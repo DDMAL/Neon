@@ -4,6 +4,7 @@ function Neon () {
     // Constructor
     //////////////
     var vrvToolkit = new verovio.toolkit();
+    var filePath = "/mei/mei4page.mei";
     var dragController = new DragController(this, vrvToolkit);
     var vrvOptions = {
         noLayout: 1,
@@ -12,7 +13,7 @@ function Neon () {
     };
     vrvToolkit.setOptions(vrvOptions);
     
-    $.get("/mei/mei4page.mei", function(data) {
+    $.get(filePath, function(data) {
         loadData(data);
         loadPage();
         dragController.dragInit();
@@ -31,7 +32,7 @@ function Neon () {
         $("#svg_output").html(svg);
     }
 
-    function saveMei () {
+    function refreshPage () {
         var meiData = vrvToolkit.getMEI();
         loadData(meiData);
     }
@@ -41,6 +42,6 @@ function Neon () {
 
     Neon.prototype.loadData = loadData;
     Neon.prototype.loadPage = loadPage;
-    Neon.prototype.saveMei = saveMei;
+    Neon.prototype.refreshPage = refreshPage;
 }
 

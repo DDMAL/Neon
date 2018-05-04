@@ -47,7 +47,7 @@ function DragController (neon, vrvToolkit) {
             };
 
             vrvToolkit.edit(editorAction);
-            neon.saveMei();
+            neon.refreshPage();
             dragInit();
         }
     }
