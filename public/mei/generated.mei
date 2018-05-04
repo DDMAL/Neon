@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://music-encoding.org/schema/3.0.0/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://music-encoding.org/schema/3.0.0/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="2013">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title>Mensural alignment example</title>
+            </titleStmt>
+            <pubStmt />
+            <seriesStmt>
+                <title>Verovio feature examples</title>
+            </seriesStmt>
+        </fileDesc>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv>
+                <pages type="transcription">
+                    <!--Coordinates in MEI axis direction-->
+                    <scoreDef xml:id="scoredef-0000000560958068">
+                        <staffGrp xml:id="staffgrp-0000001265111694" symbol="bracket">
+                            <staffDef xml:id="staffdef-0000001270173538" clef.shape="C" clef.line="2" proport.num="1" proport.numbase="3" prolatio="3" tempus="3" n="1" notationtype="neume" lines="4" />
+                        </staffGrp>
+                    </scoreDef>
+                    <page xml:id="page-0000000776849386" page.width="720" page.height="432" page.leftmar="0" page.rightmar="0" page.rightmar="0" ppu="1.388889">
+                        <system xml:id="system-0000002047448624" system.leftmar="0" system.rightmar="0" uly="144">
+                            <staff xml:id="staff-0000000028529941" n="1" uly="396">
+                                <layer xml:id="layer-0000001580856658" n="1">
+                                    <clef xml:id="clef-0000001279431632" shape="C" line="2" />
+                                    <syllable xml:id="syllable-0000000324781071">
+                                        <syl xml:id="syl-0000002050113713">
+                                            <rend xml:id="rend-0000001879134458" color="red">O</rend>
+                                        </syl>
+                                        <neume xml:id="neume-0000001604700286">
+                                            <nc oct="3" pname="e" xml:id="nc-0000000018364749" ulx="100" />
+                                            <nc oct="3" pname="d" xml:id="nc-0000001311010971" ulx="122" />
+                                            <nc oct="3" pname="e" xml:id="nc-0000000336928098" ulx="200" />
+                                        </neume>
+                                    </syllable>
+                                    <syllable xml:id="syllable-0000001653666523">
+                                        <syl xml:id="syl-0000001695402469">splen_</syl>
+                                        <neume xml:id="neume-0000002015105412">
+                                            <nc oct="3" pname="g" xml:id="nc-0000002055563457" ulx="250" />
+                                            <nc oct="3" pname="e" xml:id="nc-0000002104512190" ulx="300" />
+                                        </neume>
+                                        <neume xml:id="neume-0000001677275569">
+                                            <nc oct="3" pname="d" xml:id="nc-0000001517139285" ulx="350" />
+                                            <nc oct="3" pname="e" xml:id="nc-0000001605599002" ulx="400" />
+                                        </neume>
+                                    </syllable>
+                                    <syllable xml:id="syllable-0000001804366192">
+                                        <syl xml:id="syl-0000000556670911">di_</syl>
+                                        <neume xml:id="neume-0000000288189196">
+                                            <nc oct="3" pname="f" xml:id="nc-0000001428513195" ulx="450" />
+                                            <nc oct="3" pname="d" xml:id="nc-0000001713986534" ulx="500" />
+                                            <nc oct="3" pname="c" xml:id="nc-0000000009352301" ulx="550" />
+                                        </neume>
+                                    </syllable>
+                                    <syllable xml:id="syllable-0000000215302134">
+                                        <syl xml:id="syl-0000000304679109">si_</syl>
+                                        <neume xml:id="neume-0000000443979858">
+                                            <nc oct="2" pname="a" xml:id="nc-0000000886481741" ulx="650" />
+                                            <nc oct="2" pname="b" xml:id="nc-0000001243647920" ulx="700" />
+                                            <nc oct="3" pname="c" xml:id="nc-0000002061014485" ulx="750" />
+                                        </neume>
+                                    </syllable>
+                                    <syllable xml:id="syllable-0000001356256876">
+                                        <syl xml:id="syl-0000000363344726">ma</syl>
+                                        <neume xml:id="neume-0000002049818883">
+                                            <nc oct="2" pname="b" xml:id="nc-0000001544661365" ulx="800" />
+                                            <nc oct="2" pname="a" xml:id="nc-0000000264320466" ulx="850" />
+                                        </neume>
+                                    </syllable>
+                                </layer>
+                            </staff>
+                            <staff xml:id="staff-0000000471945012" n="2" uly="252">
+                                <layer xml:id="layer-0000001582912737" n="1">
+                                    <clef xml:id="clef-0000001598919273" shape="C" line="2" />
+                                    <syllable xml:id="syllable-0000001928092608">
+                                        <syl xml:id="syl-0000000533226137">
+                                            <rend xml:id="rend-0000002130069796" color="red">O</rend>
+                                        </syl>
+                                        <neume xml:id="neume-0000001429203772">
+                                            <nc oct="3" pname="e" xml:id="nc-0000000916077130" ulx="160" />
+                                            <nc oct="3" pname="f" xml:id="nc-0000000925808945" ulx="180" />
+                                            <nc oct="3" pname="e" xml:id="nc-0000001546859804" ulx="200" />
+                                        </neume>
+                                    </syllable>
+                                    <syllable xml:id="syllable-0000001216022554">
+                                        <syl xml:id="syl-0000000400151782">splen_</syl>
+                                        <neume xml:id="neume-0000001167821518">
+                                            <nc oct="3" pname="g" xml:id="nc-0000001325106900" ulx="250" />
+                                            <nc oct="3" pname="e" xml:id="nc-0000000276893491" ulx="300" />
+                                        </neume>
+                                        <neume xml:id="neume-0000001210538523">
+                                            <nc oct="3" pname="d" xml:id="nc-0000002111513727" ulx="350" />
+                                            <nc oct="3" pname="e" xml:id="nc-0000001843709983" ulx="400" />
+                                        </neume>
+                                    </syllable>
+                                    <syllable xml:id="syllable-0000001329918291">
+                                        <syl xml:id="syl-0000001470174350">di_</syl>
+                                        <neume xml:id="neume-0000001305162004">
+                                            <nc oct="3" pname="f" xml:id="nc-0000001700185626" ulx="450" />
+                                            <nc oct="3" pname="d" xml:id="nc-0000001462058189" ulx="500" />
+                                            <nc oct="3" pname="c" xml:id="nc-0000001085481113" ulx="550" />
+                                        </neume>
+                                    </syllable>
+                                    <syllable xml:id="syllable-0000001069153578">
+                                        <syl xml:id="syl-0000000430770323">si_</syl>
+                                        <neume xml:id="neume-0000000807444789">
+                                            <nc oct="2" pname="a" xml:id="nc-0000001230684913" ulx="650" />
+                                            <nc oct="2" pname="b" xml:id="nc-0000000752981224" ulx="700" />
+                                            <nc oct="3" pname="c" xml:id="nc-0000002064491768" ulx="750" />
+                                        </neume>
+                                    </syllable>
+                                    <syllable xml:id="syllable-0000001404513697">
+                                        <syl xml:id="syl-0000001914675186">ma</syl>
+                                        <neume xml:id="neume-0000001292429247">
+                                            <nc oct="2" pname="b" xml:id="nc-0000000130221730" ulx="800" />
+                                            <nc oct="2" pname="a" xml:id="nc-0000001618097520" ulx="850" />
+                                        </neume>
+                                    </syllable>
+                                </layer>
+                            </staff>
+                        </system>
+                    </page>
+                </pages>
+            </mdiv>
+        </body>
+    </music>
+</mei>
+
