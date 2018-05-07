@@ -4,7 +4,7 @@ function Neon () {
     // Constructor
     //////////////
     var vrvToolkit = new verovio.toolkit();
-    var filePath = "/mei/mei4page.mei";
+    var fileName = "mei4page.mei";
     var dragController = new DragController(this, vrvToolkit);
     var vrvOptions = {
         noLayout: 1,
@@ -13,10 +13,11 @@ function Neon () {
     };
     vrvToolkit.setOptions(vrvOptions);
     
-    $.get(filePath, function(data) {
+    $.get("/mei/" + fileName, function(data) {
         loadData(data);
         loadPage();
         dragController.dragInit();
+        saveMEI();
     });
 
     ////////////
@@ -37,11 +38,25 @@ function Neon () {
         loadData(meiData);
     }
 
+    function saveMEI() {
+        $(window).keydown(function(event) {
+            if (event.keyCode == 83) {
+                var meiData = vrvToolkit.getMEI();
+                $.ajax({
+                    type: "POST",
+                    url: "/save/" + fileName,
+                    data: {"meiData": meiData,
+                            "fileName": fileName}
+                }) 
+            }
+        });
+    }
     // Constructor reference
     Neon.prototype.constructor = Neon;
 
     Neon.prototype.loadData = loadData;
     Neon.prototype.loadPage = loadPage;
     Neon.prototype.refreshPage = refreshPage;
+    Neon.prototype.saveMEI = saveMEI;
 }
 
