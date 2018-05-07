@@ -18,8 +18,7 @@ router.route('/save/:filename')
                 }
             }
         )
-
-        console.log("File Saved!");
+        console.log("File saved to " + req.body.fileName);
     });
 
 module.exports = router;
