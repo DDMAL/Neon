@@ -7,8 +7,16 @@ function DragController (neon, vrvToolkit) {
     function dragInit () {
         // Adding listeners
         var elements = d3.selectAll(".nc");
-    
+        var clefs = d3.selectAll(".clef")
+
         elements.call(
+            d3.drag()
+                .on("start", dragStarted)
+                .on("drag", dragging)
+                .on("end", dragEnded)
+        );
+
+        clefs.call(
             d3.drag()
                 .on("start", dragStarted)
                 .on("drag", dragging)
@@ -20,6 +28,7 @@ function DragController (neon, vrvToolkit) {
         // Drag effects
         function dragStarted () {
             id = this.id;
+            console.log(id);
 
             // Highlighting
             d3.select(this).attr("fill", "#d00");
