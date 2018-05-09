@@ -7,12 +7,20 @@ function DragController (neon, vrvToolkit) {
     function dragInit () {
         // Adding listeners
         var elements = d3.selectAll(".nc");
-    
+        var clefs = d3.selectAll(".clef")
+
         elements.call(
             d3.drag()
                 .on("start", dragStarted)
                 .on("drag", dragging)
                 .on("end", dragEnded)
+        );
+
+        clefs.call(
+            d3.drag()
+                .on("start", dragStarted)
+                .on("drag", dragging)
+                .on("end", dragEndedClef)
         );
     
         var editorAction;
@@ -44,6 +52,18 @@ function DragController (neon, vrvToolkit) {
                 x: parseInt(dragStartCoords[2] - 20 + (dragEndCoords[2] - dragStartCoords[2])),
                 // TODO: Investigate Y offset
                 y: parseInt(dragStartCoords[1] + 750 + (dragEndCoords[1] - dragStartCoords[1])) }   
+            };
+            
+            vrvToolkit.edit(editorAction);
+            neon.refreshPage();
+            dragInit();
+        }
+        function dragEndedClef () {
+            dragEndCoords = [d3.event.x, d3.event.y, d3.event.sourceEvent.x];
+
+            editorAction = { action: 'drag', param: { elementId: id,
+                x: parseInt(dragStartCoords[2] - 20 + (dragEndCoords[2] - dragStartCoords[2])),
+                y: parseInt(dragStartCoords[1] - dragEndCoords[1]) }
             };
 
             vrvToolkit.edit(editorAction);
