@@ -6,10 +6,11 @@ function DragController (neon, vrvToolkit) {
 
     function dragInit () {
         // Adding listeners
-        var elements = d3.selectAll(".nc");
+        var neumeComponents = d3.selectAll(".nc");
         var clefs = d3.selectAll(".clef")
+        var custos = d3.selectAll(".custos");
 
-        elements.call(
+        neumeComponents.call(
             d3.drag()
                 .on("start", dragStarted)
                 .on("drag", dragging)
@@ -21,6 +22,13 @@ function DragController (neon, vrvToolkit) {
                 .on("start", dragStarted)
                 .on("drag", dragging)
                 .on("end", dragEndedClef)
+        );
+
+        custos.call(
+            d3.drag()
+                .on("start", dragStarted)
+                .on("drag", dragging)
+                .on("end", dragEnded)
         );
     
         var editorAction;
