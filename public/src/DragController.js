@@ -6,22 +6,23 @@ function DragController (neon, vrvToolkit) {
 
     function dragInit () {
         // Adding listeners
-        var neumeComponents = d3.selectAll(".nc");
+        //var neumeComponents = d3.selectAll(".nc");
+        var neumes = d3.selectAll(".neume");
         var clefs = d3.selectAll(".clef")
         var custos = d3.selectAll(".custos");
 
-        neumeComponents.call(
+        neumes.call(
             d3.drag()
                 .on("start", dragStarted)
                 .on("drag", dragging)
-                .on("end", dragEnded)
+                .on("end", dragEndedRelative)
         );
 
         clefs.call(
             d3.drag()
                 .on("start", dragStarted)
                 .on("drag", dragging)
-                .on("end", dragEndedClef)
+                .on("end", dragEndedRelativeY)
         );
 
         custos.call(
@@ -61,19 +62,33 @@ function DragController (neon, vrvToolkit) {
                 // TODO: Investigate Y offset
                 y: parseInt(dragStartCoords[1] + 750 + (dragEndCoords[1] - dragStartCoords[1])) }   
             };
-            
+           
             vrvToolkit.edit(editorAction);
             neon.refreshPage();
             dragInit();
         }
-        function dragEndedClef () {
+
+        function dragEndedRelative () {
+            dragEndCoords = [d3.event.x, d3.event.y, d3.event.sourceEvent.x];
+
+            editorAction = {action: 'drag', param: { elementId: id,
+                x: parseInt(dragStartCoords[2] - dragEndCoords[2]),
+                y: parseInt(dragStartCoords[1] - dragEndCoords[1]) }
+            };
+
+            vrvToolkit.edit(editorAction);
+            neon.refreshPage();
+            dragInit();
+        }
+
+        function dragEndedRelativeY () {
             dragEndCoords = [d3.event.x, d3.event.y, d3.event.sourceEvent.x];
 
             editorAction = { action: 'drag', param: { elementId: id,
                 x: parseInt(dragStartCoords[2] - 20 + (dragEndCoords[2] - dragStartCoords[2])),
                 y: parseInt(dragStartCoords[1] - dragEndCoords[1]) }
             };
-
+            
             vrvToolkit.edit(editorAction);
             neon.refreshPage();
             dragInit();
