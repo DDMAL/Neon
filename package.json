@@ -7,9 +7,10 @@
   "author": "Andrew Tran",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "nodemon": "^1.17.4"
   },
   "scripts": {
     "start": "nodemon server.js"
-  } 
+  }
 }
