@@ -1,0 +1,19 @@
+html
+  head
+    title Neon2
+  body
+    div
+      h2
+        | Score Selection
+        ul
+            each file in files
+                li
+                    a(href='/edit/' + file)= file   
+        form(action='/upload_mei', enctype='multipart/form-data', method='post')
+            | select an MEI file to upload:
+            input(type='file', name='file')
+            input(type='submit', value='Upload MEI')
+        form(action='/upload_img', enctype='multipart/form-data', method='post')
+            | select an PNG file to upload:
+            input(type='file', name='image')
+            input(type='submit', value='Upload PNG')
