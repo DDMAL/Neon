@@ -12,4 +12,6 @@ html
   body
     #svg_output
       script(type='text/javascript').
-        var neon = new Neon();
+        var neon = new Neon({
+          meifile: "#{meifile}"
+        });
