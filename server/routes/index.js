@@ -25,11 +25,11 @@ router.route('/')
                 res.status(500).send(error);
                 return
             }
-            console.log(files);
             res.render('index', {'files': files});
         });
 });
 
+//fins a way to make this one function
 router.route('/upload_mei')
     .post(uploadm.single("file"), function(req, res){
     });
@@ -40,8 +40,7 @@ router.route('/upload_img')
 
 router.route('/edit/:filename')
     .get(function (req, res) {
-        console.log(res);
-        res.render('editor');
+        res.render('editor', {'meifile': req.params.filename});
     });
 
 /////////////////

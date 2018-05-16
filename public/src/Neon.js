@@ -1,10 +1,10 @@
-function Neon () {
+function Neon (params) {
 
     //////////////
     // Constructor
     //////////////
     var vrvToolkit = new verovio.toolkit();
-    var fileName = "mei4page.mei";
+    var fileName = params.meifile;
     var dragController = new DragController(this, vrvToolkit);
     var vrvOptions = {
         noLayout: 1,
