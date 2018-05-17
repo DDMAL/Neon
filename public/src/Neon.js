@@ -13,7 +13,7 @@ function Neon (params) {
     };
     vrvToolkit.setOptions(vrvOptions);
     
-    $.get("/mei/" + fileName, function(data) {
+    $.get("/uploads/mei/" + fileName, function(data) {
         loadData(data);
         loadPage();
         dragController.dragInit();

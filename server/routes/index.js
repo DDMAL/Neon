@@ -8,34 +8,61 @@ var router = express.Router();
 /// Index routes//
 //////////////////
 
-var uploadi = multer({
-    dest: __dirname + '../../../public/img' ,
-    limits: {filesize: 1000000, files:1}
-})
-
-var uploadm = multer({
-    dest: __dirname + '../../../public/mei' ,
-    limits: {filesize: 1000000, files:1}
-})
-
-router.route('/')
-    .get(function (req, res) {    
-        fs.readdir(__base + 'public/mei', function(err, files){
-            if (err) {
-                res.status(500).send(error);
-                return
-            }
-            res.render('index', {'files': files});
-        });
+var storage = multer.diskStorage({
+    destination: __dirname + '../../../public/uploads', 
+    limits: {filesize: 1000000, files: 2} ,
+    filename: function ( req, file, cb ) {
+        cb( null, file.originalname);
+    }
 });
 
-//fins a way to make this one function
-router.route('/upload_mei')
-    .post(uploadm.single("file"), function(req, res){
-    });
+var upload = multer({ 
+    storage: storage 
+});
 
-router.route('/upload_img')
-    .post(uploadi.single("image"), function(req, res){    
+router.route('/')
+    .get(function (req, res) {
+        fs.readdir(__base + 'public/uploads/mei', function(err, files){
+            if (err) {
+                res.status(500).send(err);
+                return 
+            }
+        res.render('index', {'files': files});
+    });
+});
+
+//find a way to make this one function
+router.route('/upload_file')
+    .post(upload.array('resource', 2) ,function(req, res){
+        if (req.files.length != 2){
+            console.log("Must upload 2 files!");
+        }
+        else{
+            var files = [req.files[0].originalname, req.files[1].originalname];
+            console.log(files);
+            filename = files[0].split(".", 2)[0];
+            imgext = files[1].split(".", 2)[1];
+            newImg = filename + "." + imgext;
+
+            for(i=0; i<2; i++){
+                file = files[i];
+                filext = file.split(".", 2)[1];
+                if(filext === "mei"){
+                    fs.rename(__base + 'public/uploads/' + file, __base + 'public/uploads/mei/' + file, function (err){
+                        if (err) throw err;
+                    });
+                }
+                else if(filext === "png" || filext === "jpg"){
+                    fs.rename(__base + 'public/uploads/' + file, __base + 'public/uploads/img/' + newImg, function (err){
+                        if (err) throw err;
+                    });
+                }
+                else{
+                    console.log("invalid file type!");
+                }           
+            }
+        }
+        res.redirect('/');
     });
 
 router.route('/edit/:filename')
