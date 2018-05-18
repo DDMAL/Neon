@@ -17,7 +17,6 @@ function Neon (params) {
     $.get("/uploads/mei/" + fileName, function(data) {
         loadData(data);
         loadPage();
-        saveMEI();
     });
 
     // Set keypress listener
