@@ -1,16 +1,27 @@
 html
   head
     title Neon2
+    block sripts
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css')
+    script(defer='', src='https://use.fontawesome.com/releases/v5.0.7/js/all.js')
   body
     div
+    .container.is-fluid
+      h1
+        | Neon2
+      p
+        | Neon2 is a borwser-based score editor used to manipulate digitally encoded early music notation.
       h2
         | Score Selection
         ul
             each file in files
                 li
-                    a(href='/edit/' + file)= file   
+                    a(href='/edit/' + file)= file 
+        h3
+          | Score Upload  
         form(action='/upload_file', enctype='multipart/form-data', method='post')
-            | select an MEI file to upload:
-            input(type='file', name='resource')
+            | select an MEI file to upload: 
+            input(type='file', name='resource') 
+            | select a PNG file to upload: 
             input(type='file', name='resource')
             input(type='submit', value='Upload')
