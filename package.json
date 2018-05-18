@@ -7,9 +7,14 @@
   "author": "Andrew Tran",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "express": "^4.16.3"
+    "bulma": "^0.7.1",
+    "bulma-start": "^0.0.2",
+    "express": "^4.16.3",
+    "multer": "^1.3.0",
+    "nodemon": "^1.17.4",
+    "pug": "^2.0.3"
   },
   "scripts": {
     "start": "nodemon server.js"
-  } 
+  }
 }
