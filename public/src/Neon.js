@@ -19,7 +19,7 @@ function Neon (params) {
         loadData(data);
         loadPage();
         dragController.dragInit();
-        saveMEI();
+        //saveMEI();
     });
 
     // Set keypress listener
