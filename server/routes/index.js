@@ -8,6 +8,19 @@ var router = express.Router();
 /// Index routes//
 //////////////////
 
+//Main Page
+router.route('/')
+    .get(function (req, res) {
+        fs.readdir(__base + 'public/uploads/mei', function(err, files){
+            if (err) {
+                res.status(500).send(err);
+                return 
+            }
+        res.render('index', {'files': files});
+    });
+});
+
+//File upload
 var storage = multer.diskStorage({
     destination: __dirname + '../../../public/uploads', 
     limits: {filesize: 1000000, files: 2} ,
@@ -20,18 +33,6 @@ var upload = multer({
     storage: storage 
 });
 
-router.route('/')
-    .get(function (req, res) {
-        fs.readdir(__base + 'public/uploads/mei', function(err, files){
-            if (err) {
-                res.status(500).send(err);
-                return 
-            }
-        res.render('index', {'files': files});
-    });
-});
-
-//find a way to make this one function
 router.route('/upload_file')
     .post(upload.array('resource', 2) ,function(req, res){
         if (req.files.length != 2){
@@ -65,6 +66,19 @@ router.route('/upload_file')
         res.redirect('/');
     });
 
+//Delete file
+router.route('/delete/:filename')
+    .get(function (req, res){
+        file = req.params.filename;
+        fs.unlink( __base + 'public/uploads/mei/' + file, function (err){
+            if (err){
+                console.log("failed to delete file");
+            }
+        })
+        res.redirect('/');
+    });
+
+//Redirect
 router.route('/edit/:filename')
     .get(function (req, res) {
         res.render('editor', {'meifile': req.params.filename});

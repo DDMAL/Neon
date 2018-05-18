@@ -14,15 +14,17 @@ html
           | Neon2 is a browser-based score editor used to manipulate digitally encoded early music notation.
         h2.subtitle
         section
-            | Score Selection
+            | Score Selection:
             ul
-                each file in files
-                    li
-                        a(href='/edit/' + file)= file 
-       
+              each file in files
+                li
+                  a(href='/edit/' + file)= file 
+                  a(href='/delete/' + file)
+                    span.icon
+                      i.fas.fa-times
         h3.subtitle
         section
-          | Score Upload 
+          | Score Upload: 
           form(action='/upload_file', enctype='multipart/form-data', method='post')
               | select an MEI file to upload: 
               input(type='file', name='resource') 
