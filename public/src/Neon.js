@@ -5,7 +5,6 @@ function Neon () {
     //////////////
     var vrvToolkit = new verovio.toolkit();
     var fileName = "mei4page.mei";
-    var dragController = new DragController(this, vrvToolkit);
     var vrvOptions = {
         noLayout: 1,
         noFooter: 1,
@@ -16,7 +15,6 @@ function Neon () {
     $.get("/mei/" + fileName, function(data) {
         loadData(data);
         loadPage();
-        dragController.dragInit();
         saveMEI();
     });
 
