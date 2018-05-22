@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-var routes = require('./server/routes');
+var routes = require('./server/routes/index');
 var bodyParser = require('body-parser');
 
 global.__base = __dirname + "/";
@@ -16,13 +16,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //=====================
 app.use('/', routes);
 
+//=====================
+// Templating Engine
+//=====================
+
+app.set('view engine', 'pug');
+
 //=============
 // Static Files
 //=============
 app.use(express.static('public'));
 
+app.listen(9000);
 
-
-app.listen(8080);
-
-console.log('Server hosted at :8080');
+console.log('Server hosted at :9000');
