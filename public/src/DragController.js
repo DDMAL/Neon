@@ -138,9 +138,14 @@ function DragController (neon, vrvToolkit) {
         $("#neume_info").empty();
         $("#neume_info").append(
             "<article class='message'>" +
-            "<div class='message-header'> <p>" + elementClass + "</p> <button class='delete' aria-label='delete'></button> </div>" +
+            "<div class='message-header'> <p>" + elementClass + "</p> <button id='notification-delete' class='delete' aria-label='delete'></button> </div>" +
             "<div class='message-body'>" + body + "</div> </article>"
         );
+
+        // Setting up listener for dismissing message
+        $("#notification-delete").on("click", function() {
+            $("#neume_info").empty();
+        })
     }
 
     DragController.prototype.dragInit = dragInit;
