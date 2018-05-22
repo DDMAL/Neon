@@ -43,18 +43,7 @@ function DragController (neon, vrvToolkit) {
             
             dragStartCoords = [d3.event.x, d3.event.y, d3.event.sourceEvent.x];
 
-            console.log(typeof(this));
-            // // Neume Information
-            // var ncs = this.selectAll(".nc");
-            // for (int = 0; i < ncs.size(); i++){
-            //     console.log(vrvToolkit.getElementAttr(ncs[i].id));
-            // }
-            $("#neume_info").empty();
-            $("#neume_info").append(
-                "<article class='message'>" +
-                "<div class='message-header'> <p>Hello World</p> <button class='delete' aria-label='delete'></button> </div>" +
-                "<div class='message-body'> lorem ipsum </div> </article>"
-            );
+            neumeInformation(id);
         }
         function dragging () {
             var relativeY = d3.event.y - dragStartCoords[1];
@@ -106,6 +95,52 @@ function DragController (neon, vrvToolkit) {
             neon.refreshPage();
             dragInit();
         }
+    }
+
+
+    // This function updates the neume information box in the editor
+    // TODO: Separate this functionality into its own file
+    function neumeInformation(id) {
+        // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the <g> element
+        // So we will simply return if ID does not exist for now
+        if (id == "") {
+            $("#neume_info").empty();
+            console.log("No id!");
+            return;
+        }
+
+        var element = d3.select("#" + id);
+        var elementClass = element.attr("class");
+        var body = "";
+
+        // Gets the pitches depending on element type and 
+        switch(elementClass) {
+            case "neume":
+                var ncs = element.selectAll('.nc');
+                var pitches = [];
+                ncs.each( function () {
+                    var ncId = d3.select(this).attr("id");
+                    var ncPitch = vrvToolkit.getElementAttr(ncId).pname;
+                    pitches.push(ncPitch);
+                })
+                // TODO: Somehow get the grouping name from verovio? Requires quite a bit of refactoring in verovio for this though
+                body += "Pitch(es): " + pitches;
+                break;
+            case "custos":
+                body += "Pitch: " + vrvToolkit.getElementAttr(id).pname;
+                break;
+            default:
+                body += "nothing";
+                break;
+        }
+
+        // Resetting info box then adding relevant info
+        $("#neume_info").empty();
+        $("#neume_info").append(
+            "<article class='message'>" +
+            "<div class='message-header'> <p>" + elementClass + "</p> <button class='delete' aria-label='delete'></button> </div>" +
+            "<div class='message-body'>" + body + "</div> </article>"
+        );
     }
 
     DragController.prototype.dragInit = dragInit;
