@@ -36,7 +36,7 @@ var upload = multer({
 router.route('/upload_file')
     .post(upload.array('resource', 2) ,function(req, res){
         if (req.files.length != 2){
-            console.log("Must upload 2 files!");
+            return console.log("Must upload 2 files!");
         }
         else{
             var files = [req.files[0].originalname, req.files[1].originalname];
@@ -53,13 +53,13 @@ router.route('/upload_file')
                         if (err) throw err;
                     });
                 }
-                else if(filext === "png" || filext === "jpg"){
+                else if(filext === "png"){
                     fs.rename(__base + 'public/uploads/' + file, __base + 'public/uploads/img/' + newImg, function (err){
                         if (err) throw err;
                     });
                 }
                 else{
-                    console.log("invalid file type!");
+                    return console.log("invalid file type!");
                 }           
             }
         }
@@ -72,7 +72,7 @@ router.route('/delete/:filename')
         file = req.params.filename;
         fs.unlink( __base + 'public/uploads/mei/' + file, function (err){
             if (err){
-                console.log("failed to delete file");
+                return console.log("failed to delete file");
             }
         })
         res.redirect('/');
