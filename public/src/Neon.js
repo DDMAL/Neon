@@ -20,8 +20,13 @@ function Neon (params) {
     });
 
     // Set keypress listener
-    d3.select("body").on("keydown", keydownListener);
-
+    d3.select("body")
+        .on("keydown", keydownListener)
+        .on("keyup", () => {
+            if (d3.event.key == "Shift") {
+                d3.select("body").on(".drag", null);
+            }
+        });
     ////////////
     // Functions
     ////////////
@@ -55,6 +60,13 @@ function Neon (params) {
     function keydownListener () {
         var unit = 10;
         switch (d3.event.key) {
+            case "Shift":
+                d3.select("body").call(
+                    d3.drag()
+                        .on("start", zoomController.startDrag)
+                        .on("drag", zoomController.dragging)
+                );
+                break;
             case "s":
                 saveMEI();
                 break;
@@ -63,18 +75,6 @@ function Neon (params) {
                 break;
             case "Z":
                 zoomController.zoom(0.80);
-                break;
-            case "k":
-                zoomController.translate(0, unit);
-                break;
-            case "j":
-                zoomController.translate(0, -unit);
-                break;
-            case "l":
-                zoomController.translate(-unit, 0);
-                break;
-            case "h":
-                zoomController.translate(unit, 0);
                 break;
             default: break;
         }
