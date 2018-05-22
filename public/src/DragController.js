@@ -42,8 +42,6 @@ function DragController (neon, vrvToolkit) {
             d3.select(this).attr("fill", "#d00");
             
             dragStartCoords = [d3.event.x, d3.event.y, d3.event.sourceEvent.x];
-
-            neumeInformation(id);
         }
         function dragging () {
             var relativeY = d3.event.y - dragStartCoords[1];
@@ -67,6 +65,7 @@ function DragController (neon, vrvToolkit) {
            
             vrvToolkit.edit(editorAction);
             neon.refreshPage();
+            neumeInformation(id);
             dragInit();
         }
 
@@ -80,6 +79,7 @@ function DragController (neon, vrvToolkit) {
 
             vrvToolkit.edit(editorAction);
             neon.refreshPage();
+            neumeInformation(id);
             dragInit();
         }
 
@@ -93,6 +93,7 @@ function DragController (neon, vrvToolkit) {
             
             vrvToolkit.edit(editorAction);
             neon.refreshPage();
+            neumeInformation(id);
             dragInit();
         }
     }
