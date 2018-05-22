@@ -42,6 +42,19 @@ function DragController (neon, vrvToolkit) {
             d3.select(this).attr("fill", "#d00");
             
             dragStartCoords = [d3.event.x, d3.event.y, d3.event.sourceEvent.x];
+
+            console.log(typeof(this));
+            // // Neume Information
+            // var ncs = this.selectAll(".nc");
+            // for (int = 0; i < ncs.size(); i++){
+            //     console.log(vrvToolkit.getElementAttr(ncs[i].id));
+            // }
+            $("#neume_info").empty();
+            $("#neume_info").append(
+                "<article class='message'>" +
+                "<div class='message-header'> <p>Hello World</p> <button class='delete' aria-label='delete'></button> </div>" +
+                "<div class='message-body'> lorem ipsum </div> </article>"
+            );
         }
         function dragging () {
             var relativeY = d3.event.y - dragStartCoords[1];

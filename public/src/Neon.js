@@ -4,10 +4,12 @@ function Neon () {
     // Constructor
     //////////////
     var vrvToolkit = new verovio.toolkit();
-    var fileName = "mei4page.mei";
+    var fileName = "mei4.mei";
     var dragController = new DragController(this, vrvToolkit);
     var vrvOptions = {
-        noLayout: 1,
+        // Width/Height needs to be set based on MEI information in the future
+        pageHeight: 400,
+        pageWidth: 600,
         noFooter: 1,
         noHeader: 1
     };
@@ -17,7 +19,6 @@ function Neon () {
         loadData(data);
         loadPage();
         dragController.dragInit();
-        saveMEI();
     });
 
     ////////////
