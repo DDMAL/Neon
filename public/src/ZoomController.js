@@ -4,27 +4,7 @@ function ZoomController (neon) {
     var transform = d3.zoomIdentity;
     var unitX = 10;
     var unitY = unitX;
-    
-    function zoomListener () {
-        if (d3.event.key == "z") {
-            zoom(1.25);
-        }
-        else if (d3.event.key == "Z") {
-            zoom(0.80);
-        }
-        else if (d3.event.key == "ArrowUp") {
-            translate(0, unitY);
-        }
-        else if (d3.event.key == "ArrowDown") {
-            translate(0, -unitY);
-        }
-        else if (d3.event.key == "ArrowRight") {
-            translate(-unitX, 0);
-        }
-        else if (d3.event.key == "ArrowLeft") {
-            translate(unitX, 0);
-        }
-    }
+    var dragCoordinates = [0.0, 0.0];
 
     function zoom (k) {
         selectSvgContainer();
@@ -50,8 +30,23 @@ function ZoomController (neon) {
         svg = d3.select("#svg_container");
     }
 
+    function startDrag () {
+        dragCoordinates = [d3.event.x, d3.event.y];
+    }
+
+    function dragging () {
+        translate(
+            (d3.event.x - dragCoordinates[0]) / transform.k,
+            (d3.event.y - dragCoordinates[1]) / transform.k
+        );
+        dragCoordinates[0] = d3.event.x;
+        dragCoordinates[1] = d3.event.y;
+    }
+
     ZoomController.prototype.constructor = ZoomController;
     ZoomController.prototype.zoom = zoom;
     ZoomController.prototype.translate = translate;
     ZoomController.prototype.restoreTransformation = restoreTransformation;
+    ZoomController.prototype.startDrag = startDrag;
+    ZoomController.prototype.dragging = dragging;
 }

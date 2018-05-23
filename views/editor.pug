@@ -6,12 +6,16 @@ html
       script(src='/js/verovio-toolkit.js', type='text/javascript')
       script(src='/js/jquery.js', type='text/javascript')
       script(src='/js/d3.js', type='text/javascript')
+      // Style Sheets
+      link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css')
       // Source Files
       script(src='/src/Neon.js', type='text/javascript')
-      script(src='/src/DragController.js', type='text/javascript')
+      script(src='/src/InfoController.js', type='text/javascript')
       script(src='/src/ZoomController.js', type='text/javascript')
   body
-    #svg_output
+    .columns
+      .column#svg_output(style={overflow: "hidden"})
+      .column#neume_info
       script(type='text/javascript').
         var neon = new Neon({
           meifile: "#{meifile}"
