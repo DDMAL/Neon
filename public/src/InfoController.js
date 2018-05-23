@@ -28,11 +28,9 @@ function InfoController(vrvToolkit) {
         // Gets the pitches depending on element type and 
         switch(elementClass) {
             case "neume":
-                var neumeInfo = { action: 'neume-info', param: { elementId: id }};
-                body = vrvToolkit.query(neumeInfo);
-                break;
             case "custos":
-                body += "Pitch: " + vrvToolkit.getElementAttr(id).pname;
+                var infoAction = { action: 'element-info', param: { elementId: id }};
+                body = vrvToolkit.query(infoAction);
                 break;
             default:
                 body += "nothing";
