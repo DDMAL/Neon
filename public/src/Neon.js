@@ -53,7 +53,6 @@ function Neon (params) {
     }
     // Constructor reference
     Neon.prototype.constructor = Neon;
-
     Neon.prototype.loadData = loadData;
     Neon.prototype.loadPage = loadPage;
     Neon.prototype.refreshPage = refreshPage;

@@ -20,50 +20,75 @@ router.route('/')
     });
 });                                                                      
 
-//File upload
+//File upload using Multer
 var storage = multer.diskStorage({
-    destination: __dirname + '../../../public/uploads', 
-    limits: {filesize: 1000000, files: 2} ,
+    destination: function ( req, file, cb ) {
+        cb(null,  __dirname + '../../../public/uploads');
+    },   
     filename: function ( req, file, cb ) {
-        cb( null, file.originalname);
+        cb(null, file.originalname);
     }
 });
 
 var upload = multer({ 
-    storage: storage 
-});
+    storage: storage,
+    limits: {filesize: 1000000, files: 2} ,
+}).array('resource', 2);
 
 router.route('/upload_file')
-    .post(upload.array('resource', 2) ,function(req, res){
-        if (req.files.length != 2){
-            return console.log("Must upload 2 files!");
-        }
-        else{
-            var files = [req.files[0].originalname, req.files[1].originalname];
-            console.log(files);
-            filename = files[0].split(".", 2)[0];
-            imgext = files[1].split(".", 2)[1];
-            newImg = filename + "." + imgext;
-
-            for(i=0; i<2; i++){
-                file = files[i];
-                filext = file.split(".", 2)[1];
-                if(filext === "mei"){
-                    fs.rename(__base + 'public/uploads/' + file, __base + 'public/uploads/mei/' + file, function (err){
-                        if (err) throw err;
-                    });
+    .post(function(req, res) {
+        upload(req, res, function (err) {
+            //Check if two files were uploaded
+            if (req.files.length != 2){
+                for (i=0; i<req.files.length; i++){
+                    fs.unlink( __base + 'public/uploads/' + req.files[i].originalname, function (err){
+                        if (err){
+                            return console.log("failed to delete file");
+                        }
+                    });  
                 }
-                else if(filext === "png"){
-                    fs.rename(__base + 'public/uploads/' + file, __base + 'public/uploads/img/' + newImg, function (err){
-                        if (err) throw err;
-                    });
-                }
-                else{
-                    return console.log("invalid file type!");
-                }           
+                fs.readdir(__base + 'public/uploads/mei', function(err, files){
+                    res.render('index', {'files': files, 'err': "Error: must upload two files"});
+                });
+                return;    
             }
-        }
-        res.redirect('/');
+            //rename img file to have same name as MEI
+            var files = [req.files[0].originalname, req.files[1].originalname];
+            var meiSplit = files[0].split(".", 2);
+            var filename = meiSplit[0];
+            var meiext = meiSplit[1];
+            var imgext = files[1].split(".", 2)[1];
+            files[1] = filename + "." + imgext;
+
+            //Check if valid filetypes
+            if (meiext != "mei" || imgext != "png"){
+                for (i=0; i<files.length; i++){
+                    fs.unlink( __base + 'public/uploads/' + files[i], function (err){
+                        if (err){
+                            return console.log("Failed to delete file");
+                        }
+                    })
+                }
+                fs.readdir(__base + 'public/uploads/mei', function(err, files){
+                    res.render('index', {'files': files, 'err': "Error: Invalid file type"});
+                });
+                return;
+            }
+            //Move files into their folders
+            else{
+                for(i=0; i<files.length; i++){
+                    file = files[i];
+                    filext = file.split(".", 2)[1];
+                    fs.rename(__base + 'public/uploads/' + files[i], __base + 'public/uploads/'+ filext + '/' + files[i], function (err){
+                        if (err){
+                            return console.log("Failed to rename file");
+                        }
+                    });         
+                }
+            }
+            //reload page
+            res.redirect('/');
+        });
     });
 
 //Delete file
