@@ -1,5 +1,16 @@
 function InfoController(vrvToolkit) {
 
+    function infoListeners() {
+        var neumes = d3.selectAll(".neume");
+        var custos = d3.selectAll(".custos");
+
+        neumes.call( d3.drag().on("start", setInfo) );
+        custos.call( d3.drag().on("start", setInfo) );
+    }
+
+    function setInfo() {
+        updateInfo(this.id);
+    }
     // This function updates the neume information box in the editor
     function updateInfo(id) {
         // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the <g> element
@@ -31,7 +42,7 @@ function InfoController(vrvToolkit) {
                 body += "Pitch: " + vrvToolkit.getElementAttr(id).pname;
                 break;
             default:
-                body += "";
+                body += "nothing";
                 break;
         }
 
@@ -49,5 +60,5 @@ function InfoController(vrvToolkit) {
         })
     }
 
-    InfoController.prototype.updateInfo = updateInfo;
+    InfoController.prototype.infoListeners = infoListeners;
 }

@@ -5,9 +5,13 @@ function Neon (params) {
     //////////////
     var vrvToolkit = new verovio.toolkit();
     var fileName = params.meifile;
-    var dragController = new DragController(this, vrvToolkit);
+    var zoomController = new ZoomController(this);
+    var infoController = new InfoController(vrvToolkit);
+
     var vrvOptions = {
-        noLayout: 1,
+        // Width/Height needs to be set based on MEI information in the future
+        pageHeight: 400,
+        pageWidth: 600,
         noFooter: 1,
         noHeader: 1
     };
@@ -16,10 +20,16 @@ function Neon (params) {
     $.get("/uploads/mei/" + fileName, function(data) {
         loadData(data);
         loadPage();
-        dragController.dragInit();
-        saveMEI();
     });
 
+    // Set keypress listener
+    d3.select("body")
+        .on("keydown", keydownListener)
+        .on("keyup", () => {
+            if (d3.event.key == "Shift") {
+                d3.select("body").on(".drag", null);
+            }
+        });
     ////////////
     // Functions
     ////////////
@@ -31,25 +41,47 @@ function Neon (params) {
     function loadPage () {
         var svg = vrvToolkit.renderToSVG(1);
         $("#svg_output").html(svg);
+        d3.select("#svg_output").select("svg").attr("id", "svg_container");
+        infoController.infoListeners();
     }
 
     function refreshPage () {
         var meiData = vrvToolkit.getMEI();
         loadData(meiData);
+        zoomController.restoreTransformation();
     }
 
     function saveMEI() {
-        $(window).keydown(function(event) {
-            if (event.keyCode == 83) {
-                var meiData = vrvToolkit.getMEI();
-                $.ajax({
-                    type: "POST",
-                    url: "/save/" + fileName,
-                    data: {"meiData": meiData,
-                            "fileName": fileName}
-                }) 
-            }
-        });
+        var meiData = vrvToolkit.getMEI();
+        $.ajax({
+            type: "POST",
+            url: "/save/" + fileName,
+            data: {"meiData": meiData,
+                    "fileName": fileName}
+        }) 
+    }
+
+    function keydownListener () {
+        var unit = 10;
+        switch (d3.event.key) {
+            case "Shift":
+                d3.select("body").call(
+                    d3.drag()
+                        .on("start", zoomController.startDrag)
+                        .on("drag", zoomController.dragging)
+                );
+                break;
+            case "s":
+                saveMEI();
+                break;
+            case "z":
+                zoomController.zoom(1.25);
+                break;
+            case "Z":
+                zoomController.zoom(0.80);
+                break;
+            default: break;
+        }
     }
     // Constructor reference
     Neon.prototype.constructor = Neon;

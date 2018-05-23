@@ -18,7 +18,7 @@ router.route('/')
             }
         res.render('index', {'files': files});
     });
-});                                                                      
+});
 
 //File upload using Multer
 var storage = multer.diskStorage({
