@@ -14,7 +14,7 @@ html
       script(src='/src/ZoomController.js', type='text/javascript')
   body
     .columns
-      .column#svg_output(style={width: "100%", height: "100%"})
+      .column#svg_output(style={overflow: "hidden"})
       .column#neume_info
       script(type='text/javascript').
         var neon = new Neon({
