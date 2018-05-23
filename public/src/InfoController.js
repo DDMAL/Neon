@@ -28,15 +28,8 @@ function InfoController(vrvToolkit) {
         // Gets the pitches depending on element type and 
         switch(elementClass) {
             case "neume":
-                var ncs = element.selectAll('.nc');
-                var pitches = [];
-                ncs.each( function () {
-                    var ncId = d3.select(this).attr("id");
-                    var ncPitch = vrvToolkit.getElementAttr(ncId).pname;
-                    pitches.push(ncPitch);
-                })
-                // TODO: Somehow get the grouping name from verovio? Requires quite a bit of refactoring in verovio for this though
-                body += "Pitch(es): " + pitches;
+                var neumeInfo = { action: 'neume-info', param: { elementId: id }};
+                body = vrvToolkit.query(neumeInfo);
                 break;
             case "custos":
                 body += "Pitch: " + vrvToolkit.getElementAttr(id).pname;
