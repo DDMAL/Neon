@@ -5,6 +5,19 @@ function ZoomController (neon) {
     var unitX = 10;
     var unitY = unitX;
     var dragCoordinates = [0.0, 0.0];
+    setZoomControls();
+
+    // TODO: Finish functionality for zoom controls
+    function setZoomControls() {
+        $("#reset-zoom").click( function() {
+            console.log("reset zoom");
+        });
+
+        $("zoomSlider").on('change', function () {
+            console.log('test');
+            console.log($(this).val());
+        })
+    }
 
     function zoom (k) {
         selectSvgContainer();
