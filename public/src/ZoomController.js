@@ -24,6 +24,8 @@ function ZoomController (neon) {
         d3.zoom().scaleTo(svg, 1);
         transform = d3.zoomTransform(svg.node());
         svg.attr("transform", transform);
+        $("#zoomSlider").val(100);
+        $("#zoomOutput").val(100);
 
         d3.zoom().translateTo(svg, neon.pageWidth/2, neon.pageHeight/2);
         transform = d3.zoomTransform(svg.node());
