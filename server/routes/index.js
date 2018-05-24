@@ -115,7 +115,7 @@ router.route('/edit/:filename')
 
 router.route('/save/:filename')
 .post(function (req, res) {
-    fs.writeFile(__base + 'public/mei/' + req.body.fileName, 
+    fs.writeFile(__base + 'public/uploads/mei/' + req.body.fileName, 
         req.body.meiData,
         function(err) {
             if(err) {
