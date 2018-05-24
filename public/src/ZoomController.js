@@ -13,9 +13,9 @@ function ZoomController (neon) {
             resetZoomAndPan();
         });
 
-        $("zoomSlider").on('change', function () {
-            console.log('test');
-            console.log($(this).val());
+        $(document).on('input change', '#zoomSlider', function () {
+            console.log($("#zoomOutput").val());
+            zoomTo($("#zoomOutput").val() / 100.0)
         })
     }
 
@@ -33,6 +33,13 @@ function ZoomController (neon) {
     function zoom (k) {
         selectSvgContainer();
         d3.zoom().scaleBy(svg, k);
+        transform = d3.zoomTransform(svg.node());
+        svg.attr("transform", transform);
+    }
+
+    function zoomTo (k) {
+        selectSvgContainer();
+        d3.zoom().scaleTo(svg, k);
         transform = d3.zoomTransform(svg.node());
         svg.attr("transform", transform);
     }

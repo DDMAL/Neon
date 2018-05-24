@@ -30,6 +30,7 @@ function InfoController(vrvToolkit) {
             case "neume":
                 var neumeInfo = { action: 'neume-info', param: { elementId: id }};
                 body = vrvToolkit.query(neumeInfo);
+                //TODO: Add pitch names to info box for neumes
                 break;
             case "custos":
                 body += "Pitch: " + vrvToolkit.getElementAttr(id).pname;
