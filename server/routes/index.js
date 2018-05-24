@@ -58,7 +58,7 @@ router.route('/upload_file')
             var filename = meiSplit[0];
             var meiext = meiSplit[1];
             var imgext = files[1].split(".", 2)[1];
-            files[1] = filename + "." + imgext;
+            var newImg = filename + "." + imgext;
 
             //Check if valid filetypes
             if (meiext != "mei" || imgext != "png"){
@@ -76,15 +76,21 @@ router.route('/upload_file')
             }
             //Move files into their folders
             else{
-                for(i=0; i<files.length; i++){
-                    file = files[i];
-                    filext = file.split(".", 2)[1];
-                    fs.rename(__base + 'public/uploads/' + files[i], __base + 'public/uploads/'+ filext + '/' + files[i], function (err){
-                        if (err){
-                            return console.log("Failed to rename file");
-                        }
-                    });         
-                }
+                //Move MEI file
+                fs.rename(__base + 'public/uploads/' + files[0], __base + 'public/uploads/mei/'+ files[0], function (err){
+                    if (err){
+                        return console.log("Failed to rename file");
+                    }
+                });
+                //Move PNG file
+                fs.rename(__base + 'public/uploads/' + files[1], __base + 'public/uploads/png/' + newImg, function (err){
+                    if (err){
+                        return console.log("Failed to rename file");
+                    }
+                });
+                //Copy MEI file to backup 
+                fs.createReadStream(__base + 'public/uploads/mei/' + files[0])
+                    .pipe(fs.createWriteStream(__base + 'public/uploads/backup/' + files[0]));
             }
             //reload page
             res.redirect('/');
