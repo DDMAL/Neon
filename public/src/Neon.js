@@ -12,6 +12,7 @@ function Neon (params) {
     var fileName = params.meifile;
     var zoomController = new ZoomController(this);
     var infoController = new InfoController(vrvToolkit);
+    var controlsController = new ControlsController(zoomController);
 
     var vrvOptions = {
         pageWidth: pageWidth,

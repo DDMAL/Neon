@@ -5,19 +5,6 @@ function ZoomController (neon) {
     var unitX = 10;
     var unitY = unitX;
     var dragCoordinates = [0.0, 0.0];
-    setZoomControls();
-
-    // TODO: Finish functionality for zoom controls
-    function setZoomControls() {
-        $("#reset-zoom").click( function() {
-            resetZoomAndPan();
-        });
-
-        $(document).on('input change', '#zoomSlider', function () {
-            console.log($("#zoomOutput").val());
-            zoomTo($("#zoomOutput").val() / 100.0)
-        })
-    }
 
     function resetZoomAndPan () {
         selectSvgContainer();
@@ -77,7 +64,9 @@ function ZoomController (neon) {
     }
 
     ZoomController.prototype.constructor = ZoomController;
+    ZoomController.prototype.resetZoomAndPan = resetZoomAndPan;
     ZoomController.prototype.zoom = zoom;
+    ZoomController.prototype.zoomTo = zoomTo;
     ZoomController.prototype.translate = translate;
     ZoomController.prototype.restoreTransformation = restoreTransformation;
     ZoomController.prototype.startDrag = startDrag;
