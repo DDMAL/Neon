@@ -5,18 +5,18 @@ function ZoomController (neon) {
     var unitX = 10;
     var unitY = unitX;
     var dragCoordinates = [0.0, 0.0];
-    setZoomControls();
 
-    // TODO: Finish functionality for zoom controls
-    function setZoomControls() {
-        $("#reset-zoom").click( function() {
-            console.log("reset zoom");
-        });
+    function resetZoomAndPan () {
+        selectSvgContainer();
+        d3.zoom().scaleTo(svg, 1);
+        transform = d3.zoomTransform(svg.node());
+        svg.attr("transform", transform);
+        $("#zoomSlider").val(100);
+        $("#zoomOutput").val(100);
 
-        $("zoomSlider").on('change', function () {
-            console.log('test');
-            console.log($(this).val());
-        })
+        d3.zoom().translateTo(svg, neon.pageWidth/2, neon.pageHeight/2);
+        transform = d3.zoomTransform(svg.node());
+        svg.attr("transform", transform);
     }
 
     // Zoom by relative k
@@ -24,6 +24,13 @@ function ZoomController (neon) {
     function zoom (k) {
         selectSvgContainer();
         d3.zoom().scaleBy(svg, k);
+        transform = d3.zoomTransform(svg.node());
+        svg.attr("transform", transform);
+    }
+
+    function zoomTo (k) {
+        selectSvgContainer();
+        d3.zoom().scaleTo(svg, k);
         transform = d3.zoomTransform(svg.node());
         svg.attr("transform", transform);
     }
@@ -64,7 +71,9 @@ function ZoomController (neon) {
     }
 
     ZoomController.prototype.constructor = ZoomController;
+    ZoomController.prototype.resetZoomAndPan = resetZoomAndPan;
     ZoomController.prototype.zoom = zoom;
+    ZoomController.prototype.zoomTo = zoomTo;
     ZoomController.prototype.translate = translate;
     ZoomController.prototype.restoreTransformation = restoreTransformation;
     ZoomController.prototype.startDrag = startDrag;
