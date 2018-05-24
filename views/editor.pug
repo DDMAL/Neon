@@ -11,6 +11,7 @@ html
       // Source Files
       script(src='/src/Neon.js', type='text/javascript')
       script(src='/src/DragController.js', type='text/javascript')
+      script(src='/src/NavbarController.js', type='text/javascript')
       //- script(src='/src/InfoController.js', type='text/javascript')
       //- script(src='/src/ZoomController.js', type='text/javascript')
   body
@@ -21,7 +22,9 @@ html
       .navbar-item.has-dropdown.is-hoverable
         a.navbar-link File
         .navbar-dropdown
-          a.navbar-item(href='') Refresh
+          a#get_mei.navbar-item(href='') Download MEI
+          a#get_png.navbar-item(href='') Download PNG
+          a#revert.navbar-item(href='') Revert
     .columns
       .column#svg_output.is-two-thirds
       .column.is-one-third

@@ -6,6 +6,7 @@ function Neon (params) {
     var vrvToolkit = new verovio.toolkit();
     var fileName = params.meifile;
     var dragController = new DragController(this, vrvToolkit);
+    var navbarController = new NavbarController(fileName);
     // var zoomController = new ZoomController(this);
     // var infoController = new InfoController(vrvToolkit);
 

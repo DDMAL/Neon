@@ -17,7 +17,7 @@ router.route('/')
                 return 
             }
         res.render('index', {'files': files});
-    });
+        });
 });
 
 //File upload using Multer
@@ -43,7 +43,7 @@ router.route('/upload_file')
                 for (i=0; i<req.files.length; i++){
                     fs.unlink( __base + 'public/uploads/' + req.files[i].originalname, function (err){
                         if (err){
-                            return console.log("failed to delete file");
+                            return console.log("Failed to delete file");
                         }
                     });  
                 }
@@ -88,11 +88,8 @@ router.route('/upload_file')
                         return console.log("Failed to rename file");
                     }
                 });
-                //Copy MEI file to backup 
-                fs.createReadStream(__base + 'public/uploads/mei/' + files[0])
-                    .pipe(fs.createWriteStream(__base + 'public/uploads/backup/' + files[0]));
             }
-            //reload page
+            //Reload page
             res.redirect('/');
         });
     });
@@ -109,11 +106,33 @@ router.route('/delete/:filename')
         res.redirect('/');
     });
 
-//Redirect
+//Save mei to backup folder
+router.route('/to_editor/:filename')
+    .get(function(req, res){
+        //empty backup folder (temporary)
+        fs.readdir(__base + 'public/uploads/backup/', function(err, file){
+            console.log(file.length);
+            if (err || file.length > 1){
+                return console.log("Error with backup folder");
+            }
+            else if(file.length === 1)
+                fs.unlink(__base + 'public/uploads/backup/' + file, function(err){
+                    if(err){
+                        return console.log(err);
+                    }
+            })
+        })
+        //write to backup folder
+        fs.createReadStream(__base + 'public/uploads/mei/' + req.params.filename)
+            .pipe(fs.createWriteStream(__base + 'public/uploads/backup/' + req.params.filename));
+
+        res.redirect('/edit/' + req.params.filename);
+});
+// redirect to editor
 router.route('/edit/:filename')
     .get(function (req, res) {
         res.render('editor', {'meifile': req.params.filename});
-    });
+});
 
 /////////////////
 /// NEON routes//
@@ -130,6 +149,20 @@ router.route('/save/:filename')
         }
     )
     console.log("File saved to " + req.body.fileName);
+});
+
+router.route('/revert/:filename')
+.post(function(req, res){
+    fs.readdir(__base + 'public/uploads/backup', function(err, file){
+        if (file.length != 1){ 
+            return console.log("Error: too many file in backup folder.")
+        }
+        else{
+            fs.createReadStream(__base + 'public/uploads/backup/' + file)
+            .pipe(fs.createWriteStream(__base + 'public/uploads/mei/' + file));
+        }
+        res.render('editor', {'meifile': file});
+    });
 });
 
 module.exports = router;
