@@ -3,15 +3,19 @@ function Neon (params) {
     //////////////
     // Constructor
     //////////////
+
+    // Width/Height needs to be set based on MEI information in the future
+    var pageWidth = 600;
+    var pageHeight = 800;
+
     var vrvToolkit = new verovio.toolkit();
     var fileName = params.meifile;
     var zoomController = new ZoomController(this);
     var infoController = new InfoController(vrvToolkit);
 
     var vrvOptions = {
-        // Width/Height needs to be set based on MEI information in the future
-        pageHeight: 800,
-        pageWidth: 600,
+        pageWidth: pageWidth,
+        pageHeight: pageHeight,
         noFooter: 1,
         noHeader: 1
     };
@@ -83,7 +87,11 @@ function Neon (params) {
             default: break;
         }
     }
+    
     // Constructor reference
+    Neon.prototype.pageWidth = pageWidth;
+    Neon.prototype.pageHeight = pageHeight;
+
     Neon.prototype.constructor = Neon;
     Neon.prototype.loadData = loadData;
     Neon.prototype.loadPage = loadPage;

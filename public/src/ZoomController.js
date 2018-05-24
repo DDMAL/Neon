@@ -10,13 +10,24 @@ function ZoomController (neon) {
     // TODO: Finish functionality for zoom controls
     function setZoomControls() {
         $("#reset-zoom").click( function() {
-            console.log("reset zoom");
+            resetZoomAndPan();
         });
 
         $("zoomSlider").on('change', function () {
             console.log('test');
             console.log($(this).val());
         })
+    }
+
+    function resetZoomAndPan () {
+        selectSvgContainer();
+        d3.zoom().scaleTo(svg, 1);
+        transform = d3.zoomTransform(svg.node());
+        svg.attr("transform", transform);
+
+        d3.zoom().translateTo(svg, neon.pageWidth/2, neon.pageHeight/2);
+        transform = d3.zoomTransform(svg.node());
+        svg.attr("transform", transform);
     }
 
     function zoom (k) {
