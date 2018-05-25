@@ -16,8 +16,13 @@ router.route('/')
                 res.status(500).send(err);
                 return 
             }
-        res.render('index', {'files': files});
-        });
+        if (files.length != 0){
+            res.render('index', {'files': files});
+        }
+        else{
+            res.render('index', {'nofiles': "No files Uploaded", 'files': files});
+        }    
+     });
 });
 
 //File upload using Multer
@@ -88,46 +93,39 @@ router.route('/upload_file')
                         return console.log("Failed to rename file");
                     }
                 });
+                //write to backup folder
+                fs.createReadStream(__base + 'public/uploads/mei/' + files[0])
+                    .pipe(fs.createWriteStream(__base + 'public/uploads/backup/' + files[0]));
             }
             //Reload page
             res.redirect('/');
         });
     });
 
-//Delete file
+//Delete file TODO: Optimize function with regex
 router.route('/delete/:filename')
     .get(function (req, res){
-        file = req.params.filename;
-        fs.unlink( __base + 'public/uploads/mei/' + file, function (err){
+        meifile = req.params.filename;
+        pngfile = meifile.split('.')[0] + ".png";
+        //delete file from all folders
+        fs.unlink( __base + 'public/uploads/mei/' + meifile, function (err){
             if (err){
-                return console.log("failed to delete file");
+                return console.log("failed to delete mei file");
             }
-        })
+        });
+        fs.unlink( __base + 'public/uploads/backup/' + meifile, function (err){
+            if (err){
+                return console.log("failed to delete backup mei file");
+            }
+        });
+        fs.unlink( __base + 'public/uploads/png/' + pngfile, function (err){
+            if (err){
+                return console.log("failed to delete png file");
+            }
+        });
         res.redirect('/');
     });
-
-//Save mei to backup folder
-router.route('/to_editor/:filename')
-    .get(function(req, res){
-        //empty backup folder (temporary)
-        fs.readdir(__base + 'public/uploads/backup/', function(err, file){
-            console.log(file.length);
-            if (err || file.length > 1){
-                return console.log("Error with backup folder");
-            }
-            else if(file.length === 1)
-                fs.unlink(__base + 'public/uploads/backup/' + file, function(err){
-                    if(err){
-                        return console.log(err);
-                    }
-            })
-        })
-        //write to backup folder
-        fs.createReadStream(__base + 'public/uploads/mei/' + req.params.filename)
-            .pipe(fs.createWriteStream(__base + 'public/uploads/backup/' + req.params.filename));
-
-        res.redirect('/edit/' + req.params.filename);
-});
+    
 // redirect to editor
 router.route('/edit/:filename')
     .get(function (req, res) {
@@ -143,7 +141,7 @@ router.route('/save/:filename')
     fs.writeFile(__base + 'public/uploads/mei/' + req.body.fileName, 
         req.body.meiData,
         function(err) {
-            if(err) {
+            if(err) { 
                 return console.log(err);
             }
         }
@@ -152,17 +150,12 @@ router.route('/save/:filename')
 });
 
 router.route('/revert/:filename')
-.post(function(req, res){
-    fs.readdir(__base + 'public/uploads/backup', function(err, file){
-        if (file.length != 1){ 
-            return console.log("Error: too many file in backup folder.")
-        }
-        else{
-            fs.createReadStream(__base + 'public/uploads/backup/' + file)
+    .post(function(req, res){
+        var file = req.params.filename;
+        fs.createReadStream(__base + 'public/uploads/backup/' + file)
             .pipe(fs.createWriteStream(__base + 'public/uploads/mei/' + file));
-        }
-        res.render('editor', {'meifile': file});
-    });
+    
+        res.render('editor', {'meifile': req.params.file});
 });
 
 module.exports = router;

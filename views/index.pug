@@ -16,10 +16,11 @@ section.hero.is-info
 section.container
   h3.subtitle
   | Score Selection:
+  p= nofiles
   ul
     each file in files
       li
-        a(href='/to_editor/' + file)= file 
+        a(href='/edit/' + file)= file 
         a(href='/delete/' + file)
           span.icon
              i.fas.fa-times
