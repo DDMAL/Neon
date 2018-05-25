@@ -15,7 +15,7 @@ function InfoController(vrvToolkit) {
     }
 
     function setInfoClef() {
-        updateInfoClef(this.parentNode.id);
+        updateInfo(this.parentNode.id);
     }
 
     // This function updates the neume information box in the editor
@@ -39,6 +39,12 @@ function InfoController(vrvToolkit) {
                 var infoAction = { action: 'element-info', param: { elementId: id }};
                 body = vrvToolkit.query(infoAction);
                 break;
+            // Temporary workaround for clef info
+            case "staff":
+                var infoAction = { action: "clef-info", param: { elementId: id }};
+                elementClass = "clef";
+                var body = vrvToolkit.query(infoAction);
+                break;
             default:
                 body += "nothing";
                 break;
@@ -46,20 +52,6 @@ function InfoController(vrvToolkit) {
         updateInfoBox(elementClass, body);
     }
     
-    function updateInfoClef(id) {
-        // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the <g> element
-        // So we will simply return if ID does not exist for now
-        if (id == "") {
-            $("#neume_info").empty();
-            console.log("No id!");
-            return;
-        }
-
-        var infoAction = { action: "clef-info", param: { elementId: id }};
-        var body = vrvToolkit.query(infoAction);
-        
-        updateInfoBox("clef", body);
-    }
     function updateInfoBox(title, body) {
         $("#neume_info").empty();
         $("#neume_info").append(
