@@ -12,7 +12,7 @@ function Neon (params) {
 
     var vrvOptions = {
         // Width/Height needs to be set based on MEI information in the future
-        noLayout: 1,
+        breaks: "none",
         pageHeight: 400,
         pageWidth: 600,
         noFooter: 1,
