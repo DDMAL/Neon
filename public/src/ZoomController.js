@@ -19,6 +19,8 @@ function ZoomController (neon) {
         svg.attr("transform", transform);
     }
 
+    // Zoom by relative k
+    // newK = oldK * k
     function zoom (k) {
         selectSvgContainer();
         d3.zoom().scaleBy(svg, k);
@@ -33,6 +35,7 @@ function ZoomController (neon) {
         svg.attr("transform", transform);
     }
 
+    // Translate svg by relative x and y
     function translate (xDiff, yDiff) {
         selectSvgContainer();
         d3.zoom().translateBy(svg, xDiff, yDiff);
@@ -40,6 +43,10 @@ function ZoomController (neon) {
         svg.attr("transform", transform);
     }
 
+    // Restore an svg to whatever the previous
+    // transformation was. Used when verovio
+    // produces a new svg on each edit action
+    // so it doesn't reset.
     function restoreTransformation () {
         selectSvgContainer();
         d3.zoom().transform(svg, transform);
