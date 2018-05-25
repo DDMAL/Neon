@@ -47,7 +47,7 @@ function ZoomController (neon) {
     }
 
     function selectSvgContainer () {
-        svg = d3.select("#svg_container");
+        svg = d3.select("#svg_group");
     }
 
     function startDrag () {

@@ -10,6 +10,8 @@ function Neon (params) {
 
     var vrvToolkit = new verovio.toolkit();
     var fileName = params.meifile;
+    //Temporary BGIMG path, should be taken from the file name
+    var bgimg = "CF-012.jpg";
     var zoomController = new ZoomController(this);
     var infoController = new InfoController(vrvToolkit);
     var controlsController = new ControlsController(zoomController);
@@ -24,7 +26,6 @@ function Neon (params) {
     
     $.get("/uploads/mei/" + fileName, function(data) {
         loadData(data);
-        loadPage();
     });
 
     // Set keypress listener
@@ -35,18 +36,43 @@ function Neon (params) {
                 d3.select("body").on(".drag", null);
             }
         });
+
+
     ////////////
     // Functions
     ////////////
+
+    // Loads data into toolkit and also loads the image & mei svg data
     function loadData (data) {
         vrvToolkit.loadData(data);
+        loadImage();
         loadPage();
+    }
+
+    function loadImage () {
+        var bgimg_layer = d3.select("#svg_output").append("svg")
+            .attr("id", "svg_group")
+            .attr("width", pageWidth)
+            .attr("height", pageHeight)
+            .attr("viewBox", '0 0 ' + pageWidth + " " + pageHeight);
+
+        var bg = bgimg_layer.append("image")
+            .attr("id", "bgimg")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("height", pageHeight)
+            .attr("width", pageWidth)
+            .attr("xlink:href", "/uploads/img/" + bgimg);
+
+        bgimg_layer.append('g')
+            .attr("id", "mei_output");
+
     }
 
     function loadPage () {
         var svg = vrvToolkit.renderToSVG(1);
-        $("#svg_output").html(svg);
-        d3.select("#svg_output").select("svg").attr("id", "svg_container");
+        $("#mei_output").html(svg);
+        d3.select("#mei_output").select("svg").attr("id", "svg_container");
         infoController.infoListeners();
     }
 
