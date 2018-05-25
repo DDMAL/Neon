@@ -24,7 +24,6 @@ function Neon (params) {
         loadData(data);
         loadPage();
         dragController.dragInit();
-        saveMEI();
     });
 
     // Set keypress listener
@@ -51,8 +50,7 @@ function Neon (params) {
     }
 
     function refreshPage () {
-        var meiData = vrvToolkit.getMEI();
-        loadData(meiData);
+        loadPage();
         //zoomController.restoreTransformation();
     }
 
