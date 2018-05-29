@@ -61,7 +61,7 @@ function Neon (params) {
             .attr("y", 0)
             .attr("height", pageHeight)
             .attr("width", pageWidth)
-            .attr("xlink:href", "/uploads/img/" + bgimg);
+            .attr("xlink:href", "/uploads/png/" + bgimg);
 
         bgimg_layer.append('g')
             .attr("id", "mei_output");
