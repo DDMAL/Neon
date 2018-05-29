@@ -63,7 +63,7 @@ function InfoController(vrvToolkit) {
                     previous = current;
                 });
                 if (neumeGroups.get(contour) === undefined) {
-                    console.log("Unknown contour: " + contour);
+                    console.warn("Unknown contour: " + contour);
                 }
                 body = neumeGroups.get(contour) + " " + body;
                 break;
