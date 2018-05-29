@@ -21,28 +21,21 @@ html
       .navbar-brand
         a.navbar-item(href='../')
           p Neon2
-      .navbar-item.has-dropdown.is-hoverable
-        a.navbar-link File
-        .navbar-dropdown
-          a.navbar-item(href='') Refresh
     .columns
       .column#svg_output.is-two-thirds.box(style={overflow: "hidden"})
       .column.is-one-third
         .panel
           p.panel-heading Controls
-          p.panel-tabs
-            a.is-active Insert
-            a Edit
           a.panel-block.has-text-centered
             button.button#reset-zoom Zoom
             input.slider.is-fullwidth#zoomSlider(step="5", min="25", max="200", value="100", type="range")
             output#zoomOutput(for="zoomSlider") 100
           a.panel-block.has-text-centered
-            button.button#reset-opacity MEI Opacity
+            button.button#reset-opacity Neume Opacity
             input.slider.is-fullwidth#opacitySlider(step="5", min="0", max="100", value="100", type="range")
             output#opacityOutput(for="opacitySlider") 100
           a.panel-block.has-text-centered
-            button.button#reset-bg-opacity BG Opacity
+            button.button#reset-bg-opacity Image Opacity
             input.slider.is-fullwidth#bgOpacitySlider(step="5", min="0", max="100", value="100", type="range")
             output#bgOpacityOutput(for="bgOpacitySlider") 100
         #neume_info
