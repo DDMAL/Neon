@@ -37,10 +37,11 @@ function InfoController(vrvToolkit) {
             case "neume":
                 var childPitches = vrvToolkit.getElementChildPitches(id);
                 var contour = "";
+                var pitches = "";
                 var previous = null;
                 Object.keys(childPitches).forEach( function (key) {
                     var current = childPitches[key];
-                    body += pitchNumToName(current.pname) + current.oct + " ";
+                    pitches += pitchNumToName(current.pname) + current.oct + " ";
                     if (previous !== null) {
                         if (previous.oct > current.oct) {
                             contour += "d";
@@ -65,16 +66,19 @@ function InfoController(vrvToolkit) {
                 if (neumeGroups.get(contour) === undefined) {
                     console.warn("Unknown contour: " + contour);
                 }
-                body = neumeGroups.get(contour) + " " + body;
+                pitches = pitches.trim().toUpperCase();
+                body = "Shape: " + neumeGroups.get(contour) + "<br/>"
+                    + "Pitch(es): " + pitches;
                 break;
             case "custos":
                 var attributes = vrvToolkit.getElementAttr(id);
-                body += "Custos " + attributes.pname + attributes.oct;
+                body += "Pitch: " + (attributes.pname).toUpperCase() + attributes.oct;
                 break;
             case "staff":
                 elementClass = "clef";
                 var staffDefAttributes = vrvToolkit.getElementStaffDef(id);
-                body += staffDefAttributes["clef.shape"] + " clef line " + staffDefAttributes["clef.line"];
+                body = "Shape: " + staffDefAttributes["clef.shape"] + "<br/>"
+                    + "Line: " + staffDefAttributes["clef.line"];
                 break;
             default:
                 body += "nothing";
