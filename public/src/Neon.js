@@ -10,8 +10,7 @@ function Neon (params) {
 
     var vrvToolkit = new verovio.toolkit();
     var fileName = params.meifile;
-    //Temporary BGIMG path, should be taken from the file name
-    var bgimg = "CF-012.jpg";
+    var bgimg = fileName.split('.', 2)[0] + ".png";
     var zoomController = new ZoomController(this);
     var infoController = new InfoController(vrvToolkit);
     var controlsController = new ControlsController(zoomController);
