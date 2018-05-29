@@ -38,9 +38,13 @@ html
             input.slider.is-fullwidth#zoomSlider(step="5", min="25", max="200", value="100", type="range")
             output#zoomOutput(for="zoomSlider") 100
           a.panel-block.has-text-centered
-            button.button#reset-opacity Opacity
+            button.button#reset-opacity MEI Opacity
             input.slider.is-fullwidth#opacitySlider(step="5", min="0", max="100", value="100", type="range")
             output#opacityOutput(for="opacitySlider") 100
+          a.panel-block.has-text-centered
+            button.button#reset-bg-opacity BG Opacity
+            input.slider.is-fullwidth#bgOpacitySlider(step="5", min="0", max="100", value="100", type="range")
+            output#bgOpacityOutput(for="bgOpacitySlider") 100
         #neume_info
       script(type='text/javascript').
         var neon = new Neon({

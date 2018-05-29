@@ -2,6 +2,7 @@ function ControlsController (zoomController) {
 
     setZoomControls();
     setOpacityControls();
+    setBackgroundOpacityControls();
 
     function setZoomControls() {
         $("#reset-zoom").click( function() {
@@ -32,7 +33,24 @@ function ControlsController (zoomController) {
         });
     }
 
+    function setBackgroundOpacityControls() {
+        $("#reset-bg-opacity").click( function() {
+            var bgSel = d3.select("#bgimg");
+            bgSel.style("opacity", 1);
+
+            $("#bgOpacitySlider").val(100);
+            $("#bgOpacityOutput").val(100);
+        })
+
+        $(document).on('input change', '#bgOpacitySlider', function () {
+            var bgSel = d3.select("#bgimg");
+            var opacitySliderValue = $("#bgOpacityOutput").val();
+            bgSel.style("opacity", opacitySliderValue / 100.0);
+        });
+    }
+
     ControlsController.prototype.constructor = ControlsController;
     ControlsController.prototype.setZoomControls = setZoomControls;
     ControlsController.prototype.setOpacityControls = setOpacityControls;
+    ControlsController.prototype.setBackgroundOpacityControls = setBackgroundOpacityControls;
 }
