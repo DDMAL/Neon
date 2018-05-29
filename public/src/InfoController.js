@@ -35,15 +35,46 @@ function InfoController(vrvToolkit) {
         // Gets the pitches depending on element type and 
         switch(elementClass) {
             case "neume":
-            case "custos":
-                var infoAction = { action: 'element-info', param: { elementId: id }};
-                body = vrvToolkit.query(infoAction);
+                var childPitches = vrvToolkit.getElementChildPitches(id);
+                var contour = "";
+                var previous = null;
+                Object.keys(childPitches).forEach( function (key) {
+                    var current = childPitches[key];
+                    body += pitchNumToName(current.pname) + current.oct + " ";
+                    if (previous !== null) {
+                        if (previous.oct > current.oct) {
+                            contour += "d";
+                        }
+                        else if (previous.oct < current.oct) {
+                            contour += "u";
+                        }
+                        else {
+                            if (previous.pname > current.pname) {
+                                contour += "u";
+                            }
+                            else if (previous.pname < current.pname) {
+                                contour += "d";
+                            }
+                            else {
+                                contour += "s";
+                            }
+                        }
+                    }
+                    previous = current;
+                });
+                if (neumeGroups.get(contour) === undefined) {
+                    console.log("Unknown contour: " + contour);
+                }
+                body = neumeGroups.get(contour) + " " + body;
                 break;
-            // Temporary workaround for clef info
+            case "custos":
+                var attributes = vrvToolkit.getElementAttr(id);
+                body += "Custos " + attributes.pname + attributes.oct;
+                break;
             case "staff":
-                var infoAction = { action: "clef-info", param: { elementId: id }};
                 elementClass = "clef";
-                var body = vrvToolkit.query(infoAction);
+                var staffDefAttributes = vrvToolkit.getElementStaffDef(id);
+                body += staffDefAttributes["clef.shape"] + " clef line " + staffDefAttributes["clef.line"];
                 break;
             default:
                 body += "nothing";
@@ -65,6 +96,34 @@ function InfoController(vrvToolkit) {
             $("#neume_info").empty();
         })
     }
+
+    function pitchNumToName(pitchNumber) {
+        switch(parseInt(pitchNumber)) {
+            case 1:
+                return "c";
+            case 2:
+                return "d";
+            case 3:
+                return "e";
+            case 4:
+                return "f";
+            case 5:
+                return "g";
+            case 6:
+                return "a";
+            case 7:
+                return "b";
+            default:
+                console.log(pitchNumber);
+                return "";
+        }
+    }
+
+    var neumeGroups = new Map (
+        [["", "Punctum"], ["u", "Pes"], ["d", "Clivis"], ["uu", "Scandicus"], ["dd", "Climacus"], ["ud", "Torculus"], ["du", "Porrectus"],
+         ["sd", "Pressus"], ["ddd", "Climacus"], ["ddu", "Climacus resupinus"], ["udu", "Torculus resupinus"], ["dud", "Porrectus flexus"],
+         ["udd", "Pes subpunctis"], ["uud", "Scandicus flexus"], ["uudd", "Scandicus subpunctis"], ["dudd", "Porrectus subpunctis"]]
+    );
 
     InfoController.prototype.infoListeners = infoListeners;
 }
