@@ -1,4 +1,4 @@
-function ControlsController (zoomController) {
+function Controls (zoomHandler) {
 
     setZoomControls();
     setOpacityControls();
@@ -6,11 +6,11 @@ function ControlsController (zoomController) {
 
     function setZoomControls() {
         $("#reset-zoom").click( function() {
-            zoomController.resetZoomAndPan();
+            zoomHandler.resetZoomAndPan();
         });
 
         $(document).on('input change', '#zoomSlider', function () {
-            zoomController.zoomTo($("#zoomOutput").val() / 100.0)
+            zoomHandler.zoomTo($("#zoomOutput").val() / 100.0)
         })
     }
 
@@ -49,8 +49,8 @@ function ControlsController (zoomController) {
         });
     }
 
-    ControlsController.prototype.constructor = ControlsController;
-    ControlsController.prototype.setZoomControls = setZoomControls;
-    ControlsController.prototype.setOpacityControls = setOpacityControls;
-    ControlsController.prototype.setBackgroundOpacityControls = setBackgroundOpacityControls;
+    Controls.prototype.constructor = Controls;
+    Controls.prototype.setZoomControls = setZoomControls;
+    Controls.prototype.setOpacityControls = setOpacityControls;
+    Controls.prototype.setBackgroundOpacityControls = setBackgroundOpacityControls;
 }

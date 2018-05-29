@@ -11,15 +11,16 @@ function Neon (params) {
     var vrvToolkit = new verovio.toolkit();
     var fileName = params.meifile;
     var bgimg = fileName.split('.', 2)[0] + ".png";
-    var zoomController = new ZoomController(this);
-    var infoController = new InfoController(vrvToolkit);
-    var controlsController = new ControlsController(zoomController);
+    var zoomhandler = new ZoomHandler(this);
+    var infobox = new InfoBox(vrvToolkit);
+    var controls = new Controls(zoomhandler);
 
     var vrvOptions = {
         pageWidth: pageWidth,
         pageHeight: pageHeight,
         noFooter: 1,
-        noHeader: 1
+        noHeader: 1,
+        scale: 50
     };
     vrvToolkit.setOptions(vrvOptions);
     
@@ -65,20 +66,19 @@ function Neon (params) {
 
         bgimg_layer.append('g')
             .attr("id", "mei_output");
-
     }
 
     function loadPage () {
         var svg = vrvToolkit.renderToSVG(1);
         $("#mei_output").html(svg);
         d3.select("#mei_output").select("svg").attr("id", "svg_container");
-        infoController.infoListeners();
+        infobox.infoListeners();
     }
 
     function refreshPage () {
         var meiData = vrvToolkit.getMEI();
         loadData(meiData);
-        zoomController.restoreTransformation();
+        zoomhandler.restoreTransformation();
     }
 
     function saveMEI() {
@@ -97,18 +97,18 @@ function Neon (params) {
             case "Shift":
                 d3.select("body").call(
                     d3.drag()
-                        .on("start", zoomController.startDrag)
-                        .on("drag", zoomController.dragging)
+                        .on("start", zoomhandler.startDrag)
+                        .on("drag", zoomhandler.dragging)
                 );
                 break;
             case "s":
                 saveMEI();
                 break;
             case "z":
-                zoomController.zoom(1.25);
+                zoomhandler.zoom(1.25);
                 break;
             case "Z":
-                zoomController.zoom(0.80);
+                zoomhandler.zoom(0.80);
                 break;
             default: break;
         }

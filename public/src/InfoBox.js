@@ -1,4 +1,4 @@
-function InfoController(vrvToolkit) {
+function InfoBox(vrvToolkit) {
 
     function infoListeners() {
         var neumes = d3.selectAll(".neume");
@@ -129,5 +129,5 @@ function InfoController(vrvToolkit) {
          ["udd", "Pes subpunctis"], ["uud", "Scandicus flexus"], ["uudd", "Scandicus subpunctis"], ["dudd", "Porrectus subpunctis"]]
     );
 
-    InfoController.prototype.infoListeners = infoListeners;
+    InfoBox.prototype.infoListeners = infoListeners;
 }
