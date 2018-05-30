@@ -12,7 +12,8 @@ Neon2 is a re-write of [Neon.JS](https://github.com/DDMAL/Neon.js) using a modif
 
 Requirements
 ------------
- * yarn: `brew install yarn`
+ * (yarn)[https://yarnpkg.com/en/docs/install]: 
+    * `brew install yarn` on Mac
 
 Setup
 -----
@@ -27,4 +28,4 @@ yarn install
 yarn start
 ```
 
-3. Access the page at: <http://localhost:8080>.
+3. Access the page at: <http://localhost:9000>.
