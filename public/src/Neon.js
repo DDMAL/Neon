@@ -81,15 +81,15 @@ function Neon (params) {
         zoomhandler.restoreTransformation();
     }
 
-    function saveMEI() {
-        var meiData = vrvToolkit.getMEI();
-        $.ajax({
-            type: "POST",
-            url: "/save/" + fileName,
-            data: {"meiData": meiData,
-                    "fileName": fileName}
-        }) 
-    }
+    // function saveMEI() {
+    //     var meiData = vrvToolkit.getMEI();
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "/save/" + fileName,
+    //         data: {"meiData": meiData,
+    //                 "fileName": fileName}
+    //     }) 
+    // }
 
     function keydownListener () {
         var unit = 10;
@@ -101,9 +101,9 @@ function Neon (params) {
                         .on("drag", zoomhandler.dragging)
                 );
                 break;
-            case "s":
-                saveMEI();
-                break;
+            // case "s":
+            //     saveMEI();
+            //     break;
             case "z":
                 zoomhandler.zoom(1.25);
                 break;
@@ -122,6 +122,6 @@ function Neon (params) {
     Neon.prototype.loadData = loadData;
     Neon.prototype.loadPage = loadPage;
     Neon.prototype.refreshPage = refreshPage;
-    Neon.prototype.saveMEI = saveMEI;
+    //Neon.prototype.saveMEI = saveMEI;
 }
 
