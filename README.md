@@ -12,7 +12,7 @@ Neon2 is a re-write of [Neon.JS](https://github.com/DDMAL/Neon.js) using a modif
 
 Requirements
 ------------
- * (yarn)[https://yarnpkg.com/en/docs/install]: 
+ * [yarn](https://yarnpkg.com/en/docs/install): 
     * `brew install yarn` on Mac
 
 Setup
