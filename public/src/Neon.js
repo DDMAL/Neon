@@ -91,6 +91,7 @@ function Neon (params) {
     //     }) 
     // }
 
+    // Handles key presses for Neon2
     function keydownListener () {
         var unit = 10;
         switch (d3.event.key) {

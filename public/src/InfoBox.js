@@ -20,8 +20,6 @@ function InfoBox(vrvToolkit) {
 
     // This function updates the neume information box in the editor
     function updateInfo(id) {
-        // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the <g> element
-        // So we will simply return if ID does not exist for now
         if (id == "") {
             $("#neume_info").empty();
             console.log("No id!");
@@ -32,17 +30,23 @@ function InfoBox(vrvToolkit) {
         var elementClass = element.attr("class");
         var body = "";
 
-        // Gets the pitches depending on element type and 
+        // Information displayed depends on class
         switch(elementClass) {
             case "neume":
                 var childPitches = vrvToolkit.getElementChildPitches(id);
                 var contour = "";
                 var pitches = "";
                 var previous = null;
+
+                // Iterate through pitches for each neume component
+                // These may not match how the nc element SVGs are
+                // rendered because of how we handle different neume
+                // groupings in verovio.
                 Object.keys(childPitches).forEach( function (key) {
                     var current = childPitches[key];
                     pitches += pitchNumToName(current.pname) + current.oct + " ";
                     if (previous !== null) {
+                        // Calculate the contour of the neume
                         if (previous.oct > current.oct) {
                             contour += "d";
                         }
@@ -101,6 +105,8 @@ function InfoBox(vrvToolkit) {
         })
     }
 
+    // Converts the value of data_PITCHNAME in verovio
+    // to the actual letter for the pitch
     function pitchNumToName(pitchNumber) {
         switch(parseInt(pitchNumber)) {
             case 1:
@@ -123,6 +129,7 @@ function InfoBox(vrvToolkit) {
         }
     }
 
+    // Identical to map used for groupings in vrv::Neume
     var neumeGroups = new Map (
         [["", "Punctum"], ["u", "Pes"], ["d", "Clivis"], ["uu", "Scandicus"], ["dd", "Climacus"], ["ud", "Torculus"], ["du", "Porrectus"],
          ["sd", "Pressus"], ["ddd", "Climacus"], ["ddu", "Climacus resupinus"], ["udu", "Torculus resupinus"], ["dud", "Porrectus flexus"],
