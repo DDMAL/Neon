@@ -38,6 +38,9 @@ html
             button.button#reset-bg-opacity Image Opacity
             input.slider.is-fullwidth#bgOpacitySlider(step="5", min="0", max="100", value="100", type="range")
             output#bgOpacityOutput(for="bgOpacitySlider") 100
+          a.panel-block
+            label.checkbox Display Text: 
+              input.checkbox#displayText(type="checkbox")
         #neume_info
       script(type='text/javascript').
         var neon = new Neon({

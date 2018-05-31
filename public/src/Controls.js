@@ -1,8 +1,9 @@
-function Controls (zoomHandler) {
+function Controls (neon, zoomHandler) {
 
     setZoomControls();
     setOpacityControls();
     setBackgroundOpacityControls();
+    setSylControls();
 
     function setZoomControls() {
         $("#reset-zoom").click( function() {
@@ -49,8 +50,20 @@ function Controls (zoomHandler) {
         });
     }
 
+    function shouldHideText() {
+        return (!$("#displayText").is(":checked"));
+    }
+
+    function setSylControls() {
+        $("#displayText").click( function () {
+            neon.loadPage();
+        });
+    }
+
     Controls.prototype.constructor = Controls;
     Controls.prototype.setZoomControls = setZoomControls;
     Controls.prototype.setOpacityControls = setOpacityControls;
     Controls.prototype.setBackgroundOpacityControls = setBackgroundOpacityControls;
+    Controls.prototype.shouldHideText = shouldHideText;
+    Controls.prototype.setSylControls = setSylControls;
 }

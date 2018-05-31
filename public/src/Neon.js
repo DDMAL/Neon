@@ -13,7 +13,7 @@ function Neon (params) {
     var bgimg = fileName.split('.', 2)[0] + ".png";
     var zoomhandler = new ZoomHandler(this);
     var infobox = new InfoBox(vrvToolkit);
-    var controls = new Controls(zoomhandler);
+    var controls = new Controls(this, zoomhandler);
 
     var vrvOptions = {
         pageWidth: pageWidth,
@@ -72,6 +72,9 @@ function Neon (params) {
         var svg = vrvToolkit.renderToSVG(1);
         $("#mei_output").html(svg);
         d3.select("#mei_output").select("svg").attr("id", "svg_container");
+        if (controls.shouldHideText()) {
+            d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
+        }
         infobox.infoListeners();
     }
 
