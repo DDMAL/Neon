@@ -1,7 +1,15 @@
 function ZoomHandler (neon) {
-    
+
+    /////////////// 
+    // Constructor
+    //////////////
+
     var transform = d3.zoomIdentity;
     var dragCoordinates = [0.0, 0.0];
+
+    /////////////// 
+    // Functions 
+    //////////////
 
     // Resets SVG transformation
     // Scaling at 1.0

@@ -1,5 +1,9 @@
 function InfoBox(vrvToolkit) {
 
+    /////////////// 
+    // Functions
+    /////////////// 
+    
     function infoListeners() {
         var neumes = d3.selectAll(".neume");
         var custos = d3.selectAll(".custos");

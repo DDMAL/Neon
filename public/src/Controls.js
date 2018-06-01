@@ -1,9 +1,17 @@
 function Controls (zoomHandler) {
 
+    ///////////////
+    // Constructor
+    ///////////////  
+
     setZoomControls();
     setOpacityControls();
     setBackgroundOpacityControls();
 
+    ///////////////
+    // Functions 
+    ///////////////  
+    
     // Bind controls for zoom to zoom slider/button
     function setZoomControls() {
         $("#reset-zoom").click( function() {
