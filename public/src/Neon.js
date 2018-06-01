@@ -11,6 +11,8 @@ function Neon (params) {
     var vrvToolkit = new verovio.toolkit();
     var fileName = params.meifile;
     var bgimg = fileName.split('.', 2)[0] + ".png";
+    
+    // Set up handlers for zoom, info box, etc.
     var zoomhandler = new ZoomHandler(this);
     var infobox = new InfoBox(vrvToolkit);
     var controls = new Controls(zoomhandler);
@@ -29,6 +31,7 @@ function Neon (params) {
     });
 
     // Set keypress listener
+    // Panning behaviour only when shift is pressed
     d3.select("body")
         .on("keydown", keydownListener)
         .on("keyup", () => {
@@ -91,6 +94,7 @@ function Neon (params) {
     //     }) 
     // }
 
+    // Handles key presses for Neon2
     function keydownListener () {
         var unit = 10;
         switch (d3.event.key) {

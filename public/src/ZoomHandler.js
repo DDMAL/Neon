@@ -1,13 +1,21 @@
 function ZoomHandler (neon) {
-    var svg = d3.select("#svg_container");
-    
+
+    /////////////// 
+    // Constructor
+    //////////////
+
     var transform = d3.zoomIdentity;
-    var unitX = 10;
-    var unitY = unitX;
     var dragCoordinates = [0.0, 0.0];
 
+    /////////////// 
+    // Functions 
+    //////////////
+
+    // Resets SVG transformation
+    // Scaling at 1.0
+    // Translation to half of page height/width
     function resetZoomAndPan () {
-        selectSvgContainer();
+        var svg = selectSvgContainer();
         d3.zoom().scaleTo(svg, 1);
         transform = d3.zoomTransform(svg.node());
         svg.attr("transform", transform);
@@ -22,14 +30,14 @@ function ZoomHandler (neon) {
     // Zoom by relative k
     // newK = oldK * k
     function zoom (k) {
-        selectSvgContainer();
+        var svg = selectSvgContainer();
         d3.zoom().scaleBy(svg, k);
         transform = d3.zoomTransform(svg.node());
         svg.attr("transform", transform);
     }
 
     function zoomTo (k) {
-        selectSvgContainer();
+        var svg = selectSvgContainer();
         d3.zoom().scaleTo(svg, k);
         transform = d3.zoomTransform(svg.node());
         svg.attr("transform", transform);
@@ -37,7 +45,7 @@ function ZoomHandler (neon) {
 
     // Translate svg by relative x and y
     function translate (xDiff, yDiff) {
-        selectSvgContainer();
+        var svg = selectSvgContainer();
         d3.zoom().translateBy(svg, xDiff, yDiff);
         transform = d3.zoomTransform(svg.node());
         svg.attr("transform", transform);
@@ -48,14 +56,16 @@ function ZoomHandler (neon) {
     // produces a new svg on each edit action
     // so it doesn't reset.
     function restoreTransformation () {
-        selectSvgContainer();
+        var svg = selectSvgContainer();
         d3.zoom().transform(svg, transform);
         svg.attr("transform", d3.zoomTransform(svg.node()));
     }
 
     function selectSvgContainer () {
-        svg = d3.select("#svg_group");
+        return d3.select("#svg_group");
     }
+
+    // D3 drag listeners (for panning)
 
     function startDrag () {
         dragCoordinates = [d3.event.x, d3.event.y];
