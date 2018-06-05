@@ -154,8 +154,8 @@ router.route('/revert/:filename')
         var file = req.params.filename;
         fs.createReadStream(__base + 'public/uploads/backup/' + file)
             .pipe(fs.createWriteStream(__base + 'public/uploads/mei/' + file));
-    
-        res.render('editor', {'meifile': req.params.file});
+        
+        res.redirect('/edit/' + file);
 });
 
 module.exports = router;
