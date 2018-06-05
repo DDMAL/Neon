@@ -1,9 +1,9 @@
-function DragController (neon, vrvToolkit) {
+function DragHandler (neon, vrvToolkit) {
     var id = "";
     var dragStartCoords;
     var dragEndCoords;
     var canvas = d3.select("#svg_output");
-    // var infoController = new InfoController(vrvToolkit);
+    // var infoBox = new InfoBox(vrvToolkit);
 
     function dragInit () {
         // Adding listeners
@@ -58,7 +58,7 @@ function DragController (neon, vrvToolkit) {
            
             vrvToolkit.edit(editorAction);
             neon.refreshPage();
-            //infoController.updateInfo(id);
+            //infoBox.updateInfo(id);
             dragInit();
         }
 
@@ -72,7 +72,7 @@ function DragController (neon, vrvToolkit) {
 
             vrvToolkit.edit(editorAction);
             neon.refreshPage();
-            //infoController.updateInfo(id);
+            //infoBox.updateInfo(id);
             dragInit();
         }
 
@@ -86,10 +86,10 @@ function DragController (neon, vrvToolkit) {
             
             vrvToolkit.edit(editorAction);
             neon.refreshPage();
-            //xinfoController.updateInfo(id);
+            //infoBox.updateInfo(id);
             dragInit();
         }
     }
 
-    DragController.prototype.dragInit = dragInit;
+    DragHandler.prototype.dragInit = dragInit;
 }

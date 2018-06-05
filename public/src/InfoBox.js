@@ -1,4 +1,4 @@
-function InfoController(vrvToolkit) {
+function InfoBox(vrvToolkit) {
 
     function infoListeners() {
         var neumes = d3.selectAll(".neume");
@@ -60,5 +60,5 @@ function InfoController(vrvToolkit) {
         })
     }
 
-    InfoController.prototype.infoListeners = infoListeners;
+    InfoBox.prototype.infoListeners = infoListeners;
 }

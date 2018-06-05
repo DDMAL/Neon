@@ -8,12 +8,14 @@ html
       script(src='/js/d3.js', type='text/javascript')
       // Style Sheets
       link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css')
+      link(rel='stylesheet', href='/css/bulma-slider.min.css')
+      script(src='/js/bulma-slider.min.js' type='text/javascript')
       // Source Files
       script(src='/src/Neon.js', type='text/javascript')
-      script(src='/src/DragController.js', type='text/javascript')
-      script(src='/src/NavbarController.js', type='text/javascript')
-      //- script(src='/src/InfoController.js', type='text/javascript')
-      //- script(src='/src/ZoomController.js', type='text/javascript')
+      script(src='/src/DragHandler.js', type='text/javascript')
+      script(src='/src/Navbar.js', type='text/javascript')
+      //- script(src='/src/InfoBox.js', type='text/javascript')
+      //- script(src='/src/ZoomHandler.js', type='text/javascript')
   body
     .navbar.is-light
       .navbar-brand
@@ -30,14 +32,23 @@ html
       .column.is-one-third
         .panel
           p.panel-heading Controls
-          p.panel-tabs
-            a.is-active Insert
-            a Edit
           a.panel-block.has-text-centered
-            button.button Zoom
-            button.button Opacity
+            button.button#reset-zoom Zoom
+            input.slider.is-fullwidth#zoomSlider(step="5", min="25", max="200", value="100", type="range")
+            output#zoomOutput(for="zoomSlider") 100
+          a.panel-block.has-text-centered
+            button.button#reset-opacity Neume Opacity
+            input.slider.is-fullwidth#opacitySlider(step="5", min="0", max="100", value="100", type="range")
+            output#opacityOutput(for="opacitySlider") 100
+          a.panel-block.has-text-centered
+            button.button#reset-bg-opacity Image Opacity
+            input.slider.is-fullwidth#bgOpacitySlider(step="5", min="0", max="100", value="100", type="range")
+            output#bgOpacityOutput(for="bgOpacitySlider") 100
         #neume_info
-      script(type='text/javascript').
-        var neon = new Neon({
-          meifile: "#{meifile}"
-        });
+        script(type='text/javascript').
+          var neon = new Neon({
+            meifile: "#{meifile}"
+          });
+
+
+          

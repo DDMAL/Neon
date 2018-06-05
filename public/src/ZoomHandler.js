@@ -1,4 +1,4 @@
-function ZoomController (neon) {
+function ZoomHandler (neon) {
     var svg = d3.select("#svg_container");
     
     var transform = d3.zoomIdentity;
@@ -43,10 +43,10 @@ function ZoomController (neon) {
         dragCoordinates[1] = d3.event.y;
     }
 
-    ZoomController.prototype.constructor = ZoomController;
-    ZoomController.prototype.zoom = zoom;
-    ZoomController.prototype.translate = translate;
-    ZoomController.prototype.restoreTransformation = restoreTransformation;
-    ZoomController.prototype.startDrag = startDrag;
-    ZoomController.prototype.dragging = dragging;
+    ZoomHandler.prototype.constructor = ZoomHandler;
+    ZoomHandler.prototype.zoom = zoom;
+    ZoomHandler.prototype.translate = translate;
+    ZoomHandler.prototype.restoreTransformation = restoreTransformation;
+    ZoomHandler.prototype.startDrag = startDrag;
+    ZoomHandler.prototype.dragging = dragging;
 }

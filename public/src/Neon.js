@@ -5,10 +5,10 @@ function Neon (params) {
     //////////////
     var vrvToolkit = new verovio.toolkit();
     var fileName = params.meifile;
-    var dragController = new DragController(this, vrvToolkit);
-    var navbarController = new NavbarController(fileName);
-    // var zoomController = new ZoomController(this);
-    // var infoController = new InfoController(vrvToolkit);
+    var dragHandler = new DragHandler(this, vrvToolkit);
+    var navbarHandler = new Navbar(fileName);
+    // var zoomHandler = new ZoomHandler(this);
+    // var infoBox = new InfoBox(vrvToolkit);
 
     var vrvOptions = {
         // Width/Height needs to be set based on MEI information in the future
@@ -23,7 +23,7 @@ function Neon (params) {
     $.get("/uploads/mei/" + fileName, function(data) {
         loadData(data);
         loadPage();
-        dragController.dragInit();
+        dragHandler.dragInit();
     });
 
     // Set keypress listener
@@ -46,12 +46,12 @@ function Neon (params) {
         var svg = vrvToolkit.renderToSVG(1);
         $("#svg_output").html(svg);
         d3.select("#svg_output").select("svg").attr("id", "svg_container");
-        //infoController.infoListeners();
+        //infoBox.infoListeners();
     }
 
     function refreshPage () {
         loadPage();
-        //zoomController.restoreTransformation();
+        //zoomHandler.restoreTransformation();
     }
 
     function saveMEI() {
@@ -70,18 +70,18 @@ function Neon (params) {
             case "Shift":
                 d3.select("body").call(
                     d3.drag()
-                        .on("start", zoomController.startDrag)
-                        .on("drag", zoomController.dragging)
+                        .on("start", zoomHandler.startDrag)
+                        .on("drag", zoomHandler.dragging)
                 );
                 break;
             case "s":
                 saveMEI();
                 break;
             case "z":
-                zoomController.zoom(1.25);
+                zoomHandler.zoom(1.25);
                 break;
             case "Z":
-                zoomController.zoom(0.80);
+                zoomHandler.zoom(0.80);
                 break;
             default: break;
         }
