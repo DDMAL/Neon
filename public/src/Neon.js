@@ -10,6 +10,7 @@ function Neon (params) {
     var vrvToolkit = new verovio.toolkit();
     var fileName = params.meifile;
     var bgimg = fileName.split('.', 2)[0] + ".png";
+    var initialPage = true;
 
     var dragHandler = new DragHandler(this, vrvToolkit);
     var navbarHandler = new Navbar(fileName);
@@ -17,7 +18,7 @@ function Neon (params) {
     var viewControls = new ViewControls(this, zoomHandler);
     var editControls = new EditControls();
     var insertControls = new InsertControls();
-    //var infoBox = new InfoBox(vrvToolkit);
+    // var infoBox = new InfoBox(vrvToolkit);
 
     var vrvOptions = {
         // Width/Height needs to be set based on MEI information in the future
@@ -42,7 +43,7 @@ function Neon (params) {
                 d3.select("body").on(".drag", null);
             }
         });
-        
+
     ////////////
     // Functions
     ////////////
@@ -54,22 +55,24 @@ function Neon (params) {
     }
 
     function loadImage () {
-        var bgimg_layer = d3.select("#svg_output").append("svg")
+        if (initialPage) {
+            var bgimg_layer = d3.select("#svg_output").append("svg")
             .attr("id", "svg_group")
             .attr("width", pageWidth)
             .attr("height", pageHeight)
             .attr("viewBox", '0 0 ' + pageWidth + " " + pageHeight);
 
-        var bg = bgimg_layer.append("image")
-            .attr("id", "bgimg")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("height", pageHeight)
-            .attr("width", pageWidth)
-            .attr("xlink:href", "/uploads/png/" + bgimg);
+            var bg = bgimg_layer.append("image")
+                .attr("id", "bgimg")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("height", pageHeight)
+                .attr("width", pageWidth)
+                .attr("xlink:href", "/uploads/png/" + bgimg);
 
-        bgimg_layer.append('g')
-            .attr("id", "mei_output");
+            bgimg_layer.append('g')
+                .attr("id", "mei_output");
+        }
     }
 
     function loadPage () {
@@ -79,11 +82,12 @@ function Neon (params) {
         if (viewControls.shouldHideText()) {
             d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
         }
-        //infobox.infoListeners();
+        // infoBox.infoListeners();
     }
 
     function refreshPage () {
         var meiData = vrvToolkit.getMEI();
+        initialPage = false;
         loadData(meiData);
         zoomHandler.restoreTransformation();
     }
