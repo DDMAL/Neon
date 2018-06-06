@@ -15,7 +15,7 @@ function Neon (params) {
     var dragHandler = new DragHandler(this, vrvToolkit);
     var navbarHandler = new Navbar(fileName);
     var zoomHandler = new ZoomHandler(this);
-    var viewControls = new ViewControls(this, zoomHandler);
+    var viewControls = new ViewControls(this, zoomHandler, dragHandler);
     var editControls = new EditControls();
     var insertControls = new InsertControls();
     // var infoBox = new InfoBox(vrvToolkit);

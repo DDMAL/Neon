@@ -1,4 +1,4 @@
-function ViewControls (neon, zoomHandler) {
+function ViewControls (neon, zoomHandler, dragHandler) {
     setZoomControls();
     setOpacityControls();
     setBackgroundOpacityControls();
@@ -56,6 +56,7 @@ function ViewControls (neon, zoomHandler) {
     function setSylControls() {
         $("#displayText").click( function () {
             neon.loadPage();
+            dragHandler.dragInit();
         });
     }
 
