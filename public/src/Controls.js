@@ -27,11 +27,7 @@ function Controls (neon, zoomHandler) {
             $("#opacityOutput").val(100);
         })
 
-        $(document).on('input change', '#opacitySlider', function () {
-            var meiSel = d3.select(".definition-scale");
-            var opacitySliderValue = $("#opacityOutput").val();
-            meiSel.style("opacity", opacitySliderValue / 100.0);
-        });
+        $(document).on('input change', '#opacitySlider', setOpacityFromSlider);
     }
 
     function setBackgroundOpacityControls() {
@@ -60,10 +56,17 @@ function Controls (neon, zoomHandler) {
         });
     }
 
+    function setOpacityFromSlider() {
+        var meiSel = d3.select(".definition-scale");
+        var opacitySliderValue = $("#opacityOutput").val();
+        meiSel.style("opacity", opacitySliderValue / 100.0);
+    };
+
     Controls.prototype.constructor = Controls;
     Controls.prototype.setZoomControls = setZoomControls;
     Controls.prototype.setOpacityControls = setOpacityControls;
     Controls.prototype.setBackgroundOpacityControls = setBackgroundOpacityControls;
     Controls.prototype.shouldHideText = shouldHideText;
     Controls.prototype.setSylControls = setSylControls;
+    Controls.prototype.setOpacityFromSlider = setOpacityFromSlider;
 }

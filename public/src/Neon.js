@@ -72,9 +72,12 @@ function Neon (params) {
         var svg = vrvToolkit.renderToSVG(1);
         $("#mei_output").html(svg);
         d3.select("#mei_output").select("svg").attr("id", "svg_container");
+        // Hide text if necessary
         if (controls.shouldHideText()) {
             d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
         }
+        // Set MEI opacity to value from slider
+        controls.setOpacityFromSlider();
         infobox.infoListeners();
     }
 
