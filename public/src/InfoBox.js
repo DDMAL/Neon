@@ -36,25 +36,26 @@ function InfoBox(vrvToolkit) {
         // Gets the pitches depending on element type and 
         switch(elementClass) {
             case "neume":
-                var childPitches = vrvToolkit.getElementChildPitches(id);
+                // Select neume components of selected neume
+                var ncs = element.selectAll(".nc");
                 var contour = "";
                 var pitches = "";
                 var previous = null;
-                Object.keys(childPitches).forEach( function (key) {
-                    var current = childPitches[key];
-                    pitches += pitchNumToName(current.pname) + current.oct + " ";
+                ncs.each( function () {
+                    var attributes = vrvToolkit.getElementAttr(this.id);
+                    pitches += attributes.pname + attributes.oct + " ";
                     if (previous !== null) {
-                        if (previous.oct > current.oct) {
+                        if (previous.oct > attributes.oct) {
                             contour += "d";
                         }
-                        else if (previous.oct < current.oct) {
+                        else if (previous.oct < attributes.oct) {
                             contour += "u";
                         }
                         else {
-                            if (previous.pname > current.pname) {
+                            if (pitchNameToNum(previous.pname) < pitchNameToNum(attributes.pname)) {
                                 contour += "u";
                             }
-                            else if (previous.pname < current.pname) {
+                            else if (pitchNameToNum(previous.pname) > pitchNameToNum(attributes.pname)) {
                                 contour += "d";
                             }
                             else {
@@ -62,7 +63,7 @@ function InfoBox(vrvToolkit) {
                             }
                         }
                     }
-                    previous = current;
+                    previous = attributes;
                 });
                 if (neumeGroups.get(contour) === undefined) {
                     console.warn("Unknown contour: " + contour);
@@ -102,25 +103,24 @@ function InfoBox(vrvToolkit) {
         })
     }
 
-    function pitchNumToName(pitchNumber) {
-        switch(parseInt(pitchNumber)) {
-            case 1:
-                return "c";
-            case 2:
-                return "d";
-            case 3:
-                return "e";
-            case 4:
-                return "f";
-            case 5:
-                return "g";
-            case 6:
-                return "a";
-            case 7:
-                return "b";
+    function pitchNameToNum(pname) {
+        switch(pname) {
+            case "c":
+                return 1;
+            case "d":
+                return 2;
+            case "e":
+                return 3;
+            case "f":
+                return 4;
+            case "g":
+                return 5;
+            case "a":
+                return 6;
+            case "b":
+                return 7;
             default:
-                console.log(pitchNumber);
-                return "";
+                console.log("Unknown pitch name");
         }
     }
 
