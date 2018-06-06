@@ -15,7 +15,10 @@ html
       script(src='/src/DragHandler.js', type='text/javascript')
       script(src='/src/Navbar.js', type='text/javascript')
       //- script(src='/src/InfoBox.js', type='text/javascript')
-      //- script(src='/src/ZoomHandler.js', type='text/javascript')
+      script(src='/src/ZoomHandler.js', type='text/javascript')
+      script(src='/src/ViewControls.js', type='text/javascript')
+      script(src='/src/InsertControls.js', type='text/javascript')
+      script(src='/src/EditControls.js', type='text/javascript')
   body
     .navbar.is-light
       .navbar-brand
@@ -28,13 +31,13 @@ html
           a#getpng.navbar-item(href='', download='') Download PNG
           a#revert.navbar-item(href='') Revert
     .columns
-      .column#svg_output.is-two-thirds
+      .column#svg_output.is-two-thirds.box(style={overflow: "hidden"})
       .column.is-one-third
         .panel
           p.panel-heading Controls
           a.panel-block.has-text-centered
             button.button#reset-zoom Zoom
-            input.slider.is-fullwidth#zoomSlider(step="5", min="25", max="200", value="100", type="range")
+            input.slider.is-fullwidth#zoomSlider(step="5", min="25", max="100", value="100", type="range")
             output#zoomOutput(for="zoomSlider") 100
           a.panel-block.has-text-centered
             button.button#reset-opacity Neume Opacity
@@ -44,6 +47,9 @@ html
             button.button#reset-bg-opacity Image Opacity
             input.slider.is-fullwidth#bgOpacitySlider(step="5", min="0", max="100", value="100", type="range")
             output#bgOpacityOutput(for="bgOpacitySlider") 100
+          a.panel-block
+            label.checkbox Display Text: 
+              input.checkbox#displayText(type="checkbox")
         #neume_info
         script(type='text/javascript').
           var neon = new Neon({

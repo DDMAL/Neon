@@ -1,28 +1,36 @@
 function Neon (params) {
-
     //////////////
     // Constructor
     //////////////
+
+    // Width/Height needs to be set based on MEI information in the future
+    var pageWidth = 600;
+    var pageHeight = 800;
+
     var vrvToolkit = new verovio.toolkit();
     var fileName = params.meifile;
+    var bgimg = fileName.split('.', 2)[0] + ".png";
+
     var dragHandler = new DragHandler(this, vrvToolkit);
     var navbarHandler = new Navbar(fileName);
-    // var zoomHandler = new ZoomHandler(this);
-    // var infoBox = new InfoBox(vrvToolkit);
+    var zoomHandler = new ZoomHandler(this);
+    var viewControls = new ViewControls(this, zoomHandler);
+    var editControls = new EditControls();
+    var insertControls = new InsertControls();
+    //var infoBox = new InfoBox(vrvToolkit);
 
     var vrvOptions = {
         // Width/Height needs to be set based on MEI information in the future
-        breaks: "none",
-        pageHeight: 400,
-        pageWidth: 600,
+        pageHeight: pageHeight,
+        pageWidth: pageWidth,
         noFooter: 1,
-        noHeader: 1
+        noHeader: 1,
+        scale: 50
     };
     vrvToolkit.setOptions(vrvOptions);
     
     $.get("/uploads/mei/" + fileName, function(data) {
         loadData(data);
-        loadPage();
         dragHandler.dragInit();
     });
 
@@ -34,24 +42,50 @@ function Neon (params) {
                 d3.select("body").on(".drag", null);
             }
         });
+        
     ////////////
     // Functions
     ////////////
     function loadData (data) {
         vrvToolkit.loadData(data);
+        vrvToolkit.loadData(data);
+        loadImage();
         loadPage();
+    }
+
+    function loadImage () {
+        var bgimg_layer = d3.select("#svg_output").append("svg")
+            .attr("id", "svg_group")
+            .attr("width", pageWidth)
+            .attr("height", pageHeight)
+            .attr("viewBox", '0 0 ' + pageWidth + " " + pageHeight);
+
+        var bg = bgimg_layer.append("image")
+            .attr("id", "bgimg")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("height", pageHeight)
+            .attr("width", pageWidth)
+            .attr("xlink:href", "/uploads/png/" + bgimg);
+
+        bgimg_layer.append('g')
+            .attr("id", "mei_output");
     }
 
     function loadPage () {
         var svg = vrvToolkit.renderToSVG(1);
-        $("#svg_output").html(svg);
-        d3.select("#svg_output").select("svg").attr("id", "svg_container");
-        //infoBox.infoListeners();
+        $("#mei_output").html(svg);
+        d3.select("#mei_output").select("svg").attr("id", "svg_container");
+        if (viewControls.shouldHideText()) {
+            d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
+        }
+        //infobox.infoListeners();
     }
 
     function refreshPage () {
-        loadPage();
-        //zoomHandler.restoreTransformation();
+        var meiData = vrvToolkit.getMEI();
+        loadData(meiData);
+        zoomHandler.restoreTransformation();
     }
 
     function saveMEI() {
@@ -87,6 +121,9 @@ function Neon (params) {
         }
     }
     // Constructor reference
+    Neon.prototype.pageWidth = pageWidth;
+    Neon.prototype.pageHeight = pageHeight;
+
     Neon.prototype.constructor = Neon;
     Neon.prototype.loadData = loadData;
     Neon.prototype.loadPage = loadPage;
