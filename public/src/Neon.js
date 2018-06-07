@@ -112,9 +112,11 @@ function Neon (params) {
             //     break;
             case "z":
                 zoomhandler.zoom(1.25);
+                $("#zoomOutput").html(Math.round($("#zoomOutput").val() *  1.25));
                 break;
             case "Z":
                 zoomhandler.zoom(0.80);
+                $("#zoomOutput").html(Math.round($("#zoomOutput").val() * 0.80));
                 break;
             default: break;
         }
