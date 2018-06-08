@@ -10,12 +10,12 @@ USAGE="./update-verovio [-b build-directory [-d]] [-l local-verovio] [-h]\n\n-b 
 GIT=`which git`
 if [[ 0 -ne $? ]]; then
     echo >&2 "Git could not be found.";
-    exit 1;
+    exit 127;
 fi
 which emcc > /dev/null 2>&1
 if [[ 0 -ne $? ]]; then
     echo >&2 "Emscripten (emcc) could not be found.";
-    exit 1;
+    exit 127;
 fi
 
 # Parse Arguments
@@ -46,6 +46,7 @@ while [[ $# -gt 0 ]]; do
         *)
             echo >&2 "Unknown option $1"
             printf "$USAGE"
+            # EINVAL Invalid argument
             exit 1
             ;;
     esac
