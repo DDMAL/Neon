@@ -8,8 +8,8 @@ global.__base = __dirname + "/";
 //===========
 // Bodyparser
 //===========
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: false }));
 
 //=====================
 // Route import & setup
@@ -27,6 +27,6 @@ app.set('view engine', 'pug');
 //=============
 app.use(express.static('public'));
 
-app.listen(9000);
+app.listen(8080);
 
 console.log('Server hosted at :9000');
