@@ -7,13 +7,14 @@
 BUILDDIR="verovio-build"
 USAGE="./update-verovio [-b build-directory [-d]] [-l local-verovio] [-h]\n\n-b | --build-dir\t\tSpecify the build directory for verovio.\n-d | --delete\t\tDelete the build directory after building.\n-l | --local\t\tSpecify the path to a preexisting root of verovio source.\n-h | --help\t\tDisplay this dialogue.\n"
 
-if ! command -v git > /dev/null 2>&1; then
-    echo >&2 "Git is required.";
+GIT=`which git`
+if [[ 0 -ne $? ]]; then
+    echo >&2 "Git could not be found.";
     exit 1;
 fi
-
-if ! command -v emcc > /dev/null 2>&1; then
-    echo >&2 "Emscripten (emcc) is required.";
+which emcc > /dev/null 2>&1
+if [[ 0 -ne $? ]]; then
+    echo >&2 "Emscripten (emcc) could not be found.";
     exit 1;
 fi
 
@@ -69,7 +70,7 @@ if [ ! "$LOCALVEROVIO" ]; then
         exit 1
     fi
 
-    git clone --depth 1 https://github.com/DDMAL/verovio.git "$BUILDDIR"
+    $GIT clone --depth 1 https://github.com/DDMAL/verovio.git "$BUILDDIR"
 else
     if [ ! -d $BUILDDIR ]; then
         echo >&2 "$BUILDDIR does not exist!"
