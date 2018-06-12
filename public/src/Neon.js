@@ -4,8 +4,8 @@ function Neon (params) {
     //////////////
 
     // Width/Height needs to be set based on MEI information in the future
-    var pageWidth = 600;
-    var pageHeight = 800;
+    var pageWidth = 1000;
+    var pageHeight = 1400;
 
     var vrvToolkit = new verovio.toolkit();
     var fileName = params.meifile;
@@ -17,7 +17,7 @@ function Neon (params) {
     var zoomHandler = new ZoomHandler(this);
     var viewControls = new ViewControls(this, zoomHandler, dragHandler);
     var editControls = new EditControls();
-    var insertControls = new InsertControls();
+    var insertControls = new InsertControls(this);
     // var infoBox = new InfoBox(vrvToolkit);
 
     var vrvOptions = {
@@ -26,7 +26,7 @@ function Neon (params) {
         pageWidth: pageWidth,
         noFooter: 1,
         noHeader: 1,
-        scale: 50
+        //scale: 50
     };
     vrvToolkit.setOptions(vrvOptions);
     
