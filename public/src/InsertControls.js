@@ -5,7 +5,7 @@ function InsertControls (neon) {
         $("#insert_data").empty();
         $("#insert_data").append(
             "<p class='control'>" +
-            "<button id='punctum' class='button insertel is-active'><img src='/img/punctum.png' class='image'/></button></p>" +
+            "<button id='punctum' class='button insertel'><img src='/img/punctum.png' class='image'/></button></p>" +
             "<p class='control'>" +
             "<button id='virga' class='button insertel'><img src='/img/virga.png' class='image'/></button></p>" +
             "<p class='control'>" +
@@ -23,12 +23,22 @@ function InsertControls (neon) {
         deactivateTab();
         activateTab(this.id);
         $("#insert_data").empty();
+        $("#insert_data").append(
+            "<p class='control'>" +
+            "<button id='cClef' class='button insertel'><img src='/img/cClef.png' class='image' /></button></p>" +
+            "<p class='control'>" +
+            "<button id='fClef' class='button insertel'><img src='/img/fClef.png' class='image'/></button></p>"
+        );
     });
 
     $("#systemTab").on("click", function(){
         deactivateTab();
         activateTab(this.id);
         $("#insert_data").empty();
+        $("#insert_data").append(
+            "<p class='control'>" +
+            "<button id='staff' class='button insertsys'><img src='/img/staff.png' class='image' /></button></p>"
+        );
     });
 
     $("#divisionTab").on("click", function(){
