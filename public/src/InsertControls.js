@@ -1,8 +1,9 @@
 function InsertControls (neon) {
     // set up listeners to switch between tabs and load the appropriate template
     $("#neumeTab").on("click", function(){
-        deactivateTab();
+        deactivate(".insertTab");
         activate(this.id);
+        resetCursor();
         $("#insert_data").empty();
         $("#insert_data").append(
             "<p class='control'>" +
@@ -19,29 +20,13 @@ function InsertControls (neon) {
             "<button id='custos' class='button insertel'><img src='/img/custos.png' class='image'/></button></p>"
         );
 
-        $("#punctum").on("click", function(){
-            updateCursor(this.id);
-        })
-        $("#virga").on("click", function(){
-            updateCursor(this.id);
-        })
-        $("#diamond").on("click", function(){
-            updateCursor(this.id);
-        })
-        $("#white_punct").on("click", function(){
-            updateCursor(this.id);
-        })
-        $("#quilisma").on("click", function(){
-            updateCursor(this.id);
-        })
-        $("#custos").on("click", function(){
-            updateCursor(this.id);
-        })
+        bindElements();
     });
 
     $("#clefTab").on("click", function(){
-        deactivateTab();
+        deactivate(".insertTab");
         activate(this.id);
+        resetCursor();
         $("#insert_data").empty();
         $("#insert_data").append(
             "<p class='control'>" +
@@ -49,17 +34,14 @@ function InsertControls (neon) {
             "<p class='control'>" +
             "<button id='fClef' class='button insertel'><img src='/img/fClef.png' class='image'/></button></p>"
         );
-        $("#cClef").on("click", function(){
-            updateCursor(this.id);
-        })
-        $("#fClef").on("click", function(){
-            updateCursor(this.id);
-        })
+        
+        bindElements();
     });
 
     $("#systemTab").on("click", function(){
-        deactivateTab();
+        deactivate(".insertTab");
         activate(this.id);
+        resetCursor();
         $("#insert_data").empty();
         $("#insert_data").append(
             "<p class='control'>" +
@@ -67,11 +49,13 @@ function InsertControls (neon) {
             "<input id='staffSlider' class='slider is-fullwidth' min='10' max='100' value='50' step='1' type='range'/>" +
             "<output for='staffSlider'>100</output>"
         );
+        //ToDo: Dynamic system output, bind elements, add scaled staff as cursor
     });
 
     $("#divisionTab").on("click", function(){
-        deactivateTab();
+        deactivate(".insertTab");
         activate(this.id);
+        resetCursor();
         $("#insert_data").empty();
         $("#insert_data").append(
             "<p class='control'>" +
@@ -83,19 +67,36 @@ function InsertControls (neon) {
             "<p class='control'>" +
             "<button id='finalDiv' class='button insertelLong'>Final</button></p>"
         );
+        //TODO: add division images
     });
 
     function activate(id) {
         $("#" + id)[0].classList.add('is-active');
     }
 
-    function deactivateTab() {
-        var tabs = d3.selectAll(".insertTab")._groups[0];
-        for (i=0; i<tabs.length; i++){
-            if(tabs[i].classList.length > 1){
-                tabs[i].classList.remove('is-active');
+    function deactivate(type) {
+        var elList = d3.selectAll(type)._groups[0];
+        for (i=0; i<elList.length; i++){
+            if(elList[i].classList.length > 1){
+                elList[i].classList.remove('is-active');
             }
         }
+        //TODO: add division images for buttons and cursor image
+    }
+
+    function bindElements() {
+        var insertElements = d3.selectAll('.insertEl')._groups[0];
+        var elementIds = $.map(insertElements, function(el, i){
+            return el.id;
+        });
+
+        $.each(elementIds, function(i, el){
+            $('#' + el).on("click", function(){
+                deactivate(".insertel");
+                activate(el);  
+                updateCursor(el);
+            });
+        });
     }
 
     function updateCursor(id) {
@@ -103,11 +104,19 @@ function InsertControls (neon) {
         $("#bgimg").css('cursor', url);
         $("#mei_output").css('cursor', url);
     }
-      
+
+    function resetCursor(id) {
+        $("#bgimg").css('cursor', "default");
+        $("#mei_output").css('cursor', "default");
+    }
+  
     // Default to neume tab on initial load
     $("#neumeTab").click();
     
-    Neon.prototype.deactivateTab = deactivateTab;
+    Neon.prototype.deactivate = deactivate;
     Neon.prototype.activate = activate;
+    Neon.prototype.bindElements = bindElements;
+    Neon.prototype.updateCursor = updateCursor;
+    Neon.prototype.resetCursor = resetCursor;
 
 }
