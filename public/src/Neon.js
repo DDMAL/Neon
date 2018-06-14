@@ -18,9 +18,10 @@ function Neon (params) {
     var zoomHandler = new ZoomHandler(this);
     var viewControls = new ViewControls(this, zoomHandler, dragHandler);
     var editControls = new EditControls();
-    var insertControls = new InsertControls(this);
-    console.log(insertControls);
+    var cursorHandler = new CursorHandler();
+    var insertControls = new InsertControls(this, cursorHandler);
     var infoBox = new InfoBox(vrvToolkit);
+   
 
     var vrvOptions = {
         // Width/Height needs to be set based on MEI information in the future
@@ -108,7 +109,8 @@ function Neon (params) {
         var unit = 10;
         switch (d3.event.key) {
             case "Shift":
-                insertControls.resetCursor();
+                cursorHandler.resetCursor();
+                insertControls.deactivate(".insertel");
                 d3.select("body").call(
                     d3.drag()
                         .on("start", zoomHandler.startDrag,)
@@ -123,6 +125,10 @@ function Neon (params) {
                 break;
             case "Z":
                 zoomHandler.zoom(0.80);
+                break;
+            case 27:
+                insertControls.resetCursor();
+                insertControls.deactivate(".insertel");
                 break;
             default: break;
         }

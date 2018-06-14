@@ -1,4 +1,4 @@
-function InsertControls (neon) {
+function InsertControls (neon, cursorHandler) {
     // To add new tab, add inner html to dictionary with id as key value. All elements must be of class insertel.
     var tabHtml = {
         neumeTab: "<p class='control'>" +
@@ -22,13 +22,13 @@ function InsertControls (neon) {
             "<input id='staffSlider' class='slider is-fullwidth' min='10' max='100' value='50' step='1' type='range'/>" +
             "<output for='staffSlider'>100</output>",
         divisionTab: "<p class='control'>" +
-            "<button id='smallDiv' class='button insertel longel'>Small</button></p>" +
+            "<button id='smallDiv' class='button insertel tallel'><img src='/img/smallDiv.png' class='image'/></button></p>" +
             "<p class='control'>" +
-            "<button id='minorDiv' class='button insertel longel'>Minor</button></p>" +
+            "<button id='minorDiv' class='button insertel tallel'><img src='/img/minorDiv.png' class='image'/></button></p>" +
             "<p class='control'>" +
-            "<button id='majorDiv' class='button insertel longel'>Major</button></p>" +
+            "<button id='majorDiv' class='button insertel tallel'><img src='/img/majorDiv.png' class='image'/></button></p>" +
             "<p class='control'>" +
-            "<button id='finalDiv' class='button insertel longel'>Final</button></p>"
+            "<button id='finalDiv' class='button insertel tallel'><img src='/img/finalDiv.png' class='image'/></button></p>"
     }
 
     bindTabs();
@@ -42,7 +42,7 @@ function InsertControls (neon) {
             $('#' + tab).on('click', function(){
                 deactivate('.insertTab');
                 activate(this.id);
-                resetCursor();
+                cursorHandler.resetCursor();
                 $("#insert_data"). empty();
                 $("#insert_data").append(tabHtml[tab]);
                 bindElements();
@@ -59,7 +59,7 @@ function InsertControls (neon) {
             $('#' + el).on('click', function(){
                 deactivate('.insertel');
                 activate(el);  
-                updateCursor(el);
+                cursorHandler.updateCursor(el);
             });
         });
     }
@@ -76,17 +76,6 @@ function InsertControls (neon) {
             }
         }
     }
-
-    function updateCursor(id) {
-        var url = 'url(/img/' + id + '.png), auto';
-        $("#bgimg").css('cursor', url);
-        $("#mei_output").css('cursor', url);
-    }
-
-    function resetCursor(id) {
-        $("#bgimg").css('cursor', 'default');
-        $("#mei_output").css('cursor', 'default');
-    }
   
     // Default to neume tab on initial load
     $("#neumeTab").click();
@@ -96,6 +85,4 @@ function InsertControls (neon) {
     InsertControls.prototype.bindElements = bindElements;
     InsertControls.prototype.deactivate = deactivate;
     InsertControls.prototype.activate = activate;
-    InsertControls.prototype.updateCursor = updateCursor;
-    InsertControls.prototype.resetCursor = resetCursor;
 }
