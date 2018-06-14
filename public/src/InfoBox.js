@@ -15,7 +15,6 @@ function InfoBox(vrvToolkit) {
     }
 
     function setInfoClef() {
-        console.log(vrvToolkit.getElementAttr(this.id).shape !== undefined);
         if (vrvToolkit.getElementAttr(this.id).shape !== undefined) {
             updateInfo(this.id);
         }
