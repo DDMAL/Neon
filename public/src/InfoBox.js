@@ -16,7 +16,13 @@ function InfoBox(vrvToolkit) {
     }
 
     function setInfoClef() {
-        updateInfo(this.parentNode.id);
+        console.log(vrvToolkit.getElementAttr(this.id).shape !== undefined);
+        if (vrvToolkit.getElementAttr(this.id).shape !== undefined) {
+            updateInfo(this.id);
+        }
+        else {
+            updateInfo(this.parentNode.id);
+        }
     }
 
     // This function updates the neume information box in the editor
@@ -75,6 +81,11 @@ function InfoBox(vrvToolkit) {
             case "custos":
                 var attributes = vrvToolkit.getElementAttr(id);
                 body += "Pitch: " + (attributes.pname).toUpperCase() + attributes.oct;
+                break;
+            case "clef":
+                var attributes = vrvToolkit.getElementAttr(id);
+                body += "Shape: " + attributes.shape + "<br/>"
+                    + "Line: " + attributes.line;
                 break;
             case "staff":
                 elementClass = "clef";
