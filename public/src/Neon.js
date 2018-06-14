@@ -20,7 +20,7 @@ function Neon (params) {
     var editControls = new EditControls();
     var insertControls = new InsertControls(this);
     console.log(insertControls);
-    // var infoBox = new InfoBox(vrvToolkit);
+    var infoBox = new InfoBox(vrvToolkit);
 
     var vrvOptions = {
         // Width/Height needs to be set based on MEI information in the future
@@ -84,7 +84,7 @@ function Neon (params) {
         if (viewControls.shouldHideText()) {
             d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
         }
-        // infoBox.infoListeners();
+        infoBox.infoListeners();
     }
 
     function refreshPage () {
