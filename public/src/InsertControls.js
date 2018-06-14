@@ -2,23 +2,23 @@ function InsertControls (neon) {
     // To add new tab, add inner html to dictionary with id as key value. All elements must be of class insertel.
     var tabHtml = {
         neumeTab: "<p class='control'>" +
-            "<button id='punctum' class='button insertel smallel'><img src='/img/punctum.png' class='image'/></button></p>" +
+            "<button id='punctum' class='button insertel smallel' title='punctum'><img src='/img/punctum.png' class='image'/></button></p>" +
             "<p class='control'>" +
-            "<button id='virga' class='button insertel smallel'><img src='/img/virga.png' class='image'/></button></p>" +
+            "<button id='virga' class='button insertel smallel' title='virga'><img src='/img/virga.png' class='image'/></button></p>" +
             "<p class='control'>" +
-            "<button id='diamond' class='button insertel smallel'><img src='/img/diamond.png' class='image'/></button></p>" +
+            "<button id='diamond' class='button insertel smallel' title='inclinatum'><img src='/img/diamond.png' class='image'/></button></p>" +
             "<p class='control'>" +
-            "<button id='white_punct' class='button insertel smallel'><img src='/img/white_punct.png' class='image'/></button></p>" +
+            "<button id='white_punct' class='button insertel smallel' title='white punctum'><img src='/img/white_punct.png' class='image'/></button></p>" +
             "<p class='control'>" +
-            "<button id='quilisma' class='button insertel smallel'><img src='/img/quilisma.png' class='image'/></button></p>" +
+            "<button id='quilisma' class='button insertel smallel' title='quilisma'><img src='/img/quilisma.png' class='image'/></button></p>" +
             "<p class='control'>" +
-            "<button id='custos' class='button insertel smallel'><img src='/img/custos.png' class='image'/></button></p>",
+            "<button id='custos' class='button insertel smallel' title='custos'><img src='/img/custos.png' class='image'/></button></p>",
         clefTab: "<p class='control'>" +
-            "<button id='cClef' class='button insertel smallel'><img src='/img/cClef.png' class='image' /></button></p>" +
+            "<button id='cClef' class='button insertel smallel' title=' C Clef'><img src='/img/cClef.png' class='image' /></button></p>" +
             "<p class='control'>" +
-            "<button id='fClef' class='button insertel smallel'><img src='/img/fClef.png' class='image'/></button></p>",
+            "<button id='fClef' class='button insertel smallel' title='F Clef'><img src='/img/fClef.png' class='image'/></button></p>",
         systemTab: "<p class='control'>" +
-            "<button id='staff' class='button insertel longel'><img src='/img/staff.png' class='image' /></button></p>" +
+            "<button id='staff' class='button insertel longel' title='system'><img src='/img/staff.png' class='image' /></button></p>" +
             "<input id='staffSlider' class='slider is-fullwidth' min='10' max='100' value='50' step='1' type='range'/>" +
             "<output for='staffSlider'>100</output>",
         divisionTab: "<p class='control'>" +
@@ -91,10 +91,11 @@ function InsertControls (neon) {
     // Default to neume tab on initial load
     $("#neumeTab").click();
     
-    Neon.prototype.bindTabs = bindTabs;
-    Neon.prototype.bindElements = bindElements;
-    Neon.prototype.deactivate = deactivate;
-    Neon.prototype.activate = activate;
-    Neon.prototype.updateCursor = updateCursor;
-    Neon.prototype.resetCursor = resetCursor;
+    InsertControls.prototype.constructor = InsertControls;
+    InsertControls.prototype.bindTabs = bindTabs;
+    InsertControls.prototype.bindElements = bindElements;
+    InsertControls.prototype.deactivate = deactivate;
+    InsertControls.prototype.activate = activate;
+    InsertControls.prototype.updateCursor = updateCursor;
+    InsertControls.prototype.resetCursor = resetCursor;
 }

@@ -19,6 +19,7 @@ function Neon (params) {
     var viewControls = new ViewControls(this, zoomHandler, dragHandler);
     var editControls = new EditControls();
     var insertControls = new InsertControls(this);
+    console.log(insertControls);
     // var infoBox = new InfoBox(vrvToolkit);
 
     var vrvOptions = {
@@ -107,9 +108,10 @@ function Neon (params) {
         var unit = 10;
         switch (d3.event.key) {
             case "Shift":
+                insertControls.resetCursor();
                 d3.select("body").call(
                     d3.drag()
-                        .on("start", zoomHandler.startDrag)
+                        .on("start", zoomHandler.startDrag,)
                         .on("drag", zoomHandler.dragging)
                 );
                 break;
