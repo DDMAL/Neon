@@ -9,8 +9,8 @@ function Neon (params) {
     var pageHeight = 800;
 
     var vrvToolkit = new verovio.toolkit();
-    var fileName = params.meifile;
-    var bgimg = fileName.split('.', 2)[0] + ".png";
+    var mei = params.meifile;
+    var bgimg = params.bgimg;
     var zoomhandler = new ZoomHandler(this);
     var infobox = new InfoBox(vrvToolkit);
     var controls = new Controls(this, zoomhandler);
@@ -24,7 +24,7 @@ function Neon (params) {
     };
     vrvToolkit.setOptions(vrvOptions);
     
-    $.get("/uploads/mei/" + fileName, function(data) {
+    $.get("/uploads/mei/" + mei, function(data) {
         loadData(data);
     });
 
@@ -36,7 +36,6 @@ function Neon (params) {
                 d3.select("body").on(".drag", null);
             }
         });
-
 
     ////////////
     // Functions

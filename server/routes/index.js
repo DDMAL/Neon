@@ -112,7 +112,9 @@ router.route('/delete/:filename')
 //Redirect
 router.route('/edit/:filename')
     .get(function (req, res) {
-        res.render('editor', {'meifile': req.params.filename});
+        var mei = req.params.filename;
+        var bgimg = mei.split('.', 2)[0] + ".png";
+        res.render('editor', {'meifile': mei, 'bgimg': bgimg});
     });
 
 /////////////////
