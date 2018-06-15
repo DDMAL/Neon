@@ -28,4 +28,4 @@ yarn install
 yarn start
 ```
 
-3. Access the page at: <http://localhost:9000>.
+3. Access the page at: <http://localhost:8080>.
