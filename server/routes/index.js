@@ -16,7 +16,12 @@ router.route('/')
                 res.status(500).send(err);
                 return 
             }
-        res.render('index', {'files': files});
+        if (files.length != 0){
+            res.render('index', {'files': files});
+        }
+        else{
+            res.render('index', {'nofiles': "No files Uploaded", 'files': files});
+        } 
     });
 });                                                                      
 
