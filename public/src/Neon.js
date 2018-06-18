@@ -5,8 +5,8 @@ function Neon (params) {
     //////////////
 
     // Width/Height needs to be set based on MEI information in the future
-    var pageWidth = 600;
-    var pageHeight = 800;
+    var pageWidth = 4414;
+    var pageHeight = 6993;
 
     var vrvToolkit = new verovio.toolkit();
     var mei = params.meifile;
@@ -20,7 +20,9 @@ function Neon (params) {
         pageHeight: pageHeight,
         noFooter: 1,
         noHeader: 1,
-        scale: 50
+        pageMarginLeft: 0,
+        pageMarginTop: 0,
+        scale: 1000
     };
     vrvToolkit.setOptions(vrvOptions);
     
