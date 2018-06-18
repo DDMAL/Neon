@@ -4,9 +4,8 @@ function Neon (params) {
     // Constructor
     //////////////
 
-    // Width/Height needs to be set based on MEI information in the future
-    var pageWidth = 4414;
-    var pageHeight = 6993;
+    var viewHeight = 800;   // size of the view box on the page
+    var viewWidth = 600;
 
     var vrvToolkit = new verovio.toolkit();
     var mei = params.meifile;
@@ -16,13 +15,10 @@ function Neon (params) {
     var controls = new Controls(this, zoomhandler);
 
     var vrvOptions = {
-        pageWidth: pageWidth,
-        pageHeight: pageHeight,
         noFooter: 1,
         noHeader: 1,
         pageMarginLeft: 0,
         pageMarginTop: 0,
-        scale: 1000
     };
     vrvToolkit.setOptions(vrvOptions);
     
@@ -46,38 +42,35 @@ function Neon (params) {
     // Loads data into toolkit and also loads the image & mei svg data
     function loadData (data) {
         vrvToolkit.loadData(data);
-        loadImage();
-        loadPage();
+        loadView();
     }
 
-    function loadImage () {
-        var bgimg_layer = d3.select("#svg_output").append("svg")
-            .attr("id", "svg_group")
-            .attr("width", pageWidth)
-            .attr("height", pageHeight)
-            .attr("viewBox", '0 0 ' + pageWidth + " " + pageHeight);
+    function loadView () {
+        var view_layer = d3.select("#svg_output").append("svg");
+        var bg_img = view_layer.append("image");
+        view_layer.append('g').attr("id", "mei_output");
 
-        var bg = bgimg_layer.append("image")
-            .attr("id", "bgimg")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("height", pageHeight)
-            .attr("width", pageWidth)
-            .attr("xlink:href", "/uploads/png/" + bgimg);
-
-        bgimg_layer.append('g')
-            .attr("id", "mei_output");
-    }
-
-    function loadPage () {
         var svg = vrvToolkit.renderToSVG(1);
         $("#mei_output").html(svg);
         d3.select("#mei_output").select("svg").attr("id", "svg_container");
-        // Hide text if necessary
         if (controls.shouldHideText()) {
             d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
         }
-        // Set MEI opacity to value from slider
+        
+        var height = parseInt(d3.select("#svg_container").attr("height"));
+        var width = parseInt(d3.select("#svg_container").attr("width"));
+        bg_img.attr("id", "bgimg")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("height", height)
+            .attr("width", width)
+            .attr("xlink:href", "/uploads/png/" + bgimg);
+
+        view_layer.attr("id", "svg_group")
+            .attr("width", viewWidth)
+            .attr("height", viewHeight)
+            .attr("viewBox", "0 0 " + width + " " + height);
+        
         controls.setOpacityFromSlider();
         infobox.infoListeners();
     }
@@ -128,8 +121,7 @@ function Neon (params) {
     Neon.prototype.pageHeight = pageHeight;
 
     Neon.prototype.constructor = Neon;
-    Neon.prototype.loadData = loadData;
-    Neon.prototype.loadPage = loadPage;
+    Neon.prototype.loadView = loadView;
     Neon.prototype.refreshPage = refreshPage;
     //Neon.prototype.saveMEI = saveMEI;
 }
