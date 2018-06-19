@@ -81,6 +81,8 @@ function Neon (params) {
         zoomhandler.restoreTransformation();
     }
 
+    
+
     // function saveMEI() {
     //     var meiData = vrvToolkit.getMEI();
     //     $.ajax({
@@ -90,6 +92,11 @@ function Neon (params) {
     //                 "fileName": fileName}
     //     }) 
     // }
+   
+
+    function getMEI () {
+        return vrvToolkit.getMEI();
+    }
 
     function keydownListener () {
         var unit = 10;
@@ -120,6 +127,6 @@ function Neon (params) {
     Neon.prototype.constructor = Neon;
     Neon.prototype.loadView = loadView;
     Neon.prototype.refreshPage = refreshPage;
-    //Neon.prototype.saveMEI = saveMEI;
+    Neon.prototype.getMEI = getMEI;
 }
 
