@@ -4,7 +4,32 @@
   "description": "A web-based editor for correcting MEI-Neume files",
   "main": "server.js",
   "license": "MIT",
-  "author": "Andrew Tran",
+  "author": {
+      "name": "DDMAL",
+      "url": "https://ddmal.music.mcgill.ca"
+  },
+  "contributors": [
+      {
+          "name": "Zoé McLennan",
+          "url": "https://github.com/zoemcl"
+      },
+      {
+          "name": "Juliette Regimbal",
+          "url": "https://github.com/JRegimbal"
+      },
+      {
+          "name": "Andrew Tran",
+          "url": "https://github.com/ATranimal"
+      }
+  ],
+  "homepage": "https://github.com/DDMAL/Neon2",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/DDMAL/Neon2.git"
+  },
+  "bugs": {
+      "url": "https://github.com/DDMAL/Neon2/issues"
+  },
   "dependencies": {
     "body-parser": "^1.18.2",
     "bulma": "^0.7.1",
