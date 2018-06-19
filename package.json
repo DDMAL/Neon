@@ -16,7 +16,8 @@
     "pug": "^2.0.3"
   },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "build": "webpack --config webpack.config.js"
   },
   "devDependencies": {
     "d3": "^5.5.0",
