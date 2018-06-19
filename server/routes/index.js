@@ -119,7 +119,8 @@ router.route('/edit/:filename')
     .get(function (req, res) {
         var mei = req.params.filename;
         var bgimg = mei.split('.', 2)[0] + ".png";
-        res.render('editor', {'meifile': mei, 'bgimg': bgimg});
+        // Feeds the entire path for compatability with rodan
+        res.render('editor', {'meifile': "/uploads/mei/" + mei, 'bgimg': "/uploads/png/" + bgimg});
     });
 
 /////////////////

@@ -21,7 +21,6 @@ function Neon (params) {
         pageMarginTop: 0,
     };
     vrvToolkit.setOptions(vrvOptions);
-    
     $.get(mei, function(data) {
         loadData(data);
     });
