@@ -22,7 +22,7 @@ function Neon (params) {
     };
     vrvToolkit.setOptions(vrvOptions);
     
-    $.get("/uploads/mei/" + mei, function(data) {
+    $.get(mei, function(data) {
         loadData(data);
     });
 
@@ -64,7 +64,7 @@ function Neon (params) {
             .attr("y", 0)
             .attr("height", height)
             .attr("width", width)
-            .attr("xlink:href", "/uploads/png/" + bgimg);
+            .attr("xlink:href", bgimg);
 
         view_layer.attr("id", "svg_group")
             .attr("width", viewWidth)
@@ -117,9 +117,6 @@ function Neon (params) {
     }
     
     // Constructor reference
-    Neon.prototype.pageWidth = pageWidth;
-    Neon.prototype.pageHeight = pageHeight;
-
     Neon.prototype.constructor = Neon;
     Neon.prototype.loadView = loadView;
     Neon.prototype.refreshPage = refreshPage;
