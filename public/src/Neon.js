@@ -1,5 +1,9 @@
-function Neon (params) {
+import { Controls } from './Controls.js';
+import { InfoBox } from './InfoBox.js';
+import { ZoomHandler } from './ZoomHandler.js';
 
+function Neon (params) {
+    
     //////////////
     // Constructor
     //////////////
@@ -7,9 +11,9 @@ function Neon (params) {
     var viewHeight = 800;   // size of the view box on the page
     var viewWidth = 600;
 
-    var vrvToolkit = new verovio.toolkit();
     var mei = params.meifile;
     var bgimg = params.bgimg;
+    var vrvToolkit = params.toolkit;
     var zoomhandler = new ZoomHandler(this);
     var infobox = new InfoBox(vrvToolkit);
     var controls = new Controls(this, zoomhandler);
@@ -129,3 +133,4 @@ function Neon (params) {
     Neon.prototype.getMEI = getMEI;
 }
 
+export { Neon };

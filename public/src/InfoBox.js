@@ -141,3 +141,5 @@ function InfoBox(vrvToolkit) {
 
     InfoBox.prototype.infoListeners = infoListeners;
 }
+
+export { InfoBox };

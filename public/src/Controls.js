@@ -70,3 +70,5 @@ function Controls (neon, zoomHandler) {
     Controls.prototype.setSylControls = setSylControls;
     Controls.prototype.setOpacityFromSlider = setOpacityFromSlider;
 }
+
+export { Controls };

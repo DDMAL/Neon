@@ -79,3 +79,5 @@ function ZoomHandler (neon) {
     ZoomHandler.prototype.startDrag = startDrag;
     ZoomHandler.prototype.dragging = dragging;
 }
+
+export { ZoomHandler };
