@@ -3,9 +3,8 @@ html
     title Neon2
     block scripts
       // Static Files
-      script(src='/js/verovio-toolkit.js', type='text/javascript')
-      script(src='https://code.jquery.com/jquery-3.3.1.min.js')  
-      script(src='https://d3js.org/d3.v5.min.js')
+      script(src='/js/jquery.js')  
+      script(src='/js/d3.js')
       // Style Sheets
       link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css')
       link(rel='stylesheet', href='/css/bulma-slider.min.css')
@@ -41,9 +40,7 @@ html
         #neume_info
       script(type='module').
         import { Neon } from "/src/Neon.js";
-        var vrvToolkit = new verovio.toolkit();
         var neon = new Neon({
           meifile: "#{meifile}",
           bgimg: "#{bgimg}",
-          toolkit: vrvToolkit
         });

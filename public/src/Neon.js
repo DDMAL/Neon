@@ -1,6 +1,7 @@
 import { Controls } from './Controls.js';
 import { InfoBox } from './InfoBox.js';
 import { ZoomHandler } from './ZoomHandler.js';
+import { verovio } from '../js/verovio-toolkit.js';
 
 function Neon (params) {
     
@@ -13,7 +14,7 @@ function Neon (params) {
 
     var mei = params.meifile;
     var bgimg = params.bgimg;
-    var vrvToolkit = params.toolkit;
+    var vrvToolkit = new verovio.toolkit();
     var zoomhandler = new ZoomHandler(this);
     var infobox = new InfoBox(vrvToolkit);
     var controls = new Controls(this, zoomhandler);
