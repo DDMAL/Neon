@@ -1,9 +1,9 @@
 import { Controls } from './Controls.js';
 import { InfoBox } from './InfoBox.js';
 import { ZoomHandler } from './ZoomHandler.js';
-import { verovio } from '../js/verovio-toolkit.js';
+import { verovio } from './verovio-toolkit.js';
 
-function Neon (params) {
+export function Neon (params) {
     
     //////////////
     // Constructor
@@ -133,5 +133,3 @@ function Neon (params) {
     Neon.prototype.refreshPage = refreshPage;
     Neon.prototype.getMEI = getMEI;
 }
-
-export { Neon };
