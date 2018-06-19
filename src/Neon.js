@@ -3,7 +3,7 @@ import { InfoBox } from './InfoBox.js';
 import { ZoomHandler } from './ZoomHandler.js';
 import { verovio } from './verovio-toolkit.js';
 
-export function Neon (params) {
+function Neon (params) {
     
     //////////////
     // Constructor
@@ -75,13 +75,16 @@ export function Neon (params) {
             .attr("height", viewHeight)
             .attr("viewBox", "0 0 " + width + " " + height);
         
-        controls.setOpacityFromSlider();
         infobox.infoListeners();
     }
 
     function refreshPage () {
-        var meiData = vrvToolkit.getMEI();
-        loadData(meiData);
+        $("#mei_output").html(vrvToolkit.renderToSVG(1));
+        if (controls.shouldHideText()) {
+            d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
+        }
+        infobox.infoListeners();
+        controls.setOpacityFromSlider();
         zoomhandler.restoreTransformation();
     }
 
@@ -133,3 +136,5 @@ export function Neon (params) {
     Neon.prototype.refreshPage = refreshPage;
     Neon.prototype.getMEI = getMEI;
 }
+
+export { Neon };

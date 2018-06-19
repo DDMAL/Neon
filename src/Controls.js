@@ -52,7 +52,7 @@ function Controls (neon, zoomHandler) {
 
     function setSylControls() {
         $("#displayText").click( function () {
-            neon.loadPage();
+            neon.refreshPage();
         });
     }
 
