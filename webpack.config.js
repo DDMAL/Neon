@@ -3,10 +3,13 @@ const webpack = require("webpack");
 
 module.exports = {
     mode: "production",
-    entry: "./src/editor.js",
+    entry: {
+        editor: "./src/editor.js",
+        pretty: "./src/pretty.js"
+    },
     output: {
         path: path.resolve(__dirname, "public"),
-        filename: "editor.js",
+        filename: "[name].js",
     },
     plugins: [
         new webpack.ProvidePlugin({
