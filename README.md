@@ -23,9 +23,14 @@ Setup
 yarn install
 ```
 
-2. Run the server:
+2. Build webpack:
+```
+yarn build
+```
+
+3. Start the server:
 ```
 yarn start
 ```
 
-3. Access the page at: <http://localhost:8080>.
+4. Access the page at: <http://localhost:8080>.
