@@ -2,6 +2,7 @@ import { Controls } from './Controls.js';
 import { InfoBox } from './InfoBox.js';
 import { ZoomHandler } from './ZoomHandler.js';
 import { verovio } from './verovio-toolkit.js';
+import { EditMode } from './EditMode.js';
 
 function Neon (params) {
     
@@ -18,6 +19,7 @@ function Neon (params) {
     var zoomhandler = new ZoomHandler(this);
     var infobox = new InfoBox(vrvToolkit);
     var controls = new Controls(this, zoomhandler);
+    var editMode = new EditMode(this);
 
     var vrvOptions = {
         noFooter: 1,
