@@ -1,4 +1,4 @@
-function ZoomHandler (neon) {
+export default function ZoomHandler () {
     var svg = d3.select("#svg_container");
     
     var transform = d3.zoomIdentity;
@@ -14,7 +14,7 @@ function ZoomHandler (neon) {
         $("#zoomSlider").val(100);
         $("#zoomOutput").val(100);
 
-        d3.zoom().translateTo(svg, neon.pageWidth/2, neon.pageHeight/2);
+        d3.zoom().translateTo(svg, 0, 0);
         transform = d3.zoomTransform(svg.node());
         svg.attr("transform", transform);
     }
@@ -79,5 +79,3 @@ function ZoomHandler (neon) {
     ZoomHandler.prototype.startDrag = startDrag;
     ZoomHandler.prototype.dragging = dragging;
 }
-
-export { ZoomHandler };
