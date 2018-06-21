@@ -62,12 +62,16 @@ export default function NeonView (params) {
     }
 
     function saveMEI() {
+        var split = meiFile.split('/');
+        var i = split.length - 1;
+        var fn = split[i];
         var meiData = vrvToolkit.getMEI();
+
         $.ajax({
             type: "POST",
-            url: "/save/" + fileName,
+            url: "/save/" + fn,
             data: {"meiData": meiData,
-                    "fileName": meiFile}
+                    "fileName": fn}
         }) 
     } 
 
@@ -88,9 +92,12 @@ export default function NeonView (params) {
                             .on("drag", zoomHandler.dragging)
                     );
                 }
+                else if (d3.event.key == "s") {
+                    saveMEI();
+                }
             })
             .on("keyup", () => {
-                if (d3.event.key == "Shift") {
+                if (d3.event.key == "Shift") {a
                     d3.select("body").on(".drag", null);
                 }
             });
