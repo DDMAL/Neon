@@ -55,10 +55,9 @@ export default function NeonView (params) {
     }
 
     function refreshPage () {
-        console.log("refreshing");
-        $("mei_output").html(neon.getSVG());
-        setSvgText();
-        resetListeners();
+        var meiData = vrvToolkit.getMEI();
+        neon.loadData(meiData);
+        loadView();
         resetTransformations();
     }
 
@@ -71,6 +70,7 @@ export default function NeonView (params) {
                     "fileName": meiFile}
         }) 
     } 
+
 
     function setSvgText () {
         if (viewControls.shouldHideText()) {
