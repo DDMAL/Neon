@@ -14,3 +14,5 @@ function CursorHandler () {
     CursorHandler.prototype.updateCursor = updateCursor;
     CursorHandler.prototype.resetCursor = resetCursor;
 }
+
+export { CursorHandler };

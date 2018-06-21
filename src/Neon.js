@@ -1,4 +1,4 @@
-import { Controls } from './Controls.js';
+import { ViewControls } from './ViewControls.js';
 import { InfoBox } from './InfoBox.js';
 import { ZoomHandler } from './ZoomHandler.js';
 import { verovio } from './verovio-toolkit.js';
@@ -16,10 +16,11 @@ function Neon (params) {
     var mei = params.meifile;
     var bgimg = params.bgimg;
     var vrvToolkit = new verovio.toolkit();
+
     var zoomhandler = new ZoomHandler(this);
     var infobox = new InfoBox(vrvToolkit);
-    var controls = new Controls(this, zoomhandler);
-    var editMode = new EditMode(this);
+    var viewControls = new ViewControls(this, zoomhandler);
+    var editMode = new EditMode(this, mei, vrvToolkit);
 
     var vrvOptions = {
         noFooter: 1,
@@ -59,7 +60,7 @@ function Neon (params) {
         var svg = vrvToolkit.renderToSVG(1);
         $("#mei_output").html(svg);
         d3.select("#mei_output").select("svg").attr("id", "svg_container");
-        if (controls.shouldHideText()) {
+        if (viewControls.shouldHideText()) {
             d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
         }
         
@@ -82,27 +83,24 @@ function Neon (params) {
 
     function refreshPage () {
         $("#mei_output").html(vrvToolkit.renderToSVG(1));
-        if (controls.shouldHideText()) {
+        if (viewControls.shouldHideText()) {
             d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
         }
         infobox.infoListeners();
-        controls.setOpacityFromSlider();
+        viewControls.setOpacityFromSlider();
         zoomhandler.restoreTransformation();
     }
 
-    
-
-    // function saveMEI() {
-    //     var meiData = vrvToolkit.getMEI();
-    //     $.ajax({
-    //         type: "POST",
-    //         url: "/save/" + fileName,
-    //         data: {"meiData": meiData,
-    //                 "fileName": fileName}
-    //     }) 
-    // }
+    function saveMEI() {
+        var meiData = vrvToolkit.getMEI();
+        $.ajax({
+            type: "POST",
+            url: "/save/" + fileName,
+            data: {"meiData": meiData,
+                    "fileName": fileName}
+        }) 
+    }
    
-
     function getMEI () {
         return vrvToolkit.getMEI();
     }

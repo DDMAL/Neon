@@ -1,4 +1,16 @@
-function EditMode (neon){
+import { DragHandler } from './DragHandler';
+import { Navbar } from './Navbar.js';
+import { EditControls } from './EditControls';
+import { CursorHandler } from './CursorHandler';
+import { InsertControls } from './InsertControls';
+
+function EditMode (neon, meiFile, vrvToolkit){
+    var dragHandler = null;
+    var navbarHandler = null;
+    var editControls = null;
+    var insertControls = null;
+    var cursorHandler = null;
+
     // Set edit mode listener
     $("#edit_mode").on("click", function(){
         $("#dropdown_toggle").empty();
@@ -9,7 +21,30 @@ function EditMode (neon){
             "<a id='getpng' class='navbar-item' href='' download=''> Download PNG </a>" +
             "<a id='revert' class='navbar-item' href=''> Revert </a>"
         );
+        $("#edit_controls").append(
+            "<p class='panel-heading'>Insert</p>" +
+            "<p class='panel-tabs'>" +
+            "<a id='neumeTab' class='insertTab'>Neume</a>" +
+            "<a id='clefTab' class='insertTab'>Clef</a>" +
+            "<a id='systemTab' class='insertTab'>System</a>" +
+            "<a id='divisionTab' class='insertTab'>Division</a></p>" +
+            "<a class='panel-block has-text-centered'>" +
+            "<div id='insert_data' class='field is-grouped'/></a>" +
+            "<p class='panel-heading'>Edit</p><p class='panel-tabs'></p>"
+        );
+
+        init();
     })
+
+    function init() {
+        dragHandler = new DragHandler(neon, vrvToolkit)
+        navbarHandler = new Navbar(meiFile);
+        editControls = new EditControls();
+        cursorHandler = new CursorHandler();
+        insertControls = new InsertControls(cursorHandler);
+
+        dragHandler.dragInit();
+    }
 }
 
 export { EditMode };

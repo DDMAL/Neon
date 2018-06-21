@@ -5,9 +5,9 @@ function InfoBox(vrvToolkit) {
         var custos = d3.selectAll(".custos");
         var clefs = d3.selectAll(".clef");
 
-        neumes.call( d3.drag().on("start", setInfo) );
-        custos.call( d3.drag().on("start", setInfo) );
-        clefs.call( d3.drag().on("start", setInfoClef) );
+        neumes.on("mouseover", setInfo);
+        custos.on("mouseover", setInfo);
+        clefs.on("mouseover", setInfoClef);
     }
 
     function setInfo() {

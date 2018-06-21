@@ -93,3 +93,5 @@ function DragHandler (neon, vrvToolkit) {
 
     DragHandler.prototype.dragInit = dragInit;
 }
+
+export { DragHandler };

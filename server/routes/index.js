@@ -45,7 +45,7 @@ router.route('/upload_file')
         upload(req, res, function (err) {
             //Check if two files were uploaded
             if (req.files.length != 2){
-                for (i=0; i<req.files.length; i++){
+                for (var i=0; i<req.files.length; i++){
                     fs.unlink( __base + 'public/uploads/' + req.files[i].originalname, function (err){
                         if (err){
                             return console.log("Failed to delete file");
@@ -67,7 +67,7 @@ router.route('/upload_file')
 
             //Check if valid filetypes
             if (meiext != "mei" || imgext != "png"){
-                for (i=0; i<files.length; i++){
+                for (var i=0; i<files.length; i++){
                     fs.unlink( __base + 'public/uploads/' + files[i], function (err){
                         if (err){
                             return console.log("Failed to delete file");

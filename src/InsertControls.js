@@ -1,4 +1,6 @@
-function InsertControls (neon, cursorHandler) {
+import { CursorHandler } from "./CursorHandler";
+
+function InsertControls (cursorHandler) {
     // To add new tab, add inner html to dictionary with id as key value. All elements must be of class insertel.
     var tabHtml = {
         neumeTab: "<p class='control'>" +
@@ -32,6 +34,8 @@ function InsertControls (neon, cursorHandler) {
     }
 
     bindTabs();
+    // Default to neume tab on initial load
+    $("#neumeTab").click();
     
     function bindTabs() {
         var insertTabs = d3.selectAll('.insertTab')._groups[0];
@@ -43,7 +47,7 @@ function InsertControls (neon, cursorHandler) {
                 deactivate('.insertTab');
                 activate(this.id);
                 cursorHandler.resetCursor();
-                $("#insert_data"). empty();
+                $("#insert_data").empty();
                 $("#insert_data").append(tabHtml[tab]);
                 bindElements();
             })
@@ -70,15 +74,12 @@ function InsertControls (neon, cursorHandler) {
 
     function deactivate(type) {
         var elList = d3.selectAll(type)._groups[0];
-        for (i=0; i<elList.length; i++){
+        for (var i=0; i<elList.length; i++){
             if(elList[i].classList.length > 1){
                 elList[i].classList.remove('is-active');
             }
         }
     }
-  
-    // Default to neume tab on initial load
-    $("#neumeTab").click();
     
     InsertControls.prototype.constructor = InsertControls;
     InsertControls.prototype.bindTabs = bindTabs;
@@ -86,3 +87,5 @@ function InsertControls (neon, cursorHandler) {
     InsertControls.prototype.deactivate = deactivate;
     InsertControls.prototype.activate = activate;
 }
+
+export { InsertControls };
