@@ -1,8 +1,9 @@
 language: node_js
 node_js: 10
 os: osx
+addons:
+  firefox: latest
 install:
-  - brew install yarn geckodriver
   - yarn install
 script:
   - yarn build
