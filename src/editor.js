@@ -1,10 +1,6 @@
-import { Neon } from './Neon.js';
-import 'bulma/css/bulma.css';
-import './bulma-slider.min.css';
-import './bulma-slider.min.js';
-import '../public/css/style.css'
+import NeonView from "./NeonView.js";
 
-var neon = new Neon({
+var view = new NeonView({
     meifile: meiFile,
     bgimg: bgImg,
 });

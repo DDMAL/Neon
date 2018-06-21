@@ -4,7 +4,7 @@ import { EditControls } from './EditControls';
 import { CursorHandler } from './CursorHandler';
 import { InsertControls } from './InsertControls';
 
-function EditMode (neon, meiFile, vrvToolkit){
+export default function EditMode (neon, meiFile, vrvToolkit){
     var dragHandler = null;
     var navbarHandler = null;
     var editControls = null;
@@ -46,5 +46,3 @@ function EditMode (neon, meiFile, vrvToolkit){
         dragHandler.dragInit();
     }
 }
-
-export { EditMode };
