@@ -53,7 +53,6 @@ describe("Neon2 View and Controls", () => {
         const actions = browser.actions();
         await actions.click(zoomButton).perform();
         var svgGroup = await browser.findElement(By.id('svg_group'));
-        console.log("svg group");
         var transform = await svgGroup.getAttribute("transform");
         expect(transform).toBe("translate(0,0) scale(1)");
     });
