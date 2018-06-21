@@ -1,10 +1,11 @@
-/**
- * @jest-environment jest-environment-webdriver
- */
 const pathToResources = "./test/resources/";
 const pathToUploads = "./public/uploads/";
 const editUrl = 'http://localhost:8080/edit/test.mei';
 const fs = require("fs");
+const {Builder, By, Key, until} = require('selenium-webdriver');
+const firefox = require('selenium-webdriver/firefox');
+
+var browser = null;
 
 jest.setTimeout("10000");
 
@@ -19,6 +20,15 @@ afterAll(() => {
 });
 
 describe("Neon2 View and Controls", () => {
+    beforeAll(async () => {
+        let options = new firefox.Options()
+            .headless();
+        browser = await new Builder().
+            forBrowser('firefox').
+            setFirefoxOptions(options).
+            build();
+    });
+
     beforeEach(async () => {
         await browser.get(editUrl);
     });
@@ -29,20 +39,20 @@ describe("Neon2 View and Controls", () => {
     });
 
     test("Check Zoom Slider", async () => {
-        var zoomSlider = await browser.findElement(by.id('zoomSlider'));
+        var zoomSlider = await browser.findElement(By.id('zoomSlider'));
         const actions = browser.actions();
         await actions.dragAndDrop(zoomSlider, {x: 180, y: 0}).perform();
         //await actions.move({origin: zoomSlider}).click().move({x: 1280}).release().perform();
-        var svgGroup = await browser.findElement(by.id('svg_group'));
+        var svgGroup = await browser.findElement(By.id('svg_group'));
         var transform = await svgGroup.getAttribute("transform");
         expect(transform).toContain("scale(2)");
     });
 
     test("Check Zoom reset button", async () => {
-        var zoomButton = await browser.findElement(by.id('reset-zoom'));
+        var zoomButton = await browser.findElement(By.id('reset-zoom'));
         const actions = browser.actions();
         await actions.click(zoomButton).perform();
-        var svgGroup = await browser.findElement(by.id('svg_group'));
+        var svgGroup = await browser.findElement(By.id('svg_group'));
         console.log("svg group");
         var transform = await svgGroup.getAttribute("transform");
         expect(transform).toBe("translate(0,0) scale(1)");
