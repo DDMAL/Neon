@@ -1,6 +1,4 @@
-import { CursorHandler } from "./CursorHandler";
-
-function InsertControls (cursorHandler) {
+export default function InsertControls (cursorHandler) {
     // To add new tab, add inner html to dictionary with id as key value. All elements must be of class insertel.
     var tabHtml = {
         neumeTab: "<p class='control'>" +
@@ -87,5 +85,3 @@ function InsertControls (cursorHandler) {
     InsertControls.prototype.deactivate = deactivate;
     InsertControls.prototype.activate = activate;
 }
-
-export { InsertControls };

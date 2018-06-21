@@ -1,4 +1,4 @@
-function DragHandler (neon, vrvToolkit) {
+export default function DragHandler (neon, vrvToolkit) {
     var id = "";
     var dragStartCoords;
     var dragEndCoords;
@@ -93,5 +93,3 @@ function DragHandler (neon, vrvToolkit) {
 
     DragHandler.prototype.dragInit = dragInit;
 }
-
-export { DragHandler };

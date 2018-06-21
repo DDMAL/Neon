@@ -1,3 +1,1 @@
-function EditControls () {}
-
-export { EditControls };
+export default function EditControls () {}

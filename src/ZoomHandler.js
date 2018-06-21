@@ -1,6 +1,5 @@
-export default function ZoomHandler () {
-    var svg = d3.select("#svg_container");
-    
+export default function ZoomHandler (neon) {
+    var svg = d3.select("#svg_container"); 
     var transform = d3.zoomIdentity;
     var unitX = 10;
     var unitY = unitX;

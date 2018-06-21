@@ -1,4 +1,4 @@
-function Navbar (filename) {  
+export default function Navbar (filename) {  
     // setup navbar listeners 
     $("#revert").on("click", function(){
         if (confirm("Reverting will cause all changes to be lost. Press OK to continue.")) {
@@ -17,4 +17,3 @@ function Navbar (filename) {
     $("#getpng").attr("href", pngFile);
 }
 
-export { Navbar };

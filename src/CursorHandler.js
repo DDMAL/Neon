@@ -1,4 +1,4 @@
-function CursorHandler () {
+export default function CursorHandler () {
     function updateCursor(id) {
         var url = 'url(/img/' + id + '.png), auto';
         $("#bgimg").css('cursor', url);
@@ -14,5 +14,3 @@ function CursorHandler () {
     CursorHandler.prototype.updateCursor = updateCursor;
     CursorHandler.prototype.resetCursor = resetCursor;
 }
-
-export { CursorHandler };

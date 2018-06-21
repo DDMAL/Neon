@@ -2,6 +2,7 @@ import Neon from "./Neon.js";
 import ZoomHandler from "./ZoomHandler.js";
 import InfoBox from "./InfoBox.js";
 import ViewControls from "./ViewControls.js";
+import EditMode from "./EditMode.js";
 import { verovio } from "./verovio-toolkit.js";
 
 export default function NeonView (params) {
@@ -14,14 +15,16 @@ export default function NeonView (params) {
     var neon = null;
     var zoomHandler = null;
     var infoBox = null;
-    var controls = null;
+    var viewControls = null;
+    var editMode = null;
 
     $.get(meiFile, (data) => {
         neon = new Neon(data, vrvToolkit);
-        zoomHandler = new ZoomHandler();
+        zoomHandler = new ZoomHandler(this);
         infoBox = new InfoBox(neon);
-        controls = new Controls(zoomHandler);
-        controls.setSylControls(this);
+        viewControls = new ViewControls(zoomHandler);
+        editMode = new EditMode(this, meiFile, vrvToolkit);
+        viewControls.setSylControls(this);
         loadView();
     });
 
@@ -52,14 +55,25 @@ export default function NeonView (params) {
     }
 
     function refreshPage () {
+        console.log("refreshing");
         $("mei_output").html(neon.getSVG());
         setSvgText();
         resetListeners();
         resetTransformations();
     }
 
+    function saveMEI() {
+        var meiData = vrvToolkit.getMEI();
+        $.ajax({
+            type: "POST",
+            url: "/save/" + fileName,
+            data: {"meiData": meiData,
+                    "fileName": meiFile}
+        }) 
+    } 
+
     function setSvgText () {
-        if (controls.shouldHideText()) {
+        if (viewControls.shouldHideText()) {
             d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
         }
     }
@@ -85,7 +99,7 @@ export default function NeonView (params) {
 
     function resetTransformations () {
         zoomHandler.restoreTransformation();
-        controls.setOpacityFromSlider();
+        viewControls.setOpacityFromSlider();
     }
 
     NeonView.prototype.constructor = NeonView;

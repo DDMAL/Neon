@@ -1,8 +1,8 @@
-import { DragHandler } from './DragHandler';
-import { Navbar } from './Navbar.js';
-import { EditControls } from './EditControls';
-import { CursorHandler } from './CursorHandler';
-import { InsertControls } from './InsertControls';
+import DragHandler from "./DragHandler";
+import Navbar from "./Navbar.js";
+import EditControls from "./EditControls";
+import CursorHandler from "./CursorHandler";
+import InsertControls from "./InsertControls";
 
 export default function EditMode (neon, meiFile, vrvToolkit){
     var dragHandler = null;

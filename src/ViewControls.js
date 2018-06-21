@@ -1,9 +1,8 @@
-export default function ViewControls (neon, zoomHandler, dragHandler) {
+export default function ViewControls (zoomHandler) {
 
     setZoomControls();
     setOpacityControls();
     setBackgroundOpacityControls();
-    setSylControls();
 
     function setZoomControls() {
         $("#reset-zoom").click( function() {
@@ -50,9 +49,9 @@ export default function ViewControls (neon, zoomHandler, dragHandler) {
         return (!$("#displayText").is(":checked"));
     }
 
-    function setSylControls() {
+    function setSylControls(view) {
         $("#displayText").click( function () {
-            neon.refreshPage();
+            view.refreshPage();
         });
     }
 
@@ -61,7 +60,6 @@ export default function ViewControls (neon, zoomHandler, dragHandler) {
         var opacitySliderValue = $("#opacityOutput").val();
         meiSel.style("opacity", opacitySliderValue / 100.0);
     };
-
 
     ViewControls.prototype.constructor = ViewControls;
     ViewControls.prototype.setZoomControls = setZoomControls;
