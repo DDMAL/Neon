@@ -1,9 +1,24 @@
 /**
  * @jest-environment jest-environment-webdriver
  */
-const editUrl = 'http://localhost:8080/edit/CF18output4.mei';
+const pathToResources = "./test/resources/";
+const pathToUploads = "./public/uploads/";
+const editUrl = 'http://localhost:8080/edit/test.mei';
+const fs = require("fs");
+
 jest.setTimeout("10000");
-describe("Load Neon2", () => {
+
+beforeAll(() => {
+    fs.linkSync(pathToResources + "test.png", pathToUploads + "png/test.png");
+    fs.linkSync(pathToResources + "test.mei", pathToUploads + "mei/test.mei");
+});
+
+afterAll(() => {
+    fs.unlinkSync(pathToUploads + "png/test.png");
+    fs.unlinkSync(pathToUploads + "mei/test.mei");
+});
+
+describe("Neon2 View and Controls", () => {
     beforeEach(async () => {
         await browser.get(editUrl);
     });
