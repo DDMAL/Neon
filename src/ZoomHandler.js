@@ -13,8 +13,9 @@ export default function ZoomHandler () {
         svg.attr("transform", transform);
         $("#zoomSlider").val(100);
         $("#zoomOutput").val(100);
-
-        d3.zoom().translateTo(svg, 0, 0);
+        var width = parseInt($("#svg_output").getAttribute("width"));
+        var height = parseInt($("#svg_output").getAttribute("height"));
+        d3.zoom().translateTo(svg, width / 2, height / 2);
         transform = d3.zoomTransform(svg.node());
         svg.attr("transform", transform);
     }

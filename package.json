@@ -38,7 +38,11 @@
     "jest": {
         "testPathIgnorePatterns": [
             "<rootDir>/node_modules/"
-        ]
+        ],
+        "testEnvironment": "jest-environment-webdriver",
+        "testEnvironmentOptions": {
+            "browser": "firefox"
+        }
     },
     "dependencies": {
         "express": "^4.16.3",
@@ -47,13 +51,13 @@
         "pug": "^2.0.3"
     },
     "devDependencies": {
-        "babel-preset-env": "^1.7.0",
         "bulma": "^0.7.1",
         "bulma-extensions": "^2.2.1",
         "bulma-slider": "^2.0.0",
         "css-loader": "^0.28.11",
         "d3": "^5.5.0",
         "jest": "^23.1.0",
+        "jest-environment-webdriver": "^0.2.0",
         "jquery": "^3.3.1",
         "style-loader": "^0.21.0",
         "webpack": "^4.12.0",
