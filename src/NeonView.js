@@ -61,6 +61,8 @@ export default function NeonView (params) {
     function setSvgText () {
         if (controls.shouldHideText()) {
             d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
+        } else {
+            d3.select("#mei_output").selectAll(".syl").style("visibility", "visible");
         }
     }
 
