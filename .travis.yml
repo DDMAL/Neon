@@ -3,6 +3,8 @@ node_js: 10
 os: osx
 addons:
   firefox: latest
+before_install:
+  - brew install geckodriver
 install:
   - yarn install
 script:
