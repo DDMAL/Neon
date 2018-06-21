@@ -1,5 +1,6 @@
 Neon2
 =====
+[![Build_Status](https://travis-ci.org/DDMAL/Neon2.svg?branch=develop)](https://travis-ci.org/DDMAL/Neon2)
 
 **N**eume **E**ditor **ON**line.
 
@@ -9,6 +10,7 @@ Neon2 is a browser-based music notation editor written in JavaScript using the V
 
 Neon2 is a re-write of [Neon.JS](https://github.com/DDMAL/Neon.js) using a modified version of [Verovio](https://github.com/DDMAL/verovio) to render MEI-Neume files according to the MEI 4.0 specifications. 
 
+Develop status: [![Build Status](https://travis-ci.org/DDMAL/Neon2.svg?branch=develop)](https://travis-ci.org/DDMAL/Neon2)
 
 Requirements
 ------------
