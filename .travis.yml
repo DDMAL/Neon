@@ -8,5 +8,6 @@ install:
   - yarn install
 script:
   - yarn build
+  - mkdir -p public/uploads/png && mkdir -p public/uploads/mei
   - yarn start &
   - yarn test
