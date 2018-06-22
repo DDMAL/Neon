@@ -99,16 +99,13 @@ export default function InfoBox(neon) {
     }
     
     function updateInfoBox(title, body) {
-        $("#neume_info").empty();
-        $("#neume_info").append(
-            "<article class='message'>" +
-            "<div class='message-header'> <p>" + title + "</p> <button id='notification-delete' class='delete' aria-label='delete'></button> </div>" +
-            "<div class='message-body'>" + body + "</div> </article>"
-        );
-
+        d3.select(".message").style("visibility", "visible");
+        d3.select(".message-header").select("p").html(title);
+        d3.select(".message-body").html(body);
+        
         // Setting up listener for dismissing message
         $("#notification-delete").on("click", function () {
-            $("#neume_info").empty();
+            d3.select(".message").style("visibility", "hidden");
         })
     }
 
