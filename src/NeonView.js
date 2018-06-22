@@ -10,6 +10,7 @@ export default function NeonView (params) {
     var viewWidth = 600;
     var meiFile = params.meifile;
     var bgimg = params.bgimg;
+    var meiPath = params.meipath;
     var initialPage = true;
     var vrvToolkit = new verovio.toolkit();
     
@@ -65,19 +66,19 @@ export default function NeonView (params) {
     }
 
     function saveMEI() {
-        var split = meiFile.split('/');
-        var i = split.length - 1;
-        var fn = split[i];
+        var pathSplit = meiFile.split('/');
+        var i = pathSplit.length - 1;
+        var fn = pathSplit[i];
         
         var meiData = vrvToolkit.getMEI();
         $.ajax({
             type: "POST",
             url: "/save/" + fn,
             data: {"meiData": meiData,
-                    "fileName": fn}
+                    "fileName": fn,
+                    "uploadPath": meiPath}
         }) 
     } 
-
 
     function setSvgText () {
         if (viewControls.shouldHideText()) {
