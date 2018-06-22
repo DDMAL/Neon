@@ -1,6 +1,6 @@
-import { Neon } from './Neon.js';
+import NeonView from "./NeonView.js";
 
-var neon = new Neon({
+var view = new NeonView({
     meifile: meiFile,
     bgimg: bgImg,
 });

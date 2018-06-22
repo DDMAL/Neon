@@ -81,7 +81,7 @@ fi
 
 # Build
 (cd "$BUILDDIR/emscripten"; ./buildToolkit -H)
-cp "$BUILDDIR/emscripten/build/verovio-toolkit.js" public/js/
+cp "$BUILDDIR/emscripten/build/verovio-toolkit.js" src/
 
 if [ "$DELETE" ]; then
     rm -rf $BUILDDIR

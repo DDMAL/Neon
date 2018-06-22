@@ -1,9 +1,8 @@
-function Controls (neon, zoomHandler) {
+export default function Controls (zoomHandler) {
 
     setZoomControls();
     setOpacityControls();
     setBackgroundOpacityControls();
-    setSylControls();
 
     function setZoomControls() {
         $("#reset-zoom").click( function() {
@@ -50,9 +49,9 @@ function Controls (neon, zoomHandler) {
         return (!$("#displayText").is(":checked"));
     }
 
-    function setSylControls() {
+    function setSylControls(view) {
         $("#displayText").click( function () {
-            neon.refreshPage();
+            view.refreshPage();
         });
     }
 
@@ -70,5 +69,3 @@ function Controls (neon, zoomHandler) {
     Controls.prototype.setSylControls = setSylControls;
     Controls.prototype.setOpacityFromSlider = setOpacityFromSlider;
 }
-
-export { Controls };

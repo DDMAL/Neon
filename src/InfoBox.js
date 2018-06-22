@@ -1,4 +1,4 @@
-function InfoBox(vrvToolkit) {
+export default function InfoBox(neon) {
 
     function infoListeners() {
         var neumes = d3.selectAll(".neume");
@@ -15,7 +15,7 @@ function InfoBox(vrvToolkit) {
     }
 
     function setInfoClef() {
-        if (vrvToolkit.getElementAttr(this.id).shape !== undefined) {
+        if (neon.getElementAttr(this.id).shape !== undefined) {
             updateInfo(this.id);
         }
         else {
@@ -46,7 +46,7 @@ function InfoBox(vrvToolkit) {
                 var pitches = "";
                 var previous = null;
                 ncs.each( function () {
-                    var attributes = vrvToolkit.getElementAttr(this.id);
+                    var attributes = neon.getElementAttr(this.id);
                     pitches += attributes.pname + attributes.oct + " ";
                     if (previous !== null) {
                         if (previous.oct > attributes.oct) {
@@ -77,17 +77,17 @@ function InfoBox(vrvToolkit) {
                     + "Pitch(es): " + pitches;
                 break;
             case "custos":
-                var attributes = vrvToolkit.getElementAttr(id);
+                var attributes = neon.getElementAttr(id);
                 body += "Pitch: " + (attributes.pname).toUpperCase() + attributes.oct;
                 break;
             case "clef":
-                var attributes = vrvToolkit.getElementAttr(id);
+                var attributes = neon.getElementAttr(id);
                 body += "Shape: " + attributes.shape + "<br/>"
                     + "Line: " + attributes.line;
                 break;
             case "staff":
                 elementClass = "clef";
-                var staffDefAttributes = vrvToolkit.getElementStaffDef(id);
+                var staffDefAttributes = neon.getElementStaffDef(id);
                 body = "Shape: " + staffDefAttributes["clef.shape"] + "<br/>"
                     + "Line: " + staffDefAttributes["clef.line"];
                 break;
@@ -141,5 +141,3 @@ function InfoBox(vrvToolkit) {
 
     InfoBox.prototype.infoListeners = infoListeners;
 }
-
-export { InfoBox };
