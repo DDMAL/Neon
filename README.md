@@ -10,8 +10,6 @@ Neon2 is a browser-based music notation editor written in JavaScript using the V
 
 Neon2 is a re-write of [Neon.JS](https://github.com/DDMAL/Neon.js) using a modified version of [Verovio](https://github.com/DDMAL/verovio) to render MEI-Neume files according to the MEI 4.0 specifications. 
 
-Develop status: [![Build Status](https://travis-ci.org/DDMAL/Neon2.svg?branch=develop)](https://travis-ci.org/DDMAL/Neon2)
-
 Requirements
 ------------
  * [yarn](https://yarnpkg.com/en/docs/install): 
@@ -36,3 +34,16 @@ yarn start
 ```
 
 4. Access the page at: <http://localhost:8080>.
+
+Test
+----
+
+Follow the instructions from above first. The tests for Neon2 use [Selenium](https://docs.seleniumhq.org/) and so require a web browser ([Firefox](https://mozilla.org/firefox)) and its driver ([geckodriver](https://github.com/mozilla/geckodriver)).
+On Mac install these with Homebrew:
+```
+brew cask install firefox
+brew install geckodriver
+```
+Then you can run the tests locally using `yarn test`. We use [jest](https://facebook.github.io/jest/) to script our tests.
+
+*These tests require the server to be running on `localhost:8080`*
