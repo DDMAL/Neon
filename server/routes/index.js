@@ -17,6 +17,8 @@ router.route('/')
                 return 
             }
         if (files.length != 0){
+            var index = files.indexOf(".gitignore");
+            files.splice(index, (index < 0 ? 0 : 1));
             res.render('index', {'files': files});
         }
         else{
