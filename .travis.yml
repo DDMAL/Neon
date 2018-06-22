@@ -3,6 +3,7 @@ node_js: 10
 os: osx
 env:
  - HOMEBREW_NO_AUTO_UPDATE="1"
+if: (branch = master OR branch = develop)
 install:
   - brew install yarn geckodriver
   - yarn install

@@ -10,6 +10,7 @@ export default function NeonView (params) {
     var viewWidth = 600;
     var meiFile = params.meifile;
     var bgimg = params.bgimg;
+    var initialPage = true;
     var vrvToolkit = new verovio.toolkit();
     
     var neon = null;
@@ -29,34 +30,36 @@ export default function NeonView (params) {
     });
 
     function loadView () {
-        var view_layer = d3.select("#svg_output").append("svg");
-        var bg_img = view_layer.append("image");
-        view_layer.append("g").attr("id", "mei_output");
+        if (initialPage){
+            var view_layer = d3.select("#svg_output").append("svg");
+            var bg_img = view_layer.append("image");
+            view_layer.append("g").attr("id", "mei_output");
+            loadSvg(); 
 
-        var svg = neon.getSVG();
-        $("#mei_output").html(svg);
-        d3.select("#mei_output").select("svg").attr("id", "svg_container");
+            var height = parseInt(d3.select("#svg_container").attr("height"));
+            var width = parseInt(d3.select("#svg_container").attr("width"));
+            bg_img.attr("id", "bgimg")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("height", height)
+                .attr("width", width)
+                .attr("xlink:href", bgimg);
+        
+            view_layer.attr("id", "svg_group")
+                .attr("width", viewWidth)
+                .attr("height", viewHeight)
+                .attr("viewBox", "0 0 " + width + " " + height);
+        }
+        else {
+            loadSvg(); 
+        }
         setSvgText();
-
-        var height = parseInt(d3.select("#svg_container").attr("height"));
-        var width = parseInt(d3.select("#svg_container").attr("width"));
-        bg_img.attr("id", "bgimg")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("height", height)
-            .attr("width", width)
-            .attr("xlink:href", bgimg);
-       
-        view_layer.attr("id", "svg_group")
-            .attr("width", viewWidth)
-            .attr("height", viewHeight)
-            .attr("viewBox", "0 0 " + width + " " + height);
         resetListeners();
     }
 
     function refreshPage () {
-        var meiData = vrvToolkit.getMEI();
-        neon.loadData(meiData);
+        $("mei_output").html(neon.getSVG());
+        initialPage = false;
         loadView();
         resetTransformations();
     }
@@ -65,8 +68,8 @@ export default function NeonView (params) {
         var split = meiFile.split('/');
         var i = split.length - 1;
         var fn = split[i];
+        
         var meiData = vrvToolkit.getMEI();
-
         $.ajax({
             type: "POST",
             url: "/save/" + fn,
@@ -80,6 +83,12 @@ export default function NeonView (params) {
         if (viewControls.shouldHideText()) {
             d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
         }
+    }
+
+    function loadSvg() {
+        var svg = neon.getSVG();
+        $("#mei_output").html(svg);
+        d3.select("#mei_output").select("svg").attr("id", "svg_container"); 
     }
 
     function resetListeners () {
