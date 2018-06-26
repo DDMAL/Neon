@@ -45,4 +45,10 @@ export default function EditMode (neon, meiFile, vrvToolkit){
 
         dragHandler.dragInit();
     }
+
+    function initializeListeners () {
+        if (dragHandler !== null) { dragHandler.dragInit(); }
+    }
+
+    EditMode.prototype.initializeListeners = initializeListeners;
 }

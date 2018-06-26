@@ -15,14 +15,14 @@ export default function DragHandler (neon, vrvToolkit) {
             d3.drag()
                 .on("start", dragStarted)
                 .on("drag", dragging)
-                .on("end", dragEndedRelative)
+                .on("end", dragEnded)
         );
 
         custos.call(
             d3.drag()
                 .on("start", dragStarted)
                 .on("drag", dragging)
-                .on("end", dragEndedRelative)
+                .on("end", dragEnded)
         );
     
         var editorAction;
@@ -43,47 +43,13 @@ export default function DragHandler (neon, vrvToolkit) {
             d3.select(this).attr("transform", function(d,i) {
                 return "translate(" + [relativeX, relativeY] + ")"
             })
-
-
         }
         function dragEnded () {
             dragEndCoords = [d3.event.x, d3.event.y, d3.event.sourceEvent.x];
-
             editorAction = { action: 'drag', param: { elementId: id, 
-                // TODO: Investigate X offset L M A O
-                x: parseInt(dragStartCoords[2] - 20 + (dragEndCoords[2] - dragStartCoords[2])),
-                // TODO: Investigate Y offset
-                y: parseInt(dragStartCoords[1] + 750 + (dragEndCoords[1] - dragStartCoords[1])) }   
+                x: parseInt(dragEndCoords[0] - dragStartCoords[0]),
+                y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -1}
             };
-           
-            vrvToolkit.edit(editorAction);
-            neon.refreshPage();
-            //infoBox.updateInfo(id);
-            dragInit();
-        }
-
-        function dragEndedRelative () {
-            dragEndCoords = [d3.event.x, d3.event.y, d3.event.sourceEvent.x];
-
-            editorAction = {action: 'drag', param: { elementId: id,
-                x: parseInt(dragStartCoords[2] - dragEndCoords[2]),
-                y: parseInt(dragStartCoords[1] - dragEndCoords[1]) }
-            };
-
-            vrvToolkit.edit(editorAction);
-            neon.refreshPage();
-            //infoBox.updateInfo(id);
-            dragInit();
-        }
-
-        function dragEndedRelativeY () {
-            dragEndCoords = [d3.event.x, d3.event.y, d3.event.sourceEvent.x];
-
-            editorAction = { action: 'drag', param: { elementId: id,
-                x: parseInt(dragStartCoords[2] - 20 + (dragEndCoords[2] - dragStartCoords[2])),
-                y: parseInt(dragStartCoords[1] - dragEndCoords[1]) }
-            };
-            
             vrvToolkit.edit(editorAction);
             neon.refreshPage();
             //infoBox.updateInfo(id);
