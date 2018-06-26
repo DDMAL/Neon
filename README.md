@@ -1,6 +1,6 @@
 Neon2
 =====
-[![Build_Status](https://travis-ci.org/DDMAL/Neon2.svg?branch=develop)](https://travis-ci.org/DDMAL/Neon2)
+[![Build_Status](https://travis-ci.org/DDMAL/Neon2.svg?branch=master)](https://travis-ci.org/DDMAL/Neon2)
 
 **N**eume **E**ditor **ON**line.
 
