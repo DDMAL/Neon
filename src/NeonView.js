@@ -81,6 +81,8 @@ export default function NeonView (params) {
     function setSvgText () {
         if (viewControls.shouldHideText()) {
             d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
+        } else {
+            d3.select("#mei_output").selectAll(".syl").style("visibility", "visible");
         }
     }
 
@@ -115,6 +117,10 @@ export default function NeonView (params) {
     function resetTransformations () {
         zoomHandler.restoreTransformation();
         viewControls.setOpacityFromSlider();
+    }
+
+    function rodanGetMei() {
+        return neon.getMEI();
     }
 
     function rodanGetMei() {

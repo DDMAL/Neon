@@ -1,6 +1,7 @@
 const pathToResources = "./test/resources/";
 const pathToUploads = "./public/uploads/";
 const editUrl = 'http://localhost:8080/edit/test.mei';
+
 const fs = require("fs");
 const {Builder, By, Key, until} = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
@@ -9,51 +10,131 @@ var browser = null;
 
 jest.setTimeout("10000");
 
-beforeAll(() => {
+beforeAll(async () => {
+    // Link test MEI/png to public/uploads so we can use them
     fs.linkSync(pathToResources + "test.png", pathToUploads + "png/test.png");
     fs.linkSync(pathToResources + "test.mei", pathToUploads + "mei/test.mei");
+    
+    // Set up the webdriver
+    let options = new firefox.Options()
+        .headless();
+    browser = await new Builder().
+        forBrowser('firefox').
+        setFirefoxOptions(options).
+        build();
+
+    await browser.get(editUrl);
 });
 
 afterAll(() => {
+    browser.quit();
+    // Clean up test files
     fs.unlinkSync(pathToUploads + "png/test.png");
     fs.unlinkSync(pathToUploads + "mei/test.mei");
 });
 
-describe("Neon2 View and Controls", () => {
-    beforeAll(async () => {
-        let options = new firefox.Options()
-            .headless();
-        browser = await new Builder().
-            forBrowser('firefox').
-            setFirefoxOptions(options).
-            build();
-    });
-
-    beforeEach(async () => {
-        await browser.get(editUrl);
-    });
-
+describe("Neon2 Basics", () => {
     test("Render Page", async () => {
         const title = await browser.getTitle();
         expect(title).toBe("Neon2");
     });
+});
 
-    test("Check Zoom Slider", async () => {
+describe("Check Info Box", () => {
+    test("Check Info Box Neumes", async () => {
+        var neumeClivis = await browser.findElement(By.id("m-07ad2140-4fa1-45d4-af47-6733add00825"));
+        const actions = browser.actions();
+        await actions.click(neumeClivis).perform();
+        var message = await browser.findElement(By.className("message-body")).getText();
+        expect(message).toContain("Clivis");
+        expect(message).toContain("A2 G2");
+    });
+
+    test("Check Info Box Clef", async () => {
+        var firstClef = await browser.findElement(By.id("m-5336ecdd-16ac-4d06-ac93-0d83b7458cea"));
+        const actions = browser.actions();
+        // Can't click center since the clef is open there
+        var rect = await firstClef.getRect();
+        await actions.move({origin: firstClef, y: parseInt(rect.height / 2)}).click().perform();
+        var message = await browser.findElement(By.className("message-body")).getText();
+        expect(message).toContain("Shape: C");
+        expect(message).toContain("Line: 3");
+    });
+
+    test("Check Info Box Custos", async () => {
+        var firstCustos = await browser.findElement(By.id("m-9e59174b-ed59-43a5-bba8-08e8eb276509"));
+        const actions = browser.actions();
+        // Can't click center since actual custos glyph is to the left
+        var rect = await firstCustos.getRect();
+        await actions.move({origin: firstCustos, x: -1 * parseInt(rect.width / 2)}).click().perform();
+        var message = await browser.findElement(By.className("message-body")).getText();
+        expect(message).toBe("Pitch: G3");
+    });
+});
+
+describe("Check Controls UI", () => {
+    test("Check Zoom Controls", async () => {
         var zoomSlider = await browser.findElement(By.id('zoomSlider'));
         const actions = browser.actions();
-        await actions.dragAndDrop(zoomSlider, {x: 180, y: 0}).perform();
-        //await actions.move({origin: zoomSlider}).click().move({x: 1280}).release().perform();
-        var svgGroup = await browser.findElement(By.id('svg_group'));
-        var transform = await svgGroup.getAttribute("transform");
+        var rect = await zoomSlider.getRect();
+        await actions.dragAndDrop(zoomSlider, {x: parseInt(rect.width / 2), y: 0}).perform();
+        var transform = await browser.findElement(By.id("svg_group")).getAttribute("transform");
         expect(transform).toContain("scale(2)");
-    });
-
-    test("Check Zoom reset button", async () => {
+        
         var zoomButton = await browser.findElement(By.id('reset-zoom'));
-        const actions = browser.actions();
         await actions.click(zoomButton).perform();
-        var svgGroup = await browser.findElement(By.id('svg_group'));
-        var transform = await svgGroup.getAttribute("transform");
+        var transform = await browser.findElement(By.id("svg_group")).getAttribute("transform");
         expect(transform).toBe("translate(0,0) scale(1)");
     });
-})
+
+    test("Check Panning", async () => {
+        var originalTransform = await browser.findElement(By.id("svg_group")).getAttribute("transform");
+        const actions = browser.actions();
+        var svgGroup = await browser.findElement(By.id("svg_group"));
+        await actions.keyDown(Key.SHIFT).dragAndDrop(svgGroup, {x: 100, y: 100}).keyUp(Key.SHIFT).perform();
+        var newTransform = await browser.findElement(By.id("svg_group")).getAttribute("transform");
+
+        var originalSplit = originalTransform.slice(10, -10).split(",");
+        var newSplit = newTransform.slice(10, -10).split(",");
+        expect(parseInt(originalSplit[0])).toBeLessThan(parseInt(newSplit[0]));
+        expect(parseInt(originalSplit[1])).toBeLessThan(parseInt(newSplit[1]));
+    });
+    
+    test("Check MEI Opacity Controls", async () => {
+        var opacitySlider = await browser.findElement(By.id("opacitySlider"));
+        const actions = browser.actions();
+        var rect = await opacitySlider.getRect();
+        await actions.dragAndDrop(opacitySlider, {x: -1 * parseInt(rect.width), y: 0}).perform();
+        var meiStyle = await browser.findElement(By.className("definition-scale")).getAttribute("style");
+        expect(meiStyle).toContain("opacity: 0;");
+        
+        var opacityButton = await browser.findElement(By.id("reset-opacity"));
+        await actions.click(opacityButton).perform();
+        var meiStyle = await browser.findElement(By.className("definition-scale")).getAttribute("style");
+        expect(meiStyle).toContain("opacity: 1;");
+    });
+    
+    test("Check Image Opacity Controls", async () => {
+        var opacitySlider = await browser.findElement(By.id("bgOpacitySlider"));
+        const actions = browser.actions();
+        var rect = await opacitySlider.getRect();
+        await actions.dragAndDrop(opacitySlider, {x: -1 * parseInt(rect.width), y: 0}).perform();
+        var imgStyle = await browser.findElement(By.id("bgimg")).getAttribute("style");
+        expect(imgStyle).toContain("opacity: 0;");
+        
+        var opacityButton = await browser.findElement(By.id("reset-bg-opacity"));
+        await actions.click(opacityButton).perform();
+        var imgStyle = await browser.findElement(By.id("bgimg")).getAttribute("style");
+        expect(imgStyle).toContain("opacity: 1;");
+    });
+
+    test("Check Text Controls", async () => {
+        var syl = await browser.findElement(By.className("syl")).getAttribute("style");
+        expect(syl).toContain("visibility: hidden;");
+        var textCheck = await browser.findElement(By.id("displayText"));
+        const actions = browser.actions();
+        await actions.click(textCheck).perform();
+        syl = await browser.findElement(By.className("syl")).getAttribute("style");
+        expect(syl).toContain("visibility: visible;");
+    });
+});

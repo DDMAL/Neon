@@ -32,6 +32,11 @@ html
               input.checkbox#displayText(type="checkbox")
           #edit_controls
         #neume_info
+          article.message(style={visibility: "hidden"})
+            .message-header
+              p
+              button#notification-delete.delete("aria-label"="delete")
+            .message-body
       script(type='text/javascript').
         var meiFile = "#{meifile}";
         var bgImg = "#{bgimg}";
