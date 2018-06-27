@@ -105,10 +105,16 @@ export default function NeonView (params) {
                 else if (d3.event.key == "s") {
                     saveMEI();
                 }
+                else if (d3.event.key == "h") {
+                    d3.select("#mei_output").attr("visibility", "hidden");
+                }
             })
             .on("keyup", () => {
                 if (d3.event.key == "Shift") {
                     d3.select("body").on(".drag", null);
+                }
+                if (d3.event.key == "h") {
+                    d3.select("#mei_output").attr("visibility", "visible");
                 }
             });
         infoBox.infoListeners();
