@@ -4,9 +4,12 @@ html
     script(src='/pretty.js')
   body
     .navbar.is-light
-      .navbar-brand
+      .navbar-start
         a.navbar-item(href='../')
           p Neon2
+      .navbar-end
+        a.navbar-item(href='https://github.com/DDMAL/Neon2/wiki')
+          p.has-text-info Help
     .columns
       .column#svg_output.is-two-thirds.box(style={overflow: "hidden"})
       .column.is-one-third
