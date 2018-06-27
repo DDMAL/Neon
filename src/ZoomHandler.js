@@ -1,6 +1,5 @@
-export default function ZoomHandler () {
-    var svg = d3.select("#svg_container");
-    
+export default function ZoomHandler (neon) {
+    var svg = d3.select("#svg_container"); 
     var transform = d3.zoomIdentity;
     var unitX = 10;
     var unitY = unitX;
@@ -13,8 +12,8 @@ export default function ZoomHandler () {
         svg.attr("transform", transform);
         $("#zoomSlider").val(100);
         $("#zoomOutput").val(100);
-        var width = parseInt($("#svg_output").getAttribute("width"));
-        var height = parseInt($("#svg_output").getAttribute("height"));
+        var width = parseInt(d3.select("#svg_group").attr("width"));
+        var height = parseInt(d3.select("#svg_group").attr("height"));
         d3.zoom().translateTo(svg, width / 2, height / 2);
         transform = d3.zoomTransform(svg.node());
         svg.attr("transform", transform);

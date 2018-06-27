@@ -47,10 +47,10 @@ router.route('/upload_file')
         upload(req, res, function (err) {
             //Check if two files were uploaded
             if (req.files.length != 2){
-                for (i=0; i<req.files.length; i++){
+                for (var i=0; i<req.files.length; i++){
                     fs.unlink( __base + 'public/uploads/' + req.files[i].originalname, function (err){
                         if (err){
-                            return console.log("failed to delete file");
+                            return console.log("Failed to delete file");
                         }
                     });  
                 }
@@ -69,7 +69,7 @@ router.route('/upload_file')
 
             //Check if valid filetypes
             if (meiext != "mei" || imgext != "png"){
-                for (i=0; i<files.length; i++){
+                for (var i=0; i<files.length; i++){
                     fs.unlink( __base + 'public/uploads/' + files[i], function (err){
                         if (err){
                             return console.log("Failed to delete file");
@@ -99,24 +99,36 @@ router.route('/upload_file')
                 fs.createReadStream(__base + 'public/uploads/mei/' + files[0])
                     .pipe(fs.createWriteStream(__base + 'public/uploads/backup/' + files[0]));
             }
-            //reload page
+            //Reload page
             res.redirect('/');
         });
     });
 
-//Delete file
+//Delete file TODO: Optimize function with regex
 router.route('/delete/:filename')
     .get(function (req, res){
-        file = req.params.filename;
-        fs.unlink( __base + 'public/uploads/mei/' + file, function (err){
+        meifile = req.params.filename;
+        pngfile = meifile.split('.')[0] + ".png";
+        //delete file from all folders
+        fs.unlink( __base + 'public/uploads/mei/' + meifile, function (err){
             if (err){
-                return console.log("failed to delete file");
+                return console.log("failed to delete mei file");
             }
-        })
+        });
+        fs.unlink( __base + 'public/uploads/backup/' + meifile, function (err){
+            if (err){
+                return console.log("failed to delete backup mei file");
+            }
+        });
+        fs.unlink( __base + 'public/uploads/png/' + pngfile, function (err){
+            if (err){
+                return console.log("failed to delete png file");
+            }
+        });
         res.redirect('/');
     });
-
-//Redirect
+    
+// redirect to editor
 router.route('/edit/:filename')
     .get(function (req, res) {
         var mei = req.params.filename;
@@ -129,17 +141,27 @@ router.route('/edit/:filename')
 /// NEON routes//
 /////////////////
 
-// router.route('/save/:filename')
-// .post(function (req, res) {
-//     fs.writeFile(__base + 'public/mei/' + req.body.fileName, 
-//         req.body.meiData,
-//         function(err) {
-//             if(err) {
-//                 return console.log(err);
-//             }
-//         }
-//     )
-//     console.log("File saved to " + req.body.fileName);
-// });
+router.route('/save/:filename')
+.post(function (req, res) {
+    console.log(req.body.fileName);
+    fs.writeFile(__base + "public/" + req.body.fileName, 
+        req.body.meiData,
+        function(err) {
+            if(err) { 
+                return console.log(err);
+            }
+        }
+    )
+    console.log("File saved to " + req.body.fileName);
+});
+
+router.route('/revert/:filename')
+    .post(function(req, res){
+        var file = req.params.filename;
+        fs.createReadStream(__base + 'public/uploads/backup/' + file)
+            .pipe(fs.createWriteStream(__base + 'public/uploads/mei/' + file));
+        
+        res.redirect('/edit/' + file);
+});
 
 module.exports = router;

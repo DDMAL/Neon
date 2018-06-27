@@ -28,10 +28,15 @@ export default function Neon (mei, vrvToolkit) {
         return vrvToolkit.getElementAttr(elementId);
     }
 
+    function edit (editorAction) {
+        return vrvToolkit.edit(editorAction);
+    }
+
     // Constructor reference
     Neon.prototype.constructor = Neon;
     Neon.prototype.loadData = loadData;
     Neon.prototype.getSVG = getSVG;
     Neon.prototype.getMEI = getMEI;
     Neon.prototype.getElementAttr = getElementAttr;
+    Neon.prototype.edit = edit;
 }

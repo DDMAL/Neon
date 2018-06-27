@@ -7,11 +7,14 @@ html
       .navbar-brand
         a.navbar-item(href='../')
           p Neon2
+        a.navbar-item
+          #dropdown_toggle
+            button.button#edit_mode Edit MEI
     .columns
       .column#svg_output.is-two-thirds.box(style={overflow: "hidden"})
       .column.is-one-third
         .panel
-          p.panel-heading Controls
+          p.panel-heading Display
           a.panel-block.has-text-centered
             button.button#reset-zoom Zoom
             input.slider.is-fullwidth#zoomSlider(step="5", min="25", max="200", value="100", type="range")
@@ -27,6 +30,7 @@ html
           a.panel-block
             label.checkbox Display Text: 
               input.checkbox#displayText(type="checkbox")
+          #edit_controls
         #neume_info
           article.message(style={visibility: "hidden"})
             .message-header
