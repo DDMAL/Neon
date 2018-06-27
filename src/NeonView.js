@@ -127,7 +127,12 @@ export default function NeonView (params) {
         return neon.getMEI();
     }
 
+    function edit(editorAction) {
+        return neon.edit(editorAction);
+    }
+
     NeonView.prototype.constructor = NeonView;
     NeonView.prototype.refreshPage = refreshPage;
     NeonView.prototype.rodanGetMei = rodanGetMei;
+    NeonView.prototype.edit = edit;
 }

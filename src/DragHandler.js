@@ -1,4 +1,4 @@
-export default function DragHandler (neon) {
+export default function DragHandler (neonView) {
     var id = "";
     var dragStartCoords;
     var dragEndCoords;
@@ -49,8 +49,8 @@ export default function DragHandler (neon) {
                 x: parseInt(dragEndCoords[0] - dragStartCoords[0]),
                 y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -1}
             };
-            neon.edit(editorAction);
-            neon.refreshPage();
+            neonView.edit(editorAction);
+            neonView.refreshPage();
             //infoBox.updateInfo(id);
             dragInit();
         }
