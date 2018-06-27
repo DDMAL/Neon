@@ -1,9 +1,8 @@
-export default function DragHandler (neon, vrvToolkit) {
+export default function DragHandler (neon) {
     var id = "";
     var dragStartCoords;
     var dragEndCoords;
     var canvas = d3.select("#svg_output");
-    // var infoBox = new InfoBox(vrvToolkit);
 
     function dragInit () {
         // Adding listeners
@@ -50,7 +49,7 @@ export default function DragHandler (neon, vrvToolkit) {
                 x: parseInt(dragEndCoords[0] - dragStartCoords[0]),
                 y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -1}
             };
-            vrvToolkit.edit(editorAction);
+            neon.edit(editorAction);
             neon.refreshPage();
             //infoBox.updateInfo(id);
             dragInit();

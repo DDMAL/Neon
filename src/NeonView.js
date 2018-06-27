@@ -24,7 +24,7 @@ export default function NeonView (params) {
         zoomHandler = new ZoomHandler(this);
         infoBox = new InfoBox(neon);
         viewControls = new ViewControls(zoomHandler);
-        editMode = new EditMode(this, meiFile, vrvToolkit);
+        editMode = new EditMode(this, meiFile);
         viewControls.setSylControls(this);
         loadView();
     });
@@ -69,7 +69,7 @@ export default function NeonView (params) {
         var i = pathSplit.length - 1;
         var fn = pathSplit[i];
         
-        var meiData = vrvToolkit.getMEI();
+        var meiData = neon.getMEI();
         $.ajax({
             type: "POST",
             url: "/save/" + fn,
