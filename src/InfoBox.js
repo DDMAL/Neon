@@ -73,7 +73,7 @@ export default function InfoBox(neon) {
                     console.warn("Unknown contour: " + contour);
                 }
                 pitches = pitches.trim().toUpperCase();
-                body = "Shape: " + neumeGroups.get(contour) + "<br/>"
+                body = "Shape: " + (neumeGroups.get(contour) === undefined ? "Compound" : neumeGroups.get(contour)) + "<br/>"
                     + "Pitch(es): " + pitches;
                 break;
             case "custos":
