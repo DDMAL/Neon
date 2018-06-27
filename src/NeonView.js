@@ -107,7 +107,7 @@ export default function NeonView (params) {
                 }
             })
             .on("keyup", () => {
-                if (d3.event.key == "Shift") {a
+                if (d3.event.key == "Shift") {
                     d3.select("body").on(".drag", null);
                 }
             });
