@@ -119,6 +119,11 @@ export default function NeonView (params) {
         viewControls.setOpacityFromSlider();
     }
 
+    function rodanGetMei() {
+        return neon.getMEI();
+    }
+
     NeonView.prototype.constructor = NeonView;
     NeonView.prototype.refreshPage = refreshPage;
+    NeonView.prototype.rodanGetMei = rodanGetMei;
 }
