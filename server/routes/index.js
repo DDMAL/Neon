@@ -132,7 +132,7 @@ router.route('/edit/:filename')
         var mei = req.params.filename;
         var bgimg = mei.split('.', 2)[0] + ".png";
         // Feeds the entire path for compatability with rodan
-        res.render('editor', {'meifile': "/uploads/mei/" + mei, 'bgimg': "/uploads/png/" + bgimg, 'meipath': "public/uploads/mei/"});
+        res.render('editor', {'meifile': "/uploads/mei/" + mei, 'bgimg': "/uploads/png/" + bgimg});
     });
 
 /////////////////
@@ -141,7 +141,8 @@ router.route('/edit/:filename')
 
 router.route('/save/:filename')
 .post(function (req, res) {
-    fs.writeFile(__base + req.body.uploadPath + req.body.fileName, 
+    console.log(req.body.fileName);
+    fs.writeFile(__base + "public/" + req.body.fileName, 
         req.body.meiData,
         function(err) {
             if(err) { 

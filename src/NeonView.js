@@ -10,7 +10,6 @@ export default function NeonView (params) {
     var viewWidth = 600;
     var meiFile = params.meifile;
     var bgimg = params.bgimg;
-    var meiPath = params.meipath;
     var initialPage = true;
     var vrvToolkit = new verovio.toolkit();
     
@@ -75,8 +74,7 @@ export default function NeonView (params) {
             type: "POST",
             url: "/save/" + fn,
             data: {"meiData": meiData,
-                    "fileName": fn,
-                    "uploadPath": meiPath}
+                    "fileName": meiFile}
         }) 
     } 
 
