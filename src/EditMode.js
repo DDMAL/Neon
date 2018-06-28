@@ -11,6 +11,7 @@ export default function EditMode (neonView, meiFile){
     var editControls = null;
     var insertControls = null;
     var cursorHandler = null;
+    var dragSelect = null;
 
     // Set edit mode listener
     $("#edit_mode").on("click", function(){
@@ -45,7 +46,7 @@ export default function EditMode (neonView, meiFile){
         insertControls = new InsertControls(cursorHandler);
         dragSelect = new DragSelect();
 
-        dragHandler.dragInit();
+        initializeListeners();
     }
 
     function initializeListeners () {
