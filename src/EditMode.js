@@ -3,13 +3,15 @@ import Navbar from "./Navbar.js";
 import EditControls from "./EditControls";
 import CursorHandler from "./CursorHandler";
 import InsertControls from "./InsertControls";
+import InsertHandler from "./InsertHandler.js";
 
-export default function EditMode (neon, meiFile){
+export default function EditMode (neonView, meiFile){
     var dragHandler = null;
     var navbarHandler = null;
     var editControls = null;
     var insertControls = null;
     var cursorHandler = null;
+    var insertHandler = null;
 
     // Set edit mode listener
     $("#edit_mode").on("click", function(){
@@ -37,11 +39,12 @@ export default function EditMode (neon, meiFile){
     })
 
     function init() {
-        dragHandler = new DragHandler(neon)
+        dragHandler = new DragHandler(neonView)
         navbarHandler = new Navbar(meiFile);
         editControls = new EditControls();
         cursorHandler = new CursorHandler();
-        insertControls = new InsertControls(cursorHandler);
+        insertHandler = new InsertHandler(neonView);
+        insertControls = new InsertControls(cursorHandler, insertHandler);
 
         dragHandler.dragInit();
     }

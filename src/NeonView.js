@@ -118,6 +118,9 @@ export default function NeonView (params) {
                 }
             });
         infoBox.infoListeners();
+        if (editMode !== null) {
+            editMode.initializeListeners();
+        }
     }
 
     function resetTransformations () {
