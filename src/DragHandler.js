@@ -6,9 +6,9 @@ export default function DragHandler (neonView) {
 
     function dragInit () {
         // Adding listeners
-        //var neumeComponents = d3.selectAll(".nc");
         var neumes = d3.selectAll(".neume");
         var custos = d3.selectAll(".custos");
+        var clefs = d3.selectAll(".clef");
 
         neumes.call(
             d3.drag()
@@ -18,6 +18,13 @@ export default function DragHandler (neonView) {
         );
 
         custos.call(
+            d3.drag()
+                .on("start", dragStarted)
+                .on("drag", dragging)
+                .on("end", dragEnded)
+        );
+
+        clefs.call(
             d3.drag()
                 .on("start", dragStarted)
                 .on("drag", dragging)
