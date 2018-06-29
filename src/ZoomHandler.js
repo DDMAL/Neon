@@ -1,46 +1,35 @@
 export default function ZoomHandler (neon) {
-    var svg = d3.select("#svg_container"); 
-    var transform = d3.zoomIdentity;
-    var unitX = 10;
-    var unitY = unitX;
-    var dragCoordinates = [0.0, 0.0];
+    var dragCoordinates;
+    var viewBox = new ViewBox();
+    var matrix;
 
     function resetZoomAndPan () {
-        selectSvgContainer();
-        d3.zoom().scaleTo(svg, 1);
-        transform = d3.zoomTransform(svg.node());
-        svg.attr("transform", transform);
-        $("#zoomSlider").val(100);
-        $("#zoomOutput").val(100);
-        var width = parseInt(d3.select("#svg_group").attr("width"));
-        var height = parseInt(d3.select("#svg_group").attr("height"));
-        d3.zoom().translateTo(svg, width / 2, height / 2);
-        transform = d3.zoomTransform(svg.node());
-        svg.attr("transform", transform);
-    }
-
-    // Zoom by relative k
-    // newK = oldK * k
-    function zoom (k) {
-        selectSvgContainer();
-        d3.zoom().scaleBy(svg, k);
-        transform = d3.zoomTransform(svg.node());
-        svg.attr("transform", transform);
+        viewBox.a = 0;
+        viewBox.b = 0;
+        viewBox.c = parseInt($("#bgimg").attr("width"));
+        viewBox.d = parseInt($("#bgimg").attr("height"));
+        
+        $("#svg_group").attr("viewBox", viewBox.a + " " + viewBox.b + " " + viewBox.c + " " + viewBox.d);
     }
 
     function zoomTo (k) {
-        selectSvgContainer();
-        d3.zoom().scaleTo(svg, k);
-        transform = d3.zoomTransform(svg.node());
-        svg.attr("transform", transform);
+        getViewBox();
+        let zoomWidth = parseInt($("#bgimg").attr("width")) / k;
+        let zoomHeight = parseInt($("#bgimg").attr("height")) / k;
+
+        let xDiff = (viewBox.c - zoomWidth);
+        let yDiff = (viewBox.d - zoomHeight);
+        viewBox.c -= xDiff;
+        viewBox.d -= yDiff;
+        $("#svg_group").attr("viewBox", viewBox.a + " " + viewBox.b + " " + viewBox.c + " " + viewBox.d);
     }
 
     // Translate svg by relative x and y
     function translate (xDiff, yDiff) {
-        selectSvgContainer();
-        d3.zoom().translateBy(svg, xDiff, yDiff);
-        transform = d3.zoomTransform(svg.node());
-        svg.attr("transform", transform);
+        getViewBox();
+        viewBox.a += xDiff;
+        viewBox.b += yDiff;
+        $("#svg_group").attr("viewBox", viewBox.a + " " + viewBox.b + " " + viewBox.c + " " + viewBox.d);
     }
 
     // Restore an svg to whatever the previous
@@ -48,34 +37,51 @@ export default function ZoomHandler (neon) {
     // produces a new svg on each edit action
     // so it doesn't reset.
     function restoreTransformation () {
-        selectSvgContainer();
-        d3.zoom().transform(svg, transform);
-        svg.attr("transform", d3.zoomTransform(svg.node()));
+        $("#svg_group").attr("viewBox", viewBox.a + " " + viewBox.b + " " + viewBox.c + " " + viewBox.d);
     }
 
-    function selectSvgContainer () {
-        svg = d3.select("#svg_group");
+    function getViewBox () {
+        var rawViewBox = $("#svg_group").attr("viewBox").split(" ");
+        viewBox.a = parseInt(rawViewBox[0]);
+        viewBox.b = parseInt(rawViewBox[1]);
+        viewBox.c = parseInt(rawViewBox[2]);
+        viewBox.d = parseInt(rawViewBox[3]);
     }
+
 
     function startDrag () {
-        dragCoordinates = [d3.event.x, d3.event.y];
+        dragCoordinates = document.getElementById("svg_group").createSVGPoint();
+        dragCoordinates.x = d3.event.x;
+        dragCoordinates.y = d3.event.y;
+
+        matrix = document.getElementById("svg_group").getScreenCTM().inverse();
+        dragCoordinates = dragCoordinates.matrixTransform(matrix);
     }
 
     function dragging () {
-        translate(
-            (d3.event.x - dragCoordinates[0]) / transform.k,
-            (d3.event.y - dragCoordinates[1]) / transform.k
-        );
-        dragCoordinates[0] = d3.event.x;
-        dragCoordinates[1] = d3.event.y;
+        console.log("dragging");
+        var newCoordinates = document.getElementById("svg_group").createSVGPoint();
+        newCoordinates.x = d3.event.x;
+        newCoordinates.y = d3.event.y;
+        newCoordinates = newCoordinates.matrixTransform(matrix);
+        translate(-newCoordinates.x + dragCoordinates.x, -newCoordinates.y + dragCoordinates.y);
+        dragCoordinates = newCoordinates;
     }
 
     ZoomHandler.prototype.constructor = ZoomHandler;
     ZoomHandler.prototype.resetZoomAndPan = resetZoomAndPan;
-    ZoomHandler.prototype.zoom = zoom;
     ZoomHandler.prototype.zoomTo = zoomTo;
     ZoomHandler.prototype.translate = translate;
     ZoomHandler.prototype.restoreTransformation = restoreTransformation;
     ZoomHandler.prototype.startDrag = startDrag;
     ZoomHandler.prototype.dragging = dragging;
+}
+
+function ViewBox () {
+    var a;
+    var b;
+    var c;
+    var d;
+
+    ViewBox.prototype.constructor = ViewBox;
 }

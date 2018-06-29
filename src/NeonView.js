@@ -7,7 +7,7 @@ import { verovio } from "./verovio-toolkit.js";
 
 export default function NeonView (params) {
     var viewHeight = 800;
-    var viewWidth = 600;
+    var viewWidth = 800;
     var meiFile = params.meifile;
     var bgimg = params.bgimg;
     var initialPage = true;
