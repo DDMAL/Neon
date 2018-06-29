@@ -21,12 +21,11 @@ export default function InsertHandler (neonView) {
 
     function handler (evt) {
         var container = document.getElementById("svg_container");
-        var group = document.getElementById("svg_group");
-        var pt = group.createSVGPoint();
+        var pt = container.createSVGPoint();
         pt.x = evt.clientX;
         pt.y = evt.clientY;
         //Transform pt to SVG context
-        var transformMatrix = group.getScreenCTM();
+        var transformMatrix = container.getScreenCTM();
         console.log(transformMatrix);
         var cursorpt = pt.matrixTransform(transformMatrix.inverse());
         
