@@ -21,7 +21,7 @@ export default function NeonView (params) {
 
     $.get(meiFile, (data) => {
         neon = new Neon(data, vrvToolkit);
-        zoomHandler = new ZoomHandler(this);
+        zoomHandler = new ZoomHandler();
         infoBox = new InfoBox(neon);
         viewControls = new ViewControls(zoomHandler);
         editMode = new EditMode(this, meiFile);

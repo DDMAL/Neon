@@ -1,4 +1,4 @@
-export default function ZoomHandler (neon) {
+export default function ZoomHandler () {
     var dragCoordinates;
     var viewBox = new ViewBox();
     var matrix;
@@ -59,7 +59,6 @@ export default function ZoomHandler (neon) {
     }
 
     function dragging () {
-        console.log("dragging");
         var newCoordinates = document.getElementById("svg_group").createSVGPoint();
         newCoordinates.x = d3.event.x;
         newCoordinates.y = d3.event.y;
@@ -72,6 +71,7 @@ export default function ZoomHandler (neon) {
     ZoomHandler.prototype.resetZoomAndPan = resetZoomAndPan;
     ZoomHandler.prototype.zoomTo = zoomTo;
     ZoomHandler.prototype.translate = translate;
+    ZoomHandler.prototype.getViewBox = getViewBox;
     ZoomHandler.prototype.restoreTransformation = restoreTransformation;
     ZoomHandler.prototype.startDrag = startDrag;
     ZoomHandler.prototype.dragging = dragging;
