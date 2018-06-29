@@ -48,7 +48,7 @@ export default function DragSelect () {
         elements.map(function(el){
             d3.select(el)
                 .attr("fill", "#d00")
-                .attr("selected");
+                .attr("selected", "true");
         })
 
         d3.selectAll("#selectRect").remove();
