@@ -1,8 +1,8 @@
-import DragHandler from "./DragHandler";
+import DragHandler from "./DragHandler.js";
 import Navbar from "./Navbar.js";
-import EditControls from "./EditControls";
-import CursorHandler from "./CursorHandler";
-import InsertControls from "./InsertControls";
+import EditControls from "./EditControls.js";
+import CursorHandler from "./CursorHandler.js";
+import InsertControls from "./InsertControls.js";
 
 export default function EditMode (neon, meiFile){
     var dragHandler = null;
@@ -36,7 +36,7 @@ export default function EditMode (neon, meiFile){
             "<a class='panel-block'>" +
             "<label>Select By:&nbsp;</label>" +
             "<div class='field has-addons'>" +
-            "<p class='control'>" +
+            "<p class='control'>" + 
             "<button class='button is-active' id='selByNeume'>Neume</button></p>" +
             "<p class='control'>" +
             "<button class='button' id='selByNc'>Neume Component</button></p></div></a>"
@@ -52,7 +52,7 @@ export default function EditMode (neon, meiFile){
         cursorHandler = new CursorHandler();
         insertControls = new InsertControls(cursorHandler);
 
-        dragHandler.dragInit();
+        //dragHandler.dragInit();
     }
 
     function initializeListeners () {
