@@ -1,15 +1,8 @@
 import DragHandler from "./DragHandler.js";
 import Navbar from "./Navbar.js";
-<<<<<<< HEAD
 import EditControls from "./EditControls.js";
 import CursorHandler from "./CursorHandler.js";
 import InsertControls from "./InsertControls.js";
-=======
-import EditControls from "./EditControls";
-import CursorHandler from "./CursorHandler";
-import InsertControls from "./InsertControls";
-import DragSelect from "./DragSelect";
->>>>>>> feature/drag-select
 
 export default function EditMode (neonView, meiFile){
     var dragHandler = null;
