@@ -20,23 +20,19 @@ export default function InsertHandler (neonView) {
     }
 
     function handler (evt) {
-        var container = document.getElementById("svg_container");
+        var container = document.getElementsByClassName("definition-scale")[0];
         var pt = container.createSVGPoint();
         pt.x = evt.clientX;
         pt.y = evt.clientY;
         //Transform pt to SVG context
         var transformMatrix = container.getScreenCTM();
-        console.log(transformMatrix);
         var cursorpt = pt.matrixTransform(transformMatrix.inverse());
         
-        // TODO Find closest staff to attach to
-        var staffId = "m-adc4f225-5574-422d-8c4d-9781a3dab529";
-
         let editorAction = {
             "action": "insert",
             "param": {
                 "elementType": type,
-                "staffId": staffId,
+                "staffId": "auto",
                 "ulx": cursorpt.x,
                 "uly": cursorpt.y
             }
