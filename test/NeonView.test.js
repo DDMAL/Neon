@@ -76,11 +76,12 @@ describe("Check Controls UI", () => {
     // Can't get viewBox from selenium for some reason so we can't check more than this
     test("Check Zoom Controls", async () => {
         var zoomSlider = await browser.findElement(By.id('zoomSlider'));
+        var maxZoom = await zoomSlider.getAttribute("max");
         const actions = browser.actions();
         var rect = await zoomSlider.getRect();
         await actions.dragAndDrop(zoomSlider, {x: parseInt(rect.width / 2), y: 0}).perform();
         var output = await browser.findElement(By.id('zoomOutput')).getText();
-        expect(output).toBe("200");
+        expect(output).toBe(maxZoom);
 
         var zoomButton = await browser.findElement(By.id('reset-zoom'));
         await actions.click(zoomButton).perform();
