@@ -43,6 +43,10 @@ while [[ $# -gt 0 ]]; do
             printf "$USAGE"
             exit 0 
             ;;
+        -s|--standalone)
+            STANDALONE=true
+            shift
+            ;;
         *)
             echo >&2 "Unknown option $1"
             printf "$USAGE"
@@ -81,7 +85,13 @@ fi
 
 # Build
 (cd "$BUILDDIR/emscripten"; ./buildToolkit -H)
-cp "$BUILDDIR/emscripten/build/verovio-toolkit.js" src/
+
+# Copy file
+if [ "$STANDALONE" ]; then
+   cp "$BUILDDIR/emscripten/build/verovio-toolkit.js" src/
+else
+   cp -R "$BUILDDIR/emscripten/npm-dev" src/verovio-dev
+fi
 
 if [ "$DELETE" ]; then
     rm -rf $BUILDDIR
