@@ -27,10 +27,12 @@ beforeAll(async () => {
 });
 
 afterAll(() => {
-    browser.quit();
     // Clean up test files
     fs.unlinkSync(pathToUploads + "png/test.png");
     fs.unlinkSync(pathToUploads + "mei/test.mei");
+    if (browser !== null) {
+        browser.quit();
+    }
 });
 
 describe("Neon2 Basics", () => {
