@@ -96,6 +96,7 @@ export default function NeonView (params) {
         d3.select("body")
             .on("keydown", () => {
                 if (d3.event.key == "Shift") {
+                    d3.select("body").on(".drag", null);
                     d3.select("body").call(
                         d3.drag()
                             .on("start", zoomHandler.startDrag)
@@ -129,16 +130,13 @@ export default function NeonView (params) {
         return neon.getMEI();
     }
 
-    function rodanGetMei() {
-        return neon.getMEI();
-    }
-
     function edit(editorAction) {
         return neon.edit(editorAction);
     }
 
     NeonView.prototype.constructor = NeonView;
     NeonView.prototype.refreshPage = refreshPage;
+    NeonView.prototype.resetListeners = resetListeners;
     NeonView.prototype.rodanGetMei = rodanGetMei;
     NeonView.prototype.edit = edit;
 }

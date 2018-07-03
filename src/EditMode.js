@@ -3,6 +3,7 @@ import Navbar from "./Navbar.js";
 import EditControls from "./EditControls.js";
 import CursorHandler from "./CursorHandler.js";
 import InsertControls from "./InsertControls.js";
+import DragSelect from "./DragSelect.js"
 
 export default function EditMode (neonView, meiFile){
     var dragHandler = null;
@@ -44,22 +45,17 @@ export default function EditMode (neonView, meiFile){
         );
 
         init();
+        neonView.resetListeners();
     })
 
     function init() {
-        dragHandler = new DragHandler(neonView)
+        dragHandler = new DragHandler(neonView, null)
         navbarHandler = new Navbar(meiFile);
-        editControls = new EditControls();
+        editControls = new EditControls(dragHandler);
         cursorHandler = new CursorHandler();
         insertControls = new InsertControls(cursorHandler);
-        dragSelect = new DragSelect();
-
-        //dragHandler.dragInit();
+        dragSelect = new DragSelect(dragHandler);
     }
 
-    function initializeListeners () {
-        if (dragHandler !== null) { dragHandler.dragInit(); }
-    }
 
-    EditMode.prototype.initializeListeners = initializeListeners;
 }

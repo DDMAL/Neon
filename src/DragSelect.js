@@ -1,8 +1,9 @@
-export default function DragSelect () {
+export default function DragSelect (dragHandler) {
     var initialX = 0;
     var initialY = 0;
 
     var canvas = d3.select("#svg_group");
+
     canvas.call(
         d3.drag()
             .on("start", selStart)
@@ -46,11 +47,12 @@ export default function DragSelect () {
         });
 
         elements.map(function(el){
-            d3.select(el)
+            var parent = $(el).parent()[0];
+            d3.select(parent)
                 .attr("fill", "#d00")
-                .attr("selected", "true");
+                .attr("class", "nc selected");
         })
-
+        dragHandler.dragInit();
         d3.selectAll("#selectRect").remove();
     }
 
@@ -62,7 +64,7 @@ export default function DragSelect () {
             .attr("height", 0)
             .attr("id", "selectRect")
             .attr("stroke", "black")
-            .attr("stroke-width", 10)
+            .attr("stroke-width", 7)
             .attr("fill", "none");
     }
 

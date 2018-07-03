@@ -1,30 +1,16 @@
 export default function DragHandler (neonView) {
-    var id = "";
     var dragStartCoords;
     var dragEndCoords;
-    var canvas = d3.select("#svg_output");
 
     function dragInit () {
         // Adding listeners
-        var neumes = d3.selectAll(".neume");
-        var custos = d3.selectAll(".custos");
-        var clefs = d3.selectAll(".clef");
+        var activeNc = d3.selectAll(".selected");
+        var selection = Array.from(activeNc._groups[0]);
+        
+        dragStartCoords = new Array(activeNc.length);
+        dragEndCoords = new Array(activeNc.length);
 
-        neumes.call(
-            d3.drag()
-                .on("start", dragStarted)
-                .on("drag", dragging)
-                .on("end", dragEnded)
-        );
-
-        custos.call(
-            d3.drag()
-                .on("start", dragStarted)
-                .on("drag", dragging)
-                .on("end", dragEnded)
-        );
-
-        clefs.call(
+        activeNc.call(
             d3.drag()
                 .on("start", dragStarted)
                 .on("drag", dragging)
@@ -35,30 +21,32 @@ export default function DragHandler (neonView) {
     
         // Drag effects
         function dragStarted () {
-            id = this.id;
-
-            // Highlighting
-            d3.select(this).attr("fill", "#d00");
-            
-            dragStartCoords = [d3.event.x, d3.event.y, d3.event.sourceEvent.x];
+            dragStartCoords = [d3.event.x, d3.event.y];
         }
+
         function dragging () {
             var relativeY = d3.event.y - dragStartCoords[1];
             var relativeX = d3.event.x - dragStartCoords[0];
 
-            d3.select(this).attr("transform", function(d,i) {
-                return "translate(" + [relativeX, relativeY] + ")"
+            selection.forEach((el) => {
+                d3.select(el).attr("transform", function() {
+                    return "translate(" + [relativeX, relativeY] + ")"
+                })
             })
         }
+
         function dragEnded () {
-            dragEndCoords = [d3.event.x, d3.event.y, d3.event.sourceEvent.x];
-            editorAction = { action: 'drag', param: { elementId: id, 
-                x: parseInt(dragEndCoords[0] - dragStartCoords[0]),
-                y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -1}
-            };
-            neonView.edit(editorAction);
+            dragEndCoords = [d3.event.x, d3.event.y];
+            
+            selection.forEach((el) => {
+                editorAction = { action: 'drag', param: { elementId: el.id, 
+                    x: parseInt(dragEndCoords[0] - dragStartCoords[0]),
+                    y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -1}
+                };
+                neonView.edit(editorAction);
+            })
+
             neonView.refreshPage();
-            //infoBox.updateInfo(id);
             dragInit();
         }
     }

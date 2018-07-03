@@ -1,4 +1,4 @@
-export default function EditListeners () {
+export default function EditListeners (dragHandler) {
 
     function initListeners () {
         //Selection mode toggle
@@ -19,10 +19,17 @@ export default function EditListeners () {
         //Activating selected neumes
         $(".nc").on("mousedown", function() {
             if ($("#selByNeume").hasClass("is-active")){
-                if(!$(this).parent().hasClass("selected")){
-                    unselectNeumes();
-                    $(this).parent().attr("fill", "#d00");
-                    $(this).parent()[0].classList.add("selected");
+                if(!$(this).hasClass("selected")){
+                    unselectNcs();
+                    $(this).attr("fill", "#d00");
+                    $(this)[0].classList.add("selected");
+
+                    var siblings = Array.from($(this).siblings());                  
+                    siblings.forEach((el) => {
+                        $("#" + el.id).attr("fill", "#d00");
+                        $("#" + el.id).addClass("selected");
+                    })
+                    dragHandler.dragInit();
                 }
             }
             else if ($("#selByNc").hasClass("is-active")){
@@ -30,6 +37,7 @@ export default function EditListeners () {
                     unselectNcs();
                     $(this).attr("fill", "#d00");
                     $(this)[0].classList.add("selected");
+                    dragHandler.dragInit();
                 }
             }
             else {
@@ -43,7 +51,7 @@ export default function EditListeners () {
            unselectNcs();
         })
 
-        $("#mei_output").on("click", function(e){
+        $(".nc").on("click", function(e){
             e.stopPropagation();
         })
     }

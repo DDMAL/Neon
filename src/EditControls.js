@@ -1,8 +1,13 @@
 import EditListeners from "./EditListeners.js"
 
-export default function EditControls () {
-    var editListeners = new EditListeners();
+export default function EditControls (dragHandler) {
+    var editListeners = new EditListeners(dragHandler);
 
-    editListeners.initListeners();
+    resetListeners();
 
+    function resetListeners(){
+        editListeners.initListeners();
+    }
+
+    EditControls.prototype.resetListeners = resetListeners; 
 }
