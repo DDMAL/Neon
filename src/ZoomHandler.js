@@ -37,7 +37,12 @@ export default function ZoomHandler () {
     // produces a new svg on each edit action
     // so it doesn't reset.
     function restoreTransformation () {
+        if (viewBox.isUnset()) {
+            resetZoomAndPan();
+        }
+        else {
         $("#svg_group").attr("viewBox", viewBox.a + " " + viewBox.b + " " + viewBox.c + " " + viewBox.d);
+        }
     }
 
     function getViewBox () {
@@ -82,6 +87,10 @@ function ViewBox () {
     var b;
     var c;
     var d;
+
+    function isUnset () {
+        return (a === undefined || b === undefined || c === undefined || d === undefined);
+    }
 
     ViewBox.prototype.constructor = ViewBox;
 }
