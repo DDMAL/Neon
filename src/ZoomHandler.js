@@ -9,27 +9,21 @@ export default function ZoomHandler () {
         viewBox.c = parseInt($("#bgimg").attr("width"));
         viewBox.d = parseInt($("#bgimg").attr("height"));
         
-        $("#svg_group").attr("viewBox", viewBox.a + " " + viewBox.b + " " + viewBox.c + " " + viewBox.d);
+        $("#svg_group").attr("viewBox", viewBox.get());
     }
 
     function zoomTo (k) {
         getViewBox();
-        let zoomWidth = parseInt($("#bgimg").attr("width")) / k;
-        let zoomHeight = parseInt($("#bgimg").attr("height")) / k;
-
-        let xDiff = (viewBox.c - zoomWidth);
-        let yDiff = (viewBox.d - zoomHeight);
-        viewBox.c -= xDiff;
-        viewBox.d -= yDiff;
-        $("#svg_group").attr("viewBox", viewBox.a + " " + viewBox.b + " " + viewBox.c + " " + viewBox.d);
+        viewBox.zoomTo(k, parseInt($("#bgimg").attr("width")), parseInt($("#bgimg").attr("height")));
+        //$("#svg_group").attr("viewBox", viewBox.a + " " + viewBox.b + " " + viewBox.c + " " + viewBox.d);
+        $("#svg_group").attr("viewBox", viewBox.get());
     }
 
     // Translate svg by relative x and y
     function translate (xDiff, yDiff) {
         getViewBox();
-        viewBox.a += xDiff;
-        viewBox.b += yDiff;
-        $("#svg_group").attr("viewBox", viewBox.a + " " + viewBox.b + " " + viewBox.c + " " + viewBox.d);
+        viewBox.translate(xDiff, yDiff);
+        $("#svg_group").attr("viewBox", viewBox.get());
     }
 
     // Restore an svg to whatever the previous
@@ -41,16 +35,18 @@ export default function ZoomHandler () {
             resetZoomAndPan();
         }
         else {
-        $("#svg_group").attr("viewBox", viewBox.a + " " + viewBox.b + " " + viewBox.c + " " + viewBox.d);
+        $("#svg_group").attr("viewBox", viewBox.get());
         }
     }
 
     function getViewBox () {
         var rawViewBox = $("#svg_group").attr("viewBox").split(" ");
-        viewBox.a = parseInt(rawViewBox[0]);
-        viewBox.b = parseInt(rawViewBox[1]);
-        viewBox.c = parseInt(rawViewBox[2]);
-        viewBox.d = parseInt(rawViewBox[3]);
+        viewBox.set(
+            parseInt(rawViewBox[0]),
+            parseInt(rawViewBox[1]),
+            parseInt(rawViewBox[2]),
+            parseInt(rawViewBox[3])
+        );
     }
 
 
@@ -82,15 +78,47 @@ export default function ZoomHandler () {
     ZoomHandler.prototype.dragging = dragging;
 }
 
-function ViewBox () {
+export function ViewBox () {
     var a;
     var b;
     var c;
     var d;
 
+    function set (w, x, y, z) {
+        this.a = w;
+        this.b = x;
+        this.c = y;
+        this.d = z;
+    }
+
+    function get () {
+        return this.a + " " + this.b + " " + this.c + " " + this.d;
+    }
+
+    function zoomTo(k, imageHeight, imageWidth) {
+        let zoomHeight = (imageWidth / k);
+        let zoomWidth = (imageHeight / k);
+
+        this.c = zoomWidth;
+        this.d = zoomHeight;
+    }
+
+    /**
+     * Shift viewbox by (xDiff, yDiff)
+     */
+    function translate (xDiff, yDiff) {
+        this.a += xDiff;
+        this.b += yDiff;
+    }
+
     function isUnset () {
-        return (a === undefined || b === undefined || c === undefined || d === undefined);
+        return (this.a === undefined || this.b === undefined || this.c === undefined || this.d === undefined);
     }
 
     ViewBox.prototype.constructor = ViewBox;
+    ViewBox.prototype.set = set;
+    ViewBox.prototype.translate = translate;
+    ViewBox.prototype.isUnset = isUnset;
+    ViewBox.prototype.zoomTo = zoomTo;
+    ViewBox.prototype.get = get;
 }
