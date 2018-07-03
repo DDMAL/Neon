@@ -6,8 +6,8 @@ import EditMode from "./EditMode.js";
 import { verovio } from "./verovio-toolkit.js";
 
 export default function NeonView (params) {
-    var viewHeight = 800;
-    var viewWidth = 600;
+    var viewHeight = 750;
+    var viewWidth = 800;
     var meiFile = params.meifile;
     var bgimg = params.bgimg;
     var initialPage = true;
@@ -21,7 +21,7 @@ export default function NeonView (params) {
 
     $.get(meiFile, (data) => {
         neon = new Neon(data, vrvToolkit);
-        zoomHandler = new ZoomHandler(this);
+        zoomHandler = new ZoomHandler();
         infoBox = new InfoBox(neon);
         viewControls = new ViewControls(zoomHandler);
         editMode = new EditMode(this, meiFile);
@@ -46,7 +46,7 @@ export default function NeonView (params) {
                 .attr("xlink:href", bgimg);
         
             view_layer.attr("id", "svg_group")
-                .attr("width", viewWidth)
+                .attr("width", "100%")
                 .attr("height", viewHeight)
                 .attr("viewBox", "0 0 " + width + " " + height);
         }
@@ -118,6 +118,9 @@ export default function NeonView (params) {
                 }
             });
         infoBox.infoListeners();
+        if (editMode !== null) {
+            editMode.initializeListeners();
+        }
     }
 
     function resetTransformations () {

@@ -1,4 +1,4 @@
-export default function InsertControls (cursorHandler) {
+export default function InsertControls (cursorHandler, insertHandler) {
     // To add new tab, add inner html to dictionary with id as key value. All elements must be of class insertel.
     var tabHtml = {
         neumeTab: "<p class='control'>" +
@@ -68,6 +68,7 @@ export default function InsertControls (cursorHandler) {
 
     function activate(id) {
         $("#" + id)[0].classList.add('is-active');
+        insertHandler.insertActive(id);
     }
 
     function deactivate(type) {

@@ -6,6 +6,8 @@ export default function ViewControls (zoomHandler) {
 
     function setZoomControls() {
         $("#reset-zoom").click( function() {
+            $("#zoomOutput").val(100);
+            $("#zoomSlider").val(100);
             zoomHandler.resetZoomAndPan();
         });
 
