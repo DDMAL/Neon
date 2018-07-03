@@ -1,8 +1,10 @@
+import CursorHandler from "./CursorHandler.js";
+
 export default function InsertHandler (neonView) {
     var type = "";
+    var cursor = new CursorHandler();
 
     function insertActive (buttonId) {
-        console.log("InsertHandler Active!");
         if (buttonId === "punctum") {
             type = "nc";
             $("body").on("click", "#svg_output", handler);
@@ -14,9 +16,9 @@ export default function InsertHandler (neonView) {
     }
 
     function insertDisabled () {
-        console.log("InsertHandler Not Active!");
         type = "";
         $("body").off("click", "#svg_output", handler);
+        cursor.resetCursor();
     }
 
     function handler (evt) {
@@ -37,7 +39,7 @@ export default function InsertHandler (neonView) {
                 "uly": cursorpt.y
             }
         };
-        console.log(editorAction);
+        
         neonView.edit(editorAction);
         neonView.refreshPage();
         insertDisabled();
