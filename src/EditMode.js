@@ -45,13 +45,12 @@ export default function EditMode (neonView, meiFile, zoomHandler){
         );
 
         init();
-        neonView.resetListeners();
     })
 
     function init() {
         dragHandler = new DragHandler(neonView, null)
         navbarHandler = new Navbar(meiFile);
-        editControls = new EditControls(dragHandler, neonView);
+        editControls = new EditControls(dragHandler);
         cursorHandler = new CursorHandler();
         insertControls = new InsertControls(cursorHandler);
         dragSelect = new DragSelect(dragHandler, zoomHandler);
