@@ -1,7 +1,8 @@
 export default function DragSelect (dragHandler, zoomHandler) {
     var initialX = 0;
     var initialY = 0;
-    var dragInit = false;
+    var panning = false;
+    var dragSelecting = false;
 
     var canvas = d3.select("#svg_group");
 
@@ -13,20 +14,23 @@ export default function DragSelect (dragHandler, zoomHandler) {
     );
 
     function selStart(){
-        if(!d3.event.sourceEvent.shiftKey){
-            dragInit = true;
-            var initialP = d3.mouse(this);
-            initialX = initialP[0];
-            initialY = initialP[1];
-            initRect(initialX, initialY);
+        if (d3.event.sourceEvent.target.nodeName != "use"){
+            if(!d3.event.sourceEvent.shiftKey){
+                dragSelecting = true;
+                var initialP = d3.mouse(this);
+                initialX = initialP[0];
+                initialY = initialP[1];
+                initRect(initialX, initialY);
+            }
+            else {
+                panning = true;
+                zoomHandler.startDrag();
+            }    
         }
-        else {
-            zoomHandler.startDrag();
-        }    
     }
 
     function selecting(){
-        if(dragInit){
+        if(!panning && dragSelecting){
             var currentPt = d3.mouse(this);
             var curX = currentPt[0];
             var curY = currentPt[1];
@@ -38,13 +42,13 @@ export default function DragSelect (dragHandler, zoomHandler) {
 
             updateRect(newX, newY, width, height);
         }
-        else {
+        else if(panning){
             zoomHandler.dragging();
         }
     }
 
     function selEnd(){
-        if(dragInit){
+        if(!panning && dragSelecting){
             var finalPt = d3.mouse(this);
             var finalX = finalPt[0];
             var finalY = finalPt[1];
@@ -67,8 +71,9 @@ export default function DragSelect (dragHandler, zoomHandler) {
             })
             dragHandler.dragInit();
             d3.selectAll("#selectRect").remove();
-            dragInit = false;
+            dragSelecting = false;
         }
+        panning = false;
     }
 
     function initRect(ulx, uly){

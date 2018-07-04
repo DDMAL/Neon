@@ -1,6 +1,6 @@
 import DragHandler from "./DragHandler.js";
 import Navbar from "./Navbar.js";
-import EditControls from "./EditControls.js";
+import Select from "./Select.js";
 import CursorHandler from "./CursorHandler.js";
 import InsertControls from "./InsertControls.js";
 import DragSelect from "./DragSelect.js"
@@ -8,7 +8,7 @@ import DragSelect from "./DragSelect.js"
 export default function EditMode (neonView, meiFile, zoomHandler){
     var dragHandler = null;
     var navbarHandler = null;
-    var editControls = null;
+    var select = null;
     var insertControls = null;
     var cursorHandler = null;
     var dragSelect = null;
@@ -50,11 +50,15 @@ export default function EditMode (neonView, meiFile, zoomHandler){
     function init() {
         dragHandler = new DragHandler(neonView, null)
         navbarHandler = new Navbar(meiFile);
-        editControls = new EditControls(dragHandler);
+        select = new Select(dragHandler);
         cursorHandler = new CursorHandler();
         insertControls = new InsertControls(cursorHandler);
         dragSelect = new DragSelect(dragHandler, zoomHandler);
     }
 
+    function resetListeners() {
+        select.selectListeners();
+    }
 
+    EditMode.prototype.resetListeners = resetListeners;
 }

@@ -62,6 +62,7 @@ export default function NeonView (params) {
         initialPage = false;
         loadView();
         resetTransformations();
+        editMode.resetListeners();
     }
 
     function saveMEI() {

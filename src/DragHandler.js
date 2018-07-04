@@ -16,7 +16,7 @@ export default function DragHandler (neonView) {
                 .on("drag", dragging)
                 .on("end", dragEnded)
         );
-    
+
         var editorAction;
     
         // Drag effects
@@ -45,7 +45,6 @@ export default function DragHandler (neonView) {
                 };
                 neonView.edit(editorAction);
             })
-
             neonView.refreshPage();
             dragInit();
         }
