@@ -16,6 +16,7 @@ export default function DragSelect (dragHandler, zoomHandler) {
     function selStart(){
         if (d3.event.sourceEvent.target.nodeName != "use"){
             if(!d3.event.sourceEvent.shiftKey){
+                unselectNcs();
                 dragSelecting = true;
                 var initialP = d3.mouse(this);
                 initialX = initialP[0];
@@ -63,11 +64,33 @@ export default function DragSelect (dragHandler, zoomHandler) {
                     && elY > initialY && elY < finalY;
             });
 
-            elements.map(function(el){
+            elements.forEach(el => {
+                var toSelect = [];
                 var parent = $(el).parent()[0];
-                d3.select(parent)
-                    .attr("fill", "#d00")
-                    .attr("class", "nc selected");
+                var isNc = !($(parent).hasClass("clef") || $(parent).hasClass("custos"));
+
+                if($(parent).hasClass("selected")){
+                    return;
+                }
+
+                toSelect.push(parent);
+
+                if(d3.select("#selByNeume").classed("is-active") && isNc){
+                    var siblings = Array.from($(parent).siblings());
+                    siblings.forEach(el => {
+                        var cls = d3.select("#" + el.id).attr("class");
+                        if(cls == "nc"){
+                            toSelect.push(el);
+                        }   
+                    })
+                }
+                
+                toSelect.forEach(nc => {
+                    var cl = d3.select("#" + nc.id).attr("class"); 
+                    d3.select("#" + nc.id)
+                        .attr("fill", "#d00")
+                        .attr("class", cl + " selected");
+                });                 
             })
             dragHandler.dragInit();
             d3.selectAll("#selectRect").remove();
@@ -94,5 +117,12 @@ export default function DragSelect (dragHandler, zoomHandler) {
             .attr("y", newY)
             .attr("width", currentWidth)
             .attr("height", currentHeight)
+    }
+
+    function unselectNcs() {
+        var ncs = $(".nc.selected, .clef.selected, .custos.selected");
+        for (var i=0; i<ncs.length; i++){
+            $(ncs[i]).removeClass("selected").attr("fill", null);
+        }
     }
 }
