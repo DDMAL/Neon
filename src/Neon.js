@@ -8,6 +8,7 @@ export default function Neon (mei, vrvToolkit) {
         noHeader: 1,
         pageMarginLeft: 0,
         pageMarginTop: 0,
+        font: "Bravura",
     };
     vrvToolkit.setOptions(vrvOptions);
     loadData(mei);
