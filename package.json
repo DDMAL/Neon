@@ -33,7 +33,7 @@
     "scripts": {
         "start": "nodemon server.js",
         "build": "webpack --config webpack.config.js",
-        "test": "jest"
+        "test": "jest --silent"
     },
     "jest": {
         "testPathIgnorePatterns": [

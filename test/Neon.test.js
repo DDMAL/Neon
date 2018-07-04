@@ -39,3 +39,34 @@ test("Test dragging", () => {
     expect(newAtts["pname"]).toBe("c");
     expect(newAtts["oct"]).toBe("3");
 });
+
+/**
+ * Note that XML IDs may change on updates to verovio,
+ * even with the xmlIdSeed set. If this happens, use
+ * neon.getMEI() to check what the ID is. You may also
+ * need to disable the --silent option for jest in
+ * package.json.
+ */
+test("Test 'insert' action", () => {
+    let toolkit = new verovio.toolkit();
+    let neon = new Neon(mei, toolkit);
+    let options = toolkit.getOptions();
+    options.xmlIdSeed = 12345;
+    toolkit.setOptions(options);
+    neon.getSVG();
+    let originalAtts = neon.getElementAttr("nc-0000000276628145");
+    let editorAction = {
+        "action": "insert",
+        "param": {
+            "elementType": "nc",
+            "staffId": "auto",
+            "ulx": 939,
+            "uly": 2452
+        }
+    };
+    neon.edit(editorAction);
+    let insertAtts = neon.getElementAttr("nc-0000000276628145");
+    expect(originalAtts).toStrictEqual({});
+    expect(insertAtts["pname"]).toBe("c");
+    expect(insertAtts["oct"]).toBe("3");
+});
