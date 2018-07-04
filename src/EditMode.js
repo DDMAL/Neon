@@ -5,7 +5,7 @@ import CursorHandler from "./CursorHandler.js";
 import InsertControls from "./InsertControls.js";
 import DragSelect from "./DragSelect.js"
 
-export default function EditMode (neonView, meiFile){
+export default function EditMode (neonView, meiFile, zoomHandler){
     var dragHandler = null;
     var navbarHandler = null;
     var editControls = null;
@@ -51,10 +51,10 @@ export default function EditMode (neonView, meiFile){
     function init() {
         dragHandler = new DragHandler(neonView, null)
         navbarHandler = new Navbar(meiFile);
-        editControls = new EditControls(dragHandler);
+        editControls = new EditControls(dragHandler, neonView);
         cursorHandler = new CursorHandler();
         insertControls = new InsertControls(cursorHandler);
-        dragSelect = new DragSelect(dragHandler);
+        dragSelect = new DragSelect(dragHandler, zoomHandler);
     }
 
 

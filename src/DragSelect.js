@@ -1,6 +1,7 @@
-export default function DragSelect (dragHandler) {
+export default function DragSelect (dragHandler, zoomHandler) {
     var initialX = 0;
     var initialY = 0;
+    var dragInit = false;
 
     var canvas = d3.select("#svg_group");
 
@@ -12,48 +13,62 @@ export default function DragSelect (dragHandler) {
     );
 
     function selStart(){
-        var initialP = d3.mouse(this);
-        initialX = initialP[0];
-        initialY = initialP[1];
-        initRect(initialX, initialY);    
+        if(!d3.event.sourceEvent.shiftKey){
+            dragInit = true;
+            var initialP = d3.mouse(this);
+            initialX = initialP[0];
+            initialY = initialP[1];
+            initRect(initialX, initialY);
+        }
+        else {
+            zoomHandler.startDrag();
+        }    
     }
 
     function selecting(){
-        var currentPt = d3.mouse(this);
-        var curX = currentPt[0];
-        var curY = currentPt[1];
-        
-        var newX = curX<initialX?curX:initialX;
-        var newY = curY<initialY?curY:initialY;
-        var width = curX<initialX?initialX-curX:curX-initialX;
-        var height = curY<initialY?initialY-curY:curY-initialY;
+        if(dragInit){
+            var currentPt = d3.mouse(this);
+            var curX = currentPt[0];
+            var curY = currentPt[1];
+            
+            var newX = curX<initialX?curX:initialX;
+            var newY = curY<initialY?curY:initialY;
+            var width = curX<initialX?initialX-curX:curX-initialX;
+            var height = curY<initialY?initialY-curY:curY-initialY;
 
-        updateRect(newX, newY, width, height);
+            updateRect(newX, newY, width, height);
+        }
+        else {
+            zoomHandler.dragging();
+        }
     }
 
     function selEnd(){
-        var finalPt = d3.mouse(this);
-        var finalX = finalPt[0];
-        var finalY = finalPt[1];
+        if(dragInit){
+            var finalPt = d3.mouse(this);
+            var finalX = finalPt[0];
+            var finalY = finalPt[1];
 
-        var nc = d3.selectAll("use")._groups[0];
-        var els = Array.from(nc);
-        
-        var elements = els.filter(function(d){
-            var elX = d.x.baseVal.value;
-            var elY = d.y.baseVal.value;
-            return elX > initialX && elX < finalX 
-                && elY > initialY && elY < finalY;
-        });
+            var nc = d3.selectAll("use")._groups[0];
+            var els = Array.from(nc);
+            
+            var elements = els.filter(function(d){
+                var elX = d.x.baseVal.value;
+                var elY = d.y.baseVal.value;
+                return elX > initialX && elX < finalX 
+                    && elY > initialY && elY < finalY;
+            });
 
-        elements.map(function(el){
-            var parent = $(el).parent()[0];
-            d3.select(parent)
-                .attr("fill", "#d00")
-                .attr("class", "nc selected");
-        })
-        dragHandler.dragInit();
-        d3.selectAll("#selectRect").remove();
+            elements.map(function(el){
+                var parent = $(el).parent()[0];
+                d3.select(parent)
+                    .attr("fill", "#d00")
+                    .attr("class", "nc selected");
+            })
+            dragHandler.dragInit();
+            d3.selectAll("#selectRect").remove();
+            dragInit = false;
+        }
     }
 
     function initRect(ulx, uly){
