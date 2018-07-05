@@ -25,6 +25,11 @@ export default function InsertHandler (neonView) {
             };
             $("body").on("click", "#svg_output", handler);
         }
+        else if (buttonId === "custos") {
+            type = "custos";
+            attributes = null;
+            $("body").on("click", "#svg_output", handler);
+        }
         else {
             type = "";
             attributes = null;
