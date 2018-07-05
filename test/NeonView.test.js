@@ -146,4 +146,30 @@ describe("Check Controls UI", () => {
         syl = await browser.findElement(By.className("syl")).getAttribute("style");
         expect(syl).toContain("visibility: visible;");
     });
+
+    /// TEST EDIT MODE ///
+    test("Test Edit Mode", async () => {
+        var editBtn = await browser.findElement(By.linkText("Edit MEI"));
+        const actions = browser.actions();
+        await actions.click(editBtn).perform();
+    })
+
+    //get rid of imaginary numbers
+    test("Test drag selection", async () => {
+        var canvas = await browser.findElement(By.id("svg_output"));
+        const actions = browser.actions();
+        await actions.move({origin: canvas}).press().move({x: 200, y: 200}).perform();
+        await browser.findElement(By.id("selectRect"));
+        await actions.release().perform();
+        await browser.findElement(By.className("selected"));
+    })
+
+    test("Test click select .nc", async () => {
+        var nc = await browser.findElement(By.className("nc"));
+        const actions = browser.actions();
+        await actions.click(nc).perform();
+        var ncClass = await nc.getAttribute("class");
+        expect(ncClass).toBe("nc selected");
+        await actions.click().perform();
+    })
 });
