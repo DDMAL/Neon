@@ -20,3 +20,11 @@
     width: 42px;
     height: 80px;
 }
+
+.button.is-active {
+    background-color: whitesmoke;
+}
+
+button:focus {
+    outline:0;
+}

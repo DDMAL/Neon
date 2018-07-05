@@ -35,6 +35,7 @@ export default function InsertHandler (neonView) {
     function insertDisabled () {
         type = "";
         $("body").off("click", "#svg_output", handler);
+        $(".insertel.is-active").removeClass("is-active");
         cursor.resetCursor();
     }
 

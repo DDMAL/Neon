@@ -25,7 +25,7 @@ export default function NeonView (params) {
         zoomHandler = new ZoomHandler();
         infoBox = new InfoBox(neon);
         viewControls = new ViewControls(zoomHandler);
-        editMode = new EditMode(this, meiFile);
+        editMode = new EditMode(this, meiFile, zoomHandler);
         viewControls.setSylControls(this);
         loadView();
     });
@@ -63,6 +63,7 @@ export default function NeonView (params) {
         initialPage = false;
         loadView();
         resetTransformations();
+        editMode.resetListeners();
     }
 
     function saveMEI() {
@@ -97,6 +98,7 @@ export default function NeonView (params) {
         d3.select("body")
             .on("keydown", () => {
                 if (d3.event.key == "Shift") {
+                    d3.select("body").on(".drag", null);
                     d3.select("body").call(
                         d3.drag()
                             .on("start", zoomHandler.startDrag)
@@ -119,18 +121,11 @@ export default function NeonView (params) {
                 }
             });
         infoBox.infoListeners();
-        if (editMode !== null) {
-            editMode.initializeListeners();
-        }
     }
 
     function resetTransformations () {
         zoomHandler.restoreTransformation();
         viewControls.setOpacityFromSlider();
-    }
-
-    function rodanGetMei() {
-        return neon.getMEI();
     }
 
     function rodanGetMei() {
@@ -143,6 +138,7 @@ export default function NeonView (params) {
 
     NeonView.prototype.constructor = NeonView;
     NeonView.prototype.refreshPage = refreshPage;
+    NeonView.prototype.resetListeners = resetListeners;
     NeonView.prototype.rodanGetMei = rodanGetMei;
     NeonView.prototype.edit = edit;
 }

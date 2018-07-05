@@ -1,16 +1,18 @@
-import DragHandler from "./DragHandler";
+import DragHandler from "./DragHandler.js";
 import Navbar from "./Navbar.js";
-import EditControls from "./EditControls";
-import CursorHandler from "./CursorHandler";
-import InsertControls from "./InsertControls";
+import Select from "./Select.js";
+import CursorHandler from "./CursorHandler.js";
+import InsertControls from "./InsertControls.js";
 import InsertHandler from "./InsertHandler.js";
+import DragSelect from "./DragSelect.js"
 
-export default function EditMode (neonView, meiFile){
+export default function EditMode (neonView, meiFile, zoomHandler){
     var dragHandler = null;
     var navbarHandler = null;
-    var editControls = null;
+    var select = null;
     var insertControls = null;
     var cursorHandler = null;
+    var dragSelect = null;
     var insertHandler = null;
 
     // Set edit mode listener
@@ -23,16 +25,25 @@ export default function EditMode (neonView, meiFile){
             "<a id='getpng' class='navbar-item' href='' download=''> Download PNG </a>" +
             "<a id='revert' class='navbar-item' href=''> Revert </a>"
         );
-        $("#edit_controls").append(
-            "<p class='panel-heading'>Insert</p>" +
+        $("#insert_controls").append(
+            "<p class='panel-heading' id='insertMenu'>Insert</p>" +
             "<p class='panel-tabs'>" +
             "<a id='neumeTab' class='insertTab'>Neume</a>" +
             "<a id='clefTab' class='insertTab'>Clef</a>" +
             "<a id='systemTab' class='insertTab'>System</a>" +
             "<a id='divisionTab' class='insertTab'>Division</a></p>" +
             "<a class='panel-block has-text-centered'>" +
-            "<div id='insert_data' class='field is-grouped'/></a>" +
-            "<p class='panel-heading'>Edit</p><p class='panel-tabs'></p>"
+            "<div id='insert_data' class='field is-grouped'/></a>"
+        );
+        $("#edit_controls").append(
+            "<p class='panel-heading' id='editMenu'>Edit</p>" +
+            "<a class='panel-block'>" +
+            "<label>Select By:&nbsp;</label>" +
+            "<div class='field has-addons'>" +
+            "<p class='control'>" + 
+            "<button class='button is-active' id='selByNeume'>Neume</button></p>" +
+            "<p class='control'>" +
+            "<button class='button' id='selByNc'>Neume Component</button></p></div></a>"
         );
 
         init();
@@ -41,17 +52,16 @@ export default function EditMode (neonView, meiFile){
     function init() {
         dragHandler = new DragHandler(neonView)
         navbarHandler = new Navbar(meiFile);
-        editControls = new EditControls();
+        select = new Select(dragHandler);
         cursorHandler = new CursorHandler();
         insertHandler = new InsertHandler(neonView);
         insertControls = new InsertControls(cursorHandler, insertHandler);
-
-        dragHandler.dragInit();
+        dragSelect = new DragSelect(dragHandler, zoomHandler);
     }
 
-    function initializeListeners () {
-        if (dragHandler !== null) { dragHandler.dragInit(); }
+    function resetListeners() {
+        select.selectListeners();
     }
 
-    EditMode.prototype.initializeListeners = initializeListeners;
+    EditMode.prototype.resetListeners = resetListeners;
 }
