@@ -8,6 +8,7 @@ export default function Neon (mei, vrvToolkit) {
         noHeader: 1,
         pageMarginLeft: 0,
         pageMarginTop: 0,
+        font: "Bravura",
     };
     vrvToolkit.setOptions(vrvOptions);
     loadData(mei);
@@ -32,6 +33,10 @@ export default function Neon (mei, vrvToolkit) {
         return vrvToolkit.edit(editorAction);
     }
 
+    function info () {
+        return vrvToolkit.editInfo();
+    }
+
     // Constructor reference
     Neon.prototype.constructor = Neon;
     Neon.prototype.loadData = loadData;
@@ -39,4 +44,5 @@ export default function Neon (mei, vrvToolkit) {
     Neon.prototype.getMEI = getMEI;
     Neon.prototype.getElementAttr = getElementAttr;
     Neon.prototype.edit = edit;
+    Neon.prototype.info = info;
 }

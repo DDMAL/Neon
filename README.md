@@ -47,3 +47,8 @@ brew install geckodriver
 Then you can run the tests locally using `yarn test`. We use [jest](https://facebook.github.io/jest/) to script our tests.
 
 *These tests require the server to be running on `localhost:8080`*
+
+Verovio
+-------
+
+Verovio is present as an npm package under `src/verovio-dev` with the name `verovio-dev`. Its contents come from the `emscripten/npm-dev` folder in a Verovio project folder.
