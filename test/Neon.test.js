@@ -18,7 +18,7 @@ test("Test 'getElementAttr' function", () => {
     expect(atts["oct"]).toBe("2");
 });
 
-test("Test dragging", () => {
+test("Test 'drag' action, neume", () => {
     let neon = new Neon(mei, new verovio.toolkit());
     neon.getSVG();
     let originalAtts = neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d");
@@ -47,14 +47,9 @@ test("Test dragging", () => {
  * need to disable the --silent option for jest in
  * package.json.
  */
-test("Test 'insert' action", () => {
-    let toolkit = new verovio.toolkit();
-    let neon = new Neon(mei, toolkit);
-    let options = toolkit.getOptions();
-    options.xmlIdSeed = 12345;
-    toolkit.setOptions(options);
+test("Test 'insert' action, punctum", () => {
+    let neon = new Neon(mei, new verovio.toolkit());
     neon.getSVG();
-    let originalAtts = neon.getElementAttr("nc-0000000276628145");
     let editorAction = {
         "action": "insert",
         "param": {
@@ -65,8 +60,28 @@ test("Test 'insert' action", () => {
         }
     };
     neon.edit(editorAction);
-    let insertAtts = neon.getElementAttr("nc-0000000276628145");
-    expect(originalAtts).toStrictEqual({});
+    let insertAtts = neon.getElementAttr(neon.info());
     expect(insertAtts["pname"]).toBe("c");
     expect(insertAtts["oct"]).toBe("3");
+});
+
+test("Test 'insert' action, clef", () => {
+    let neon = new Neon(mei, new verovio.toolkit());
+    neon.getSVG();
+    let editorAction = {
+        "action": "insert",
+        "param": {
+            "elementType": "clef",
+            "staffId": "auto",
+            "ulx": 1033,
+            "uly": 1431,
+            "attributes": {
+                "shape": "C"
+            }
+        }
+    };
+    neon.edit(editorAction);
+    let insertAtts = neon.getElementAttr(neon.info());
+    expect(insertAtts["shape"]).toBe("C");
+    expect(insertAtts["line"]).toBe("3");
 });
