@@ -50,9 +50,10 @@ export default function DragSelect (dragHandler, zoomHandler) {
 
     function selEnd(){
         if(!panning && dragSelecting){
-            var finalPt = d3.mouse(this);
-            var finalX = finalPt[0];
-            var finalY = finalPt[1];
+            var rx = parseInt($("#selectRect").attr("x"));
+            var ry = parseInt($("#selectRect").attr("y"));
+            var lx = parseInt($("#selectRect").attr("x")) + parseInt($("#selectRect").attr("width"));
+            var ly = parseInt($("#selectRect").attr("y")) + parseInt($("#selectRect").attr("height"));
 
             var nc = d3.selectAll("use")._groups[0];
             var els = Array.from(nc);
@@ -60,8 +61,8 @@ export default function DragSelect (dragHandler, zoomHandler) {
             var elements = els.filter(function(d){
                 var elX = d.x.baseVal.value;
                 var elY = d.y.baseVal.value;
-                return elX > initialX && elX < finalX 
-                    && elY > initialY && elY < finalY;
+            
+                return elX > rx && elX < lx  && elY > ry && elY < ly;
             });
 
             elements.forEach(el => {
