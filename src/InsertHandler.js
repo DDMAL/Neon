@@ -2,15 +2,32 @@ import CursorHandler from "./CursorHandler.js";
 
 export default function InsertHandler (neonView) {
     var type = "";
+    var attributes = null;
     var cursor = new CursorHandler();
 
     function insertActive (buttonId) {
         if (buttonId === "punctum") {
             type = "nc";
+            attributes = null;
+            $("body").on("click", "#svg_output", handler);
+        }
+        else if (buttonId === "cClef") {
+            type = "clef";
+            attributes = {
+                "shape": "C"
+            };
+            $("body").on("click", "#svg_output", handler);
+        }
+        else if (buttonId === "fClef") {
+            type = "clef";
+            attributes = {
+                "shape": "F"
+            };
             $("body").on("click", "#svg_output", handler);
         }
         else {
             type = "";
+            attributes = null;
             console.error("Invalid button for insertion: " + buttonId + ".");
         }
     }
@@ -36,10 +53,14 @@ export default function InsertHandler (neonView) {
                 "elementType": type,
                 "staffId": "auto",
                 "ulx": cursorpt.x,
-                "uly": cursorpt.y
+                "uly": cursorpt.y,
             }
         };
-        
+
+        if (attributes !== null) {
+            editorAction["param"]["attributes"] = attributes;
+        }
+
         neonView.edit(editorAction);
         neonView.refreshPage();
         insertDisabled();
