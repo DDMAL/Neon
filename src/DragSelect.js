@@ -16,7 +16,7 @@ export default function DragSelect (dragHandler, zoomHandler) {
     function selStart(){
         if (d3.event.sourceEvent.target.nodeName != "use"){
             if(!d3.event.sourceEvent.shiftKey){
-                unselectNcs();
+                unselect();
                 dragSelecting = true;
                 var initialP = d3.mouse(this);
                 initialX = initialP[0];
@@ -119,7 +119,7 @@ export default function DragSelect (dragHandler, zoomHandler) {
             .attr("height", currentHeight)
     }
 
-    function unselectNcs() {
+    function unselect() {
         var ncs = $(".nc.selected, .clef.selected, .custos.selected");
         for (var i=0; i<ncs.length; i++){
             $(ncs[i]).removeClass("selected").attr("fill", null);
