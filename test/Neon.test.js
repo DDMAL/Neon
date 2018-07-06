@@ -112,3 +112,31 @@ test("Test 'remove' action", () => {
     let atts = neon.getElementAttr("m-ceab54b1-893e-42de-8fca-aeeb13254e19");
     expect(atts).toStrictEqual({});
 });
+
+test("Test undo and redo", () => {
+    let neon = new Neon(mei, new verovio.toolkit());
+    let firstSVG = neon.getSVG();
+    //Should not be able to undo or redo now
+    expect(neon.undo()).toBeFalsy();
+    expect(neon.redo()).toBeFalsy();
+    
+    let editorAction = {
+        "action": "drag",
+        "param": {
+            "elementId": "m-54220197-ac7d-452c-8c34-b3d0bdbaefa0",
+            "x": 2,
+            "y": 69 
+        }
+    };
+    // Ensure the editor is working
+    expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "a", oct: "2"});
+    expect(neon.edit(editorAction)).toBeTruthy();
+    expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "c", oct: "3"});
+
+    expect(neon.undo()).toBeTruthy();
+    neon.getSVG();
+    expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "a", oct: "2"});
+    expect(neon.redo()).toBeTruthy();
+    neon.getSVG();
+    expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "c", oct: "3"});
+});
