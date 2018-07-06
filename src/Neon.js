@@ -10,6 +10,9 @@ export default function Neon (mei, vrvToolkit) {
         pageMarginTop: 0,
         font: "Bravura",
     };
+    var undoStack = new Array(0);
+    var redoStack = new Array(0);
+
     vrvToolkit.setOptions(vrvOptions);
     loadData(mei);
 
@@ -30,11 +33,37 @@ export default function Neon (mei, vrvToolkit) {
     }
 
     function edit (editorAction) {
-        return vrvToolkit.edit(editorAction);
+        let currentMEI = getMEI();
+        let value = vrvToolkit.edit(editorAction);
+        if (value) {
+            undoStack.push(currentMEI);
+            redoStack = new Array(0);
+        }
+        return value; 
     }
 
     function info () {
         return vrvToolkit.editInfo();
+    }
+
+    function undo () {
+        let state = undoStack.pop();
+        if (state !== undefined) {
+            redoStack.push(getMEI());
+            loadData(state);
+            return true;
+        }
+        return false;
+    }
+
+    function redo () {
+        let state = redoStack.pop();
+        if (state !== undefined) {
+            undoStack.push(getMEI());
+            loadData(state);
+            return true;
+        }
+        return false;
     }
 
     // Constructor reference
@@ -45,4 +74,6 @@ export default function Neon (mei, vrvToolkit) {
     Neon.prototype.getElementAttr = getElementAttr;
     Neon.prototype.edit = edit;
     Neon.prototype.info = info;
+    Neon.prototype.undo = undo;
+    Neon.prototype.redo = redo;
 }
