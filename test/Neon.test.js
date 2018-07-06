@@ -40,48 +40,61 @@ test("Test 'drag' action, neume", () => {
     expect(newAtts["oct"]).toBe("3");
 });
 
-/**
- * Note that XML IDs may change on updates to verovio,
- * even with the xmlIdSeed set. If this happens, use
- * neon.getMEI() to check what the ID is. You may also
- * need to disable the --silent option for jest in
- * package.json.
- */
-test("Test 'insert' action, punctum", () => {
-    let neon = new Neon(mei, new verovio.toolkit());
-    neon.getSVG();
-    let editorAction = {
-        "action": "insert",
-        "param": {
-            "elementType": "nc",
-            "staffId": "auto",
-            "ulx": 939,
-            "uly": 2452
-        }
-    };
-    neon.edit(editorAction);
-    let insertAtts = neon.getElementAttr(neon.info());
-    expect(insertAtts["pname"]).toBe("c");
-    expect(insertAtts["oct"]).toBe("3");
-});
-
-test("Test 'insert' action, clef", () => {
-    let neon = new Neon(mei, new verovio.toolkit());
-    neon.getSVG();
-    let editorAction = {
-        "action": "insert",
-        "param": {
-            "elementType": "clef",
-            "staffId": "auto",
-            "ulx": 1033,
-            "uly": 1431,
-            "attributes": {
-                "shape": "C"
+describe("Test insert editor action", () => {
+    test("Test 'insert' action, punctum", () => {
+        let neon = new Neon(mei, new verovio.toolkit());
+        neon.getSVG();
+        let editorAction = {
+            "action": "insert",
+            "param": {
+                "elementType": "nc",
+                "staffId": "auto",
+                "ulx": 939,
+                "uly": 2452
             }
-        }
-    };
-    neon.edit(editorAction);
-    let insertAtts = neon.getElementAttr(neon.info());
-    expect(insertAtts["shape"]).toBe("C");
-    expect(insertAtts["line"]).toBe("3");
+        };
+        neon.edit(editorAction);
+        let insertAtts = neon.getElementAttr(neon.info());
+        expect(insertAtts["pname"]).toBe("c");
+        expect(insertAtts["oct"]).toBe("3");
+    });
+
+    test("Test 'insert' action, clef", () => {
+        let neon = new Neon(mei, new verovio.toolkit());
+        neon.getSVG();
+        let editorAction = {
+            "action": "insert",
+            "param": {
+                "elementType": "clef",
+                "staffId": "auto",
+                "ulx": 1033,
+                "uly": 1431,
+                "attributes": {
+                    "shape": "C"
+                }
+            }
+        };
+        neon.edit(editorAction);
+        let insertAtts = neon.getElementAttr(neon.info());
+        expect(insertAtts["shape"]).toBe("C");
+        expect(insertAtts["line"]).toBe("3");
+    });
+
+    test("Test 'insert' action, custos", () => {
+        let neon = new Neon(mei, new verovio.toolkit());
+        neon.getSVG();
+        let editorAction = {
+            "action": "insert",
+            "param": {
+                "elementType": "custos",
+                "staffId": "auto",
+                "ulx": 1476,
+                "uly": 690
+            }
+        };
+        neon.edit(editorAction);
+        let insertAtts = neon.getElementAttr(neon.info());
+        expect(insertAtts.pname).toBe("b");
+        expect(insertAtts.oct).toBe("2");
+    });
 });
