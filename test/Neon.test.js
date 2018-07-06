@@ -98,3 +98,17 @@ describe("Test insert editor action", () => {
         expect(insertAtts.oct).toBe("2");
     });
 });
+
+test("Test 'remove' action", () => {
+    let neon = new Neon(mei, new verovio.toolkit());
+    neon.getSVG();
+    let editorAction = {
+        "action": "remove",
+        "param": {
+            "elementId": "m-ceab54b1-893e-42de-8fca-aeeb13254e19"
+        }
+    };
+    expect(neon.edit(editorAction)).toBeTruthy();
+    let atts = neon.getElementAttr("m-ceab54b1-893e-42de-8fca-aeeb13254e19");
+    expect(atts).toStrictEqual({});
+});
