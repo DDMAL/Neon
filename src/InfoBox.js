@@ -1,13 +1,7 @@
 export default function InfoBox(neon) {
 
     function infoListeners() {
-        var neumes = d3.selectAll(".neume");
-        var custos = d3.selectAll(".custos");
-        var clefs = d3.selectAll(".clef");
-
-        neumes.on("mouseover", setInfo);
-        custos.on("mouseover", setInfo);
-        clefs.on("mouseover", setInfoClef);
+        $(".neume,.custos,.clef").on("mouseover", setInfo);
     }
 
     function setInfo() {
@@ -33,7 +27,7 @@ export default function InfoBox(neon) {
             return;
         }
 
-        var element = d3.select("#" + id);
+        var element = $("#" + id);
         var elementClass = element.attr("class");
         var body = "";
 
@@ -41,7 +35,7 @@ export default function InfoBox(neon) {
         switch(elementClass) {
             case "neume":
                 // Select neume components of selected neume
-                var ncs = element.selectAll(".nc");
+                var ncs = element.children(".nc");
                 var contour = "";
                 var pitches = "";
                 var previous = null;
@@ -99,13 +93,13 @@ export default function InfoBox(neon) {
     }
     
     function updateInfoBox(title, body) {
-        d3.select(".message").style("visibility", "visible");
-        d3.select(".message-header").select("p").html(title);
-        d3.select(".message-body").html(body);
+        $(".message").css("visibility", "visible");
+        $(".message-header").children("p").html(title);
+        $(".message-body").html(body);
         
         // Setting up listener for dismissing message
         $("#notification-delete").on("click", function () {
-            d3.select(".message").style("visibility", "hidden");
+            $(".message").css("visibility", "hidden");
         })
     }
 

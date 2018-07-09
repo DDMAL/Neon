@@ -48,20 +48,15 @@ export default function Select (dragHandler) {
         })
 
         // // click away listeners
-        $(document.body).on("click", function() {
+
+        $("body").on("click keydown", (evt) => {
+            if (evt.type === "keydown" && evt.key !== "Escape") return;
             unselect();
         })
 
         $(".nc, .clef, .custos").on("click", function(e){
             e.stopPropagation();
         })
-
-        d3.select("body")
-            .on("keydown", function() {
-                if (d3.event.key == "Escape") {
-                    unselect();
-                }
-            })
 
         function unselect() {
             var els = $(".nc.selected, .clef.selected, .custos.selected");
