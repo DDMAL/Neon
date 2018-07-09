@@ -1,18 +1,37 @@
 export default function GroupingHandler () {
 
     function triggerGroupSelection () {
+        $("#moreEdit").removeClass("is-invisible");
         $("#moreEdit").append(
-            "<a class='panel-block'>" +
-            "<div class='dropdown is-active'>" +
+            "<label>Select Grouping:&nbsp;</label>" +
+            "<div id='grouping_dropdown' class='dropdown'>" +
             "<div class='dropdown-trigger'>" +
-            "<button class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+            "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
             "<span>Groupings</span><span class='icon is-small'>" +
-            "<i class='fa-angle-down'></i></span></button></div>" +
+            "<i class=''></i></span></button></div>" +
             "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
-            "<div class='dropdown-content'></div></div></div></a>"
+            "<div class='dropdown-content'>" +
+            "<a id='Torculus' class='dropdown-item'>Torculus</a>" +
+            "<a id='' class='dropdown-item'>Etc...</a></div></div></div>"
         );
+        initGroupingListeners();
     };
+
+    function endGroupingSelection () {
+        $("#moreEdit").empty();
+        $("#moreEdit").addClass("is-invisible");
+    }
+
+    function initGroupingListeners(){
+        $("#grouping_dropdown").on("click", function() {
+            $(this).toggleClass("is-active");
+        })
+
+    }
+
+
 
     GroupingHandler.prototype.constructor = GroupingHandler;
     GroupingHandler.prototype.triggerGroupSelection = triggerGroupSelection;
+    GroupingHandler.prototype.endGroupingSelection = endGroupingSelection;
 }

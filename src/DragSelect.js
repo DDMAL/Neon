@@ -93,8 +93,7 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
                             toSelect.push(el);
                         }   
                     })
-                }
-                
+                }     
                 toSelect.forEach(nc => {
                     var cl = d3.select("#" + nc.id).attr("class"); 
                     d3.select("#" + nc.id)
@@ -102,7 +101,6 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
                         .attr("class", cl + " selected");
                 });               
             })
-            console.log(toSelect);
             if (toSelect.length > 1){
                 groupingHandler.triggerGroupSelection();
             }  
@@ -138,5 +136,6 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
         for (var i=0; i<ncs.length; i++){
             $(ncs[i]).removeClass("selected").attr("fill", null);
         }
+        groupingHandler.endGroupingSelection();
     }
 }

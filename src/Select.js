@@ -1,4 +1,4 @@
-export default function Select (dragHandler) {
+export default function Select (dragHandler, groupingHandler) {
     selectListeners();
     //Selection mode toggle
     function selectListeners() {
@@ -32,6 +32,7 @@ export default function Select (dragHandler) {
                         }   
                     })                  
                     dragHandler.dragInit();
+                    triggerNeumeActions();
                 }
             }
             else if ($("#selByNc").hasClass("is-active") || !isNc){
@@ -40,15 +41,17 @@ export default function Select (dragHandler) {
                     $(this).attr("fill", "#d00");
                     $(this).addClass("selected");
                     dragHandler.dragInit();
+                    triggerNcActions();
                 }
             }
             else {
                 console.log("error: selection mode not activated");
             }
+            groupingHandler.endGroupingSelection();
         })
 
         // // click away listeners
-        $(document.body).on("click", function() {
+        $(document.body).on("click", function(e) {
             unselect();
         })
 
@@ -56,10 +59,15 @@ export default function Select (dragHandler) {
             e.stopPropagation();
         })
 
+        $("#moreEdit").on("click", function(e){
+            e.stopPropagation();
+        })
+
         d3.select("body")
             .on("keydown", function() {
                 if (d3.event.key == "Escape") {
                     unselect();
+                    groupingHandler.endGroupingSelection();
                 }
             })
 
@@ -69,6 +77,14 @@ export default function Select (dragHandler) {
                 $(els[i]).removeClass("selected").attr("fill", null);
             }
         }
+    }
+
+    function triggerNcActions() {
+        
+    }
+
+    function triggerNeumeActions() {
+
     }
     Select.prototype.selectListeners = selectListeners;
 }

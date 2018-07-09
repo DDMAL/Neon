@@ -56,7 +56,7 @@ export default function EditMode (neonView, meiFile, zoomHandler){
             "<button class='button' id='redo'>Redo</button></p>" +
             "<p class='control'>" +
             "<button class='button' id='save'>Save Changes</button></p></div></a>" +
-            "<div id='moreEdit'>",
+            "<a id='moreEdit' class='panel-block is-invisible'>",
         );
 
         init();
@@ -66,7 +66,7 @@ export default function EditMode (neonView, meiFile, zoomHandler){
         dragHandler = new DragHandler(neonView);
         groupingHandler = new GroupingHandler();
         navbarHandler = new Navbar(meiFile);
-        select = new Select(dragHandler);
+        select = new Select(dragHandler, groupingHandler);
         cursorHandler = new CursorHandler();
         insertHandler = new InsertHandler(neonView);
         insertControls = new InsertControls(cursorHandler, insertHandler);
