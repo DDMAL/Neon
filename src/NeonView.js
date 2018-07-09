@@ -32,22 +32,26 @@ export default function NeonView (params) {
 
     function loadView () {
         if (initialPage){
-            var view_layer = d3.select("#svg_output").append("svg");
-            var bg_img = view_layer.append("image");
-            view_layer.append("g").attr("id", "mei_output");
+            var group = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            group.id = "svg_group";
+            var bg = document.createElementNS("http://www.w3.org/2000/svg", "image");
+            bg.id = "bgimg";
+            bg.setAttributeNS("http://www.w3.org/1999/xlink", "href", bgimg);
+            var mei = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            mei.id = "mei_output";
+            group.append(bg);
+            group.append(mei);
+            $("#svg_output").append(group);
             loadSvg(); 
 
-            var height = parseInt(d3.select("#svg_container").attr("height"));
-            var width = parseInt(d3.select("#svg_container").attr("width"));
-            bg_img.attr("id", "bgimg")
-                .attr("x", 0)
+            var height = parseInt($("#svg_container").attr("height"));
+            var width = parseInt($("#svg_container").attr("width"));
+            $("#bgimg").attr("x", 0)
                 .attr("y", 0)
                 .attr("height", height)
-                .attr("width", width)
-                .attr("xlink:href", bgimg);
+                .attr("width", width);
         
-            view_layer.attr("id", "svg_group")
-                .attr("width", "100%")
+            $("#svg_group").attr("width", "100%")
                 .attr("height", viewHeight)
                 .attr("viewBox", "0 0 " + width + " " + height);
         }
@@ -82,44 +86,50 @@ export default function NeonView (params) {
 
     function setSvgText () {
         if (viewControls.shouldHideText()) {
-            d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
+            $(".syl").css("visibility", "hidden");
         } else {
-            d3.select("#mei_output").selectAll(".syl").style("visibility", "visible");
+            $(".syl").css("visibility", "visible");
         }
     }
 
     function loadSvg() {
         var svg = neon.getSVG();
         $("#mei_output").html(svg);
-        d3.select("#mei_output").select("svg").attr("id", "svg_container"); 
+        $("#mei_output").children("svg").attr("id", "svg_container"); 
     }
 
     function resetListeners () {
-        d3.select("body")
-            .on("keydown", () => {
-                if (d3.event.key == "Shift") {
-                    d3.select("body").on(".drag", null);
-                    d3.select("body").call(
-                        d3.drag()
-                            .on("start", zoomHandler.startDrag)
-                            .on("drag", zoomHandler.dragging)
-                    );
+        $("body").on("keydown keyup", (evt) => {
+            if (evt.type === "keydown") {
+                switch (evt.key) {
+                    case "Shift":
+                        d3.select("body").on(".drag", null);
+                        d3.select("body").call(
+                            d3.drag().on("start", zoomHandler.startDrag)
+                                .on("drag", zoomHandler.dragging)
+                        );
+                        break;
+                    case "s":
+                        saveMEI();
+                        break;
+                    case "h":
+                        $("#mei_output").css("visibility", "hidden");
+                        break;
+                    default: break;
                 }
-                else if (d3.event.key == "s") {
-                    saveMEI();
+            }
+            else {
+                switch (evt.key) {
+                    case "Shift":
+                        d3.select("body").on(".drag", null);
+                        break;
+                    case "h":
+                        $("#mei_output").css("visibility", "visible");
+                        break;
+                    default: break;
                 }
-                else if (d3.event.key == "h") {
-                    d3.select("#mei_output").attr("visibility", "hidden");
-                }
-            })
-            .on("keyup", () => {
-                if (d3.event.key == "Shift") {
-                    d3.select("body").on(".drag", null);
-                }
-                if (d3.event.key == "h") {
-                    d3.select("#mei_output").attr("visibility", "visible");
-                }
-            });
+            }
+        });
         infoBox.infoListeners();
     }
 
