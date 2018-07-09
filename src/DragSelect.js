@@ -1,4 +1,4 @@
-export default function DragSelect (dragHandler, zoomHandler) {
+export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
     var initialX = 0;
     var initialY = 0;
     var panning = false;
@@ -73,8 +73,9 @@ export default function DragSelect (dragHandler, zoomHandler) {
                 return elX > rx && elX < lx  && elY > ry && elY < ly;
             });
 
+            var toSelect = [];
+
             elements.forEach(el => {
-                var toSelect = [];
                 var parent = $(el).parent()[0];
                 var isNc = !($(parent).hasClass("clef") || $(parent).hasClass("custos"));
 
@@ -99,8 +100,12 @@ export default function DragSelect (dragHandler, zoomHandler) {
                     d3.select("#" + nc.id)
                         .attr("fill", "#d00")
                         .attr("class", cl + " selected");
-                });                 
+                });               
             })
+            console.log(toSelect);
+            if (toSelect.length > 1){
+                groupingHandler.triggerGroupSelection();
+            }  
             dragHandler.dragInit();
             d3.selectAll("#selectRect").remove();
             dragSelecting = false;
