@@ -8,7 +8,7 @@ const verovio = require("verovio-dev");
 
 export default function NeonView (params) {
     var viewHeight = 750;
-    var viewWidth = 800;
+    var viewWidth = 800; 
     var meiFile = params.meifile;
     var bgimg = params.bgimg;
     var initialPage = true;
@@ -28,6 +28,7 @@ export default function NeonView (params) {
         editMode = new EditMode(this, meiFile, zoomHandler);
         viewControls.setSylControls(this);
         loadView();
+        // editMode.getScale();
     });
 
     function loadView () {
