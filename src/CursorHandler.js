@@ -1,6 +1,6 @@
-export default function CursorHandler (origHeight, origWidth) {
-    this.origHeight = origHeight;
-    this.origWidth = origWidth;
+export default function CursorHandler () {
+    // this.origHeight = origHeight;
+    // this.origWidth = origWidth;
 
     function updateCursor() {
         $("#bgimg").css('cursor', 'crosshair');
