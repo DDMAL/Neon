@@ -56,7 +56,8 @@ export default function EditMode (neonView, meiFile, zoomHandler){
             "<button class='button' id='redo'>Redo</button></p>" +
             "<p class='control'>" +
             "<button class='button' id='save'>Save Changes</button></p></div></a>" +
-            "<a id='moreEdit' class='panel-block is-invisible'>",
+            "<a id='moreEdit' class='panel-block is-invisible'>" + 
+            "<a id='neumeEdit' class='panel-block is-invisible'>"
         );
 
         init();

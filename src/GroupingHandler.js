@@ -12,7 +12,10 @@ export default function GroupingHandler () {
             "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
             "<div class='dropdown-content'>" +
             "<a id='Torculus' class='dropdown-item'>Torculus</a>" +
-            "<a id='' class='dropdown-item'>Etc...</a></div></div></div>"
+            "<a id='' class='dropdown-item'>Etc...</a></div></div></div>" +
+            "<div><p class='control'>" +
+            "<button class='button' id='ungroup'>Ungroup</button></p></div>"
+
         );
         initGroupingListeners();
     };
@@ -28,9 +31,7 @@ export default function GroupingHandler () {
         })
 
     }
-
-
-
+    
     GroupingHandler.prototype.constructor = GroupingHandler;
     GroupingHandler.prototype.triggerGroupSelection = triggerGroupSelection;
     GroupingHandler.prototype.endGroupingSelection = endGroupingSelection;

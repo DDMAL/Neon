@@ -30,9 +30,14 @@ export default function Select (dragHandler, groupingHandler) {
                             $(el).attr("fill", "#d00");
                             $(el).addClass("selected");
                         }   
-                    })                  
-                    dragHandler.dragInit();
-                    triggerNeumeActions();
+                    }) 
+                    if(siblings.length != 0){
+                        triggerNeumeActions();  
+                    }     
+                    else{
+                        triggerNcActions();
+                    }          
+                    dragHandler.dragInit();   
                 }
             }
             else if ($("#selByNc").hasClass("is-active") || !isNc){
@@ -40,18 +45,18 @@ export default function Select (dragHandler, groupingHandler) {
                     unselect();
                     $(this).attr("fill", "#d00");
                     $(this).addClass("selected");
-                    dragHandler.dragInit();
                     triggerNcActions();
+                    dragHandler.dragInit();
                 }
             }
             else {
                 console.log("error: selection mode not activated");
             }
-            groupingHandler.endGroupingSelection();
         })
 
-        // // click away listeners
+        // click away listeners
         $(document.body).on("click", function(e) {
+            endOptionsSelection();
             unselect();
         })
 
@@ -59,7 +64,7 @@ export default function Select (dragHandler, groupingHandler) {
             e.stopPropagation();
         })
 
-        $("#moreEdit").on("click", function(e){
+        $("#moreEdit").on("click", function(e) {
             e.stopPropagation();
         })
 
@@ -67,7 +72,7 @@ export default function Select (dragHandler, groupingHandler) {
             .on("keydown", function() {
                 if (d3.event.key == "Escape") {
                     unselect();
-                    groupingHandler.endGroupingSelection();
+                    endOptionsSelection()
                 }
             })
 
@@ -80,11 +85,55 @@ export default function Select (dragHandler, groupingHandler) {
     }
 
     function triggerNcActions() {
-        
+        endOptionsSelection();
+        $("#moreEdit").removeClass("is-invisible");
+        $("#moreEdit").append(
+            "<label>Change Head Shape:&nbsp;</label>" +
+            "<div id='drop_select' class='dropdown'>" +
+            "<div class='dropdown-trigger'>" +
+            "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+            "<span>Head Shapes</span><span class='icon is-small'>" +
+            "<i class=''></i></span></button></div>" +
+            "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
+            "<div class='dropdown-content'>" +
+            "<a id='Punctum' class='dropdown-item'>Punctum</a>" +
+            "<a id='Virga' class='dropdown-item'>Virga</a>" +
+            "<a id='Inclinatum' class='dropdown-item'>Inclinatum</a></div></div></div>"
+        );
+
+        initOptionsListeners();
     }
 
     function triggerNeumeActions() {
+        endOptionsSelection()
+        $("#moreEdit").removeClass("is-invisible");
+        $("#moreEdit").append(
+            "<label>Change Grouping:&nbsp;</label>" +
+            "<div id='drop_select' class='dropdown'>" +
+            "<div class='dropdown-trigger'>" +
+            "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+            "<span>Groupings</span><span class='icon is-small'>" +
+            "<i class=''></i></span></button></div>" +
+            "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
+            "<div class='dropdown-content'>" +
+            "<a id='Torculus' class='dropdown-item'>Torculus</a></div></div></div>" +
+            "<div><p class='control'>" +
+            "<button class='button' id='ungroup'>Ungroup</button></p></div>"
+        );
 
+        initOptionsListeners();
     }
+
+    function endOptionsSelection () {
+        $("#moreEdit").empty();
+        $("#moreEdit").addClass("is-invisible");
+    }
+
+    function initOptionsListeners(){
+        $("#drop_select").on("click", function() {
+            $(this).toggleClass("is-active");
+        })
+    }
+
     Select.prototype.selectListeners = selectListeners;
 }
