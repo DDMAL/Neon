@@ -2,6 +2,7 @@ export default function Select (dragHandler) {
     selectListeners();
     //Selection mode toggle
     function selectListeners() {
+        var classesToSelect = ".nc, .clef, .custos";
         $("#selByNeume").on("click", function(){
             if ($("#selByNc").hasClass("is-active")){
                 $("#selByNc").toggleClass('is-active');
@@ -17,8 +18,8 @@ export default function Select (dragHandler) {
         });
 
         //Activating selected neumes
-        $(".nc, .clef, .custos").on("mousedown", function() {
-            var isNc = !($(this).hasClass("clef") || $(this).hasClass("custos"));
+        $(classesToSelect).on("mousedown", function() {
+            var isNc= $(this).hasClass("nc");
             if ($("#selByNeume").hasClass("is-active") && isNc){
                 if(!$(this).hasClass("selected")){
                     unselect();
@@ -48,23 +49,18 @@ export default function Select (dragHandler) {
         })
 
         // // click away listeners
-        $(document.body).on("click", function() {
+
+        $("body").on("click keydown", (evt) => {
+            if (evt.type === "keydown" && evt.key !== "Escape") return;
             unselect();
         })
 
-        $(".nc, .clef, .custos").on("click", function(e){
+        $(classesToSelect).on("click", function(e){
             e.stopPropagation();
         })
 
-        d3.select("body")
-            .on("keydown", function() {
-                if (d3.event.key == "Escape") {
-                    unselect();
-                }
-            })
-
         function unselect() {
-            var els = $(".nc.selected, .clef.selected, .custos.selected");
+            var els = $(".selected");
             for (var i=0; i<els.length; i++){
                 $(els[i]).removeClass("selected").attr("fill", null);
             }

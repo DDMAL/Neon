@@ -11,6 +11,20 @@ export default function InsertHandler (neonView) {
             attributes = null;
             $("body").on("click", "#svg_output", handler);
         }
+        else if (buttonId === "diamond") {
+            type = "nc";
+            attributes = {
+                "name": "inclinatum"
+            };
+            $("body").on("click", "#svg_output", handler);
+        }
+        else if (buttonId === "virga") {
+            type = "nc";
+            attributes = {
+                "diagonalright": "u"
+            };
+            $("body").on("click", "#svg_output", handler);
+        }
         else if (buttonId === "cClef") {
             type = "clef";
             attributes = {
@@ -23,6 +37,11 @@ export default function InsertHandler (neonView) {
             attributes = {
                 "shape": "F"
             };
+            $("body").on("click", "#svg_output", handler);
+        }
+        else if (buttonId === "custos") {
+            type = "custos";
+            attributes = null;
             $("body").on("click", "#svg_output", handler);
         }
         else {

@@ -40,48 +40,103 @@ test("Test 'drag' action, neume", () => {
     expect(newAtts["oct"]).toBe("3");
 });
 
-/**
- * Note that XML IDs may change on updates to verovio,
- * even with the xmlIdSeed set. If this happens, use
- * neon.getMEI() to check what the ID is. You may also
- * need to disable the --silent option for jest in
- * package.json.
- */
-test("Test 'insert' action, punctum", () => {
-    let neon = new Neon(mei, new verovio.toolkit());
-    neon.getSVG();
-    let editorAction = {
-        "action": "insert",
-        "param": {
-            "elementType": "nc",
-            "staffId": "auto",
-            "ulx": 939,
-            "uly": 2452
-        }
-    };
-    neon.edit(editorAction);
-    let insertAtts = neon.getElementAttr(neon.info());
-    expect(insertAtts["pname"]).toBe("c");
-    expect(insertAtts["oct"]).toBe("3");
+describe("Test insert editor action", () => {
+    test("Test 'insert' action, punctum", () => {
+        let neon = new Neon(mei, new verovio.toolkit());
+        neon.getSVG();
+        let editorAction = {
+            "action": "insert",
+            "param": {
+                "elementType": "nc",
+                "staffId": "auto",
+                "ulx": 939,
+                "uly": 2452
+            }
+        };
+        neon.edit(editorAction);
+        let insertAtts = neon.getElementAttr(neon.info());
+        expect(insertAtts["pname"]).toBe("c");
+        expect(insertAtts["oct"]).toBe("3");
+    });
+
+    test("Test 'insert' action, clef", () => {
+        let neon = new Neon(mei, new verovio.toolkit());
+        neon.getSVG();
+        let editorAction = {
+            "action": "insert",
+            "param": {
+                "elementType": "clef",
+                "staffId": "auto",
+                "ulx": 1033,
+                "uly": 1431,
+                "attributes": {
+                    "shape": "C"
+                }
+            }
+        };
+        neon.edit(editorAction);
+        let insertAtts = neon.getElementAttr(neon.info());
+        expect(insertAtts["shape"]).toBe("C");
+        expect(insertAtts["line"]).toBe("3");
+    });
+
+    test("Test 'insert' action, custos", () => {
+        let neon = new Neon(mei, new verovio.toolkit());
+        neon.getSVG();
+        let editorAction = {
+            "action": "insert",
+            "param": {
+                "elementType": "custos",
+                "staffId": "auto",
+                "ulx": 1476,
+                "uly": 690
+            }
+        };
+        neon.edit(editorAction);
+        let insertAtts = neon.getElementAttr(neon.info());
+        expect(insertAtts.pname).toBe("b");
+        expect(insertAtts.oct).toBe("2");
+    });
 });
 
-test("Test 'insert' action, clef", () => {
+test("Test 'remove' action", () => {
     let neon = new Neon(mei, new verovio.toolkit());
     neon.getSVG();
     let editorAction = {
-        "action": "insert",
+        "action": "remove",
         "param": {
-            "elementType": "clef",
-            "staffId": "auto",
-            "ulx": 1033,
-            "uly": 1431,
-            "attributes": {
-                "shape": "C"
-            }
+            "elementId": "m-ceab54b1-893e-42de-8fca-aeeb13254e19"
         }
     };
-    neon.edit(editorAction);
-    let insertAtts = neon.getElementAttr(neon.info());
-    expect(insertAtts["shape"]).toBe("C");
-    expect(insertAtts["line"]).toBe("3");
+    expect(neon.edit(editorAction)).toBeTruthy();
+    let atts = neon.getElementAttr("m-ceab54b1-893e-42de-8fca-aeeb13254e19");
+    expect(atts).toStrictEqual({});
+});
+
+test("Test undo and redo", () => {
+    let neon = new Neon(mei, new verovio.toolkit());
+    let firstSVG = neon.getSVG();
+    //Should not be able to undo or redo now
+    expect(neon.undo()).toBeFalsy();
+    expect(neon.redo()).toBeFalsy();
+    
+    let editorAction = {
+        "action": "drag",
+        "param": {
+            "elementId": "m-54220197-ac7d-452c-8c34-b3d0bdbaefa0",
+            "x": 2,
+            "y": 69 
+        }
+    };
+    // Ensure the editor is working
+    expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "a", oct: "2"});
+    expect(neon.edit(editorAction)).toBeTruthy();
+    expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "c", oct: "3"});
+
+    expect(neon.undo()).toBeTruthy();
+    neon.getSVG();
+    expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "a", oct: "2"});
+    expect(neon.redo()).toBeTruthy();
+    neon.getSVG();
+    expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "c", oct: "3"});
 });
