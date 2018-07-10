@@ -5,6 +5,7 @@ export default function Controls (zoomHandler) {
     setZoomControls();
     setOpacityControls();
     setBackgroundOpacityControls();
+    setSylControls();
     setHighlightControls();
 
     function setZoomControls() {
@@ -49,13 +50,8 @@ export default function Controls (zoomHandler) {
     }
 
     function setSylControls() {
-        $("#displayText").click( function () {
-            if ($("#displayText").is(":checked")) {
-                $(".syl").css("visibility", "hidden");
-            } else {
-                $(".syl").css("visibility", "visible");
-            }
-        });
+        updateSylVisibility();
+        $("#displayText").click(updateSylVisibility);
     }
 
     function setOpacityFromSlider() {
@@ -65,13 +61,24 @@ export default function Controls (zoomHandler) {
     };
 
     function setHighlightControls(view) {
-        $("#highlightStaves").click(() => {
-            if ($("#highlightStaves").is(":checked")) {
-                color.setColor();
-            } else {
-                color.unsetColor();
-            }
-        });
+        updateHighlight();
+        $("#highlightStaves").click(updateHighlight);
+    }
+
+    function updateSylVisibility() {
+        if ($("#displayText").is(":checked")) {
+            $(".syl").css("visibility", "visible");
+        } else {
+            $(".syl").css("visibility", "hidden");
+        }
+    }
+
+    function updateHighlight() {
+        if ($("#highlightStaves").is(":checked")) {
+            color.setColor();
+        } else {
+            color.unsetColor();
+        }
     }
     
     Controls.prototype.constructor = Controls;
