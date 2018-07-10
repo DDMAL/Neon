@@ -26,9 +26,9 @@ export default function NeonView (params) {
         infoBox = new InfoBox(neon);
         viewControls = new ViewControls(zoomHandler);
         editMode = new EditMode(this, meiFile, zoomHandler);
+        loadView();
         viewControls.setSylControls();
         viewControls.setHighlightControls();
-        loadView();
     });
 
     function loadView () {
