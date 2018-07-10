@@ -1,12 +1,13 @@
 export default function GroupingHandler () {
 
+    //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
     function triggerGroupSelection () {
         $("#moreEdit").removeClass("is-invisible");
         $("#moreEdit").append(
             "<label>Select Grouping:&nbsp;</label>" +
             "<div id='grouping_dropdown' class='dropdown'>" +
             "<div class='dropdown-trigger'>" +
-            "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+            "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
             "<span>Groupings</span><span class='icon is-small'>" +
             "<i class=''></i></span></button></div>" +
             "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +

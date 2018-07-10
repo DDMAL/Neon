@@ -1,4 +1,4 @@
-export default function Select (dragHandler, groupingHandler) {
+export default function Select (dragHandler) {
     selectListeners();
     //Selection mode toggle
     function selectListeners() {
@@ -84,6 +84,7 @@ export default function Select (dragHandler, groupingHandler) {
         }
     }
 
+    //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
     function triggerNcActions() {
         endOptionsSelection();
         $("#moreEdit").removeClass("is-invisible");
@@ -91,7 +92,7 @@ export default function Select (dragHandler, groupingHandler) {
             "<label>Change Head Shape:&nbsp;</label>" +
             "<div id='drop_select' class='dropdown'>" +
             "<div class='dropdown-trigger'>" +
-            "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+            "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
             "<span>Head Shapes</span><span class='icon is-small'>" +
             "<i class=''></i></span></button></div>" +
             "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
@@ -103,7 +104,7 @@ export default function Select (dragHandler, groupingHandler) {
 
         initOptionsListeners();
     }
-
+    //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
     function triggerNeumeActions() {
         endOptionsSelection()
         $("#moreEdit").removeClass("is-invisible");
@@ -111,7 +112,7 @@ export default function Select (dragHandler, groupingHandler) {
             "<label>Change Grouping:&nbsp;</label>" +
             "<div id='drop_select' class='dropdown'>" +
             "<div class='dropdown-trigger'>" +
-            "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+            "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
             "<span>Groupings</span><span class='icon is-small'>" +
             "<i class=''></i></span></button></div>" +
             "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
