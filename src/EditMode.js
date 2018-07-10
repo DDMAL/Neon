@@ -74,6 +74,24 @@ export default function EditMode (neonView, meiFile, zoomHandler){
         insertHandler = new InsertHandler(neonView);
         insertControls = new InsertControls(cursorHandler, insertHandler);
         dragSelect = new DragSelect(dragHandler, zoomHandler, groupingHandler);
+
+        $("#undo").on("click", () => {
+            if (!neonView.undo()) {
+                console.error("Failed to undo action");
+            } else {
+                neonView.refreshPage();
+            }
+        });
+        $("#redo").on("click", () => {
+            if (!neonView.redo()) {
+                console.error("Failed to redo action");
+            } else {
+                neonView.refreshPage();
+            }
+        });
+        $("#save").on("click", () => {
+            neonView.saveMEI();
+        });
     }
 
     function resetListeners() {

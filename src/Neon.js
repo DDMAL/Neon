@@ -32,14 +32,18 @@ export default function Neon (mei, vrvToolkit) {
         return vrvToolkit.getElementAttr(elementId);
     }
 
-    function edit (editorAction) {
+    function edit (editorAction, addToUndo = true) {
         let currentMEI = getMEI();
         let value = vrvToolkit.edit(editorAction);
-        if (value) {
+        if (value && addToUndo) {
             undoStack.push(currentMEI);
             redoStack = new Array(0);
         }
         return value; 
+    }
+
+    function addStateToUndo() {
+        undoStack.push(getMEI());
     }
 
     function info () {
@@ -76,4 +80,5 @@ export default function Neon (mei, vrvToolkit) {
     Neon.prototype.info = info;
     Neon.prototype.undo = undo;
     Neon.prototype.redo = redo;
+    Neon.prototype.addStateToUndo = addStateToUndo;
 }
