@@ -86,4 +86,6 @@ export default function ViewControls (zoomHandler) {
     ViewControls.prototype.setSylControls = setSylControls;
     ViewControls.prototype.setOpacityFromSlider = setOpacityFromSlider;
     ViewControls.prototype.setHighlightControls = setHighlightControls;
+    ViewControls.prototype.updateHighlight = updateHighlight;
+    ViewControls.prototype.updateSylVisibility = updateSylVisibility;
 }
