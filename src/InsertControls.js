@@ -61,7 +61,7 @@ export default function InsertControls (cursorHandler, insertHandler) {
             $('#' + el).on('click', function(){
                 deactivate('.insertel');
                 activate(el);  
-                cursorHandler.updateCursor(el);
+                cursorHandler.updateCursor();
             });
         });
     }
