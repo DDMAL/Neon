@@ -11,8 +11,11 @@ html
           #dropdown_toggle
             button.button#edit_mode Edit MEI
       .navbar-end
-        a.navbar-item(href='https://github.com/DDMAL/Neon2/wiki')
-          p.has-text-info Help
+        .navbar-item.has-dropdown.is-hoverable
+          a.navbar-link Help
+          .navbar-dropdown
+            a.navbar-item(href="https://github.com/DDMAL/Neon2/wiki") Wiki
+            a.navbar-item(href="http://ddmal.music.mcgill.ca") DDMAL
     .columns
       .column#svg_output.is-two-thirds.box(style={overflow: "hidden"})
       .column.is-one-third
