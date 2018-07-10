@@ -26,7 +26,8 @@ export default function NeonView (params) {
         infoBox = new InfoBox(neon);
         viewControls = new ViewControls(zoomHandler);
         editMode = new EditMode(this, meiFile, zoomHandler);
-        viewControls.setSylControls(this);
+        viewControls.setSylControls();
+        viewControls.setHighlightControls();
         loadView();
     });
 
@@ -58,7 +59,6 @@ export default function NeonView (params) {
         else {
             loadSvg(); 
         }
-        setSvgText();
         resetListeners();
     }
 
@@ -83,14 +83,6 @@ export default function NeonView (params) {
                     "fileName": meiFile}
         }) 
     } 
-
-    function setSvgText () {
-        if (viewControls.shouldHideText()) {
-            $(".syl").css("visibility", "hidden");
-        } else {
-            $(".syl").css("visibility", "visible");
-        }
-    }
 
     function loadSvg() {
         var svg = neon.getSVG();

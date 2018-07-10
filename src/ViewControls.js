@@ -1,8 +1,12 @@
+import ColorStaves from "./ColorStaves.js";
+
 export default function ViewControls (zoomHandler) {
 
+    var color = new ColorStaves();
     setZoomControls();
     setOpacityControls();
     setBackgroundOpacityControls();
+    setHighlightControls();
 
     function setZoomControls() {
         $("#reset-zoom").click( function() {
@@ -43,13 +47,13 @@ export default function ViewControls (zoomHandler) {
         });
     }
 
-    function shouldHideText() {
-        return (!$("#displayText").is(":checked"));
-    }
-
-    function setSylControls(view) {
+    function setSylControls() {
         $("#displayText").click( function () {
-            view.refreshPage();
+            if ($("#displayText").is(":checked")) {
+                $(".syl").css("visibility", "hidden");
+            } else {
+                $(".syl").css("visibility", "visible");
+            }
         });
     }
 
@@ -57,11 +61,22 @@ export default function ViewControls (zoomHandler) {
         $(".definition-scale").css("opacity", $("#opacityOutput").val() / 100.0);
     };
 
+
+    function setHighlightControls(view) {
+        $("#highlightStaves").click(() => {
+            if ($("#highlightStaves").is(":checked")) {
+                color.setColor();
+            } else {
+                color.unsetColor();
+            }
+        });
+    }
+
     ViewControls.prototype.constructor = ViewControls;
     ViewControls.prototype.setZoomControls = setZoomControls;
     ViewControls.prototype.setOpacityControls = setOpacityControls;
     ViewControls.prototype.setBackgroundOpacityControls = setBackgroundOpacityControls;
-    ViewControls.prototype.shouldHideText = shouldHideText;
     ViewControls.prototype.setSylControls = setSylControls;
     ViewControls.prototype.setOpacityFromSlider = setOpacityFromSlider;
+    ViewControls.prototype.setHighlightControls = setHighlightControls;
 }
