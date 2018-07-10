@@ -34,7 +34,6 @@ export default function NeonView (params) {
         var svg = neon.getSVG();
         $("#mei_output").html(svg);
         d3.select("#mei_output").select("svg").attr("id", "svg_container");
-        setSvgText();
 
         var height = parseInt(d3.select("#svg_container").attr("height"));
         var width = parseInt(d3.select("#svg_container").attr("width"));
@@ -56,17 +55,8 @@ export default function NeonView (params) {
 
     function refreshPage () {
         $("mei_output").html(neon.getSVG());
-        setSvgText();
         resetListeners();
         resetTransformations();
-    }
-
-    function setSvgText () {
-        if (controls.shouldHideText()) {
-            d3.select("#mei_output").selectAll(".syl").style("visibility", "hidden");
-        } else {
-            d3.select("#mei_output").selectAll(".syl").style("visibility", "visible");
-        }
     }
 
     function resetListeners () {
