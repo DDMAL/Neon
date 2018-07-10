@@ -137,8 +137,20 @@ export default function NeonView (params) {
         return neon.getMEI();
     }
 
-    function edit(editorAction) {
-        return neon.edit(editorAction);
+    function edit(editorAction, addToUndo = true) {
+        return neon.edit(editorAction, addToUndo);
+    }
+
+    function undo() {
+        return neon.undo();
+    }
+
+    function redo() {
+        return neon.redo();
+    }
+
+    function addStateToUndo() {
+        neon.addStateToUndo();
     }
 
     NeonView.prototype.constructor = NeonView;
@@ -146,4 +158,8 @@ export default function NeonView (params) {
     NeonView.prototype.resetListeners = resetListeners;
     NeonView.prototype.rodanGetMei = rodanGetMei;
     NeonView.prototype.edit = edit;
+    NeonView.prototype.saveMEI = saveMEI;
+    NeonView.prototype.undo = undo;
+    NeonView.prototype.redo = redo;
+    NeonView.prototype.addStateToUndo = addStateToUndo;
 }

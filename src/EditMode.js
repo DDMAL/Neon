@@ -1,4 +1,5 @@
 import DragHandler from "./DragHandler.js";
+import GroupingHandler from "./GroupingHandler.js";
 import Navbar from "./Navbar.js";
 import Select from "./Select.js";
 import CursorHandler from "./CursorHandler.js";
@@ -8,6 +9,7 @@ import DragSelect from "./DragSelect.js"
 
 export default function EditMode (neonView, meiFile, zoomHandler){
     var dragHandler = null;
+    var groupingHandler = null;
     var navbarHandler = null;
     var select = null;
     var insertControls = null;
@@ -16,6 +18,7 @@ export default function EditMode (neonView, meiFile, zoomHandler){
     var insertHandler = null;
     var vbHeight = null;
     var vbWidth = null;
+
 
     // Set edit mode listener
     $("#edit_mode").on("click", function(){
@@ -31,6 +34,7 @@ export default function EditMode (neonView, meiFile, zoomHandler){
             "<p class='panel-heading' id='insertMenu'>Insert</p>" +
             "<p class='panel-tabs'>" +
             "<a id='neumeTab' class='insertTab'>Neume</a>" +
+            "<a id='groupingTab' class='insertTab'>Grouping</a>" +
             "<a id='clefTab' class='insertTab'>Clef</a>" +
             "<a id='systemTab' class='insertTab'>System</a>" +
             "<a id='divisionTab' class='insertTab'>Division</a></p>" +
@@ -45,20 +49,49 @@ export default function EditMode (neonView, meiFile, zoomHandler){
             "<p class='control'>" + 
             "<button class='button is-active' id='selByNeume'>Neume</button></p>" +
             "<p class='control'>" +
-            "<button class='button' id='selByNc'>Neume Component</button></p></div></a>"
+            "<button class='button' id='selByNc'>Neume Component</button></p></div></a>" +
+            "<a class='panel-block'>" + 
+            "<div class='field is-grouped'>" +
+            "<p class='control'>" +
+            "<button class='button' id='undo'>Undo</button></p>" +
+            "<p class='control'>" +
+            "<button class='button' id='redo'>Redo</button></p>" +
+            "<p class='control'>" +
+            "<button class='button' id='save'>Save Changes</button></p></div></a>" +
+            "<a id='moreEdit' class='panel-block is-invisible'>" + 
+            "<a id='neumeEdit' class='panel-block is-invisible'>"
         );
 
         init();
     })
 
     function init() {
-        dragHandler = new DragHandler(neonView)
+        dragHandler = new DragHandler(neonView);
+        groupingHandler = new GroupingHandler();
         navbarHandler = new Navbar(meiFile);
-        select = new Select(dragHandler);
+        select = new Select(dragHandler, groupingHandler);
         cursorHandler = new CursorHandler();
         insertHandler = new InsertHandler(neonView);
         insertControls = new InsertControls(cursorHandler, insertHandler);
-        dragSelect = new DragSelect(dragHandler, zoomHandler);
+        dragSelect = new DragSelect(dragHandler, zoomHandler, groupingHandler);
+
+        $("#undo").on("click", () => {
+            if (!neonView.undo()) {
+                console.error("Failed to undo action");
+            } else {
+                neonView.refreshPage();
+            }
+        });
+        $("#redo").on("click", () => {
+            if (!neonView.redo()) {
+                console.error("Failed to redo action");
+            } else {
+                neonView.refreshPage();
+            }
+        });
+        $("#save").on("click", () => {
+            neonView.saveMEI();
+        });
     }
 
     function resetListeners() {

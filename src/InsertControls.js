@@ -13,6 +13,12 @@ export default function InsertControls (cursorHandler, insertHandler) {
             "<button id='quilisma' class='button insertel smallel' title='quilisma'><img src='/img/quilisma.png' class='image'/></button></p>" +
             "<p class='control'>" +
             "<button id='custos' class='button insertel smallel' title='custos'><img src='/img/custos.png' class='image'/></button></p>",
+        groupingTab: "<p class='control'>" +
+            "<button id='torculus' class='button insertel smallel' title='torculus'><img src='' class='image'/></button></p>" +
+            "<p class='control'>" +
+            "<button id='clivis' class='button insertel smallel' title='clivis'><img src='' class='image'/></button></p>" +
+            "<p class='control'>" +
+            "<button id='pes' class='button insertel smallel' title='pes'><img src='' class='image'/></button></p>",
         clefTab: "<p class='control'>" +
             "<button id='cClef' class='button insertel smallel' title=' C Clef'><img src='/img/cClef.png' class='image' /></button></p>" +
             "<p class='control'>" +

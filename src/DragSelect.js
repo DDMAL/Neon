@@ -1,4 +1,4 @@
-export default function DragSelect (dragHandler, zoomHandler) {
+export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
     var initialX = 0;
     var initialY = 0;
     var panning = false;
@@ -73,8 +73,9 @@ export default function DragSelect (dragHandler, zoomHandler) {
                 return elX > rx && elX < lx  && elY > ry && elY < ly;
             });
 
+            var toSelect = [];
+
             elements.forEach(el => {
-                var toSelect = [];
                 var parent = $(el).parent()[0];
                 var isNc = !($(parent).hasClass("clef") || $(parent).hasClass("custos"));
 
@@ -92,15 +93,17 @@ export default function DragSelect (dragHandler, zoomHandler) {
                             toSelect.push(el);
                         }   
                     })
-                }
-                
+                }     
                 toSelect.forEach(nc => {
                     var cl = d3.select("#" + nc.id).attr("class"); 
                     d3.select("#" + nc.id)
                         .attr("fill", "#d00")
                         .attr("class", cl + " selected");
-                });                 
+                });               
             })
+            if (toSelect.length > 1){
+                groupingHandler.triggerGroupSelection();
+            }  
             dragHandler.dragInit();
             d3.selectAll("#selectRect").remove();
             dragSelecting = false;
@@ -133,5 +136,6 @@ export default function DragSelect (dragHandler, zoomHandler) {
         for (var i=0; i<ncs.length; i++){
             $(ncs[i]).removeClass("selected").attr("fill", null);
         }
+        groupingHandler.endGroupingSelection();
     }
 }

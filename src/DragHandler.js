@@ -37,17 +37,23 @@ export default function DragHandler (neonView) {
 
         function dragEnded () {
             dragEndCoords = [d3.event.x, d3.event.y];
-            
+            neonView.addStateToUndo(); 
             selection.forEach((el) => {
                 editorAction = { action: 'drag', param: { elementId: el.id, 
                     x: parseInt(dragEndCoords[0] - dragStartCoords[0]),
                     y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -1}
                 };
-                neonView.edit(editorAction);
+                neonView.edit(editorAction, false);
             })
             neonView.refreshPage();
             dragInit();
+            endOptionsSelection();
         }
+    }
+
+    function endOptionsSelection () {
+        $("#moreEdit").empty();
+        $("#moreEdit").addClass("is-invisible");
     }
 
     DragHandler.prototype.dragInit = dragInit;

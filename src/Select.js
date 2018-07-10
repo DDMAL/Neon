@@ -31,8 +31,14 @@ export default function Select (dragHandler) {
                             $(el).attr("fill", "#d00");
                             $(el).addClass("selected");
                         }   
-                    })                  
-                    dragHandler.dragInit();
+                    }) 
+                    if(siblings.length != 0){
+                        triggerNeumeActions();  
+                    }     
+                    else{
+                        triggerNcActions();
+                    }          
+                    dragHandler.dragInit();   
                 }
             }
             else if ($("#selByNc").hasClass("is-active") || !isNc){
@@ -40,6 +46,7 @@ export default function Select (dragHandler) {
                     unselect();
                     $(this).attr("fill", "#d00");
                     $(this).addClass("selected");
+                    triggerNcActions();
                     dragHandler.dragInit();
                 }
             }
@@ -48,14 +55,18 @@ export default function Select (dragHandler) {
             }
         })
 
-        // // click away listeners
-
+        // click away listeners
         $("body").on("click keydown", (evt) => {
             if (evt.type === "keydown" && evt.key !== "Escape") return;
+            endOptionsSelection();
             unselect();
         })
 
         $(classesToSelect).on("click", function(e){
+            e.stopPropagation();
+        })
+
+        $("#moreEdit").on("click", function(e) {
             e.stopPropagation();
         })
 
@@ -66,5 +77,58 @@ export default function Select (dragHandler) {
             }
         }
     }
+
+    //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
+    function triggerNcActions() {
+        endOptionsSelection();
+        $("#moreEdit").removeClass("is-invisible");
+        $("#moreEdit").append(
+            "<label>Change Head Shape:&nbsp;</label>" +
+            "<div id='drop_select' class='dropdown'>" +
+            "<div class='dropdown-trigger'>" +
+            "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+            "<span>Head Shapes</span><span class='icon is-small'>" +
+            "<i class=''></i></span></button></div>" +
+            "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
+            "<div class='dropdown-content'>" +
+            "<a id='Punctum' class='dropdown-item'>Punctum</a>" +
+            "<a id='Virga' class='dropdown-item'>Virga</a>" +
+            "<a id='Inclinatum' class='dropdown-item'>Inclinatum</a></div></div></div>"
+        );
+
+        initOptionsListeners();
+    }
+    //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
+    function triggerNeumeActions() {
+        endOptionsSelection()
+        $("#moreEdit").removeClass("is-invisible");
+        $("#moreEdit").append(
+            "<label>Change Grouping:&nbsp;</label>" +
+            "<div id='drop_select' class='dropdown'>" +
+            "<div class='dropdown-trigger'>" +
+            "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+            "<span>Groupings</span><span class='icon is-small'>" +
+            "<i class=''></i></span></button></div>" +
+            "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
+            "<div class='dropdown-content'>" +
+            "<a id='Torculus' class='dropdown-item'>Torculus</a></div></div></div>" +
+            "<div><p class='control'>" +
+            "<button class='button' id='ungroup'>Ungroup</button></p></div>"
+        );
+
+        initOptionsListeners();
+    }
+
+    function endOptionsSelection () {
+        $("#moreEdit").empty();
+        $("#moreEdit").addClass("is-invisible");
+    }
+
+    function initOptionsListeners(){
+        $("#drop_select").on("click", function() {
+            $(this).toggleClass("is-active");
+        })
+    }
+
     Select.prototype.selectListeners = selectListeners;
 }
