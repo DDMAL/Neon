@@ -49,6 +49,8 @@ export default function NeonView (params) {
             .attr("width", viewWidth)
             .attr("height", viewHeight)
             .attr("viewBox", "0 0 " + width + " " + height);
+        controls.updateHighlight();
+        controls.updateSylVisibility();
         resetListeners();
     }
 
