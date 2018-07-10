@@ -47,7 +47,13 @@ export default function DragHandler (neonView) {
             })
             neonView.refreshPage();
             dragInit();
+            endOptionsSelection();
         }
+    }
+
+    function endOptionsSelection () {
+        $("#moreEdit").empty();
+        $("#moreEdit").addClass("is-invisible");
     }
 
     DragHandler.prototype.dragInit = dragInit;

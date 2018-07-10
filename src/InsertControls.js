@@ -42,7 +42,7 @@ export default function InsertControls (cursorHandler, insertHandler) {
     $("#neumeTab").click();
     
     function bindTabs() {
-        var insertTabs = d3.selectAll('.insertTab')._groups[0];
+        var insertTabs = $('.insertTab');
         var tabIds = $.map(insertTabs, function(tab, i){
             return tab.id;
         });
@@ -59,7 +59,7 @@ export default function InsertControls (cursorHandler, insertHandler) {
     }
 
     function bindElements() {
-        var insertElements = d3.selectAll('.insertel')._groups[0];
+        var insertElements = $('.insertel');
         var elementIds = $.map(insertElements, function(el, i){
             return el.id;
         });
@@ -67,7 +67,7 @@ export default function InsertControls (cursorHandler, insertHandler) {
             $('#' + el).on('click', function(){
                 deactivate('.insertel');
                 activate(el);  
-                cursorHandler.updateCursor(el);
+                cursorHandler.updateCursor();
             });
         });
     }
@@ -78,7 +78,7 @@ export default function InsertControls (cursorHandler, insertHandler) {
     }
 
     function deactivate(type) {
-        var elList = d3.selectAll(type)._groups[0];
+        var elList = $(type);
         for (var i=0; i<elList.length; i++){
             if(elList[i].classList.length > 1){
                 elList[i].classList.remove('is-active');

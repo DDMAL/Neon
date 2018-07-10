@@ -16,6 +16,8 @@ export default function EditMode (neonView, meiFile, zoomHandler){
     var cursorHandler = null;
     var dragSelect = null;
     var insertHandler = null;
+    var vbHeight = null;
+    var vbWidth = null;
 
 
     // Set edit mode listener
@@ -78,5 +80,13 @@ export default function EditMode (neonView, meiFile, zoomHandler){
         select.selectListeners();
     }
 
+    ////// TODO: pass to cursorHandler to scale insert image ///////
+    // function getScale() {
+    //     var viewBox = d3.select("#svg_group").attr("viewBox");
+    //     vbHeight = parseInt(viewBox.split(" ")[3]);
+    //     vbWidth = parseInt(viewBox.split(" ")[2]);
+    // }
+
     EditMode.prototype.resetListeners = resetListeners;
+    // EditMode.prototype.getScale = getScale;
 }

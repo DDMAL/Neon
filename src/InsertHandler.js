@@ -9,46 +9,48 @@ export default function InsertHandler (neonView) {
         if (buttonId === "punctum") {
             type = "nc";
             attributes = null;
-            $("body").on("click", "#svg_output", handler);
         }
         else if (buttonId === "diamond") {
             type = "nc";
             attributes = {
                 "name": "inclinatum"
             };
-            $("body").on("click", "#svg_output", handler);
         }
         else if (buttonId === "virga") {
             type = "nc";
             attributes = {
                 "diagonalright": "u"
             };
-            $("body").on("click", "#svg_output", handler);
         }
         else if (buttonId === "cClef") {
             type = "clef";
             attributes = {
                 "shape": "C"
             };
-            $("body").on("click", "#svg_output", handler);
         }
         else if (buttonId === "fClef") {
             type = "clef";
             attributes = {
                 "shape": "F"
             };
-            $("body").on("click", "#svg_output", handler);
         }
         else if (buttonId === "custos") {
             type = "custos";
             attributes = null;
-            $("body").on("click", "#svg_output", handler);
         }
         else {
             type = "";
             attributes = null;
             console.error("Invalid button for insertion: " + buttonId + ".");
+            return;
         }
+        $("body").on("click", "#svg_output", handler);
+        $("body").on("keydown", (evt) => {
+            if (evt.key === "Escape") {
+                insertDisabled();
+                $("body").off("keydown");
+            }
+        });
     }
 
     function insertDisabled () {
@@ -83,7 +85,6 @@ export default function InsertHandler (neonView) {
 
         neonView.edit(editorAction);
         neonView.refreshPage();
-        insertDisabled();
     }
 
     InsertHandler.prototype.constructor = InsertHandler;
