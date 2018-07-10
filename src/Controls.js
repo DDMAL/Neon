@@ -1,8 +1,12 @@
-export default function Controls (zoomHandler) {
+import ColorStaves from "./ColorStaves.js";
 
+export default function Controls (zoomHandler) {
+    var color = new ColorStaves();
     setZoomControls();
     setOpacityControls();
     setBackgroundOpacityControls();
+    setSylControls();
+    setHighlightControls();
 
     function setZoomControls() {
         $("#reset-zoom").click( function() {
@@ -45,14 +49,9 @@ export default function Controls (zoomHandler) {
         });
     }
 
-    function shouldHideText() {
-        return (!$("#displayText").is(":checked"));
-    }
-
-    function setSylControls(view) {
-        $("#displayText").click( function () {
-            view.refreshPage();
-        });
+    function setSylControls() {
+        updateSylVisibility();
+        $("#displayText").click(updateSylVisibility);
     }
 
     function setOpacityFromSlider() {
@@ -61,11 +60,34 @@ export default function Controls (zoomHandler) {
         meiSel.style("opacity", opacitySliderValue / 100.0);
     };
 
+    function setHighlightControls(view) {
+        updateHighlight();
+        $("#highlightStaves").click(updateHighlight);
+    }
+
+    function updateSylVisibility() {
+        if ($("#displayText").is(":checked")) {
+            $(".syl").css("visibility", "visible");
+        } else {
+            $(".syl").css("visibility", "hidden");
+        }
+    }
+
+    function updateHighlight() {
+        if ($("#highlightStaves").is(":checked")) {
+            color.setColor();
+        } else {
+            color.unsetColor();
+        }
+    }
+    
     Controls.prototype.constructor = Controls;
     Controls.prototype.setZoomControls = setZoomControls;
     Controls.prototype.setOpacityControls = setOpacityControls;
     Controls.prototype.setBackgroundOpacityControls = setBackgroundOpacityControls;
-    Controls.prototype.shouldHideText = shouldHideText;
     Controls.prototype.setSylControls = setSylControls;
     Controls.prototype.setOpacityFromSlider = setOpacityFromSlider;
+    Controls.prototype.setHighlightControls = setHighlightControls;
+    Controls.prototype.updateHighlight = updateHighlight;
+    Controls.prototype.updateSylVisibility = updateSylVisibility;
 }
