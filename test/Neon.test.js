@@ -140,3 +140,37 @@ test("Test undo and redo", () => {
     neon.getSVG();
     expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "c", oct: "3"});
 });
+
+test("Test chain action", () => {
+    let neon = new Neon(mei, new verovio.toolkit());
+    neon.getSVG();
+    let editorAction = {
+        "action": "chain",
+        "param": [
+            {
+                "action": "drag",
+                "param": {
+                    "elementId": "m-5ba56425-5c59-4f34-9e56-b86779cb4d6d",
+                    "x": 2,
+                    "y": 69
+                }
+            },
+            {
+                "action": "insert",
+                "param": {
+                    "elementType": "nc",
+                    "staffId": "auto",
+                    "ulx": 939,
+                    "uly": 2452
+                }
+            }
+        ]
+    };
+    expect(neon.edit(editorAction)).toBeTruthy();
+    let dragAtts = neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d");
+    let insertAtts = neon.getElementAttr(neon.info());
+    expect(dragAtts.pname).toBe("c");
+    expect(dragAtts.oct).toBe("3");
+    expect(insertAtts.pname).toBe("c");
+    expect(insertAtts.oct).toBe("3");
+});
