@@ -21,7 +21,8 @@ export default function NeonView (params) {
         zoomHandler = new ZoomHandler();
         infoBox = new InfoBox(neon);
         controls = new Controls(zoomHandler);
-        controls.setSylControls(this);
+        controls.setSylControls();
+        controls.setHighlightControls();
         loadView();
     });
 

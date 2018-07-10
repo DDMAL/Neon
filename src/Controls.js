@@ -1,8 +1,11 @@
-export default function Controls (zoomHandler) {
+import ColorStaves from "./ColorStaves.js";
 
+export default function Controls (zoomHandler) {
+    var color = new ColorStaves();
     setZoomControls();
     setOpacityControls();
     setBackgroundOpacityControls();
+    setHighlightControls();
 
     function setZoomControls() {
         $("#reset-zoom").click( function() {
@@ -45,13 +48,13 @@ export default function Controls (zoomHandler) {
         });
     }
 
-    function shouldHideText() {
-        return (!$("#displayText").is(":checked"));
-    }
-
-    function setSylControls(view) {
+    function setSylControls() {
         $("#displayText").click( function () {
-            view.refreshPage();
+            if ($("#displayText").is(":checked")) {
+                $(".syl").css("visibility", "hidden");
+            } else {
+                $(".syl").css("visibility", "visible");
+            }
         });
     }
 
@@ -61,11 +64,21 @@ export default function Controls (zoomHandler) {
         meiSel.style("opacity", opacitySliderValue / 100.0);
     };
 
+    function setHighlightControls(view) {
+        $("#highlightStaves").click(() => {
+            if ($("#highlightStaves").is(":checked")) {
+                color.setColor();
+            } else {
+                color.unsetColor();
+            }
+        });
+    }
+    
     Controls.prototype.constructor = Controls;
     Controls.prototype.setZoomControls = setZoomControls;
     Controls.prototype.setOpacityControls = setOpacityControls;
     Controls.prototype.setBackgroundOpacityControls = setBackgroundOpacityControls;
-    Controls.prototype.shouldHideText = shouldHideText;
     Controls.prototype.setSylControls = setSylControls;
     Controls.prototype.setOpacityFromSlider = setOpacityFromSlider;
+    Controls.prototype.setHighlightControls = setHighlightControls;
 }
