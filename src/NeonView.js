@@ -60,6 +60,8 @@ export default function NeonView (params) {
         else {
             loadSvg(); 
         }
+        viewControls.updateSylVisibility();
+        viewControls.updateHighlight();
         resetListeners();
     }
 
