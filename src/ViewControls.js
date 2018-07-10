@@ -1,8 +1,13 @@
+import ColorStaves from "./ColorStaves.js";
+
 export default function ViewControls (zoomHandler) {
 
+    var color = new ColorStaves();
     setZoomControls();
     setOpacityControls();
     setBackgroundOpacityControls();
+    setSylControls();
+    setHighlightControls();
 
     function setZoomControls() {
         $("#reset-zoom").click( function() {
@@ -43,25 +48,42 @@ export default function ViewControls (zoomHandler) {
         });
     }
 
-    function shouldHideText() {
-        return (!$("#displayText").is(":checked"));
-    }
-
-    function setSylControls(view) {
-        $("#displayText").click( function () {
-            view.refreshPage();
-        });
+    function setSylControls() {
+        updateSylVisibility();
+        $("#displayText").click(updateSylVisibility);
     }
 
     function setOpacityFromSlider() {
         $(".definition-scale").css("opacity", $("#opacityOutput").val() / 100.0);
     };
 
+
+    function setHighlightControls(view) {
+        updateHighlight();
+        $("#highlightStaves").click(updateHighlight);
+    }
+
+    function updateSylVisibility() {
+        if ($("#displayText").is(":checked")) {
+            $(".syl").css("visibility", "visible");
+        } else {
+            $(".syl").css("visibility", "hidden");
+        }
+    }
+
+    function updateHighlight() {
+        if ($("#highlightStaves").is(":checked")) {
+            color.setColor();
+        } else {
+            color.unsetColor();
+        }
+    }
+
     ViewControls.prototype.constructor = ViewControls;
     ViewControls.prototype.setZoomControls = setZoomControls;
     ViewControls.prototype.setOpacityControls = setOpacityControls;
     ViewControls.prototype.setBackgroundOpacityControls = setBackgroundOpacityControls;
-    ViewControls.prototype.shouldHideText = shouldHideText;
     ViewControls.prototype.setSylControls = setSylControls;
     ViewControls.prototype.setOpacityFromSlider = setOpacityFromSlider;
+    ViewControls.prototype.setHighlightControls = setHighlightControls;
 }
