@@ -12,7 +12,7 @@ export default function GroupingHandler () {
             "<i class=''></i></span></button></div>" +
             "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
             "<div class='dropdown-content'>" +
-            "<a id='Torculus' class='dropdown-item'>Torculus</a>" +
+            "<a id='grouping' class='dropdown-item'>Torculus</a>" +
             "<a id='' class='dropdown-item'>Etc...</a></div></div></div>" +
             "<div><p class='control'>" +
             "<button class='button' id='ungroup'>Ungroup</button></p></div>"
@@ -31,6 +31,36 @@ export default function GroupingHandler () {
             $(this).toggleClass("is-active");
         })
 
+        $("#grouping").on("click", function(){
+            groupNcs();
+        })
+
+    }
+    
+    function groupNcs() {
+        var elementIds = [];
+        var elements = Array.from($(".selected"));
+
+        elements.every((el) => {
+            if ($(el).hasClass("nc")){
+                elementIds.push(el.id);
+            }
+            else {
+                elementIds = [];
+                console.log("Error: cannot group Clefs or Custos");
+                return false;
+            }
+            return true;
+        })
+
+        // let editorAction = {
+        //     "action": "group",
+        //     "param": {
+        //         "elementIds": elementIds;
+        //     }
+        // };
+
+        // neonView.edit(editorAction);
     }
     
     GroupingHandler.prototype.constructor = GroupingHandler;
