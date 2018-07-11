@@ -79,7 +79,7 @@ describe("Check Controls UI", () => {
         var rect = await zoomSlider.getRect();
         await actions.dragAndDrop(zoomSlider, {x: parseInt(rect.width / 2), y: 0}).perform();
         var transform = await browser.findElement(By.id("svg_group")).getAttribute("transform");
-        expect(transform).toContain("scale(2)");
+        expect(transform).toContain("scale(4)");
         
         var zoomButton = await browser.findElement(By.id('reset-zoom'));
         await actions.click(zoomButton).perform();

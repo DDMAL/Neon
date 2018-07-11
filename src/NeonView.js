@@ -2,7 +2,8 @@ import Neon from "./Neon.js";
 import ZoomHandler from "./ZoomHandler.js";
 import InfoBox from "./InfoBox.js";
 import Controls from "./Controls.js";
-import { verovio } from "./verovio-toolkit.js";
+
+const verovio = require("verovio-dev");
 
 export default function NeonView (params) {
     var viewHeight = 800;
