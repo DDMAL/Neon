@@ -32,6 +32,7 @@ export default function EditMode (neonView, meiFile, zoomHandler){
         );
         $("#insert_controls").append(
             "<p class='panel-heading' id='insertMenu'>Insert</p>" +
+            "<div id='insertContents'>" +
             "<p class='panel-tabs'>" +
             "<a id='neumeTab' class='insertTab'>Neume</a>" +
             "<a id='groupingTab' class='insertTab'>Grouping</a>" +
@@ -39,10 +40,11 @@ export default function EditMode (neonView, meiFile, zoomHandler){
             "<a id='systemTab' class='insertTab'>System</a>" +
             "<a id='divisionTab' class='insertTab'>Division</a></p>" +
             "<a class='panel-block has-text-centered'>" +
-            "<div id='insert_data' class='field is-grouped'/></a>"
+            "<div id='insert_data' class='field is-grouped'/></a></div>"
         );
         $("#edit_controls").append(
             "<p class='panel-heading' id='editMenu'>Edit</p>" +
+            "<div id='editContents'>" +
             "<a class='panel-block'>" +
             "<label>Select By:&nbsp;</label>" +
             "<div class='field has-addons'>" +
@@ -59,7 +61,7 @@ export default function EditMode (neonView, meiFile, zoomHandler){
             "<p class='control'>" +
             "<button class='button' id='save'>Save Changes</button></p></div></a>" +
             "<a id='moreEdit' class='panel-block is-invisible'>" + 
-            "<a id='neumeEdit' class='panel-block is-invisible'>"
+            "<a id='neumeEdit' class='panel-block is-invisible'></div>"
         );
 
         init();
@@ -74,6 +76,22 @@ export default function EditMode (neonView, meiFile, zoomHandler){
         insertHandler = new InsertHandler(neonView);
         insertControls = new InsertControls(cursorHandler, insertHandler);
         dragSelect = new DragSelect(dragHandler, zoomHandler, groupingHandler);
+
+        $("#insertMenu").on("click", () => {
+            if ($("#insertContents").is(":hidden")) {
+                $("#insertContents").css("display", "");
+            } else {
+                $("#insertContents").css("display", "none");
+            }
+        });
+
+        $("#editMenu").on("click", () => {
+            if ($("#editContents").is(":hidden")) {
+                $("#editContents").css("display", "");
+            } else {
+                $("#editContents").css("display", "none");
+            }
+        });
 
         $("#undo").on("click", () => {
             if (!neonView.undo()) {

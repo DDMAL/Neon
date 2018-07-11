@@ -20,24 +20,25 @@ html
       .column#svg_output.is-two-thirds.box(style={overflow: "hidden"})
       .column.is-one-third
         .panel
-          p.panel-heading Display
-          a.panel-block.has-text-centered
-            button.button#reset-zoom Zoom
-            input.slider.is-fullwidth#zoomSlider(step="5", min="25", max="400", value="100", type="range")
-            output#zoomOutput(for="zoomSlider") 100
-          a.panel-block.has-text-centered
-            button.button#reset-opacity Neume Opacity
-            input.slider.is-fullwidth#opacitySlider(step="5", min="0", max="100", value="100", type="range")
-            output#opacityOutput(for="opacitySlider") 100
-          a.panel-block.has-text-centered
-            button.button#reset-bg-opacity Image Opacity
-            input.slider.is-fullwidth#bgOpacitySlider(step="5", min="0", max="100", value="100", type="range")
-            output#bgOpacityOutput(for="bgOpacitySlider") 100
-          a.panel-block
-            label.checkbox Display Text: 
-              input.checkbox#displayText(type="checkbox")
-            label.checkbox Highlight Staves:
-              input.checkbox#highlightStaves(type="checkbox")
+          p.panel-heading#displayHeader Display
+          #displayContents
+            a.panel-block.has-text-centered
+              button.button#reset-zoom Zoom
+              input.slider.is-fullwidth#zoomSlider(step="5", min="25", max="400", value="100", type="range")
+              output#zoomOutput(for="zoomSlider") 100
+            a.panel-block.has-text-centered
+              button.button#reset-opacity Neume Opacity
+              input.slider.is-fullwidth#opacitySlider(step="5", min="0", max="100", value="100", type="range")
+              output#opacityOutput(for="opacitySlider") 100
+            a.panel-block.has-text-centered
+              button.button#reset-bg-opacity Image Opacity
+              input.slider.is-fullwidth#bgOpacitySlider(step="5", min="0", max="100", value="100", type="range")
+              output#bgOpacityOutput(for="bgOpacitySlider") 100
+            a.panel-block
+              label.checkbox Display Text: 
+                input.checkbox#displayText(type="checkbox")
+              label.checkbox Highlight Staves:
+                input.checkbox#highlightStaves(type="checkbox")
           #insert_controls
           #edit_controls
         #neume_info
