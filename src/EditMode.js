@@ -67,7 +67,7 @@ export default function EditMode (neonView, meiFile, zoomHandler){
 
     function init() {
         dragHandler = new DragHandler(neonView);
-        groupingHandler = new GroupingHandler();
+        groupingHandler = new GroupingHandler(neonView);
         navbarHandler = new Navbar(meiFile);
         select = new Select(dragHandler, groupingHandler);
         cursorHandler = new CursorHandler();

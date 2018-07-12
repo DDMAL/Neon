@@ -1,4 +1,4 @@
-export default function GroupingHandler () {
+export default function GroupingHandler (neonView) {
 
     //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
     function triggerGroupSelection () {
@@ -35,6 +35,10 @@ export default function GroupingHandler () {
             groupNcs();
         })
 
+        $("#ungroup").on("click", function(){
+            ungroupNcs();
+        })
+
     }
     
     function groupNcs() {
@@ -53,14 +57,19 @@ export default function GroupingHandler () {
             return true;
         })
 
-        // let editorAction = {
-        //     "action": "group",
-        //     "param": {
-        //         "elementIds": elementIds;
-        //     }
-        // };
+        let editorAction = {
+            "action": "group",
+            "param": {
+                "elementIds": elementIds
+            }
+        };
 
-        // neonView.edit(editorAction);
+        function ungroupNcs() {
+            
+        }
+
+        neonView.edit(editorAction);
+        neonView.refreshPage();
     }
     
     GroupingHandler.prototype.constructor = GroupingHandler;
