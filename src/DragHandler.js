@@ -21,7 +21,7 @@ export default function DragHandler (neonView) {
     
         // Drag effects
         function dragStarted () {
-            dragStartCoords = [d3.event.x, d3.event.y];
+            dragStartCoords = d3.mouse(this);
         }
 
         function dragging () {
@@ -37,14 +37,21 @@ export default function DragHandler (neonView) {
 
         function dragEnded () {
             dragEndCoords = [d3.event.x, d3.event.y];
-            neonView.addStateToUndo(); 
+            let paramArray = [];
             selection.forEach((el) => {
-                editorAction = { action: 'drag', param: { elementId: el.id, 
+                let singleAction = { action: 'drag', param: { elementId: el.id, 
                     x: parseInt(dragEndCoords[0] - dragStartCoords[0]),
-                    y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -1}
+                    y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -2}
                 };
-                neonView.edit(editorAction, false);
-            })
+                paramArray.push(singleAction);
+            });
+            editorAction = {
+                "action": "chain",
+                "param": paramArray
+            };
+            console.log("Relative y: " + (dragStartCoords[1] - dragEndCoords[1]));
+            console.log(editorAction);
+            neonView.edit(editorAction);
             neonView.refreshPage();
             dragInit();
             endOptionsSelection();

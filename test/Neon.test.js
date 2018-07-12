@@ -27,7 +27,7 @@ test("Test 'drag' action, neume", () => {
         "param": {
             "elementId": "m-54220197-ac7d-452c-8c34-b3d0bdbaefa0",
             "x": 2,
-            "y": 69 
+            "y": 34 
         }
     };
     neon.edit(editorAction);
@@ -125,7 +125,7 @@ test("Test undo and redo", () => {
         "param": {
             "elementId": "m-54220197-ac7d-452c-8c34-b3d0bdbaefa0",
             "x": 2,
-            "y": 69 
+            "y": 34 
         }
     };
     // Ensure the editor is working
@@ -152,7 +152,7 @@ test("Test chain action", () => {
                 "param": {
                     "elementId": "m-5ba56425-5c59-4f34-9e56-b86779cb4d6d",
                     "x": 2,
-                    "y": 69
+                    "y": 34 
                 }
             },
             {
