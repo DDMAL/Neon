@@ -28,7 +28,8 @@ export default function InfoBox(neon) {
         }
 
         var element = $("#" + id);
-        var elementClass = element.attr("class");
+        var classRe = /neume|nc|clef|custos|staff/;
+        var elementClass = element.attr("class").match(classRe)[0];
         var body = "";
 
         // Gets the pitches depending on element type and 
