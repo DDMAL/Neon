@@ -95,10 +95,8 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
                     })
                 }     
                 toSelect.forEach(nc => {
-                    var cl = d3.select("#" + nc.id).attr("class"); 
-                    d3.select("#" + nc.id)
-                        .attr("fill", "#d00")
-                        .attr("class", cl + " selected");
+                    $("#" + nc.id).addClass("selected");
+                    $("#" + nc.id).attr("fill", "#d00");
                 });               
             })
             if (toSelect.length > 1){
