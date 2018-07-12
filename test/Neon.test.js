@@ -36,8 +36,8 @@ test("Test 'drag' action, neume", () => {
     expect(originalAtts["pname"]).toBe("a");
     expect(originalAtts["oct"]).toBe("2");
 
-    expect(newAtts["pname"]).toBe("c");
-    expect(newAtts["oct"]).toBe("3");
+    expect(newAtts["pname"]).toBe("b");
+    expect(newAtts["oct"]).toBe("2");
 });
 
 describe("Test insert editor action", () => {
@@ -131,14 +131,14 @@ test("Test undo and redo", () => {
     // Ensure the editor is working
     expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "a", oct: "2"});
     expect(neon.edit(editorAction)).toBeTruthy();
-    expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "c", oct: "3"});
+    expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "b", oct: "2"});
 
     expect(neon.undo()).toBeTruthy();
     neon.getSVG();
     expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "a", oct: "2"});
     expect(neon.redo()).toBeTruthy();
     neon.getSVG();
-    expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "c", oct: "3"});
+    expect(neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d")).toEqual({pname: "b", oct: "2"});
 });
 
 test("Test chain action", () => {
@@ -169,8 +169,8 @@ test("Test chain action", () => {
     expect(neon.edit(editorAction)).toBeTruthy();
     let dragAtts = neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d");
     let insertAtts = neon.getElementAttr(JSON.parse(neon.info())[1]);
-    expect(dragAtts.pname).toBe("c");
-    expect(dragAtts.oct).toBe("3");
+    expect(dragAtts.pname).toBe("b");
+    expect(dragAtts.oct).toBe("2");
     expect(insertAtts.pname).toBe("c");
     expect(insertAtts.oct).toBe("3");
 });

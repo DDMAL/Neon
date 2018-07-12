@@ -41,7 +41,7 @@ export default function DragHandler (neonView) {
             selection.forEach((el) => {
                 let singleAction = { action: 'drag', param: { elementId: el.id, 
                     x: parseInt(dragEndCoords[0] - dragStartCoords[0]),
-                    y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -2}
+                    y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -1}
                 };
                 paramArray.push(singleAction);
             });
