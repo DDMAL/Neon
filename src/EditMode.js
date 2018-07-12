@@ -59,7 +59,9 @@ export default function EditMode (neonView, meiFile, zoomHandler){
             "<p class='control'>" +
             "<button class='button' id='redo'>Redo</button></p>" +
             "<p class='control'>" +
-            "<button class='button' id='save'>Save Changes</button></p></div></a>" +
+            "<button class='button' id='save'>Save Changes</button></p>" +
+            "<p class='control'>" +
+            "<button class='button' id='delete'>Delete</button></p></div></a>" +
             "<a id='moreEdit' class='panel-block is-invisible'>" + 
             "<a id='neumeEdit' class='panel-block is-invisible'></div>"
         );
@@ -109,6 +111,27 @@ export default function EditMode (neonView, meiFile, zoomHandler){
         });
         $("#save").on("click", () => {
             neonView.saveMEI();
+        });
+
+        $("#delete").on("click", () => {
+            let toRemove = [];
+            var selected = Array.from(document.getElementsByClassName("selected"));
+            selected.forEach(elem => {
+                toRemove.push(
+                    {
+                        "action": "remove",
+                        "param": {
+                            "elementId": elem.id
+                        }
+                    }
+                );
+            });
+            let chainAction = {
+                "action": "chain",
+                "param": toRemove
+            };
+            neonView.edit(chainAction);
+            neonView.refreshPage();
         });
     }
 
