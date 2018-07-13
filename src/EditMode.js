@@ -6,9 +6,11 @@ import CursorHandler from "./CursorHandler.js";
 import InsertControls from "./InsertControls.js";
 import InsertHandler from "./InsertHandler.js";
 import DragSelect from "./DragSelect.js"
+import SelectOptions from "./SelectOptions.js";
 
 export default function EditMode (neonView, meiFile, zoomHandler){
     var dragHandler = null;
+    var selectOptions = null;
     var groupingHandler = null;
     var navbarHandler = null;
     var select = null;
@@ -71,13 +73,14 @@ export default function EditMode (neonView, meiFile, zoomHandler){
 
     function init() {
         dragHandler = new DragHandler(neonView);
+        selectOptions = new SelectOptions();
         groupingHandler = new GroupingHandler();
         navbarHandler = new Navbar(meiFile);
-        select = new Select(dragHandler, neonView, groupingHandler);
+        select = new Select(dragHandler, neonView, selectOptions);
         cursorHandler = new CursorHandler();
         insertHandler = new InsertHandler(neonView);
         insertControls = new InsertControls(cursorHandler, insertHandler);
-        dragSelect = new DragSelect(dragHandler, zoomHandler, groupingHandler);
+        dragSelect = new DragSelect(dragHandler, zoomHandler, groupingHandler, selectOptions);
 
         $("#insertMenu").on("click", () => {
             if ($("#insertContents").is(":hidden")) {
