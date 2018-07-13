@@ -1,4 +1,5 @@
-export default function Select (dragHandler) {
+export default function Select (dragHandler, neonView) {
+    var lastSelect = new Array(0);
     selectListeners();
     //Selection mode toggle
     function selectListeners() {
@@ -52,11 +53,13 @@ export default function Select (dragHandler) {
             }
             else {
                 console.log("error: selection mode not activated");
+                return;
             }
+            lastSelect = Array.from($(".selected"));
         })
 
         // click away listeners
-        $("body").on("click keydown", (evt) => {
+        $("body").on("keydown", (evt) => { // click
             if (evt.type === "keydown" && evt.key !== "Escape") return;
             endOptionsSelection();
             unselect();
@@ -95,6 +98,69 @@ export default function Select (dragHandler) {
             "<a id='Virga' class='dropdown-item'>Virga</a>" +
             "<a id='Inclinatum' class='dropdown-item'>Inclinatum</a></div></div></div>"
         );
+        
+        $("#Punctum.dropdown-item").on("click", (evt) => {
+            let unsetInclinatum = {
+                "action": "set",
+                "param": {
+                    "elementId": lastSelect[0].id,
+                    "attrType": "name",
+                    "attrValue": ""
+                }
+            };
+            let unsetVirga = {
+                "action": "set",
+                "param": {
+                    "elementId": lastSelect[0].id,
+                    "attrType": "diagonalright",
+                    "attrValue": ""
+                }
+            };
+            neonView.edit({ "action": "chain", "param": [ unsetInclinatum, unsetVirga ]});
+            neonView.refreshPage();
+        });
+
+        $("#Inclinatum.dropdown-item").on("click", (evt) => {
+            let setInclinatum = {
+                "action": "set",
+                "param": {
+                    "elementId": lastSelect[0].id,
+                    "attrType": "name",
+                    "attrValue": "inclinatum"
+                }
+            };
+            let unsetVirga = {
+                "action": "set",
+                "param": {
+                    "elementId": lastSelect[0].id,
+                    "attrType": "diagonalright",
+                    "attrValue": ""
+                }
+            };
+            neonView.edit({ "action": "chain", "param": [ setInclinatum, unsetVirga ]});
+            neonView.refreshPage();
+        });
+        
+        $("#Virga.dropdown-item").on("click", (evt) => {
+            let unsetInclinatum = {
+                "action": "set",
+                "param": {
+                    "elementId": lastSelect[0].id,
+                    "attrType": "name",
+                    "attrValue": ""
+                }
+            };
+            let setVirga = {
+                "action": "set",
+                "param": {
+                    "elementId": lastSelect[0].id,
+                    "attrType": "diagonalright",
+                    "attrValue": "u"
+                }
+            };
+            neonView.edit({ "action": "chain", "param": [ unsetInclinatum, setVirga ]});
+            neonView.refreshPage();
+        });
 
         initOptionsListeners();
     }
