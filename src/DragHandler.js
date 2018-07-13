@@ -49,8 +49,6 @@ export default function DragHandler (neonView) {
                 "action": "chain",
                 "param": paramArray
             };
-            console.log("Relative y: " + (dragStartCoords[1] - dragEndCoords[1]));
-            console.log(editorAction);
             neonView.edit(editorAction);
             neonView.refreshPage();
             dragInit();
