@@ -174,3 +174,19 @@ test("Test chain action", () => {
     expect(insertAtts.pname).toBe("c");
     expect(insertAtts.oct).toBe("3");
 });
+
+test("Test 'set' action", () => {
+    let neon = new Neon(mei, new verovio.toolkit());
+    neon.getSVG();
+    expect(neon.getElementAttr("m-6831ff33-aa39-4b0d-a383-e44585c6c644")).toEqual({pname: "g", oct: "2"});
+    let setAction = {
+        "action": "set",
+        "param": {
+            "elementId": "m-6831ff33-aa39-4b0d-a383-e44585c6c644",
+            "attrType": "diagonalright",
+            "attrValue": "u"
+        }
+    };
+    neon.edit(setAction);
+    expect(neon.getElementAttr("m-6831ff33-aa39-4b0d-a383-e44585c6c644")).toEqual({pname: "g", oct: "2", diagonalright: "u"});
+});
