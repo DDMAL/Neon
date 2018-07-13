@@ -32,16 +32,16 @@ export default function GroupingHandler (neonView) {
         })
 
         $("#grouping").on("click", function(){
-            groupNcs();
+            groupingAction("group");
         })
 
         $("#ungroup").on("click", function(){
-            ungroupNcs();
+            groupingAction("ungroup");
         })
 
     }
     
-    function groupNcs() {
+    function groupingAction(action) {
         var elementIds = [];
         var elements = Array.from($(".selected"));
 
@@ -58,15 +58,11 @@ export default function GroupingHandler (neonView) {
         })
 
         let editorAction = {
-            "action": "group",
+            "action": action,
             "param": {
                 "elementIds": elementIds
             }
         };
-
-        function ungroupNcs() {
-            
-        }
 
         neonView.edit(editorAction);
         neonView.refreshPage();
