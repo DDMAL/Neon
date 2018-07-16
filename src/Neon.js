@@ -25,7 +25,7 @@ export default function Neon (mei, vrvToolkit) {
     }
 
     function getMEI () {
-        return vrvToolkit.getMEI();
+        return vrvToolkit.getMEI(0, true);
     }
 
     function getElementAttr (elementId) {
