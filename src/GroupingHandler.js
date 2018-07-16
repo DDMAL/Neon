@@ -1,23 +1,16 @@
 export default function GroupingHandler (neonView) {
-
     //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
     function triggerGroupSelection () {
         $("#moreEdit").removeClass("is-invisible");
+        var groupMethod = ($("#selByNeume").hasClass("is-active") ? "Group as Syllable" : "Group as Neume");
         $("#moreEdit").append(
-            "<label>Select Grouping:&nbsp;</label>" +
-            "<div id='grouping_dropdown' class='dropdown'>" +
-            "<div class='dropdown-trigger'>" +
-            "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-            "<span>Groupings</span><span class='icon is-small'>" +
-            "<i class=''></i></span></button></div>" +
-            "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
-            "<div class='dropdown-content'>" +
-            "<a id='grouping' class='dropdown-item'>Torculus</a>" +
-            "<a id='' class='dropdown-item'>Etc...</a></div></div></div>" +
+            "<div class='field is-grouped'>" +
+            "<div><p class='control'>" +
+            "<button class='button' id='group'>" + groupMethod + "</button></p></div>" +
             "<div><p class='control'>" +
             "<button class='button' id='ungroup'>Ungroup</button></p></div>"
-
         );
+        
         initGroupingListeners();
     };
 
@@ -31,7 +24,7 @@ export default function GroupingHandler (neonView) {
             $(this).toggleClass("is-active");
         })
 
-        $("#grouping").on("click", function(){
+        $("#group").on("click", function(){
             groupingAction("group");
         })
 
@@ -46,7 +39,9 @@ export default function GroupingHandler (neonView) {
         var elements = Array.from($(".selected"));
 
         elements.every((el) => {
-            if ($(el).hasClass("nc")){
+            var groupEls = ($("#selByNeume").hasClass("is-active") ? "neume" : "nc");
+            console.log(groupEls)
+            if ($(el).hasClass(groupEls)){
                 elementIds.push(el.id);
             }
             else {
@@ -60,6 +55,7 @@ export default function GroupingHandler (neonView) {
         let editorAction = {
             "action": action,
             "param": {
+                "groupType" : groupEls,
                 "elementIds": elementIds
             }
         };

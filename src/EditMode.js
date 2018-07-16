@@ -6,9 +6,11 @@ import CursorHandler from "./CursorHandler.js";
 import InsertControls from "./InsertControls.js";
 import InsertHandler from "./InsertHandler.js";
 import DragSelect from "./DragSelect.js"
+import SelectOptions from "./SelectOptions.js";
 
 export default function EditMode (neonView, meiFile, zoomHandler){
     var dragHandler = null;
+    var selectOptions = null;
     var groupingHandler = null;
     var navbarHandler = null;
     var select = null;
@@ -32,6 +34,7 @@ export default function EditMode (neonView, meiFile, zoomHandler){
         );
         $("#insert_controls").append(
             "<p class='panel-heading' id='insertMenu'>Insert</p>" +
+            "<div id='insertContents'>" +
             "<p class='panel-tabs'>" +
             "<a id='neumeTab' class='insertTab'>Neume</a>" +
             "<a id='groupingTab' class='insertTab'>Grouping</a>" +
@@ -39,10 +42,11 @@ export default function EditMode (neonView, meiFile, zoomHandler){
             "<a id='systemTab' class='insertTab'>System</a>" +
             "<a id='divisionTab' class='insertTab'>Division</a></p>" +
             "<a class='panel-block has-text-centered'>" +
-            "<div id='insert_data' class='field is-grouped'/></a>"
+            "<div id='insert_data' class='field is-grouped'/></a></div>"
         );
         $("#edit_controls").append(
             "<p class='panel-heading' id='editMenu'>Edit</p>" +
+            "<div id='editContents'>" +
             "<a class='panel-block'>" +
             "<label>Select By:&nbsp;</label>" +
             "<div class='field has-addons'>" +
@@ -57,9 +61,11 @@ export default function EditMode (neonView, meiFile, zoomHandler){
             "<p class='control'>" +
             "<button class='button' id='redo'>Redo</button></p>" +
             "<p class='control'>" +
-            "<button class='button' id='save'>Save Changes</button></p></div></a>" +
+            "<button class='button' id='save'>Save Changes</button></p>" +
+            "<p class='control'>" +
+            "<button class='button' id='delete'>Delete</button></p></div></a>" +
             "<a id='moreEdit' class='panel-block is-invisible'>" + 
-            "<a id='neumeEdit' class='panel-block is-invisible'>"
+            "<a id='neumeEdit' class='panel-block is-invisible'></div>"
         );
 
         init();
@@ -67,13 +73,30 @@ export default function EditMode (neonView, meiFile, zoomHandler){
 
     function init() {
         dragHandler = new DragHandler(neonView);
+        selectOptions = new SelectOptions();
         groupingHandler = new GroupingHandler(neonView);
         navbarHandler = new Navbar(meiFile);
-        select = new Select(dragHandler, groupingHandler);
+        select = new Select(dragHandler, selectOptions);
         cursorHandler = new CursorHandler();
         insertHandler = new InsertHandler(neonView);
         insertControls = new InsertControls(cursorHandler, insertHandler);
-        dragSelect = new DragSelect(dragHandler, zoomHandler, groupingHandler);
+        dragSelect = new DragSelect(dragHandler, zoomHandler, groupingHandler, selectOptions);
+
+        $("#insertMenu").on("click", () => {
+            if ($("#insertContents").is(":hidden")) {
+                $("#insertContents").css("display", "");
+            } else {
+                $("#insertContents").css("display", "none");
+            }
+        });
+
+        $("#editMenu").on("click", () => {
+            if ($("#editContents").is(":hidden")) {
+                $("#editContents").css("display", "");
+            } else {
+                $("#editContents").css("display", "none");
+            }
+        });
 
         $("#undo").on("click", () => {
             if (!neonView.undo()) {
@@ -91,6 +114,27 @@ export default function EditMode (neonView, meiFile, zoomHandler){
         });
         $("#save").on("click", () => {
             neonView.saveMEI();
+        });
+
+        $("#delete").on("click", () => {
+            let toRemove = [];
+            var selected = Array.from(document.getElementsByClassName("selected"));
+            selected.forEach(elem => {
+                toRemove.push(
+                    {
+                        "action": "remove",
+                        "param": {
+                            "elementId": elem.id
+                        }
+                    }
+                );
+            });
+            let chainAction = {
+                "action": "chain",
+                "param": toRemove
+            };
+            neonView.edit(chainAction);
+            neonView.refreshPage();
         });
     }
 

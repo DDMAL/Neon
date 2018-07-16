@@ -1,4 +1,4 @@
-export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
+export default function DragSelect (dragHandler, zoomHandler, groupingHandler, selectOptions) {
     var initialX = 0;
     var initialY = 0;
     var panning = false;
@@ -73,37 +73,37 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
                 return elX > rx && elX < lx  && elY > ry && elY < ly;
             });
 
-            var toSelect = [];
-
             elements.forEach(el => {
-                var parent = $(el).parent()[0];
-                var isNc = !($(parent).hasClass("clef") || $(parent).hasClass("custos"));
+                var parent = $(el).parent()[0];         
+                var isNc = $(parent).hasClass("nc");
 
-                if($(parent).hasClass("selected")){
+                if($(parent).hasClass("selected") || $(parent).parent().hasClass("selected")){
                     return;
                 }
 
-                toSelect.push(parent);
-
-                if(d3.select("#selByNeume").classed("is-active") && isNc){
-                    var siblings = Array.from($(parent).siblings());
-                    siblings.forEach(el => {
-                        var cls = d3.select("#" + el.id).attr("class");
-                        if(cls == "nc"){
-                            toSelect.push(el);
-                        }   
-                    })
-                }     
-                toSelect.forEach(nc => {
-                    var cl = d3.select("#" + nc.id).attr("class"); 
-                    d3.select("#" + nc.id)
-                        .attr("fill", "#d00")
-                        .attr("class", cl + " selected");
-                });               
+                if ($("#selByNeume").hasClass("is-active") && isNc){
+                    var neumeParent = $(parent).parent();
+                    if(!neumeParent.hasClass("selected")){
+                        $(neumeParent).addClass("selected");
+                        $(neumeParent).attr("fill", "#d00");  
+                    } 
+                }
+                else {
+                    $(parent).addClass("selected");
+                    $(parent).attr("fill", "#d00");
+                }                
             })
-            if (toSelect.length > 1){
+            
+            var l = $(".selected").length
+            if (l > 1){
                 groupingHandler.triggerGroupSelection();
             }  
+            else if (l != 0 && $("#selByNeume").hasClass("is-active") && $(".selected")[0].children.length > 1){
+                selectOptions.triggerNeumeActions();
+            }
+            else if (l != 0){
+                selectOptions.triggerNcActions();
+            }
             dragHandler.dragInit();
             d3.selectAll("#selectRect").remove();
             dragSelecting = false;
@@ -132,9 +132,9 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
     }
 
     function unselect() {
-        var ncs = $(".nc.selected, .clef.selected, .custos.selected");
-        for (var i=0; i<ncs.length; i++){
-            $(ncs[i]).removeClass("selected").attr("fill", null);
+        var els = $(".selected");
+        for (var i=0; i<els.length; i++){
+            $(els[i]).removeClass("selected").attr("fill", null);
         }
         groupingHandler.endGroupingSelection();
     }

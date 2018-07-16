@@ -9,6 +9,14 @@ export default function ViewControls (zoomHandler) {
     setSylControls();
     setHighlightControls();
 
+    $("#displayHeader").on("click", () => {
+        if ($("#displayContents").is(":hidden")) {
+            $("#displayContents").css("display", "");
+        } else {
+            $("#displayContents").css("display", "none");
+        }
+    });
+
     function setZoomControls() {
         $("#reset-zoom").click( function() {
             $("#zoomOutput").val(100);
