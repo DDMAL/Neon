@@ -24,9 +24,7 @@ export default function InsertControls (cursorHandler, insertHandler) {
             "<p class='control'>" +
             "<button id='fClef' class='button insertel smallel' title='F Clef'><img src='/img/fClef.png' class='image'/></button></p>",
         systemTab: "<p class='control'>" +
-            "<button id='staff' class='button insertel longel' title='system'><img src='/img/staff.png' class='image' /></button></p>" +
-            "<input id='staffSlider' class='slider is-fullwidth' min='10' max='100' value='50' step='1' type='range'/>" +
-            "<output for='staffSlider'>100</output>",
+            "<button id='staff' class='button insertel longel' title='system'><img src='/img/staff.png' class='image' /></button></p>", 
         divisionTab: "<p class='control'>" +
             "<button id='smallDiv' class='button insertel tallel'><img src='/img/smallDiv.png' class='image'/></button></p>" +
             "<p class='control'>" +
