@@ -99,7 +99,6 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler, s
                 groupingHandler.triggerGroupSelection();
             }  
             else if (l != 0 && $("#selByNeume").hasClass("is-active") && $(".selected")[0].children.length > 1){
-                console.log($(".selected"));
                 selectOptions.triggerNeumeActions();
             }
             else if (l != 0){

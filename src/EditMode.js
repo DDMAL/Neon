@@ -76,7 +76,7 @@ export default function EditMode (neonView, meiFile, zoomHandler){
         selectOptions = new SelectOptions();
         groupingHandler = new GroupingHandler();
         navbarHandler = new Navbar(meiFile);
-        select = new Select(dragHandler, neonView, selectOptions);
+        select = new Select(dragHandler, selectOptions);
         cursorHandler = new CursorHandler();
         insertHandler = new InsertHandler(neonView);
         insertControls = new InsertControls(cursorHandler, insertHandler);

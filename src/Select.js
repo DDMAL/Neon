@@ -1,4 +1,4 @@
-export default function Select (dragHandler, neonView, selectOptions) {
+export default function Select (dragHandler, selectOptions) {
     var lastSelect = new Array(0);
     selectListeners();
     //Selection mode toggle

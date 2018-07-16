@@ -1,23 +1,16 @@
 export default function GroupingHandler () {
-
     //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
     function triggerGroupSelection () {
         $("#moreEdit").removeClass("is-invisible");
+        var groupMethod = ($("#selByNeume").hasClass("is-active") ? "Group as Syllable" : "Group as Neume");
         $("#moreEdit").append(
-            "<label>Select Grouping:&nbsp;</label>" +
-            "<div id='grouping_dropdown' class='dropdown'>" +
-            "<div class='dropdown-trigger'>" +
-            "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-            "<span>Groupings</span><span class='icon is-small'>" +
-            "<i class=''></i></span></button></div>" +
-            "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
-            "<div class='dropdown-content'>" +
-            "<a id='Torculus' class='dropdown-item'>Torculus</a>" +
-            "<a id='' class='dropdown-item'>Etc...</a></div></div></div>" +
+            "<div class='field is-grouped'>" +
+            "<div><p class='control'>" +
+            "<button class='button' id='group'>" + groupMethod + "</button></p></div>" +
             "<div><p class='control'>" +
             "<button class='button' id='ungroup'>Ungroup</button></p></div>"
-
         );
+        
         initGroupingListeners();
     };
 
