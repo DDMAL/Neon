@@ -49,6 +49,7 @@ export default function DragHandler (neonView) {
                 "action": "chain",
                 "param": paramArray
             };
+            console.log(editorAction);
             neonView.edit(editorAction);
             neonView.refreshPage();
             dragInit();

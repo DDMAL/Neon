@@ -5,29 +5,39 @@ export default class ColorStaves {
         let staves = Array.from(document.getElementsByClassName("staff"));
         for (var i = 0; i < staves.length; i++) {
             let staffColor = ColorStaves.Colors[i % ColorStaves.Colors.length];
-            let children = Array.from($("#" + staves[i].id).children());
-            children.forEach(child => {
-                if (child.tagName === "path") {
-                    child.setAttribute("stroke", staffColor);
-                } else {
-                    child.setAttribute("fill", staffColor);
-                }
-                child.setAttribute("class", child.getAttribute("class") + " highlighted");
-            });
+            highlight(staves[i], staffColor);
         }
     }
     unsetColor() {
-        let highlighted = Array.from(document.getElementsByClassName("highlighted"));
-        highlighted.forEach(elem => {
-            if (elem.tagName === "path") {
-                elem.setAttribute("stroke", "#000000");
-            } else {
-                elem.removeAttribute("fill");
-            }
-        });
-        $(".highlighted").removeClass("highlighted");
+        unhighlight(".staff");
     }
 }
+
+export function highlight(staff, color) {
+    let children = Array.from($("#" + staff.id).children());
+    children.forEach(child => {
+        if (child.tagName === "path") {
+            child.setAttribute("stroke", color);
+        } else {
+            child.setAttribute("fill", color);
+        }
+        let currentClass = child.getAttribute("class");
+        child.setAttribute("class", currentClass !== null ? currentClass + " highlighted" : "highlighted");
+    });
+}
+
+export function unhighlight(staff) {
+    let children = Array.from($(staff).children(".highlighted"));
+    children.forEach(elem => {
+        if (elem.tagName === "path") {
+            elem.setAttribute("stroke", "#000000");
+        } else {
+            elem.removeAttribute("fill");
+        }
+    });
+    $(staff).children(".highlighted").removeClass("highlighted");
+}
+    
 
 // Color palette from Figure 2 (Colors optimized for color-blind
 // individuals) from "Points of view: Color blindness" by Bang Wong

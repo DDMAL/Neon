@@ -1,3 +1,5 @@
+import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
+
 export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
     var initialX = 0;
     var initialY = 0;
@@ -63,43 +65,68 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
             var lx = parseInt($("#selectRect").attr("x")) + parseInt($("#selectRect").attr("width"));
             var ly = parseInt($("#selectRect").attr("y")) + parseInt($("#selectRect").attr("height"));
 
-            var nc = d3.selectAll("use")._groups[0];
+            var nc;
+            if ($("#selByStaff").hasClass("is-active")) {
+                nc = d3.selectAll("use, .staff")._groups[0];
+            } else {
+                nc = d3.selectAll("use")._groups[0];
+            }
             var els = Array.from(nc);
             
             var elements = els.filter(function(d){
-                var elX = d.x.baseVal.value;
-                var elY = d.y.baseVal.value;
-            
+                var elX, elY;
+                if (d.tagName === "use") {
+                    elX = d.x.baseVal.value;
+                    elY = d.y.baseVal.value;
+                } else {
+                    elX = d.getBBox().x;
+                    elY = d.getBBox().y;
+                }
                 return elX > rx && elX < lx  && elY > ry && elY < ly;
             });
 
             var toSelect = [];
 
-            elements.forEach(el => {
-                var parent = $(el).parent()[0];
-                var isNc = !($(parent).hasClass("clef") || $(parent).hasClass("custos"));
+            if ($("#selByStaff").hasClass("is-active")) {
+                elements.forEach(el => {
+                    if (el.tagName === "use") {
+                        toSelect.push($(el).parents(".staff")[0]);
+                    } else {
+                        toSelect.push(el);
+                    }
+                });
+                toSelect.forEach(elem => {
+                    highlight(elem, "#d00");
+                    $(elem).addClass("selected");
+                });
+            }
+            else {
+                elements.forEach(el => {
+                    var parent = $(el).parent()[0];
+                    var isNc = !($(parent).hasClass("clef") || $(parent).hasClass("custos"));
 
-                if($(parent).hasClass("selected")){
-                    return;
-                }
+                    if($(parent).hasClass("selected")){
+                        return;
+                    }
 
-                toSelect.push(parent);
+                    toSelect.push(parent);
 
-                if(d3.select("#selByNeume").classed("is-active") && isNc){
-                    var siblings = Array.from($(parent).siblings());
-                    siblings.forEach(el => {
-                        var cls = d3.select("#" + el.id).attr("class");
-                        if(cls == "nc"){
-                            toSelect.push(el);
-                        }   
-                    })
-                }     
-                toSelect.forEach(nc => {
-                    $("#" + nc.id).addClass("selected");
-                    $("#" + nc.id).attr("fill", "#d00");
-                });               
-            })
-            if (toSelect.length > 1){
+                    if(d3.select("#selByNeume").classed("is-active") && isNc){
+                        var siblings = Array.from($(parent).siblings());
+                        siblings.forEach(el => {
+                            var cls = d3.select("#" + el.id).attr("class");
+                            if(cls == "nc"){
+                                toSelect.push(el);
+                            }   
+                        })
+                    }     
+                    toSelect.forEach(nc => {
+                        $("#" + nc.id).addClass("selected");
+                        $("#" + nc.id).attr("fill", "#d00");
+                    });               
+                });
+            }
+            if (toSelect.length > 1 && !$("#selByStaff").hasClass("is-active")){
                 groupingHandler.triggerGroupSelection();
             }  
             dragHandler.dragInit();
@@ -130,10 +157,21 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
     }
 
     function unselect() {
-        var ncs = $(".nc.selected, .clef.selected, .custos.selected");
-        for (var i=0; i<ncs.length; i++){
-            $(ncs[i]).removeClass("selected").attr("fill", null);
+        var selected = $(".selected");
+        for (var i=0; i < selected.length; i++) {
+            if ($(selected[i]).hasClass("staff")) {
+                $(selected[i]).removeClass("selected");
+                unhighlight(selected[i]);
+            } else {
+                $(selected[i]).removeClass("selected").attr("fill", null);
+            }
         }
-        groupingHandler.endGroupingSelection();
+        if (!$("#selByStaff").hasClass("is-active")) {
+            groupingHandler.endGroupingSelection();
+        }
+        if ($("#highlightStaves").is(":checked")) {
+            let color = new ColorStaves();
+            color.setColor();
+        }
     }
 }

@@ -1,3 +1,5 @@
+import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
+
 export default function Select (dragHandler, neonView) {
     var lastSelect = new Array(0);
     selectListeners();
@@ -5,21 +7,31 @@ export default function Select (dragHandler, neonView) {
     function selectListeners() {
         var classesToSelect = ".nc, .clef, .custos";
         $("#selByNeume").on("click", function(){
-            if ($("#selByNc").hasClass("is-active")){
-                $("#selByNc").toggleClass('is-active');
-                $("#selByNeume").toggleClass('is-active');
+            if (!$("#selByNeume").hasClass("is-active")){
+                $("#selByNeume").addClass("is-active");
+                $("#selByNc").removeClass("is-active");
+                $("#selByStaff").removeClass("is-active");
             }           
         });
 
         $("#selByNc").on("click", function(){
-            if ($("#selByNeume").hasClass("is-active")){
-                $("#selByNeume").toggleClass('is-active');
-                $("#selByNc").toggleClass('is-active');
-            } 
+            if (!$("#selByNc").hasClass("is-active")) {
+                $("#selByNc").addClass("is-active");
+                $("#selByNeume").removeClass("is-active");
+                $("#selByStaff").removeClass("is-active");
+            }
+        });
+
+        $("#selByStaff").on("click", function () {
+            if (!$("#selByStaff").hasClass("is-active")) {
+                $("#selByStaff").addClass("is-active");
+                $("#selByNc").removeClass("is-active");
+                $("#selByNeume").removeClass("is-active");
+            }
         });
 
         //Activating selected neumes
-        $(classesToSelect).on("mousedown", function() {
+        $(classesToSelect).on("click", function() {
             var isNc= $(this).hasClass("nc");
             if ($("#selByNeume").hasClass("is-active") && isNc){
                 if(!$(this).hasClass("selected")){
@@ -42,12 +54,21 @@ export default function Select (dragHandler, neonView) {
                     dragHandler.dragInit();   
                 }
             }
-            else if ($("#selByNc").hasClass("is-active") || !isNc){
+            else if ($("#selByNc").hasClass("is-active") || !(isNc || $("#selByStaff").hasClass("is-active"))){
                 if(!$(this).hasClass("selected")){
                     unselect();
                     $(this).attr("fill", "#d00");
                     $(this).addClass("selected");
                     triggerNcActions();
+                    dragHandler.dragInit();
+                }
+            }
+            else if ($("#selByStaff").hasClass("is-active")) {
+                var staff = $(this).parents(".staff");
+                if (!staff.hasClass("selected")) {
+                    unselect();
+                    staff.addClass("selected");
+                    highlight(staff[0], "#d00");
                     dragHandler.dragInit();
                 }
             }
@@ -76,7 +97,17 @@ export default function Select (dragHandler, neonView) {
         function unselect() {
             var els = $(".selected");
             for (var i=0; i<els.length; i++){
-                $(els[i]).removeClass("selected").attr("fill", null);
+                if ($(els[i]).hasClass("staff")) {
+                    $(els[i]).removeClass("selected");
+                    unhighlight(els[i]);
+                } else {
+                    $(els[i]).removeClass("selected").attr("fill", null);
+                }
+            }
+
+            if ($("#highlightStaves").is(":checked")) {
+                let color = new ColorStaves();
+                color.setColor();
             }
         }
     }
