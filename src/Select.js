@@ -5,17 +5,27 @@ export default function Select (dragHandler, neonView) {
     function selectListeners() {
         var classesToSelect = ".nc, .clef, .custos";
         $("#selByNeume").on("click", function(){
-            if ($("#selByNc").hasClass("is-active")){
-                $("#selByNc").toggleClass('is-active');
-                $("#selByNeume").toggleClass('is-active');
+            if (!$("#selByNeume").hasClass("is-active")){
+                $("#selByNeume").addClass("is-active");
+                $("#selByNc").removeClass("is-active");
+                $("#selByStaff").removeClass("is-active");
             }           
         });
 
         $("#selByNc").on("click", function(){
-            if ($("#selByNeume").hasClass("is-active")){
-                $("#selByNeume").toggleClass('is-active');
-                $("#selByNc").toggleClass('is-active');
-            } 
+            if (!$("#selByNc").hasClass("is-active")) {
+                $("#selByNc").addClass("is-active");
+                $("#selByNeume").removeClass("is-active");
+                $("#selByStaff").removeClass("is-active");
+            }
+        });
+
+        $("#selByStaff").on("click", function () {
+            if (!$("#selByStaff").hasClass("is-active")) {
+                $("#selByStaff").addClass("is-active");
+                $("#selByNc").removeClass("is-active");
+                $("#selByNeume").removeClass("is-active");
+            }
         });
 
         //Activating selected neumes
@@ -42,12 +52,21 @@ export default function Select (dragHandler, neonView) {
                     dragHandler.dragInit();   
                 }
             }
-            else if ($("#selByNc").hasClass("is-active") || !isNc){
+            else if ($("#selByNc").hasClass("is-active") || !(isNc || $("#selByStaff").hasClass("is-active"))){
                 if(!$(this).hasClass("selected")){
                     unselect();
                     $(this).attr("fill", "#d00");
                     $(this).addClass("selected");
                     triggerNcActions();
+                    dragHandler.dragInit();
+                }
+            }
+            else if ($("#selByStaff").hasClass("is-active")) {
+                var staff = $(this).parents(".staff");
+                if (!staff.hasClass("selected")) {
+                    unselect();
+                    staff.addClass("selected");
+                    staff.attr("fill", "#d00");
                     dragHandler.dragInit();
                 }
             }

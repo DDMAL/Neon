@@ -51,7 +51,9 @@ export default function EditMode (neonView, meiFile, zoomHandler){
             "<p class='control'>" + 
             "<button class='button is-active' id='selByNeume'>Neume</button></p>" +
             "<p class='control'>" +
-            "<button class='button' id='selByNc'>Neume Component</button></p></div></a>" +
+            "<button class='button' id='selByNc'>Neume Component</button></p>" +
+            "<p class='control'>" +
+            "<button class='button' id='selByStaff'>Staff</button></p></div></a>" +
             "<a class='panel-block'>" + 
             "<div class='field is-grouped'>" +
             "<p class='control'>" +
