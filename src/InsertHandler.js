@@ -110,7 +110,6 @@ export default function InsertHandler (neonView) {
 
         if (firstClick) {
             coord = cursorpt;
-            console.log("First");
             firstClick = false;
         }
         else {
@@ -125,7 +124,6 @@ export default function InsertHandler (neonView) {
                     "lry": cursorpt.y,
                 }
             };
-            console.log(action);
 
             neonView.edit(action);
             neonView.refreshPage();
