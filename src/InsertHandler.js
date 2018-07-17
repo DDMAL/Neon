@@ -2,6 +2,8 @@ import CursorHandler from "./CursorHandler.js";
 
 export default function InsertHandler (neonView) {
     var type = "";
+    var firstClick = true;
+    var coord;
     var attributes = null;
     var cursor = new CursorHandler();
 
@@ -38,13 +40,22 @@ export default function InsertHandler (neonView) {
             type = "custos";
             attributes = null;
         }
+        else if (buttonId === "staff") {
+            type = "staff";
+            attributes = null;
+        }
         else {
             type = "";
             attributes = null;
             console.error("Invalid button for insertion: " + buttonId + ".");
             return;
         }
-        $("body").on("click", "#svg_output", handler);
+        if (type === "staff") {
+            $("body").on("click", "#svg_output", staffHandler);
+        }
+        else
+            $("body").on("click", "#svg_output", handler);
+        
         $("body").on("keydown", (evt) => {
             if (evt.key === "Escape") {
                 insertDisabled();
@@ -56,7 +67,9 @@ export default function InsertHandler (neonView) {
     function insertDisabled () {
         type = "";
         $("body").off("click", "#svg_output", handler);
+        $("body").off("click", "#svg_output", staffHandler);
         $(".insertel.is-active").removeClass("is-active");
+        firstClick = true;
         cursor.resetCursor();
     }
 
@@ -85,6 +98,37 @@ export default function InsertHandler (neonView) {
 
         neonView.edit(editorAction);
         neonView.refreshPage();
+    }
+
+    function staffHandler (evt) {
+        var container = document.getElementsByClassName("definition-scale")[0];
+        var pt = container.createSVGPoint();
+        pt.x = evt.clientX;
+        pt.y = evt.clientY;
+        var transformMatrix = container.getScreenCTM();
+        var cursorpt = pt.matrixTransform(transformMatrix.inverse());
+
+        if (firstClick) {
+            coord = cursorpt;
+            firstClick = false;
+        }
+        else {
+            let action = {
+                "action": "insert",
+                "param": {
+                    "elementType": "staff",
+                    "staffId": "auto",
+                    "ulx": coord.x,
+                    "uly": coord.y,
+                    "lrx": cursorpt.x,
+                    "lry": cursorpt.y,
+                }
+            };
+
+            neonView.edit(action);
+            neonView.refreshPage();
+            insertDisabled();
+        }
     }
 
     InsertHandler.prototype.constructor = InsertHandler;
