@@ -1,3 +1,5 @@
+import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
+
 export default function Select (dragHandler, neonView) {
     var lastSelect = new Array(0);
     selectListeners();
@@ -29,7 +31,7 @@ export default function Select (dragHandler, neonView) {
         });
 
         //Activating selected neumes
-        $(classesToSelect).on("mousedown", function() {
+        $(classesToSelect).on("click", function() {
             var isNc= $(this).hasClass("nc");
             if ($("#selByNeume").hasClass("is-active") && isNc){
                 if(!$(this).hasClass("selected")){
@@ -66,7 +68,7 @@ export default function Select (dragHandler, neonView) {
                 if (!staff.hasClass("selected")) {
                     unselect();
                     staff.addClass("selected");
-                    staff.attr("fill", "#d00");
+                    highlight(staff[0], "#d00");
                     dragHandler.dragInit();
                 }
             }
@@ -95,7 +97,17 @@ export default function Select (dragHandler, neonView) {
         function unselect() {
             var els = $(".selected");
             for (var i=0; i<els.length; i++){
-                $(els[i]).removeClass("selected").attr("fill", null);
+                if ($(els[i]).hasClass("staff")) {
+                    $(els[i]).removeClass("selected");
+                    unhighlight(els[i]);
+                } else {
+                    $(els[i]).removeClass("selected").attr("fill", null);
+                }
+            }
+
+            if ($("#highlightStaves").is(":checked")) {
+                let color = new ColorStaves();
+                color.setColor();
             }
         }
     }
