@@ -1,4 +1,5 @@
 import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
+import {triggerStaffActions} from "./Select.js";
 
 /**
  * Handle dragging to select musical elements and staves.
@@ -6,8 +7,9 @@ import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
  * @param {DragHandler} dragHandler - Instantiated DragHandler object.
  * @param {module:ZoomHandler~ZoomHandler} zoomHandler - Instantiated ZoomHandler object.
  * @param {GroupingHandler} groupingHandler - Instantiated GroupingHandler object.
+ * @param {NeonView} neonView - NeonView parent.
  */
-function DragSelect (dragHandler, zoomHandler, groupingHandler) {
+function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView) {
     var initialX = 0;
     var initialY = 0;
     var panning = false;
@@ -141,7 +143,10 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler) {
             }
             if (toSelect.length > 1 && !$("#selByStaff").hasClass("is-active")){
                 groupingHandler.triggerGroupSelection();
-            }  
+            } 
+            else if (toSelect.length > 1 && $("#selByStaff").hasClass("is-active")) {
+                triggerStaffActions(neonView);
+            }
             dragHandler.dragInit();
             d3.selectAll("#selectRect").remove();
             dragSelecting = false;

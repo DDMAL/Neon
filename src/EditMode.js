@@ -86,7 +86,7 @@ function EditMode (neonView, meiFile, zoomHandler){
         cursorHandler = new CursorHandler();
         insertHandler = new InsertHandler(neonView);
         insertControls = new InsertControls(cursorHandler, insertHandler);
-        dragSelect = new DragSelect(dragHandler, zoomHandler, groupingHandler);
+        dragSelect = new DragSelect(dragHandler, zoomHandler, groupingHandler, neonView);
 
         $("#insertMenu").on("click", () => {
             if ($("#insertContents").is(":hidden")) {
