@@ -1,6 +1,11 @@
 import CursorHandler from "./CursorHandler.js";
 
-export default function InsertHandler (neonView) {
+/**
+ * Handle inserting new musical elements and communicate this to Verovio.
+ * @constructor
+ * @param {NeonView} neonView - The NeonView parent.
+ */
+function InsertHandler (neonView) {
     var type = "";
     var firstClick = true;
     var coord;
@@ -135,3 +140,4 @@ export default function InsertHandler (neonView) {
     InsertHandler.prototype.insertActive = insertActive;
     InsertHandler.prototype.insertDisabled = insertDisabled;
 }
+export {InsertHandler as default};

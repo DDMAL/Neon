@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: InsertHandler.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: InsertHandler.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import CursorHandler from "./CursorHandler.js";
+
+/**
+ * Handle inserting new musical elements and communicate this to Verovio.
+ * @constructor
+ * @param {NeonView} neonView - The NeonView parent.
+ */
+function InsertHandler (neonView) {
+    var type = "";
+    var firstClick = true;
+    var coord;
+    var attributes = null;
+    var cursor = new CursorHandler();
+
+    function insertActive (buttonId) {
+        if (buttonId === "punctum") {
+            type = "nc";
+            attributes = null;
+        }
+        else if (buttonId === "diamond") {
+            type = "nc";
+            attributes = {
+                "name": "inclinatum"
+            };
+        }
+        else if (buttonId === "virga") {
+            type = "nc";
+            attributes = {
+                "diagonalright": "u"
+            };
+        }
+        else if (buttonId === "cClef") {
+            type = "clef";
+            attributes = {
+                "shape": "C"
+            };
+        }
+        else if (buttonId === "fClef") {
+            type = "clef";
+            attributes = {
+                "shape": "F"
+            };
+        }
+        else if (buttonId === "custos") {
+            type = "custos";
+            attributes = null;
+        }
+        else if (buttonId === "staff") {
+            type = "staff";
+            attributes = null;
+        }
+        else {
+            type = "";
+            attributes = null;
+            console.error("Invalid button for insertion: " + buttonId + ".");
+            return;
+        }
+        if (type === "staff") {
+            $("body").on("click", "#svg_output", staffHandler);
+        }
+        else
+            $("body").on("click", "#svg_output", handler);
+        
+        $("body").on("keydown", (evt) => {
+            if (evt.key === "Escape") {
+                insertDisabled();
+                $("body").off("keydown");
+            }
+        });
+    }
+
+    function insertDisabled () {
+        type = "";
+        $("body").off("click", "#svg_output", handler);
+        $("body").off("click", "#svg_output", staffHandler);
+        $(".insertel.is-active").removeClass("is-active");
+        firstClick = true;
+        cursor.resetCursor();
+    }
+
+    function handler (evt) {
+        var container = document.getElementsByClassName("definition-scale")[0];
+        var pt = container.createSVGPoint();
+        pt.x = evt.clientX;
+        pt.y = evt.clientY;
+        //Transform pt to SVG context
+        var transformMatrix = container.getScreenCTM();
+        var cursorpt = pt.matrixTransform(transformMatrix.inverse());
+        
+        let editorAction = {
+            "action": "insert",
+            "param": {
+                "elementType": type,
+                "staffId": "auto",
+                "ulx": cursorpt.x,
+                "uly": cursorpt.y,
+            }
+        };
+
+        if (attributes !== null) {
+            editorAction["param"]["attributes"] = attributes;
+        }
+
+        neonView.edit(editorAction);
+        neonView.refreshPage();
+    }
+
+    function staffHandler (evt) {
+        var container = document.getElementsByClassName("definition-scale")[0];
+        var pt = container.createSVGPoint();
+        pt.x = evt.clientX;
+        pt.y = evt.clientY;
+        var transformMatrix = container.getScreenCTM();
+        var cursorpt = pt.matrixTransform(transformMatrix.inverse());
+
+        if (firstClick) {
+            coord = cursorpt;
+            firstClick = false;
+        }
+        else {
+            let action = {
+                "action": "insert",
+                "param": {
+                    "elementType": "staff",
+                    "staffId": "auto",
+                    "ulx": coord.x,
+                    "uly": coord.y,
+                    "lrx": cursorpt.x,
+                    "lry": cursorpt.y,
+                }
+            };
+
+            neonView.edit(action);
+            neonView.refreshPage();
+            insertDisabled();
+        }
+    }
+
+    InsertHandler.prototype.constructor = InsertHandler;
+    InsertHandler.prototype.insertActive = insertActive;
+    InsertHandler.prototype.insertDisabled = insertDisabled;
+}
+export {InsertHandler as default};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ColorStaves.html">ColorStaves</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-ZoomHandler.html">ZoomHandler</a></li></ul><h3>Classes</h3><ul><li><a href="CursorHandler.html">CursorHandler</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="DragSelect.html">DragSelect</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="GroupingHandler.html">GroupingHandler</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertControls.html">InsertControls</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-ColorStaves-ColorStaves.html">ColorStaves</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-ZoomHandler.ViewBox.html">ViewBox</a></li><li><a href="module-ZoomHandler-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="Select.html">Select</a></li><li><a href="ViewControls.html">ViewControls</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Navbar">Navbar</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jul 18 2018 13:33:22 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

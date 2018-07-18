@@ -1,6 +1,13 @@
 import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
 
-export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
+/**
+ * Handle dragging to select musical elements and staves.
+ * @constructor
+ * @param {DragHandler} dragHandler - Instantiated DragHandler object.
+ * @param {module:ZoomHandler~ZoomHandler} zoomHandler - Instantiated ZoomHandler object.
+ * @param {GroupingHandler} groupingHandler - Instantiated GroupingHandler object.
+ */
+function DragSelect (dragHandler, zoomHandler, groupingHandler) {
     var initialX = 0;
     var initialY = 0;
     var panning = false;
@@ -15,6 +22,9 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
             .on("end", selEnd)
     );
 
+    /**
+     * Start drag selecting musical elements.
+     */
     function selStart(){
         var editing = false;
         var insertEls = Array.from(d3.selectAll(".insertel")._groups[0]);
@@ -58,6 +68,9 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
         }
     }
 
+    /**
+     * Finish the selection and mark elements within the rectangle as being selected.
+     */
     function selEnd(){
         if(!panning && dragSelecting){
             var rx = parseInt($("#selectRect").attr("x"));
@@ -175,3 +188,5 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler) {
         }
     }
 }
+
+export {DragSelect as default};

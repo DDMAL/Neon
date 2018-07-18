@@ -7,7 +7,14 @@ import InsertControls from "./InsertControls.js";
 import InsertHandler from "./InsertHandler.js";
 import DragSelect from "./DragSelect.js"
 
-export default function EditMode (neonView, meiFile, zoomHandler){
+/**
+ * Creates user interface for editing and creates necessary tools.
+ * @constructor
+ * @param {NeonView} neonView - The NeonView parent object.
+ * @param {string} meiFile - The path to the MEi file.
+ * @param {module:ZoomHandler~ZoomHandler} zoomHandler - The ZoomHandler object.
+ */
+function EditMode (neonView, meiFile, zoomHandler){
     var dragHandler = null;
     var groupingHandler = null;
     var navbarHandler = null;
@@ -151,3 +158,5 @@ export default function EditMode (neonView, meiFile, zoomHandler){
     EditMode.prototype.resetListeners = resetListeners;
     // EditMode.prototype.getScale = getScale;
 }
+
+export {EditMode as default};

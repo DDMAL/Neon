@@ -1,5 +1,13 @@
-export default function InfoBox(neon) {
+/**
+ * Gets information on musical elements and displays them.
+ * @constructor
+ * @param {NeonView} neon - The NeonView parent
+ */
+function InfoBox(neon) {
 
+    /**
+     * Set the info box listener on neumes, clefs, and custos.
+     */
     function infoListeners() {
         $(".neume,.custos,.clef").on("mouseover", setInfo);
     }
@@ -17,7 +25,10 @@ export default function InfoBox(neon) {
         }
     }
 
-    // This function updates the neume information box in the editor
+    /**
+     * Gets element info from Verovio and updates/creates the info box.
+     * @param {string} id - The element ID
+     */
     function updateInfo(id) {
         // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the <g> element
         // So we will simply return if ID does not exist for now
@@ -93,6 +104,11 @@ export default function InfoBox(neon) {
         updateInfoBox(elementClass, body);
     }
     
+    /**
+     * Show and update the info box.
+     * @param {string} title - The info box title.
+     * @param {string} body - The info box contents.
+     */
     function updateInfoBox(title, body) {
         $(".message").css("visibility", "visible");
         $(".message-header").children("p").html(title);
@@ -104,6 +120,11 @@ export default function InfoBox(neon) {
         })
     }
 
+    /**
+     * Convert a pitch name (a-g) to a number (where c is 1, d is 2 and b is 7).
+     * @param {string} pname - The pitch name.
+     * @returns {number}
+     */
     function pitchNameToNum(pname) {
         switch(pname) {
             case "c":
@@ -125,6 +146,9 @@ export default function InfoBox(neon) {
         }
     }
 
+    /**
+     * A map containing neume groupings and their contours.
+     */
     var neumeGroups = new Map (
         [["", "Punctum"], ["u", "Pes"], ["d", "Clivis"], ["uu", "Scandicus"], ["dd", "Climacus"], ["ud", "Torculus"], ["du", "Porrectus"],
          ["sd", "Pressus"], ["ddd", "Climacus"], ["ddu", "Climacus resupinus"], ["udu", "Torculus resupinus"], ["dud", "Porrectus flexus"],
@@ -133,3 +157,4 @@ export default function InfoBox(neon) {
 
     InfoBox.prototype.infoListeners = infoListeners;
 }
+export {InfoBox as default};

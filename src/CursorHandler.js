@@ -1,7 +1,13 @@
-export default function CursorHandler () {
+/**
+ * Control the cursor type within the SVG container.
+ * @constructor
+ */
+function CursorHandler () {
     // this.origHeight = origHeight;
     // this.origWidth = origWidth;
-
+    /**
+     * Update the cursor to a crosshair within the container.
+     */
     function updateCursor() {
         $("#bgimg").css('cursor', 'crosshair');
         $("#mei_output").css('cursor', 'crosshair');
@@ -28,6 +34,9 @@ export default function CursorHandler () {
         // $("#mei_output").css('cursor', url);
     }
 
+    /**
+     * Reset the cursor to the typical pointer.
+     */
     function resetCursor() {
         $("#bgimg").css('cursor', 'default');
         $("#mei_output").css('cursor', 'default');
@@ -36,3 +45,5 @@ export default function CursorHandler () {
     CursorHandler.prototype.updateCursor = updateCursor;
     CursorHandler.prototype.resetCursor = resetCursor;
 }
+
+export {CursorHandler as default};

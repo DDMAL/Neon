@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: InfoBox.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: InfoBox.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Gets information on musical elements and displays them.
+ * @constructor
+ * @param {NeonView} neon - The NeonView parent
+ */
+function InfoBox(neon) {
+
+    /**
+     * Set the info box listener on neumes, clefs, and custos.
+     */
+    function infoListeners() {
+        $(".neume,.custos,.clef").on("mouseover", setInfo);
+    }
+
+    function setInfo() {
+        updateInfo(this.id);
+    }
+
+    function setInfoClef() {
+        if (neon.getElementAttr(this.id).shape !== undefined) {
+            updateInfo(this.id);
+        }
+        else {
+            updateInfo(this.parentNode.id);
+        }
+    }
+
+    /**
+     * Gets element info from Verovio and updates/creates the info box.
+     * @param {string} id - The element ID
+     */
+    function updateInfo(id) {
+        // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the &lt;g> element
+        // So we will simply return if ID does not exist for now
+        if (id == "") {
+            $("#neume_info").empty();
+            console.log("No id!");
+            return;
+        }
+
+        var element = $("#" + id);
+        var classRe = /neume|nc|clef|custos|staff/;
+        var elementClass = element.attr("class").match(classRe)[0];
+        var body = "";
+
+        // Gets the pitches depending on element type and 
+        switch(elementClass) {
+            case "neume":
+                // Select neume components of selected neume
+                var ncs = element.children(".nc");
+                var contour = "";
+                var pitches = "";
+                var previous = null;
+                ncs.each( function () {
+                    var attributes = neon.getElementAttr(this.id);
+                    pitches += attributes.pname + attributes.oct + " ";
+                    if (previous !== null) {
+                        if (previous.oct > attributes.oct) {
+                            contour += "d";
+                        }
+                        else if (previous.oct &lt; attributes.oct) {
+                            contour += "u";
+                        }
+                        else {
+                            if (pitchNameToNum(previous.pname) &lt; pitchNameToNum(attributes.pname)) {
+                                contour += "u";
+                            }
+                            else if (pitchNameToNum(previous.pname) > pitchNameToNum(attributes.pname)) {
+                                contour += "d";
+                            }
+                            else {
+                                contour += "s";
+                            }
+                        }
+                    }
+                    previous = attributes;
+                });
+                if (neumeGroups.get(contour) === undefined) {
+                    console.warn("Unknown contour: " + contour);
+                }
+                pitches = pitches.trim().toUpperCase();
+                body = "Shape: " + (neumeGroups.get(contour) === undefined ? "Compound" : neumeGroups.get(contour)) + "&lt;br/>"
+                    + "Pitch(es): " + pitches;
+                break;
+            case "custos":
+                var attributes = neon.getElementAttr(id);
+                body += "Pitch: " + (attributes.pname).toUpperCase() + attributes.oct;
+                break;
+            case "clef":
+                var attributes = neon.getElementAttr(id);
+                body += "Shape: " + attributes.shape + "&lt;br/>"
+                    + "Line: " + attributes.line;
+                break;
+            case "staff":
+                elementClass = "clef";
+                var staffDefAttributes = neon.getElementStaffDef(id);
+                body = "Shape: " + staffDefAttributes["clef.shape"] + "&lt;br/>"
+                    + "Line: " + staffDefAttributes["clef.line"];
+                break;
+            default:
+                body += "nothing";
+                break;
+        }
+        updateInfoBox(elementClass, body);
+    }
+    
+    /**
+     * Show and update the info box.
+     * @param {string} title - The info box title.
+     * @param {string} body - The info box contents.
+     */
+    function updateInfoBox(title, body) {
+        $(".message").css("visibility", "visible");
+        $(".message-header").children("p").html(title);
+        $(".message-body").html(body);
+        
+        // Setting up listener for dismissing message
+        $("#notification-delete").on("click", function () {
+            $(".message").css("visibility", "hidden");
+        })
+    }
+
+    /**
+     * Convert a pitch name (a-g) to a number (where c is 1, d is 2 and b is 7).
+     * @param {string} pname - The pitch name.
+     * @returns {number}
+     */
+    function pitchNameToNum(pname) {
+        switch(pname) {
+            case "c":
+                return 1;
+            case "d":
+                return 2;
+            case "e":
+                return 3;
+            case "f":
+                return 4;
+            case "g":
+                return 5;
+            case "a":
+                return 6;
+            case "b":
+                return 7;
+            default:
+                console.log("Unknown pitch name");
+        }
+    }
+
+    /**
+     * A map containing neume groupings and their contours.
+     */
+    var neumeGroups = new Map (
+        [["", "Punctum"], ["u", "Pes"], ["d", "Clivis"], ["uu", "Scandicus"], ["dd", "Climacus"], ["ud", "Torculus"], ["du", "Porrectus"],
+         ["sd", "Pressus"], ["ddd", "Climacus"], ["ddu", "Climacus resupinus"], ["udu", "Torculus resupinus"], ["dud", "Porrectus flexus"],
+         ["udd", "Pes subpunctis"], ["uud", "Scandicus flexus"], ["uudd", "Scandicus subpunctis"], ["dudd", "Porrectus subpunctis"]]
+    );
+
+    InfoBox.prototype.infoListeners = infoListeners;
+}
+export {InfoBox as default};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ColorStaves.html">ColorStaves</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-ZoomHandler.html">ZoomHandler</a></li></ul><h3>Classes</h3><ul><li><a href="CursorHandler.html">CursorHandler</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="DragSelect.html">DragSelect</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="GroupingHandler.html">GroupingHandler</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertControls.html">InsertControls</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-ColorStaves-ColorStaves.html">ColorStaves</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-ZoomHandler.ViewBox.html">ViewBox</a></li><li><a href="module-ZoomHandler-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="Select.html">Select</a></li><li><a href="ViewControls.html">ViewControls</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Navbar">Navbar</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jul 18 2018 13:33:22 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

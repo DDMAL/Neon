@@ -12,7 +12,13 @@ import MinorDivIcon from "./img/minorDiv.png";
 import MajorDivIcon from "./img/majorDiv.png";
 import FinalDivIcon from "./img/finalDiv.png";
 
-export default function InsertControls (cursorHandler, insertHandler) {
+/**
+ * Create insert controls and bind event handlers.
+ * @constructor
+ * @param {CursorHandler} cursorHandler - A CursorHandler object.
+ * @param {InsertHandler} insertHandler - An InsertHandler object.
+ */
+function InsertControls (cursorHandler, insertHandler) {
     // To add new tab, add inner html to dictionary with id as key value. All elements must be of class insertel.
     var tabHtml = {
         neumeTab: "<p class='control'>" +
@@ -104,3 +110,4 @@ export default function InsertControls (cursorHandler, insertHandler) {
     InsertControls.prototype.deactivate = deactivate;
     InsertControls.prototype.activate = activate;
 }
+export {InsertControls as default};

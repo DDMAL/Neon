@@ -1,8 +1,18 @@
-export default function ZoomHandler () {
+/** @module ZoomHandler */
+
+/**
+ * Creates a Zoom Handler object.
+ * @constructor ZoomHandler
+ */
+function ZoomHandler () {
     var dragCoordinates;
+    /** The internal view box of the SVG container. */   
     var viewBox = new ViewBox();
     var matrix;
 
+    /**
+     * Reset the zoom and pan of the viewbox for the SVG.
+     */
     function resetZoomAndPan () {
         viewBox.a = 0;
         viewBox.b = 0;
@@ -12,6 +22,10 @@ export default function ZoomHandler () {
         $("#svg_group").attr("viewBox", viewBox.get());
     }
 
+    /**
+     * Zoom to a certain factor.
+     * @param {number} k - The zoom factor.
+     */
     function zoomTo (k) {
         getViewBox();
         viewBox.zoomTo(k, parseInt($("#bgimg").attr("width")), parseInt($("#bgimg").attr("height")));
@@ -19,17 +33,20 @@ export default function ZoomHandler () {
         $("#svg_group").attr("viewBox", viewBox.get());
     }
 
-    // Translate svg by relative x and y
+    /**
+     * Translate the view box by relative coordinates.
+     * @param {number} xDiff - The relative x coordinate.
+     * @param {number} yDiff - The relative y coordinate.
+     */
     function translate (xDiff, yDiff) {
         getViewBox();
         viewBox.translate(xDiff, yDiff);
         $("#svg_group").attr("viewBox", viewBox.get());
     }
 
-    // Restore an svg to whatever the previous
-    // transformation was. Used when verovio
-    // produces a new svg on each edit action
-    // so it doesn't reset.
+    /**
+     * Restore the view box to what it was before the editor action.
+     */
     function restoreTransformation () {
         if (viewBox.isUnset()) {
             resetZoomAndPan();
@@ -39,6 +56,9 @@ export default function ZoomHandler () {
         }
     }
 
+    /**
+     * Get the view box from the SVG in the page.
+     */
     function getViewBox () {
         var rawViewBox = $("#svg_group").attr("viewBox").split(" ");
         viewBox.set(
@@ -78,12 +98,23 @@ export default function ZoomHandler () {
     ZoomHandler.prototype.dragging = dragging;
 }
 
+/**
+ * A class representing an SVG view box.
+ * @constructor
+ */
 export function ViewBox () {
     var a;
     var b;
     var c;
     var d;
 
+    /**
+     * Set the parameters of a view box.
+     * @param {number} w - New value for a.
+     * @param {number} x - New value for b.
+     * @param {number} y - New value for c.
+     * @param {number} z - New value for d.
+     */
     function set (w, x, y, z) {
         this.a = w;
         this.b = x;
@@ -91,10 +122,20 @@ export function ViewBox () {
         this.d = z;
     }
 
+    /**
+     * Returns the ViewBox values in a way that can be used as an SVG attribute.
+     * @returns {string}
+     */
     function get () {
         return this.a + " " + this.b + " " + this.c + " " + this.d;
     }
 
+    /**
+     * Zoom to a certain scale.
+     * @param {number} k - The zoom scale.
+     * @param {number} imageHeight - The height of the original image in pixels.
+     * @param {number} imageWidth - The width of the original image in pixels.
+     */
     function zoomTo(k, imageHeight, imageWidth) {
         let zoomHeight = (imageWidth / k);
         let zoomWidth = (imageHeight / k);
@@ -111,6 +152,10 @@ export function ViewBox () {
         this.b += yDiff;
     }
 
+    /**
+     * Check if any ViewBox parameters are unset.
+     * @returns {boolean}
+     */
     function isUnset () {
         return (this.a === undefined || this.b === undefined || this.c === undefined || this.d === undefined);
     }
@@ -122,3 +167,5 @@ export function ViewBox () {
     ViewBox.prototype.zoomTo = zoomTo;
     ViewBox.prototype.get = get;
 }
+
+export {ZoomHandler as default};

@@ -1,6 +1,11 @@
 import ColorStaves from "./ColorStaves.js";
 
-export default function ViewControls (zoomHandler) {
+/**
+ * Set handlers for the display controls.
+ * @constructor
+ * @param {module:ZoomHandler~ZoomHandler} zoomhandler - An instantiated ZoomHandler.
+ */
+function ViewControls (zoomHandler) {
 
     var color = new ColorStaves();
     setZoomControls();
@@ -97,3 +102,4 @@ export default function ViewControls (zoomHandler) {
     ViewControls.prototype.updateHighlight = updateHighlight;
     ViewControls.prototype.updateSylVisibility = updateSylVisibility;
 }
+export {ViewControls as default};

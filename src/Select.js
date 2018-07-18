@@ -1,6 +1,12 @@
 import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
 
-export default function Select (dragHandler, neonView) {
+/**
+ * Handle click selection and mark elements as selected.
+ * @constructor
+ * @param {DragHandler} dragHandler - An instantiated DragHandler object.
+ * @param {NeonView} neonView - The NeonView parent.
+ */
+function Select (dragHandler, neonView) {
     var lastSelect = new Array(0);
     selectListeners();
     //Selection mode toggle
@@ -229,3 +235,4 @@ export default function Select (dragHandler, neonView) {
 
     Select.prototype.selectListeners = selectListeners;
 }
+export {Select as default};

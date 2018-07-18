@@ -1,7 +1,15 @@
-export default function DragHandler (neonView) {
+/**
+ * Handle the dragging of musical elements and communicate actions.
+ * @constructor
+ * @param {NeonView} neonView - The NeonView parent object.
+ */
+function DragHandler (neonView) {
     var dragStartCoords;
     var dragEndCoords;
 
+    /**
+     * Initialize the dragging action and handler for selected elements.
+     */
     function dragInit () {
         // Adding listeners
         var activeNc = d3.selectAll(".selected");
@@ -64,3 +72,5 @@ export default function DragHandler (neonView) {
 
     DragHandler.prototype.dragInit = dragInit;
 }
+
+export {DragHandler as default};

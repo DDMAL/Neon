@@ -1,4 +1,7 @@
-export default function GroupingHandler () {
+/** Handles grouping of neumes.
+ * @constructor
+ */
+function GroupingHandler () {
 
     //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
     function triggerGroupSelection () {
@@ -37,3 +40,4 @@ export default function GroupingHandler () {
     GroupingHandler.prototype.triggerGroupSelection = triggerGroupSelection;
     GroupingHandler.prototype.endGroupingSelection = endGroupingSelection;
 }
+export {GroupingHandler as default};

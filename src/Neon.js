@@ -1,4 +1,12 @@
-export default function Neon (mei, vrvToolkit) {
+/** @module Neon */
+
+/**
+ * Underlying Neon class that communicates with Verovio.
+ * @constructor
+ * @param {string} mei - Contents of the MEI file.
+ * @param {object} vrvToolkit - An instantiated Verovio toolkit.
+ */
+function Neon (mei, vrvToolkit) {
     
     //////////////
     // Constructor
@@ -16,22 +24,45 @@ export default function Neon (mei, vrvToolkit) {
     vrvToolkit.setOptions(vrvOptions);
     loadData(mei);
 
+    /**
+     * Load MEI data into Verovio.
+     * @param {string} data - MEI data.
+     */
     function loadData (data) {
         vrvToolkit.loadData(data);
     }
 
+    /**
+     * Get the SVG from Verovio.
+     * @returns {string}
+     */
     function getSVG () {
         return vrvToolkit.renderToSVG(1);
     }
 
+    /**
+     * Get the MEI data from Verovio.
+     * @returns {string}
+     */
     function getMEI () {
         return vrvToolkit.getMEI(0, true);
     }
 
+    /**
+     * Get MEI element attributes from Verovio.
+     * @param {string} elementId - The ID of the MEI element.
+     * @returns {object}
+     */
     function getElementAttr (elementId) {
         return vrvToolkit.getElementAttr(elementId);
     }
 
+    /**
+     * Execute an editor action in Verovio.
+     * @param {object} editorAction - The action to execute.
+     * @param {boolean} addToUndo - Whether or not to make this action undoable.
+     * @returns {boolean}
+     */
     function edit (editorAction, addToUndo = true) {
         let currentMEI = getMEI();
         let value = vrvToolkit.edit(editorAction);
@@ -46,10 +77,18 @@ export default function Neon (mei, vrvToolkit) {
         undoStack.push(getMEI());
     }
 
+    /**
+     * Get additional information on the last editor action from Verovio.
+     * @returns {string}
+     */
     function info () {
         return vrvToolkit.editInfo();
     }
 
+    /**
+     * Undo the last editor action.
+     * @returns {boolean}
+     */
     function undo () {
         let state = undoStack.pop();
         if (state !== undefined) {
@@ -60,6 +99,10 @@ export default function Neon (mei, vrvToolkit) {
         return false;
     }
 
+    /**
+     * Redo an undone action.
+     * @returns {boolean}
+     */
     function redo () {
         let state = redoStack.pop();
         if (state !== undefined) {
@@ -82,3 +125,5 @@ export default function Neon (mei, vrvToolkit) {
     Neon.prototype.redo = redo;
     Neon.prototype.addStateToUndo = addStateToUndo;
 }
+
+export {Neon as default};

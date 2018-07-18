@@ -6,7 +6,12 @@ import EditMode from "./EditMode.js";
 
 const verovio = require("verovio-dev");
 
-export default function NeonView (params) {
+/**
+ * The class managing DOM objects and the Neon class for the application.
+ * @constructor
+ * @param {object} params - An object containing the filenames of the MEI file and background image.
+ */
+function NeonView (params) {
     var viewHeight = 750;
     var viewWidth = 800; 
     var meiFile = params.meifile;
@@ -32,6 +37,9 @@ export default function NeonView (params) {
         viewControls.setHighlightControls();
     });
 
+    /**
+     * Load the view, including background image and rendered MEI.
+     */
     function loadView () {
         if (initialPage){
             var group = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -65,6 +73,9 @@ export default function NeonView (params) {
         resetListeners();
     }
 
+    /**
+     * Refresh the page, often after an editor action.
+     */
     function refreshPage () {
         $("mei_output").html(neon.getSVG());
         initialPage = false;
@@ -73,6 +84,9 @@ export default function NeonView (params) {
         editMode.resetListeners();
     }
 
+    /**
+     * Save the MEI to a file.
+     */
     function saveMEI() {
         var pathSplit = meiFile.split('/');
         var i = pathSplit.length - 1;
@@ -87,12 +101,18 @@ export default function NeonView (params) {
         }) 
     } 
 
+    /**
+     * Load the SVG and put it in the SVG container.
+     */
     function loadSvg() {
         var svg = neon.getSVG();
         $("#mei_output").html(svg);
         $("#mei_output").children("svg").attr("id", "svg_container"); 
     }
 
+    /**
+     * Reset hotkey and panning listeners
+     */
     function resetListeners () {
         $("body").on("keydown keyup", (evt) => {
             if (evt.type === "keydown") {
@@ -133,18 +153,35 @@ export default function NeonView (params) {
         viewControls.setOpacityFromSlider();
     }
 
+    /**
+     * Get the MEI for use in Rodan.
+     */
     function rodanGetMei() {
         return neon.getMEI();
     }
 
+    /**
+     * Execute an editor action.
+     * @param {object} editorAction - The editor action.
+     * @param {boolean} addToUndo - Whether or not to add the action to the undo stack.
+     * @returns {boolean} If the action succeeded.
+     */
     function edit(editorAction, addToUndo = true) {
         return neon.edit(editorAction, addToUndo);
     }
 
+    /**
+     * Undo the last action.
+     * @returns {boolean}
+     */
     function undo() {
         return neon.undo();
     }
 
+    /**
+     * Redo the last undone action.
+     * @returns {boolean}
+     */
     function redo() {
         return neon.redo();
     }
@@ -163,3 +200,5 @@ export default function NeonView (params) {
     NeonView.prototype.redo = redo;
     NeonView.prototype.addStateToUndo = addStateToUndo;
 }
+
+export {NeonView as default};
