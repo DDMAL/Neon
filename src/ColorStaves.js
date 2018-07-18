@@ -36,8 +36,7 @@ export function highlight(staff, color) {
         } else {
             child.setAttribute("fill", color);
         }
-        let currentClass = child.getAttribute("class");
-        child.setAttribute("class", currentClass !== null ? currentClass + " highlighted" : "highlighted");
+        $(child).addClass("highlighted");
     });
 }
 
@@ -63,7 +62,7 @@ export function unhighlight(staff) {
  * published in Nature Methods volume 8 on 27 May 2011
  * https://www.nature.com/articles/nmeth.1618?WT.ec_id=NMETH-201106
  */
-ColorStaves.Colors = new Array([
+ColorStaves.Colors = [ 
     "rgb(0,0,0)",
     "rgb(230, 159, 0)",
     "rgb(86, 180, 233)",
@@ -72,6 +71,6 @@ ColorStaves.Colors = new Array([
     "rgb(0, 114, 178)",
     "rgb(213, 94, 0)",
     "rgb(204, 121, 167)"
-]);
+];
 
 export {ColorStaves as default};
