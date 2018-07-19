@@ -3,15 +3,15 @@
 import * as Color from "./Color.js";
 import * as Contents from "./Contents.js";
 import * as Controls from "./Controls.js";
+import * as Grouping from "./Grouping.js";
 
 /**
  * Handle click selection and mark elements as selected.
  * @constructor
  * @param {DragHandler} dragHandler - An instantiated DragHandler object.
  * @param {NeonView} neonView - The NeonView parent.
- * @param {GroupingHandler} groupingHandler - A GroupingHandler
  */
-export function ClickSelect (dragHandler, neonView, groupingHandler) {
+export function ClickSelect (dragHandler, neonView) {
     var lastSelect = new Array(0);
     selectListeners();
     
@@ -25,7 +25,7 @@ export function ClickSelect (dragHandler, neonView, groupingHandler) {
             var isNc= $(this).hasClass("nc");
             if ($("#selByNeume").hasClass("is-active") && isNc){
                 if(!$(this).hasClass("selected")){
-                    unselect(groupingHandler);
+                    unselect();
                     $(this).attr("fill", "#d00");
                     $(this).addClass("selected");
                     var siblings = Array.from($(this).siblings());
@@ -46,7 +46,7 @@ export function ClickSelect (dragHandler, neonView, groupingHandler) {
             }
             else if ($("#selByNc").hasClass("is-active") || !(isNc || $("#selByStaff").hasClass("is-active"))){
                 if(!$(this).hasClass("selected")){
-                    unselect(groupingHandler);
+                    unselect();
                     $(this).attr("fill", "#d00");
                     $(this).addClass("selected");
                     triggerNcActions(neonView);
@@ -56,7 +56,7 @@ export function ClickSelect (dragHandler, neonView, groupingHandler) {
             else if ($("#selByStaff").hasClass("is-active")) {
                 var staff = $(this).parents(".staff");
                 if (!staff.hasClass("selected")) {
-                    unselect(groupingHandler);
+                    unselect();
                     staff.addClass("selected");
                     Color.highlight(staff[0], "#d00");
                     triggerStaffActions(neonView);
@@ -74,7 +74,7 @@ export function ClickSelect (dragHandler, neonView, groupingHandler) {
         $("body").on("keydown", (evt) => { // click
             if (evt.type === "keydown" && evt.key !== "Escape") return;
             endOptionsSelection();
-            unselect(groupingHandler);
+            unselect();
         })
 
         $(classesToSelect).on("click", function(e){
@@ -216,10 +216,9 @@ function triggerStaffActions(neonView) {
  * @constructor
  * @param {DragHandler} dragHandler - Instantiated DragHandler object.
  * @param {module:Zoom~ZoomHandler} zoomHandler - Instantiated ZoomHandler object.
- * @param {GroupingHandler} groupingHandler - Instantiated GroupingHandler object.
  * @param {NeonView} neonView - NeonView parent.
  */
-export function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView) {
+export function DragSelect (dragHandler, zoomHandler, neonView) {
     var initialX = 0;
     var initialY = 0;
     var panning = false;
@@ -247,7 +246,7 @@ export function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView)
         })
         if (d3.event.sourceEvent.target.nodeName != "use" && !editing){
             if(!d3.event.sourceEvent.shiftKey){
-                unselect(groupingHandler);
+                unselect();
                 dragSelecting = true;
                 var initialP = d3.mouse(this);
                 initialX = initialP[0];
@@ -355,7 +354,7 @@ export function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView)
                 });
             }
             if (toSelect.length > 1 && !$("#selByStaff").hasClass("is-active")){
-                groupingHandler.triggerGroupSelection();
+                Grouping.triggerGroupSelection();
             } 
             else if (toSelect.length > 1 && $("#selByStaff").hasClass("is-active")) {
                 triggerStaffActions(neonView);
@@ -404,7 +403,7 @@ export function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView)
  * Unselect all selected elements and run undo any extra
  * actions.
  */
-function unselect(groupingHandler) {
+function unselect() {
     var selected = $(".selected");
     for (var i=0; i < selected.length; i++) {
         if ($(selected[i]).hasClass("staff")) {
@@ -415,7 +414,7 @@ function unselect(groupingHandler) {
         }
     }
     if (!$("#selByStaff").hasClass("is-active")) {
-        groupingHandler.endGroupingSelection();
+        Grouping.endGroupingSelection();
     }
     if ($("#highlightStaves").is(":checked")) {
         Color.setStaffHighlight();

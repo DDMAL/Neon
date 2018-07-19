@@ -31,15 +31,15 @@
 import * as Color from "./Color.js";
 import * as Contents from "./Contents.js";
 import * as Controls from "./Controls.js";
+import * as Grouping from "./Grouping.js";
 
 /**
  * Handle click selection and mark elements as selected.
  * @constructor
  * @param {DragHandler} dragHandler - An instantiated DragHandler object.
  * @param {NeonView} neonView - The NeonView parent.
- * @param {GroupingHandler} groupingHandler - A GroupingHandler
  */
-export function ClickSelect (dragHandler, neonView, groupingHandler) {
+export function ClickSelect (dragHandler, neonView) {
     var lastSelect = new Array(0);
     selectListeners();
     
@@ -53,7 +53,7 @@ export function ClickSelect (dragHandler, neonView, groupingHandler) {
             var isNc= $(this).hasClass("nc");
             if ($("#selByNeume").hasClass("is-active") &amp;&amp; isNc){
                 if(!$(this).hasClass("selected")){
-                    unselect(groupingHandler);
+                    unselect();
                     $(this).attr("fill", "#d00");
                     $(this).addClass("selected");
                     var siblings = Array.from($(this).siblings());
@@ -74,7 +74,7 @@ export function ClickSelect (dragHandler, neonView, groupingHandler) {
             }
             else if ($("#selByNc").hasClass("is-active") || !(isNc || $("#selByStaff").hasClass("is-active"))){
                 if(!$(this).hasClass("selected")){
-                    unselect(groupingHandler);
+                    unselect();
                     $(this).attr("fill", "#d00");
                     $(this).addClass("selected");
                     triggerNcActions(neonView);
@@ -84,7 +84,7 @@ export function ClickSelect (dragHandler, neonView, groupingHandler) {
             else if ($("#selByStaff").hasClass("is-active")) {
                 var staff = $(this).parents(".staff");
                 if (!staff.hasClass("selected")) {
-                    unselect(groupingHandler);
+                    unselect();
                     staff.addClass("selected");
                     Color.highlight(staff[0], "#d00");
                     triggerStaffActions(neonView);
@@ -102,7 +102,7 @@ export function ClickSelect (dragHandler, neonView, groupingHandler) {
         $("body").on("keydown", (evt) => { // click
             if (evt.type === "keydown" &amp;&amp; evt.key !== "Escape") return;
             endOptionsSelection();
-            unselect(groupingHandler);
+            unselect();
         })
 
         $(classesToSelect).on("click", function(e){
@@ -244,10 +244,9 @@ function triggerStaffActions(neonView) {
  * @constructor
  * @param {DragHandler} dragHandler - Instantiated DragHandler object.
  * @param {module:Zoom~ZoomHandler} zoomHandler - Instantiated ZoomHandler object.
- * @param {GroupingHandler} groupingHandler - Instantiated GroupingHandler object.
  * @param {NeonView} neonView - NeonView parent.
  */
-export function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView) {
+export function DragSelect (dragHandler, zoomHandler, neonView) {
     var initialX = 0;
     var initialY = 0;
     var panning = false;
@@ -275,7 +274,7 @@ export function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView)
         })
         if (d3.event.sourceEvent.target.nodeName != "use" &amp;&amp; !editing){
             if(!d3.event.sourceEvent.shiftKey){
-                unselect(groupingHandler);
+                unselect();
                 dragSelecting = true;
                 var initialP = d3.mouse(this);
                 initialX = initialP[0];
@@ -383,7 +382,7 @@ export function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView)
                 });
             }
             if (toSelect.length > 1 &amp;&amp; !$("#selByStaff").hasClass("is-active")){
-                groupingHandler.triggerGroupSelection();
+                Grouping.triggerGroupSelection();
             } 
             else if (toSelect.length > 1 &amp;&amp; $("#selByStaff").hasClass("is-active")) {
                 triggerStaffActions(neonView);
@@ -432,7 +431,7 @@ export function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView)
  * Unselect all selected elements and run undo any extra
  * actions.
  */
-function unselect(groupingHandler) {
+function unselect() {
     var selected = $(".selected");
     for (var i=0; i &lt; selected.length; i++) {
         if ($(selected[i]).hasClass("staff")) {
@@ -443,7 +442,7 @@ function unselect(groupingHandler) {
         }
     }
     if (!$("#selByStaff").hasClass("is-active")) {
-        groupingHandler.endGroupingSelection();
+        Grouping.endGroupingSelection();
     }
     if ($("#highlightStaves").is(":checked")) {
         Color.setStaffHighlight();
@@ -459,13 +458,13 @@ function unselect(groupingHandler) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="GroupingHandler.html">GroupingHandler</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 19 2018 14:46:39 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 19 2018 14:54:47 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

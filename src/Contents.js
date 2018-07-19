@@ -151,3 +151,21 @@ export const staffActionContents =
     "<label>Merge Systems:&nbsp;</label>" +
     "<div><p class='control'>" +
     "<button id='merge-systems' class='button'>Merge</button></p></div>";
+
+/**
+ * HTML for goruping selection menu.
+ * @type {string}
+ */
+export const groupingMenu =
+    "<label>Select Grouping:&nbsp;</label>" +
+    "<div id='grouping_dropdown' class='dropdown'>" +
+    "<div class='dropdown-trigger'>" +
+    "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+    "<span>Groupings</span><span class='icon is-small'>" +
+    "<i class=''></i></span></button></div>" +
+    "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
+    "<div class='dropdown-content'>" +
+    "<a id='Torculus' class='dropdown-item'>Torculus</a>" +
+    "<a id='' class='dropdown-item'>Etc...</a></div></div></div>" +
+    "<div><p class='control'>" +
+    "<button class='button' id='ungroup'>Ungroup</button></p></div>";

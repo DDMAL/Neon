@@ -1,5 +1,4 @@
 import DragHandler from "./DragHandler.js";
-import GroupingHandler from "./GroupingHandler.js";
 import {ClickSelect, DragSelect} from "./Select.js";
 import InsertHandler from "./InsertHandler.js";
 import * as Controls from "./Controls.js";
@@ -14,7 +13,6 @@ import * as Contents from "./Contents.js";
  */
 function EditMode (neonView, meiFile, zoomHandler){
     var dragHandler = null;
-    var groupingHandler = null;
     var select = null;
     var insertControls = null;
     var dragSelect = null;
@@ -31,13 +29,12 @@ function EditMode (neonView, meiFile, zoomHandler){
      */
     function init() {
         dragHandler = new DragHandler(neonView);
-        groupingHandler = new GroupingHandler();
         Controls.initNavbar(meiFile);
-        select = new ClickSelect(dragHandler, neonView, groupingHandler);
+        select = new ClickSelect(dragHandler, neonView);
         insertHandler = new InsertHandler(neonView);
         Controls.bindInsertTabs(insertHandler);
         $("#neumeTab").click();
-        dragSelect = new DragSelect(dragHandler, zoomHandler, groupingHandler, neonView);
+        dragSelect = new DragSelect(dragHandler, zoomHandler, neonView);
 
         Controls.initInsertEditControls(neonView);
     }
