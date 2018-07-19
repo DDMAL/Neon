@@ -75,6 +75,7 @@ function Select (dragHandler, neonView) {
                     unselect();
                     staff.addClass("selected");
                     Color.highlight(staff[0], "#d00");
+                    triggerStaffActions(neonView);
                     dragHandler.dragInit();
                 }
             }
@@ -221,6 +222,7 @@ function Select (dragHandler, neonView) {
         initOptionsListeners();
     }
 
+
     function endOptionsSelection () {
         $("#moreEdit").empty();
         $("#moreEdit").addClass("is-invisible");
@@ -233,5 +235,40 @@ function Select (dragHandler, neonView) {
     }
 
     Select.prototype.selectListeners = selectListeners;
+}
+
+export function triggerStaffActions(neonView) {
+    $("#moreEdit").empty();
+    $("#moreEdit").addClass("is-invisible");
+    $("#moreEdit").removeClass("is-invisible");
+    $("#moreEdit").append(
+        "<label>Merge Systems:&nbsp;</label>" +
+        "<div><p class='control'>" +
+        "<button id='merge-systems' class='button'>Merge</button></p></div>"
+    );
+    
+    $("#drop_select").on("click", function() {
+        $(this).toggleClass("is-active");
+    });
+    $("#merge-systems").on("click", (evt) => {
+        let systems = Array.from($(".staff.selected"));
+        let elementIds = [];
+        systems.forEach(staff => {
+            elementIds.push(staff.id);
+        });
+        let editorAction = {
+            "action": "merge",
+            "param": {
+                "elementIds": elementIds
+            }
+        };
+
+        if (neonView.edit(editorAction)) {
+            neonView.refreshPage();
+        }
+        else {
+            alert("Could not merge systems. :(");
+        }
+    });
 }
 export {Select as default};

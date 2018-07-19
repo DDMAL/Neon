@@ -31,8 +31,7 @@ export function highlight(staff, color) {
         } else {
             child.setAttribute("fill", color);
         }
-        let currentClass = child.getAttribute("class");
-        child.setAttribute("class", currentClass !== null ? currentClass + " highlighted" : "highlighted");
+        $(child).addClass("highlighted");
     });
 }
 
@@ -58,7 +57,7 @@ export function unhighlight(staff) {
  * published in Nature Methods volume 8 on 27 May 2011
  * https://www.nature.com/articles/nmeth.1618?WT.ec_id=NMETH-201106
  */
-const ColorPalette = [
+ColorStaves.Colors = [ 
     "rgb(0,0,0)",
     "rgb(230, 159, 0)",
     "rgb(86, 180, 233)",
