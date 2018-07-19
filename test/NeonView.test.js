@@ -165,8 +165,10 @@ describe("Check Controls UI", () => {
     })
 
     test("Test click select .nc", async () => {
-        var nc = await browser.findElement(By.className("nc"));
+        var selByNcButton = await browser.findElement(By.id("selByNc"));
         const actions = browser.actions();
+        await actions.click(selByNcButton).perform();
+        var nc = await browser.findElement(By.className("nc"));
         await actions.click(nc).perform();
         var ncClass = await nc.getAttribute("class");
         expect(ncClass).toBe("nc selected");
