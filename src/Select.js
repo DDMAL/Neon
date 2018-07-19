@@ -1,4 +1,4 @@
-import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
+import * as Color from "./Color.js";
 
 /**
  * Handle click selection and mark elements as selected.
@@ -74,7 +74,7 @@ function Select (dragHandler, neonView) {
                 if (!staff.hasClass("selected")) {
                     unselect();
                     staff.addClass("selected");
-                    highlight(staff[0], "#d00");
+                    Color.highlight(staff[0], "#d00");
                     dragHandler.dragInit();
                 }
             }
@@ -112,8 +112,7 @@ function Select (dragHandler, neonView) {
             }
 
             if ($("#highlightStaves").is(":checked")) {
-                let color = new ColorStaves();
-                color.setColor();
+                Color.setStaffHighlight();
             }
         }
     }

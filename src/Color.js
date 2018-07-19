@@ -1,26 +1,21 @@
-/** @module ColorStaves */
+/** @module Color*/
 
 /**
- * Implements the highlight staves functionality.
+ * Highlight each staff a different color.
  */
-class ColorStaves {
-    /**
-     * Highlight each staff a different color.
-     */
-    setColor() {
-        let staves = Array.from(document.getElementsByClassName("staff"));
-        for (var i = 0; i < staves.length; i++) {
-            let staffColor = ColorStaves.Colors[i % ColorStaves.Colors.length];
-            highlight(staves[i], staffColor);
-        }
+export function setStaffHighlight() {
+    let staves = Array.from(document.getElementsByClassName("staff"));
+    for (var i = 0; i < staves.length; i++) {
+        let staffColor = ColorPalette[i % ColorPalette.length];
+        highlight(staves[i], staffColor);
     }
-    
-    /**
-     * Remove the highlight from each staff.
-     */
-    unsetColor() {
-        unhighlight(".staff");
-    }
+}
+
+/**
+ * Remove the highlight from each staff.
+ */
+export function unsetStaffHighlight() {
+    unhighlight(".staff");
 }
 
 /**
@@ -63,7 +58,7 @@ export function unhighlight(staff) {
  * published in Nature Methods volume 8 on 27 May 2011
  * https://www.nature.com/articles/nmeth.1618?WT.ec_id=NMETH-201106
  */
-ColorStaves.Colors = new Array([
+const ColorPalette = [
     "rgb(0,0,0)",
     "rgb(230, 159, 0)",
     "rgb(86, 180, 233)",
@@ -72,6 +67,4 @@ ColorStaves.Colors = new Array([
     "rgb(0, 114, 178)",
     "rgb(213, 94, 0)",
     "rgb(204, 121, 167)"
-]);
-
-export {ColorStaves as default};
+];

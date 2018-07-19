@@ -1,4 +1,4 @@
-/** @module ZoomHandler */
+/** @module Zoom */
 
 /**
  * Creates a Zoom Handler object.
@@ -6,7 +6,10 @@
  */
 function ZoomHandler () {
     var dragCoordinates;
-    /** The internal view box of the SVG container. */   
+    /** 
+     * The internal view box of the SVG container. 
+     * @type {module:Zoom.ViewBox}
+     */
     var viewBox = new ViewBox();
     var matrix;
 

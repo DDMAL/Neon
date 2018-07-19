@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Contents.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Contents.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module Contents */
+
+import PunctumIcon from "./img/punctum.png";
+import VirgaIcon from "./img/virga.png";
+import DiamondIcon from "./img/diamond.png";
+import WhitePunctumIcon from "./img/white_punct.png";
+import QuilismaIcon from "./img/quilisma.png";
+import CustosIcon from "./img/custos.png";
+import CClefIcon from "./img/cClef.png";
+import FClefIcon from "./img/fClef.png";
+import StaffIcon from "./img/staff.png";
+import SmallDivIcon from "./img/smallDiv.png";
+import MinorDivIcon from "./img/minorDiv.png";
+import MajorDivIcon from "./img/majorDiv.png";
+import FinalDivIcon from "./img/finalDiv.png";
+
+/**
+ * HTML for each insert tab (neume, grouping, clef, system, and division).
+ * @type {object}
+ */
+export const insertTabHtml = {
+    neumeTab: "&lt;p class='control'>" +
+        "&lt;button id='punctum' class='button insertel smallel' title='punctum'>&lt;img src='" + PunctumIcon + "' class='image'/>&lt;/button>&lt;/p>" +
+        "&lt;p class='control'>" +
+        "&lt;button id='virga' class='button insertel smallel' title='virga'>&lt;img src='" + VirgaIcon + "' class='image'/>&lt;/button>&lt;/p>" +
+        "&lt;p class='control'>" +
+        "&lt;button id='diamond' class='button insertel smallel' title='inclinatum'>&lt;img src='" + DiamondIcon + "' class='image'/>&lt;/button>&lt;/p>" +
+        "&lt;p class='control'>" +
+        "&lt;button id='white_punct' class='button insertel smallel' title='white punctum'>&lt;img src='" + WhitePunctumIcon + "' class='image'/>&lt;/button>&lt;/p>" +
+        "&lt;p class='control'>" +
+        "&lt;button id='quilisma' class='button insertel smallel' title='quilisma'>&lt;img src='" + QuilismaIcon + "' class='image'/>&lt;/button>&lt;/p>" +
+        "&lt;p class='control'>" +
+        "&lt;button id='custos' class='button insertel smallel' title='custos'>&lt;img src='" + CustosIcon + "' class='image'/>&lt;/button>&lt;/p>",
+    groupingTab: "&lt;p class='control'>" +
+        "&lt;button id='torculus' class='button insertel smallel' title='torculus'>&lt;img src='' class='image'/>&lt;/button>&lt;/p>" +
+        "&lt;p class='control'>" +
+        "&lt;button id='clivis' class='button insertel smallel' title='clivis'>&lt;img src='' class='image'/>&lt;/button>&lt;/p>" +
+        "&lt;p class='control'>" +
+        "&lt;button id='pes' class='button insertel smallel' title='pes'>&lt;img src='' class='image'/>&lt;/button>&lt;/p>",
+    clefTab: "&lt;p class='control'>" +
+        "&lt;button id='cClef' class='button insertel smallel' title=' C Clef'>&lt;img src='" + CClefIcon + "' class='image' />&lt;/button>&lt;/p>" +
+        "&lt;p class='control'>" +
+        "&lt;button id='fClef' class='button insertel smallel' title='F Clef'>&lt;img src='" + FClefIcon + "' class='image'/>&lt;/button>&lt;/p>",
+    systemTab: "&lt;p class='control'>" +
+        "&lt;button id='staff' class='button insertel longel' title='system'>&lt;img src='" + StaffIcon + "' class='image' />&lt;/button>&lt;/p>", 
+    divisionTab: "&lt;p class='control'>" +
+        "&lt;button id='smallDiv' class='button insertel tallel'>&lt;img src='" + SmallDivIcon + "' class='image'/>&lt;/button>&lt;/p>" +
+        "&lt;p class='control'>" +
+        "&lt;button id='minorDiv' class='button insertel tallel'>&lt;img src='" + MinorDivIcon +"' class='image'/>&lt;/button>&lt;/p>" +
+        "&lt;p class='control'>" +
+        "&lt;button id='majorDiv' class='button insertel tallel'>&lt;img src='" + MajorDivIcon + "' class='image'/>&lt;/button>&lt;/p>" +
+        "&lt;p class='control'>" +
+        "&lt;button id='finalDiv' class='button insertel tallel'>&lt;img src='" + FinalDivIcon + "' class='image'/>&lt;/button>&lt;/p>"
+};
+
+/**
+ * Contents of navbar menu after switching to edit mode.
+ * @type {string}
+ */
+export const navbarDropdownMenu =
+    "&lt;div class='navbar-item has-dropdown is-hoverable'>&lt;a class='navbar-link'>File&lt;/a>" +
+    "&lt;div class='navbar-dropdown'>" +
+    "&lt;a id='getmei' class='navbar-item' href='' download=''> Download MEI &lt;/a>" +
+    "&lt;a id='getpng' class='navbar-item' href='' download=''> Download PNG &lt;/a>" +
+    "&lt;a id='revert' class='navbar-item' href=''> Revert &lt;/a>";
+
+/**
+ * Structure of insert panel with basic grouping tabs.
+ * @type {string}
+ */
+export const insertControlsPanel =
+    "&lt;p class='panel-heading' id='insertMenu'>Insert&lt;/p>" +
+    "&lt;div id='insertContents'>" +
+    "&lt;p class='panel-tabs'>" +
+    "&lt;a id='neumeTab' class='insertTab'>Neume&lt;/a>" +
+    "&lt;a id='groupingTab' class='insertTab'>Grouping&lt;/a>" +
+    "&lt;a id='clefTab' class='insertTab'>Clef&lt;/a>" +
+    "&lt;a id='systemTab' class='insertTab'>System&lt;/a>" +
+    "&lt;a id='divisionTab' class='insertTab'>Division&lt;/a>&lt;/p>" +
+    "&lt;a class='panel-block has-text-centered'>" +
+    "&lt;div id='insert_data' class='field is-grouped'/>&lt;/a>&lt;/div>";
+
+/**
+ * Contents of edit panel with buttons.
+ * @type {string}
+ */
+export const editControlsPanel =
+    "&lt;p class='panel-heading' id='editMenu'>Edit&lt;/p>" +
+    "&lt;div id='editContents'>" +
+    "&lt;a class='panel-block'>" +
+    "&lt;label>Select By:&amp;nbsp;&lt;/label>" +
+    "&lt;div class='field has-addons'>" +
+    "&lt;p class='control'>" + 
+    "&lt;button class='button is-active' id='selByNeume'>Neume&lt;/button>&lt;/p>" +
+    "&lt;p class='control'>" +
+    "&lt;button class='button' id='selByNc'>Neume Component&lt;/button>&lt;/p>" +
+    "&lt;p class='control'>" +
+    "&lt;button class='button' id='selByStaff'>Staff&lt;/button>&lt;/p>&lt;/div>&lt;/a>" +
+    "&lt;a class='panel-block'>" + 
+    "&lt;div class='field is-grouped'>" +
+    "&lt;p class='control'>" +
+    "&lt;button class='button' id='undo'>Undo&lt;/button>&lt;/p>" +
+    "&lt;p class='control'>" +
+    "&lt;button class='button' id='redo'>Redo&lt;/button>&lt;/p>" +
+    "&lt;p class='control'>" +
+    "&lt;button class='button' id='save'>Save Changes&lt;/button>&lt;/p>" +
+    "&lt;p class='control'>" +
+    "&lt;button class='button' id='delete'>Delete&lt;/button>&lt;/p>&lt;/div>&lt;/a>" +
+    "&lt;a id='moreEdit' class='panel-block is-invisible'>" + 
+    "&lt;a id='neumeEdit' class='panel-block is-invisible'>&lt;/div>";
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="DragSelect.html">DragSelect</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="GroupingHandler.html">GroupingHandler</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="Select.html">Select</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Navbar">Navbar</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 19 2018 10:56:27 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

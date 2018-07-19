@@ -1,10 +1,10 @@
-import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
+import * as Color from "./Color.js";
 
 /**
  * Handle dragging to select musical elements and staves.
  * @constructor
  * @param {DragHandler} dragHandler - Instantiated DragHandler object.
- * @param {module:ZoomHandler~ZoomHandler} zoomHandler - Instantiated ZoomHandler object.
+ * @param {module:Zoom~ZoomHandler} zoomHandler - Instantiated ZoomHandler object.
  * @param {GroupingHandler} groupingHandler - Instantiated GroupingHandler object.
  */
 function DragSelect (dragHandler, zoomHandler, groupingHandler) {
@@ -112,7 +112,7 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler) {
                     }
                 });
                 toSelect.forEach(elem => {
-                    highlight(elem, "#d00");
+                    Color.highlight(elem, "#d00");
                     $(elem).addClass("selected");
                 });
             }
@@ -193,7 +193,7 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler) {
         for (var i=0; i < selected.length; i++) {
             if ($(selected[i]).hasClass("staff")) {
                 $(selected[i]).removeClass("selected");
-                unhighlight(selected[i]);
+                Color.unhighlight(selected[i]);
             } else {
                 $(selected[i]).removeClass("selected").attr("fill", null);
             }
@@ -202,8 +202,7 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler) {
             groupingHandler.endGroupingSelection();
         }
         if ($("#highlightStaves").is(":checked")) {
-            let color = new ColorStaves();
-            color.setColor();
+            Color.setStaffHighlight();
         }
     }
 }
