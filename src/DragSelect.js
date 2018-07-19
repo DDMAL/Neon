@@ -106,7 +106,40 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler, selectOptions) {
             var ncs = [];
             var notNeumes = [];
 
-            if ($("#selByStaff").hasClass("is-active")) {
+        
+            elements.forEach(el => {
+                var firstParent = $(el).parent()[0];         
+                var isNc = $(firstParent).hasClass("nc")
+
+                if (isNc){
+                    ncs.push(firstParent);
+
+                    var neume = $(firstParent).parent()[0];
+                    if (!neumes.includes(neume)){
+                        neumes.push(neume);
+                    }
+
+                    var syl = $(neume).parent()[0];
+                    if (!syls.includes(syl)){
+                        syls.push(syl);
+                    }
+                }
+                else{
+                    notNeumes.push(firstParent);
+                }
+            });
+
+            var selectMode = null;
+            var tabs = Array.from($(".sel-by"));
+
+            tabs.forEach(tab => {
+                if ($(tab).hasClass("is-active")){
+                    selectMode = $(tab)[0].id;
+                }
+            })
+
+            if (selectMode == "selByStaff"){
+                var toSelect = [];
                 elements.forEach(el => {
                     if (el.tagName === "use") {
                         toSelect.push($(el).parents(".staff")[0]);
@@ -119,84 +152,51 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler, selectOptions) {
                     $(elem).addClass("selected");
                 });
             }
-            else{
-                elements.forEach(el => {
-                    var firstParent = $(el).parent()[0];         
-                    var isNc = $(firstParent).hasClass("nc")
-
-                    if (isNc){
-                        ncs.push(firstParent);
-
-                        var neume = $(firstParent).parent()[0];
-                        if (!neumes.includes(neume)){
-                            neumes.push(neume);
-                        }
-
-                        var syl = $(neume).parent()[0];
-                        if (!syls.includes(syl)){
-                            syls.push(syl);
-                        }
-                    }
-                    else{
-                        notNeumes.push(firstParent);
-                    }
+            else if (selectMode == "selBySyl"){
+                var noClefOrCustos = selectNn(notNeumes);
+                syls.forEach(s => {
+                    select(s);
                 });
-
-                var selectMode = null;
-                var tabs = Array.from($(".sel-by"));
-
-                tabs.forEach(tab => {
-                    if ($(tab).hasClass("is-active")){
-                        selectMode = $(tab)[0].id;
-                    }
-                })
-
-                if(notNeumes.length != 0){
-                    console.log("clefs or custos were selected");
+                if(syls.length > 1 && noClefOrCustos){
+                    groupingHandler.triggerGrouping("syl");
                 }
-                else if (selectMode == "selBySyl"){
-                    syls.forEach(s => {
-                        select(s);
-                    });
-                    if(syls.length > 1){
-                        groupingHandler.triggerGrouping("syl");
-                    }
-                    else if(syls.length == 1){
-                        selectOptions.triggerSylActions(); 
-                    }
-                    else{
-                        console.log("Warning: no selection made");
-                    }
+                else if(syls.length == 1 && noClefOrCustos){
+                    selectOptions.triggerSylActions(); 
                 }
-                else if (selectMode == "selByNeume"){
-                    neumes.forEach(n => {
-                        select(n);
-                    });
-                    if(neumes.length > 1){
-                        groupingHandler.triggerGrouping("neume"); 
-                    }
-                    else if(neumes.length == 1){
-                        selectOptions.triggerNeumeActions();
-                    }
-                    else{
-                        console.log("Warning: no selection made");
-                    }
-                }
-                else if (selectMode == "selByNc"){
-                    ncs.forEach(nc => {
-                        select(nc);
-                    });
-                    if(ncs.length > 1){
-                        groupingHandler.triggerGrouping("nc"); 
-                    }
-                    else if(ncs.length == 1){
-                        selectOptions.triggerNcActions();
-                    }
-                    else{
-                        console.log("Warning: no selection made");
-                    }
+                else{
+                    console.log("Warning: no selection made");
                 }
             }
+            else if (selectMode == "selByNeume"){
+                var noClefOrCustos = selectNn(notNeumes);
+                neumes.forEach(n => {
+                    select(n);
+                });
+                if(neumes.length > 1 && noClefOrCustos){
+                    groupingHandler.triggerGrouping("neume"); 
+                }
+                else if(neumes.length == 1 && noClefOrCustos){
+                    selectOptions.triggerNeumeActions();
+                }
+                else{
+                    console.log("Warning: no selection made");
+                }
+            }
+            else if (selectMode == "selByNc"){
+                var noClefOrCustos = selectNn(notNeumes);
+                ncs.forEach(nc => {
+                    select(nc);
+                });
+                if(ncs.length > 1 && noClefOrCustos){
+                    groupingHandler.triggerGrouping("nc"); 
+                }
+                else if(ncs.length == 1 && noClefOrCustos){
+                    selectOptions.triggerNcActions();
+                }
+                else{
+                    console.log("Warning: no selection made");
+                }
+            } 
             dragHandler.dragInit();
             d3.selectAll("#selectRect").remove();
             dragSelecting = false;
@@ -262,6 +262,18 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler, selectOptions) {
         if ($("#highlightStaves").is(":checked")) {
             let color = new ColorStaves();
             color.setColor();
+        }
+    }
+
+    function selectNn(notNeumes) {
+        if(notNeumes.length > 0){
+            notNeumes.forEach(nn => {
+                select(nn);
+            })
+            return false;
+        }
+        else{
+            return true;
         }
     }
 }
