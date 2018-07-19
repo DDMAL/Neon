@@ -12,6 +12,10 @@ function InsertHandler (neonView) {
     var attributes = null;
     var cursor = new CursorHandler();
 
+    /**
+     * Switch to insert mode based on the button pressed.
+     * @param {string} buttonId - The ID of the button pressed.
+     */
     function insertActive (buttonId) {
         if (buttonId === "punctum") {
             type = "nc";
@@ -69,6 +73,9 @@ function InsertHandler (neonView) {
         });
     }
 
+    /**
+     * Disable insert mode
+     */
     function insertDisabled () {
         type = "";
         $("body").off("click", "#svg_output", handler);
@@ -78,6 +85,10 @@ function InsertHandler (neonView) {
         cursor.resetCursor();
     }
 
+    /**
+     * Event handler for insert events other than staff. Creates an insert action and sends it to Verovio.
+     * @param {object} evt - JQuery event object.
+     */
     function handler (evt) {
         var container = document.getElementsByClassName("definition-scale")[0];
         var pt = container.createSVGPoint();
@@ -105,6 +116,10 @@ function InsertHandler (neonView) {
         neonView.refreshPage();
     }
 
+    /**
+     * Event handler for staff insertion. Creates an insert action with two points (ul and lr) and sends it to Verovio.
+     * @param {object} evt - JQuery event object.
+     */
     function staffHandler (evt) {
         var container = document.getElementsByClassName("definition-scale")[0];
         var pt = container.createSVGPoint();

@@ -10,6 +10,8 @@ const verovio = require("verovio-dev");
  * The class managing DOM objects and the Neon class for the application.
  * @constructor
  * @param {object} params - An object containing the filenames of the MEI file and background image.
+ * @param {string} params.meifile - The filename of the MEI file.
+ * @param {string} params.bgimg - The filename of the background image.
  */
 function NeonView (params) {
     var viewHeight = 750;

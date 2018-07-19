@@ -50,6 +50,9 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler) {
         editing = false;
     }
 
+    /**
+     * Action to run while the drag select continues. Updates the rectangle.
+     */
     function selecting(){
         if(!panning && dragSelecting){
             var currentPt = d3.mouse(this);
@@ -149,6 +152,11 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler) {
         panning = false;
     }
 
+    /**
+     * Create an initial dragging rectangle.
+     * @param {number} ulx - The upper left x-position of the new rectangle.
+     * @param {number} uly - The upper left y-position of the new rectangle.
+     */
     function initRect(ulx, uly){
         canvas.append("rect")
             .attr("x", ulx)
@@ -161,6 +169,13 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler) {
             .attr("fill", "none");
     }
 
+    /**
+     * Update the dragging rectangle.
+     * @param {number} newX - The new ulx.
+     * @param {number} newY - The new uly.
+     * @param {number} currentWidth - The width of the rectangle in pixels.
+     * @param {number} currentHeight - The height of the rectangle in pixels.
+     */
     function updateRect(newX, newY, currentWidth, currentHeight){
         d3.select("#selectRect")
             .attr("x", newX)
@@ -169,6 +184,10 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler) {
             .attr("height", currentHeight)
     }
 
+    /**
+     * Unselect all selected elements and run undo any extra
+     * actions.
+     */
     function unselect() {
         var selected = $(".selected");
         for (var i=0; i < selected.length; i++) {

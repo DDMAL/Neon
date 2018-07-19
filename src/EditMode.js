@@ -78,6 +78,9 @@ function EditMode (neonView, meiFile, zoomHandler){
         init();
     })
 
+    /**
+     * Initialize handlers and controls and create event listeners.
+     */
     function init() {
         dragHandler = new DragHandler(neonView);
         groupingHandler = new GroupingHandler();
@@ -144,6 +147,9 @@ function EditMode (neonView, meiFile, zoomHandler){
         });
     }
 
+    /**
+     * Reset select event listeners.
+     */
     function resetListeners() {
         select.selectListeners();
     }
