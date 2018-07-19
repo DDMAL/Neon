@@ -66,7 +66,7 @@ function Select (dragHandler, selectOptions) {
                     unselect();
                     staff.addClass("selected");
                     highlight(staff[0], "#d00");
-                    triggerStaffActions(neonView);
+                    selectOptions.triggerStaffActions(neonView);
                     dragHandler.dragInit();
                 }
             }
