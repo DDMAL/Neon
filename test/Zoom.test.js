@@ -1,4 +1,4 @@
-import {ViewBox} from "../src/ZoomHandler.js";
+import {ViewBox} from "../src/Zoom.js";
 
 test("Check 'isUnset', 'set' functions", () => {
     let viewBox = new ViewBox();
