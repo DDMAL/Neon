@@ -1,10 +1,21 @@
 import CursorHandler from "./CursorHandler.js";
 
-export default function InsertHandler (neonView) {
+/**
+ * Handle inserting new musical elements and communicate this to Verovio.
+ * @constructor
+ * @param {NeonView} neonView - The NeonView parent.
+ */
+function InsertHandler (neonView) {
     var type = "";
+    var firstClick = true;
+    var coord;
     var attributes = null;
     var cursor = new CursorHandler();
 
+    /**
+     * Switch to insert mode based on the button pressed.
+     * @param {string} buttonId - The ID of the button pressed.
+     */
     function insertActive (buttonId) {
         if (buttonId === "punctum") {
             type = "nc";
@@ -38,13 +49,22 @@ export default function InsertHandler (neonView) {
             type = "custos";
             attributes = null;
         }
+        else if (buttonId === "staff") {
+            type = "staff";
+            attributes = null;
+        }
         else {
             type = "";
             attributes = null;
             console.error("Invalid button for insertion: " + buttonId + ".");
             return;
         }
-        $("body").on("click", "#svg_output", handler);
+        if (type === "staff") {
+            $("body").on("click", "#svg_output", staffHandler);
+        }
+        else
+            $("body").on("click", "#svg_output", handler);
+        
         $("body").on("keydown", (evt) => {
             if (evt.key === "Escape") {
                 insertDisabled();
@@ -53,13 +73,22 @@ export default function InsertHandler (neonView) {
         });
     }
 
+    /**
+     * Disable insert mode
+     */
     function insertDisabled () {
         type = "";
         $("body").off("click", "#svg_output", handler);
+        $("body").off("click", "#svg_output", staffHandler);
         $(".insertel.is-active").removeClass("is-active");
+        firstClick = true;
         cursor.resetCursor();
     }
 
+    /**
+     * Event handler for insert events other than staff. Creates an insert action and sends it to Verovio.
+     * @param {object} evt - JQuery event object.
+     */
     function handler (evt) {
         var container = document.getElementsByClassName("definition-scale")[0];
         var pt = container.createSVGPoint();
@@ -87,7 +116,43 @@ export default function InsertHandler (neonView) {
         neonView.refreshPage();
     }
 
+    /**
+     * Event handler for staff insertion. Creates an insert action with two points (ul and lr) and sends it to Verovio.
+     * @param {object} evt - JQuery event object.
+     */
+    function staffHandler (evt) {
+        var container = document.getElementsByClassName("definition-scale")[0];
+        var pt = container.createSVGPoint();
+        pt.x = evt.clientX;
+        pt.y = evt.clientY;
+        var transformMatrix = container.getScreenCTM();
+        var cursorpt = pt.matrixTransform(transformMatrix.inverse());
+
+        if (firstClick) {
+            coord = cursorpt;
+            firstClick = false;
+        }
+        else {
+            let action = {
+                "action": "insert",
+                "param": {
+                    "elementType": "staff",
+                    "staffId": "auto",
+                    "ulx": coord.x,
+                    "uly": coord.y,
+                    "lrx": cursorpt.x,
+                    "lry": cursorpt.y,
+                }
+            };
+
+            neonView.edit(action);
+            neonView.refreshPage();
+            insertDisabled();
+        }
+    }
+
     InsertHandler.prototype.constructor = InsertHandler;
     InsertHandler.prototype.insertActive = insertActive;
     InsertHandler.prototype.insertDisabled = insertDisabled;
 }
+export {InsertHandler as default};

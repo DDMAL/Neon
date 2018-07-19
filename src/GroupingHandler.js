@@ -1,4 +1,9 @@
-export default function GroupingHandler (neonView) {
+/** Handles grouping of neumes.
+ * @constructor
+ * @param {NeonView} neonView - The NeonView parent object.
+ */
+function GroupingHandler (neonView) {
+
     //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
     function triggerGrouping (type) {
         $("#moreEdit").removeClass("is-invisible");
@@ -99,3 +104,4 @@ export default function GroupingHandler (neonView) {
     GroupingHandler.prototype.triggerGrouping = triggerGrouping;
     GroupingHandler.prototype.endGroupingSelection = endGroupingSelection;
 }
+export {GroupingHandler as default};

@@ -1,6 +1,11 @@
-import { exportDefaultSpecifier } from "babel-types";
+import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
 
-export default function Select (dragHandler, selectOptions) {
+/**
+ * Handle click selection and mark elements as selected.
+ * @constructor
+ * @param {DragHandler} dragHandler - An instantiated DragHandler object.
+ */
+function Select (dragHandler, selectOptions) {
     var lastSelect = new Array(0);
     selectListeners();
     //Selection mode toggle
@@ -20,7 +25,7 @@ export default function Select (dragHandler, selectOptions) {
         //Activating selected neumes
         $(classesToSelect).on("click", function() {
             var isNc= $(this).hasClass("nc");
-            if(!isNc){
+            if(!isNc && !($("#selByStaff").hasClass("is-active"))){
                 if ($(this).hasClass("clef")){
                     selectClefs(this);
                 }
@@ -55,6 +60,15 @@ export default function Select (dragHandler, selectOptions) {
             else if ($("#selByNc").hasClass("is-active") && isNc){
                 selectNcs(this);
             }
+            else if ($("#selByStaff").hasClass("is-active")) {
+                var staff = $(this).parents(".staff");
+                if (!staff.hasClass("selected")) {
+                    unselect();
+                    staff.addClass("selected");
+                    highlight(staff[0], "#d00");
+                    dragHandler.dragInit();
+                }
+            }
             else {
                 console.log("error: selection mode not activated");
                 return;
@@ -86,7 +100,17 @@ export default function Select (dragHandler, selectOptions) {
         function unselect() {
             var els = $(".selected");
             for (var i=0; i<els.length; i++){
-                $(els[i]).removeClass("selected").attr("fill", null);
+                if ($(els[i]).hasClass("staff")) {
+                    $(els[i]).removeClass("selected");
+                    unhighlight(els[i]);
+                } else {
+                    $(els[i]).removeClass("selected").attr("fill", null);
+                }
+            }
+
+            if ($("#highlightStaves").is(":checked")) {
+                let color = new ColorStaves();
+                color.setColor();
             }
         }
 
@@ -129,3 +153,4 @@ export default function Select (dragHandler, selectOptions) {
 
     Select.prototype.selectListeners = selectListeners;
 }
+export {Select as default};

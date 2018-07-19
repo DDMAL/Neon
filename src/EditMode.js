@@ -8,7 +8,14 @@ import InsertHandler from "./InsertHandler.js";
 import DragSelect from "./DragSelect.js"
 import SelectOptions from "./SelectOptions.js";
 
-export default function EditMode (neonView, meiFile, zoomHandler){
+/**
+ * Creates user interface for editing and creates necessary tools.
+ * @constructor
+ * @param {NeonView} neonView - The NeonView parent object.
+ * @param {string} meiFile - The path to the MEi file.
+ * @param {module:ZoomHandler~ZoomHandler} zoomHandler - The ZoomHandler object.
+ */
+function EditMode (neonView, meiFile, zoomHandler){
     var dragHandler = null;
     var groupingHandler = null;
     var navbarHandler = null;
@@ -55,7 +62,9 @@ export default function EditMode (neonView, meiFile, zoomHandler){
             "<p class='control'>" + 
             "<button class='button sel-by' id='selByNeume'>Neume</button></p>" +
             "<p class='control'>" +
-            "<button class='button sel-by' id='selByNc'>Neume Component</button></p></div></a>" +
+            "<button class='button sel-by' id='selByNc'>Neume Component</button></p>" +
+            "<p class='control'>" +
+            "<button class='button sel-by' id='selByStaff'>Staff</button></p></div></a>" +
             "<a class='panel-block'>" + 
             "<div class='field is-grouped'>" +
             "<p class='control'>" +
@@ -73,6 +82,9 @@ export default function EditMode (neonView, meiFile, zoomHandler){
         init();
     })
 
+    /**
+     * Initialize handlers and controls and create event listeners.
+     */
     function init() {
         dragHandler = new DragHandler(neonView);
         groupingHandler = new GroupingHandler(neonView);
@@ -140,6 +152,9 @@ export default function EditMode (neonView, meiFile, zoomHandler){
         });
     }
 
+    /**
+     * Reset select event listeners.
+     */
     function resetListeners() {
         select.selectListeners();
     }
@@ -154,3 +169,5 @@ export default function EditMode (neonView, meiFile, zoomHandler){
     EditMode.prototype.resetListeners = resetListeners;
     // EditMode.prototype.getScale = getScale;
 }
+
+export {EditMode as default};

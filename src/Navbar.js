@@ -1,4 +1,8 @@
-export default function Navbar (filename) {  
+/**
+ * Sets listeners for the navbar.
+ * @param {string} filename - The file name for the MEi file.
+ */
+function Navbar (filename) {  
     // setup navbar listeners 
     $("#revert").on("click", function(){
         if (confirm("Reverting will cause all changes to be lost. Press OK to continue.")) {
@@ -16,4 +20,4 @@ export default function Navbar (filename) {
     var pngFile = filename.split('.', 2)[0] + ".png";
     $("#getpng").attr("href", pngFile);
 }
-
+export {Navbar as default};

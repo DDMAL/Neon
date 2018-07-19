@@ -33,7 +33,8 @@
     "scripts": {
         "start": "nodemon server.js",
         "build": "webpack --config webpack.config.js",
-        "test": "jest --silent"
+        "test": "jest --silent",
+        "doc": "jsdoc -d ./doc/ ./src/"
     },
     "jest": {
         "testPathIgnorePatterns": [
@@ -60,6 +61,7 @@
         "file-loader": "^1.1.11",
         "jest": "^23.1.0",
         "jquery": "^3.3.1",
+        "jsdoc": "^3.5.5",
         "selenium-webdriver": "^4.0.0-alpha.1",
         "style-loader": "^0.21.0",
         "webpack": "^4.12.0",
