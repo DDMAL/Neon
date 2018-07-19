@@ -1,4 +1,5 @@
 import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
+import {triggerStaffActions} from "./Select.js";
 
 /**
  * Handle dragging to select musical elements and staves.
@@ -6,8 +7,9 @@ import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
  * @param {DragHandler} dragHandler - Instantiated DragHandler object.
  * @param {module:ZoomHandler~ZoomHandler} zoomHandler - Instantiated ZoomHandler object.
  * @param {GroupingHandler} groupingHandler - Instantiated GroupingHandler object.
+ * @param {NeonView} neonView - NeonView parent.
  */
-function DragSelect (dragHandler, zoomHandler, groupingHandler, selectOptions) {
+function DragSelect (neonView, dragHandler, zoomHandler, groupingHandler, selectOptions) {
     var initialX = 0;
     var initialY = 0;
     var panning = false;
@@ -151,6 +153,7 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler, selectOptions) {
                     highlight(elem, "#d00");
                     $(elem).addClass("selected");
                 });
+                selectOptions.triggerStaffActions(neonView);
             }
             else if (selectMode == "selBySyl"){
                 var noClefOrCustos = selectNn(notNeumes);

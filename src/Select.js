@@ -66,6 +66,7 @@ function Select (dragHandler, selectOptions) {
                     unselect();
                     staff.addClass("selected");
                     highlight(staff[0], "#d00");
+                    triggerStaffActions(neonView);
                     dragHandler.dragInit();
                 }
             }
@@ -153,4 +154,5 @@ function Select (dragHandler, selectOptions) {
 
     Select.prototype.selectListeners = selectListeners;
 }
+
 export {Select as default};

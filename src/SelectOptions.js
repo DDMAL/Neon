@@ -1,4 +1,4 @@
-export default function SelectOptions(neonView, groupingHandler) {
+function SelectOptions(neonView, groupingHandler) {
     //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
     function triggerNcActions(lastSelect) {
         endOptionsSelection();
@@ -131,6 +131,41 @@ export default function SelectOptions(neonView, groupingHandler) {
         initOptionsListeners();
     }
 
+    function triggerStaffActions(neonView) {
+        $("#moreEdit").empty();
+        $("#moreEdit").addClass("is-invisible");
+        $("#moreEdit").removeClass("is-invisible");
+        $("#moreEdit").append(
+            "<label>Merge Systems:&nbsp;</label>" +
+            "<div><p class='control'>" +
+            "<button id='merge-systems' class='button'>Merge</button></p></div>"
+        );
+        
+        $("#drop_select").on("click", function() {
+            $(this).toggleClass("is-active");
+        });
+        $("#merge-systems").on("click", (evt) => {
+            let systems = Array.from($(".staff.selected"));
+            let elementIds = [];
+            systems.forEach(staff => {
+                elementIds.push(staff.id);
+            });
+            let editorAction = {
+                "action": "merge",
+                "param": {
+                    "elementIds": elementIds
+                }
+            };
+    
+            if (neonView.edit(editorAction)) {
+                neonView.refreshPage();
+            }
+            else {
+                alert("Could not merge systems. :(");
+            }
+        });
+    }
+
     function endOptionsSelection () {
         $("#moreEdit").empty();
         $("#moreEdit").addClass("is-invisible");
@@ -147,4 +182,7 @@ export default function SelectOptions(neonView, groupingHandler) {
     SelectOptions.prototype.triggerNeumeActions = triggerNeumeActions;
     SelectOptions.prototype.triggerSylActions = triggerSylActions;
     SelectOptions.prototype.triggerClefActions = triggerClefActions;
-};
+    SelectOptions.prototype.triggerStaffActions = triggerStaffActions;
+}
+
+export {SelectOptions as default};
