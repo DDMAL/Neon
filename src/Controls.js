@@ -279,3 +279,32 @@ export function initEditMode(editMode) {
         editMode.init();
     });
 }
+
+/**
+ * Set listeners on the buttons to change selection modes.
+ */
+export function initSelectionButtons() {
+    $("#selByNeume").on("click", function(){
+        if (!$("#selByNeume").hasClass("is-active")){
+            $("#selByNeume").addClass("is-active");
+            $("#selByNc").removeClass("is-active");
+            $("#selByStaff").removeClass("is-active");
+        }           
+    });
+
+    $("#selByNc").on("click", function(){
+        if (!$("#selByNc").hasClass("is-active")) {
+            $("#selByNc").addClass("is-active");
+            $("#selByNeume").removeClass("is-active");
+            $("#selByStaff").removeClass("is-active");
+        }
+    });
+
+    $("#selByStaff").on("click", function () {
+        if (!$("#selByStaff").hasClass("is-active")) {
+            $("#selByStaff").addClass("is-active");
+            $("#selByNc").removeClass("is-active");
+            $("#selByNeume").removeClass("is-active");
+        }
+    });
+}

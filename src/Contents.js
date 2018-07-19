@@ -108,3 +108,46 @@ export const editControlsPanel =
     "<button class='button' id='delete'>Delete</button></p></div></a>" +
     "<a id='moreEdit' class='panel-block is-invisible'>" + 
     "<a id='neumeEdit' class='panel-block is-invisible'></div>";
+
+/**
+ * Contents of extra nc action menu.
+ * @type {string}
+ */
+export const ncActionContents =
+        "<label>Change Head Shape:&nbsp;</label>" +
+        "<div id='drop_select' class='dropdown'>" +
+        "<div class='dropdown-trigger'>" +
+        "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+        "<span>Head Shapes</span><span class='icon is-small'>" +
+        "<i class=''></i></span></button></div>" +
+        "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
+        "<div class='dropdown-content'>" +
+        "<a id='Punctum' class='dropdown-item'>Punctum</a>" +
+        "<a id='Virga' class='dropdown-item'>Virga</a>" +
+        "<a id='Inclinatum' class='dropdown-item'>Inclinatum</a></div></div></div>";
+
+/**
+ * Contents of extra neume action menu.
+ * @type {string}
+ */
+export const neumeActionContents =
+        "<label>Change Grouping:&nbsp;</label>" +
+        "<div id='drop_select' class='dropdown'>" +
+        "<div class='dropdown-trigger'>" +
+        "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+        "<span>Groupings</span><span class='icon is-small'>" +
+        "<i class=''></i></span></button></div>" +
+        "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
+        "<div class='dropdown-content'>" +
+        "<a id='Torculus' class='dropdown-item'>Torculus</a></div></div></div>" +
+        "<div><p class='control'>" +
+        "<button class='button' id='ungroup'>Ungroup</button></p></div>";
+
+/**
+ * Contents of extra staff action menu.
+ * @type {string}
+ */
+export const staffActionContents =
+    "<label>Merge Systems:&nbsp;</label>" +
+    "<div><p class='control'>" +
+    "<button id='merge-systems' class='button'>Merge</button></p></div>";

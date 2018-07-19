@@ -34,7 +34,7 @@
         "start": "nodemon server.js",
         "build": "webpack --config webpack.config.js",
         "test": "jest --silent",
-        "doc": "jsdoc -d ./doc/ ./src/"
+        "doc": "jsdoc -d ./doc/ ./src/ -R ./README.md"
     },
     "jest": {
         "testPathIgnorePatterns": [

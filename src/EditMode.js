@@ -1,8 +1,7 @@
 import DragHandler from "./DragHandler.js";
 import GroupingHandler from "./GroupingHandler.js";
-import Select from "./Select.js";
+import {ClickSelect, DragSelect} from "./Select.js";
 import InsertHandler from "./InsertHandler.js";
-import DragSelect from "./DragSelect.js"
 import * as Controls from "./Controls.js";
 import * as Contents from "./Contents.js";
 
@@ -34,7 +33,7 @@ function EditMode (neonView, meiFile, zoomHandler){
         dragHandler = new DragHandler(neonView);
         groupingHandler = new GroupingHandler();
         Controls.initNavbar(meiFile);
-        select = new Select(dragHandler, neonView, groupingHandler);
+        select = new ClickSelect(dragHandler, neonView, groupingHandler);
         insertHandler = new InsertHandler(neonView);
         Controls.bindInsertTabs(insertHandler);
         $("#neumeTab").click();
