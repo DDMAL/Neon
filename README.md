@@ -36,6 +36,12 @@ yarn start
 
 4. Access the page at: <http://localhost:8080>.
 
+
+Instructions
+-----------
+
+Neon.js has two main modes: viewer and editor. To learn how to use both, [read the instructions on our wiki.](https://github.com/DDMAL/Neon2/wiki/Instructions)
+
 Test
 ----
 
