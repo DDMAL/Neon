@@ -1,16 +1,32 @@
 export default function GroupingHandler (neonView) {
     //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
-    function triggerGroupSelection () {
+    function triggerGrouping (type) {
         $("#moreEdit").removeClass("is-invisible");
-        var groupMethod = ($("#selByNeume").hasClass("is-active") ? "Group as Syllable" : "Group as Neume");
-        $("#moreEdit").append(
-            "<div class='field is-grouped'>" +
-            "<div><p class='control'>" +
-            "<button class='button' id='group'>" + groupMethod + "</button></p></div>" +
-            "<div><p class='control'>" +
-            "<button class='button' id='ungroup'>Ungroup</button></p></div>"
-        );
-        
+        if(type == "nc"){
+            $("#moreEdit").append(
+                "<div class='field is-grouped'>" +
+                "<div><p class='control'>" +
+                "<button class='button' id='groupNcs'>Group Ncs</button></p></div>"
+            );
+        }
+        else if(type == "neume"){
+            $("#moreEdit").append(
+                "<div class='field is-grouped'>" +
+                "<div><p class='control'>" +
+                "<button class='button' id='groupNeumes'>Group Neumes</button></p></div>" +
+                "<div><p class='control'>" +
+                "<button class='button' id='ungroupNcs'>Ungroup</button></p></div></div>"
+            );
+        }
+        else if(type == "syl"){
+            $("#moreEdit").append(
+                "<div class='field is-grouped'>" +
+                "<div><p class='control'>" +
+                "<button class='button' id='mergeSyls'>Merge Syllables</button></p></div>" +
+                "<div><p class='control'>" +
+                "<button class='button' id='ungroupNeumes'>Ungroup</button></p></div></div>"
+            );
+        }
         initGroupingListeners();
     };
 
@@ -20,42 +36,35 @@ export default function GroupingHandler (neonView) {
     }
 
     function initGroupingListeners(){
-        $("#grouping_dropdown").on("click", function() {
-            $(this).toggleClass("is-active");
+        $("#mergeSyls").on("click", function(){
+            var elementIds = getChildrenIds();
+            groupingAction("group", "neume", elementIds);
+        })
+        $("#groupNeumes").on("click", function(){
+            var elementIds = getIds();
+            groupingAction("group", "neume", elementIds);
         })
 
-        $("#group").on("click", function(){
-            groupingAction("group");
+        $("#groupNcs").on("click", function() {
+            var elementIds = getIds();
+            groupingAction("group", "nc", elementIds);
         })
 
-        $("#ungroup").on("click", function(){
-            groupingAction("ungroup");
+        $("#ungroupNeumes").on("click", function(){
+            var elementIds = getChildrenIds();
+            groupingAction("ungroup", "neume", elementIds);
         })
-
+        $("#ungroupNcs").on("click", function() {
+            var elementIds = getChildrenIds();
+            groupingAction("ungroup", "nc", elementIds);
+        })
     }
     
-    function groupingAction(action) {
-        var elementIds = [];
-        var elements = Array.from($(".selected"));
-
-        elements.every((el) => {
-            var groupEls = ($("#selByNeume").hasClass("is-active") ? "neume" : "nc");
-            console.log(groupEls)
-            if ($(el).hasClass(groupEls)){
-                elementIds.push(el.id);
-            }
-            else {
-                elementIds = [];
-                console.log("Error: cannot group Clefs or Custos");
-                return false;
-            }
-            return true;
-        })
-
+    function groupingAction(action, groupType, elementIds) {
         let editorAction = {
             "action": action,
             "param": {
-                "groupType" : groupEls,
+                "groupType" : groupType,
                 "elementIds": elementIds
             }
         };
@@ -63,8 +72,30 @@ export default function GroupingHandler (neonView) {
         neonView.edit(editorAction);
         neonView.refreshPage();
     }
+
+    function getIds() {
+        var ids = [];
+        var elements = Array.from($(".selected"));
+        elements.forEach(el => {
+            ids.push($(el)[0].id);
+        })
+        return ids;
+    }
+
+    function getChildrenIds(){
+        var childrenIds = [];
+        var elements = Array.from($(".selected"));
+        elements.forEach(el => {
+            var children = Array.from($(el).children());
+            children.forEach(ch => { 
+                childrenIds.push($(ch)[0].id);
+            })
+        })
+        return childrenIds;
+    }
     
     GroupingHandler.prototype.constructor = GroupingHandler;
-    GroupingHandler.prototype.triggerGroupSelection = triggerGroupSelection;
+    GroupingHandler.prototype.initGroupingListeners = initGroupingListeners;
+    GroupingHandler.prototype.triggerGrouping = triggerGrouping;
     GroupingHandler.prototype.endGroupingSelection = endGroupingSelection;
 }

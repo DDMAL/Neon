@@ -10,16 +10,16 @@ import SelectOptions from "./SelectOptions.js";
 
 export default function EditMode (neonView, meiFile, zoomHandler){
     var dragHandler = null;
-    var selectOptions = null;
     var groupingHandler = null;
     var navbarHandler = null;
+    var selectOptions = null;
     var select = null;
     var insertControls = null;
     var cursorHandler = null;
     var dragSelect = null;
     var insertHandler = null;
-    var vbHeight = null;
-    var vbWidth = null;
+    // var vbHeight = null;
+    // var vbWidth = null;
 
 
     // Set edit mode listener
@@ -51,9 +51,11 @@ export default function EditMode (neonView, meiFile, zoomHandler){
             "<label>Select By:&nbsp;</label>" +
             "<div class='field has-addons'>" +
             "<p class='control'>" + 
-            "<button class='button is-active' id='selByNeume'>Neume</button></p>" +
+            "<button class='button sel-by is-active' id='selBySyl'>Syllable</button></p>" +
+            "<p class='control'>" + 
+            "<button class='button sel-by' id='selByNeume'>Neume</button></p>" +
             "<p class='control'>" +
-            "<button class='button' id='selByNc'>Neume Component</button></p></div></a>" +
+            "<button class='button sel-by' id='selByNc'>Neume Component</button></p></div></a>" +
             "<a class='panel-block'>" + 
             "<div class='field is-grouped'>" +
             "<p class='control'>" +
@@ -73,9 +75,9 @@ export default function EditMode (neonView, meiFile, zoomHandler){
 
     function init() {
         dragHandler = new DragHandler(neonView);
-        selectOptions = new SelectOptions();
         groupingHandler = new GroupingHandler(neonView);
         navbarHandler = new Navbar(meiFile);
+        selectOptions = new SelectOptions(neonView, groupingHandler);
         select = new Select(dragHandler, selectOptions);
         cursorHandler = new CursorHandler();
         insertHandler = new InsertHandler(neonView);

@@ -73,36 +73,86 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler, s
                 return elX > rx && elX < lx  && elY > ry && elY < ly;
             });
 
+            var syls = [];
+            var neumes = [];
+            var ncs = [];
+            var notNeumes = [];
+
             elements.forEach(el => {
-                var parent = $(el).parent()[0];         
-                var isNc = $(parent).hasClass("nc");
+                var firstParent = $(el).parent()[0];         
+                var isNc = $(firstParent).hasClass("nc")
 
-                if($(parent).hasClass("selected") || $(parent).parent().hasClass("selected")){
-                    return;
-                }
+                if (isNc){
+                    ncs.push(firstParent);
 
-                if ($("#selByNeume").hasClass("is-active") && isNc){
-                    var neumeParent = $(parent).parent();
-                    if(!neumeParent.hasClass("selected")){
-                        $(neumeParent).addClass("selected");
-                        $(neumeParent).attr("fill", "#d00");  
-                    } 
+                    var neume = $(firstParent).parent()[0];
+                    if (!neumes.includes(neume)){
+                        neumes.push(neume);
+                    }
+
+                    var syl = $(neume).parent()[0];
+                    if (!syls.includes(syl)){
+                        syls.push(syl);
+                    }
                 }
-                else {
-                    $(parent).addClass("selected");
-                    $(parent).attr("fill", "#d00");
-                }                
+                else{
+                    notNeumes.push(firstParent);
+                }
+            });
+
+            var selectMode = null;
+            var tabs = Array.from($(".sel-by"));
+
+            tabs.forEach(tab => {
+                if ($(tab).hasClass("is-active")){
+                    selectMode = $(tab)[0].id;
+                }
             })
-            
-            var l = $(".selected").length
-            if (l > 1){
-                groupingHandler.triggerGroupSelection();
-            }  
-            else if (l != 0 && $("#selByNeume").hasClass("is-active") && $(".selected")[0].children.length > 1){
-                selectOptions.triggerNeumeActions();
+
+            if(notNeumes.length != 0){
+                console.log("clefs or custos were selected");
             }
-            else if (l != 0){
-                selectOptions.triggerNcActions();
+            else if (selectMode == "selBySyl"){
+                syls.forEach(s => {
+                    select(s);
+                });
+                if(syls.length > 1){
+                    groupingHandler.triggerGrouping("syl");
+                }
+                else if(syls.length == 1){
+                    selectOptions.triggerSylActions(); 
+                }
+                else{
+                    console.log("Warning: no selection made");
+                }
+            }
+            else if (selectMode == "selByNeume"){
+                neumes.forEach(n => {
+                    select(n);
+                });
+                if(neumes.length > 1){
+                    groupingHandler.triggerGrouping("neume"); 
+                }
+                else if(neumes.length == 1){
+                    selectOptions.triggerNeumeActions();
+                }
+                else{
+                    console.log("Warning: no selection made");
+                }
+            }
+            else if (selectMode == "selByNc"){
+                ncs.forEach(nc => {
+                    select(nc);
+                });
+                if(ncs.length > 1){
+                    groupingHandler.triggerGrouping("nc"); 
+                }
+                else if(ncs.length == 1){
+                    selectOptions.triggerNcActions();
+                }
+                else{
+                    console.log("Warning: no selection made");
+                }
             }
             dragHandler.dragInit();
             d3.selectAll("#selectRect").remove();
@@ -129,6 +179,13 @@ export default function DragSelect (dragHandler, zoomHandler, groupingHandler, s
             .attr("y", newY)
             .attr("width", currentWidth)
             .attr("height", currentHeight)
+    }
+
+    function select(el){
+        if(!$(el).hasClass("selected")){
+            $(el).attr("fill", "#d00");
+            $(el).addClass("selected"); 
+        }
     }
 
     function unselect() {
