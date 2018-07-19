@@ -6,6 +6,7 @@ import CursorHandler from "./CursorHandler.js";
 import InsertControls from "./InsertControls.js";
 import InsertHandler from "./InsertHandler.js";
 import DragSelect from "./DragSelect.js"
+import SelectOptions from "./SelectOptions.js";
 
 /**
  * Creates user interface for editing and creates necessary tools.
@@ -18,13 +19,14 @@ function EditMode (neonView, meiFile, zoomHandler){
     var dragHandler = null;
     var groupingHandler = null;
     var navbarHandler = null;
+    var selectOptions = null;
     var select = null;
     var insertControls = null;
     var cursorHandler = null;
     var dragSelect = null;
     var insertHandler = null;
-    var vbHeight = null;
-    var vbWidth = null;
+    // var vbHeight = null;
+    // var vbWidth = null;
 
 
     // Set edit mode listener
@@ -56,11 +58,13 @@ function EditMode (neonView, meiFile, zoomHandler){
             "<label>Select By:&nbsp;</label>" +
             "<div class='field has-addons'>" +
             "<p class='control'>" + 
-            "<button class='button is-active' id='selByNeume'>Neume</button></p>" +
+            "<button class='button sel-by is-active' id='selBySyl'>Syllable</button></p>" +
+            "<p class='control'>" + 
+            "<button class='button sel-by' id='selByNeume'>Neume</button></p>" +
             "<p class='control'>" +
-            "<button class='button' id='selByNc'>Neume Component</button></p>" +
+            "<button class='button sel-by' id='selByNc'>Neume Component</button></p>" +
             "<p class='control'>" +
-            "<button class='button' id='selByStaff'>Staff</button></p></div></a>" +
+            "<button class='button sel-by' id='selByStaff'>Staff</button></p></div></a>" +
             "<a class='panel-block'>" + 
             "<div class='field is-grouped'>" +
             "<p class='control'>" +
@@ -83,13 +87,14 @@ function EditMode (neonView, meiFile, zoomHandler){
      */
     function init() {
         dragHandler = new DragHandler(neonView);
-        groupingHandler = new GroupingHandler();
+        groupingHandler = new GroupingHandler(neonView);
         navbarHandler = new Navbar(meiFile);
-        select = new Select(dragHandler, neonView, groupingHandler);
+        selectOptions = new SelectOptions(neonView, groupingHandler);
+        select = new Select(dragHandler, selectOptions);
         cursorHandler = new CursorHandler();
         insertHandler = new InsertHandler(neonView);
         insertControls = new InsertControls(cursorHandler, insertHandler);
-        dragSelect = new DragSelect(dragHandler, zoomHandler, groupingHandler, neonView);
+        dragSelect = new DragSelect(neonView, dragHandler, zoomHandler, groupingHandler, selectOptions);
 
         $("#insertMenu").on("click", () => {
             if ($("#insertContents").is(":hidden")) {

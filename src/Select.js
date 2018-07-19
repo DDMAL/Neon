@@ -4,70 +4,61 @@ import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
  * Handle click selection and mark elements as selected.
  * @constructor
  * @param {DragHandler} dragHandler - An instantiated DragHandler object.
- * @param {NeonView} neonView - The NeonView parent.
  */
-function Select (dragHandler, neonView) {
+function Select (dragHandler, selectOptions) {
     var lastSelect = new Array(0);
     selectListeners();
     //Selection mode toggle
     function selectListeners() {
         var classesToSelect = ".nc, .clef, .custos";
-        $("#selByNeume").on("click", function(){
-            if (!$("#selByNeume").hasClass("is-active")){
-                $("#selByNeume").addClass("is-active");
-                $("#selByNc").removeClass("is-active");
-                $("#selByStaff").removeClass("is-active");
-            }           
-        });
+        $(".sel-by").on("click", function() {
+            var tabs = Array.from($(".sel-by"));
+            tabs.forEach(el => {
+                if($(el).hasClass("is-active")){
+                    $(el).toggleClass("is-active");
+                }
+            })
 
-        $("#selByNc").on("click", function(){
-            if (!$("#selByNc").hasClass("is-active")) {
-                $("#selByNc").addClass("is-active");
-                $("#selByNeume").removeClass("is-active");
-                $("#selByStaff").removeClass("is-active");
-            }
-        });
-
-        $("#selByStaff").on("click", function () {
-            if (!$("#selByStaff").hasClass("is-active")) {
-                $("#selByStaff").addClass("is-active");
-                $("#selByNc").removeClass("is-active");
-                $("#selByNeume").removeClass("is-active");
-            }
+            $(this).toggleClass("is-active");
         });
 
         //Activating selected neumes
         $(classesToSelect).on("click", function() {
             var isNc= $(this).hasClass("nc");
-            if ($("#selByNeume").hasClass("is-active") && isNc){
-                if(!$(this).hasClass("selected")){
-                    unselect();
-                    $(this).attr("fill", "#d00");
-                    $(this).addClass("selected");
-                    var siblings = Array.from($(this).siblings());
-                    siblings.forEach(el => {
-                        if(!$(el).hasClass("selected")){
-                            $(el).attr("fill", "#d00");
-                            $(el).addClass("selected");
-                        }   
-                    }) 
-                    if(siblings.length != 0){
-                        triggerNeumeActions();  
-                    }     
-                    else{
-                        triggerNcActions();
-                    }          
-                    dragHandler.dragInit();   
+            if(!isNc && !($("#selByStaff").hasClass("is-active"))){
+                if ($(this).hasClass("clef")){
+                    selectClefs(this);
+                }
+                else if($(this).hasClass("custos")){
+                    selectNcs(this);
                 }
             }
-            else if ($("#selByNc").hasClass("is-active") || !(isNc || $("#selByStaff").hasClass("is-active"))){
-                if(!$(this).hasClass("selected")){
-                    unselect();
-                    $(this).attr("fill", "#d00");
-                    $(this).addClass("selected");
-                    triggerNcActions();
-                    dragHandler.dragInit();
+            else if ($("#selBySyl").hasClass("is-active") && isNc) {
+                var neumeParent = $(this).parent();
+                if($(neumeParent).hasClass("neume")){
+                    var parentSiblings = Array.from($(neumeParent).siblings());
+                    if(parentSiblings.length != 0){
+                        selectSyl(neumeParent);
+                    }
+                    else{
+                        selectNeumes(this);
+                    }
                 }
+                else{
+                    console.log("Error: parent should be neume.");
+                }
+            }
+            else if ($("#selByNeume").hasClass("is-active") && isNc){
+                var siblings = Array.from($(this).siblings());
+                if(siblings.length != 0) {
+                    selectNeumes(this);
+                }
+                else{
+                    selectNcs(this);
+                }            
+            }
+            else if ($("#selByNc").hasClass("is-active") && isNc){
+                selectNcs(this);
             }
             else if ($("#selByStaff").hasClass("is-active")) {
                 var staff = $(this).parents(".staff");
@@ -89,7 +80,7 @@ function Select (dragHandler, neonView) {
         // click away listeners
         $("body").on("keydown", (evt) => { // click
             if (evt.type === "keydown" && evt.key !== "Escape") return;
-            endOptionsSelection();
+            selectOptions.endOptionsSelection();
             unselect();
         })
 
@@ -100,6 +91,12 @@ function Select (dragHandler, neonView) {
         $("#moreEdit").on("click", function(e) {
             e.stopPropagation();
         })
+
+        //General select and unselect functions
+        function select(el) {
+            $(el).attr("fill", "#d00");
+            $(el).addClass("selected");
+        }
 
         function unselect() {
             var els = $(".selected");
@@ -117,159 +114,45 @@ function Select (dragHandler, neonView) {
                 color.setColor();
             }
         }
-    }
 
-    //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
-    function triggerNcActions() {
-        endOptionsSelection();
-        $("#moreEdit").removeClass("is-invisible");
-        $("#moreEdit").append(
-            "<label>Change Head Shape:&nbsp;</label>" +
-            "<div id='drop_select' class='dropdown'>" +
-            "<div class='dropdown-trigger'>" +
-            "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-            "<span>Head Shapes</span><span class='icon is-small'>" +
-            "<i class=''></i></span></button></div>" +
-            "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
-            "<div class='dropdown-content'>" +
-            "<a id='Punctum' class='dropdown-item'>Punctum</a>" +
-            "<a id='Virga' class='dropdown-item'>Virga</a>" +
-            "<a id='Inclinatum' class='dropdown-item'>Inclinatum</a></div></div></div>"
-        );
-        
-        $("#Punctum.dropdown-item").on("click", (evt) => {
-            let unsetInclinatum = {
-                "action": "set",
-                "param": {
-                    "elementId": lastSelect[0].id,
-                    "attrType": "name",
-                    "attrValue": ""
-                }
-            };
-            let unsetVirga = {
-                "action": "set",
-                "param": {
-                    "elementId": lastSelect[0].id,
-                    "attrType": "diagonalright",
-                    "attrValue": ""
-                }
-            };
-            neonView.edit({ "action": "chain", "param": [ unsetInclinatum, unsetVirga ]});
-            neonView.refreshPage();
-        });
+        //Specific select functions
+        function selectSyl(el) {
+            if(!$(el).parent().hasClass("selected")){
+                unselect();
+                select($(el).parent());
+                selectOptions.triggerSylActions(); 
+                dragHandler.dragInit(); 
+            }
+        }
 
-        $("#Inclinatum.dropdown-item").on("click", (evt) => {
-            let setInclinatum = {
-                "action": "set",
-                "param": {
-                    "elementId": lastSelect[0].id,
-                    "attrType": "name",
-                    "attrValue": "inclinatum"
-                }
-            };
-            let unsetVirga = {
-                "action": "set",
-                "param": {
-                    "elementId": lastSelect[0].id,
-                    "attrType": "diagonalright",
-                    "attrValue": ""
-                }
-            };
-            neonView.edit({ "action": "chain", "param": [ setInclinatum, unsetVirga ]});
-            neonView.refreshPage();
-        });
-        
-        $("#Virga.dropdown-item").on("click", (evt) => {
-            let unsetInclinatum = {
-                "action": "set",
-                "param": {
-                    "elementId": lastSelect[0].id,
-                    "attrType": "name",
-                    "attrValue": ""
-                }
-            };
-            let setVirga = {
-                "action": "set",
-                "param": {
-                    "elementId": lastSelect[0].id,
-                    "attrType": "diagonalright",
-                    "attrValue": "u"
-                }
-            };
-            neonView.edit({ "action": "chain", "param": [ unsetInclinatum, setVirga ]});
-            neonView.refreshPage();
-        });
+        function selectNeumes(el) {
+            if(!$(el).parent().hasClass("selected")){
+                unselect();
+                select($(el).parent());
+                selectOptions.triggerNeumeActions(); 
+                dragHandler.dragInit(); 
+            } 
+        }
+        function selectNcs(el) {
+            if(!$(el).hasClass("selected")){
+                unselect();
+                select(el);
+                selectOptions.triggerNcActions(lastSelect);
+                dragHandler.dragInit();
+            }
+        }
 
-        initOptionsListeners();
-    }
-    //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
-    function triggerNeumeActions() {
-        endOptionsSelection()
-        $("#moreEdit").removeClass("is-invisible");
-        $("#moreEdit").append(
-            "<label>Change Grouping:&nbsp;</label>" +
-            "<div id='drop_select' class='dropdown'>" +
-            "<div class='dropdown-trigger'>" +
-            "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-            "<span>Groupings</span><span class='icon is-small'>" +
-            "<i class=''></i></span></button></div>" +
-            "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
-            "<div class='dropdown-content'>" +
-            "<a id='Torculus' class='dropdown-item'>Torculus</a></div></div></div>" +
-            "<div><p class='control'>" +
-            "<button class='button' id='ungroup'>Ungroup</button></p></div>"
-        );
-
-        initOptionsListeners();
-    }
-
-
-    function endOptionsSelection () {
-        $("#moreEdit").empty();
-        $("#moreEdit").addClass("is-invisible");
-    }
-
-    function initOptionsListeners(){
-        $("#drop_select").on("click", function() {
-            $(this).toggleClass("is-active");
-        })
+        function selectClefs(el){
+            if(!$(el).hasClass("selected")){
+                unselect();
+                select(el);
+                selectOptions.triggerClefActions();
+                dragHandler.dragInit();
+            }
+        }
     }
 
     Select.prototype.selectListeners = selectListeners;
 }
 
-export function triggerStaffActions(neonView) {
-    $("#moreEdit").empty();
-    $("#moreEdit").addClass("is-invisible");
-    $("#moreEdit").removeClass("is-invisible");
-    $("#moreEdit").append(
-        "<label>Merge Systems:&nbsp;</label>" +
-        "<div><p class='control'>" +
-        "<button id='merge-systems' class='button'>Merge</button></p></div>"
-    );
-    
-    $("#drop_select").on("click", function() {
-        $(this).toggleClass("is-active");
-    });
-    $("#merge-systems").on("click", (evt) => {
-        let systems = Array.from($(".staff.selected"));
-        let elementIds = [];
-        systems.forEach(staff => {
-            elementIds.push(staff.id);
-        });
-        let editorAction = {
-            "action": "merge",
-            "param": {
-                "elementIds": elementIds
-            }
-        };
-
-        if (neonView.edit(editorAction)) {
-            neonView.refreshPage();
-        }
-        else {
-            alert("Could not merge systems. :(");
-        }
-    });
-}
 export {Select as default};

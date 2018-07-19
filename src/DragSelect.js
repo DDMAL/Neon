@@ -9,7 +9,7 @@ import {triggerStaffActions} from "./Select.js";
  * @param {GroupingHandler} groupingHandler - Instantiated GroupingHandler object.
  * @param {NeonView} neonView - NeonView parent.
  */
-function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView) {
+function DragSelect (neonView, dragHandler, zoomHandler, groupingHandler, selectOptions) {
     var initialX = 0;
     var initialY = 0;
     var panning = false;
@@ -103,9 +103,45 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView) {
                 return elX > rx && elX < lx  && elY > ry && elY < ly;
             });
 
-            var toSelect = [];
+            var syls = [];
+            var neumes = [];
+            var ncs = [];
+            var notNeumes = [];
 
-            if ($("#selByStaff").hasClass("is-active")) {
+        
+            elements.forEach(el => {
+                var firstParent = $(el).parent()[0];         
+                var isNc = $(firstParent).hasClass("nc")
+
+                if (isNc){
+                    ncs.push(firstParent);
+
+                    var neume = $(firstParent).parent()[0];
+                    if (!neumes.includes(neume)){
+                        neumes.push(neume);
+                    }
+
+                    var syl = $(neume).parent()[0];
+                    if (!syls.includes(syl)){
+                        syls.push(syl);
+                    }
+                }
+                else{
+                    notNeumes.push(firstParent);
+                }
+            });
+
+            var selectMode = null;
+            var tabs = Array.from($(".sel-by"));
+
+            tabs.forEach(tab => {
+                if ($(tab).hasClass("is-active")){
+                    selectMode = $(tab)[0].id;
+                }
+            })
+
+            if (selectMode == "selByStaff"){
+                var toSelect = [];
                 elements.forEach(el => {
                     if (el.tagName === "use") {
                         toSelect.push($(el).parents(".staff")[0]);
@@ -117,39 +153,53 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView) {
                     highlight(elem, "#d00");
                     $(elem).addClass("selected");
                 });
+                selectOptions.triggerStaffActions(neonView);
             }
-            else {
-                elements.forEach(el => {
-                    var parent = $(el).parent()[0];
-                    var isNc = !($(parent).hasClass("clef") || $(parent).hasClass("custos"));
-
-                    if($(parent).hasClass("selected")){
-                        return;
-                    }
-
-                    toSelect.push(parent);
-
-                    if(d3.select("#selByNeume").classed("is-active") && isNc){
-                        var siblings = Array.from($(parent).siblings());
-                        siblings.forEach(el => {
-                            var cls = d3.select("#" + el.id).attr("class");
-                            if(cls == "nc"){
-                                toSelect.push(el);
-                            }   
-                        })
-                    }     
-                    toSelect.forEach(nc => {
-                        $("#" + nc.id).addClass("selected");
-                        $("#" + nc.id).attr("fill", "#d00");
-                    });               
+            else if (selectMode == "selBySyl"){
+                var noClefOrCustos = selectNn(notNeumes);
+                syls.forEach(s => {
+                    select(s);
                 });
+                if(syls.length > 1 && noClefOrCustos){
+                    groupingHandler.triggerGrouping("syl");
+                }
+                else if(syls.length == 1 && noClefOrCustos){
+                    selectOptions.triggerSylActions(); 
+                }
+                else{
+                    console.log("Warning: no selection made");
+                }
             }
-            if (toSelect.length > 1 && !$("#selByStaff").hasClass("is-active")){
-                groupingHandler.triggerGroupSelection();
+            else if (selectMode == "selByNeume"){
+                var noClefOrCustos = selectNn(notNeumes);
+                neumes.forEach(n => {
+                    select(n);
+                });
+                if(neumes.length > 1 && noClefOrCustos){
+                    groupingHandler.triggerGrouping("neume"); 
+                }
+                else if(neumes.length == 1 && noClefOrCustos){
+                    selectOptions.triggerNeumeActions();
+                }
+                else{
+                    console.log("Warning: no selection made");
+                }
+            }
+            else if (selectMode == "selByNc"){
+                var noClefOrCustos = selectNn(notNeumes);
+                ncs.forEach(nc => {
+                    select(nc);
+                });
+                if(ncs.length > 1 && noClefOrCustos){
+                    groupingHandler.triggerGrouping("nc"); 
+                }
+                else if(ncs.length == 1 && noClefOrCustos){
+                    selectOptions.triggerNcActions();
+                }
+                else{
+                    console.log("Warning: no selection made");
+                }
             } 
-            else if (toSelect.length > 1 && $("#selByStaff").hasClass("is-active")) {
-                triggerStaffActions(neonView);
-            }
             dragHandler.dragInit();
             d3.selectAll("#selectRect").remove();
             dragSelecting = false;
@@ -189,6 +239,12 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView) {
             .attr("height", currentHeight)
     }
 
+    function select(el){
+        if(!$(el).hasClass("selected")){
+            $(el).attr("fill", "#d00");
+            $(el).addClass("selected"); 
+        }
+    }
     /**
      * Unselect all selected elements and run undo any extra
      * actions.
@@ -209,6 +265,18 @@ function DragSelect (dragHandler, zoomHandler, groupingHandler, neonView) {
         if ($("#highlightStaves").is(":checked")) {
             let color = new ColorStaves();
             color.setColor();
+        }
+    }
+
+    function selectNn(notNeumes) {
+        if(notNeumes.length > 0){
+            notNeumes.forEach(nn => {
+                select(nn);
+            })
+            return false;
+        }
+        else{
+            return true;
         }
     }
 }
