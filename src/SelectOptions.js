@@ -7,7 +7,7 @@ function SelectOptions(neonView, groupingHandler) {
             "<label>Change Head Shape:&nbsp;</label>" +
             "<div id='drop_select' class='dropdown'>" +
             "<div class='dropdown-trigger'>" +
-            "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+            "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
             "<span>Head Shapes</span><span class='icon is-small'>" +
             "<i class=''></i></span></button></div>" +
             "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
@@ -90,9 +90,8 @@ function SelectOptions(neonView, groupingHandler) {
             "<label>Change Grouping:&nbsp;</label>" +
             "<div id='drop_select' class='dropdown'>" +
             "<div class='dropdown-trigger'>" +
-            "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-            "<span>Groupings</span><span class='icon is-small'>" +
-            "<i class=''></i></span></button></div>" +
+            "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+            "<span>Groupings</span><object type='image/svg+xml' data='/img/img.svg'></object></span></button></div>" +
             "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
             "<div class='dropdown-content'>" +
             "<a id='Torculus' class='dropdown-item'>Torculus</a></div></div></div>" +
@@ -120,9 +119,8 @@ function SelectOptions(neonView, groupingHandler) {
             "<label>Change Clef Shape:&nbsp;</label>" +
             "<div id='drop_select' class='dropdown'>" +
             "<div class='dropdown-trigger'>" +
-            "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-            "<span>Clef Shapes</span><span class='icon is-small'>" +
-            "<i class=''></i></span></button></div>" +
+            "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+            "<span>Clef Shapes</span></span></button></div>" +
             "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
             "<div class='dropdown-content'>" +
             "<a id='Punctum' class='dropdown-item'>C Clef</a>" +
