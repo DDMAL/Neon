@@ -1,7 +1,7 @@
 import Neon from "./Neon.js";
-import ZoomHandler from "./ZoomHandler.js";
+import ZoomHandler from "./Zoom.js";
 import InfoBox from "./InfoBox.js";
-import ViewControls from "./ViewControls.js";
+import * as Controls from "./Controls.js";
 import EditMode from "./EditMode.js";
 
 const verovio = require("verovio-dev");
@@ -24,19 +24,18 @@ function NeonView (params) {
     var neon = null;
     var zoomHandler = null;
     var infoBox = null;
-    var viewControls = null;
     var editMode = null;
 
     $.get(meiFile, (data) => {
         neon = new Neon(data, vrvToolkit);
         zoomHandler = new ZoomHandler();
         infoBox = new InfoBox(neon);
-        viewControls = new ViewControls(zoomHandler);
+        Controls.initDisplayControls(zoomHandler);
         editMode = new EditMode(this, meiFile, zoomHandler);
         loadView();
         // editMode.getScale();
-        viewControls.setSylControls();
-        viewControls.setHighlightControls();
+        Controls.setSylControls();
+        Controls.setHighlightControls();
     });
 
     /**
@@ -70,8 +69,8 @@ function NeonView (params) {
         else {
             loadSvg(); 
         }
-        viewControls.updateSylVisibility();
-        viewControls.updateHighlight();
+        Controls.updateSylVisibility();
+        Controls.updateHighlight();
         resetListeners();
     }
 
@@ -152,7 +151,7 @@ function NeonView (params) {
 
     function resetTransformations () {
         zoomHandler.restoreTransformation();
-        viewControls.setOpacityFromSlider();
+        Controls.setOpacityFromSlider();
     }
 
     /**

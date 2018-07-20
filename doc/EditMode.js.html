@@ -27,152 +27,47 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import DragHandler from "./DragHandler.js";
-import GroupingHandler from "./GroupingHandler.js";
-import Navbar from "./Navbar.js";
-import Select from "./Select.js";
-import CursorHandler from "./CursorHandler.js";
-import InsertControls from "./InsertControls.js";
+import {ClickSelect, DragSelect} from "./Select.js";
 import InsertHandler from "./InsertHandler.js";
-import DragSelect from "./DragSelect.js"
+import * as Controls from "./Controls.js";
+import * as Contents from "./Contents.js";
+import * as SelectOptions from "./SelectOptions.js";
 
 /**
  * Creates user interface for editing and creates necessary tools.
  * @constructor
  * @param {NeonView} neonView - The NeonView parent object.
  * @param {string} meiFile - The path to the MEi file.
- * @param {module:ZoomHandler~ZoomHandler} zoomHandler - The ZoomHandler object.
+ * @param {module:Zoom~ZoomHandler} zoomHandler - The ZoomHandler object.
  */
 function EditMode (neonView, meiFile, zoomHandler){
     var dragHandler = null;
-    var groupingHandler = null;
-    var navbarHandler = null;
+    var selectOptions = null;
     var select = null;
     var insertControls = null;
-    var cursorHandler = null;
     var dragSelect = null;
     var insertHandler = null;
-    var vbHeight = null;
-    var vbWidth = null;
+    // var vbHeight = null;
+    // var vbWidth = null;
 
 
     // Set edit mode listener
-    $("#edit_mode").on("click", function(){
-        $("#dropdown_toggle").empty();
-        $("#dropdown_toggle").append(  
-            "&lt;div class='navbar-item has-dropdown is-hoverable'>&lt;a class='navbar-link'>File&lt;/a>" +
-            "&lt;div class='navbar-dropdown'>" +
-            "&lt;a id='getmei' class='navbar-item' href='' download=''> Download MEI &lt;/a>" +
-            "&lt;a id='getpng' class='navbar-item' href='' download=''> Download PNG &lt;/a>" +
-            "&lt;a id='revert' class='navbar-item' href=''> Revert &lt;/a>"
-        );
-        $("#insert_controls").append(
-            "&lt;p class='panel-heading' id='insertMenu'>Insert&lt;/p>" +
-            "&lt;div id='insertContents'>" +
-            "&lt;p class='panel-tabs'>" +
-            "&lt;a id='neumeTab' class='insertTab'>Neume&lt;/a>" +
-            "&lt;a id='groupingTab' class='insertTab'>Grouping&lt;/a>" +
-            "&lt;a id='clefTab' class='insertTab'>Clef&lt;/a>" +
-            "&lt;a id='systemTab' class='insertTab'>System&lt;/a>" +
-            "&lt;a id='divisionTab' class='insertTab'>Division&lt;/a>&lt;/p>" +
-            "&lt;a class='panel-block has-text-centered'>" +
-            "&lt;div id='insert_data' class='field is-grouped'/>&lt;/a>&lt;/div>"
-        );
-        $("#edit_controls").append(
-            "&lt;p class='panel-heading' id='editMenu'>Edit&lt;/p>" +
-            "&lt;div id='editContents'>" +
-            "&lt;a class='panel-block'>" +
-            "&lt;label>Select By:&amp;nbsp;&lt;/label>" +
-            "&lt;div class='field has-addons'>" +
-            "&lt;p class='control'>" + 
-            "&lt;button class='button is-active' id='selByNeume'>Neume&lt;/button>&lt;/p>" +
-            "&lt;p class='control'>" +
-            "&lt;button class='button' id='selByNc'>Neume Component&lt;/button>&lt;/p>" +
-            "&lt;p class='control'>" +
-            "&lt;button class='button' id='selByStaff'>Staff&lt;/button>&lt;/p>&lt;/div>&lt;/a>" +
-            "&lt;a class='panel-block'>" + 
-            "&lt;div class='field is-grouped'>" +
-            "&lt;p class='control'>" +
-            "&lt;button class='button' id='undo'>Undo&lt;/button>&lt;/p>" +
-            "&lt;p class='control'>" +
-            "&lt;button class='button' id='redo'>Redo&lt;/button>&lt;/p>" +
-            "&lt;p class='control'>" +
-            "&lt;button class='button' id='save'>Save Changes&lt;/button>&lt;/p>" +
-            "&lt;p class='control'>" +
-            "&lt;button class='button' id='delete'>Delete&lt;/button>&lt;/p>&lt;/div>&lt;/a>" +
-            "&lt;a id='moreEdit' class='panel-block is-invisible'>" + 
-            "&lt;a id='neumeEdit' class='panel-block is-invisible'>&lt;/div>"
-        );
-
-        init();
-    })
+    Controls.initEditMode(this);
 
     /**
      * Initialize handlers and controls and create event listeners.
      */
     function init() {
         dragHandler = new DragHandler(neonView);
-        groupingHandler = new GroupingHandler();
-        navbarHandler = new Navbar(meiFile);
-        select = new Select(dragHandler, neonView, groupingHandler);
-        cursorHandler = new CursorHandler();
+        Controls.initNavbar(meiFile);
+        select = new ClickSelect(dragHandler, neonView);
         insertHandler = new InsertHandler(neonView);
-        insertControls = new InsertControls(cursorHandler, insertHandler);
-        dragSelect = new DragSelect(dragHandler, zoomHandler, groupingHandler, neonView);
+        Controls.bindInsertTabs(insertHandler);
+        $("#neumeTab").click();
+        dragSelect = new DragSelect(dragHandler, zoomHandler, neonView);
+        SelectOptions.initNeonView(neonView);
 
-        $("#insertMenu").on("click", () => {
-            if ($("#insertContents").is(":hidden")) {
-                $("#insertContents").css("display", "");
-            } else {
-                $("#insertContents").css("display", "none");
-            }
-        });
-
-        $("#editMenu").on("click", () => {
-            if ($("#editContents").is(":hidden")) {
-                $("#editContents").css("display", "");
-            } else {
-                $("#editContents").css("display", "none");
-            }
-        });
-
-        $("#undo").on("click", () => {
-            if (!neonView.undo()) {
-                console.error("Failed to undo action");
-            } else {
-                neonView.refreshPage();
-            }
-        });
-        $("#redo").on("click", () => {
-            if (!neonView.redo()) {
-                console.error("Failed to redo action");
-            } else {
-                neonView.refreshPage();
-            }
-        });
-        $("#save").on("click", () => {
-            neonView.saveMEI();
-        });
-
-        $("#delete").on("click", () => {
-            let toRemove = [];
-            var selected = Array.from(document.getElementsByClassName("selected"));
-            selected.forEach(elem => {
-                toRemove.push(
-                    {
-                        "action": "remove",
-                        "param": {
-                            "elementId": elem.id
-                        }
-                    }
-                );
-            });
-            let chainAction = {
-                "action": "chain",
-                "param": toRemove
-            };
-            neonView.edit(chainAction);
-            neonView.refreshPage();
-        });
+        Controls.initInsertEditControls(neonView);
     }
 
     /**
@@ -189,6 +84,7 @@ function EditMode (neonView, meiFile, zoomHandler){
     //     vbWidth = parseInt(viewBox.split(" ")[2]);
     // }
 
+    EditMode.prototype.init = init;
     EditMode.prototype.resetListeners = resetListeners;
     // EditMode.prototype.getScale = getScale;
 }
@@ -204,13 +100,13 @@ export {EditMode as default};
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ColorStaves.html">ColorStaves</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-ZoomHandler.html">ZoomHandler</a></li></ul><h3>Classes</h3><ul><li><a href="CursorHandler.html">CursorHandler</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="DragSelect.html">DragSelect</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="GroupingHandler.html">GroupingHandler</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertControls.html">InsertControls</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-ColorStaves-ColorStaves.html">ColorStaves</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-ZoomHandler.ViewBox.html">ViewBox</a></li><li><a href="module-ZoomHandler-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="Select.html">Select</a></li><li><a href="ViewControls.html">ViewControls</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Navbar">Navbar</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 19 2018 12:06:25 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jul 20 2018 11:06:42 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
