@@ -2,8 +2,15 @@
 
 import * as Contents from "./Contents.js";
 
+/**
+ * The NeonView parent to access editor actions.
+ * @type {NeonView}
+ */
 var neonView;
 
+/**
+ * Set the neonView member.
+ */
 export function initNeonView(view) {
     neonView = view;
 }
@@ -55,6 +62,12 @@ export function initGroupingListeners(){
     });
 }
 
+/**
+ * Form and execute a group/ungroup action.
+ * @param {string} action - The action to execute. Either "group" or "ungroup".
+ * @param {string} groupType - The type of elements to group. Either "neume" or "nc".
+ * @param {string[]} elementIds - The IDs of the elements.
+ */
 function groupingAction(action, groupType, elementIds) {
     let editorAction = {
         "action": action,
@@ -68,6 +81,9 @@ function groupingAction(action, groupType, elementIds) {
     neonView.refreshPage();
 }
 
+/**
+ * Get the IDs of selected elements.
+ */
 function getIds() {
     var ids = [];
     var elements = Array.from($(".selected"));
@@ -77,6 +93,9 @@ function getIds() {
     return ids;
 }
 
+/**
+ * Get the IDs of the selected elements' children.
+ */
 function getChildrenIds() {
     var childrenIds = [];
     var elements = Array.from($(".selected"));
@@ -88,4 +107,3 @@ function getChildrenIds() {
     });
     return childrenIds;
 }
-

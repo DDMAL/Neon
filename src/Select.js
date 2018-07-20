@@ -10,6 +10,7 @@ import * as SelectOptions from "./SelectOptions.js";
  * Handle click selection and mark elements as selected.
  * @constructor
  * @param {DragHandler} dragHandler - An instantiated DragHandler object.
+ * @param {NeonView} neonView - The NeonView parent.
  */
 export function ClickSelect (dragHandler, neonView) {
     var lastSelect = new Array(0);
@@ -328,6 +329,10 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
             .attr("height", currentHeight)
     }
 
+    /**
+     * Select not neume elements.
+     * @param {object[]} notNeumes - An array of not neumes elements.
+     */
     function selectNn(notNeumes) {
         if (notNeumes.length > 0) {
             notNeumes.forEach(nn => {
@@ -362,7 +367,9 @@ function unselect() {
     }
 }
 
-//General select and unselect functions
+/**
+ * Generic select function.
+ */
 function select(el) {
     if (!$(el).hasClass("selected")) {
         $(el).attr("fill", "#d00");
@@ -370,7 +377,11 @@ function select(el) {
     }
 }
 
-//Specific select functions
+/**
+ * Select a syllable.
+ * @param {SVGSVGElement} el - The nc element whose syllable to select.
+ * @param {DragHandler} dragHandler - An instantiated DragHandler.
+ */
 function selectSyl(el, dragHandler) {
     if(!$(el).parent().hasClass("selected")){
         unselect();
@@ -380,6 +391,11 @@ function selectSyl(el, dragHandler) {
     }
 }
 
+/**
+ * Select a neume.
+ * @param {SVGSVGElement} el - The nc element whose neume to select.
+ * @param {DragHandler} dragHandler - An instantiated DragHandler.
+ */
 function selectNeumes(el, dragHandler) {
     if(!$(el).parent().hasClass("selected")){
         unselect();
@@ -388,6 +404,13 @@ function selectNeumes(el, dragHandler) {
         dragHandler.dragInit(); 
     } 
 }
+
+/**
+ * Select an nc.
+ * @param {SVGSVGElement} el - The nc element to select.
+ * @param {DragHandler} dragHandler - An instantiated DragHandler.
+ * @param {Array.SVGSVGElement} lastSelect - An array of the last selected elements.
+ */
 function selectNcs(el, dragHandler, lastSelect) {
     if(!$(el).hasClass("selected")){
         unselect();
@@ -397,6 +420,11 @@ function selectNcs(el, dragHandler, lastSelect) {
     }
 }
 
+/**
+ * Select a clef.
+ * @param {SVGSVGElement} el - The clef element to select.
+ * @param {DragHandler} dragHandler - An instantiated DragHandler.
+ */
 function selectClefs(el, dragHandler){
     if(!$(el).hasClass("selected")){
         unselect();

@@ -3,14 +3,26 @@
 import * as Contents from "./Contents.js";
 import * as Grouping from "./Grouping.js";
 
+/**
+ * The NeonView parent to call editor actions.
+ * @type {NeonView}
+ */
 var neonView;
 
+/**
+ * Initialize NeonView for this and {@link module:Grouping}
+ * @param {NeonView} view - The parent NeonView.
+ */
 export function initNeonView(view) {
     neonView = view;
     Grouping.initNeonView(view);
 }
 
 //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
+/**
+ * Trigger the extra nc action menu.
+ * @param {Array.SVGSVGElement} lastSelect - The last selected elements.
+ */
 export function triggerNcActions(lastSelect) {
     endOptionsSelection();
     $("#moreEdit").removeClass("is-invisible");
@@ -83,6 +95,9 @@ export function triggerNcActions(lastSelect) {
 }
 
 //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
+/**
+ * Trigger extra neume actions.
+ */
 export function triggerNeumeActions() {
     endOptionsSelection()
     $("#moreEdit").removeClass("is-invisible");
@@ -91,6 +106,9 @@ export function triggerNeumeActions() {
     initOptionsListeners();
 }
 
+/**
+ * Trigger extra syllable actions.
+ */
 export function triggerSylActions() {
     endOptionsSelection()
     $("#moreEdit").removeClass("is-invisible");
@@ -101,6 +119,9 @@ export function triggerSylActions() {
     Grouping.initGroupingListeners();
 }
 
+/**
+ * Trigger extra clef actions.
+ */
 export function triggerClefActions() {
     endOptionsSelection();
     $("#moreEdit").removeClass("is-invisible");
@@ -119,6 +140,9 @@ export function triggerClefActions() {
     initOptionsListeners();
 }
 
+/**
+ * Trigger extra staff actions.
+ */
 export function triggerStaffActions() {
     endOptionsSelection();
     $("#moreEdit").removeClass("is-invisible");
@@ -152,11 +176,17 @@ export function triggerStaffActions() {
     });
 }
 
+/**
+ * End the extra options menu.
+ */
 export function endOptionsSelection () {
     $("#moreEdit").empty();
     $("#moreEdit").addClass("is-invisible");
 }
 
+/**
+ * Initialize extra dropdown options.
+ */
 function initOptionsListeners(){
     $("#drop_select").on("click", function() {
         $(this).toggleClass("is-active");
