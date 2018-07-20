@@ -90,12 +90,14 @@ export const editControlsPanel =
     "<a class='panel-block'>" +
     "<label>Select By:&nbsp;</label>" +
     "<div class='field has-addons'>" +
+    "<p class='control'>" +
+    "<button class='button sel-by is-active' id='selBySyl'>Syllable</button></p>" +
     "<p class='control'>" + 
-    "<button class='button is-active' id='selByNeume'>Neume</button></p>" +
+    "<button class='button sel-by' id='selByNeume'>Neume</button></p>" +
     "<p class='control'>" +
-    "<button class='button' id='selByNc'>Neume Component</button></p>" +
+    "<button class='button sel-by' id='selByNc'>Neume Component</button></p>" +
     "<p class='control'>" +
-    "<button class='button' id='selByStaff'>Staff</button></p></div></a>" +
+    "<button class='button sel-by' id='selByStaff'>Staff</button></p></div></a>" +
     "<a class='panel-block'>" + 
     "<div class='field is-grouped'>" +
     "<p class='control'>" +
@@ -154,18 +156,20 @@ export const staffActionContents =
 
 /**
  * HTML for grouping selection menu.
- * @type {string}
+ * @type {object}
  */
-export const groupingMenu =
-    "<label>Select Grouping:&nbsp;</label>" +
-    "<div id='grouping_dropdown' class='dropdown'>" +
-    "<div class='dropdown-trigger'>" +
-    "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-    "<span>Groupings</span><span class='icon is-small'>" +
-    "<i class=''></i></span></button></div>" +
-    "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
-    "<div class='dropdown-content'>" +
-    "<a id='Torculus' class='dropdown-item'>Torculus</a>" +
-    "<a id='' class='dropdown-item'>Etc...</a></div></div></div>" +
-    "<div><p class='control'>" +
-    "<button class='button' id='ungroup'>Ungroup</button></p></div>";
+export const groupingMenu = {
+    "nc": "<div class='field is-grouped'>" + 
+        "<div><p class='control'>" +
+        "<button class='button' id='groupNcs'>Group Ncs</button></p></div>",
+    "neume": "<div class='field is-grouped'>" +
+        "<div><p class='control'>" +
+        "<button class='button' id='groupNeumes'>Group Neumes</button></p></div>" +
+        "<div><p class='control'>" +
+        "<button class='button' id='ungroupNcs'>Ungroup</button></p></div></div>",
+    "syl": "<div class='field is-grouped'>" +
+        "<div><p class='control'>" +
+        "<button class='button' id='mergeSyls'>Merge Syllables</button></p></div>" +
+        "<div><p class='control'>" +
+        "<button class='button' id='ungroupNeumes'>Ungroup</button></p></div></div>"
+};

@@ -4,6 +4,7 @@ import * as Color from "./Color.js";
 import * as Contents from "./Contents.js";
 import * as Controls from "./Controls.js";
 import * as Grouping from "./Grouping.js";
+import * as SelectOptions from "./SelectOptions.js";
 
 /**
  * Handle click selection and mark elements as selected.
@@ -24,10 +25,10 @@ export function ClickSelect (dragHandler, neonView) {
             var isNc= $(this).hasClass("nc");
             if(!isNc && !($("#selByStaff").hasClass("is-active"))){
                 if ($(this).hasClass("clef")){
-                    selectClefs(this);
+                    selectClefs(this, dragHandler);
                 }
                 else if($(this).hasClass("custos")){
-                    selectNcs(this);
+                    selectNcs(this, dragHandler, lastSelect);
                 }
             }
             else if ($("#selBySyl").hasClass("is-active") && isNc) {
@@ -38,7 +39,7 @@ export function ClickSelect (dragHandler, neonView) {
                         selectSyl(neumeParent);
                     }
                     else{
-                        selectNeumes(this);
+                        selectNeumes(this, dragHandler);
                     }
                 }
                 else{
@@ -48,14 +49,14 @@ export function ClickSelect (dragHandler, neonView) {
             else if ($("#selByNeume").hasClass("is-active") && isNc){
                 var siblings = Array.from($(this).siblings());
                 if(siblings.length != 0) {
-                    selectNeumes(this);
+                    selectNeumes(this, dragHandler);
                 }
                 else{
-                    selectNcs(this);
+                    selectNcs(this, dragHandler, lastSelect);
                 }            
             }
             else if ($("#selByNc").hasClass("is-active") && isNc){
-                selectNcs(this);
+                selectNcs(this, dragHandler, lastSelect);
             }
             else if ($("#selByStaff").hasClass("is-active")) {
                 var staff = $(this).parents(".staff");
@@ -63,7 +64,7 @@ export function ClickSelect (dragHandler, neonView) {
                     unselect();
                     staff.addClass("selected");
                     Color.highlight(staff[0], "#d00");
-                    triggerStaffActions(neonView);
+                    SelectOptions.triggerStaffActions();
                     dragHandler.dragInit();
                 }
             }
@@ -77,7 +78,7 @@ export function ClickSelect (dragHandler, neonView) {
         // click away listeners
         $("body").on("keydown", (evt) => { // click
             if (evt.type === "keydown" && evt.key !== "Escape") return;
-            selectOptions.endOptionsSelection();
+            SelectOptions.endOptionsSelection();
             unselect();
         })
 
@@ -90,189 +91,6 @@ export function ClickSelect (dragHandler, neonView) {
         })
     }
     ClickSelect.prototype.selectListeners = selectListeners;
-}
-
-function endOptionsSelection () {
-    $("#moreEdit").empty();
-    $("#moreEdit").addClass("is-invisible");
-}
-
-function initOptionsListeners(){
-    $("#drop_select").on("click", function() {
-        $(this).toggleClass("is-active");
-    })
-}
-
-//TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
-function triggerNcActions(neonView) {
-    endOptionsSelection();
-    $("#moreEdit").removeClass("is-invisible");
-    $("#moreEdit").append(Contents.ncActionContents);
-    
-    $("#Punctum.dropdown-item").on("click", (evt) => {
-        let unsetInclinatum = {
-            "action": "set",
-            "param": {
-                "elementId": lastSelect[0].id,
-                "attrType": "name",
-                "attrValue": ""
-            }
-        };
-        let unsetVirga = {
-            "action": "set",
-            "param": {
-                "elementId": lastSelect[0].id,
-                "attrType": "diagonalright",
-                "attrValue": ""
-            }
-        };
-        neonView.edit({ "action": "chain", "param": [ unsetInclinatum, unsetVirga ]});
-        neonView.refreshPage();
-    });
-
-    $("#Inclinatum.dropdown-item").on("click", (evt) => {
-        let setInclinatum = {
-            "action": "set",
-            "param": {
-                "elementId": lastSelect[0].id,
-                "attrType": "name",
-                "attrValue": "inclinatum"
-            }
-        };
-        let unsetVirga = {
-            "action": "set",
-            "param": {
-                "elementId": lastSelect[0].id,
-                "attrType": "diagonalright",
-                "attrValue": ""
-            }
-        };
-        neonView.edit({ "action": "chain", "param": [ setInclinatum, unsetVirga ]});
-        neonView.refreshPage();
-    });
-    
-    $("#Virga.dropdown-item").on("click", (evt) => {
-        let unsetInclinatum = {
-            "action": "set",
-            "param": {
-                "elementId": lastSelect[0].id,
-                "attrType": "name",
-                "attrValue": ""
-            }
-        };
-        let setVirga = {
-            "action": "set",
-            "param": {
-                "elementId": lastSelect[0].id,
-                "attrType": "diagonalright",
-                "attrValue": "u"
-            }
-        };
-        neonView.edit({ "action": "chain", "param": [ unsetInclinatum, setVirga ]});
-        neonView.refreshPage();
-    });
-
-    initOptionsListeners();
-}
-
-//TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
-function triggerNeumeActions() {
-    endOptionsSelection()
-    $("#moreEdit").removeClass("is-invisible");
-    $("#moreEdit").append(Contents.neumeActionContents);
-    initOptionsListeners();
-}
-
-    //General select and unselect functions
-    function select(el) {
-        $(el).attr("fill", "#d00");
-        $(el).addClass("selected");
-    }
-
-    function unselect() {
-        var els = $(".selected");
-        for (var i=0; i<els.length; i++){
-            if ($(els[i]).hasClass("staff")) {
-                $(els[i]).removeClass("selected");
-                unhighlight(els[i]);
-            } else {
-                $(els[i]).removeClass("selected").attr("fill", null);
-            }
-        }
-
-        if ($("#highlightStaves").is(":checked")) {
-            let color = new ColorStaves();
-            color.setColor();
-        }
-    }
-
-    //Specific select functions
-    function selectSyl(el) {
-        if(!$(el).parent().hasClass("selected")){
-            unselect();
-            select($(el).parent());
-            selectOptions.triggerSylActions(); 
-            dragHandler.dragInit(); 
-        }
-    }
-
-    function selectNeumes(el) {
-        if(!$(el).parent().hasClass("selected")){
-            unselect();
-            select($(el).parent());
-            selectOptions.triggerNeumeActions(); 
-            dragHandler.dragInit(); 
-        } 
-    }
-    function selectNcs(el) {
-        if(!$(el).hasClass("selected")){
-            unselect();
-            select(el);
-            selectOptions.triggerNcActions(lastSelect);
-            dragHandler.dragInit();
-        }
-    }
-
-    function selectClefs(el){
-        if(!$(el).hasClass("selected")){
-            unselect();
-            select(el);
-            selectOptions.triggerClefActions();
-            dragHandler.dragInit();
-        }
-    }
-}
-
-
-function triggerStaffActions(neonView) {
-    endOptionsSelection();
-    $("#moreEdit").removeClass("is-invisible");
-    $("#moreEdit").append(Contents.staffActionContents);
-    
-    $("#drop_select").on("click", function() {
-        $(this).toggleClass("is-active");
-    });
-    $("#merge-systems").on("click", (evt) => {
-        let systems = Array.from($(".staff.selected"));
-        let elementIds = [];
-        systems.forEach(staff => {
-            elementIds.push(staff.id);
-        });
-        let editorAction = {
-            "action": "merge",
-            "param": {
-                "elementIds": elementIds
-            }
-        };
-
-        if (neonView.edit(editorAction)) {
-            neonView.refreshPage();
-        }
-        else {
-            alert("Could not merge systems. :(");
-        }
-    });
-    initOptionsListeners();
 }
 
 /**
@@ -376,9 +194,43 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                 return elX > rx && elX < lx  && elY > ry && elY < ly;
             });
 
-            var toSelect = [];
+            var syls = [];
+            var neumes = [];
+            var ncs = [];
+            var notNeumes = [];
 
-            if ($("#selByStaff").hasClass("is-active")) {
+            elements.forEach(el => {
+                var firstParent = $(el).parent()[0];
+                var isNc = $(firstParent).hasClass("nc");
+
+                if (isNc) {
+                    ncs.push(firstParent);
+
+                    var neume = $(firstParent).parent()[0];
+                    if (!neumes.includes(neume)) {
+                        neumes.push(neume);
+                    }
+
+                    var syl = $(neume).parent()[0];
+                    if (!syls.includes(syl)) {
+                        syls.push(syl);
+                    }
+                }
+                else {
+                    notNeumes.push(firstParent);
+                }
+            });
+
+            var selectMode = null;
+            var tabs = Array.from($(".sel-by"));
+            tabs.forEach(tab => {
+                if ($(tab).hasClass("is-active")) {
+                    selectMode = $(tab)[0].id;
+                }
+            });
+
+            if (selectMode == "selByStaff") {
+                var toSelect = [];
                 elements.forEach(el => {
                     if (el.tagName === "use") {
                         toSelect.push($(el).parents(".staff")[0]);
@@ -390,38 +242,52 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     Color.highlight(elem, "#d00");
                     $(elem).addClass("selected");
                 });
+                SelectOptions.triggerStaffActions();
             }
-            else {
-                elements.forEach(el => {
-                    var parent = $(el).parent()[0];
-                    var isNc = !($(parent).hasClass("clef") || $(parent).hasClass("custos"));
-
-                    if($(parent).hasClass("selected")){
-                        return;
-                    }
-
-                    toSelect.push(parent);
-
-                    if(d3.select("#selByNeume").classed("is-active") && isNc){
-                        var siblings = Array.from($(parent).siblings());
-                        siblings.forEach(el => {
-                            var cls = d3.select("#" + el.id).attr("class");
-                            if(cls == "nc"){
-                                toSelect.push(el);
-                            }   
-                        })
-                    }     
-                    toSelect.forEach(nc => {
-                        $("#" + nc.id).addClass("selected");
-                        $("#" + nc.id).attr("fill", "#d00");
-                    });               
+            else if (selectMode === "selBySyl") {
+                var noClefOrCustos = selectNn(notNeumes);
+                syls.forEach(s => {
+                    select(s);
                 });
+                if (syls.length > 1 && noClefOrCustos) {
+                    Grouping.triggerGrouping("syl");
+                }
+                else if (syls.length === 1 && noClefOrCustos) {
+                    SelectOptions.triggerSylActions();
+                }
+                else {
+                    console.log("Warning: no selection made");
+                }
             }
-            if (toSelect.length > 1 && !$("#selByStaff").hasClass("is-active")){
-                Grouping.triggerGroupSelection();
-            } 
-            else if (toSelect.length > 1 && $("#selByStaff").hasClass("is-active")) {
-                triggerStaffActions(neonView);
+            else if (selectMode === "selByNeume") {
+                var noClefOrCustos = selectNn(notNeumes);
+                neumes.forEach(n => {
+                    select(n);
+                });
+                if (neumes.length > 1 && noClefOrCustos) {
+                    Grouping.triggerGrouping("neume");
+                }
+                else if (neumes.length == 1 && noClefOrCustos) {
+                    SelectOptions.triggerNeumeActions();
+                }
+                else {
+                    console.log("no selection made");
+                }
+            }
+            else if (selectMode === "selByNc") {
+                var noClefOrCustos = selectNn(notNeumes);
+                ncs.forEach(nc => {
+                    select(nc);
+                });
+                if (ncs.length > 1 && noClefOrCustos) {
+                    Grouping.triggerGrouping("nc");
+                }
+                else if (ncs.length === 1 && noClefOrCustos) {
+                    SelectOptions.triggerNcActions();
+                }
+                else {
+                    console.log("Warning: no selection made");
+                }
             }
             dragHandler.dragInit();
             d3.selectAll("#selectRect").remove();
@@ -461,6 +327,17 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
             .attr("width", currentWidth)
             .attr("height", currentHeight)
     }
+
+    function selectNn(notNeumes) {
+        if (notNeumes.length > 0) {
+            notNeumes.forEach(nn => {
+                select(nn);
+            });
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
 
 /**
@@ -484,3 +361,49 @@ function unselect() {
         Color.setStaffHighlight();
     }
 }
+
+//General select and unselect functions
+function select(el) {
+    if (!$(el).hasClass("selected")) {
+        $(el).attr("fill", "#d00");
+        $(el).addClass("selected");
+    }
+}
+
+//Specific select functions
+function selectSyl(el, dragHandler) {
+    if(!$(el).parent().hasClass("selected")){
+        unselect();
+        select($(el).parent());
+        SelectOptions.triggerSylActions(); 
+        dragHandler.dragInit(); 
+    }
+}
+
+function selectNeumes(el, dragHandler) {
+    if(!$(el).parent().hasClass("selected")){
+        unselect();
+        select($(el).parent());
+        SelectOptions.triggerNeumeActions(); 
+        dragHandler.dragInit(); 
+    } 
+}
+function selectNcs(el, dragHandler, lastSelect) {
+    if(!$(el).hasClass("selected")){
+        unselect();
+        select(el);
+        SelectOptions.triggerNcActions(lastSelect);
+        dragHandler.dragInit();
+    }
+}
+
+function selectClefs(el, dragHandler){
+    if(!$(el).hasClass("selected")){
+        unselect();
+        select(el);
+        SelectOptions.triggerClefActions();
+        dragHandler.dragInit();
+    }
+}
+
+

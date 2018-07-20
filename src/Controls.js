@@ -284,11 +284,21 @@ export function initEditMode(editMode) {
  * Set listeners on the buttons to change selection modes.
  */
 export function initSelectionButtons() {
+    $("#selBySyl").on("click", function() {
+        if (!$("#selBySyl").hasClass("is-active")) {
+            $("#selBySyl").addClass("is-active");
+            $("#selByNeume").removeClass("is-active");
+            $("#selByNc").removeClass("is-active");
+            $("#selByStaff").removeClass("is-active");
+        }
+    });
+
     $("#selByNeume").on("click", function(){
         if (!$("#selByNeume").hasClass("is-active")){
             $("#selByNeume").addClass("is-active");
             $("#selByNc").removeClass("is-active");
             $("#selByStaff").removeClass("is-active");
+            $("#selBySyl").removeClass("is-active");
         }           
     });
 
@@ -297,6 +307,7 @@ export function initSelectionButtons() {
             $("#selByNc").addClass("is-active");
             $("#selByNeume").removeClass("is-active");
             $("#selByStaff").removeClass("is-active");
+            $("#selBySyl").removeClass("is-active");
         }
     });
 
@@ -305,6 +316,7 @@ export function initSelectionButtons() {
             $("#selByStaff").addClass("is-active");
             $("#selByNc").removeClass("is-active");
             $("#selByNeume").removeClass("is-active");
+            $("#selBySyl").removeClass("is-active");
         }
     });
 }
