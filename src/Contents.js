@@ -153,7 +153,7 @@ export const staffActionContents =
     "<button id='merge-systems' class='button'>Merge</button></p></div>";
 
 /**
- * HTML for goruping selection menu.
+ * HTML for grouping selection menu.
  * @type {string}
  */
 export const groupingMenu =

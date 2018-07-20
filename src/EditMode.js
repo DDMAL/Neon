@@ -3,6 +3,7 @@ import {ClickSelect, DragSelect} from "./Select.js";
 import InsertHandler from "./InsertHandler.js";
 import * as Controls from "./Controls.js";
 import * as Contents from "./Contents.js";
+import SelectOptions from "./SelectOptions.js";
 
 /**
  * Creates user interface for editing and creates necessary tools.
@@ -13,12 +14,13 @@ import * as Contents from "./Contents.js";
  */
 function EditMode (neonView, meiFile, zoomHandler){
     var dragHandler = null;
+    var selectOptions = null;
     var select = null;
     var insertControls = null;
     var dragSelect = null;
     var insertHandler = null;
-    var vbHeight = null;
-    var vbWidth = null;
+    // var vbHeight = null;
+    // var vbWidth = null;
 
 
     // Set edit mode listener
@@ -35,6 +37,7 @@ function EditMode (neonView, meiFile, zoomHandler){
         Controls.bindInsertTabs(insertHandler);
         $("#neumeTab").click();
         dragSelect = new DragSelect(dragHandler, zoomHandler, neonView);
+        selectOptions = new SelectOptions(neonView, groupingHandler);
 
         Controls.initInsertEditControls(neonView);
     }

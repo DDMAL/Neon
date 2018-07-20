@@ -9,7 +9,6 @@ import * as Grouping from "./Grouping.js";
  * Handle click selection and mark elements as selected.
  * @constructor
  * @param {DragHandler} dragHandler - An instantiated DragHandler object.
- * @param {NeonView} neonView - The NeonView parent.
  */
 export function ClickSelect (dragHandler, neonView) {
     var lastSelect = new Array(0);
@@ -23,35 +22,40 @@ export function ClickSelect (dragHandler, neonView) {
         //Activating selected neumes
         $(classesToSelect).on("click", function() {
             var isNc= $(this).hasClass("nc");
-            if ($("#selByNeume").hasClass("is-active") && isNc){
-                if(!$(this).hasClass("selected")){
-                    unselect();
-                    $(this).attr("fill", "#d00");
-                    $(this).addClass("selected");
-                    var siblings = Array.from($(this).siblings());
-                    siblings.forEach(el => {
-                        if(!$(el).hasClass("selected")){
-                            $(el).attr("fill", "#d00");
-                            $(el).addClass("selected");
-                        }   
-                    }) 
-                    if(siblings.length != 0){
-                        triggerNeumeActions();  
-                    }     
-                    else{
-                        triggerNcActions(neonView);
-                    }          
-                    dragHandler.dragInit();   
+            if(!isNc && !($("#selByStaff").hasClass("is-active"))){
+                if ($(this).hasClass("clef")){
+                    selectClefs(this);
+                }
+                else if($(this).hasClass("custos")){
+                    selectNcs(this);
                 }
             }
-            else if ($("#selByNc").hasClass("is-active") || !(isNc || $("#selByStaff").hasClass("is-active"))){
-                if(!$(this).hasClass("selected")){
-                    unselect();
-                    $(this).attr("fill", "#d00");
-                    $(this).addClass("selected");
-                    triggerNcActions(neonView);
-                    dragHandler.dragInit();
+            else if ($("#selBySyl").hasClass("is-active") && isNc) {
+                var neumeParent = $(this).parent();
+                if($(neumeParent).hasClass("neume")){
+                    var parentSiblings = Array.from($(neumeParent).siblings());
+                    if(parentSiblings.length != 0){
+                        selectSyl(neumeParent);
+                    }
+                    else{
+                        selectNeumes(this);
+                    }
                 }
+                else{
+                    console.log("Error: parent should be neume.");
+                }
+            }
+            else if ($("#selByNeume").hasClass("is-active") && isNc){
+                var siblings = Array.from($(this).siblings());
+                if(siblings.length != 0) {
+                    selectNeumes(this);
+                }
+                else{
+                    selectNcs(this);
+                }            
+            }
+            else if ($("#selByNc").hasClass("is-active") && isNc){
+                selectNcs(this);
             }
             else if ($("#selByStaff").hasClass("is-active")) {
                 var staff = $(this).parents(".staff");
@@ -73,7 +77,7 @@ export function ClickSelect (dragHandler, neonView) {
         // click away listeners
         $("body").on("keydown", (evt) => { // click
             if (evt.type === "keydown" && evt.key !== "Escape") return;
-            endOptionsSelection();
+            selectOptions.endOptionsSelection();
             unselect();
         })
 
@@ -176,9 +180,69 @@ function triggerNeumeActions() {
     endOptionsSelection()
     $("#moreEdit").removeClass("is-invisible");
     $("#moreEdit").append(Contents.neumeActionContents);
-
     initOptionsListeners();
 }
+
+    //General select and unselect functions
+    function select(el) {
+        $(el).attr("fill", "#d00");
+        $(el).addClass("selected");
+    }
+
+    function unselect() {
+        var els = $(".selected");
+        for (var i=0; i<els.length; i++){
+            if ($(els[i]).hasClass("staff")) {
+                $(els[i]).removeClass("selected");
+                unhighlight(els[i]);
+            } else {
+                $(els[i]).removeClass("selected").attr("fill", null);
+            }
+        }
+
+        if ($("#highlightStaves").is(":checked")) {
+            let color = new ColorStaves();
+            color.setColor();
+        }
+    }
+
+    //Specific select functions
+    function selectSyl(el) {
+        if(!$(el).parent().hasClass("selected")){
+            unselect();
+            select($(el).parent());
+            selectOptions.triggerSylActions(); 
+            dragHandler.dragInit(); 
+        }
+    }
+
+    function selectNeumes(el) {
+        if(!$(el).parent().hasClass("selected")){
+            unselect();
+            select($(el).parent());
+            selectOptions.triggerNeumeActions(); 
+            dragHandler.dragInit(); 
+        } 
+    }
+    function selectNcs(el) {
+        if(!$(el).hasClass("selected")){
+            unselect();
+            select(el);
+            selectOptions.triggerNcActions(lastSelect);
+            dragHandler.dragInit();
+        }
+    }
+
+    function selectClefs(el){
+        if(!$(el).hasClass("selected")){
+            unselect();
+            select(el);
+            selectOptions.triggerClefActions();
+            dragHandler.dragInit();
+        }
+    }
+}
+
 
 function triggerStaffActions(neonView) {
     endOptionsSelection();
