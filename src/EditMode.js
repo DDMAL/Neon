@@ -90,7 +90,7 @@ function EditMode (neonView, meiFile, zoomHandler){
         groupingHandler = new GroupingHandler(neonView);
         navbarHandler = new Navbar(meiFile);
         selectOptions = new SelectOptions(neonView, groupingHandler);
-        select = new Select(dragHandler, selectOptions);
+        select = new Select(neonView, dragHandler, selectOptions);
         cursorHandler = new CursorHandler();
         insertHandler = new InsertHandler(neonView);
         insertControls = new InsertControls(cursorHandler, insertHandler);

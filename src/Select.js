@@ -5,7 +5,7 @@ import ColorStaves, {highlight, unhighlight} from "./ColorStaves.js";
  * @constructor
  * @param {DragHandler} dragHandler - An instantiated DragHandler object.
  */
-function Select (dragHandler, selectOptions) {
+function Select (neonView, dragHandler, selectOptions) {
     var lastSelect = new Array(0);
     selectListeners();
     //Selection mode toggle
