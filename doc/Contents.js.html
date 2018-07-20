@@ -118,12 +118,14 @@ export const editControlsPanel =
     "&lt;a class='panel-block'>" +
     "&lt;label>Select By:&amp;nbsp;&lt;/label>" +
     "&lt;div class='field has-addons'>" +
+    "&lt;p class='control'>" +
+    "&lt;button class='button sel-by is-active' id='selBySyl'>Syllable&lt;/button>&lt;/p>" +
     "&lt;p class='control'>" + 
-    "&lt;button class='button is-active' id='selByNeume'>Neume&lt;/button>&lt;/p>" +
+    "&lt;button class='button sel-by' id='selByNeume'>Neume&lt;/button>&lt;/p>" +
     "&lt;p class='control'>" +
-    "&lt;button class='button' id='selByNc'>Neume Component&lt;/button>&lt;/p>" +
+    "&lt;button class='button sel-by' id='selByNc'>Neume Component&lt;/button>&lt;/p>" +
     "&lt;p class='control'>" +
-    "&lt;button class='button' id='selByStaff'>Staff&lt;/button>&lt;/p>&lt;/div>&lt;/a>" +
+    "&lt;button class='button sel-by' id='selByStaff'>Staff&lt;/button>&lt;/p>&lt;/div>&lt;/a>" +
     "&lt;a class='panel-block'>" + 
     "&lt;div class='field is-grouped'>" +
     "&lt;p class='control'>" +
@@ -181,22 +183,24 @@ export const staffActionContents =
     "&lt;button id='merge-systems' class='button'>Merge&lt;/button>&lt;/p>&lt;/div>";
 
 /**
- * HTML for goruping selection menu.
- * @type {string}
+ * HTML for grouping selection menu.
+ * @type {object}
  */
-export const groupingMenu =
-    "&lt;label>Select Grouping:&amp;nbsp;&lt;/label>" +
-    "&lt;div id='grouping_dropdown' class='dropdown'>" +
-    "&lt;div class='dropdown-trigger'>" +
-    "&lt;button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-    "&lt;span>Groupings&lt;/span>&lt;span class='icon is-small'>" +
-    "&lt;i class=''>&lt;/i>&lt;/span>&lt;/button>&lt;/div>" +
-    "&lt;div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
-    "&lt;div class='dropdown-content'>" +
-    "&lt;a id='Torculus' class='dropdown-item'>Torculus&lt;/a>" +
-    "&lt;a id='' class='dropdown-item'>Etc...&lt;/a>&lt;/div>&lt;/div>&lt;/div>" +
-    "&lt;div>&lt;p class='control'>" +
-    "&lt;button class='button' id='ungroup'>Ungroup&lt;/button>&lt;/p>&lt;/div>";
+export const groupingMenu = {
+    "nc": "&lt;div class='field is-grouped'>" + 
+        "&lt;div>&lt;p class='control'>" +
+        "&lt;button class='button' id='groupNcs'>Group Ncs&lt;/button>&lt;/p>&lt;/div>",
+    "neume": "&lt;div class='field is-grouped'>" +
+        "&lt;div>&lt;p class='control'>" +
+        "&lt;button class='button' id='groupNeumes'>Group Neumes&lt;/button>&lt;/p>&lt;/div>" +
+        "&lt;div>&lt;p class='control'>" +
+        "&lt;button class='button' id='ungroupNcs'>Ungroup&lt;/button>&lt;/p>&lt;/div>&lt;/div>",
+    "syl": "&lt;div class='field is-grouped'>" +
+        "&lt;div>&lt;p class='control'>" +
+        "&lt;button class='button' id='mergeSyls'>Merge Syllables&lt;/button>&lt;/p>&lt;/div>" +
+        "&lt;div>&lt;p class='control'>" +
+        "&lt;button class='button' id='ungroupNeumes'>Ungroup&lt;/button>&lt;/p>&lt;/div>&lt;/div>"
+};
 </code></pre>
         </article>
     </section>
@@ -207,13 +211,13 @@ export const groupingMenu =
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 19 2018 14:54:47 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jul 20 2018 10:43:26 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

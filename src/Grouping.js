@@ -1,3 +1,5 @@
+/** @module Grouping */
+
 import * as Contents from "./Contents.js";
 
 var neonView;
