@@ -13,8 +13,8 @@ module.exports = {
     },
     plugins: [
         new webpack.ProvidePlugin({
-            d3: 'd3',
-            $: 'jquery'
+            d3: './vendor/d3.v5.min.js',
+            $: './vendor/jquery-3.3.1.min.js'
         })
     ],
     node: {
