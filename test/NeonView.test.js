@@ -53,12 +53,16 @@ describe("Check Info Box", () => {
     });
 
     test("Check Info Box Clef", async () => {
-        var firstClef = await browser.findElement(By.id("m-5336ecdd-16ac-4d06-ac93-0d83b7458cea"));
+        var firstClef = await browser.findElement(By.id("m-45439068-5e0c-4595-a820-4faa16771422"));
+        var notificationDelete = await browser.findElement(By.id("notification-delete"));
         const actions = browser.actions();
+        await actions.click(notificationDelete).perform();
         // Can't click center since the clef is open there
         var rect = await firstClef.getRect();
         await actions.move({origin: firstClef, y: parseInt(rect.height / 2)}).click().perform();
-        var message = await browser.findElement(By.className("message-body")).getText();
+        var notification = await browser.findElement(By.className("message"));
+        await browser.wait(until.elementIsVisible(notification));
+        var message = await browser.findElement(By.className("message")).getText();
         expect(message).toContain("Shape: C");
         expect(message).toContain("Line: 3");
     });
