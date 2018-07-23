@@ -95,8 +95,34 @@ export function setOpacityFromSlider() {
  * Set listener on staff highlighting checkbox.
  */
 export function setHighlightControls() {
-    updateHighlight();
-    $("#highlightStaves").click(updateHighlight);
+    $("#highlight-button").on("click", () => {
+        $("#highlight-dropdown").toggleClass("is-active");
+        if ($("#highlight-dropdown").hasClass("is-active")) {
+            $("#highlight-staff").on("click", () => {
+                $("#highlight-dropdown").removeClass("is-active");
+                $(".highlight-selected").removeClass("highlight-selected");
+                $("#highlight-staff").addClass("highlight-selected");
+                Color.setGroupingHighlight("staff");
+            });
+            $("#highlight-syllable").on("click", () => {
+                $("#highlight-dropdown").removeClass("is-active");
+                $(".highlight-selected").removeClass("highlight-selected");
+                $("#highlight-syllable").addClass("highlight-selected");
+                Color.setGroupingHighlight("syllable");
+            });
+            $("#highlight-neume").on("click", () => {
+                $("#highlight-dropdown").removeClass("is-active");
+                $(".highlight-selected").removeClass("highlight-selected");
+                $("#highlight-neume").addClass("highlight-selected");
+                Color.setGroupingHighlight("neume");
+            });
+            $("#highlight-none").on("click", () => {
+                $("#highlight-dropdown").removeClass("is-active");
+                $(".highlight-selected").removeClass("highlight-selected");
+                Color.unsetGroupingHighlight();
+            });
+        }
+    });
 }
 
 export function updateSylVisibility() {
@@ -108,10 +134,19 @@ export function updateSylVisibility() {
 }
 
 export function updateHighlight() {
-    if ($("#highlightStaves").is(":checked")) {
-        Color.setStaffHighlight();
-    } else {
-        Color.unsetStaffHighlight();
+    let highlightId = $(".highlight-selected").attr("id");
+    switch (highlightId) {
+        case "highlight-staff":
+            Color.setGroupingHighlight("staff");
+            break;
+        case "highlight-syllable":
+            Color.setGroupingHighlight("syllable");
+            break;
+        case "highlight-neume":
+            Color.setGroupingHighlight("neume");
+            break;
+        default:
+            Color.unsetGroupingHighlight();
     }
 }
 

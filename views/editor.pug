@@ -34,11 +34,22 @@ html
               button.button#reset-bg-opacity Image Opacity
               input.slider.is-fullwidth#bgOpacitySlider(step="5", min="0", max="100", value="100", type="range")
               output#bgOpacityOutput(for="bgOpacitySlider") 100
-            a.panel-block
+            .panel-block
               label.checkbox Display Text: 
                 input.checkbox#displayText(type="checkbox")
-              label.checkbox Highlight Staves:&nbsp;
-                input.checkbox#highlightStaves(type="checkbox")
+              #highlight-dropdown.dropdown
+                .dropdown-trigger
+                  button#highlight-button.button(aria-haspopup='true' aria-controls='highlight-menu')
+                    span Highlight
+                    span.icon.is-small
+                      i.fas.fa-angle-down
+                #highlight-menu.dropdown-menu(role='menu')
+                  .dropdown-content
+                    a#highlight-staff.dropdown-item Staff
+                    a#highlight-syllable.dropdown-item Syllable
+                    a#highlight-neume.dropdown-item Neume
+                    hr.dropdown-divider
+                    a#highlight-none.dropdown-item None
           #insert_controls
           #edit_controls
         #neume_info
