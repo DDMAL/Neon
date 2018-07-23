@@ -1,4 +1,4 @@
-import CursorHandler from "./CursorHandler.js";
+import * as Cursor from "./Cursor.js";
 
 /**
  * Handle inserting new musical elements and communicate this to Verovio.
@@ -10,7 +10,6 @@ function InsertHandler (neonView) {
     var firstClick = true;
     var coord;
     var attributes = null;
-    var cursor = new CursorHandler();
 
     /**
      * Switch to insert mode based on the button pressed.
@@ -82,7 +81,7 @@ function InsertHandler (neonView) {
         $("body").off("click", "#svg_output", staffHandler);
         $(".insertel.is-active").removeClass("is-active");
         firstClick = true;
-        cursor.resetCursor();
+        Cursor.resetCursor();
     }
 
     /**
