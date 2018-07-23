@@ -135,7 +135,7 @@ export function initInsertEditControls(neonView) {
         }
     });
 
-    $("#editMenu").on("click", () => {
+    $("#toggleEdit").on("click", () => {
         if ($("#editContents").is(":hidden")) {
             $("#editContents").css("display", "");
             $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-up");
