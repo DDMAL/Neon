@@ -13,6 +13,7 @@ import SmallDivIcon from "./img/smallDiv.png";
 import MinorDivIcon from "./img/minorDiv.png";
 import MajorDivIcon from "./img/majorDiv.png";
 import FinalDivIcon from "./img/finalDiv.png";
+import Icons from "./img/icons.svg";
 
 /**
  * HTML for each insert tab (neume, grouping, clef, system, and division).
@@ -69,7 +70,8 @@ export const navbarDropdownMenu =
  * @type {string}
  */
 export const insertControlsPanel =
-    "<p class='panel-heading' id='insertMenu'>Insert</p>" +
+    "<p class='panel-heading' id='insertMenu'>Insert" +
+    "<svg class='icon is-pulled-right'><use id='toggleInsert' xlink:href='" + Icons + "#dropdown-up'></use></svg></p>" +
     "<div id='insertContents'>" +
     "<p class='panel-tabs'>" +
     "<a id='neumeTab' class='insertTab'>Neume</a>" +
@@ -85,7 +87,8 @@ export const insertControlsPanel =
  * @type {string}
  */
 export const editControlsPanel =
-    "<p class='panel-heading' id='editMenu'>Edit</p>" +
+    "<p class='panel-heading' id='editMenu'>Edit" +
+    "<svg class='icon is-pulled-right'><use id='toggleEdit' xlink:href='" + Icons + "#dropdown-up'></use></svg></p>" +
     "<div id='editContents'>" +
     "<a class='panel-block'>" +
     "<label>Select By:&nbsp;</label>" +
@@ -119,9 +122,9 @@ export const ncActionContents =
         "<label>Change Head Shape:&nbsp;</label>" +
         "<div id='drop_select' class='dropdown'>" +
         "<div class='dropdown-trigger'>" +
-        "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-        "<span>Head Shapes</span><span class='icon is-small'>" +
-        "<i class=''></i></span></button></div>" +
+        "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+        "<span>Head Shapes</span>" +
+        "<svg class='icon'><use xlink:href='" + Icons + "#dropdown-down'></use></svg></button></div>" +
         "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
         "<div class='dropdown-content'>" +
         "<a id='Punctum' class='dropdown-item'>Punctum</a>" +
@@ -136,9 +139,9 @@ export const neumeActionContents =
         "<label>Change Grouping:&nbsp;</label>" +
         "<div id='drop_select' class='dropdown'>" +
         "<div class='dropdown-trigger'>" +
-        "<button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-        "<span>Groupings</span><span class='icon is-small'>" +
-        "<i class=''></i></span></button></div>" +
+        "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+        "<span>Groupings</span>" +
+        "<svg class='icon'><use xlink:href='" + Icons + "#dropdown-down'></use></svg></button></div>" +
         "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
         "<div class='dropdown-content'>" +
         "<a id='Torculus' class='dropdown-item'>Torculus</a></div></div></div>" +

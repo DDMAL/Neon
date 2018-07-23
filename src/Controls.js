@@ -3,6 +3,7 @@
 import * as Color from "./Color.js";
 import * as Contents from "./Contents.js";
 import * as Cursor from "./Cursor.js";
+import Icons from "./img/icons.svg";
 
 /** @type {module:Zoom~ZoomHandler} */
 var zoomHandler;
@@ -20,12 +21,14 @@ export function initDisplayControls (zHandler) {
     setSylControls();
     setHighlightControls();
 
-    $("#displayHeader").on("click", () => {
+    $("#toggleDisplay").on("click", () => {
         if ($("#displayContents").is(":hidden")) {
             $("#displayContents").css("display", "");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-up");
         }
         else {
             $("#displayContents").css("display", "none");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-down");
         }
     });
 }
@@ -121,19 +124,24 @@ export function updateHighlight() {
  * @param {NeonView} neonView - The NeonView parent.
  */
 export function initInsertEditControls(neonView) {
-    $("#insertMenu").on("click", () => {
+    $("#toggleInsert").on("click", () => {
         if ($("#insertContents").is(":hidden")) {
             $("#insertContents").css("display", "");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-up");
+
         } else {
             $("#insertContents").css("display", "none");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-down");
         }
     });
 
-    $("#editMenu").on("click", () => {
+    $("#toggleEdit").on("click", () => {
         if ($("#editContents").is(":hidden")) {
             $("#editContents").css("display", "");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-up");
         } else {
             $("#editContents").css("display", "none");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-down");
         }
     });
 

@@ -20,7 +20,9 @@ html
       .column#svg_output.is-two-thirds.box(style={overflow: "hidden"})
       .column.is-one-third
         .panel
-          p.panel-heading#displayHeader Display
+          p.panel-heading.has-dropdown#displayHeader Display
+            svg.icon.is-pulled-right
+              use(id="toggleDisplay" xlink:href="/img/icons.svg#dropdown-up")
           #displayContents
             a.panel-block.has-text-centered
               button.button#reset-zoom Zoom
