@@ -7,6 +7,7 @@ import InsertControls from "./InsertControls.js";
 import InsertHandler from "./InsertHandler.js";
 import DragSelect from "./DragSelect.js"
 import SelectOptions from "./SelectOptions.js";
+import Icons from "./img/icons.svg";
 
 /**
  * Creates user interface for editing and creates necessary tools.
@@ -40,7 +41,8 @@ function EditMode (neonView, meiFile, zoomHandler){
             "<a id='revert' class='navbar-item' href=''> Revert </a>"
         );
         $("#insert_controls").append(
-            "<p class='panel-heading' id='insertMenu'>Insert</p>" +
+            "<p class='panel-heading' id='insertMenu'>Insert" +
+            "<svg class='icon is-pulled-right'><use id='toggleInsert' xlink:href='" + Icons + "#dropdown-up'></use></svg></p>" +
             "<div id='insertContents'>" +
             "<p class='panel-tabs'>" +
             "<a id='neumeTab' class='insertTab'>Neume</a>" +
@@ -52,7 +54,8 @@ function EditMode (neonView, meiFile, zoomHandler){
             "<div id='insert_data' class='field is-grouped'/></a></div>"
         );
         $("#edit_controls").append(
-            "<p class='panel-heading' id='editMenu'>Edit</p>" +
+            "<p class='panel-heading' id='editMenu'>Edit" +
+            "<svg class='icon is-pulled-right'><use id='toggleEdit' xlink:href='" + Icons + "#dropdown-up'></use></svg></p>" +
             "<div id='editContents'>" +
             "<a class='panel-block'>" +
             "<label>Select By:&nbsp;</label>" +
@@ -96,19 +99,23 @@ function EditMode (neonView, meiFile, zoomHandler){
         insertControls = new InsertControls(cursorHandler, insertHandler);
         dragSelect = new DragSelect(neonView, dragHandler, zoomHandler, groupingHandler, selectOptions);
 
-        $("#insertMenu").on("click", () => {
+        $("#toggleInsert").on("click", () => {
             if ($("#insertContents").is(":hidden")) {
                 $("#insertContents").css("display", "");
+                $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-up");
             } else {
                 $("#insertContents").css("display", "none");
+                $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-down");
             }
         });
 
-        $("#editMenu").on("click", () => {
+        $("#toggleEdit").on("click", () => {
             if ($("#editContents").is(":hidden")) {
                 $("#editContents").css("display", "");
+                $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-up");
             } else {
                 $("#editContents").css("display", "none");
+                $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-down");
             }
         });
 

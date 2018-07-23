@@ -21,7 +21,8 @@ html
       .column.is-one-third
         .panel
           p.panel-heading.has-dropdown#displayHeader Display
-            //- object.is-pulled-right(type='image/svg+xml', data='/img/img.svg#dropdown')
+            svg.icon.is-pulled-right
+              use(id="toggleDisplay" xlink:href="/img/icons.svg#dropdown-up")
           #displayContents
             a.panel-block.has-text-centered
               button.button#reset-zoom Zoom

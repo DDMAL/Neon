@@ -1,4 +1,5 @@
 import ColorStaves from "./ColorStaves.js";
+import Icons from "./img/icons.svg";
 
 /**
  * Set handlers for the display controls.
@@ -14,11 +15,13 @@ function ViewControls (zoomHandler) {
     setSylControls();
     setHighlightControls();
 
-    $("#displayHeader").on("click", () => {
+    $("#toggleDisplay").on("click", () => {
         if ($("#displayContents").is(":hidden")) {
             $("#displayContents").css("display", "");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-up");
         } else {
             $("#displayContents").css("display", "none");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-down");
         }
     });
 

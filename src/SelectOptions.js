@@ -1,3 +1,5 @@
+import Icons from "./img/icons.svg";
+
 function SelectOptions(neonView, groupingHandler) {
     //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
     function triggerNcActions(lastSelect) {
@@ -8,8 +10,8 @@ function SelectOptions(neonView, groupingHandler) {
             "<div id='drop_select' class='dropdown'>" +
             "<div class='dropdown-trigger'>" +
             "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-            "<span>Head Shapes</span><span class='icon is-small'>" +
-            "<i class=''></i></span></button></div>" +
+            "<span>Head Shapes</span><svg class='icon'>" +
+            "<use xlink:href='" + Icons + "#dropdown-down'></use></svg></button></div>" +
             "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
             "<div class='dropdown-content'>" +
             "<a id='Punctum' class='dropdown-item'>Punctum</a>" +
@@ -91,7 +93,8 @@ function SelectOptions(neonView, groupingHandler) {
             "<div id='drop_select' class='dropdown'>" +
             "<div class='dropdown-trigger'>" +
             "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-            "<span>Groupings</span><object type='image/svg+xml' data='/img/img.svg'></object></span></button></div>" +
+            "<span>Groupings</span><svg class='icon'>" +
+            "<use xlink:href='" + Icons + "#dropdown-down'></use></svg></button></div>" +
             "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
             "<div class='dropdown-content'>" +
             "<a id='Torculus' class='dropdown-item'>Torculus</a></div></div></div>" +
@@ -120,7 +123,8 @@ function SelectOptions(neonView, groupingHandler) {
             "<div id='drop_select' class='dropdown'>" +
             "<div class='dropdown-trigger'>" +
             "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-            "<span>Clef Shapes</span></span></button></div>" +
+            "<span>Clef Shapes</span><svg class='icon'>" +
+            "<use xlink:href='" + Icons + "#dropdown-down'></use></svg></button></div>" +
             "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
             "<div class='dropdown-content'>" +
             "<a id='Punctum' class='dropdown-item'>C Clef</a>" +
