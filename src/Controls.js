@@ -134,6 +134,17 @@ export function updateSylVisibility() {
     if ($("#displayText").is(":checked")) {
         $("#syl_text").css("display", "");
         $("#syl_text").html("<p>" + Text.getSylText() + "</p>");
+        let spans = Array.from($("#syl_text").children("p").children("span"));
+        spans.forEach(span => {
+            $(span).on("mouseenter", () => {
+                let syllable = $("#" + $(span).attr("class"));
+                syllable.addClass("syl-select");
+                syllable.attr("fill", "#d00");
+            });
+            $(span).on("mouseleave", () => {
+                $("#" + $(span).attr("class")).removeClass("syl-select").attr("fill", null);
+            });
+        });
     } else {
         $("#syl_text").css("display", "none");
     }

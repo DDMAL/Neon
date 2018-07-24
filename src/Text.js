@@ -11,7 +11,6 @@ export function getSylText() {
     syllables.forEach(syllable => {
         if ($(syllable).has(".syl").length) {
             let syl = $(syllable).children(".syl")[0];
-            console.log(syl);
             lyrics += "<span class='" + syllable.id + "'>";
             Array.from(syl.children[0].children[0].children).forEach(text => {
                 lyrics += text.textContent;
