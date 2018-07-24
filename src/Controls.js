@@ -3,6 +3,7 @@
 import * as Color from "./Color.js";
 import * as Contents from "./Contents.js";
 import * as Cursor from "./Cursor.js";
+import * as Select from "./Select.js";
 import Icons from "./img/icons.svg";
 
 /** @type {module:Zoom~ZoomHandler} */
@@ -329,6 +330,8 @@ export function initEditMode(editMode) {
 export function initSelectionButtons() {
     $("#selBySyl").on("click", function() {
         if (!$("#selBySyl").hasClass("is-active")) {
+            Select.unselect();
+            $("#moreEdit").empty();
             $("#selBySyl").addClass("is-active");
             $("#selByNeume").removeClass("is-active");
             $("#selByNc").removeClass("is-active");
@@ -338,6 +341,8 @@ export function initSelectionButtons() {
 
     $("#selByNeume").on("click", function(){
         if (!$("#selByNeume").hasClass("is-active")){
+            Select.unselect();
+            $("#moreEdit").empty();
             $("#selByNeume").addClass("is-active");
             $("#selByNc").removeClass("is-active");
             $("#selByStaff").removeClass("is-active");
@@ -347,6 +352,8 @@ export function initSelectionButtons() {
 
     $("#selByNc").on("click", function(){
         if (!$("#selByNc").hasClass("is-active")) {
+            Select.unselect();
+            $("#moreEdit").empty();
             $("#selByNc").addClass("is-active");
             $("#selByNeume").removeClass("is-active");
             $("#selByStaff").removeClass("is-active");
@@ -356,6 +363,8 @@ export function initSelectionButtons() {
 
     $("#selByStaff").on("click", function () {
         if (!$("#selByStaff").hasClass("is-active")) {
+            Select.unselect();
+            $("#moreEdit").empty();
             $("#selByStaff").addClass("is-active");
             $("#selByNc").removeClass("is-active");
             $("#selByNeume").removeClass("is-active");
