@@ -1,6 +1,7 @@
 /** @module SelectOptions */
 import * as Contents from "./Contents.js";
 import * as Grouping from "./Grouping.js";
+import InfoBox from "./InfoBox.js";
 
 /**
  * The NeonView parent to call editor actions.
@@ -101,7 +102,27 @@ export function triggerNeumeActions() {
     endOptionsSelection()
     $("#moreEdit").removeClass("is-invisible");
     $("#moreEdit").append(Contents.neumeActionContents);
-    Grouping.initGroupingListeners();
+    var neume = $(".selected");
+    if (neume.length != 1){
+        console.warn("More than one neume selected! Cannot trigger Neume ClickSelect actions.");
+        return;
+    }
+
+    $("#Torculus.dropdown-item").on("click", (evt) => {
+        var contour = InfoBox.getContourByValue("Torculus");
+        let changeGroupingAction = {
+            "action": "changeGroup",
+            "param": {
+                "elementId": neume[0].id,
+                "contour": contour
+            }
+        }
+        neonView.edit(changeGroupingAction);
+        neoneView.refreshPage();
+    });
+
+
+    //Grouping.initGroupingListeners();
     initOptionsListeners();
 }
 

@@ -168,6 +168,18 @@ function InfoBox(neon) {
     }
 
     /**
+     * Find the contour of an neume grouping based on the grouping name.
+     * @param {string} value - the value name. 
+     */
+    function getContourByValue(value) {
+        for (let [cont, v] of neumeGroups.entries()) {
+            if (v === value){
+                return cont;
+            }
+        }   
+    }
+
+    /**
      * A map containing neume groupings and their contours.
      */
     var neumeGroups = new Map (
@@ -178,5 +190,6 @@ function InfoBox(neon) {
 
     InfoBox.prototype.infoListeners = infoListeners;
     InfoBox.getContour = getContour;
+    InfoBox.getContourByValue = getContourByValue;
 }
 export {InfoBox as default};

@@ -144,7 +144,7 @@ export const neumeActionContents =
         "<svg class='icon'><use xlink:href='" + Icons + "#dropdown-down'></use></svg></button></div>" +
         "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
         "<div class='dropdown-content'>" +
-        "<a id='Torculus' class='dropdown-item'>Torculus</a></div></div></div>" +
+        "<a id='Torculus' class='dropdown-item grouping torculus'>Torculus</a></div></div></div>" +
         "<div><p class='control'>" +
         "<button class='button' id='ungroupNcs'>Ungroup</button></p></div>";
 
