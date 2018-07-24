@@ -32,7 +32,6 @@
  * @param {NeonView} neon - The NeonView parent
  */
 function InfoBox(neon) {
-
     /**
      * Set the info box listener on neumes, clefs, and custos.
      */
@@ -76,38 +75,11 @@ function InfoBox(neon) {
             case "neume":
                 // Select neume components of selected neume
                 var ncs = element.children(".nc");
-                var contour = "";
-                var pitches = "";
-                var previous = null;
-                ncs.each( function () {
-                    var attributes = neon.getElementAttr(this.id);
-                    pitches += attributes.pname + attributes.oct + " ";
-                    if (previous !== null) {
-                        if (previous.oct > attributes.oct) {
-                            contour += "d";
-                        }
-                        else if (previous.oct &lt; attributes.oct) {
-                            contour += "u";
-                        }
-                        else {
-                            if (pitchNameToNum(previous.pname) &lt; pitchNameToNum(attributes.pname)) {
-                                contour += "u";
-                            }
-                            else if (pitchNameToNum(previous.pname) > pitchNameToNum(attributes.pname)) {
-                                contour += "d";
-                            }
-                            else {
-                                contour += "s";
-                            }
-                        }
-                    }
-                    previous = attributes;
-                });
-                if (neumeGroups.get(contour) === undefined) {
-                    console.warn("Unknown contour: " + contour);
-                }
+                var contour = getContour(ncs);
+                var pitches = getPitches(ncs);
+                
                 pitches = pitches.trim().toUpperCase();
-                body = "Shape: " + (neumeGroups.get(contour) === undefined ? "Compound" : neumeGroups.get(contour)) + "&lt;br/>"
+                body = "Shape: " + (contour === undefined ? "Compound" : contour) + "&lt;br/>"
                     + "Pitch(es): " + pitches;
                 break;
             case "custos":
@@ -130,6 +102,55 @@ function InfoBox(neon) {
                 break;
         }
         updateInfoBox(elementClass, body);
+    }
+
+    /**
+     * Get the individual pitches of a neume.
+     * @param {array} ncs - neume components in the neume. 
+     */
+    function getPitches (ncs) {
+        var pitches = "";
+        ncs.each( function () {
+            var attributes = neon.getElementAttr(this.id);
+            pitches += attributes.pname + attributes.oct + " ";
+        });
+        return pitches;
+    }
+
+    /**
+     * Get the contour of a neume.
+     * @param {array} ncs - neume components in the neume. 
+     */
+    function getContour (ncs) {
+        var contour = "";
+        var previous = null;
+        ncs.each( function () {
+            var attributes = neon.getElementAttr(this.id);
+            if (previous !== null) {
+                if (previous.oct > attributes.oct) {
+                    contour += "d";
+                }
+                else if (previous.oct &lt; attributes.oct) {
+                    contour += "u";
+                }
+                else {
+                    if (pitchNameToNum(previous.pname) &lt; pitchNameToNum(attributes.pname)) {
+                        contour += "u";
+                    }
+                    else if (pitchNameToNum(previous.pname) > pitchNameToNum(attributes.pname)) {
+                        contour += "d";
+                    }
+                    else {
+                        contour += "s";
+                    }
+                }
+            }
+            previous = attributes;
+        });
+        if (neumeGroups.get(contour) === undefined) {
+            console.warn("Unknown contour: " + contour);
+        }
+        return neumeGroups.get(contour);
     }
     
     /**
@@ -184,6 +205,7 @@ function InfoBox(neon) {
     );
 
     InfoBox.prototype.infoListeners = infoListeners;
+    InfoBox.getContour = getContour;
 }
 export {InfoBox as default};
 </code></pre>
@@ -196,13 +218,13 @@ export {InfoBox as default};
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jul 20 2018 11:06:42 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jul 24 2018 10:44:56 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>

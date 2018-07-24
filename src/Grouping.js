@@ -1,6 +1,8 @@
 /** @module Grouping */
 
 import * as Contents from "./Contents.js";
+import * as Warnings from "./Warnings.js";
+import InfoBox from "./InfoBox.js";
 
 /**
  * The NeonView parent to access editor actions.
@@ -76,9 +78,18 @@ function groupingAction(action, groupType, elementIds) {
             "elementIds": elementIds
         }
     };
-
     neonView.edit(editorAction);
     neonView.refreshPage();
+
+    //Prompt user to confirm if Neon does not recognize contour
+    if(groupType == "nc"){
+        var neumeParent = $("#" + elementIds[0]).parent();
+        var ncs = $(neumeParent).children();
+        var contour = InfoBox.getContour((ncs));     
+        if(contour == undefined){
+            Warnings.groupingNotRecognized();
+        }
+    }
 }
 
 /**

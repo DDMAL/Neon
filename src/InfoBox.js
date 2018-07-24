@@ -4,7 +4,6 @@
  * @param {NeonView} neon - The NeonView parent
  */
 function InfoBox(neon) {
-
     /**
      * Set the info box listener on neumes, clefs, and custos.
      */
@@ -48,38 +47,11 @@ function InfoBox(neon) {
             case "neume":
                 // Select neume components of selected neume
                 var ncs = element.children(".nc");
-                var contour = "";
-                var pitches = "";
-                var previous = null;
-                ncs.each( function () {
-                    var attributes = neon.getElementAttr(this.id);
-                    pitches += attributes.pname + attributes.oct + " ";
-                    if (previous !== null) {
-                        if (previous.oct > attributes.oct) {
-                            contour += "d";
-                        }
-                        else if (previous.oct < attributes.oct) {
-                            contour += "u";
-                        }
-                        else {
-                            if (pitchNameToNum(previous.pname) < pitchNameToNum(attributes.pname)) {
-                                contour += "u";
-                            }
-                            else if (pitchNameToNum(previous.pname) > pitchNameToNum(attributes.pname)) {
-                                contour += "d";
-                            }
-                            else {
-                                contour += "s";
-                            }
-                        }
-                    }
-                    previous = attributes;
-                });
-                if (neumeGroups.get(contour) === undefined) {
-                    console.warn("Unknown contour: " + contour);
-                }
+                var contour = getContour(ncs);
+                var pitches = getPitches(ncs);
+                
                 pitches = pitches.trim().toUpperCase();
-                body = "Shape: " + (neumeGroups.get(contour) === undefined ? "Compound" : neumeGroups.get(contour)) + "<br/>"
+                body = "Shape: " + (contour === undefined ? "Compound" : contour) + "<br/>"
                     + "Pitch(es): " + pitches;
                 break;
             case "custos":
@@ -102,6 +74,55 @@ function InfoBox(neon) {
                 break;
         }
         updateInfoBox(elementClass, body);
+    }
+
+    /**
+     * Get the individual pitches of a neume.
+     * @param {array} ncs - neume components in the neume. 
+     */
+    function getPitches (ncs) {
+        var pitches = "";
+        ncs.each( function () {
+            var attributes = neon.getElementAttr(this.id);
+            pitches += attributes.pname + attributes.oct + " ";
+        });
+        return pitches;
+    }
+
+    /**
+     * Get the contour of a neume.
+     * @param {array} ncs - neume components in the neume. 
+     */
+    function getContour (ncs) {
+        var contour = "";
+        var previous = null;
+        ncs.each( function () {
+            var attributes = neon.getElementAttr(this.id);
+            if (previous !== null) {
+                if (previous.oct > attributes.oct) {
+                    contour += "d";
+                }
+                else if (previous.oct < attributes.oct) {
+                    contour += "u";
+                }
+                else {
+                    if (pitchNameToNum(previous.pname) < pitchNameToNum(attributes.pname)) {
+                        contour += "u";
+                    }
+                    else if (pitchNameToNum(previous.pname) > pitchNameToNum(attributes.pname)) {
+                        contour += "d";
+                    }
+                    else {
+                        contour += "s";
+                    }
+                }
+            }
+            previous = attributes;
+        });
+        if (neumeGroups.get(contour) === undefined) {
+            console.warn("Unknown contour: " + contour);
+        }
+        return neumeGroups.get(contour);
     }
     
     /**
@@ -156,5 +177,6 @@ function InfoBox(neon) {
     );
 
     InfoBox.prototype.infoListeners = infoListeners;
+    InfoBox.getContour = getContour;
 }
 export {InfoBox as default};

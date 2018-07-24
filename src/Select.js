@@ -349,7 +349,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
  * Unselect all selected elements and run undo any extra
  * actions.
  */
-function unselect() {
+export function unselect() {
     var selected = $(".selected");
     for (var i=0; i < selected.length; i++) {
         if ($(selected[i]).hasClass("staff")) {
