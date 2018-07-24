@@ -55,7 +55,7 @@ describe("Test insert editor action", () => {
         };
         neon.edit(editorAction);
         let insertAtts = neon.getElementAttr(neon.info());
-        expect(insertAtts["pname"]).toBe("c");
+        expect(insertAtts["pname"]).toBe("e");
         expect(insertAtts["oct"]).toBe("3");
     });
 
@@ -171,7 +171,7 @@ test("Test chain action", () => {
     let insertAtts = neon.getElementAttr(JSON.parse(neon.info())[1]);
     expect(dragAtts.pname).toBe("b");
     expect(dragAtts.oct).toBe("2");
-    expect(insertAtts.pname).toBe("c");
+    expect(insertAtts.pname).toBe("e");
     expect(insertAtts.oct).toBe("3");
 });
 
