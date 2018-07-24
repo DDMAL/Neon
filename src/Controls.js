@@ -201,7 +201,13 @@ export function initInsertEditControls(neonView) {
         neonView.saveMEI();
     });
 
-    $("#delete").on("click", () => {
+    $("#delete").on("click", removeHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "d")
+            removeHandler(evt);
+    });
+
+    function removeHandler () {
         let toRemove = [];
         var selected = Array.from(document.getElementsByClassName("selected"));
         selected.forEach(elem => {
@@ -220,7 +226,7 @@ export function initInsertEditControls(neonView) {
         };
         neonView.edit(chainAction);
         neonView.refreshPage();
-    });
+    }
 }
 
 /**
