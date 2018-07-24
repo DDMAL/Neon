@@ -1,6 +1,7 @@
 /** @module Grouping */
 
 import * as Contents from "./Contents.js";
+import InfoBox from "./InfoBox.js";
 
 /**
  * The NeonView parent to access editor actions.
@@ -76,9 +77,20 @@ function groupingAction(action, groupType, elementIds) {
             "elementIds": elementIds
         }
     };
-
     neonView.edit(editorAction);
     neonView.refreshPage();
+
+    //Prompt user to confirm if Neon does not recognize contour
+    if(groupType == "nc"){
+        var neumeParent = $("#" + elementIds[0]).parent();
+        var ncs = $(neumeParent).children();
+        var contour = InfoBox.getContour((ncs));     
+        if(contour == undefined){
+            if (!(confirm("Neon does not recognize this neume grouping. Would you like to create a compound neume?"))) {
+                $("#undo").trigger("click");
+            }
+        }
+    }
 }
 
 /**
