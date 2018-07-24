@@ -131,10 +131,10 @@ export function setHighlightControls() {
 
 export function updateSylVisibility() {
     if ($("#displayText").is(":checked")) {
-        $("#syl_text").css("visibility", "visible");
+        $("#syl_text").css("display", "");
         $("#syl_text").html("<p>" + Text.getSylText() + "</p>");
     } else {
-        $("#syl_text").css("visibility", "hidden");
+        $("#syl_text").css("display", "none");
     }
 }
 

@@ -55,12 +55,12 @@ html
           #insert_controls
           #edit_controls
         #neume_info
-          article.message(style={visibility: "hidden"})
+          article.message(style={display: "none"})
             .message-header
               p
               button#notification-delete.delete("aria-label"="delete")
             .message-body
-        #syl_text.box
+        #syl_text.box(style={display: "none"})
       script(type='text/javascript').
         var meiFile = "#{meifile}";
         var bgImg = "#{bgimg}";
