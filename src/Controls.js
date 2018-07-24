@@ -348,7 +348,14 @@ export function initEditMode(editMode) {
  * Set listeners on the buttons to change selection modes.
  */
 export function initSelectionButtons() {
-    $("#selBySyl").on("click", function() {
+    $("#selBySyl").on("click", selectBySylHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "1") {
+            selectBySylHandler(evt);
+        }
+    });
+
+    function selectBySylHandler() {
         if (!$("#selBySyl").hasClass("is-active")) {
             Select.unselect();
             $("#moreEdit").empty();
@@ -357,9 +364,16 @@ export function initSelectionButtons() {
             $("#selByNc").removeClass("is-active");
             $("#selByStaff").removeClass("is-active");
         }
+    }
+
+    $("#selByNeume").on("click", selectByNeumeHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "2") {
+            selectByNeumeHandler(evt);
+        }
     });
 
-    $("#selByNeume").on("click", function(){
+    function selectByNeumeHandler() {
         if (!$("#selByNeume").hasClass("is-active")){
             Select.unselect();
             $("#moreEdit").empty();
@@ -368,9 +382,16 @@ export function initSelectionButtons() {
             $("#selByStaff").removeClass("is-active");
             $("#selBySyl").removeClass("is-active");
         }           
+    }
+
+    $("#selByNc").on("click", selectByNcHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "3") {
+            selectByNcHandler(evt);
+        }
     });
 
-    $("#selByNc").on("click", function(){
+    function selectByNcHandler() {
         if (!$("#selByNc").hasClass("is-active")) {
             Select.unselect();
             $("#moreEdit").empty();
@@ -379,9 +400,16 @@ export function initSelectionButtons() {
             $("#selByStaff").removeClass("is-active");
             $("#selBySyl").removeClass("is-active");
         }
+    }
+
+    $("#selByStaff").on("click", selectByStaffHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "4") {
+            selectByStaffHandler(evt);
+        }
     });
 
-    $("#selByStaff").on("click", function () {
+    function selectByStaffHandler() {
         if (!$("#selByStaff").hasClass("is-active")) {
             Select.unselect();
             $("#moreEdit").empty();
@@ -390,5 +418,5 @@ export function initSelectionButtons() {
             $("#selByNeume").removeClass("is-active");
             $("#selBySyl").removeClass("is-active");
         }
-    });
+    }
 }
