@@ -150,6 +150,15 @@ export function updateSylVisibility() {
     }
 }
 
+export function setTextEdit(neonView) {
+    let spans = Array.from($("#syl_text").children("p").children("span"));
+    spans.forEach(span => {
+        $(span).on("click", () => {
+            Text.updateSylText(span, neonView);
+        });
+    });
+}
+
 export function updateHighlight() {
     let highlightId = $(".highlight-selected").attr("id");
     switch (highlightId) {
