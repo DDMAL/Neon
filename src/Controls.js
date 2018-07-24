@@ -3,6 +3,7 @@
 import * as Color from "./Color.js";
 import * as Contents from "./Contents.js";
 import * as Cursor from "./Cursor.js";
+import * as Text from "./Text.js";
 import Icons from "./img/icons.svg";
 
 /** @type {module:Zoom~ZoomHandler} */
@@ -130,9 +131,10 @@ export function setHighlightControls() {
 
 export function updateSylVisibility() {
     if ($("#displayText").is(":checked")) {
-        $(".syl").css("visibility", "visible");
+        $("#syl_text").css("visibility", "visible");
+        $("#syl_text").html("<p>" + Text.getSylText() + "</p>");
     } else {
-        $(".syl").css("visibility", "hidden");
+        $("#syl_text").css("visibility", "hidden");
     }
 }
 
