@@ -1,6 +1,37 @@
 /** @module Color*/
 
 /**
+ * Set a highlight by a different grouping. Either staff, syllable, or neume.
+ * @param {string} grouping - The grouping name.
+ */
+export function setGroupingHighlight(grouping) {
+    unsetGroupingHighlight();
+    if (grouping === "staff") {
+        setStaffHighlight();
+        return;
+    }
+
+    let groups = Array.from($("." + grouping));
+    for (var i = 0; i < groups.length; i++) {
+        let groupColor = ColorPalette[i % ColorPalette.length];
+        groups[i].setAttribute("fill", groupColor);
+        $(groups[i]).addClass("highlighted");
+    }
+}
+
+/**
+ * Unset highlight for all grouping types
+ */
+export function unsetGroupingHighlight() {
+    unsetStaffHighlight();
+    let highlighted = Array.from(document.getElementsByClassName("highlighted"));
+    highlighted.forEach(elem => {
+        elem.setAttribute("fill", null);
+        $(elem).removeClass("highlighted");
+    });
+}
+
+/**
  * Highlight each staff a different color.
  */
 export function setStaffHighlight() {
@@ -17,6 +48,7 @@ export function setStaffHighlight() {
 export function unsetStaffHighlight() {
     unhighlight(".staff");
 }
+
 
 /**
  * Highlight a staff a certain color.

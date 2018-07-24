@@ -3,6 +3,7 @@
 import * as Color from "./Color.js";
 import * as Contents from "./Contents.js";
 import * as Cursor from "./Cursor.js";
+import Icons from "./img/icons.svg";
 
 /** @type {module:Zoom~ZoomHandler} */
 var zoomHandler;
@@ -20,12 +21,14 @@ export function initDisplayControls (zHandler) {
     setSylControls();
     setHighlightControls();
 
-    $("#displayHeader").on("click", () => {
+    $("#toggleDisplay").on("click", () => {
         if ($("#displayContents").is(":hidden")) {
             $("#displayContents").css("display", "");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-up");
         }
         else {
             $("#displayContents").css("display", "none");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-down");
         }
     });
 }
@@ -95,8 +98,34 @@ export function setOpacityFromSlider() {
  * Set listener on staff highlighting checkbox.
  */
 export function setHighlightControls() {
-    updateHighlight();
-    $("#highlightStaves").click(updateHighlight);
+    $("#highlight-button").on("click", () => {
+        $("#highlight-dropdown").toggleClass("is-active");
+        if ($("#highlight-dropdown").hasClass("is-active")) {
+            $("#highlight-staff").on("click", () => {
+                $("#highlight-dropdown").removeClass("is-active");
+                $(".highlight-selected").removeClass("highlight-selected");
+                $("#highlight-staff").addClass("highlight-selected");
+                Color.setGroupingHighlight("staff");
+            });
+            $("#highlight-syllable").on("click", () => {
+                $("#highlight-dropdown").removeClass("is-active");
+                $(".highlight-selected").removeClass("highlight-selected");
+                $("#highlight-syllable").addClass("highlight-selected");
+                Color.setGroupingHighlight("syllable");
+            });
+            $("#highlight-neume").on("click", () => {
+                $("#highlight-dropdown").removeClass("is-active");
+                $(".highlight-selected").removeClass("highlight-selected");
+                $("#highlight-neume").addClass("highlight-selected");
+                Color.setGroupingHighlight("neume");
+            });
+            $("#highlight-none").on("click", () => {
+                $("#highlight-dropdown").removeClass("is-active");
+                $(".highlight-selected").removeClass("highlight-selected");
+                Color.unsetGroupingHighlight();
+            });
+        }
+    });
 }
 
 export function updateSylVisibility() {
@@ -108,10 +137,19 @@ export function updateSylVisibility() {
 }
 
 export function updateHighlight() {
-    if ($("#highlightStaves").is(":checked")) {
-        Color.setStaffHighlight();
-    } else {
-        Color.unsetStaffHighlight();
+    let highlightId = $(".highlight-selected").attr("id");
+    switch (highlightId) {
+        case "highlight-staff":
+            Color.setGroupingHighlight("staff");
+            break;
+        case "highlight-syllable":
+            Color.setGroupingHighlight("syllable");
+            break;
+        case "highlight-neume":
+            Color.setGroupingHighlight("neume");
+            break;
+        default:
+            Color.unsetGroupingHighlight();
     }
 }
 
@@ -121,19 +159,24 @@ export function updateHighlight() {
  * @param {NeonView} neonView - The NeonView parent.
  */
 export function initInsertEditControls(neonView) {
-    $("#insertMenu").on("click", () => {
+    $("#toggleInsert").on("click", () => {
         if ($("#insertContents").is(":hidden")) {
             $("#insertContents").css("display", "");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-up");
+
         } else {
             $("#insertContents").css("display", "none");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-down");
         }
     });
 
-    $("#editMenu").on("click", () => {
+    $("#toggleEdit").on("click", () => {
         if ($("#editContents").is(":hidden")) {
             $("#editContents").css("display", "");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-up");
         } else {
             $("#editContents").css("display", "none");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-down");
         }
     });
 
