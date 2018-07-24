@@ -3,6 +3,7 @@
 import * as Color from "./Color.js";
 import * as Contents from "./Contents.js";
 import * as Cursor from "./Cursor.js";
+import * as Text from "./Text.js";
 import * as Select from "./Select.js";
 import Icons from "./img/icons.svg";
 
@@ -131,10 +132,31 @@ export function setHighlightControls() {
 
 export function updateSylVisibility() {
     if ($("#displayText").is(":checked")) {
-        $(".syl").css("visibility", "visible");
+        $("#syl_text").css("display", "");
+        $("#syl_text").html("<p>" + Text.getSylText() + "</p>");
+        let spans = Array.from($("#syl_text").children("p").children("span"));
+        spans.forEach(span => {
+            $(span).on("mouseenter", () => {
+                let syllable = $("#" + $(span).attr("class"));
+                syllable.addClass("syl-select");
+                syllable.attr("fill", "#d00");
+            });
+            $(span).on("mouseleave", () => {
+                $("#" + $(span).attr("class")).removeClass("syl-select").attr("fill", null);
+            });
+        });
     } else {
-        $(".syl").css("visibility", "hidden");
+        $("#syl_text").css("display", "none");
     }
+}
+
+export function setTextEdit(neonView) {
+    let spans = Array.from($("#syl_text").children("p").children("span"));
+    spans.forEach(span => {
+        $(span).on("click", () => {
+            Text.updateSylText(span, neonView);
+        });
+    });
 }
 
 export function updateHighlight() {
