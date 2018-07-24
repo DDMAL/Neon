@@ -1,6 +1,7 @@
 /** @module Grouping */
 
 import * as Contents from "./Contents.js";
+import * as Warnings from "./Warnings.js";
 import InfoBox from "./InfoBox.js";
 
 /**
@@ -86,9 +87,7 @@ function groupingAction(action, groupType, elementIds) {
         var ncs = $(neumeParent).children();
         var contour = InfoBox.getContour((ncs));     
         if(contour == undefined){
-            if (!(confirm("Neon does not recognize this neume grouping. Would you like to create a compound neume?"))) {
-                $("#undo").trigger("click");
-            }
+            Warnings.groupingNotRecognized();
         }
     }
 }
