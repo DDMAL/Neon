@@ -35,7 +35,6 @@ function NeonView (params) {
         loadView();
         // editMode.getScale();
         Controls.setSylControls();
-        Controls.setHighlightControls();
     });
 
     /**
