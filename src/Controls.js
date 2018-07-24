@@ -181,19 +181,17 @@ export function initInsertEditControls(neonView) {
         }
     });
 
-    $("#undo").on("click", () => {
-        if (!neonView.undo()) {
-            console.error("Failed to undo action.");
-        } else {
-            neonView.refreshPage();
+    $("#undo").on("click", undoHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "z" && evt.ctrlKey) {
+            undoHandler(evt);
         }
     });
 
-    $("#redo").on("click", () => {
-        if (!neonView.redo()) {
-            console.error("Failed to redo action");
-        } else {
-            neonView.refreshPage();
+    $("#redo").on("click", redoHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "Z" && evt.ctrlKey) {
+            redoHandler(evt);
         }
     });
 
@@ -206,6 +204,22 @@ export function initInsertEditControls(neonView) {
         if (evt.key === "d")
             removeHandler(evt);
     });
+
+    function undoHandler () {
+        if (!neonView.undo()) {
+            console.error("Failed to undo action.");
+        } else {
+            neonView.refreshPage();
+        }
+    }
+
+    function redoHandler () {
+        if (!neonView.redo()) {
+            console.error("Failed to redo action");
+        } else {
+            neonView.refreshPage();
+        }
+    }
 
     function removeHandler () {
         let toRemove = [];
