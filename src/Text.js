@@ -7,12 +7,20 @@
 export function getSylText() {
     var lyrics = "";
     let uniToDash = /\ue551/g;
-    let syls = Array.from($(".syl"));
-    syls.forEach(syllable => {
-        Array.from(syllable.children[0].children[0].children).forEach(text => {
-            lyrics += text.textContent;
-        });
-        lyrics += " ";
+    let syllables = Array.from($(".syllable"));
+    syllables.forEach(syllable => {
+        if ($(syllable).has(".syl").length) {
+            let syl = $(syllable).children(".syl")[0];
+            console.log(syl);
+            lyrics += "<span class='" + syllable.id + "'>";
+            Array.from(syl.children[0].children[0].children).forEach(text => {
+                lyrics += text.textContent;
+            });
+            lyrics += " </span>";
+        }
+        else {
+            lyrics += "<span class='" + syllable.id + "'> </span>";
+        }
     });
     return lyrics.trim().replace(uniToDash, "-");
 }
