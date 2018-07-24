@@ -47,6 +47,27 @@ function setZoomControls() {
     $(document).on("input change", "#zoomSlider", () => {
         zoomHandler.zoomTo($("#zoomOutput").val() / 100.0);
     });
+
+    $("body").on("keydown", (evt) => {
+        let currentZoom = parseInt($("#zoomOutput").val());
+        if (evt.key === "+") { // increase zoom by 20
+            let newZoom = Math.min(currentZoom + 20, parseInt($("#zoomSlider").attr("max")));
+            zoomHandler.zoomTo(newZoom / 100.0);
+            $("#zoomOutput").val(newZoom);
+            $("#zoomSlider").val(newZoom);
+        }
+        else if (evt.key === "-") { // decrease zoom by 20
+            let newZoom = Math.max(currentZoom - 20, parseInt($("#zoomSlider").attr("min")));
+            zoomHandler.zoomTo(newZoom / 100.0);
+            $("#zoomOutput").val(newZoom);
+            $("#zoomSlider").val(newZoom);
+        }
+        else if (evt.key === "0") {
+            $("#zoomOutput").val(100);
+            $("#zoomSlider").val(100);
+            zoomHandler.resetZoomAndPan();
+        }
+    });
 }
 
 /**
