@@ -146,7 +146,7 @@ export const neumeActionContents =
         "<div class='dropdown-content'>" +
         "<a id='Torculus' class='dropdown-item'>Torculus</a></div></div></div>" +
         "<div><p class='control'>" +
-        "<button class='button' id='ungroup'>Ungroup</button></p></div>";
+        "<button class='button' id='ungroupNcs'>Ungroup</button></p></div>";
 
 /**
  * Contents of extra staff action menu.

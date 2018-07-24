@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: Neon</title>
+    <title>JSDoc: Source: Warnings.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,59 +17,27 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: Neon</h1>
+    <h1 class="page-title">Source: Warnings.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module Warnings */
 
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-Neon-Neon.html">Neon</a></dt>
-            <dd></dd>
-        </dl>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+/**
+ * Warn when grouped neume components form an unrecognized neume.
+ */
+export function groupingNotRecognized() {
+    if (!(confirm("Neon does not recognize this neume grouping. Would you like to create a compound neume?"))) {
+        $("#undo").trigger("click");
+    }
+}</code></pre>
+        </article>
+    </section>
 
 
 
