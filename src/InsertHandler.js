@@ -129,18 +129,32 @@ function InsertHandler (neonView) {
 
         if (firstClick) {
             coord = cursorpt;
+            d3.select(container).append('circle').attr('cx', cursorpt.x)
+                .attr('cy', cursorpt.y)
+                .attr('r', 10)
+                .attr('id', 'staff-circle')
+                .attr('fill', 'green');
             firstClick = false;
         }
         else {
+            var ul, lr;
+            if (cursorpt.x < coord.x || cursorpt.y < coord.y) { // second point is not lr
+                ul = cursorpt;
+                lr = coord;
+            } else {
+                ul = coord;
+                lr = cursorpt;
+            }
+            $("#staff-circle").remove();
             let action = {
                 "action": "insert",
                 "param": {
                     "elementType": "staff",
                     "staffId": "auto",
-                    "ulx": coord.x,
-                    "uly": coord.y,
-                    "lrx": cursorpt.x,
-                    "lry": cursorpt.y,
+                    "ulx": ul.x,
+                    "uly": ul.y,
+                    "lrx": lr.x,
+                    "lry": lr.y,
                 }
             };
 
