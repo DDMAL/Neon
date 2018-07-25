@@ -67,7 +67,8 @@ function InsertHandler (neonView) {
         $("body").on("keydown", (evt) => {
             if (evt.key === "Escape") {
                 insertDisabled();
-                $("body").off("keydown");
+                $("body").off("keydown", staffHandler);
+                $("body").off("keydown", handler);
             }
         });
     }
