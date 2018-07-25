@@ -144,7 +144,21 @@ export const neumeActionContents =
         "<svg class='icon'><use xlink:href='" + Icons + "#dropdown-down'></use></svg></button></div>" +
         "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
         "<div class='dropdown-content'>" +
-        "<a id='Torculus' class='dropdown-item grouping torculus'>Torculus</a></div></div></div>" +
+        "<a id='Pes' class='dropdown-item grouping'>Pes</a>" + 
+        "<a id='Pes subpunctis' class='dropdown-item grouping'>Pes Subpunctis</a>" + 
+        "<a id='Clivis' class='dropdown-item grouping'>Clivis</a>" +
+        "<a id='Scandicus' class='dropdown-item grouping'>Scandicus</a>" +
+        "<a id='Scandicus flexus' class='dropdown-item grouping'>Scandicus Flexus</a>" +
+        "<a id='Scandicus subpunctis' class='dropdown-item grouping'>Scandicus Subpunctis</a>" +
+        "<a id='Climacus' class='dropdown-item grouping'>Climacus</a>" +
+        "<a id='Climacus resupinus' class='dropdown-item grouping'>Climacus Resupinus</a>" +
+        "<a id='Torculus' class='dropdown-item grouping'>Torculus</a>" + 
+        "<a id='Torculus resupinus' class='dropdown-item grouping'>Torculus Resupinus</a>" +
+        "<a id='Porrectus' class='dropdown-item grouping'>Porrectus</a>" +
+        "<a id='Porrectus flexus' class='dropdown-item grouping'>Porrectus Flexus</a>" +
+        "<a id='Porrectus subpunctis' class='dropdown-item grouping'>Porrectus Subpunctis</a>" +
+        "<a id='Pressus' class='dropdown-item grouping'>Pressus</a>" +    
+        "</div></div></div>" +
         "<div><p class='control'>" +
         "<button class='button' id='ungroupNcs'>Ungroup</button></p></div>";
 

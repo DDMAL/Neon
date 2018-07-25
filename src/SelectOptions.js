@@ -94,7 +94,6 @@ export function triggerNcActions(lastSelect) {
     initOptionsListeners();
 }
 
-//TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
 /**
  * Trigger extra neume actions.
  */
@@ -108,8 +107,12 @@ export function triggerNeumeActions() {
         return;
     }
 
-    $("#Torculus.dropdown-item").on("click", (evt) => {
-        var contour = InfoBox.getContourByValue("Torculus");
+    $(".grouping").on("click", (e) => {
+        var contour = InfoBox.getContourByValue(e.target.id);
+        triggerChangeGroup(contour);   
+    });
+
+    function triggerChangeGroup(contour) {
         let changeGroupingAction = {
             "action": "changeGroup",
             "param": {
@@ -118,11 +121,8 @@ export function triggerNeumeActions() {
             }
         }
         neonView.edit(changeGroupingAction);
-        neoneView.refreshPage();
-    });
-
-
-    //Grouping.initGroupingListeners();
+        neonView.refreshPage();
+    }
     initOptionsListeners();
 }
 

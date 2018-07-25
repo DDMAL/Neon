@@ -37,7 +37,7 @@ export function ClickSelect (dragHandler, neonView) {
                 if($(neumeParent).hasClass("neume")){
                     var parentSiblings = Array.from($(neumeParent).siblings());
                     if(parentSiblings.length != 0){
-                        selectSyl(neumeParent);
+                        selectSyl(neumeParent, dragHandler);
                     }
                     else{
                         selectNeumes(this, dragHandler);
