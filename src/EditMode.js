@@ -4,6 +4,7 @@ import InsertHandler from "./InsertHandler.js";
 import * as Controls from "./Controls.js";
 import * as Contents from "./Contents.js";
 import * as SelectOptions from "./SelectOptions.js";
+import * as Text from "./Text.js";
 
 /**
  * Creates user interface for editing and creates necessary tools.
@@ -40,7 +41,7 @@ function EditMode (neonView, meiFile, zoomHandler){
         SelectOptions.initNeonView(neonView);
 
         Controls.initInsertEditControls(neonView);
-        Controls.setTextEdit(neonView);
+        Text.enableEditText(neonView);
     }
 
     /**
