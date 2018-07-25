@@ -65,6 +65,7 @@ function Neon (mei, vrvToolkit) {
      */
     function edit (editorAction, addToUndo = true) {
         let currentMEI = getMEI();
+        //console.log(editorAction); // Useful for debugging actions
         let value = vrvToolkit.edit(editorAction);
         if (value && addToUndo) {
             undoStack.push(currentMEI);
