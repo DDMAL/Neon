@@ -16,6 +16,7 @@ html
           .navbar-dropdown
             a.navbar-item(href="//github.com/DDMAL/Neon2/wiki") Wiki
             a.navbar-item(href="//ddmal.music.mcgill.ca") DDMAL
+            a.navbar-item(onclick="hotkeyDialog()") Hotkeys
     .columns
       .column#svg_output.is-two-thirds.box(style={overflow: "hidden"})
       .column.is-one-third
@@ -55,12 +56,20 @@ html
           #insert_controls
           #edit_controls
         #neume_info
-          article.message(style={visibility: "hidden"})
+          article.message(style={display: "none"})
             .message-header
               p
               button#notification-delete.delete("aria-label"="delete")
             .message-body
+        #syl_text.box(style={display: "none"})
       script(type='text/javascript').
         var meiFile = "#{meifile}";
         var bgImg = "#{bgimg}";
+
+        function hotkeyDialog() {
+          alert(
+            "+ \u{2014} Zoom in\ts \u{2014} Save File\tCtrl-z \u{2014} Undo\n" +
+            "\u{2013} \u{2014} Zoom out\th \u{2014} Hide MEI\tCtrl-Z \u{2014} Redo\n" +
+            "0 \u{2014} Zoom reset\n1/2/3/4 \u{2014} Select by Syllable/Neume/Neume Component/Staff");
+        }
       script(src='/editor.js')

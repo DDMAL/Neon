@@ -43,7 +43,8 @@ export const insertTabHtml = {
         "<p class='control'>" +
         "<button id='fClef' class='button insertel smallel' title='F Clef'><img src='" + FClefIcon + "' class='image'/></button></p>",
     systemTab: "<p class='control'>" +
-        "<button id='staff' class='button insertel longel' title='system'><img src='" + StaffIcon + "' class='image' /></button></p>", 
+        "<button id='staff' class='button insertel longel' title='system'><img src='" + StaffIcon + "' class='image' /></button></p>" +
+        "<p>Click upper left and lower right corners of new staff.</p>", 
     divisionTab: "<p class='control'>" +
         "<button id='smallDiv' class='button insertel tallel'><img src='" + SmallDivIcon + "' class='image'/></button></p>" +
         "<p class='control'>" +

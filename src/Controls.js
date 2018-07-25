@@ -3,6 +3,7 @@
 import * as Color from "./Color.js";
 import * as Contents from "./Contents.js";
 import * as Cursor from "./Cursor.js";
+import * as Text from "./Text.js";
 import * as Select from "./Select.js";
 import Icons from "./img/icons.svg";
 
@@ -46,6 +47,27 @@ function setZoomControls() {
 
     $(document).on("input change", "#zoomSlider", () => {
         zoomHandler.zoomTo($("#zoomOutput").val() / 100.0);
+    });
+
+    $("body").on("keydown", (evt) => {
+        let currentZoom = parseInt($("#zoomOutput").val());
+        if (evt.key === "+") { // increase zoom by 20
+            let newZoom = Math.min(currentZoom + 20, parseInt($("#zoomSlider").attr("max")));
+            zoomHandler.zoomTo(newZoom / 100.0);
+            $("#zoomOutput").val(newZoom);
+            $("#zoomSlider").val(newZoom);
+        }
+        else if (evt.key === "-") { // decrease zoom by 20
+            let newZoom = Math.max(currentZoom - 20, parseInt($("#zoomSlider").attr("min")));
+            zoomHandler.zoomTo(newZoom / 100.0);
+            $("#zoomOutput").val(newZoom);
+            $("#zoomSlider").val(newZoom);
+        }
+        else if (evt.key === "0") {
+            $("#zoomOutput").val(100);
+            $("#zoomSlider").val(100);
+            zoomHandler.resetZoomAndPan();
+        }
     });
 }
 
@@ -131,10 +153,31 @@ export function setHighlightControls() {
 
 export function updateSylVisibility() {
     if ($("#displayText").is(":checked")) {
-        $(".syl").css("visibility", "visible");
+        $("#syl_text").css("display", "");
+        $("#syl_text").html("<p>" + Text.getSylText() + "</p>");
+        let spans = Array.from($("#syl_text").children("p").children("span"));
+        spans.forEach(span => {
+            $(span).on("mouseenter", () => {
+                let syllable = $("#" + $(span).attr("class"));
+                syllable.addClass("syl-select");
+                syllable.attr("fill", "#d00");
+            });
+            $(span).on("mouseleave", () => {
+                $("#" + $(span).attr("class")).removeClass("syl-select").attr("fill", null);
+            });
+        });
     } else {
-        $(".syl").css("visibility", "hidden");
+        $("#syl_text").css("display", "none");
     }
+}
+
+export function setTextEdit(neonView) {
+    let spans = Array.from($("#syl_text").children("p").children("span"));
+    spans.forEach(span => {
+        $(span).on("click", () => {
+            Text.updateSylText(span, neonView);
+        });
+    });
 }
 
 export function updateHighlight() {
@@ -181,19 +224,17 @@ export function initInsertEditControls(neonView) {
         }
     });
 
-    $("#undo").on("click", () => {
-        if (!neonView.undo()) {
-            console.error("Failed to undo action.");
-        } else {
-            neonView.refreshPage();
+    $("#undo").on("click", undoHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "z" && evt.ctrlKey) {
+            undoHandler(evt);
         }
     });
 
-    $("#redo").on("click", () => {
-        if (!neonView.redo()) {
-            console.error("Failed to redo action");
-        } else {
-            neonView.refreshPage();
+    $("#redo").on("click", redoHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "Z" && evt.ctrlKey) {
+            redoHandler(evt);
         }
     });
 
@@ -201,7 +242,29 @@ export function initInsertEditControls(neonView) {
         neonView.saveMEI();
     });
 
-    $("#delete").on("click", () => {
+    $("#delete").on("click", removeHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "d")
+            removeHandler(evt);
+    });
+
+    function undoHandler () {
+        if (!neonView.undo()) {
+            console.error("Failed to undo action.");
+        } else {
+            neonView.refreshPage();
+        }
+    }
+
+    function redoHandler () {
+        if (!neonView.redo()) {
+            console.error("Failed to redo action");
+        } else {
+            neonView.refreshPage();
+        }
+    }
+
+    function removeHandler () {
         let toRemove = [];
         var selected = Array.from(document.getElementsByClassName("selected"));
         selected.forEach(elem => {
@@ -220,7 +283,7 @@ export function initInsertEditControls(neonView) {
         };
         neonView.edit(chainAction);
         neonView.refreshPage();
-    });
+    }
 }
 
 /**
@@ -328,7 +391,14 @@ export function initEditMode(editMode) {
  * Set listeners on the buttons to change selection modes.
  */
 export function initSelectionButtons() {
-    $("#selBySyl").on("click", function() {
+    $("#selBySyl").on("click", selectBySylHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "1") {
+            selectBySylHandler(evt);
+        }
+    });
+
+    function selectBySylHandler() {
         if (!$("#selBySyl").hasClass("is-active")) {
             Select.unselect();
             $("#moreEdit").empty();
@@ -337,9 +407,16 @@ export function initSelectionButtons() {
             $("#selByNc").removeClass("is-active");
             $("#selByStaff").removeClass("is-active");
         }
+    }
+
+    $("#selByNeume").on("click", selectByNeumeHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "2") {
+            selectByNeumeHandler(evt);
+        }
     });
 
-    $("#selByNeume").on("click", function(){
+    function selectByNeumeHandler() {
         if (!$("#selByNeume").hasClass("is-active")){
             Select.unselect();
             $("#moreEdit").empty();
@@ -348,9 +425,16 @@ export function initSelectionButtons() {
             $("#selByStaff").removeClass("is-active");
             $("#selBySyl").removeClass("is-active");
         }           
+    }
+
+    $("#selByNc").on("click", selectByNcHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "3") {
+            selectByNcHandler(evt);
+        }
     });
 
-    $("#selByNc").on("click", function(){
+    function selectByNcHandler() {
         if (!$("#selByNc").hasClass("is-active")) {
             Select.unselect();
             $("#moreEdit").empty();
@@ -359,9 +443,16 @@ export function initSelectionButtons() {
             $("#selByStaff").removeClass("is-active");
             $("#selBySyl").removeClass("is-active");
         }
+    }
+
+    $("#selByStaff").on("click", selectByStaffHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "4") {
+            selectByStaffHandler(evt);
+        }
     });
 
-    $("#selByStaff").on("click", function () {
+    function selectByStaffHandler() {
         if (!$("#selByStaff").hasClass("is-active")) {
             Select.unselect();
             $("#moreEdit").empty();
@@ -370,5 +461,5 @@ export function initSelectionButtons() {
             $("#selByNeume").removeClass("is-active");
             $("#selBySyl").removeClass("is-active");
         }
-    });
+    }
 }

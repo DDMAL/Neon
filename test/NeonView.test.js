@@ -56,8 +56,6 @@ describe("Check Info Box", () => {
         var firstClef = await browser.findElement(By.id("m-45439068-5e0c-4595-a820-4faa16771422"));
         var notificationDelete = await browser.findElement(By.id("notification-delete"));
         const actions = browser.actions();
-        await actions.click(notificationDelete).perform();
-        // Can't click center since the clef is open there
         var rect = await firstClef.getRect();
         await actions.move({origin: firstClef, y: parseInt(rect.height / 2)}).click().perform();
         var notification = await browser.findElement(By.className("message"));
@@ -142,13 +140,13 @@ describe("Check Controls UI", () => {
     });
 
     test("Check Text Controls", async () => {
-        var syl = await browser.findElement(By.className("syl")).getAttribute("style");
-        expect(syl).toContain("visibility: hidden;");
+        var syl = await browser.findElement(By.id("syl_text")).getAttribute("style");
+        expect(syl).toContain("display: none;");
         var textCheck = await browser.findElement(By.id("displayText"));
         const actions = browser.actions();
         await actions.click(textCheck).perform();
-        syl = await browser.findElement(By.className("syl")).getAttribute("style");
-        expect(syl).toContain("visibility: visible;");
+        syl = await browser.findElement(By.id("syl_text")).getAttribute("style");
+        expect(syl).not.toContain("display: none;");
     });
 
     /// TEST EDIT MODE ///
