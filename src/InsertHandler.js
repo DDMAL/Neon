@@ -58,6 +58,7 @@ function InsertHandler (neonView) {
             console.error("Invalid button for insertion: " + buttonId + ".");
             return;
         }
+        removeInsertClickHandlers();
         if (type === "staff") {
             $("body").on("click", "#svg_output", staffHandler);
         }
@@ -77,8 +78,7 @@ function InsertHandler (neonView) {
      */
     function insertDisabled () {
         type = "";
-        $("body").off("click", "#svg_output", handler);
-        $("body").off("click", "#svg_output", staffHandler);
+        removeInsertClickHandlers();
         $(".insertel.is-active").removeClass("is-active");
         firstClick = true;
         Cursor.resetCursor();
@@ -148,6 +148,11 @@ function InsertHandler (neonView) {
             neonView.refreshPage();
             insertDisabled();
         }
+    }
+
+    function removeInsertClickHandlers () {
+        $("body").off("click", "#svg_output", staffHandler);
+        $("body").off("click", "#svg_output", handler);
     }
 
     InsertHandler.prototype.constructor = InsertHandler;
