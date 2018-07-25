@@ -1,4 +1,20 @@
 /** @module Text */
+import * as Controls from "./Controls.js";
+
+/** @var {NeonView} */
+var view;
+
+/** @var {boolean} */
+export var editText = false;
+
+/**
+ * Enable editing text and set listeners.
+ */
+export function enableEditText(neonView) {
+    editText = true;
+    view = neonView;
+    Controls.setTextEdit(view);
+}
 
 /**
  * Get the syllable text of the loaded file.
@@ -24,7 +40,7 @@ export function getSylText() {
     return lyrics.trim().replace(uniToDash, "-");
 }
 
-export function updateSylText(span, neonView) {
+export function updateSylText(span) {
     let orig = formatRaw($(span).html());
     let corrected = window.prompt("", orig);
     if (corrected !== null && corrected !== orig) {
@@ -36,8 +52,8 @@ export function updateSylText(span, neonView) {
             }
         };
         console.log(editorAction);
-        if (neonView.edit(editorAction))
-            neonView.refreshPage();
+        if (view.edit(editorAction))
+            view.refreshPage();
     }
 }
 
