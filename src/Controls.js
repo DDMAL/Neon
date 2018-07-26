@@ -166,16 +166,20 @@ export function updateSylVisibility() {
                 $("#" + $(span).attr("class")).removeClass("syl-select").attr("fill", null);
             });
         });
+
+        if (Text.editText) {
+            setTextEdit();
+        }
     } else {
         $("#syl_text").css("display", "none");
     }
 }
 
-export function setTextEdit(neonView) {
+export function setTextEdit() {
     let spans = Array.from($("#syl_text").children("p").children("span"));
     spans.forEach(span => {
         $(span).on("click", () => {
-            Text.updateSylText(span, neonView);
+            Text.updateSylText(span);
         });
     });
 }
@@ -320,7 +324,7 @@ function bindElements(insertHandler) {
     $.each(elementIds, function(i, el){
         $('#' + el).on('click', function(){
             deactivate('.insertel');
-            activate(el, insertHandler);  
+            activate(el, insertHandler);
             Cursor.updateCursor();
         });
     });
@@ -354,11 +358,11 @@ function deactivate(type) {
  * @param {string} filename - The name of the MEI file.
  */
 export function initNavbar(filename) {
-    // setup navbar listeners 
+    // setup navbar listeners
     $("#revert").on("click", function(){
         if (confirm("Reverting will cause all changes to be lost. Press OK to continue.")) {
-            $.ajax({ 
-                url: "/revert/" + filename, 
+            $.ajax({
+                url: "/revert/" + filename,
                 type: "POST"
             })
         }
@@ -424,7 +428,7 @@ export function initSelectionButtons() {
             $("#selByNc").removeClass("is-active");
             $("#selByStaff").removeClass("is-active");
             $("#selBySyl").removeClass("is-active");
-        }           
+        }
     }
 
     $("#selByNc").on("click", selectByNcHandler);
