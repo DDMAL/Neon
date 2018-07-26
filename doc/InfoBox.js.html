@@ -70,14 +70,14 @@ function InfoBox(neon) {
         var elementClass = element.attr("class").match(classRe)[0];
         var body = "";
 
-        // Gets the pitches depending on element type and 
+        // Gets the pitches depending on element type and
         switch(elementClass) {
             case "neume":
                 // Select neume components of selected neume
                 var ncs = element.children(".nc");
                 var contour = getContour(ncs);
                 var pitches = getPitches(ncs);
-                
+
                 pitches = pitches.trim().toUpperCase();
                 body = "Shape: " + (contour === undefined ? "Compound" : contour) + "&lt;br/>"
                     + "Pitch(es): " + pitches;
@@ -106,7 +106,7 @@ function InfoBox(neon) {
 
     /**
      * Get the individual pitches of a neume.
-     * @param {array} ncs - neume components in the neume. 
+     * @param {array} ncs - neume components in the neume.
      */
     function getPitches (ncs) {
         var pitches = "";
@@ -119,7 +119,7 @@ function InfoBox(neon) {
 
     /**
      * Get the contour of a neume.
-     * @param {array} ncs - neume components in the neume. 
+     * @param {array} ncs - neume components in the neume.
      */
     function getContour (ncs) {
         var contour = "";
@@ -152,20 +152,20 @@ function InfoBox(neon) {
         }
         return neumeGroups.get(contour);
     }
-    
+
     /**
      * Show and update the info box.
      * @param {string} title - The info box title.
      * @param {string} body - The info box contents.
      */
     function updateInfoBox(title, body) {
-        $(".message").css("visibility", "visible");
+        $(".message").css("display", "");
         $(".message-header").children("p").html(title);
         $(".message-body").html(body);
-        
+
         // Setting up listener for dismissing message
         $("#notification-delete").on("click", function () {
-            $(".message").css("visibility", "hidden");
+            $(".message").css("display", "none");
         })
     }
 
@@ -196,16 +196,29 @@ function InfoBox(neon) {
     }
 
     /**
+     * Find the contour of an neume grouping based on the grouping name.
+     * @param {string} value - the value name.
+     */
+    function getContourByValue(value) {
+        for (let [cont, v] of neumeGroups.entries()) {
+            if (v === value){
+                return cont;
+            }
+        }
+    }
+
+    /**
      * A map containing neume groupings and their contours.
      */
     var neumeGroups = new Map (
-        [["", "Punctum"], ["u", "Pes"], ["d", "Clivis"], ["uu", "Scandicus"], ["dd", "Climacus"], ["ud", "Torculus"], ["du", "Porrectus"],
-         ["sd", "Pressus"], ["ddd", "Climacus"], ["ddu", "Climacus resupinus"], ["udu", "Torculus resupinus"], ["dud", "Porrectus flexus"],
+        [["", "Punctum"], ["u", "Pes"], ["d", "Clivis"], ["uu", "Scandicus"], ["ud", "Torculus"], ["du", "Porrectus"],
+         ["sd", "Pressus"], ["dd", "Climacus"], ["ddu", "Climacus resupinus"], ["udu", "Torculus resupinus"], ["dud", "Porrectus flexus"],
          ["udd", "Pes subpunctis"], ["uud", "Scandicus flexus"], ["uudd", "Scandicus subpunctis"], ["dudd", "Porrectus subpunctis"]]
     );
 
     InfoBox.prototype.infoListeners = infoListeners;
     InfoBox.getContour = getContour;
+    InfoBox.getContourByValue = getContourByValue;
 }
 export {InfoBox as default};
 </code></pre>
@@ -218,13 +231,13 @@ export {InfoBox as default};
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jul 24 2018 10:44:56 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 26 2018 12:59:16 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -43,7 +43,7 @@ import * as SelectOptions from "./SelectOptions.js";
 export function ClickSelect (dragHandler, neonView) {
     var lastSelect = new Array(0);
     selectListeners();
-    
+
     //Selection mode toggle
     function selectListeners() {
         var classesToSelect = ".nc, .clef, .custos";
@@ -65,7 +65,7 @@ export function ClickSelect (dragHandler, neonView) {
                 if($(neumeParent).hasClass("neume")){
                     var parentSiblings = Array.from($(neumeParent).siblings());
                     if(parentSiblings.length != 0){
-                        selectSyl(neumeParent);
+                        selectSyl(neumeParent, dragHandler);
                     }
                     else{
                         selectNeumes(this, dragHandler);
@@ -82,7 +82,7 @@ export function ClickSelect (dragHandler, neonView) {
                 }
                 else{
                     selectNcs(this, dragHandler, lastSelect);
-                }            
+                }
             }
             else if ($("#selByNc").hasClass("is-active") &amp;&amp; isNc){
                 selectNcs(this, dragHandler, lastSelect);
@@ -167,7 +167,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
             else {
                 panning = true;
                 zoomHandler.startDrag();
-            }    
+            }
         }
         editing = false;
     }
@@ -180,7 +180,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
             var currentPt = d3.mouse(this);
             var curX = currentPt[0];
             var curY = currentPt[1];
-            
+
             var newX = curX&lt;initialX?curX:initialX;
             var newY = curY&lt;initialY?curY:initialY;
             var width = curX&lt;initialX?initialX-curX:curX-initialX;
@@ -210,7 +210,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                 nc = d3.selectAll("use")._groups[0];
             }
             var els = Array.from(nc);
-            
+
             var elements = els.filter(function(d){
                 var elX, elY;
                 if (d.tagName === "use") {
@@ -308,7 +308,10 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                 ncs.forEach(nc => {
                     select(nc);
                 });
-                if (ncs.length > 1 &amp;&amp; noClefOrCustos) {
+                if (ncs.length === 2 &amp;&amp; noClefOrCustos) {
+                    Grouping.triggerGrouping("ligature");
+                }
+                else if (ncs.length > 1 &amp;&amp; noClefOrCustos) {
                     Grouping.triggerGrouping("nc");
                 }
                 else if (ncs.length === 1 &amp;&amp; noClefOrCustos) {
@@ -377,7 +380,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
  * Unselect all selected elements and run undo any extra
  * actions.
  */
-function unselect() {
+export function unselect() {
     var selected = $(".selected");
     for (var i=0; i &lt; selected.length; i++) {
         if ($(selected[i]).hasClass("staff")) {
@@ -414,8 +417,8 @@ function selectSyl(el, dragHandler) {
     if(!$(el).parent().hasClass("selected")){
         unselect();
         select($(el).parent());
-        SelectOptions.triggerSylActions(); 
-        dragHandler.dragInit(); 
+        SelectOptions.triggerSylActions();
+        dragHandler.dragInit();
     }
 }
 
@@ -428,9 +431,9 @@ function selectNeumes(el, dragHandler) {
     if(!$(el).parent().hasClass("selected")){
         unselect();
         select($(el).parent());
-        SelectOptions.triggerNeumeActions(); 
-        dragHandler.dragInit(); 
-    } 
+        SelectOptions.triggerNeumeActions();
+        dragHandler.dragInit();
+    }
 }
 
 /**
@@ -473,13 +476,13 @@ function selectClefs(el, dragHandler){
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jul 24 2018 10:44:56 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 26 2018 12:59:16 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

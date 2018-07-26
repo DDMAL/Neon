@@ -151,6 +151,9 @@ export function setHighlightControls() {
     });
 }
 
+/**
+ * Update the visibility of the text box and set handlers.
+ */
 export function updateSylVisibility() {
     if ($("#displayText").is(":checked")) {
         $("#syl_text").css("display", "");
@@ -175,6 +178,9 @@ export function updateSylVisibility() {
     }
 }
 
+/**
+ * Set text to edit mode.
+ */
 export function setTextEdit() {
     let spans = Array.from($("#syl_text").children("p").children("span"));
     spans.forEach(span => {
@@ -186,6 +192,9 @@ export function setTextEdit() {
     });
 }
 
+/**
+ * Reset the highlight for different types based on the 'highlight-selected' class in the DOM.
+ */
 export function updateHighlight() {
     let highlightId = $(".highlight-selected").attr("id");
     switch (highlightId) {

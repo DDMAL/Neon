@@ -27,6 +27,7 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import * as Cursor from "./Cursor.js";
+import InfoBox from "./InfoBox.js";
 
 /**
  * Handle inserting new musical elements and communicate this to Verovio.
@@ -60,6 +61,55 @@ function InsertHandler (neonView) {
                 "diagonalright": "u"
             };
         }
+        else if (buttonId == "pes") {
+            var contour = InfoBox.getContourByValue("Pes");
+            type = "grouping";
+            attributes = {
+                "contour": contour
+            };
+        }
+        else if (buttonId == "clivis") {
+            var contour = InfoBox.getContourByValue("Clivis");
+            type = "grouping";
+            attributes = {
+                "contour": contour
+            };
+        }
+        else if (buttonId == "scandicus") {
+            var contour = InfoBox.getContourByValue("Scandicus");
+            type = "grouping";
+            attributes = {
+                "contour": contour
+            };
+        }
+        else if (buttonId == "climacus") {
+            var contour = InfoBox.getContourByValue("Climacus");
+            type = "grouping";
+            attributes = {
+                "contour": contour
+            };
+        }
+        else if (buttonId == "torculus") {
+            var contour = InfoBox.getContourByValue("Torculus");
+            type = "grouping";
+            attributes = {
+                "contour": contour
+            };
+        }
+        else if (buttonId == "porrectus") {
+            var contour = InfoBox.getContourByValue("Porrectus");
+            type = "grouping";
+            attributes = {
+                "contour": contour
+            };
+        }
+        else if (buttonId == "pressus") {
+            var contour = InfoBox.getContourByValue("Pressus");
+            type = "grouping";
+            attributes = {
+                "contour": contour
+            };
+        }
         else if (buttonId === "cClef") {
             type = "clef";
             attributes = {
@@ -86,16 +136,18 @@ function InsertHandler (neonView) {
             console.error("Invalid button for insertion: " + buttonId + ".");
             return;
         }
+        removeInsertClickHandlers();
         if (type === "staff") {
             $("body").on("click", "#svg_output", staffHandler);
         }
         else
             $("body").on("click", "#svg_output", handler);
-        
+
         $("body").on("keydown", (evt) => {
             if (evt.key === "Escape") {
                 insertDisabled();
-                $("body").off("keydown");
+                $("body").off("keydown", staffHandler);
+                $("body").off("keydown", handler);
             }
         });
     }
@@ -105,8 +157,7 @@ function InsertHandler (neonView) {
      */
     function insertDisabled () {
         type = "";
-        $("body").off("click", "#svg_output", handler);
-        $("body").off("click", "#svg_output", staffHandler);
+        removeInsertClickHandlers();
         $(".insertel.is-active").removeClass("is-active");
         firstClick = true;
         Cursor.resetCursor();
@@ -124,7 +175,7 @@ function InsertHandler (neonView) {
         //Transform pt to SVG context
         var transformMatrix = container.getScreenCTM();
         var cursorpt = pt.matrixTransform(transformMatrix.inverse());
-        
+
         let editorAction = {
             "action": "insert",
             "param": {
@@ -157,18 +208,32 @@ function InsertHandler (neonView) {
 
         if (firstClick) {
             coord = cursorpt;
+            d3.select(container).append('circle').attr('cx', cursorpt.x)
+                .attr('cy', cursorpt.y)
+                .attr('r', 10)
+                .attr('id', 'staff-circle')
+                .attr('fill', 'green');
             firstClick = false;
         }
         else {
+            var ul, lr;
+            if (cursorpt.x &lt; coord.x || cursorpt.y &lt; coord.y) { // second point is not lr
+                ul = cursorpt;
+                lr = coord;
+            } else {
+                ul = coord;
+                lr = cursorpt;
+            }
+            $("#staff-circle").remove();
             let action = {
                 "action": "insert",
                 "param": {
                     "elementType": "staff",
                     "staffId": "auto",
-                    "ulx": coord.x,
-                    "uly": coord.y,
-                    "lrx": cursorpt.x,
-                    "lry": cursorpt.y,
+                    "ulx": ul.x,
+                    "uly": ul.y,
+                    "lrx": lr.x,
+                    "lry": lr.y,
                 }
             };
 
@@ -176,6 +241,11 @@ function InsertHandler (neonView) {
             neonView.refreshPage();
             insertDisabled();
         }
+    }
+
+    function removeInsertClickHandlers () {
+        $("body").off("click", "#svg_output", staffHandler);
+        $("body").off("click", "#svg_output", handler);
     }
 
     InsertHandler.prototype.constructor = InsertHandler;
@@ -193,13 +263,13 @@ export {InsertHandler as default};
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jul 24 2018 10:44:56 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 26 2018 12:59:16 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -9,11 +9,12 @@ export var editText = false;
 
 /**
  * Enable editing text and set listeners.
+ * @param {NeonView} neonView
  */
 export function enableEditText(neonView) {
     editText = true;
     view = neonView;
-    Controls.setTextEdit(view);
+    Controls.setTextEdit();
 }
 
 /**
@@ -40,6 +41,10 @@ export function getSylText() {
     return lyrics.replace(uniToDash, "-");
 }
 
+/**
+ * Update the text for a syl tag by user input.
+ * @param span
+ */
 export function updateSylText(span) {
     let orig = formatRaw($(span).html());
     let corrected = window.prompt("", orig);
@@ -51,12 +56,16 @@ export function updateSylText(span) {
                 "text": corrected
             }
         };
-        console.log(editorAction);
         if (view.edit(editorAction))
             view.refreshPage();
     }
 }
 
+/**
+ * Format a string for prompting the user.
+ * @param {string} rawString
+ * @returns {string}
+ */
 function formatRaw(rawString) {
     let removeNbsp = /&nbsp;/g;
     return rawString.replace(removeNbsp, "").trim();

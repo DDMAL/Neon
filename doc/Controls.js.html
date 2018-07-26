@@ -31,6 +31,9 @@
 import * as Color from "./Color.js";
 import * as Contents from "./Contents.js";
 import * as Cursor from "./Cursor.js";
+import * as Text from "./Text.js";
+import * as Select from "./Select.js";
+import Icons from "./img/icons.svg";
 
 /** @type {module:Zoom~ZoomHandler} */
 var zoomHandler;
@@ -48,12 +51,14 @@ export function initDisplayControls (zHandler) {
     setSylControls();
     setHighlightControls();
 
-    $("#displayHeader").on("click", () => {
+    $("#toggleDisplay").on("click", () => {
         if ($("#displayContents").is(":hidden")) {
             $("#displayContents").css("display", "");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-up");
         }
         else {
             $("#displayContents").css("display", "none");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-down");
         }
     });
 }
@@ -70,6 +75,27 @@ function setZoomControls() {
 
     $(document).on("input change", "#zoomSlider", () => {
         zoomHandler.zoomTo($("#zoomOutput").val() / 100.0);
+    });
+
+    $("body").on("keydown", (evt) => {
+        let currentZoom = parseInt($("#zoomOutput").val());
+        if (evt.key === "+") { // increase zoom by 20
+            let newZoom = Math.min(currentZoom + 20, parseInt($("#zoomSlider").attr("max")));
+            zoomHandler.zoomTo(newZoom / 100.0);
+            $("#zoomOutput").val(newZoom);
+            $("#zoomSlider").val(newZoom);
+        }
+        else if (evt.key === "-") { // decrease zoom by 20
+            let newZoom = Math.max(currentZoom - 20, parseInt($("#zoomSlider").attr("min")));
+            zoomHandler.zoomTo(newZoom / 100.0);
+            $("#zoomOutput").val(newZoom);
+            $("#zoomSlider").val(newZoom);
+        }
+        else if (evt.key === "0") {
+            $("#zoomOutput").val(100);
+            $("#zoomSlider").val(100);
+            zoomHandler.resetZoomAndPan();
+        }
     });
 }
 
@@ -123,23 +149,94 @@ export function setOpacityFromSlider() {
  * Set listener on staff highlighting checkbox.
  */
 export function setHighlightControls() {
-    updateHighlight();
-    $("#highlightStaves").click(updateHighlight);
+    $("#highlight-button").on("click", () => {
+        $("#highlight-dropdown").toggleClass("is-active");
+        if ($("#highlight-dropdown").hasClass("is-active")) {
+            $("#highlight-staff").on("click", () => {
+                $("#highlight-dropdown").removeClass("is-active");
+                $(".highlight-selected").removeClass("highlight-selected");
+                $("#highlight-staff").addClass("highlight-selected");
+                Color.setGroupingHighlight("staff");
+            });
+            $("#highlight-syllable").on("click", () => {
+                $("#highlight-dropdown").removeClass("is-active");
+                $(".highlight-selected").removeClass("highlight-selected");
+                $("#highlight-syllable").addClass("highlight-selected");
+                Color.setGroupingHighlight("syllable");
+            });
+            $("#highlight-neume").on("click", () => {
+                $("#highlight-dropdown").removeClass("is-active");
+                $(".highlight-selected").removeClass("highlight-selected");
+                $("#highlight-neume").addClass("highlight-selected");
+                Color.setGroupingHighlight("neume");
+            });
+            $("#highlight-none").on("click", () => {
+                $("#highlight-dropdown").removeClass("is-active");
+                $(".highlight-selected").removeClass("highlight-selected");
+                Color.unsetGroupingHighlight();
+            });
+        }
+    });
 }
 
+/**
+ * Update the visibility of the text box and set handlers.
+ */
 export function updateSylVisibility() {
     if ($("#displayText").is(":checked")) {
-        $(".syl").css("visibility", "visible");
+        $("#syl_text").css("display", "");
+        $("#syl_text").html("&lt;p>" + Text.getSylText() + "&lt;/p>");
+        let spans = Array.from($("#syl_text").children("p").children("span"));
+        spans.forEach(span => {
+            $(span).on("mouseenter", () => {
+                let syllable = $("#" + $(span).attr("class"));
+                syllable.addClass("syl-select");
+                syllable.attr("fill", "#d00");
+            });
+            $(span).on("mouseleave", () => {
+                $("#" + $(span).attr("class")).removeClass("syl-select").attr("fill", null);
+            });
+        });
+
+        if (Text.editText) {
+            setTextEdit();
+        }
     } else {
-        $(".syl").css("visibility", "hidden");
+        $("#syl_text").css("display", "none");
     }
 }
 
+/**
+ * Set text to edit mode.
+ */
+export function setTextEdit() {
+    let spans = Array.from($("#syl_text").children("p").children("span"));
+    spans.forEach(span => {
+        $(span).off("click", update);
+        $(span).on("click", update);
+        function update() {
+            Text.updateSylText(span);
+        }
+    });
+}
+
+/**
+ * Reset the highlight for different types based on the 'highlight-selected' class in the DOM.
+ */
 export function updateHighlight() {
-    if ($("#highlightStaves").is(":checked")) {
-        Color.setStaffHighlight();
-    } else {
-        Color.unsetStaffHighlight();
+    let highlightId = $(".highlight-selected").attr("id");
+    switch (highlightId) {
+        case "highlight-staff":
+            Color.setGroupingHighlight("staff");
+            break;
+        case "highlight-syllable":
+            Color.setGroupingHighlight("syllable");
+            break;
+        case "highlight-neume":
+            Color.setGroupingHighlight("neume");
+            break;
+        default:
+            Color.unsetGroupingHighlight();
     }
 }
 
@@ -149,35 +246,38 @@ export function updateHighlight() {
  * @param {NeonView} neonView - The NeonView parent.
  */
 export function initInsertEditControls(neonView) {
-    $("#insertMenu").on("click", () => {
+    $("#toggleInsert").on("click", () => {
         if ($("#insertContents").is(":hidden")) {
             $("#insertContents").css("display", "");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-up");
+
         } else {
             $("#insertContents").css("display", "none");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-down");
         }
     });
 
-    $("#editMenu").on("click", () => {
+    $("#toggleEdit").on("click", () => {
         if ($("#editContents").is(":hidden")) {
             $("#editContents").css("display", "");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-up");
         } else {
             $("#editContents").css("display", "none");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-down");
         }
     });
 
-    $("#undo").on("click", () => {
-        if (!neonView.undo()) {
-            console.error("Failed to undo action.");
-        } else {
-            neonView.refreshPage();
+    $("#undo").on("click", undoHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "z" &amp;&amp; evt.ctrlKey) {
+            undoHandler(evt);
         }
     });
 
-    $("#redo").on("click", () => {
-        if (!neonView.redo()) {
-            console.error("Failed to redo action");
-        } else {
-            neonView.refreshPage();
+    $("#redo").on("click", redoHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "Z" &amp;&amp; evt.ctrlKey) {
+            redoHandler(evt);
         }
     });
 
@@ -185,7 +285,29 @@ export function initInsertEditControls(neonView) {
         neonView.saveMEI();
     });
 
-    $("#delete").on("click", () => {
+    $("#delete").on("click", removeHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "d")
+            removeHandler(evt);
+    });
+
+    function undoHandler () {
+        if (!neonView.undo()) {
+            console.error("Failed to undo action.");
+        } else {
+            neonView.refreshPage();
+        }
+    }
+
+    function redoHandler () {
+        if (!neonView.redo()) {
+            console.error("Failed to redo action");
+        } else {
+            neonView.refreshPage();
+        }
+    }
+
+    function removeHandler () {
         let toRemove = [];
         var selected = Array.from(document.getElementsByClassName("selected"));
         selected.forEach(elem => {
@@ -204,7 +326,7 @@ export function initInsertEditControls(neonView) {
         };
         neonView.edit(chainAction);
         neonView.refreshPage();
-    });
+    }
 }
 
 /**
@@ -241,7 +363,7 @@ function bindElements(insertHandler) {
     $.each(elementIds, function(i, el){
         $('#' + el).on('click', function(){
             deactivate('.insertel');
-            activate(el, insertHandler);  
+            activate(el, insertHandler);
             Cursor.updateCursor();
         });
     });
@@ -275,11 +397,11 @@ function deactivate(type) {
  * @param {string} filename - The name of the MEI file.
  */
 export function initNavbar(filename) {
-    // setup navbar listeners 
+    // setup navbar listeners
     $("#revert").on("click", function(){
         if (confirm("Reverting will cause all changes to be lost. Press OK to continue.")) {
-            $.ajax({ 
-                url: "/revert/" + filename, 
+            $.ajax({
+                url: "/revert/" + filename,
                 type: "POST"
             })
         }
@@ -312,41 +434,77 @@ export function initEditMode(editMode) {
  * Set listeners on the buttons to change selection modes.
  */
 export function initSelectionButtons() {
-    $("#selBySyl").on("click", function() {
+    $("#selBySyl").on("click", selectBySylHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "1") {
+            selectBySylHandler(evt);
+        }
+    });
+
+    function selectBySylHandler() {
         if (!$("#selBySyl").hasClass("is-active")) {
+            Select.unselect();
+            $("#moreEdit").empty();
             $("#selBySyl").addClass("is-active");
             $("#selByNeume").removeClass("is-active");
             $("#selByNc").removeClass("is-active");
             $("#selByStaff").removeClass("is-active");
         }
+    }
+
+    $("#selByNeume").on("click", selectByNeumeHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "2") {
+            selectByNeumeHandler(evt);
+        }
     });
 
-    $("#selByNeume").on("click", function(){
+    function selectByNeumeHandler() {
         if (!$("#selByNeume").hasClass("is-active")){
+            Select.unselect();
+            $("#moreEdit").empty();
             $("#selByNeume").addClass("is-active");
             $("#selByNc").removeClass("is-active");
             $("#selByStaff").removeClass("is-active");
             $("#selBySyl").removeClass("is-active");
-        }           
+        }
+    }
+
+    $("#selByNc").on("click", selectByNcHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "3") {
+            selectByNcHandler(evt);
+        }
     });
 
-    $("#selByNc").on("click", function(){
+    function selectByNcHandler() {
         if (!$("#selByNc").hasClass("is-active")) {
+            Select.unselect();
+            $("#moreEdit").empty();
             $("#selByNc").addClass("is-active");
             $("#selByNeume").removeClass("is-active");
             $("#selByStaff").removeClass("is-active");
             $("#selBySyl").removeClass("is-active");
         }
+    }
+
+    $("#selByStaff").on("click", selectByStaffHandler);
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "4") {
+            selectByStaffHandler(evt);
+        }
     });
 
-    $("#selByStaff").on("click", function () {
+    function selectByStaffHandler() {
         if (!$("#selByStaff").hasClass("is-active")) {
+            Select.unselect();
+            $("#moreEdit").empty();
             $("#selByStaff").addClass("is-active");
             $("#selByNc").removeClass("is-active");
             $("#selByNeume").removeClass("is-active");
             $("#selBySyl").removeClass("is-active");
         }
-    });
+    }
 }
 </code></pre>
         </article>
@@ -358,13 +516,13 @@ export function initSelectionButtons() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jul 24 2018 10:44:56 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 26 2018 12:59:16 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
