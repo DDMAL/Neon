@@ -57,10 +57,48 @@ export function initGroupingListeners(){
         var elementIds = getChildrenIds();
         groupingAction("ungroup", "neume", elementIds);
     });
-    
+
     $("#ungroupNcs").on("click", function() {
         var elementIds = getChildrenIds();
         groupingAction("ungroup", "nc", elementIds);
+    });
+    $("#toggle-ligature").on("click", function () {
+        var elementIds = getIds();
+        var isLigature;
+        let ligatureRegex = /#E99[016]/
+        if (!ligatureRegex.test(document.getElementById(elementIds[0]).children[0].getAttribute("xlink:href"))) { // SMUFL codes for ligature glyphs
+            isLigature = true;
+        } else {
+            isLigature = false;
+        }
+
+        let editorAction1 = {
+            "action": "set",
+            "param": {
+                "elementId": elementIds[0],
+                "attrType": "ligature",
+                "attrValue": (!isLigature).toString()
+            }
+        };
+        let editorAction2 = {
+            "action": "set",
+            "param": {
+                "elementId": elementIds[1],
+                "attrType": "ligature",
+                "attrValue": (!isLigature).toString()
+            }
+        };
+
+        let chain = {
+            "action": "chain",
+            "param": [
+                editorAction1,
+                editorAction2
+            ]
+        };
+        console.log(chain);
+        neonView.edit(chain);
+        neonView.refreshPage();
     });
 }
 
@@ -85,7 +123,7 @@ function groupingAction(action, groupType, elementIds) {
     if(groupType == "nc"){
         var neumeParent = $("#" + elementIds[0]).parent();
         var ncs = $(neumeParent).children();
-        var contour = InfoBox.getContour((ncs));     
+        var contour = InfoBox.getContour((ncs));
         if(contour == undefined){
             Warnings.groupingNotRecognized();
         }

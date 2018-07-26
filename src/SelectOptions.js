@@ -109,7 +109,7 @@ export function triggerNeumeActions() {
 
     $(".grouping").on("click", (e) => {
         var contour = InfoBox.getContourByValue(e.target.id);
-        triggerChangeGroup(contour);   
+        triggerChangeGroup(contour);
     });
 
     function triggerChangeGroup(contour) {

@@ -15,7 +15,7 @@ import * as SelectOptions from "./SelectOptions.js";
 export function ClickSelect (dragHandler, neonView) {
     var lastSelect = new Array(0);
     selectListeners();
-    
+
     //Selection mode toggle
     function selectListeners() {
         var classesToSelect = ".nc, .clef, .custos";
@@ -54,7 +54,7 @@ export function ClickSelect (dragHandler, neonView) {
                 }
                 else{
                     selectNcs(this, dragHandler, lastSelect);
-                }            
+                }
             }
             else if ($("#selByNc").hasClass("is-active") && isNc){
                 selectNcs(this, dragHandler, lastSelect);
@@ -139,7 +139,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
             else {
                 panning = true;
                 zoomHandler.startDrag();
-            }    
+            }
         }
         editing = false;
     }
@@ -152,7 +152,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
             var currentPt = d3.mouse(this);
             var curX = currentPt[0];
             var curY = currentPt[1];
-            
+
             var newX = curX<initialX?curX:initialX;
             var newY = curY<initialY?curY:initialY;
             var width = curX<initialX?initialX-curX:curX-initialX;
@@ -182,7 +182,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                 nc = d3.selectAll("use")._groups[0];
             }
             var els = Array.from(nc);
-            
+
             var elements = els.filter(function(d){
                 var elX, elY;
                 if (d.tagName === "use") {
@@ -280,7 +280,10 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                 ncs.forEach(nc => {
                     select(nc);
                 });
-                if (ncs.length > 1 && noClefOrCustos) {
+                if (ncs.length === 2 && noClefOrCustos) {
+                    Grouping.triggerGrouping("ligature");
+                }
+                else if (ncs.length > 1 && noClefOrCustos) {
                     Grouping.triggerGrouping("nc");
                 }
                 else if (ncs.length === 1 && noClefOrCustos) {
@@ -386,8 +389,8 @@ function selectSyl(el, dragHandler) {
     if(!$(el).parent().hasClass("selected")){
         unselect();
         select($(el).parent());
-        SelectOptions.triggerSylActions(); 
-        dragHandler.dragInit(); 
+        SelectOptions.triggerSylActions();
+        dragHandler.dragInit();
     }
 }
 
@@ -400,9 +403,9 @@ function selectNeumes(el, dragHandler) {
     if(!$(el).parent().hasClass("selected")){
         unselect();
         select($(el).parent());
-        SelectOptions.triggerNeumeActions(); 
-        dragHandler.dragInit(); 
-    } 
+        SelectOptions.triggerNeumeActions();
+        dragHandler.dragInit();
+    }
 }
 
 /**
