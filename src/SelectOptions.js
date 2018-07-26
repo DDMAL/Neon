@@ -1,6 +1,7 @@
 /** @module SelectOptions */
 import * as Contents from "./Contents.js";
 import * as Grouping from "./Grouping.js";
+import InfoBox from "./InfoBox.js";
 
 /**
  * The NeonView parent to call editor actions.
@@ -93,7 +94,6 @@ export function triggerNcActions(lastSelect) {
     initOptionsListeners();
 }
 
-//TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
 /**
  * Trigger extra neume actions.
  */
@@ -101,7 +101,28 @@ export function triggerNeumeActions() {
     endOptionsSelection()
     $("#moreEdit").removeClass("is-invisible");
     $("#moreEdit").append(Contents.neumeActionContents);
-    Grouping.initGroupingListeners();
+    var neume = $(".selected");
+    if (neume.length != 1){
+        console.warn("More than one neume selected! Cannot trigger Neume ClickSelect actions.");
+        return;
+    }
+
+    $(".grouping").on("click", (e) => {
+        var contour = InfoBox.getContourByValue(e.target.id);
+        triggerChangeGroup(contour);   
+    });
+
+    function triggerChangeGroup(contour) {
+        let changeGroupingAction = {
+            "action": "changeGroup",
+            "param": {
+                "elementId": neume[0].id,
+                "contour": contour
+            }
+        }
+        neonView.edit(changeGroupingAction);
+        neonView.refreshPage();
+    }
     initOptionsListeners();
 }
 

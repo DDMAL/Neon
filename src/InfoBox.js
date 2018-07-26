@@ -168,15 +168,28 @@ function InfoBox(neon) {
     }
 
     /**
+     * Find the contour of an neume grouping based on the grouping name.
+     * @param {string} value - the value name. 
+     */
+    function getContourByValue(value) {
+        for (let [cont, v] of neumeGroups.entries()) {
+            if (v === value){
+                return cont;
+            }
+        }   
+    }
+
+    /**
      * A map containing neume groupings and their contours.
      */
     var neumeGroups = new Map (
-        [["", "Punctum"], ["u", "Pes"], ["d", "Clivis"], ["uu", "Scandicus"], ["dd", "Climacus"], ["ud", "Torculus"], ["du", "Porrectus"],
-         ["sd", "Pressus"], ["ddd", "Climacus"], ["ddu", "Climacus resupinus"], ["udu", "Torculus resupinus"], ["dud", "Porrectus flexus"],
+        [["", "Punctum"], ["u", "Pes"], ["d", "Clivis"], ["uu", "Scandicus"], ["ud", "Torculus"], ["du", "Porrectus"],
+         ["sd", "Pressus"], ["dd", "Climacus"], ["ddu", "Climacus resupinus"], ["udu", "Torculus resupinus"], ["dud", "Porrectus flexus"],
          ["udd", "Pes subpunctis"], ["uud", "Scandicus flexus"], ["uudd", "Scandicus subpunctis"], ["dudd", "Porrectus subpunctis"]]
     );
 
     InfoBox.prototype.infoListeners = infoListeners;
     InfoBox.getContour = getContour;
+    InfoBox.getContourByValue = getContourByValue;
 }
 export {InfoBox as default};
