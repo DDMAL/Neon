@@ -40,19 +40,19 @@ export const insertTabHtml = {
         "<p class='control'>" +
         "<button id='custos' class='button insertel smallel' title='custos'><img src='" + CustosIcon + "' class='image'/></button></p>",
     groupingTab: "<p class='control'>" +
-        "<button id='Pes' class='button insertel smallel' title='pes'><img src='" + PesIcon + "' class='image'/></button></p>" +
+        "<button id='pes' class='button insertel smallel' title='pes'><img src='" + PesIcon + "' class='image'/></button></p>" +
         "<p class='control'>" +
-        "<button id='Clivis' class='button insertel smallel' title='clivis'><img src='"+ ClivisIcon +"' class='image'/></button></p>" +
+        "<button id='clivis' class='button insertel smallel' title='clivis'><img src='"+ ClivisIcon +"' class='image'/></button></p>" +
         "<p class='control'>" +
-        "<button id='Scandicus' class='button insertel smallel' title='scandicus'><img src='"+ ScandicusIcon +"' class='image'/></button></p>" +
+        "<button id='scandicus' class='button insertel smallel' title='scandicus'><img src='"+ ScandicusIcon +"' class='image'/></button></p>" +
         "<p class='control'>" +
-        "<button id='Climacus' class='button insertel smallel' title='climacus'><img src='" + ClimacusIcon + "' class='image'/></button></p>" +
+        "<button id='climacus' class='button insertel smallel' title='climacus'><img src='" + ClimacusIcon + "' class='image'/></button></p>" +
         "<p class='control'>" +
-        "<button id='Torculus' class='button insertel smallel' title='toculus'><img src='" + TorculusIcon + "' class='image'/></button></p>" +
+        "<button id='torculus' class='button insertel smallel' title='toculus'><img src='" + TorculusIcon + "' class='image'/></button></p>" +
         "<p class='control'>" +
-        "<button id='Porrectus' class='button insertel smallel' title='porrectus'><img src='" + PorrectusIcon + "' class='image'/></button></p>" +
+        "<button id='porrectus' class='button insertel smallel' title='porrectus'><img src='" + PorrectusIcon + "' class='image'/></button></p>" +
         "<p class='control'>" +
-        "<button id='Pressus' class='button insertel smallel' title='pressus'><img src='" + PressusIcon +"' class='image'/></button></p>",
+        "<button id='pressus' class='button insertel smallel' title='pressus'><img src='" + PressusIcon +"' class='image'/></button></p>",
     clefTab: "<p class='control'>" +
         "<button id='cClef' class='button insertel smallel' title=' C Clef'><img src='" + CClefIcon + "' class='image' /></button></p>" +
         "<p class='control'>" +
