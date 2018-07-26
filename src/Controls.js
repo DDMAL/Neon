@@ -305,7 +305,7 @@ export function bindInsertTabs(insertHandler) {
     $.each(tabIds, function(i, tab) {
         $("#" + tab).on("click", () => {
             deactivate(".insertTab");
-            activate(this.id, insertHandler);
+            activate(tab, insertHandler);
             Cursor.resetCursor();
             $("#insert_data").empty();
             $("#insert_data").append(Contents.insertTabHtml[tab]);
@@ -347,12 +347,10 @@ function activate(id, insertHandler) {
  * @param {string} type - A JQuery selector for the action tab.
  */
 function deactivate(type) {
-    var elList = $(type);
-    for (var i=0; i < elList.length; i++) {
-        if(elList[i].classList.length > 1) {
-            elList[i].classList.remove("is-active");
-        }
-    }
+    var elList = Array.from($(type));
+    elList.forEach((el, i) => {
+        $(elList[i]).removeClass("is-active");
+    })
 }
 
 /**
