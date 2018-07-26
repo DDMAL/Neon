@@ -114,7 +114,7 @@ function InsertHandler (neonView) {
         }
         else
             $("body").on("click", "#svg_output", handler);
-        
+
         $("body").on("keydown", (evt) => {
             if (evt.key === "Escape") {
                 insertDisabled();
@@ -147,7 +147,7 @@ function InsertHandler (neonView) {
         //Transform pt to SVG context
         var transformMatrix = container.getScreenCTM();
         var cursorpt = pt.matrixTransform(transformMatrix.inverse());
-        
+
         let editorAction = {
             "action": "insert",
             "param": {

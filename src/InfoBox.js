@@ -42,14 +42,14 @@ function InfoBox(neon) {
         var elementClass = element.attr("class").match(classRe)[0];
         var body = "";
 
-        // Gets the pitches depending on element type and 
+        // Gets the pitches depending on element type and
         switch(elementClass) {
             case "neume":
                 // Select neume components of selected neume
                 var ncs = element.children(".nc");
                 var contour = getContour(ncs);
                 var pitches = getPitches(ncs);
-                
+
                 pitches = pitches.trim().toUpperCase();
                 body = "Shape: " + (contour === undefined ? "Compound" : contour) + "<br/>"
                     + "Pitch(es): " + pitches;
@@ -78,7 +78,7 @@ function InfoBox(neon) {
 
     /**
      * Get the individual pitches of a neume.
-     * @param {array} ncs - neume components in the neume. 
+     * @param {array} ncs - neume components in the neume.
      */
     function getPitches (ncs) {
         var pitches = "";
@@ -91,7 +91,7 @@ function InfoBox(neon) {
 
     /**
      * Get the contour of a neume.
-     * @param {array} ncs - neume components in the neume. 
+     * @param {array} ncs - neume components in the neume.
      */
     function getContour (ncs) {
         var contour = "";
@@ -124,7 +124,7 @@ function InfoBox(neon) {
         }
         return neumeGroups.get(contour);
     }
-    
+
     /**
      * Show and update the info box.
      * @param {string} title - The info box title.
@@ -134,7 +134,7 @@ function InfoBox(neon) {
         $(".message").css("display", "");
         $(".message-header").children("p").html(title);
         $(".message-body").html(body);
-        
+
         // Setting up listener for dismissing message
         $("#notification-delete").on("click", function () {
             $(".message").css("display", "none");
@@ -169,14 +169,14 @@ function InfoBox(neon) {
 
     /**
      * Find the contour of an neume grouping based on the grouping name.
-     * @param {string} value - the value name. 
+     * @param {string} value - the value name.
      */
     function getContourByValue(value) {
         for (let [cont, v] of neumeGroups.entries()) {
             if (v === value){
                 return cont;
             }
-        }   
+        }
     }
 
     /**

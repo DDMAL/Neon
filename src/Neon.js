@@ -7,7 +7,7 @@
  * @param {object} vrvToolkit - An instantiated Verovio toolkit.
  */
 function Neon (mei, vrvToolkit) {
-    
+
     //////////////
     // Constructor
     //////////////
@@ -71,7 +71,7 @@ function Neon (mei, vrvToolkit) {
             undoStack.push(currentMEI);
             redoStack = new Array(0);
         }
-        return value; 
+        return value;
     }
 
     function addStateToUndo() {

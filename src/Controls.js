@@ -178,7 +178,7 @@ export function updateSylVisibility() {
 export function setTextEdit() {
     let spans = Array.from($("#syl_text").children("p").children("span"));
     spans.forEach(span => {
-        $(span).off("click", update); 
+        $(span).off("click", update);
         $(span).on("click", update);
         function update() {
             Text.updateSylText(span);
