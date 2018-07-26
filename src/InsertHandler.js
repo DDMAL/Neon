@@ -1,4 +1,5 @@
 import * as Cursor from "./Cursor.js";
+import InfoBox from "./InfoBox.js";
 
 /**
  * Handle inserting new musical elements and communicate this to Verovio.
@@ -30,6 +31,55 @@ function InsertHandler (neonView) {
             type = "nc";
             attributes = {
                 "diagonalright": "u"
+            };
+        }
+        else if (buttonId == "pes") {
+            var contour = InfoBox.getContourByValue("Pes");
+            type = "grouping";
+            attributes = {
+                "contour": contour
+            };
+        }
+        else if (buttonId == "clivis") {
+            var contour = InfoBox.getContourByValue("Clivis");
+            type = "grouping";
+            attributes = {
+                "contour": contour
+            };
+        }
+        else if (buttonId == "scandicus") {
+            var contour = InfoBox.getContourByValue("Scandicus");
+            type = "grouping";
+            attributes = {
+                "contour": contour
+            };
+        }
+        else if (buttonId == "climacus") {
+            var contour = InfoBox.getContourByValue("Climacus");
+            type = "grouping";
+            attributes = {
+                "contour": contour
+            };
+        }
+        else if (buttonId == "torculus") {
+            var contour = InfoBox.getContourByValue("Torculus");
+            type = "grouping";
+            attributes = {
+                "contour": contour
+            };
+        }
+        else if (buttonId == "porrectus") {
+            var contour = InfoBox.getContourByValue("Porrectus");
+            type = "grouping";
+            attributes = {
+                "contour": contour
+            };
+        }
+        else if (buttonId == "pressus") {
+            var contour = InfoBox.getContourByValue("Pressus");
+            type = "grouping";
+            attributes = {
+                "contour": contour
             };
         }
         else if (buttonId === "cClef") {
