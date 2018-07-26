@@ -114,12 +114,8 @@ function InsertHandler (neonView) {
         }
         else
             $("body").on("click", "#svg_output", handler);
-<<<<<<< HEAD
         
         //Disable edit mode listeners
-=======
-
->>>>>>> develop
         $("body").on("keydown", (evt) => {
             if (evt.key === "Escape") {
                 insertDisabled();
