@@ -189,5 +189,8 @@ export const groupingMenu = {
         "<div><p class='control'>" +
         "<button class='button' id='mergeSyls'>Merge Syllables</button></p></div>" +
         "<div><p class='control'>" +
-        "<button class='button' id='ungroupNeumes'>Ungroup</button></p></div></div>"
+        "<button class='button' id='ungroupNeumes'>Ungroup</button></p></div></div>",
+    "ligature": "<div class='field is-grouped'>" +
+        "<div><p class='control'>" +
+        "<button class='button' id='toggle-ligature'>Toggle Ligature</button></p></div></div>"
 };
