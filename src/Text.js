@@ -34,10 +34,10 @@ export function getSylText() {
             lyrics += " </span>";
         }
         else {
-            lyrics += "<span class='" + syllable.id + "'> </span>";
+            lyrics += "<span class='" + syllable.id + "' style='outline: 1px solid;'>&nbsp;&nbsp;</span>";
         }
     });
-    return lyrics.trim().replace(uniToDash, "-");
+    return lyrics.replace(uniToDash, "-");
 }
 
 export function updateSylText(span) {
@@ -47,7 +47,7 @@ export function updateSylText(span) {
         let editorAction = {
             "action": "setText",
             "param": {
-                "elementId": $("#" + $(span).attr('class')).children(".syl").attr("id"),
+                "elementId": $("#" + $(span).attr('class')).attr("id"),
                 "text": corrected
             }
         };
@@ -58,5 +58,6 @@ export function updateSylText(span) {
 }
 
 function formatRaw(rawString) {
-    return rawString.trim();
+    let removeNbsp = /&nbsp;/g;
+    return rawString.replace(removeNbsp, "").trim();
 }
