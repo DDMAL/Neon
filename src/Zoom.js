@@ -6,8 +6,8 @@
  */
 function ZoomHandler () {
     var dragCoordinates;
-    /** 
-     * The internal view box of the SVG container. 
+    /**
+     * The internal view box of the SVG container.
      * @type {module:Zoom.ViewBox}
      */
     var viewBox = new ViewBox();
@@ -21,7 +21,7 @@ function ZoomHandler () {
         viewBox.b = 0;
         viewBox.c = parseInt($("#bgimg").attr("width"));
         viewBox.d = parseInt($("#bgimg").attr("height"));
-        
+
         $("#svg_group").attr("viewBox", viewBox.get());
     }
 

@@ -14,7 +14,7 @@ router.route('/')
         fs.readdir(__base + 'public/uploads/mei', function(err, files){
             if (err) {
                 res.status(500).send(err);
-                return 
+                return
             }
         if (files.length != 0){
             var index = files.indexOf(".gitignore");
@@ -23,21 +23,21 @@ router.route('/')
         }
         else{
             res.render('index', {'nofiles': "No files Uploaded", 'files': files});
-        } 
+        }
     });
-});                                                                      
+});
 
 //File upload using Multer
 var storage = multer.diskStorage({
     destination: function ( req, file, cb ) {
         cb(null,  __dirname + '../../../public/uploads');
-    },   
+    },
     filename: function ( req, file, cb ) {
         cb(null, file.originalname);
     }
 });
 
-var upload = multer({ 
+var upload = multer({
     storage: storage,
     limits: {filesize: 1000000, files: 2} ,
 }).array('resource', 2);
@@ -52,12 +52,12 @@ router.route('/upload_file')
                         if (err){
                             return console.log("Failed to delete file");
                         }
-                    });  
+                    });
                 }
                 fs.readdir(__base + 'public/uploads/mei', function(err, files){
                     res.render('index', {'files': files, 'err': "Error: must upload two files"});
                 });
-                return;    
+                return;
             }
             //rename img file to have same name as MEI
             var files = [req.files[0].originalname, req.files[1].originalname];
@@ -95,7 +95,7 @@ router.route('/upload_file')
                         return console.log("Failed to rename file");
                     }
                 });
-                //Copy MEI file to backup 
+                //Copy MEI file to backup
                 fs.createReadStream(__base + 'public/uploads/mei/' + files[0])
                     .pipe(fs.createWriteStream(__base + 'public/uploads/backup/' + files[0]));
             }
@@ -127,7 +127,7 @@ router.route('/delete/:filename')
         });
         res.redirect('/');
     });
-    
+
 // redirect to editor
 router.route('/edit/:filename')
     .get(function (req, res) {
@@ -144,10 +144,10 @@ router.route('/edit/:filename')
 router.route('/save/:filename')
 .post(function (req, res) {
     console.log(req.body.fileName);
-    fs.writeFile(__base + "public/" + req.body.fileName, 
+    fs.writeFile(__base + "public/" + req.body.fileName,
         req.body.meiData,
         function(err) {
-            if(err) { 
+            if(err) {
                 return console.log(err);
             }
         }
@@ -160,7 +160,7 @@ router.route('/revert/:filename')
         var file = req.params.filename;
         fs.createReadStream(__base + 'public/uploads/backup/' + file)
             .pipe(fs.createWriteStream(__base + 'public/uploads/mei/' + file));
-        
+
         res.redirect('/edit/' + file);
 });
 

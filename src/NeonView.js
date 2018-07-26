@@ -15,12 +15,12 @@ const verovio = require("verovio-dev");
  */
 function NeonView (params) {
     var viewHeight = 750;
-    var viewWidth = 800; 
+    var viewWidth = 800;
     var meiFile = params.meifile;
     var bgimg = params.bgimg;
     var initialPage = true;
     var vrvToolkit = new verovio.toolkit();
-    
+
     var neon = null;
     var zoomHandler = null;
     var infoBox = null;
@@ -52,7 +52,7 @@ function NeonView (params) {
             group.append(bg);
             group.append(mei);
             $("#svg_output").append(group);
-            loadSvg(); 
+            loadSvg();
 
             var height = parseInt($("#svg_container").attr("height"));
             var width = parseInt($("#svg_container").attr("width"));
@@ -60,13 +60,13 @@ function NeonView (params) {
                 .attr("y", 0)
                 .attr("height", height)
                 .attr("width", width);
-        
+
             $("#svg_group").attr("width", "100%")
                 .attr("height", viewHeight)
                 .attr("viewBox", "0 0 " + width + " " + height);
         }
         else {
-            loadSvg(); 
+            loadSvg();
         }
         Controls.updateSylVisibility();
         Controls.updateHighlight();
@@ -91,15 +91,15 @@ function NeonView (params) {
         var pathSplit = meiFile.split('/');
         var i = pathSplit.length - 1;
         var fn = pathSplit[i];
-        
+
         var meiData = neon.getMEI();
         $.ajax({
             type: "POST",
             url: "/save/" + fn,
             data: {"meiData": meiData,
                     "fileName": meiFile}
-        }) 
-    } 
+        })
+    }
 
     /**
      * Load the SVG and put it in the SVG container.
@@ -107,7 +107,7 @@ function NeonView (params) {
     function loadSvg() {
         var svg = neon.getSVG();
         $("#mei_output").html(svg);
-        $("#mei_output").children("svg").attr("id", "svg_container"); 
+        $("#mei_output").children("svg").attr("id", "svg_container");
     }
 
     /**

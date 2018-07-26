@@ -14,7 +14,7 @@ function DragHandler (neonView) {
         // Adding listeners
         var activeNc = d3.selectAll(".selected");
         var selection = Array.from(activeNc._groups[0]);
-        
+
         dragStartCoords = new Array(activeNc.length);
         dragEndCoords = new Array(activeNc.length);
 
@@ -26,7 +26,7 @@ function DragHandler (neonView) {
         );
 
         var editorAction;
-    
+
         // Drag effects
         function dragStarted () {
             dragStartCoords = d3.mouse(this);
@@ -47,7 +47,7 @@ function DragHandler (neonView) {
             dragEndCoords = [d3.event.x, d3.event.y];
             let paramArray = [];
             selection.forEach((el) => {
-                let singleAction = { action: 'drag', param: { elementId: el.id, 
+                let singleAction = { action: 'drag', param: { elementId: el.id,
                     x: parseInt(dragEndCoords[0] - dragStartCoords[0]),
                     y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -1}
                 };
@@ -57,7 +57,7 @@ function DragHandler (neonView) {
                 "action": "chain",
                 "param": paramArray
             };
-            
+
             neonView.edit(editorAction);
             neonView.refreshPage();
             dragInit();

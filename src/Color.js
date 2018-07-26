@@ -82,7 +82,7 @@ export function unhighlight(staff) {
     });
     $(staff).children(".highlighted").removeClass("highlighted");
 }
-    
+
 /**
  * Color palette from Figure 2 (Colors optimized for color-blind
  * individuals) from "Points of view: Color blindness" by Bang Wong
