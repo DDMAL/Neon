@@ -13,7 +13,6 @@ import * as SelectOptions from "./SelectOptions.js";
  * @param {NeonView} neonView - The NeonView parent.
  */
 export function ClickSelect (dragHandler, neonView) {
-    var lastSelect = new Array(0);
     selectListeners();
 
     //Selection mode toggle
@@ -29,7 +28,7 @@ export function ClickSelect (dragHandler, neonView) {
                     selectClefs(this, dragHandler);
                 }
                 else if($(this).hasClass("custos")){
-                    selectNcs(this, dragHandler, lastSelect);
+                    selectNcs(this, dragHandler);
                 }
             }
             else if ($("#selBySyl").hasClass("is-active") && isNc) {
@@ -53,11 +52,11 @@ export function ClickSelect (dragHandler, neonView) {
                     selectNeumes(this, dragHandler);
                 }
                 else{
-                    selectNcs(this, dragHandler, lastSelect);
+                    selectNcs(this, dragHandler);
                 }
             }
             else if ($("#selByNc").hasClass("is-active") && isNc){
-                selectNcs(this, dragHandler, lastSelect);
+                selectNcs(this, dragHandler);
             }
             else if ($("#selByStaff").hasClass("is-active")) {
                 var staff = $(this).parents(".staff");
@@ -73,7 +72,6 @@ export function ClickSelect (dragHandler, neonView) {
                 console.log("error: selection mode not activated");
                 return;
             }
-            lastSelect = Array.from($(".selected"));
         })
 
         // click away listeners
@@ -287,7 +285,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     Grouping.triggerGrouping("nc");
                 }
                 else if (ncs.length === 1 && noClefOrCustos) {
-                    SelectOptions.triggerNcActions();
+                    SelectOptions.triggerNcActions(ncs);
                 }
                 else {
                     console.log("Warning: no selection made");
@@ -412,13 +410,12 @@ function selectNeumes(el, dragHandler) {
  * Select an nc.
  * @param {SVGSVGElement} el - The nc element to select.
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
- * @param {Array.SVGSVGElement} lastSelect - An array of the last selected elements.
  */
-function selectNcs(el, dragHandler, lastSelect) {
+function selectNcs(el, dragHandler) {
     if(!$(el).hasClass("selected")){
         unselect();
         select(el);
-        SelectOptions.triggerNcActions(lastSelect);
+        SelectOptions.triggerNcActions([el]);
         dragHandler.dragInit();
     }
 }
