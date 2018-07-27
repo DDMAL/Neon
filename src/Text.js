@@ -44,7 +44,7 @@ export function getSylText() {
         }
     });
     if (firstDiamond && !messageSent) {
-        alert("Syllables without text are represented by a \u{25CA}.");
+        lyrics = "<h3>Blank syllables represented by &#x25CA;</h3><hr/>" + lyrics;
         messageSent = true;
     }
     return lyrics.replace(uniToDash, "-");
