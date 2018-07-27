@@ -94,7 +94,7 @@ describe("Test insert editor action", () => {
         };
         neon.edit(editorAction);
         let insertAtts = neon.getElementAttr(neon.info());
-        expect(insertAtts.pname).toBe("a");
+        expect(insertAtts.pname).toBe("g");
         expect(insertAtts.oct).toBe("2");
     });
 });
