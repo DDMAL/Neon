@@ -3,8 +3,8 @@
 import PunctumIcon from "./img/punctum.png";
 import VirgaIcon from "./img/virga.png";
 import DiamondIcon from "./img/diamond.png";
-import WhitePunctumIcon from "./img/white_punct.png";
-import QuilismaIcon from "./img/quilisma.png";
+// import WhitePunctumIcon from "./img/white_punct.png";
+// import QuilismaIcon from "./img/quilisma.png";
 import CustosIcon from "./img/custos.png";
 import CClefIcon from "./img/cClef.png";
 import FClefIcon from "./img/fClef.png";
@@ -33,10 +33,10 @@ export const insertTabHtml = {
         "<button id='virga' class='button insertel smallel' title='virga'><img src='" + VirgaIcon + "' class='image'/></button></p>" +
         "<p class='control'>" +
         "<button id='diamond' class='button insertel smallel' title='inclinatum'><img src='" + DiamondIcon + "' class='image'/></button></p>" +
-        "<p class='control'>" +
+/*        "<p class='control'>" +
         "<button id='white_punct' class='button insertel smallel' title='white punctum'><img src='" + WhitePunctumIcon + "' class='image'/></button></p>" +
         "<p class='control'>" +
-        "<button id='quilisma' class='button insertel smallel' title='quilisma'><img src='" + QuilismaIcon + "' class='image'/></button></p>" +
+        "<button id='quilisma' class='button insertel smallel' title='quilisma'><img src='" + QuilismaIcon + "' class='image'/></button></p>" + */
         "<p class='control'>" +
         "<button id='custos' class='button insertel smallel' title='custos'><img src='" + CustosIcon + "' class='image'/></button></p>",
     groupingTab: "<p class='control'>" +
