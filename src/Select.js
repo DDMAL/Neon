@@ -139,6 +139,10 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                 zoomHandler.startDrag();
             }
         }
+        else if (d3.event.sourceEvent.shiftKey) {
+            panning = true;
+            zoomHandler.startDrag();
+        }
         editing = false;
     }
 
