@@ -4,6 +4,9 @@ import * as Controls from "./Controls.js";
 /** @var {NeonView} */
 var view;
 
+var firstDiamond = false;
+var messageSent = false;
+
 /** @var {boolean} */
 export var editText = false;
 
@@ -15,6 +18,7 @@ export function enableEditText(neonView) {
     editText = true;
     view = neonView;
     Controls.setTextEdit();
+    Controls.updateSylVisibility();
 }
 
 /**
@@ -34,10 +38,15 @@ export function getSylText() {
             });
             lyrics += " </span>";
         }
-        else {
-            lyrics += "<span class='" + syllable.id + "' style='outline: 1px solid;'>&nbsp;&nbsp;</span>";
+        else if (editText){
+            lyrics += "<span class='" + syllable.id + "'>&#x25CA; </span>";
+            firstDiamond = true;
         }
     });
+    if (firstDiamond && !messageSent) {
+        alert("Syllables without text are represented by a \u{25CA}.");
+        messageSent = true;
+    }
     return lyrics.replace(uniToDash, "-");
 }
 
@@ -67,6 +76,6 @@ export function updateSylText(span) {
  * @returns {string}
  */
 function formatRaw(rawString) {
-    let removeNbsp = /&nbsp;/g;
+    let removeNbsp = /&#x25CA;/g;
     return rawString.replace(removeNbsp, "").trim();
 }
