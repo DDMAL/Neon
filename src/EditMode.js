@@ -49,7 +49,6 @@ function EditMode (neonView, meiFile, zoomHandler){
      */
     function resetListeners() {
         select.selectListeners();
-        Controls.setTextEdit(neonView);
     }
 
     ////// TODO: pass to cursorHandler to scale insert image ///////
