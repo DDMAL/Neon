@@ -77,6 +77,7 @@ export const insertTabHtml = {
 export const navbarDropdownMenu =
     "<div class='navbar-item has-dropdown is-hoverable'><a class='navbar-link'>File</a>" +
     "<div class='navbar-dropdown'>" +
+    "<a id='save' class='navbar-item'>Save File</a>" +
     "<a id='getmei' class='navbar-item' href='' download=''> Download MEI </a>" +
     "<a id='getpng' class='navbar-item' href='' download=''> Download PNG </a>" +
     "<a id='revert' class='navbar-item' href=''> Revert </a>";
@@ -123,8 +124,6 @@ export const editControlsPanel =
     "<button class='button' id='undo'>Undo</button></p>" +
     "<p class='control'>" +
     "<button class='button' id='redo'>Redo</button></p>" +
-    "<p class='control'>" +
-    "<button class='button' id='save'>Save Changes</button></p>" +
     "<p class='control'>" +
     "<button class='button' id='delete'>Delete</button></p></div></a>" +
     "<a id='moreEdit' class='panel-block is-invisible'>" +

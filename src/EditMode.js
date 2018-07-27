@@ -32,7 +32,7 @@ function EditMode (neonView, meiFile, zoomHandler){
      */
     function init() {
         dragHandler = new DragHandler(neonView);
-        Controls.initNavbar(meiFile);
+        Controls.initNavbar(meiFile, neonView);
         select = new ClickSelect(dragHandler, neonView);
         insertHandler = new InsertHandler(neonView);
         Controls.bindInsertTabs(insertHandler);

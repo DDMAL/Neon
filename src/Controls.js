@@ -253,10 +253,6 @@ export function initInsertEditControls(neonView) {
         }
     });
 
-    $("#save").on("click", () => {
-        neonView.saveMEI();
-    });
-
     $("#delete").on("click", removeHandler);
     $("body").on("keydown", (evt) => {
         if (evt.key === "d")
@@ -365,10 +361,14 @@ function deactivate(type) {
 /**
  * Set listener on switching EditMode button to File dropdown in the navbar.
  * @param {string} filename - The name of the MEI file.
+ * @param {NeonView} neonView
  */
-export function initNavbar(filename) {
+export function initNavbar(filename, neonView) {
     // setup navbar listeners
-    console.log("Filename: " + filename);
+    $("#save").on("click", () => {
+        neonView.saveMEI();
+    });
+
     $("#revert").on("click", function(){
         if (confirm("Reverting will cause all changes to be lost. Press OK to continue.")) {
             $.ajax({
