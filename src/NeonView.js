@@ -3,6 +3,7 @@ import ZoomHandler from "./Zoom.js";
 import InfoBox from "./InfoBox.js";
 import * as Controls from "./Controls.js";
 import EditMode from "./EditMode.js";
+import * as Compatibility from "./Compatibility.js";
 
 const verovio = require("verovio-dev");
 
@@ -25,6 +26,8 @@ function NeonView (params) {
     var zoomHandler = null;
     var infoBox = null;
     var editMode = null;
+
+    Compatibility.setMode(Compatibility.modes.standalone);
 
     $.get(meiFile, (data) => {
         neon = new Neon(data, vrvToolkit);
@@ -88,17 +91,7 @@ function NeonView (params) {
      * Save the MEI to a file.
      */
     function saveMEI() {
-        var pathSplit = meiFile.split('/');
-        var i = pathSplit.length - 1;
-        var fn = pathSplit[i];
-
-        var meiData = neon.getMEI();
-        $.ajax({
-            type: "POST",
-            url: "/save/" + fn,
-            data: {"meiData": meiData,
-                    "fileName": meiFile}
-        })
+        Compatibility.saveFile(meiFile, neon.getMEI());
     }
 
     function autosave() {

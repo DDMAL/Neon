@@ -1,6 +1,7 @@
 /** @module Controls */
 
 import * as Color from "./Color.js";
+import * as Compatibility from "./Compatibility.js";
 import * as Contents from "./Contents.js";
 import * as Cursor from "./Cursor.js";
 import * as Text from "./Text.js";
@@ -371,10 +372,7 @@ export function initNavbar(filename, neonView) {
 
     $("#revert").on("click", function(){
         if (confirm("Reverting will cause all changes to be lost. Press OK to continue.")) {
-            $.ajax({
-                url: "/revert/" + filename,
-                type: "POST"
-            })
+            Compatibility.revertFile(filename);
         }
     });
 
