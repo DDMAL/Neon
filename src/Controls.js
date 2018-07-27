@@ -368,6 +368,7 @@ function deactivate(type) {
  */
 export function initNavbar(filename) {
     // setup navbar listeners
+    console.log("Filename: " + filename);
     $("#revert").on("click", function(){
         if (confirm("Reverting will cause all changes to be lost. Press OK to continue.")) {
             $.ajax({
@@ -381,7 +382,8 @@ export function initNavbar(filename) {
     $("#getmei").attr("href", filename);
 
     //png download setup
-    var pngFile = filename.split('.', 2)[0] + ".png";
+    let regex = /\/uploads\/mei\/([-\.\w]+)\.mei/;
+    var pngFile = "/uploads/png/" + filename.replace(regex, '$1') + ".png";
     $("#getpng").attr("href", pngFile);
 }
 
