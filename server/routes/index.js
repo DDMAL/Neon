@@ -138,6 +138,7 @@ router.route('/edit/:filename')
         fs.stat(__base + "public/uploads/mei/" + mei, (err, stats) => {
             if (err) {
                 console.error("File of name '" + mei + "' does not exist.");
+                res.render('404', {'meifile': mei});
                 return;
             }
             // Check if a newer autosave exists
