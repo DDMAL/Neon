@@ -114,15 +114,11 @@ function InsertHandler (neonView) {
         }
         else
             $("body").on("click", "#svg_output", handler);
-        
+
         //Disable edit mode listeners
-        $("body").on("keydown", (evt) => {
-            if (evt.key === "Escape") {
-                insertDisabled();
-                $("body").off("keydown", staffHandler);
-                $("body").off("keydown", handler);
-            }
-        });
+        $("body").on("keydown", keydownListener);
+
+        $("body").on("keyup", resetInsertHandler);
 
         $("body").on("click", (evt) => {
             if(evt.target.id != "bgimg" && !($(evt.target).hasClass("insertel") || $(evt.target).hasClass("image"))) {
@@ -130,7 +126,7 @@ function InsertHandler (neonView) {
                 $("body").off("keydown", staffHandler);
                 $("body").off("keydown", handler);
             }
-        })
+        });
     }
 
     /**
@@ -139,9 +135,28 @@ function InsertHandler (neonView) {
     function insertDisabled () {
         type = "";
         removeInsertClickHandlers();
+        $("body").off("keydown", keydownListener);
+        $("body").off("keyup", resetInsertHandler);
         $(".insertel.is-active").removeClass("is-active");
         firstClick = true;
         Cursor.resetCursor();
+    }
+
+    function resetInsertHandler (evt) {
+        if (evt.key === "Shift") {
+            $("body").on("click", "#svg_output", type === "staff" ? staffHandler : handler);
+        }
+    }
+
+    function keydownListener (evt) {
+        if (evt.key === "Escape") {
+            insertDisabled();
+            $("body").off("keydown", staffHandler);
+            $("body").off("keydown", handler);
+        }
+        else if (evt.key === "Shift") {
+            removeInsertClickHandlers();
+        }
     }
 
     /**
