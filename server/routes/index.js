@@ -133,8 +133,25 @@ router.route('/edit/:filename')
     .get(function (req, res) {
         var mei = req.params.filename;
         var bgimg = mei.split('.', 2)[0] + ".png";
-        // Feeds the entire path for compatability with rodan
-        res.render('editor', {'meifile': "/uploads/mei/" + mei, 'bgimg': "/uploads/png/" + bgimg});
+        var autosave = false ;
+        // Check that the MEI exists
+        fs.stat(__base + "public/uploads/mei/" + mei, (err, stats) => {
+            if (err) {
+                console.error("File of name '" + mei + "' does not exist.");
+                res.render('404', {'meifile': mei});
+                return;
+            }
+            // Check if a newer autosave exists
+            fs.stat(__base + "public/uploads/mei-auto/" + mei, (autoErr, autoStats) => {
+                if (!autoErr) {
+                    // Check if the autosave is newer
+                    if (autoStats.mtimeMs > stats.mtimeMs) { // compares time of last modification in terms of ms since posix epoch (January 1 1970, 00:00 UTC)
+                        autosave = true;
+                    }
+                }
+                res.render('editor', {'meifile': "/uploads/mei/" + mei, 'bgimg': "/uploads/png/" + bgimg, 'autosave': autosave});
+            });
+        });
     });
 
 /////////////////
@@ -155,6 +172,15 @@ router.route('/save/:filename')
     console.log("File saved to " + req.body.fileName);
 });
 
+router.route('/autosave/:filename')
+    .post((req, res) => {
+        fs.writeFile(__base + "public/uploads/mei-auto/" + req.params.filename, req.body.data, (err) => {
+            if (err)
+                return console.log(err);
+            console.log("Autosaved " + req.params.filename);
+        });
+    });
+
 router.route('/revert/:filename')
     .post(function(req, res){
         var file = req.params.filename;
@@ -163,5 +189,14 @@ router.route('/revert/:filename')
 
         res.redirect('/edit/' + file);
 });
+
+router.route('/restore/:filename')
+    .post((req, res) => {
+        var file = req.params.filename;
+        fs.createReadStream(__base + 'public/uploads/mei-auto/' + file)
+            .pipe(fs.createWriteStream(__base + 'public/uploads/mei/' + file));
+
+        res.redirect('/edit/' + file);
+    });
 
 module.exports = router;
