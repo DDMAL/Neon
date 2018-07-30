@@ -14,7 +14,7 @@ beforeAll(async () => {
     // Link test MEI/png to public/uploads so we can use them
     fs.linkSync(pathToResources + "test.png", pathToUploads + "png/test.png");
     fs.linkSync(pathToResources + "test.mei", pathToUploads + "mei/test.mei");
-    
+
     // Set up the webdriver
     let options = new firefox.Options()
         .headless();
@@ -30,6 +30,7 @@ afterAll(() => {
     // Clean up test files
     fs.unlinkSync(pathToUploads + "png/test.png");
     fs.unlinkSync(pathToUploads + "mei/test.mei");
+    fs.unlinkSync(pathToUploads + "mei-auto/test.mei");
     if (browser !== null) {
         browser.quit();
     }
@@ -110,7 +111,7 @@ describe("Check Controls UI", () => {
         expect(parseInt(originalSplit[1])).toBeLessThan(parseInt(newSplit[1]));
     });
     */
-    
+
     test("Check MEI Opacity Controls", async () => {
         var opacitySlider = await browser.findElement(By.id("opacitySlider"));
         const actions = browser.actions();
@@ -118,13 +119,13 @@ describe("Check Controls UI", () => {
         await actions.dragAndDrop(opacitySlider, {x: -1 * parseInt(rect.width), y: 0}).perform();
         var meiStyle = await browser.findElement(By.className("definition-scale")).getAttribute("style");
         expect(meiStyle).toContain("opacity: 0;");
-        
+
         var opacityButton = await browser.findElement(By.id("reset-opacity"));
         await actions.click(opacityButton).perform();
         var meiStyle = await browser.findElement(By.className("definition-scale")).getAttribute("style");
         expect(meiStyle).toContain("opacity: 1;");
     });
-    
+
     test("Check Image Opacity Controls", async () => {
         var opacitySlider = await browser.findElement(By.id("bgOpacitySlider"));
         const actions = browser.actions();
@@ -132,7 +133,7 @@ describe("Check Controls UI", () => {
         await actions.dragAndDrop(opacitySlider, {x: -1 * parseInt(rect.width), y: 0}).perform();
         var imgStyle = await browser.findElement(By.id("bgimg")).getAttribute("style");
         expect(imgStyle).toContain("opacity: 0;");
-        
+
         var opacityButton = await browser.findElement(By.id("reset-bg-opacity"));
         await actions.click(opacityButton).perform();
         var imgStyle = await browser.findElement(By.id("bgimg")).getAttribute("style");
