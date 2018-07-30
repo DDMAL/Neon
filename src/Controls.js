@@ -1,6 +1,7 @@
 /** @module Controls */
 
 import * as Color from "./Color.js";
+import * as Compatibility from "./Compatibility.js";
 import * as Contents from "./Contents.js";
 import * as Cursor from "./Cursor.js";
 import * as Text from "./Text.js";
@@ -371,10 +372,7 @@ export function initNavbar(filename, neonView) {
 
     $("#revert").on("click", function(){
         if (confirm("Reverting will cause all changes to be lost. Press OK to continue.")) {
-            $.ajax({
-                url: "/revert/" + filename,
-                type: "POST"
-            })
+            Compatibility.revertFile(filename);
         }
     });
 
@@ -385,6 +383,14 @@ export function initNavbar(filename, neonView) {
     let regex = /\/uploads\/mei\/([-\.\w]+)\.mei/;
     var pngFile = "/uploads/png/" + filename.replace(regex, '$1') + ".png";
     $("#getpng").attr("href", pngFile);
+
+    if (Compatibility.getMode() === Compatibility.modes.rodan) {
+        $("#finalize").on("click", () => {
+            if (confirm("Finalizing will save your work and end the job. You will not be able to resume it. Continue?")) {
+                Compatibility.finalize(neonView.rodanGetMei());
+            }
+        });
+    }
 }
 
 /**
@@ -395,6 +401,9 @@ export function initEditMode(editMode) {
     $("#edit_mode").on("click", function(){
         $("#dropdown_toggle").empty();
         $("#dropdown_toggle").append(Contents.navbarDropdownMenu);
+        if (Compatibility.getMode() === Compatibility.modes.rodan) {
+            $("#navbar-dropdown-options").append(Contents.navbarFinalize);
+        }
         $("#insert_controls").append(Contents.insertControlsPanel);
         $("#edit_controls").append(Contents.editControlsPanel);
 
