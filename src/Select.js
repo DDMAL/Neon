@@ -260,13 +260,23 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                 syls.forEach(s => {
                     select(s);
                 });
-                if (syls.length > 1 && noClefOrCustos) {
+                if(!noClefOrCustos){
+                    if(notNeumes.length == 1 && ncs.length == 0){
+                        var el = notNeumes[0];
+                        if($(el).hasClass("custos")){
+                            SelectOptions.triggerNcActions();
+                        }
+                        else if($(el).hasClass("clef")){
+                            SelectOptions.triggerClefActions();
+                        }
+                    }
+                }
+                else if (syls.length > 1 && noClefOrCustos) {
                     Grouping.triggerGrouping("syl");
                 }
                 else if (syls.length === 1 && noClefOrCustos) {
                     var syl = syls[0];
                     var nmChildren = $(syl).children(".neume");
-                    console.log(nmChildren);
                     if(nmChildren.length === 1){
                         var neume = nmChildren[0];
                         var ncChildren = $(neume).children();
@@ -294,7 +304,18 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                 neumes.forEach(n => {
                     select(n);
                 });
-                if (neumes.length > 1 && noClefOrCustos) {
+                if(!noClefOrCustos){
+                    if(notNeumes.length == 1 && ncs.length == 0){
+                        var el = notNeumes[0];
+                        if($(el).hasClass("custos")){
+                            SelectOptions.triggerNcActions();
+                        }
+                        else if($(el).hasClass("clef")){
+                            SelectOptions.triggerClefActions();
+                        }
+                    }
+                }
+                else if (neumes.length > 1 && noClefOrCustos) {
                     Grouping.triggerGrouping("neume");
                 }
                 else if (neumes.length == 1 && noClefOrCustos) {
@@ -318,7 +339,18 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                 ncs.forEach(nc => {
                     select(nc);
                 });
-                if (ncs.length === 2 && noClefOrCustos) {
+                if(!noClefOrCustos){
+                    if(notNeumes.length == 1 && ncs.length == 0){
+                        var el = notNeumes[0];
+                        if($(el).hasClass("custos")){
+                            SelectOptions.triggerNcActions();
+                        }
+                        else if($(el).hasClass("clef")){
+                            SelectOptions.triggerClefActions();
+                        }
+                    }
+                }
+                else if (ncs.length === 2 && noClefOrCustos) {
                     Grouping.triggerGrouping("ligature");
                 }
                 else if (ncs.length > 1 && noClefOrCustos) {
