@@ -4,6 +4,10 @@
  * @module compatibility
  */
 
+/**
+ * The modes to run Neon in.
+ * Either standalone (0) or rodan (1).
+ */
 export const modes = {
     standalone: 0,
     rodan: 1
@@ -11,10 +15,27 @@ export const modes = {
 
 var mode;
 
+/**
+ * Set the mode to run Neon in.
+ * @param {@module:compatibility~modes} currentMode
+ */
 export function setMode(currentMode) {
     mode = currentMode;
 }
 
+/**
+ * Return the mode Neon is in.
+ * @returns {integer}
+ */
+export function getMode() {
+    return mode;
+}
+
+/**
+ * Compatible save file function.
+ * @param {string} filename - The path for the MEI file.
+ * @param {string} mei - The MEI data.
+ */
 export function saveFile(filename, mei) {
     var pathSplit = filename.split('/');
     let file = pathSplit[pathSplit.length - 1];
@@ -39,6 +60,10 @@ export function saveFile(filename, mei) {
     }
 }
 
+/**
+ * Compatible revert function.
+ * @param {string} filename
+ */
 export function revertFile(filename) {
     if (mode === modes.standalone) {
         $.ajax({
@@ -54,6 +79,11 @@ export function revertFile(filename) {
     }
 }
 
+/**
+ * Compatible autosave function.
+ * @param {string} filename
+ * @param {string} mei
+ */
 export function autosave(filename, mei) {
     var pathSplit = filename.split('/');
     let file = pathSplit[pathSplit.length - 1];
