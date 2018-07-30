@@ -111,11 +111,11 @@ export function finalize(mei) {
     }
     else if (mode === modes.rodan) {
         $.ajax({
-            url: '',
             type: 'POST',
             data: JSON.stringify({'user_input': mei, 'mode': 'finalize'}),
             contentType: 'application/json',
-        }).done(function() { window.close(); });
+            success: function () { window.close(); }
+        });
     }
     else {
         console.error("Unsupported or unset mode!");

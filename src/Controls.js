@@ -385,8 +385,8 @@ export function initNavbar(filename, neonView) {
     $("#getpng").attr("href", pngFile);
 
     if (Compatibility.getMode() === Compatibility.modes.rodan) {
-        $("#finalize").on("click", function () {
-            if (confirm("Finalizing will save and end this rodan job. Press OK to continue.")) {
+        $("#finalize").on("click", () => {
+            if (confirm("Finalizing will save your work and end the job. You will not be able to resume it. Continue?")) {
                 Compatibility.finalize(neonView.rodanGetMei());
             }
         });
