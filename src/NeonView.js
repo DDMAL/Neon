@@ -3,6 +3,7 @@ import ZoomHandler from "./Zoom.js";
 import InfoBox from "./InfoBox.js";
 import * as Controls from "./Controls.js";
 import EditMode from "./EditMode.js";
+import * as Compatibility from "./Compatibility.js";
 
 const verovio = require("verovio-dev");
 
@@ -12,6 +13,7 @@ const verovio = require("verovio-dev");
  * @param {object} params - An object containing the filenames of the MEI file and background image.
  * @param {string} params.meifile - The filename of the MEI file.
  * @param {string} params.bgimg - The filename of the background image.
+ * @param {string} params.mode - The mode to run Neon in (standalone or rodan).
  */
 function NeonView (params) {
     var viewHeight = 750;
@@ -25,6 +27,12 @@ function NeonView (params) {
     var zoomHandler = null;
     var infoBox = null;
     var editMode = null;
+
+    if (params.mode === "rodan") {
+        Compatibility.setMode(Compatibility.modes.rodan);
+    } else {
+        Compatibility.setMode(Compatibility.modes.standalone);
+    }
 
     $.get(meiFile, (data) => {
         neon = new Neon(data, vrvToolkit);
@@ -88,31 +96,7 @@ function NeonView (params) {
      * Save the MEI to a file.
      */
     function saveMEI() {
-        var pathSplit = meiFile.split('/');
-        var i = pathSplit.length - 1;
-        var fn = pathSplit[i];
-
-        var meiData = neon.getMEI();
-        $.ajax({
-            type: "POST",
-            url: "/save/" + fn,
-            data: {"meiData": meiData,
-                    "fileName": meiFile}
-        })
-    }
-
-    function autosave() {
-        neon.getSVG();
-        var pathSplit = meiFile.split('/');
-        var i = pathSplit.length - 1;
-        var data = neon.getMEI();
-        $.ajax({
-            "type": "POST",
-            "url": "/autosave/" + pathSplit[i],
-            "data": {
-                "data": data
-            }
-        });
+        Compatibility.saveFile(meiFile, neon.getMEI());
     }
 
     /**
@@ -183,7 +167,7 @@ function NeonView (params) {
     function edit(editorAction, addToUndo = true) {
         var val =  neon.edit(editorAction, addToUndo);
         if (val) {
-            autosave();
+            Compatibility.autosave(meiFile, neon.getMEI());
         }
         return val;
     }

@@ -15,5 +15,6 @@ if (autosave) {
 
 var view = new NeonView({
     meifile: meiFile,
-    bgimg: bgImg
+    bgimg: bgImg,
+    mode: "standalone"
 });
