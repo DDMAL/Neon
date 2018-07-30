@@ -17,26 +17,26 @@ export function ClickSelect (dragHandler, neonView) {
 
     //Selection mode toggle
     function selectListeners() {
-        var classesToSelect = ".nc, .clef, .custos";
+        var classesToSelect = "use";
         Controls.initSelectionButtons();
 
         //Activating selected neumes
-        $(classesToSelect).on("click", function() {
-            var isNc= $(this).hasClass("nc");
+        $(classesToSelect).on("mousedown", function() {
+            var isNc= $(this).parent().hasClass("nc");
             if(!isNc && !($("#selByStaff").hasClass("is-active"))){
-                if ($(this).hasClass("clef")){
+                if ($(this).parent().hasClass("clef")){
                     selectClefs(this, dragHandler);
                 }
-                else if($(this).hasClass("custos")){
+                else if($(this).parent().hasClass("custos")){
                     selectNcs(this, dragHandler);
                 }
             }
             else if ($("#selBySyl").hasClass("is-active") && isNc) {
-                var neumeParent = $(this).parent();
+                var neumeParent = $(this).parent().parent();
                 if($(neumeParent).hasClass("neume")){
                     var parentSiblings = Array.from($(neumeParent).siblings());
                     if(parentSiblings.length != 0){
-                        selectSyl(neumeParent, dragHandler);
+                        selectSyl(this, dragHandler);
                     }
                     else{
                         selectNeumes(this, dragHandler);
@@ -47,7 +47,7 @@ export function ClickSelect (dragHandler, neonView) {
                 }
             }
             else if ($("#selByNeume").hasClass("is-active") && isNc){
-                var siblings = Array.from($(this).siblings());
+                var siblings = Array.from($(this).parent().siblings());
                 if(siblings.length != 0) {
                     selectNeumes(this, dragHandler);
                 }
@@ -106,6 +106,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
     var dragSelecting = false;
 
     var canvas = d3.select("#svg_group");
+    
 
     canvas.call(
         d3.drag()
@@ -388,9 +389,9 @@ function select(el) {
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
 function selectSyl(el, dragHandler) {
-    if(!$(el).parent().hasClass("selected")){
+    if(!$(el).parent().parent().parent().hasClass("selected")){
         unselect();
-        select($(el).parent());
+        select($(el).parent().parent().parent());
         SelectOptions.triggerSylActions();
         dragHandler.dragInit();
     }
@@ -402,9 +403,9 @@ function selectSyl(el, dragHandler) {
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
 function selectNeumes(el, dragHandler) {
-    if(!$(el).parent().hasClass("selected")){
+    if(!$(el).parent().parent().hasClass("selected")){
         unselect();
-        select($(el).parent());
+        select($(el).parent().parent());
         SelectOptions.triggerNeumeActions();
         dragHandler.dragInit();
     }
@@ -416,9 +417,9 @@ function selectNeumes(el, dragHandler) {
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
 function selectNcs(el, dragHandler) {
-    if(!$(el).hasClass("selected")){
+    if(!$(el).parent().hasClass("selected")){
         unselect();
-        select(el);
+        select($(el).parent());
         SelectOptions.triggerNcActions([el]);
         dragHandler.dragInit();
     }
@@ -430,9 +431,9 @@ function selectNcs(el, dragHandler) {
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
 function selectClefs(el, dragHandler){
-    if(!$(el).hasClass("selected")){
+    if(!$(el).parent().hasClass("selected")){
         unselect();
-        select(el);
+        select($(el).parent());
         SelectOptions.triggerClefActions();
         dragHandler.dragInit();
     }
