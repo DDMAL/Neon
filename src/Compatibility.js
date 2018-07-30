@@ -98,7 +98,11 @@ export function autosave(filename, mei) {
         });
     }
     else if (mode === modes.rodan) {
-        console.warn("Rodan autosave not yet implemented");
+        $.ajax({
+            "type": "POST",
+            "data": JSON.stringify({"user_input": mei, "mode": "autosave"}),
+            "contentType": "application/json",
+        });
     }
     else {
         console.error("Unsupported or unset mode!");
@@ -114,7 +118,8 @@ export function finalize(mei) {
             type: 'POST',
             data: JSON.stringify({'user_input': mei, 'mode': 'finalize'}),
             contentType: 'application/json',
-            success: function () { window.close(); }
+            success: function () { window.close(); },
+            error: (jqXHR, textStatus, errorThrown) => { alert(textStatus + " Error: " + errorThrown); }
         });
     }
     else {
