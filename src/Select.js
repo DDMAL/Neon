@@ -17,29 +17,36 @@ export function ClickSelect (dragHandler, neonView) {
 
     //Selection mode toggle
     function selectListeners() {
-        var classesToSelect = ".nc, .clef, .custos";
+        var classesToSelect = "use";
         Controls.initSelectionButtons();
 
         //Activating selected neumes
-        $(classesToSelect).on("click", function() {
-            var isNc= $(this).hasClass("nc");
+        $(classesToSelect).on("mousedown", function() {
+            var isNc= $(this).parent().hasClass("nc");
             if(!isNc && !($("#selByStaff").hasClass("is-active"))){
-                if ($(this).hasClass("clef")){
+                if ($(this).parent().hasClass("clef")){
                     selectClefs(this, dragHandler);
                 }
-                else if($(this).hasClass("custos")){
+                else if($(this).parent().hasClass("custos")){
                     selectNcs(this, dragHandler);
                 }
             }
             else if ($("#selBySyl").hasClass("is-active") && isNc) {
-                var neumeParent = $(this).parent();
+                var ncParent = $(this).parent();
+                var neumeParent = $(this).parent().parent();
                 if($(neumeParent).hasClass("neume")){
-                    var parentSiblings = Array.from($(neumeParent).siblings());
+                    var parentSiblings = Array.from($(neumeParent).siblings(".neume"));
                     if(parentSiblings.length != 0){
-                        selectSyl(neumeParent, dragHandler);
+                        selectSyl(this, dragHandler);
                     }
                     else{
-                        selectNeumes(this, dragHandler);
+                        var ncSiblings = Array.from($(ncParent).siblings(".nc"));
+                        if(ncSiblings != 0){
+                            selectNeumes(this, dragHandler);
+                        }
+                        else{
+                            selectNcs(this, dragHandler);
+                        }  
                     }
                 }
                 else{
@@ -47,7 +54,7 @@ export function ClickSelect (dragHandler, neonView) {
                 }
             }
             else if ($("#selByNeume").hasClass("is-active") && isNc){
-                var siblings = Array.from($(this).siblings());
+                var siblings = Array.from($(this).parent().siblings());
                 if(siblings.length != 0) {
                     selectNeumes(this, dragHandler);
                 }
@@ -106,6 +113,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
     var dragSelecting = false;
 
     var canvas = d3.select("#svg_group");
+    
 
     canvas.call(
         d3.drag()
@@ -252,11 +260,40 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                 syls.forEach(s => {
                     select(s);
                 });
-                if (syls.length > 1 && noClefOrCustos) {
+                if(!noClefOrCustos){
+                    if(notNeumes.length == 1 && ncs.length == 0){
+                        var el = notNeumes[0];
+                        if($(el).hasClass("custos")){
+                            SelectOptions.triggerNcActions();
+                        }
+                        else if($(el).hasClass("clef")){
+                            SelectOptions.triggerClefActions();
+                        }
+                    }
+                }
+                else if (syls.length > 1 && noClefOrCustos) {
                     Grouping.triggerGrouping("syl");
                 }
                 else if (syls.length === 1 && noClefOrCustos) {
-                    SelectOptions.triggerSylActions();
+                    var syl = syls[0];
+                    var nmChildren = $(syl).children(".neume");
+                    if(nmChildren.length === 1){
+                        var neume = nmChildren[0];
+                        var ncChildren = $(neume).children();
+                        if(ncChildren.length === 1){
+                            unselect();
+                            select(ncChildren[0]);
+                            SelectOptions.triggerNcActions();
+                        }
+                        else{
+                            unselect();
+                            select(neume);
+                            SelectOptions.triggerNeumeActions();
+                        }
+                    }
+                    else{
+                        SelectOptions.triggerSylActions();
+                    }
                 }
                 else {
                     console.log("Warning: no selection made");
@@ -267,11 +304,31 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                 neumes.forEach(n => {
                     select(n);
                 });
-                if (neumes.length > 1 && noClefOrCustos) {
+                if(!noClefOrCustos){
+                    if(notNeumes.length == 1 && ncs.length == 0){
+                        var el = notNeumes[0];
+                        if($(el).hasClass("custos")){
+                            SelectOptions.triggerNcActions();
+                        }
+                        else if($(el).hasClass("clef")){
+                            SelectOptions.triggerClefActions();
+                        }
+                    }
+                }
+                else if (neumes.length > 1 && noClefOrCustos) {
                     Grouping.triggerGrouping("neume");
                 }
                 else if (neumes.length == 1 && noClefOrCustos) {
-                    SelectOptions.triggerNeumeActions();
+                    var neume = neumes[0];
+                    var ncChildren = $(neume).children();
+                    if(ncChildren.length == 1){
+                        unselect();
+                        select(ncChildren[0]);
+                        SelectOptions.triggerNcActions();
+                    }
+                    else{
+                        SelectOptions.triggerNeumeActions();
+                    }  
                 }
                 else {
                     console.log("no selection made");
@@ -282,7 +339,18 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                 ncs.forEach(nc => {
                     select(nc);
                 });
-                if (ncs.length === 2 && noClefOrCustos) {
+                if(!noClefOrCustos){
+                    if(notNeumes.length == 1 && ncs.length == 0){
+                        var el = notNeumes[0];
+                        if($(el).hasClass("custos")){
+                            SelectOptions.triggerNcActions();
+                        }
+                        else if($(el).hasClass("clef")){
+                            SelectOptions.triggerClefActions();
+                        }
+                    }
+                }
+                else if (ncs.length === 2 && noClefOrCustos) {
                     Grouping.triggerGrouping("ligature");
                 }
                 else if (ncs.length > 1 && noClefOrCustos) {
@@ -388,9 +456,9 @@ function select(el) {
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
 function selectSyl(el, dragHandler) {
-    if(!$(el).parent().hasClass("selected")){
+    if(!$(el).parent().parent().parent().hasClass("selected")){
         unselect();
-        select($(el).parent());
+        select($(el).parent().parent().parent());
         SelectOptions.triggerSylActions();
         dragHandler.dragInit();
     }
@@ -402,9 +470,9 @@ function selectSyl(el, dragHandler) {
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
 function selectNeumes(el, dragHandler) {
-    if(!$(el).parent().hasClass("selected")){
+    if(!$(el).parent().parent().hasClass("selected")){
         unselect();
-        select($(el).parent());
+        select($(el).parent().parent());
         SelectOptions.triggerNeumeActions();
         dragHandler.dragInit();
     }
@@ -416,9 +484,9 @@ function selectNeumes(el, dragHandler) {
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
 function selectNcs(el, dragHandler) {
-    if(!$(el).hasClass("selected")){
+    if(!$(el).parent().hasClass("selected")){
         unselect();
-        select(el);
+        select($(el).parent());
         SelectOptions.triggerNcActions([el]);
         dragHandler.dragInit();
     }
@@ -430,9 +498,9 @@ function selectNcs(el, dragHandler) {
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
 function selectClefs(el, dragHandler){
-    if(!$(el).hasClass("selected")){
+    if(!$(el).parent().hasClass("selected")){
         unselect();
-        select(el);
+        select($(el).parent());
         SelectOptions.triggerClefActions();
         dragHandler.dragInit();
     }

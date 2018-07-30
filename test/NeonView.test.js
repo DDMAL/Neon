@@ -30,7 +30,10 @@ afterAll(() => {
     // Clean up test files
     fs.unlinkSync(pathToUploads + "png/test.png");
     fs.unlinkSync(pathToUploads + "mei/test.mei");
-    fs.unlinkSync(pathToUploads + "mei-auto/test.mei");
+    try {
+        fs.unlinkSync(pathToUploads + "mei-auto/test.mei");
+    } catch (err) { // this is just to clean up so we don't care if it fails
+    }
     if (browser !== null) {
         browser.quit();
     }

@@ -12,18 +12,17 @@ function DragHandler (neonView) {
      */
     function dragInit () {
         // Adding listeners
+        var dragBehaviour = d3.drag().on("start", dragStarted)
+            .on("drag", dragging)
+            .on("end", dragEnded);
+        
         var activeNc = d3.selectAll(".selected");
         var selection = Array.from(activeNc._groups[0]);
 
         dragStartCoords = new Array(activeNc.length);
         dragEndCoords = new Array(activeNc.length);
 
-        activeNc.call(
-            d3.drag()
-                .on("start", dragStarted)
-                .on("drag", dragging)
-                .on("end", dragEnded)
-        );
+        activeNc.call(dragBehaviour);
 
         var editorAction;
 
@@ -58,10 +57,15 @@ function DragHandler (neonView) {
                 "param": paramArray
             };
 
-            neonView.edit(editorAction);
-            neonView.refreshPage();
+            var xDiff = Math.abs(dragStartCoords[0] - dragEndCoords[0]);
+            var yDiff = Math.abs(dragStartCoords[1] - dragEndCoords[1]);
+
+            if(xDiff > 5 || yDiff > 5){
+                neonView.edit(editorAction);
+                neonView.refreshPage();
+                endOptionsSelection();
+            }
             dragInit();
-            endOptionsSelection();
         }
     }
 
