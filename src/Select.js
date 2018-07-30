@@ -264,7 +264,26 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     Grouping.triggerGrouping("syl");
                 }
                 else if (syls.length === 1 && noClefOrCustos) {
-                    SelectOptions.triggerSylActions();
+                    var syl = syls[0];
+                    var nmChildren = $(syl).children(".neume");
+                    console.log(nmChildren);
+                    if(nmChildren.length === 1){
+                        var neume = nmChildren[0];
+                        var ncChildren = $(neume).children();
+                        if(ncChildren.length === 1){
+                            unselect();
+                            select(ncChildren[0]);
+                            SelectOptions.triggerNcActions();
+                        }
+                        else{
+                            unselect();
+                            select(neume);
+                            SelectOptions.triggerNeumeActions();
+                        }
+                    }
+                    else{
+                        SelectOptions.triggerSylActions();
+                    }
                 }
                 else {
                     console.log("Warning: no selection made");
@@ -279,7 +298,16 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     Grouping.triggerGrouping("neume");
                 }
                 else if (neumes.length == 1 && noClefOrCustos) {
-                    SelectOptions.triggerNeumeActions();
+                    var neume = neumes[0];
+                    var ncChildren = $(neume).children();
+                    if(ncChildren.length == 1){
+                        unselect();
+                        select(ncChildren[0]);
+                        SelectOptions.triggerNcActions();
+                    }
+                    else{
+                        SelectOptions.triggerNeumeActions();
+                    }  
                 }
                 else {
                     console.log("no selection made");
