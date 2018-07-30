@@ -187,6 +187,22 @@ export const staffActionContents =
     "<button id='merge-systems' class='button'>Merge</button></p></div>";
 
 /**
+ * Contents of extra clef action menu.
+ * @type {string}
+ */
+export const clefActionContents = 
+    "<label>Change Clef Shape:&nbsp;</label>" +
+    "<div id='drop_select' class='dropdown'>" +
+    "<div class='dropdown-trigger'>" +
+    "<button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
+    "<span>Clef Shapes</span>" +
+    "<svg class='icon'><use xlink:href='" + Icons + "#dropdown-down'></use></svg></button></div>" +
+    "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
+    "<div class='dropdown-content'>" +
+    "<a id='Punctum' class='dropdown-item'>C Clef</a>" +
+    "<a id='Inclinatum' class='dropdown-item'>F Clef</a></div></div></div>";
+
+/**
  * HTML for grouping selection menu.
  * @type {object}
  */

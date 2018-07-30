@@ -32,14 +32,21 @@ export function ClickSelect (dragHandler, neonView) {
                 }
             }
             else if ($("#selBySyl").hasClass("is-active") && isNc) {
+                var ncParent = $(this).parent();
                 var neumeParent = $(this).parent().parent();
                 if($(neumeParent).hasClass("neume")){
-                    var parentSiblings = Array.from($(neumeParent).siblings());
+                    var parentSiblings = Array.from($(neumeParent).siblings(".neume"));
                     if(parentSiblings.length != 0){
                         selectSyl(this, dragHandler);
                     }
                     else{
-                        selectNeumes(this, dragHandler);
+                        var ncSiblings = Array.from($(ncParent).siblings(".nc"));
+                        if(ncSiblings != 0){
+                            selectNeumes(this, dragHandler);
+                        }
+                        else{
+                            selectNcs(this, dragHandler);
+                        }  
                     }
                 }
                 else{
