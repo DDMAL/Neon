@@ -94,20 +94,6 @@ function NeonView (params) {
         Compatibility.saveFile(meiFile, neon.getMEI());
     }
 
-    function autosave() {
-        neon.getSVG();
-        var pathSplit = meiFile.split('/');
-        var i = pathSplit.length - 1;
-        var data = neon.getMEI();
-        $.ajax({
-            "type": "POST",
-            "url": "/autosave/" + pathSplit[i],
-            "data": {
-                "data": data
-            }
-        });
-    }
-
     /**
      * Load the SVG and put it in the SVG container.
      */
@@ -176,7 +162,7 @@ function NeonView (params) {
     function edit(editorAction, addToUndo = true) {
         var val =  neon.edit(editorAction, addToUndo);
         if (val) {
-            autosave();
+            Compatibility.autosave(meiFile, neon.getMEI());
         }
         return val;
     }

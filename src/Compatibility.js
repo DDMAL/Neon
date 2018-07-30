@@ -53,3 +53,24 @@ export function revertFile(filename) {
         console.error("Unsupported or unset mode!");
     }
 }
+
+export function autosave(filename, mei) {
+    var pathSplit = filename.split('/');
+    let file = pathSplit[pathSplit.length - 1];
+
+    if (mode === modes.standalone) {
+        $.ajax({
+            "type": "POST",
+            "url": "/autosave/" + file,
+            "data": {
+                "data": "data"
+            }
+        });
+    }
+    else if (mode === modes.rodan) {
+        console.warning("Rodan autosave not yet implemented");
+    }
+    else {
+        console.error("Unsupported or unset mode!");
+    }
+}
