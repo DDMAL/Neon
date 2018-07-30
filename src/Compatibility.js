@@ -53,7 +53,7 @@ export function saveFile(filename, mei) {
         );
     }
     else if (mode === modes.rodan) {
-        console.warning("Rodan save not yet implemented!");
+        console.warn("Rodan save not yet implemented!");
     }
     else {
         console.error("Unsupported or unset mode!");
@@ -72,7 +72,7 @@ export function revertFile(filename) {
         });
     }
     else if (mode === modes.rodan) {
-        console.warning("Rodan revert not yet implemented!");
+        console.warn("Rodan revert not yet implemented!");
     }
     else {
         console.error("Unsupported or unset mode!");
@@ -98,7 +98,24 @@ export function autosave(filename, mei) {
         });
     }
     else if (mode === modes.rodan) {
-        console.warning("Rodan autosave not yet implemented");
+        console.warn("Rodan autosave not yet implemented");
+    }
+    else {
+        console.error("Unsupported or unset mode!");
+    }
+}
+
+export function finalize(mei) {
+    if (mode === modes.standalone) {
+        console.error("This should not be called in standalone mode. Please report this.");
+    }
+    else if (mode === modes.rodan) {
+        $.ajax({
+            url: '',
+            type: 'POST',
+            data: JSON.stringify({'user_input': mei, 'mode': 'finalize'}),
+            contentType: 'application/json',
+        }).done(function() { window.close(); });
     }
     else {
         console.error("Unsupported or unset mode!");

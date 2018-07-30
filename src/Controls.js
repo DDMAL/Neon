@@ -383,6 +383,14 @@ export function initNavbar(filename, neonView) {
     let regex = /\/uploads\/mei\/([-\.\w]+)\.mei/;
     var pngFile = "/uploads/png/" + filename.replace(regex, '$1') + ".png";
     $("#getpng").attr("href", pngFile);
+
+    if (Compatibility.getMode() === Compatibility.modes.rodan) {
+        $("#finalize").on("click", function () {
+            if (confirm("Finalizing will save and end this rodan job. Press OK to continue.")) {
+                Compatibility.finalize(neonView.rodanGetMei());
+            }
+        });
+    }
 }
 
 /**
@@ -393,6 +401,9 @@ export function initEditMode(editMode) {
     $("#edit_mode").on("click", function(){
         $("#dropdown_toggle").empty();
         $("#dropdown_toggle").append(Contents.navbarDropdownMenu);
+        if (Compatibility.getMode() === Compatibility.modes.rodan) {
+            $("#navbar-dropdown-options").append(Contents.navbarFinalize);
+        }
         $("#insert_controls").append(Contents.insertControlsPanel);
         $("#edit_controls").append(Contents.editControlsPanel);
 
