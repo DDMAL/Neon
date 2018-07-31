@@ -66,9 +66,12 @@ export function saveFile(filename, mei) {
  */
 export function revertFile(filename) {
     if (mode === modes.standalone) {
+        var pathSplit = filename.split('/');
+        let file = pathSplit[pathSplit.length - 1];
         $.ajax({
             type: "POST",
-            url: "/revert/" + filename
+            url: "/revert/" + file,
+            success: () => { window.location.reload(); }
         });
     }
     else if (mode === modes.rodan) {
