@@ -140,6 +140,13 @@ export function triggerSylActions() {
 }
 
 /**
+ * Trigger extra ligature actions.
+ */
+export function triggerLigActions() {
+    
+}
+
+/**
  * Trigger extra clef actions.
  */
 export function triggerClefActions(clef) {

@@ -12,7 +12,7 @@ import * as SelectOptions from "./SelectOptions.js";
  * @param {DragHandler} dragHandler - An instantiated DragHandler object.
  * @param {NeonView} neonView - The NeonView parent.
  */
-export function ClickSelect (dragHandler, neonView) {
+export function ClickSelect (dragHandler, neonView, neon) {
     selectListeners();
 
     //Selection mode toggle
@@ -28,7 +28,7 @@ export function ClickSelect (dragHandler, neonView) {
                     selectClefs(this, dragHandler);
                 }
                 else if($(this).parent().hasClass("custos")){
-                    selectNcs(this, dragHandler);
+                    selectNcs(this, dragHandler, neon);
                 }
             }
             else if ($("#selBySyl").hasClass("is-active") && isNc) {
@@ -45,7 +45,7 @@ export function ClickSelect (dragHandler, neonView) {
                             selectNeumes(this, dragHandler);
                         }
                         else{
-                            selectNcs(this, dragHandler);
+                            selectNcs(this, dragHandler, neon);
                         }  
                     }
                 }
@@ -59,11 +59,11 @@ export function ClickSelect (dragHandler, neonView) {
                     selectNeumes(this, dragHandler);
                 }
                 else{
-                    selectNcs(this, dragHandler);
+                    selectNcs(this, dragHandler, neon);
                 }
             }
             else if ($("#selByNc").hasClass("is-active") && isNc){
-                selectNcs(this, dragHandler);
+                selectNcs(this, dragHandler, neon);
             }
             else if ($("#selByStaff").hasClass("is-active")) {
                 var staff = $(this).parents(".staff");
@@ -355,7 +355,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     var secondY = $(ncs[1]).children()[0].y.baseVal.value;
 
                     if(secondY > firstY){
-                        Grouping.triggerGrouping("ligature");
+                        Grouping.triggerGrouping("ligatureNc");
                     }
                     else{
                         Grouping.triggerGrouping("nc");
@@ -491,13 +491,40 @@ function selectNeumes(el, dragHandler) {
  * @param {SVGSVGElement} el - The nc element to select.
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
-function selectNcs(el, dragHandler) {
-    if(!$(el).parent().hasClass("selected")){
+function selectNcs(el, dragHandler, neon) {
+    if(!$(el).parent().hasClass("selected")){   
         var parent = $(el).parent();
         unselect();
         select(parent);
-        if(parent.hasClass("nc")){
+        var id = parent[0].id;
+        var attributes = neon.getElementAttr(id);
+        if(attributes.ligature){
+            var prevNc = $(parent).prev();
+            var prevNcId = prevNc[0].id;
+            var prevAttr = neon.getElementAttr(prevNcId);
+
+            if(prevAttr.ligature){
+                select(prevNc);
+            }
+            else{
+                var nextNc = $(parent).next();
+                var nextNcId = nextNc[0].id;
+                var nextAttr = neon.getElementAttr(nextNcId);
+
+                if(nextAttr.id){
+                    select(nextNc);
+                }
+                else{
+                    console.warn("Error: Neither prev or next nc are ligatures");
+                }
+            }
+            Grouping.triggerGrouping("ligature");
+        }
+        else if(parent.hasClass("nc")){
             SelectOptions.triggerNcActions(parent[0]);
+        }
+        else{
+            console.warn("No action triggered!");
         }
         dragHandler.dragInit();
     }

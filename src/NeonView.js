@@ -44,7 +44,7 @@ function NeonView (params) {
         zoomHandler = new ZoomHandler();
         infoBox = new InfoBox(neon);
         Controls.initDisplayControls(zoomHandler);
-        editMode = new EditMode(neonview, meiFile, zoomHandler);
+        editMode = new EditMode(neonview, neon, meiFile, zoomHandler);
         loadView();
         // editMode.getScale();
         Controls.setSylControls();

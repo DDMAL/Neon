@@ -13,7 +13,7 @@ import * as Text from "./Text.js";
  * @param {string} meiFile - The path to the MEi file.
  * @param {module:Zoom~ZoomHandler} zoomHandler - The ZoomHandler object.
  */
-function EditMode (neonView, meiFile, zoomHandler){
+function EditMode (neonView, neon, meiFile, zoomHandler){
     var dragHandler = null;
     var selectOptions = null;
     var select = null;
@@ -33,7 +33,7 @@ function EditMode (neonView, meiFile, zoomHandler){
     function init() {
         dragHandler = new DragHandler(neonView);
         Controls.initNavbar(meiFile, neonView);
-        select = new ClickSelect(dragHandler, neonView);
+        select = new ClickSelect(dragHandler, neonView, neon);
         insertHandler = new InsertHandler(neonView);
         Controls.bindInsertTabs(insertHandler);
         $("#neumeTab").click();
