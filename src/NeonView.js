@@ -44,7 +44,6 @@ function NeonView (params) {
         zoomHandler = new ZoomHandler();
         infoBox = new InfoBox(neon);
         Controls.initDisplayControls(zoomHandler);
-        console.log(neonview);
         editMode = new EditMode(neonview, meiFile, zoomHandler);
         loadView();
         // editMode.getScale();
