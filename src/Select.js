@@ -46,7 +46,7 @@ export function ClickSelect (dragHandler, neonView) {
                         }
                         else{
                             selectNcs(this, dragHandler);
-                        }  
+                        }
                     }
                 }
                 else{
@@ -113,7 +113,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
     var dragSelecting = false;
 
     var canvas = d3.select("#svg_group");
-    
+
 
     canvas.call(
         d3.drag()
@@ -198,11 +198,26 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                 if (d.tagName === "use") {
                     elX = d.x.baseVal.value;
                     elY = d.y.baseVal.value;
+                    return elX > rx && elX < lx  && elY > ry && elY < ly;
                 } else {
-                    elX = d.getBBox().x;
-                    elY = d.getBBox().y;
+                    var uly, ulx, lry, lrx;
+                    (Array.from($(d).children("path"))).forEach(path => {
+                        let box = path.getBBox();
+                        if (uly === undefined || box.y < uly) {
+                            uly = box.y;
+                        }
+                        if (ulx === undefined || box.x < ulx) {
+                            ulx = box.x;
+                        }
+                        if (lry === undefined || box.y + box.height > lry) {
+                            lry = box.y + box.height;
+                        }
+                        if (lrx === undefined || box.x + box.width > lrx) {
+                            lrx = box.x + box.width;
+                        }
+                    });
+                    return !(((rx < ulx && lx < ulx) || (rx > lrx && lx > lrx)) || ((ry < uly && ly < uly) || (ry > lry && ly > lry)));
                 }
-                return elX > rx && elX < lx  && elY > ry && elY < ly;
             });
 
             var syls = [];
@@ -328,7 +343,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     }
                     else{
                         SelectOptions.triggerNeumeActions();
-                    }  
+                    }
                 }
                 else {
                     console.log("no selection made");
