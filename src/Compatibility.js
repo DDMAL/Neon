@@ -72,7 +72,12 @@ export function revertFile(filename) {
         });
     }
     else if (mode === modes.rodan) {
-        console.warn("Rodan revert not yet implemented!");
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify({"user_input": "", "mode": "revert"}),
+            contentType: "application/json",
+            success: () => { window.location.reload(); }
+        });
     }
     else {
         console.error("Unsupported or unset mode!");
