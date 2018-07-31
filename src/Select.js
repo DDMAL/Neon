@@ -351,11 +351,22 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     }
                 }
                 else if (ncs.length === 2 && noClefOrCustos) {
-                    var firstY = $(ncs[0]).children()[0].y.baseVal.value;
-                    var secondY = $(ncs[1]).children()[0].y.baseVal.value;
+                    var firstX = $(ncs[0]).children()[0].x.baseVal.value;
+                    var secondX = $(ncs[1]).children()[0].x.baseVal.value;
+                    var firstY = 0;
+                    var secondY = 0;
+
+                    if(firstX == secondX){
+                        firstY = $(ncs[1]).children()[0].y.baseVal.value;
+                        secondY = $(ncs[0]).children()[0].y.baseVal.value;
+                    }
+                    else{
+                        firstY = $(ncs[0]).children()[0].y.baseVal.value;
+                        secondY = $(ncs[1]).children()[0].y.baseVal.value;
+                    }
 
                     if(secondY > firstY){
-                        Grouping.triggerGrouping("ligatureNc");
+                        Grouping.triggerGrouping("ligature");
                     }
                     else{
                         Grouping.triggerGrouping("nc");
