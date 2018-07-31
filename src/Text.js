@@ -33,9 +33,13 @@ export function getSylText() {
         if ($(syllable).has(".syl").length) {
             let syl = $(syllable).children(".syl")[0];
             lyrics += "<span class='" + syllable.id + "'>";
-            Array.from(syl.children[0].children[0].children).forEach(text => {
-                lyrics += text.textContent;
-            });
+            if (syl.textContent.trim() === "") {
+                lyrics += "&#x25CA; ";
+            } else {
+                Array.from(syl.children[0].children[0].children).forEach(text => {
+                    lyrics += text.textContent !== "" ? text.textContent : "&#x25CA; ";
+                });
+            }
             lyrics += " </span>";
         }
         else if (editText){
