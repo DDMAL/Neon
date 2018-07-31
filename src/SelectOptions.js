@@ -142,10 +142,34 @@ export function triggerSylActions() {
 /**
  * Trigger extra clef actions.
  */
-export function triggerClefActions() {
+export function triggerClefActions(clef) {
     endOptionsSelection();
     $("#moreEdit").removeClass("is-invisible");
     $("#moreEdit").append(Contents.clefActionContents);
+    $("#CClef.dropdown-item").on("click", (evt) => {
+        let setCClef = {
+            "action": "set",
+            "param": {
+                "elementId": clef.id,
+                "attrType": "shape",
+                "attrValue": "C"
+            } 
+        }
+        neonView.edit(setCClef)
+        neonView.refreshPage();
+    })
+    $("#FClef.dropdown-item").on("click", (evt) => {
+        let setFClef = {
+            "action": "set",
+            "param": {
+                "elementId": clef.id,
+                "attrType": "shape",
+                "attrValue": "F"
+            }
+        }
+        neonView.edit(setFClef);
+        neonView.refreshPage(); 
+    })
     initOptionsListeners();
 }
 

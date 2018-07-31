@@ -267,7 +267,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                             SelectOptions.triggerNcActions([el]);
                         }
                         else if($(el).hasClass("clef")){
-                            SelectOptions.triggerClefActions();
+                            SelectOptions.triggerClefActions([el]);
                         }
                     }
                 }
@@ -311,7 +311,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                             SelectOptions.triggerNcActions([el]);
                         }
                         else if($(el).hasClass("clef")){
-                            SelectOptions.triggerClefActions();
+                            SelectOptions.triggerClefActions([el]);
                         }
                     }
                 }
@@ -346,7 +346,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                             SelectOptions.triggerNcActions([el]);
                         }
                         else if($(el).hasClass("clef")){
-                            SelectOptions.triggerClefActions();
+                            SelectOptions.triggerClefActions([el]);
                         }
                     }
                 }
@@ -500,9 +500,10 @@ function selectNcs(el, dragHandler) {
  */
 function selectClefs(el, dragHandler){
     if(!$(el).parent().hasClass("selected")){
+        var parent = $(el).parent();
         unselect();
-        select($(el).parent());
-        SelectOptions.triggerClefActions();
+        select(parent);
+        SelectOptions.triggerClefActions(parent[0]);
         dragHandler.dragInit();
     }
 }
