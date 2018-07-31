@@ -106,7 +106,7 @@ export function ClickSelect (dragHandler, neonView, neon) {
  * @param {module:Zoom~ZoomHandler} zoomHandler - Instantiated ZoomHandler object.
  * @param {NeonView} neonView - NeonView parent.
  */
-export function DragSelect (dragHandler, zoomHandler, neonView) {
+export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
     var initialX = 0;
     var initialY = 0;
     var panning = false;
@@ -366,7 +366,12 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     }
 
                     if(secondY > firstY){
-                        Grouping.triggerGrouping("ligature");
+                        if(isLigature($(ncs[0]), neon) && isLigature($(ncs[1]), neon)){
+                            Grouping.triggerGrouping("ligature");
+                        }
+                        else{
+                            Grouping.triggerGrouping("ligatureNc");
+                        }
                     }
                     else{
                         Grouping.triggerGrouping("nc");
@@ -507,22 +512,15 @@ function selectNcs(el, dragHandler, neon) {
         var parent = $(el).parent();
         unselect();
         select(parent);
-        var id = parent[0].id;
-        var attributes = neon.getElementAttr(id);
-        if(attributes.ligature){
+        if(isLigature(parent, neon)){
             var prevNc = $(parent).prev();
-            var prevNcId = prevNc[0].id;
-            var prevAttr = neon.getElementAttr(prevNcId);
 
-            if(prevAttr.ligature){
+            if(isLigature(prevNc, neon)){
                 select(prevNc);
             }
             else{
                 var nextNc = $(parent).next();
-                var nextNcId = nextNc[0].id;
-                var nextAttr = neon.getElementAttr(nextNcId);
-
-                if(nextAttr.id){
+                if(isLigature(nectNc)){
                     select(nextNc);
                 }
                 else{
@@ -554,6 +552,17 @@ function selectClefs(el, dragHandler){
         SelectOptions.triggerClefActions(parent[0]);
         dragHandler.dragInit();
     }
+}
+
+/**
+ * Check if neume component is part of a ligature
+ * @param {*} nc - The neume component to check.
+ * @param {*} neon - An instantiated Neon.
+ */
+function isLigature(nc, neon){
+    var attributes = neon.getElementAttr(nc[0].id);
+    if(attributes.ligature) return true;
+    return false;
 }
 
 

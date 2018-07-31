@@ -37,7 +37,7 @@ function EditMode (neonView, neon, meiFile, zoomHandler){
         insertHandler = new InsertHandler(neonView);
         Controls.bindInsertTabs(insertHandler);
         $("#neumeTab").click();
-        dragSelect = new DragSelect(dragHandler, zoomHandler, neonView);
+        dragSelect = new DragSelect(dragHandler, zoomHandler, neonView, neon);
         SelectOptions.initNeonView(neonView);
 
         Controls.initInsertEditControls(neonView);
