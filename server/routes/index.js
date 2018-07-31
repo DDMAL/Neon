@@ -186,7 +186,10 @@ router.route('/revert/:filename')
         var file = req.params.filename;
         fs.createReadStream(__base + 'public/uploads/backup/' + file)
             .pipe(fs.createWriteStream(__base + 'public/uploads/mei/' + file));
-        fs.unlinkSync(__base + 'public/uploads/mei-auto/' + file);
+        try {
+            fs.unlinkSync(__base + 'public/uploads/mei-auto/' + file);
+        } catch (err) { console.log("Could not delete autosave: " + err.message); }
+        
         res.redirect('/edit/' + file);
 });
 
