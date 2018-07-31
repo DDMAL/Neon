@@ -206,8 +206,8 @@ export const clefActionContents =
     "<svg class='icon'><use xlink:href='" + Icons + "#dropdown-down'></use></svg></button></div>" +
     "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
     "<div class='dropdown-content'>" +
-    "<a id='Punctum' class='dropdown-item'>C Clef</a>" +
-    "<a id='Inclinatum' class='dropdown-item'>F Clef</a></div></div></div>";
+    "<a id='CClef' class='dropdown-item'>C Clef</a>" +
+    "<a id='FClef' class='dropdown-item'>F Clef</a></div></div></div>";
 
 /**
  * HTML for grouping selection menu.
