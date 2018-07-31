@@ -351,7 +351,15 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     }
                 }
                 else if (ncs.length === 2 && noClefOrCustos) {
-                    Grouping.triggerGrouping("ligature");
+                    var firstY = $(ncs[0]).children()[0].y.baseVal.value;
+                    var secondY = $(ncs[1]).children()[0].y.baseVal.value;
+
+                    if(secondY > firstY){
+                        Grouping.triggerGrouping("ligature");
+                    }
+                    else{
+                        Grouping.triggerGrouping("nc");
+                    }
                 }
                 else if (ncs.length > 1 && noClefOrCustos) {
                     Grouping.triggerGrouping("nc");
