@@ -435,9 +435,7 @@ export function unselect() {
     if (!$("#selByStaff").hasClass("is-active")) {
         Grouping.endGroupingSelection();
     }
-    if ($("#highlightStaves").is(":checked")) {
-        Color.setStaffHighlight();
-    }
+    Controls.updateHighlight();
 }
 
 /**
