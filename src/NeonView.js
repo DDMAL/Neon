@@ -27,23 +27,29 @@ function NeonView (params) {
     var zoomHandler = null;
     var infoBox = null;
     var editMode = null;
-
+    let neonview = this;
     if (params.mode === "rodan") {
         Compatibility.setMode(Compatibility.modes.rodan);
     } else {
         Compatibility.setMode(Compatibility.modes.standalone);
     }
+    if (params.raw === "true") {
+        init(meiFile);
+    } else {
+        $.get(meiFile, init);
+    }
 
-    $.get(meiFile, (data) => {
+    function init(data) {
         neon = new Neon(data, vrvToolkit);
         zoomHandler = new ZoomHandler();
         infoBox = new InfoBox(neon);
         Controls.initDisplayControls(zoomHandler);
-        editMode = new EditMode(this, meiFile, zoomHandler);
+        console.log(neonview);
+        editMode = new EditMode(neonview, meiFile, zoomHandler);
         loadView();
         // editMode.getScale();
         Controls.setSylControls();
-    });
+    }
 
     /**
      * Load the view, including background image and rendered MEI.
