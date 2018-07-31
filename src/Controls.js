@@ -256,7 +256,7 @@ export function initInsertEditControls(neonView) {
 
     $("#delete").on("click", removeHandler);
     $("body").on("keydown", (evt) => {
-        if (evt.key === "d")
+        if (evt.key === "d" || evt.key === "Backspace")
             removeHandler(evt);
     });
 
