@@ -76,6 +76,6 @@ export function updateSylText(span) {
  * @returns {string}
  */
 function formatRaw(rawString) {
-    let removeNbsp = /&#x25CA;/g;
-    return rawString.replace(removeNbsp, "").trim();
+    let removeSymbol = /\u{25CA}/u;
+    return rawString.replace(removeSymbol, "").trim();
 }
