@@ -264,7 +264,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     if(notNeumes.length == 1 && ncs.length == 0){
                         var el = notNeumes[0];
                         if($(el).hasClass("custos")){
-                            SelectOptions.triggerNcActions();
+                            SelectOptions.triggerNcActions([el]);
                         }
                         else if($(el).hasClass("clef")){
                             SelectOptions.triggerClefActions();
@@ -283,7 +283,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                         if(ncChildren.length === 1){
                             unselect();
                             select(ncChildren[0]);
-                            SelectOptions.triggerNcActions();
+                            SelectOptions.triggerNcActions(ncChildren[0]);
                         }
                         else{
                             unselect();
@@ -308,7 +308,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     if(notNeumes.length == 1 && ncs.length == 0){
                         var el = notNeumes[0];
                         if($(el).hasClass("custos")){
-                            SelectOptions.triggerNcActions();
+                            SelectOptions.triggerNcActions([el]);
                         }
                         else if($(el).hasClass("clef")){
                             SelectOptions.triggerClefActions();
@@ -324,7 +324,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     if(ncChildren.length == 1){
                         unselect();
                         select(ncChildren[0]);
-                        SelectOptions.triggerNcActions();
+                        SelectOptions.triggerNcActions(ncChildren[0]);
                     }
                     else{
                         SelectOptions.triggerNeumeActions();
@@ -343,7 +343,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     if(notNeumes.length == 1 && ncs.length == 0){
                         var el = notNeumes[0];
                         if($(el).hasClass("custos")){
-                            SelectOptions.triggerNcActions();
+                            SelectOptions.triggerNcActions([el]);
                         }
                         else if($(el).hasClass("clef")){
                             SelectOptions.triggerClefActions();
@@ -357,7 +357,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     Grouping.triggerGrouping("nc");
                 }
                 else if (ncs.length === 1 && noClefOrCustos) {
-                    SelectOptions.triggerNcActions(ncs);
+                    SelectOptions.triggerNcActions(ncs[0]);
                 }
                 else {
                     console.log("Warning: no selection made");
@@ -485,9 +485,10 @@ function selectNeumes(el, dragHandler) {
  */
 function selectNcs(el, dragHandler) {
     if(!$(el).parent().hasClass("selected")){
+        var parent = $(el).parent();
         unselect();
-        select($(el).parent());
-        SelectOptions.triggerNcActions([el]);
+        select(parent);
+        SelectOptions.triggerNcActions(parent[0]);
         dragHandler.dragInit();
     }
 }

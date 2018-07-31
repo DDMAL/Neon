@@ -21,9 +21,9 @@ export function initNeonView(view) {
 //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
 /**
  * Trigger the extra nc action menu.
- * @param {Array.SVGSVGElement} lastSelect - The last selected elements.
+ * @param {SVGSVGElement} nc - The last selected elements.
  */
-export function triggerNcActions(lastSelect) {
+export function triggerNcActions(nc) {
     endOptionsSelection();
     $("#moreEdit").removeClass("is-invisible");
     $("#moreEdit").append(Contents.ncActionContents);
@@ -32,7 +32,7 @@ export function triggerNcActions(lastSelect) {
         let unsetInclinatum = {
             "action": "set",
             "param": {
-                "elementId": lastSelect[0].id,
+                "elementId": nc.id,
                 "attrType": "name",
                 "attrValue": ""
             }
@@ -40,7 +40,7 @@ export function triggerNcActions(lastSelect) {
         let unsetVirga = {
             "action": "set",
             "param": {
-                "elementId": lastSelect[0].id,
+                "elementId": nc.id,
                 "attrType": "diagonalright",
                 "attrValue": ""
             }
@@ -53,7 +53,7 @@ export function triggerNcActions(lastSelect) {
         let setInclinatum = {
             "action": "set",
             "param": {
-                "elementId": lastSelect[0].id,
+                "elementId": nc.id,
                 "attrType": "name",
                 "attrValue": "inclinatum"
             }
@@ -61,7 +61,7 @@ export function triggerNcActions(lastSelect) {
         let unsetVirga = {
             "action": "set",
             "param": {
-                "elementId": lastSelect[0].id,
+                "elementId": nc.id,
                 "attrType": "diagonalright",
                 "attrValue": ""
             }
@@ -74,7 +74,7 @@ export function triggerNcActions(lastSelect) {
         let unsetInclinatum = {
             "action": "set",
             "param": {
-                "elementId": lastSelect[0].id,
+                "elementId": nc.id,
                 "attrType": "name",
                 "attrValue": ""
             }
@@ -82,7 +82,7 @@ export function triggerNcActions(lastSelect) {
         let setVirga = {
             "action": "set",
             "param": {
-                "elementId": lastSelect[0].id,
+                "elementId": nc.id,
                 "attrType": "diagonalright",
                 "attrValue": "u"
             }
