@@ -4,6 +4,7 @@ const editUrl = 'http://localhost:8080/edit/test.mei';
 
 const fs = require("fs");
 const {Builder, By, Key, until} = require('selenium-webdriver');
+const error = require("selenium-webdriver/lib/error");
 const firefox = require('selenium-webdriver/firefox');
 
 var browser = null;
@@ -219,6 +220,20 @@ describe("Check Controls UI", () => {
             let staffClass = await staff.getAttribute("class");
             expect(staffClass).toBe("staff selected");
             await actions.click().perform();
+        });
+
+        test("Delete element", async () => {
+            expect.assertions(1);
+            let selBySylButton = await browser.findElement(By.id("selBySyl"));
+            const actions = browser.actions();
+            await actions.click(selBySylButton).perform();
+            let syl = await browser.findElement(By.className("syllable"));
+            let sylNc = await syl.findElement(By.className("nc"));
+            let id = await sylNc.getAttribute("id");
+            await actions.click(sylNc).perform();
+            let deleteButton = await browser.findElement(By.id("delete"));
+            await actions.click(deleteButton).perform();
+            return expect(browser.findElement(By.id(id))).rejects.toThrowError(error.NoSuchElementError);
         });
     });
 });
