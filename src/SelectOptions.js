@@ -124,6 +124,7 @@ export function triggerNeumeActions() {
         neonView.refreshPage();
     }
     initOptionsListeners();
+    Grouping.initGroupingListeners();
 }
 
 /**
