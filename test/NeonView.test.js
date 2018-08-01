@@ -154,30 +154,71 @@ describe("Check Controls UI", () => {
     });
 
     /// TEST EDIT MODE ///
-    test("Test Edit Mode", async () => {
-        var editBtn = await browser.findElement(By.linkText("Edit MEI"));
-        const actions = browser.actions();
-        await actions.click(editBtn).perform();
-    })
+    describe("Edit Mode", () => {
+        beforeAll(async () => {
+            var editBtn = await browser.findElement(By.linkText("Edit MEI"));
+            const actions = browser.actions();
+            await actions.click(editBtn).perform();
+        });
 
-    //get rid of imaginary numbers
-    test("Test drag selection", async () => {
-        var canvas = await browser.findElement(By.id("svg_output"));
-        const actions = browser.actions();
-        await actions.move({origin: canvas}).press().move({x: 200, y: 200}).perform();
-        await browser.findElement(By.id("selectRect"));
-        await actions.release().perform();
-        await browser.findElement(By.className("selected"));
-    })
+        //get rid of imaginary numbers
+        test("Test drag selection", async () => {
+            var canvas = await browser.findElement(By.id("svg_output"));
+            const actions = browser.actions();
+            await actions.move({origin: canvas}).press().move({x: 200, y: 200}).perform();
+            await browser.findElement(By.id("selectRect"));
+            await actions.release().perform();
+            await browser.findElement(By.className("selected"));
+        });
 
-    test("Test click select .nc", async () => {
-        var selByNcButton = await browser.findElement(By.id("selByNc"));
-        const actions = browser.actions();
-        await actions.click(selByNcButton).perform();
-        var nc = await browser.findElement(By.className("nc"));
-        await actions.click(nc).perform();
-        var ncClass = await nc.getAttribute("class");
-        expect(ncClass).toBe("nc selected");
-        await actions.click().perform();
-    })
+        test("Test click select .nc", async () => {
+            var selByNcButton = await browser.findElement(By.id("selByNc"));
+            const actions = browser.actions();
+            await actions.click(selByNcButton).perform();
+            var nc = await browser.findElement(By.className("nc"));
+            await actions.click(nc).perform();
+            var ncClass = await nc.getAttribute("class");
+            expect(ncClass).toBe("nc selected");
+            await actions.click().perform();
+        });
+
+        test("Click select syllable", async () => {
+            var selBySylButton = await browser.findElement(By.id("selBySyl"));
+            const actions = browser.actions();
+            await actions.click(selBySylButton).perform();
+            expect(await selBySylButton.getAttribute("class")).toContain("is-active");
+            var syl = await browser.findElement(By.id("m-ef58ea53-8d3a-4e9b-9b82-b9a057fe3fe4"));
+            var sylNc = await syl.findElement(By.className("nc"));
+            await actions.click(sylNc).perform();
+            let sylClass = await syl.getAttribute("class");
+            expect(sylClass).toBe("syllable selected");
+            await actions.click().perform();
+        });
+
+        test("Click select neume", async () => {
+            var selByNeumeButton = await browser.findElement(By.id("selByNeume"));
+            const actions = browser.actions();
+            await actions.click(selByNeumeButton).perform();
+            expect(await selByNeumeButton.getAttribute("class")).toContain("is-active");
+            var neume = await browser.findElement(By.className("neume"));
+            var neumeNc = await neume.findElement(By.className("nc"));
+            await actions.click(neumeNc).perform();
+            let neumeClass = await neume.getAttribute("class");
+            expect(neumeClass).toBe("neume selected");
+            await actions.click().perform();
+        });
+
+        test("Click select staff", async () => {
+            var selByStaff = await browser.findElement(By.id("selByStaff"));
+            const actions = browser.actions();
+            await actions.click(selByStaff).perform();
+            expect(await selByStaff.getAttribute("class")).toContain("is-active");
+            var staff = await browser.findElement(By.className("staff"));
+            var nc = await staff.findElement(By.className("nc"));
+            await actions.click(nc).perform();
+            let staffClass = await staff.getAttribute("class");
+            expect(staffClass).toBe("staff selected");
+            await actions.click().perform();
+        });
+    });
 });
