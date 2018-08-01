@@ -48,6 +48,12 @@ function InfoBox(neon) {
                 // Select neume components of selected neume
                 var ncs = element.children(".nc");
                 var contour = getContour(ncs);
+                if(contour == "Clivis"){
+                    var attr = neon.getElementAttr($(ncs[0])[0].id);
+                    if(attr.ligature){
+                        contour = "Ligature";
+                    }
+                }
                 var pitches = getPitches(ncs);
 
                 pitches = pitches.trim().toUpperCase();
