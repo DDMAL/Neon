@@ -235,5 +235,18 @@ describe("Check Controls UI", () => {
             await actions.click(deleteButton).perform();
             return expect(browser.findElement(By.id(id))).rejects.toThrowError(error.NoSuchElementError);
         });
+
+        test("Undo/Redo", async () => {
+            let undoButton = await browser.findElement(By.id("undo"));
+            let redoButton = await browser.findElement(By.id("redo"));
+            const actions = browser.actions();
+            let origCount = (await browser.findElements(By.className("nc"))).length;
+            await actions.click(undoButton).perform();
+            let newCount = (await browser.findElements(By.className("nc"))).length;
+            expect(newCount).toBeGreaterThan(origCount);
+            await actions.click(redoButton).perform();
+            newCount = (await browser.findElements(By.className("nc"))).length;
+            expect(newCount).toEqual(origCount);
+        });
     });
 });
