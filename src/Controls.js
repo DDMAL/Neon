@@ -122,9 +122,12 @@ export function setOpacityFromSlider() {
  * Set listener on staff highlighting checkbox.
  */
 export function setHighlightControls() {
-    $("#highlight-button").on("click", () => {
+    $("#highlight-button").on("click", (evt) => {
+        evt.stopPropagation();
         $("#highlight-dropdown").toggleClass("is-active");
         if ($("#highlight-dropdown").hasClass("is-active")) {
+            console.log("Highlight active");
+            $("body").one("click", highlightClickaway);
             $("#highlight-staff").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
                 $(".highlight-selected").removeClass("highlight-selected");
@@ -149,7 +152,17 @@ export function setHighlightControls() {
                 Color.unsetGroupingHighlight();
             });
         }
+        else {
+            console.log("Highlight deactive");
+            $("body").off("click", highlightClickaway);
+        }
     });
+}
+
+function highlightClickaway () {
+    console.log("Clickaway");
+    $("body").off("click", highlightClickaway);
+    $("#highlight-dropdown").removeClass("is-active");
 }
 
 /**
