@@ -132,23 +132,27 @@ export function setHighlightControls() {
                 $("#highlight-dropdown").removeClass("is-active");
                 $(".highlight-selected").removeClass("highlight-selected");
                 $("#highlight-staff").addClass("highlight-selected");
+                $("#highlight-type").html("&nbsp;- Staff");
                 Color.setGroupingHighlight("staff");
             });
             $("#highlight-syllable").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
                 $(".highlight-selected").removeClass("highlight-selected");
                 $("#highlight-syllable").addClass("highlight-selected");
+                $("#highlight-type").html("&nbsp;- Syllable");
                 Color.setGroupingHighlight("syllable");
             });
             $("#highlight-neume").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
                 $(".highlight-selected").removeClass("highlight-selected");
                 $("#highlight-neume").addClass("highlight-selected");
+                $("#highlight-type").html("&nbsp;- Neume");
                 Color.setGroupingHighlight("neume");
             });
             $("#highlight-none").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
                 $(".highlight-selected").removeClass("highlight-selected");
+                $("#highlight-type").html("&nbsp;- Off");
                 Color.unsetGroupingHighlight();
             });
         }
