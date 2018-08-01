@@ -366,11 +366,16 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                     }
 
                     if(secondY > firstY){
-                        if(isLigature($(ncs[0]), neon) && isLigature($(ncs[1]), neon)){
-                            Grouping.triggerGrouping("ligature");
+                        if($(ncs[0]).parent()[0].id === $(ncs[1]).parent()[0].id){
+                            if(isLigature($(ncs[0]), neon) && isLigature($(ncs[1]), neon)){
+                                Grouping.triggerGrouping("ligature");
+                            }
+                            else{
+                                Grouping.triggerGrouping("ligatureNc");
+                            }
                         }
                         else{
-                            Grouping.triggerGrouping("ligatureNc");
+                            Grouping.triggerGrouping("nc");
                         }
                     }
                     else{
@@ -514,7 +519,6 @@ function selectNcs(el, dragHandler, neon) {
         select(parent);
         if(isLigature(parent, neon)){
             var prevNc = $(parent).prev();
-
             if(isLigature(prevNc, neon)){
                 select(prevNc);
             }
