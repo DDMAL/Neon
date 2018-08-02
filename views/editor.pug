@@ -71,8 +71,9 @@ html(style={height: "100%", overflow: "hidden"})
 
         function hotkeyDialog() {
           alert(
-            "+ \u{2014} Zoom in\ts \u{2014} Save File\tCtrl-z \u{2014} Undo\n" +
-            "\u{2013} \u{2014} Zoom out\th \u{2014} Hide MEI\tCtrl-Z \u{2014} Redo\n" +
-            "0 \u{2014} Zoom reset\n1/2/3/4 \u{2014} Select by Syllable/Neume/Neume Component/Staff");
+            "Hotkey : Action\n\n" +
+            "+ : Zoom in\t\ts : Save File\t\tCtrl-z or \u{2318}-z : Undo\n" +
+            "\u{2013} : Zoom out\t\th : Hide MEI\t\tCtrl-Z or \u{2318}-Z : Redo\n" +
+            "0 : Zoom reset\n\n1/2/3/4 : Select by Syllable/Neume/Neume Component/Staff");
         }
       script(src='/editor.js')
