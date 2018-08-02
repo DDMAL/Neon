@@ -101,7 +101,7 @@ export function autosave(filename, mei) {
             "type": "POST",
             "url": "/autosave/" + file,
             "data": {
-                "data": "data"
+                "data": mei
             }
         });
     }

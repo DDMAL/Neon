@@ -27,11 +27,11 @@ export function initDisplayControls (zHandler) {
     $("#toggleDisplay").on("click", () => {
         if ($("#displayContents").is(":hidden")) {
             $("#displayContents").css("display", "");
-            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-up");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-down");
         }
         else {
             $("#displayContents").css("display", "none");
-            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-down");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-side");
         }
     });
 }
@@ -122,34 +122,48 @@ export function setOpacityFromSlider() {
  * Set listener on staff highlighting checkbox.
  */
 export function setHighlightControls() {
-    $("#highlight-button").on("click", () => {
+    $("#highlight-button").on("click", (evt) => {
+        evt.stopPropagation();
         $("#highlight-dropdown").toggleClass("is-active");
         if ($("#highlight-dropdown").hasClass("is-active")) {
+            $("body").one("click", highlightClickaway);
             $("#highlight-staff").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
                 $(".highlight-selected").removeClass("highlight-selected");
                 $("#highlight-staff").addClass("highlight-selected");
+                $("#highlight-type").html("&nbsp;- Staff");
                 Color.setGroupingHighlight("staff");
             });
             $("#highlight-syllable").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
                 $(".highlight-selected").removeClass("highlight-selected");
                 $("#highlight-syllable").addClass("highlight-selected");
+                $("#highlight-type").html("&nbsp;- Syllable");
                 Color.setGroupingHighlight("syllable");
             });
             $("#highlight-neume").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
                 $(".highlight-selected").removeClass("highlight-selected");
                 $("#highlight-neume").addClass("highlight-selected");
+                $("#highlight-type").html("&nbsp;- Neume");
                 Color.setGroupingHighlight("neume");
             });
             $("#highlight-none").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
                 $(".highlight-selected").removeClass("highlight-selected");
+                $("#highlight-type").html("&nbsp;- Off");
                 Color.unsetGroupingHighlight();
             });
         }
+        else {
+            $("body").off("click", highlightClickaway);
+        }
     });
+}
+
+function highlightClickaway () {
+    $("body").off("click", highlightClickaway);
+    $("#highlight-dropdown").removeClass("is-active");
 }
 
 /**
@@ -222,41 +236,41 @@ export function initInsertEditControls(neonView) {
     $("#toggleInsert").on("click", () => {
         if ($("#insertContents").is(":hidden")) {
             $("#insertContents").css("display", "");
-            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-up");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-down");
 
         } else {
             $("#insertContents").css("display", "none");
-            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-down");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-side");
         }
     });
 
     $("#toggleEdit").on("click", () => {
         if ($("#editContents").is(":hidden")) {
             $("#editContents").css("display", "");
-            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-up");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-down");
         } else {
             $("#editContents").css("display", "none");
-            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-down");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-side");
         }
     });
 
     $("#undo").on("click", undoHandler);
     $("body").on("keydown", (evt) => {
-        if (evt.key === "z" && evt.ctrlKey) {
+        if (evt.key === "z" && (evt.ctrlKey || evt.metaKey)) {
             undoHandler(evt);
         }
     });
 
     $("#redo").on("click", redoHandler);
     $("body").on("keydown", (evt) => {
-        if (evt.key === "Z" && evt.ctrlKey) {
+        if ((evt.key === "Z" || (evt.key === "z" && evt.shiftKey)) && (evt.ctrlKey || evt.metaKey)) {
             redoHandler(evt);
         }
     });
 
     $("#delete").on("click", removeHandler);
     $("body").on("keydown", (evt) => {
-        if (evt.key === "d")
+        if (evt.key === "d" || evt.key === "Backspace")
             removeHandler(evt);
     });
 

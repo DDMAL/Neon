@@ -12,32 +12,56 @@ import * as SelectOptions from "./SelectOptions.js";
  * @param {DragHandler} dragHandler - An instantiated DragHandler object.
  * @param {NeonView} neonView - The NeonView parent.
  */
-export function ClickSelect (dragHandler, neonView, neon) {
+export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
     selectListeners();
 
     //Selection mode toggle
     function selectListeners() {
-        var classesToSelect = "use";
+        var classesToSelect = "use, #svg_group";
         Controls.initSelectionButtons();
 
         //Activating selected neumes
-        $(classesToSelect).on("mousedown", function() {
-            var isNc= $(this).parent().hasClass("nc");
-            if(!isNc && !($("#selByStaff").hasClass("is-active"))){
-                if ($(this).parent().hasClass("clef")){
-                    selectClefs(this, dragHandler);
+        $(classesToSelect).off("mousedown", handler);
+        $(classesToSelect).on("mousedown", handler);
+
+        function handler(evt) {
+            if (this.tagName === "use") {
+                var isNc= $(this).parent().hasClass("nc");
+                if(!isNc && !($("#selByStaff").hasClass("is-active"))){
+                    if ($(this).parent().hasClass("clef")){
+                        selectClefs(this, dragHandler);
+                    }
+                    else if($(this).parent().hasClass("custos")){
+                        selectNcs(this, dragHandler, neon);
+                    }
                 }
-                else if($(this).parent().hasClass("custos")){
-                    selectNcs(this, dragHandler, neon);
+
+                else if ($("#selBySyl").hasClass("is-active") && isNc) {
+                    var ncParent = $(this).parent();
+                    var neumeParent = $(this).parent().parent();
+                    if($(neumeParent).hasClass("neume")){
+                        var parentSiblings = Array.from($(neumeParent).siblings(".neume"));
+                        if(parentSiblings.length != 0){
+                            selectSyl(this, dragHandler);
+                        }
+                        else{
+                            var ncSiblings = Array.from($(ncParent).siblings(".nc"));
+                            if(ncSiblings != 0){
+                                selectNeumes(this, dragHandler);
+                            }
+                            else{
+                                selectNcs(this, dragHandler, neon);
+                            }
+                        }
+                    }
+                    else{
+                        console.log("Error: parent should be neume.");
+                    }
                 }
-            }
-            else if ($("#selBySyl").hasClass("is-active") && isNc) {
-                var ncParent = $(this).parent();
-                var neumeParent = $(this).parent().parent();
-                if($(neumeParent).hasClass("neume")){
-                    var parentSiblings = Array.from($(neumeParent).siblings(".neume"));
-                    if(parentSiblings.length != 0){
-                        selectSyl(this, dragHandler);
+                else if ($("#selByNeume").hasClass("is-active") && isNc){
+                    var siblings = Array.from($(this).parent().siblings());
+                    if(siblings.length != 0) {
+                        selectNeumes(this, dragHandler);
                     }
                     else{
                         var ncSiblings = Array.from($(ncParent).siblings(".nc"));
@@ -49,37 +73,71 @@ export function ClickSelect (dragHandler, neonView, neon) {
                         }  
                     }
                 }
-                else{
-                    console.log("Error: parent should be neume.");
-                }
-            }
-            else if ($("#selByNeume").hasClass("is-active") && isNc){
-                var siblings = Array.from($(this).parent().siblings());
-                if(siblings.length != 0) {
-                    selectNeumes(this, dragHandler);
-                }
-                else{
+                else if ($("#selByNc").hasClass("is-active") && isNc){
                     selectNcs(this, dragHandler, neon);
                 }
+                else if ($("#selByStaff").hasClass("is-active")) {
+                    var staff = $(this).parents(".staff");
+                    if (!staff.hasClass("selected")) {
+                        unselect();
+                        staff.addClass("selected");
+                        Color.highlight(staff[0], "#d00");
+                        SelectOptions.triggerStaffActions();
+                        dragHandler.dragInit();
+                    }
+                }
+                else {
+                    console.log("error: selection mode not activated");
+                    return;
+                }
             }
-            else if ($("#selByNc").hasClass("is-active") && isNc){
-                selectNcs(this, dragHandler, neon);
-            }
-            else if ($("#selByStaff").hasClass("is-active")) {
-                var staff = $(this).parents(".staff");
-                if (!staff.hasClass("selected")) {
+            else {
+                if (!$("#selByStaff").hasClass("is-active")) {
+                    return;
+                }
+                // Check if point is in staff.
+                let staves = Array.from($(".staff"));
+                var container = document.getElementsByClassName("definition-scale")[0];
+                let pt = container.createSVGPoint();
+                pt.x = evt.clientX;
+                pt.y = evt.clientY;
+                let transformMatrix = container.getScreenCTM();
+                pt = pt.matrixTransform(transformMatrix.inverse());
+
+                let selectedStaves = staves.filter((staff) => {
+                    var ulx, uly, lrx, lry;
+                    (Array.from($(staff).children("path"))).forEach(path => {
+                        let box = path.getBBox();
+                        if (uly === undefined || box.y < uly) {
+                            uly = box.y;
+                        }
+                        if (ulx === undefined || box.x < ulx) {
+                            ulx = box.x;
+                        }
+                        if (lry === undefined || box.y + box.height > lry) {
+                            lry = box.y + box.height;
+                        }
+                        if (lrx === undefined || box.x + box.width > lrx) {
+                            lrx = box.x + box.width;
+                        }
+                    });
+                    return (ulx < pt.x && pt.x < lrx) && (uly < pt.y && pt.y < lry);
+                });
+                if (selectedStaves.length != 1) {
                     unselect();
-                    staff.addClass("selected");
-                    Color.highlight(staff[0], "#d00");
+                    return;
+                }
+
+                var staff = selectedStaves[0];
+                if (!$(staff).hasClass("selected")) {
+                    unselect();
+                    $(staff).addClass("selected");
+                    Color.highlight(staff, "#d00");
                     SelectOptions.triggerStaffActions();
                     dragHandler.dragInit();
                 }
             }
-            else {
-                console.log("error: selection mode not activated");
-                return;
-            }
-        })
+        }
 
         // click away listeners
         $("body").on("keydown", (evt) => { // click
@@ -113,7 +171,6 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
     var dragSelecting = false;
 
     var canvas = d3.select("#svg_group");
-    
 
     canvas.call(
         d3.drag()
@@ -135,12 +192,14 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
         })
         if (d3.event.sourceEvent.target.nodeName != "use" && !editing){
             if(!d3.event.sourceEvent.shiftKey){
-                unselect();
-                dragSelecting = true;
-                var initialP = d3.mouse(this);
-                initialX = initialP[0];
-                initialY = initialP[1];
-                initRect(initialX, initialY);
+                if (!$("#selByStaff").hasClass("is-active") || pointNotInStaff(d3.mouse(this))) {
+                    unselect();
+                    dragSelecting = true;
+                    var initialP = d3.mouse(this);
+                    initialX = initialP[0];
+                    initialY = initialP[1];
+                    initRect(initialX, initialY);
+                }
             }
             else {
                 panning = true;
@@ -152,6 +211,30 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
             zoomHandler.startDrag();
         }
         editing = false;
+    }
+
+    function pointNotInStaff(point) {
+        let staves = Array.from($(".staff"));
+        let filtered = staves.filter((staff) => {
+            var ulx, uly, lrx, lry;
+            (Array.from($(staff).children("path"))).forEach(path => {
+                let box = path.getBBox();
+                if (uly === undefined || box.y < uly) {
+                    uly = box.y;
+                }
+                if (ulx === undefined || box.x < ulx) {
+                    ulx = box.x;
+                }
+                if (lry === undefined || box.y + box.height > lry) {
+                    lry = box.y + box.height;
+                }
+                if (lrx === undefined || box.x + box.width > lrx) {
+                    lrx = box.x + box.width;
+                }
+            });
+            return (ulx < point[0] && point[0] < lrx) && (uly < point[1] && point[1] < lry);
+        });
+        return (filtered.length == 0);
     }
 
     /**
@@ -198,11 +281,26 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                 if (d.tagName === "use") {
                     elX = d.x.baseVal.value;
                     elY = d.y.baseVal.value;
+                    return elX > rx && elX < lx  && elY > ry && elY < ly;
                 } else {
-                    elX = d.getBBox().x;
-                    elY = d.getBBox().y;
+                    var uly, ulx, lry, lrx;
+                    (Array.from($(d).children("path"))).forEach(path => {
+                        let box = path.getBBox();
+                        if (uly === undefined || box.y < uly) {
+                            uly = box.y;
+                        }
+                        if (ulx === undefined || box.x < ulx) {
+                            ulx = box.x;
+                        }
+                        if (lry === undefined || box.y + box.height > lry) {
+                            lry = box.y + box.height;
+                        }
+                        if (lrx === undefined || box.x + box.width > lrx) {
+                            lrx = box.x + box.width;
+                        }
+                    });
+                    return !(((rx < ulx && lx < ulx) || (rx > lrx && lx > lrx)) || ((ry < uly && ly < uly) || (ry > lry && ly > lry)));
                 }
-                return elX > rx && elX < lx  && elY > ry && elY < ly;
             });
 
             var syls = [];
@@ -328,7 +426,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                     }
                     else{
                         SelectOptions.triggerNeumeActions();
-                    }  
+                    }
                 }
                 else {
                     console.log("no selection made");
@@ -464,9 +562,7 @@ export function unselect() {
     if (!$("#selByStaff").hasClass("is-active")) {
         Grouping.endGroupingSelection();
     }
-    if ($("#highlightStaves").is(":checked")) {
-        Color.setStaffHighlight();
-    }
+    Controls.updateHighlight();
 }
 
 /**
@@ -524,7 +620,7 @@ function selectNcs(el, dragHandler, neon) {
             }
             else{
                 var nextNc = $(parent).next();
-                if(isLigature(nectNc)){
+                if(isLigature(nextNc, neon)){
                     select(nextNc);
                 }
                 else{

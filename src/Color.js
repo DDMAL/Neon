@@ -90,7 +90,7 @@ export function unhighlight(staff) {
  * https://www.nature.com/articles/nmeth.1618?WT.ec_id=NMETH-201106
  */
 const ColorPalette = [
-    "rgb(0,0,0)",
+//    "rgb(0,0,0)",
     "rgb(230, 159, 0)",
     "rgb(86, 180, 233)",
     "rgb(0, 158, 115)",

@@ -33,7 +33,7 @@ function EditMode (neonView, neon, meiFile, zoomHandler){
     function init() {
         dragHandler = new DragHandler(neonView);
         Controls.initNavbar(meiFile, neonView);
-        select = new ClickSelect(dragHandler, neonView, neon);
+        select = new ClickSelect(dragHandler, zoomHandler, neonView, neon);
         insertHandler = new InsertHandler(neonView);
         Controls.bindInsertTabs(insertHandler);
         $("#neumeTab").click();
@@ -58,8 +58,13 @@ function EditMode (neonView, neon, meiFile, zoomHandler){
     //     vbWidth = parseInt(viewBox.split(" ")[2]);
     // }
 
+    function isInsertMode() {
+        return insertHandler.isInsertMode();
+    }
+
     EditMode.prototype.init = init;
     EditMode.prototype.resetListeners = resetListeners;
+    EditMode.prototype.isInsertMode = isInsertMode;
     // EditMode.prototype.getScale = getScale;
 }
 
