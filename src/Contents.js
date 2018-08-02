@@ -95,7 +95,7 @@ export const navbarFinalize =
  */
 export const insertControlsPanel =
     "<p class='panel-heading' id='insertMenu'>Insert" +
-    "<svg class='icon is-pulled-right'><use id='toggleInsert' xlink:href='" + Icons + "#dropdown-up'></use></svg></p>" +
+    "<svg class='icon is-pulled-right'><use id='toggleInsert' xlink:href='" + Icons + "#dropdown-down'></use></svg></p>" +
     "<div id='insertContents'>" +
     "<p class='panel-tabs'>" +
     "<a id='neumeTab' class='insertTab'>Neume</a>" +
@@ -112,7 +112,7 @@ export const insertControlsPanel =
  */
 export const editControlsPanel =
     "<p class='panel-heading' id='editMenu'>Edit" +
-    "<svg class='icon is-pulled-right'><use id='toggleEdit' xlink:href='" + Icons + "#dropdown-up'></use></svg></p>" +
+    "<svg class='icon is-pulled-right'><use id='toggleEdit' xlink:href='" + Icons + "#dropdown-down'></use></svg></p>" +
     "<div id='editContents'>" +
     "<a class='panel-block'>" +
     "<label>Select By:&nbsp;</label>" +

@@ -27,11 +27,11 @@ export function initDisplayControls (zHandler) {
     $("#toggleDisplay").on("click", () => {
         if ($("#displayContents").is(":hidden")) {
             $("#displayContents").css("display", "");
-            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-up");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-down");
         }
         else {
             $("#displayContents").css("display", "none");
-            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-down");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-side");
         }
     });
 }
@@ -239,21 +239,21 @@ export function initInsertEditControls(neonView) {
     $("#toggleInsert").on("click", () => {
         if ($("#insertContents").is(":hidden")) {
             $("#insertContents").css("display", "");
-            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-up");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-down");
 
         } else {
             $("#insertContents").css("display", "none");
-            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-down");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-side");
         }
     });
 
     $("#toggleEdit").on("click", () => {
         if ($("#editContents").is(":hidden")) {
             $("#editContents").css("display", "");
-            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-up");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-down");
         } else {
             $("#editContents").css("display", "none");
-            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-down");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-side");
         }
     });
 
