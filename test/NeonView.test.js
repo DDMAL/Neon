@@ -5,6 +5,7 @@ const editUrl = 'http://localhost:8080/edit/test.mei';
 const fs = require("fs");
 const {Builder, By, Key, until} = require('selenium-webdriver');
 const error = require("selenium-webdriver/lib/error");
+const input = require("selenium-webdriver/lib/input");
 const firefox = require('selenium-webdriver/firefox');
 
 var browser = null;
@@ -247,6 +248,17 @@ describe("Check Controls UI", () => {
             await actions.click(redoButton).perform();
             newCount = (await browser.findElements(By.className("nc"))).length;
             expect(newCount).toEqual(origCount);
+        });
+
+        // Doesn't test location of insert, only that the handler works.
+        test("Insert Punctum", async () => {
+            let insertPunctum = await browser.findElement(By.id("punctum"));
+            const actions = browser.actions();
+            let ncCount = (await browser.findElements(By.className("nc"))).length;
+            await actions.click(insertPunctum).perform();
+            await actions.move({origin: input.VIEWPORT, x: 520, y: 135}).click().perform();
+            let newNcCount = (await browser.findElements(By.className("nc"))).length;
+            expect(ncCount + 1).toBe(newNcCount);
         });
     });
 });
