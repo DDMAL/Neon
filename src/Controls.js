@@ -126,7 +126,6 @@ export function setHighlightControls() {
         evt.stopPropagation();
         $("#highlight-dropdown").toggleClass("is-active");
         if ($("#highlight-dropdown").hasClass("is-active")) {
-            console.log("Highlight active");
             $("body").one("click", highlightClickaway);
             $("#highlight-staff").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
@@ -157,14 +156,12 @@ export function setHighlightControls() {
             });
         }
         else {
-            console.log("Highlight deactive");
             $("body").off("click", highlightClickaway);
         }
     });
 }
 
 function highlightClickaway () {
-    console.log("Clickaway");
     $("body").off("click", highlightClickaway);
     $("#highlight-dropdown").removeClass("is-active");
 }
