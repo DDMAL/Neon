@@ -122,8 +122,8 @@ function NeonView (params) {
             if (evt.type === "keydown") {
                 switch (evt.key) {
                     case "Shift":
-                        d3.select("body").on(".drag", null);
-                        d3.select("body").call(
+                        d3.select("#svg_output").on(".drag", null);
+                        d3.select("#svg_output").call(
                             d3.drag().on("start", zoomHandler.startDrag)
                                 .on("drag", zoomHandler.dragging)
                         );
@@ -141,7 +141,7 @@ function NeonView (params) {
             else {
                 switch (evt.key) {
                     case "Shift":
-                        d3.select("body").on(".drag", null);
+                        d3.select("#svg_output").on(".drag", null);
                         Cursor.updateCursorTo("");
                         if (editMode.isInsertMode()) {
                             Cursor.updateCursor();
