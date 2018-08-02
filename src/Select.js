@@ -139,7 +139,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView) {
             unselect();
         })
 
-        $(classesToSelect).on("click", function(e){
+        $("use").on("click", function(e){
             e.stopPropagation();
         })
 
