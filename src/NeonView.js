@@ -2,6 +2,7 @@ import Neon from "./Neon.js";
 import ZoomHandler from "./Zoom.js";
 import InfoBox from "./InfoBox.js";
 import * as Controls from "./Controls.js";
+import * as Cursor from "./Cursor.js";
 import EditMode from "./EditMode.js";
 import * as Compatibility from "./Compatibility.js";
 
@@ -126,6 +127,7 @@ function NeonView (params) {
                             d3.drag().on("start", zoomHandler.startDrag)
                                 .on("drag", zoomHandler.dragging)
                         );
+                        Cursor.updateCursorTo("grab");
                         break;
                     case "s":
                         saveMEI();
@@ -140,6 +142,10 @@ function NeonView (params) {
                 switch (evt.key) {
                     case "Shift":
                         d3.select("body").on(".drag", null);
+                        Cursor.updateCursorTo("");
+                        if (editMode.isInsertMode()) {
+                            Cursor.updateCursor();
+                        }
                         break;
                     case "h":
                         $("#mei_output").css("visibility", "visible");

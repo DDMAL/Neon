@@ -58,8 +58,13 @@ function EditMode (neonView, meiFile, zoomHandler){
     //     vbWidth = parseInt(viewBox.split(" ")[2]);
     // }
 
+    function isInsertMode() {
+        return insertHandler.isInsertMode();
+    }
+
     EditMode.prototype.init = init;
     EditMode.prototype.resetListeners = resetListeners;
+    EditMode.prototype.isInsertMode = isInsertMode;
     // EditMode.prototype.getScale = getScale;
 }
 
