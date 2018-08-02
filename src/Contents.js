@@ -197,7 +197,7 @@ export const staffActionContents =
  * Contents of extra clef action menu.
  * @type {string}
  */
-export const clefActionContents = 
+export const clefActionContents =
     "<label>Change Clef Shape:&nbsp;</label>" +
     "<div id='drop_select' class='dropdown'>" +
     "<div class='dropdown-trigger'>" +
@@ -216,7 +216,7 @@ export const clefActionContents =
 export const groupingMenu = {
     "nc": "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
-        "<button class='button' id='groupNcs'>Group Ncs</button></p></div>",
+        "<button class='button' id='groupNcs'>Group Neume Components</button></p></div>",
     "neume": "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
         "<button class='button' id='groupNeumes'>Group Neumes</button></p></div>",
@@ -225,7 +225,7 @@ export const groupingMenu = {
         "<button class='button' id='mergeSyls'>Merge Syllables</button></p></div>",
     "ligature": "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
-        "<button class='button' id='groupNcs'>Group Ncs</button></p></div>" +
+        "<button class='button' id='groupNcs'>Group Neume Components</button></p></div>" +
         "<div><p class='control'>" +
         "<button class='button' id='toggle-ligature'>Toggle Ligature</button></p></div></div>"
 };
