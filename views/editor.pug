@@ -27,11 +27,11 @@ html(style={height: "100%", overflow: "hidden"})
               use(id="toggleDisplay" xlink:href="/img/icons.svg#dropdown-down")
           #displayContents
             a.panel-block.has-text-centered
-              button.button#reset-zoom Zoom
+              button.button#reset-zoom(style={width: "12em"}) Zoom
               input.slider.is-fullwidth#zoomSlider(step="5", min="25", max="400", value="100", type="range")
               output#zoomOutput(for="zoomSlider") 100
             a.panel-block.has-text-centered
-              button.button#reset-opacity Neume Opacity
+              button.button#reset-opacity Glyph Opacity
               input.slider.is-fullwidth#opacitySlider(step="5", min="0", max="100", value="100", type="range")
               output#opacityOutput(for="opacitySlider") 100
             a.panel-block.has-text-centered
