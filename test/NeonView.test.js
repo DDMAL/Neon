@@ -213,6 +213,8 @@ describe("Check Controls UI", () => {
         test("Click select staff", async () => {
             var selByStaff = await browser.findElement(By.id("selByStaff"));
             const actions = browser.actions();
+            expect(await selByStaff.isDisplayed()).toBeTruthy();
+            await browser.executeScript("document.getElementById('selByStaff').scrollIntoView(true);");
             await actions.click(selByStaff).perform();
             expect(await selByStaff.getAttribute("class")).toContain("is-active");
             var staff = await browser.findElement(By.className("staff"));
@@ -255,10 +257,12 @@ describe("Check Controls UI", () => {
             let insertPunctum = await browser.findElement(By.id("punctum"));
             const actions = browser.actions();
             let ncCount = (await browser.findElements(By.className("nc"))).length;
+            let someNc = await browser.findElement(By.className("nc"));
+            await browser.executeScript((id) => { document.getElementById(id).scrollIntoView(true); }, (await someNc.getAttribute("id")));
             await actions.click(insertPunctum).perform();
-            await actions.move({origin: input.VIEWPORT, x: 520, y: 135}).click().perform();
+            await actions.move({origin: someNc, x: 100, y: 100}).click().perform();
             let newNcCount = (await browser.findElements(By.className("nc"))).length;
-            expect(ncCount + 1).toBe(newNcCount);
+            expect(newNcCount).toBe(ncCount + 1);
         });
     });
 });
