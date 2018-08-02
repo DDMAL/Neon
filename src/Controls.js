@@ -27,11 +27,11 @@ export function initDisplayControls (zHandler) {
     $("#toggleDisplay").on("click", () => {
         if ($("#displayContents").is(":hidden")) {
             $("#displayContents").css("display", "");
-            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-up");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-down");
         }
         else {
             $("#displayContents").css("display", "none");
-            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-down");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-side");
         }
     });
 }
@@ -126,7 +126,6 @@ export function setHighlightControls() {
         evt.stopPropagation();
         $("#highlight-dropdown").toggleClass("is-active");
         if ($("#highlight-dropdown").hasClass("is-active")) {
-            console.log("Highlight active");
             $("body").one("click", highlightClickaway);
             $("#highlight-staff").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
@@ -157,14 +156,12 @@ export function setHighlightControls() {
             });
         }
         else {
-            console.log("Highlight deactive");
             $("body").off("click", highlightClickaway);
         }
     });
 }
 
 function highlightClickaway () {
-    console.log("Clickaway");
     $("body").off("click", highlightClickaway);
     $("#highlight-dropdown").removeClass("is-active");
 }
@@ -239,21 +236,21 @@ export function initInsertEditControls(neonView) {
     $("#toggleInsert").on("click", () => {
         if ($("#insertContents").is(":hidden")) {
             $("#insertContents").css("display", "");
-            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-up");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-down");
 
         } else {
             $("#insertContents").css("display", "none");
-            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-down");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-side");
         }
     });
 
     $("#toggleEdit").on("click", () => {
         if ($("#editContents").is(":hidden")) {
             $("#editContents").css("display", "");
-            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-up");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-down");
         } else {
             $("#editContents").css("display", "none");
-            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-down");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-side");
         }
     });
 

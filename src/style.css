@@ -2,7 +2,7 @@
     display: flex;
 }
 
-.item { 
+.item {
     order: 1;
 }
 
@@ -27,4 +27,9 @@
 
 button:focus {
     outline:0;
+}
+
+.scrollable-dropdown {
+    height: 9em;
+    overflow: auto;
 }

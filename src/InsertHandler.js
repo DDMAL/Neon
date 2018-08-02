@@ -244,8 +244,17 @@ function InsertHandler (neonView) {
         $("body").off("click", "#svg_output", handler);
     }
 
+    /**
+     * If Neon is in insert mode.
+     * @returns {boolean}
+     */
+    function isInsertMode() {
+        return (type !== "");
+    }
+
     InsertHandler.prototype.constructor = InsertHandler;
     InsertHandler.prototype.insertActive = insertActive;
     InsertHandler.prototype.insertDisabled = insertDisabled;
+    InsertHandler.prototype.isInsertMode = isInsertMode;
 }
 export {InsertHandler as default};

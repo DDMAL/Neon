@@ -95,7 +95,7 @@ export const navbarFinalize =
  */
 export const insertControlsPanel =
     "<p class='panel-heading' id='insertMenu'>Insert" +
-    "<svg class='icon is-pulled-right'><use id='toggleInsert' xlink:href='" + Icons + "#dropdown-up'></use></svg></p>" +
+    "<svg class='icon is-pulled-right'><use id='toggleInsert' xlink:href='" + Icons + "#dropdown-down'></use></svg></p>" +
     "<div id='insertContents'>" +
     "<p class='panel-tabs'>" +
     "<a id='neumeTab' class='insertTab'>Neume</a>" +
@@ -112,7 +112,7 @@ export const insertControlsPanel =
  */
 export const editControlsPanel =
     "<p class='panel-heading' id='editMenu'>Edit" +
-    "<svg class='icon is-pulled-right'><use id='toggleEdit' xlink:href='" + Icons + "#dropdown-up'></use></svg></p>" +
+    "<svg class='icon is-pulled-right'><use id='toggleEdit' xlink:href='" + Icons + "#dropdown-down'></use></svg></p>" +
     "<div id='editContents'>" +
     "<a class='panel-block'>" +
     "<label>Select By:&nbsp;</label>" +
@@ -165,7 +165,7 @@ export const neumeActionContents =
         "<span>Groupings</span>" +
         "<svg class='icon'><use xlink:href='" + Icons + "#dropdown-down'></use></svg></button></div>" +
         "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
-        "<div class='dropdown-content'>" +
+        "<div class='dropdown-content scrollable-dropdown'>" +
         "<a id='Pes' class='dropdown-item grouping'>Pes</a>" +
         "<a id='Pes subpunctis' class='dropdown-item grouping'>Pes Subpunctis</a>" +
         "<a id='Clivis' class='dropdown-item grouping'>Clivis</a>" +
@@ -197,7 +197,7 @@ export const staffActionContents =
  * Contents of extra clef action menu.
  * @type {string}
  */
-export const clefActionContents = 
+export const clefActionContents =
     "<label>Change Clef Shape:&nbsp;</label>" +
     "<div id='drop_select' class='dropdown'>" +
     "<div class='dropdown-trigger'>" +
@@ -216,7 +216,7 @@ export const clefActionContents =
 export const groupingMenu = {
     "nc": "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
-        "<button class='button' id='groupNcs'>Group Ncs</button></p></div>",
+        "<button class='button' id='groupNcs'>Group Neume Components</button></p></div>",
     "neume": "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
         "<button class='button' id='groupNeumes'>Group Neumes</button></p></div>",
@@ -225,7 +225,7 @@ export const groupingMenu = {
         "<button class='button' id='mergeSyls'>Merge Syllables</button></p></div>",
     "ligature": "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
-        "<button class='button' id='groupNcs'>Group Ncs</button></p></div>" +
+        "<button class='button' id='groupNcs'>Group Neume Components</button></p></div>" +
         "<div><p class='control'>" +
         "<button class='button' id='toggle-ligature'>Toggle Ligature</button></p></div></div>"
 };
