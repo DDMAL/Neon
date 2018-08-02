@@ -1,8 +1,8 @@
-html
+html(style={height: "100%", overflow: "hidden"})
   head
     title Neon2
     script(src='/pretty.js')
-  body
+  body(style={height: "100%", width: "100%", overflow: "hidden"})
     .navbar.is-light
       .navbar-start
         a.navbar-item(href='../')
@@ -18,9 +18,9 @@ html
             a.navbar-item(href="//github.com/DDMAL/Neon2/wiki") Wiki
             a.navbar-item(href="//ddmal.music.mcgill.ca") DDMAL
             a.navbar-item(onclick="hotkeyDialog()") Hotkeys
-    .columns
-      .column#svg_output.is-two-thirds.box(style={overflow: "hidden"})
-      .column.is-one-third
+    .columns(style={overflow: "hidden", height: "100%"})
+      .column#svg_output.is-two-thirds.box(style={overflow: "hidden", height: "750px"})
+      .column.is-one-third.box(style={"overflow-x": "hidden", "overflow-y": "auto"})
         .panel
           p.panel-heading.has-dropdown#displayHeader Display
             svg.icon.is-pulled-right
