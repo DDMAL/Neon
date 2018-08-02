@@ -256,14 +256,14 @@ export function initInsertEditControls(neonView) {
 
     $("#undo").on("click", undoHandler);
     $("body").on("keydown", (evt) => {
-        if (evt.key === "z" && evt.ctrlKey) {
+        if (evt.key === "z" && (evt.ctrlKey || evt.metaKey)) {
             undoHandler(evt);
         }
     });
 
     $("#redo").on("click", redoHandler);
     $("body").on("keydown", (evt) => {
-        if (evt.key === "Z" && evt.ctrlKey) {
+        if ((evt.key === "Z" || (evt.key === "z" && evt.shiftKey)) && (evt.ctrlKey || evt.metaKey)) {
             redoHandler(evt);
         }
     });
