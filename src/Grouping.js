@@ -64,6 +64,7 @@ export function initGroupingListeners(){
     });
     $("#toggle-ligature").on("click", function () {
         var elementIds = getIds();
+        console.log(elementIds);
         var isLigature;
         let ligatureRegex = /#E99[016]/
         if (!ligatureRegex.test(document.getElementById(elementIds[0]).children[0].getAttribute("xlink:href"))) { // SMUFL codes for ligature glyphs
@@ -72,32 +73,15 @@ export function initGroupingListeners(){
             isLigature = false;
         }
 
-        let editorAction1 = {
-            "action": "set",
+        let editorAction = {
+            "action": "toggleLigature",
             "param": {
-                "elementId": elementIds[0],
-                "attrType": "ligature",
-                "attrValue": (!isLigature).toString()
-            }
-        };
-        let editorAction2 = {
-            "action": "set",
-            "param": {
-                "elementId": elementIds[1],
-                "attrType": "ligature",
-                "attrValue": (!isLigature).toString()
+                "elementIds": elementIds,
+                "isLigature": isLigature.toString()
             }
         };
 
-        let chain = {
-            "action": "chain",
-            "param": [
-                editorAction1,
-                editorAction2
-            ]
-        };
-        console.log(chain);
-        neonView.edit(chain);
+        neonView.edit(editorAction);
         neonView.refreshPage();
     });
 }

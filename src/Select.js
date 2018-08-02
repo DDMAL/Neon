@@ -565,7 +565,8 @@ function selectClefs(el, dragHandler){
  */
 function isLigature(nc, neon){
     var attributes = neon.getElementAttr(nc[0].id);
-    if(attributes.ligature) return true;
+    console.log(attributes.ligature);
+    if(attributes.ligature == "true") return true;
     return false;
 }
 
