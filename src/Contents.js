@@ -116,7 +116,7 @@ export const editControlsPanel =
     "<div id='editContents'>" +
     "<a class='panel-block'>" +
     "<label>Select By:&nbsp;</label>" +
-    "<div class='field has-addons'>" +
+    "<div class='field has-addons' style='overflow-x: auto;'>" +
     "<p class='control'>" +
     "<button class='button sel-by is-active' id='selBySyl'>Syllable</button></p>" +
     "<p class='control'>" +
