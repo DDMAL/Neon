@@ -181,6 +181,14 @@ router.route('/autosave/:filename')
         });
     });
 
+router.route('/autosave-clear/:filename')
+    .post((req, res) => {
+        fs.unlink(__base + "public/uploads/mei-auto/" + req.params.filename, (err) => {
+            if (err)
+                return console.log(err)
+        });
+    });
+
 router.route('/revert/:filename')
     .post(function(req, res){
         var file = req.params.filename;
@@ -189,7 +197,7 @@ router.route('/revert/:filename')
         try {
             fs.unlinkSync(__base + 'public/uploads/mei-auto/' + file);
         } catch (err) { console.log("Could not delete autosave: " + err.message); }
-        
+
         res.redirect('/edit/' + file);
 });
 
