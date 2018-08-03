@@ -6,6 +6,7 @@ import * as Contents from "./Contents.js";
 import * as Cursor from "./Cursor.js";
 import * as Text from "./Text.js";
 import * as Select from "./Select.js";
+import * as Notification from "./Notification.js";
 import Icons from "./img/icons.svg";
 
 /** @type {module:Zoom~ZoomHandler} */
@@ -382,6 +383,7 @@ export function initNavbar(filename, neonView) {
     // setup navbar listeners
     $("#save").on("click", () => {
         neonView.saveMEI();
+        Notification.queueNotification("File Saved");
     });
 
     $("#revert").on("click", function(){

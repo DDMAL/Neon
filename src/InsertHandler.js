@@ -1,5 +1,6 @@
 import * as Cursor from "./Cursor.js";
 import InfoBox from "./InfoBox.js";
+import * as Notification from "./Notification.js";
 
 /**
  * Handle inserting new musical elements and communicate this to Verovio.
@@ -127,6 +128,8 @@ function InsertHandler (neonView) {
                 $("body").off("keydown", handler);
             }
         });
+
+        Notification.queueNotification("Insert Mode");
     }
 
     /**
@@ -140,6 +143,7 @@ function InsertHandler (neonView) {
         $(".insertel.is-active").removeClass("is-active");
         firstClick = true;
         Cursor.resetCursor();
+        Notification.queueNotification("Edit Mode");
     }
 
     function resetInsertHandler (evt) {

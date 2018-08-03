@@ -24,12 +24,14 @@ function startNotification() {
 }
 
 function displayNotification(notification) {
-    //TODO actually show it in the DOM
-    console.log(notification);
+    $("#notification-content").append("<p class='box neon-notification'>" + notification + "</p>");
+    $("#notification-content").css("display", "");
 }
 
 function clearOrShowNextNotification() {
     // clear notification currently displayed
+    $("#notification-content").css("display", "none");
+    $("#notification-content").empty();
     if (notifications.length > 0) {
         startNotification();
     } else {
