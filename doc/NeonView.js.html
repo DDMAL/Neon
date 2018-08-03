@@ -30,7 +30,9 @@
 import ZoomHandler from "./Zoom.js";
 import InfoBox from "./InfoBox.js";
 import * as Controls from "./Controls.js";
+import * as Cursor from "./Cursor.js";
 import EditMode from "./EditMode.js";
+import * as Compatibility from "./Compatibility.js";
 
 const verovio = require("verovio-dev");
 
@@ -40,6 +42,7 @@ const verovio = require("verovio-dev");
  * @param {object} params - An object containing the filenames of the MEI file and background image.
  * @param {string} params.meifile - The filename of the MEI file.
  * @param {string} params.bgimg - The filename of the background image.
+ * @param {string} params.mode - The mode to run Neon in (standalone or rodan).
  */
 function NeonView (params) {
     var viewHeight = 750;
@@ -53,17 +56,28 @@ function NeonView (params) {
     var zoomHandler = null;
     var infoBox = null;
     var editMode = null;
+    let neonview = this;
+    if (params.mode === "rodan") {
+        Compatibility.setMode(Compatibility.modes.rodan);
+    } else {
+        Compatibility.setMode(Compatibility.modes.standalone);
+    }
+    if (params.raw === "true") {
+        init(meiFile);
+    } else {
+        $.get(meiFile, init);
+    }
 
-    $.get(meiFile, (data) => {
+    function init(data) {
         neon = new Neon(data, vrvToolkit);
         zoomHandler = new ZoomHandler();
         infoBox = new InfoBox(neon);
         Controls.initDisplayControls(zoomHandler);
-        editMode = new EditMode(this, meiFile, zoomHandler);
+        editMode = new EditMode(neonview, meiFile, zoomHandler);
         loadView();
         // editMode.getScale();
         Controls.setSylControls();
-    });
+    }
 
     /**
      * Load the view, including background image and rendered MEI.
@@ -116,17 +130,7 @@ function NeonView (params) {
      * Save the MEI to a file.
      */
     function saveMEI() {
-        var pathSplit = meiFile.split('/');
-        var i = pathSplit.length - 1;
-        var fn = pathSplit[i];
-
-        var meiData = neon.getMEI();
-        $.ajax({
-            type: "POST",
-            url: "/save/" + fn,
-            data: {"meiData": meiData,
-                    "fileName": meiFile}
-        })
+        Compatibility.saveFile(meiFile, neon.getMEI());
     }
 
     /**
@@ -146,11 +150,12 @@ function NeonView (params) {
             if (evt.type === "keydown") {
                 switch (evt.key) {
                     case "Shift":
-                        d3.select("body").on(".drag", null);
-                        d3.select("body").call(
+                        d3.select("#svg_output").on(".drag", null);
+                        d3.select("#svg_output").call(
                             d3.drag().on("start", zoomHandler.startDrag)
                                 .on("drag", zoomHandler.dragging)
                         );
+                        Cursor.updateCursorTo("grab");
                         break;
                     case "s":
                         saveMEI();
@@ -164,7 +169,11 @@ function NeonView (params) {
             else {
                 switch (evt.key) {
                     case "Shift":
-                        d3.select("body").on(".drag", null);
+                        d3.select("#svg_output").on(".drag", null);
+                        Cursor.updateCursorTo("");
+                        if (editMode.isInsertMode()) {
+                            Cursor.updateCursor();
+                        }
                         break;
                     case "h":
                         $("#mei_output").css("visibility", "visible");
@@ -195,7 +204,11 @@ function NeonView (params) {
      * @returns {boolean} If the action succeeded.
      */
     function edit(editorAction, addToUndo = true) {
-        return neon.edit(editorAction, addToUndo);
+        var val =  neon.edit(editorAction, addToUndo);
+        if (val) {
+            Compatibility.autosave(meiFile, neon.getMEI());
+        }
+        return val;
     }
 
     /**
@@ -240,13 +253,13 @@ export {NeonView as default};
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 26 2018 12:59:16 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 03 2018 11:45:03 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

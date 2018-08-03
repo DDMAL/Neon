@@ -28,6 +28,7 @@
         <article>
             <pre class="prettyprint source linenums"><code>import * as Cursor from "./Cursor.js";
 import InfoBox from "./InfoBox.js";
+import * as Notification from "./Notification.js";
 
 /**
  * Handle inserting new musical elements and communicate this to Verovio.
@@ -143,13 +144,20 @@ function InsertHandler (neonView) {
         else
             $("body").on("click", "#svg_output", handler);
 
-        $("body").on("keydown", (evt) => {
-            if (evt.key === "Escape") {
+        //Disable edit mode listeners
+        $("body").on("keydown", keydownListener);
+
+        $("body").on("keyup", resetInsertHandler);
+
+        $("body").on("click", (evt) => {
+            if(evt.target.id != "bgimg" &amp;&amp; !($(evt.target).hasClass("insertel") || $(evt.target).hasClass("image"))) {
                 insertDisabled();
                 $("body").off("keydown", staffHandler);
                 $("body").off("keydown", handler);
             }
         });
+
+        Notification.queueNotification("Insert Mode");
     }
 
     /**
@@ -158,9 +166,29 @@ function InsertHandler (neonView) {
     function insertDisabled () {
         type = "";
         removeInsertClickHandlers();
+        $("body").off("keydown", keydownListener);
+        $("body").off("keyup", resetInsertHandler);
         $(".insertel.is-active").removeClass("is-active");
         firstClick = true;
         Cursor.resetCursor();
+        Notification.queueNotification("Edit Mode");
+    }
+
+    function resetInsertHandler (evt) {
+        if (evt.key === "Shift") {
+            $("body").on("click", "#svg_output", type === "staff" ? staffHandler : handler);
+        }
+    }
+
+    function keydownListener (evt) {
+        if (evt.key === "Escape") {
+            insertDisabled();
+            $("body").off("keydown", staffHandler);
+            $("body").off("keydown", handler);
+        }
+        else if (evt.key === "Shift") {
+            removeInsertClickHandlers();
+        }
     }
 
     /**
@@ -248,9 +276,18 @@ function InsertHandler (neonView) {
         $("body").off("click", "#svg_output", handler);
     }
 
+    /**
+     * If Neon is in insert mode.
+     * @returns {boolean}
+     */
+    function isInsertMode() {
+        return (type !== "");
+    }
+
     InsertHandler.prototype.constructor = InsertHandler;
     InsertHandler.prototype.insertActive = insertActive;
     InsertHandler.prototype.insertDisabled = insertDisabled;
+    InsertHandler.prototype.isInsertMode = isInsertMode;
 }
 export {InsertHandler as default};
 </code></pre>
@@ -263,13 +300,13 @@ export {InsertHandler as default};
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 26 2018 12:59:16 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 03 2018 11:45:03 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

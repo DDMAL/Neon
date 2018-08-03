@@ -5,6 +5,7 @@ import * as Controls from "./Controls.js";
 import * as Contents from "./Contents.js";
 import * as SelectOptions from "./SelectOptions.js";
 import * as Text from "./Text.js";
+import * as Notification from "./Notification.js";
 
 /**
  * Creates user interface for editing and creates necessary tools.
@@ -31,6 +32,7 @@ function EditMode (neonView, meiFile, zoomHandler){
      * Initialize handlers and controls and create event listeners.
      */
     function init() {
+        Notification.queueNotification("Edit Mode");
         dragHandler = new DragHandler(neonView);
         Controls.initNavbar(meiFile, neonView);
         select = new ClickSelect(dragHandler, zoomHandler, neonView);
