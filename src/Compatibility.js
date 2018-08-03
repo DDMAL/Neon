@@ -4,6 +4,8 @@
  * @module compatibility
  */
 
+import * as Notification from "./Notification.js";
+
 /**
  * The modes to run Neon in.
  * Either standalone (0) or rodan (1).
@@ -127,7 +129,7 @@ export function finalize(mei) {
             data: JSON.stringify({'user_input': mei, 'mode': 'finalize'}),
             contentType: 'application/json',
             success: function () { window.close(); },
-            error: (jqXHR, textStatus, errorThrown) => { alert(textStatus + " Error: " + errorThrown); }
+            error: (jqXHR, textStatus, errorThrown) => { Notification.queueNotification(textStatus + " Error: " + errorThrown); }
         });
     }
     else {

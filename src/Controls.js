@@ -6,8 +6,8 @@ import * as Contents from "./Contents.js";
 import * as Cursor from "./Cursor.js";
 import * as Text from "./Text.js";
 import * as Select from "./Select.js";
-import * as Notification from "./Notification.js";
 import Icons from "./img/icons.svg";
+import * as Notification from "./Notification.js";
 
 /** @type {module:Zoom~ZoomHandler} */
 var zoomHandler;
