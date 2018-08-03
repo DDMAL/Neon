@@ -25,6 +25,14 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
         $(classesToSelect).on("mousedown", handler);
 
         function handler(evt) {
+            var editing = false;
+            var insertEls = Array.from(d3.selectAll(".insertel")._groups[0]);
+            insertEls.forEach(el => {
+                if ($(el).hasClass("is-active")){
+                    editing = true;
+                }
+            })
+            if (editing) { return; }
             if (this.tagName === "use") {
                 var isNc= $(this).parent().hasClass("nc");
                 if(!isNc && !($("#selByStaff").hasClass("is-active"))){
@@ -70,7 +78,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                         }
                         else{
                             selectNcs(this, dragHandler, neon);
-                        }  
+                        }
                     }
                 }
                 else if ($("#selByNc").hasClass("is-active") && isNc){
@@ -609,7 +617,7 @@ function selectNeumes(el, dragHandler) {
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
 function selectNcs(el, dragHandler, neon) {
-    if(!$(el).parent().hasClass("selected")){   
+    if(!$(el).parent().hasClass("selected")){
         var parent = $(el).parent();
         unselect();
         select(parent);
