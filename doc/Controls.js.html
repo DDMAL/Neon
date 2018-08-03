@@ -29,11 +29,13 @@
             <pre class="prettyprint source linenums"><code>/** @module Controls */
 
 import * as Color from "./Color.js";
+import * as Compatibility from "./Compatibility.js";
 import * as Contents from "./Contents.js";
 import * as Cursor from "./Cursor.js";
 import * as Text from "./Text.js";
 import * as Select from "./Select.js";
 import Icons from "./img/icons.svg";
+import * as Notification from "./Notification.js";
 
 /** @type {module:Zoom~ZoomHandler} */
 var zoomHandler;
@@ -54,11 +56,11 @@ export function initDisplayControls (zHandler) {
     $("#toggleDisplay").on("click", () => {
         if ($("#displayContents").is(":hidden")) {
             $("#displayContents").css("display", "");
-            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-up");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-down");
         }
         else {
             $("#displayContents").css("display", "none");
-            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-down");
+            $("#toggleDisplay").attr("xlink:href", Icons + "#dropdown-side");
         }
     });
 }
@@ -149,34 +151,48 @@ export function setOpacityFromSlider() {
  * Set listener on staff highlighting checkbox.
  */
 export function setHighlightControls() {
-    $("#highlight-button").on("click", () => {
+    $("#highlight-button").on("click", (evt) => {
+        evt.stopPropagation();
         $("#highlight-dropdown").toggleClass("is-active");
         if ($("#highlight-dropdown").hasClass("is-active")) {
+            $("body").one("click", highlightClickaway);
             $("#highlight-staff").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
                 $(".highlight-selected").removeClass("highlight-selected");
                 $("#highlight-staff").addClass("highlight-selected");
+                $("#highlight-type").html("&amp;nbsp;- Staff");
                 Color.setGroupingHighlight("staff");
             });
             $("#highlight-syllable").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
                 $(".highlight-selected").removeClass("highlight-selected");
                 $("#highlight-syllable").addClass("highlight-selected");
+                $("#highlight-type").html("&amp;nbsp;- Syllable");
                 Color.setGroupingHighlight("syllable");
             });
             $("#highlight-neume").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
                 $(".highlight-selected").removeClass("highlight-selected");
                 $("#highlight-neume").addClass("highlight-selected");
+                $("#highlight-type").html("&amp;nbsp;- Neume");
                 Color.setGroupingHighlight("neume");
             });
             $("#highlight-none").on("click", () => {
                 $("#highlight-dropdown").removeClass("is-active");
                 $(".highlight-selected").removeClass("highlight-selected");
+                $("#highlight-type").html("&amp;nbsp;- Off");
                 Color.unsetGroupingHighlight();
             });
         }
+        else {
+            $("body").off("click", highlightClickaway);
+        }
     });
+}
+
+function highlightClickaway () {
+    $("body").off("click", highlightClickaway);
+    $("#highlight-dropdown").removeClass("is-active");
 }
 
 /**
@@ -212,7 +228,7 @@ export function updateSylVisibility() {
 export function setTextEdit() {
     let spans = Array.from($("#syl_text").children("p").children("span"));
     spans.forEach(span => {
-        $(span).off("click", update);
+        $(span).off("click");
         $(span).on("click", update);
         function update() {
             Text.updateSylText(span);
@@ -249,45 +265,41 @@ export function initInsertEditControls(neonView) {
     $("#toggleInsert").on("click", () => {
         if ($("#insertContents").is(":hidden")) {
             $("#insertContents").css("display", "");
-            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-up");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-down");
 
         } else {
             $("#insertContents").css("display", "none");
-            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-down");
+            $("#toggleInsert").attr("xlink:href", Icons + "#dropdown-side");
         }
     });
 
     $("#toggleEdit").on("click", () => {
         if ($("#editContents").is(":hidden")) {
             $("#editContents").css("display", "");
-            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-up");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-down");
         } else {
             $("#editContents").css("display", "none");
-            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-down");
+            $("#toggleEdit").attr("xlink:href", Icons + "#dropdown-side");
         }
     });
 
     $("#undo").on("click", undoHandler);
     $("body").on("keydown", (evt) => {
-        if (evt.key === "z" &amp;&amp; evt.ctrlKey) {
+        if (evt.key === "z" &amp;&amp; (evt.ctrlKey || evt.metaKey)) {
             undoHandler(evt);
         }
     });
 
     $("#redo").on("click", redoHandler);
     $("body").on("keydown", (evt) => {
-        if (evt.key === "Z" &amp;&amp; evt.ctrlKey) {
+        if ((evt.key === "Z" || (evt.key === "z" &amp;&amp; evt.shiftKey)) &amp;&amp; (evt.ctrlKey || evt.metaKey)) {
             redoHandler(evt);
         }
     });
 
-    $("#save").on("click", () => {
-        neonView.saveMEI();
-    });
-
     $("#delete").on("click", removeHandler);
     $("body").on("keydown", (evt) => {
-        if (evt.key === "d")
+        if (evt.key === "d" || evt.key === "Backspace")
             removeHandler(evt);
     });
 
@@ -342,7 +354,7 @@ export function bindInsertTabs(insertHandler) {
     $.each(tabIds, function(i, tab) {
         $("#" + tab).on("click", () => {
             deactivate(".insertTab");
-            activate(this.id, insertHandler);
+            activate(tab, insertHandler);
             Cursor.resetCursor();
             $("#insert_data").empty();
             $("#insert_data").append(Contents.insertTabHtml[tab]);
@@ -384,26 +396,27 @@ function activate(id, insertHandler) {
  * @param {string} type - A JQuery selector for the action tab.
  */
 function deactivate(type) {
-    var elList = $(type);
-    for (var i=0; i &lt; elList.length; i++) {
-        if(elList[i].classList.length > 1) {
-            elList[i].classList.remove("is-active");
-        }
-    }
+    var elList = Array.from($(type));
+    elList.forEach((el, i) => {
+        $(elList[i]).removeClass("is-active");
+    })
 }
 
 /**
  * Set listener on switching EditMode button to File dropdown in the navbar.
  * @param {string} filename - The name of the MEI file.
+ * @param {NeonView} neonView
  */
-export function initNavbar(filename) {
+export function initNavbar(filename, neonView) {
     // setup navbar listeners
+    $("#save").on("click", () => {
+        neonView.saveMEI();
+        Notification.queueNotification("File Saved");
+    });
+
     $("#revert").on("click", function(){
         if (confirm("Reverting will cause all changes to be lost. Press OK to continue.")) {
-            $.ajax({
-                url: "/revert/" + filename,
-                type: "POST"
-            })
+            Compatibility.revertFile(filename);
         }
     });
 
@@ -411,8 +424,17 @@ export function initNavbar(filename) {
     $("#getmei").attr("href", filename);
 
     //png download setup
-    var pngFile = filename.split('.', 2)[0] + ".png";
+    let regex = /\/uploads\/mei\/([-\.\w]+)\.mei/;
+    var pngFile = "/uploads/png/" + filename.replace(regex, '$1') + ".png";
     $("#getpng").attr("href", pngFile);
+
+    if (Compatibility.getMode() === Compatibility.modes.rodan) {
+        $("#finalize").on("click", () => {
+            if (confirm("Finalizing will save your work and end the job. You will not be able to resume it. Continue?")) {
+                Compatibility.finalize(neonView.rodanGetMei());
+            }
+        });
+    }
 }
 
 /**
@@ -423,6 +445,9 @@ export function initEditMode(editMode) {
     $("#edit_mode").on("click", function(){
         $("#dropdown_toggle").empty();
         $("#dropdown_toggle").append(Contents.navbarDropdownMenu);
+        if (Compatibility.getMode() === Compatibility.modes.rodan) {
+            $("#navbar-dropdown-options").append(Contents.navbarFinalize);
+        }
         $("#insert_controls").append(Contents.insertControlsPanel);
         $("#edit_controls").append(Contents.editControlsPanel);
 
@@ -516,13 +541,13 @@ export function initSelectionButtons() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 26 2018 12:59:16 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 03 2018 11:45:03 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: InsertHandler</title>
+    <title>JSDoc: Module: Notification</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: InsertHandler</h1>
+    <h1 class="page-title">Module: Notification</h1>
 
     
 
@@ -28,7 +28,6 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>InsertHandler<span class="signature">(neonView)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -38,76 +37,50 @@
     
         
 
-    
-
-    
-    <h4 class="name" id="InsertHandler"><span class="type-signature"></span>new InsertHandler<span class="signature">(neonView)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Handle inserting new musical elements and communicate this to Verovio.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
         
-        <th>Name</th>
-        
+    
+    </div>
 
-        <th>Type</th>
+    
+
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="module-Notification-Notification.html">Notification</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
 
         
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
             
-                <td class="name"><code>neonView</code></td>
+<h4 class="name" id="~notifications"><span class="type-signature">(inner) </span>notifications<span class="type-signature"> :Array.&lt;<a href="module-Notification-Notification.html">module:Notification~Notification</a>></span></h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
             
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="NeonView.html">NeonView</a></span>
+<span class="param-type">Array.&lt;<a href="module-Notification-Notification.html">module:Notification~Notification</a>></span>
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The NeonView parent.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
+        </li>
+    </ul>
 
 
 
@@ -142,7 +115,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InsertHandler.js.html">InsertHandler.js</a>, <a href="InsertHandler.js.html#line10">line 10</a>
+        <a href="Notification.js.html">Notification.js</a>, <a href="Notification.js.html#line6">line 6</a>
     </li></ul></dd>
     
 
@@ -158,20 +131,36 @@
 
 
 
+        
+            
+<h4 class="name" id="~NUMBER_TO_DISPLAY"><span class="type-signature">(inner, constant) </span>NUMBER_TO_DISPLAY<span class="type-signature"> :number</span></h4>
+
+
+
+
+<div class="description">
+    Number of notifications to display at a time.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">number</span>
+
+
+        </li>
+    </ul>
 
 
 
 
 
-
-
-
-
-
-
+<dl class="details">
 
     
-    </div>
 
     
 
@@ -185,6 +174,36 @@
 
     
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Notification.js.html">Notification.js</a>, <a href="Notification.js.html#line13">line 13</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
     
 
     
@@ -196,7 +215,7 @@
     
 
     
-    <h4 class="name" id="~handler"><span class="type-signature">(inner) </span>handler<span class="signature">(evt)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".queueNotification"><span class="type-signature">(static) </span>queueNotification<span class="signature">(notification)</span><span class="type-signature"></span></h4>
     
 
     
@@ -204,7 +223,7 @@
 
 
 <div class="description">
-    Event handler for insert events other than staff. Creates an insert action and sends it to Verovio.
+    Add a notification to the queue.
 </div>
 
 
@@ -240,142 +259,7 @@
 
         <tr>
             
-                <td class="name"><code>evt</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">JQuery event object.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InsertHandler.js.html">InsertHandler.js</a>, <a href="InsertHandler.js.html#line170">line 170</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~insertActive"><span class="type-signature">(inner) </span>insertActive<span class="signature">(buttonId)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Switch to insert mode based on the button pressed.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>buttonId</code></td>
+                <td class="name"><code>notification</code></td>
             
 
             <td class="type">
@@ -391,7 +275,7 @@
 
             
 
-            <td class="description last">The ID of the button pressed.</td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -432,7 +316,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InsertHandler.js.html">InsertHandler.js</a>, <a href="InsertHandler.js.html#line20">line 20</a>
+        <a href="Notification.js.html">Notification.js</a>, <a href="Notification.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -466,7 +350,7 @@
     
 
     
-    <h4 class="name" id="~insertDisabled"><span class="type-signature">(inner) </span>insertDisabled<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~clearOrShowNextNotification"><span class="type-signature">(inner) </span>clearOrShowNextNotification<span class="signature">(currentId)</span><span class="type-signature"></span></h4>
     
 
     
@@ -474,197 +358,7 @@
 
 
 <div class="description">
-    Disable insert mode
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InsertHandler.js.html">InsertHandler.js</a>, <a href="InsertHandler.js.html#line138">line 138</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~isInsertMode"><span class="type-signature">(inner) </span>isInsertMode<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    If Neon is in insert mode.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InsertHandler.js.html">InsertHandler.js</a>, <a href="InsertHandler.js.html#line255">line 255</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~staffHandler"><span class="type-signature">(inner) </span>staffHandler<span class="signature">(evt)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Event handler for staff insertion. Creates an insert action with two points (ul and lr) and sends it to Verovio.
+    Clear the notifications if no more exist or display another from the queue.
 </div>
 
 
@@ -700,13 +394,13 @@
 
         <tr>
             
-                <td class="name"><code>evt</code></td>
+                <td class="name"><code>currentId</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">string</span>
 
 
             
@@ -716,7 +410,7 @@
 
             
 
-            <td class="description last">JQuery event object.</td>
+            <td class="description last">The ID of the notification to be cleared.</td>
         </tr>
 
     
@@ -757,7 +451,228 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InsertHandler.js.html">InsertHandler.js</a>, <a href="InsertHandler.js.html#line201">line 201</a>
+        <a href="Notification.js.html">Notification.js</a>, <a href="Notification.js.html#line53">line 53</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~displayNotification"><span class="type-signature">(inner) </span>displayNotification<span class="signature">(notification)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Display a notification.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>notification</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-Notification-Notification.html">module:Notification~Notification</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Notification.js.html">Notification.js</a>, <a href="Notification.js.html#line43">line 43</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~startNotification"><span class="type-signature">(inner) </span>startNotification<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Start displaying notifications. Called automatically.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Notification.js.html">Notification.js</a>, <a href="Notification.js.html#line30">line 30</a>
     </li></ul></dd>
     
 
@@ -807,7 +722,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 03 2018 11:45:03 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 03 2018 11:45:04 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -49,9 +49,9 @@ export function initNeonView(view) {
 //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
 /**
  * Trigger the extra nc action menu.
- * @param {Array.SVGSVGElement} lastSelect - The last selected elements.
+ * @param {SVGSVGElement} nc - The last selected elements.
  */
-export function triggerNcActions(lastSelect) {
+export function triggerNcActions(nc) {
     endOptionsSelection();
     $("#moreEdit").removeClass("is-invisible");
     $("#moreEdit").append(Contents.ncActionContents);
@@ -60,7 +60,7 @@ export function triggerNcActions(lastSelect) {
         let unsetInclinatum = {
             "action": "set",
             "param": {
-                "elementId": lastSelect[0].id,
+                "elementId": nc.id,
                 "attrType": "name",
                 "attrValue": ""
             }
@@ -68,7 +68,7 @@ export function triggerNcActions(lastSelect) {
         let unsetVirga = {
             "action": "set",
             "param": {
-                "elementId": lastSelect[0].id,
+                "elementId": nc.id,
                 "attrType": "diagonalright",
                 "attrValue": ""
             }
@@ -81,7 +81,7 @@ export function triggerNcActions(lastSelect) {
         let setInclinatum = {
             "action": "set",
             "param": {
-                "elementId": lastSelect[0].id,
+                "elementId": nc.id,
                 "attrType": "name",
                 "attrValue": "inclinatum"
             }
@@ -89,7 +89,7 @@ export function triggerNcActions(lastSelect) {
         let unsetVirga = {
             "action": "set",
             "param": {
-                "elementId": lastSelect[0].id,
+                "elementId": nc.id,
                 "attrType": "diagonalright",
                 "attrValue": ""
             }
@@ -102,7 +102,7 @@ export function triggerNcActions(lastSelect) {
         let unsetInclinatum = {
             "action": "set",
             "param": {
-                "elementId": lastSelect[0].id,
+                "elementId": nc.id,
                 "attrType": "name",
                 "attrValue": ""
             }
@@ -110,7 +110,7 @@ export function triggerNcActions(lastSelect) {
         let setVirga = {
             "action": "set",
             "param": {
-                "elementId": lastSelect[0].id,
+                "elementId": nc.id,
                 "attrType": "diagonalright",
                 "attrValue": "u"
             }
@@ -152,6 +152,7 @@ export function triggerNeumeActions() {
         neonView.refreshPage();
     }
     initOptionsListeners();
+    Grouping.initGroupingListeners();
 }
 
 /**
@@ -170,21 +171,34 @@ export function triggerSylActions() {
 /**
  * Trigger extra clef actions.
  */
-export function triggerClefActions() {
+export function triggerClefActions(clef) {
     endOptionsSelection();
     $("#moreEdit").removeClass("is-invisible");
-    $("#moreEdit").append(
-        "&lt;label>Change Clef Shape:&amp;nbsp;&lt;/label>" +
-        "&lt;div id='drop_select' class='dropdown'>" +
-        "&lt;div class='dropdown-trigger'>" +
-        "&lt;button id='select-options' class='button navbar-link' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-        "&lt;span>Clef Shapes&lt;/span>&lt;span class='icon is-small'>" +
-        "&lt;i class=''>&lt;/i>&lt;/span>&lt;/button>&lt;/div>" +
-        "&lt;div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
-        "&lt;div class='dropdown-content'>" +
-        "&lt;a id='Punctum' class='dropdown-item'>C Clef&lt;/a>" +
-        "&lt;a id='Inclinatum' class='dropdown-item'>F Clef&lt;/a>&lt;/div>&lt;/div>&lt;/div>"
-    );
+    $("#moreEdit").append(Contents.clefActionContents);
+    $("#CClef.dropdown-item").on("click", (evt) => {
+        let setCClef = {
+            "action": "set",
+            "param": {
+                "elementId": clef.id,
+                "attrType": "shape",
+                "attrValue": "C"
+            } 
+        }
+        neonView.edit(setCClef)
+        neonView.refreshPage();
+    })
+    $("#FClef.dropdown-item").on("click", (evt) => {
+        let setFClef = {
+            "action": "set",
+            "param": {
+                "elementId": clef.id,
+                "attrType": "shape",
+                "attrValue": "F"
+            }
+        }
+        neonView.edit(setFClef);
+        neonView.refreshPage(); 
+    })
     initOptionsListeners();
 }
 
@@ -250,13 +264,13 @@ function initOptionsListeners(){
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 26 2018 12:59:16 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 03 2018 11:45:03 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

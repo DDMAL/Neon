@@ -1,10 +1,15 @@
-/** @module notification */
+/** @module Notification */
 
 const uuid = require('uuid/v4');
 
+/** @type {Array.<module:Notification~Notification>} */
 var notifications = new Array(0);
 var notifying = false;
 
+/**
+ * Number of notifications to display at a time.
+ * @type {number}
+ */
 const NUMBER_TO_DISPLAY = 3;
 
 /**
@@ -19,6 +24,9 @@ export function queueNotification(notification) {
     }
 }
 
+/**
+ * Start displaying notifications. Called automatically.
+ */
 function startNotification() {
     if (notifications.length > 0) {
         notifying = true;
@@ -28,12 +36,20 @@ function startNotification() {
     }
 }
 
+/**
+ * Display a notification.
+ * @param {module:Notification~Notification} notification
+ */
 function displayNotification(notification) {
     $("#notification-content").append("<span class='neon-notification' id='" + notification.getId() + "'>" + notification.message + "</span> ");
     $("#notification-content").css("display", "");
     notification.display();
 }
 
+/**
+ * Clear the notifications if no more exist or display another from the queue.
+ * @param {string} currentId - The ID of the notification to be cleared.
+ */
 function clearOrShowNextNotification(currentId) {
     // clear notification currently displayed
     $(".neon-notification").remove("#" + currentId);
@@ -45,6 +61,9 @@ function clearOrShowNextNotification(currentId) {
     }
 }
 
+/**
+ * A class to manage Neon notifications.
+ */
 class Notification {
     /**
      * Create a new notification
