@@ -64,7 +64,6 @@ export function initGroupingListeners(){
     });
     $("#toggle-ligature").on("click", function () {
         var elementIds = getIds();
-        console.log(elementIds);
         var isLigature;
         let ligatureRegex = /#E99[016]/
         if (!ligatureRegex.test(document.getElementById(elementIds[0]).children[0].getAttribute("xlink:href"))) { // SMUFL codes for ligature glyphs

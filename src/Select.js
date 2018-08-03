@@ -656,8 +656,8 @@ function selectClefs(el, dragHandler){
 
 /**
  * Check if neume component is part of a ligature
- * @param {*} nc - The neume component to check.
- * @param {*} neon - An instantiated Neon.
+ * @param {SVGSVGElement} nc - The neume component to check.
+ * @param {module:Neon~Neon} neon - An instantiated Neon.
  */
 function isLigature(nc, neon){
     var attributes = neon.getElementAttr(nc[0].id);

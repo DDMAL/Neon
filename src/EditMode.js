@@ -10,6 +10,7 @@ import * as Text from "./Text.js";
  * Creates user interface for editing and creates necessary tools.
  * @constructor
  * @param {NeonView} neonView - The NeonView parent object.
+ * @param {module:Neon~Neon} neon - The Neon object.
  * @param {string} meiFile - The path to the MEi file.
  * @param {module:Zoom~ZoomHandler} zoomHandler - The ZoomHandler object.
  */
