@@ -15,7 +15,7 @@ function DragHandler (neonView) {
         var dragBehaviour = d3.drag().on("start", dragStarted)
             .on("drag", dragging)
             .on("end", dragEnded);
-        
+
         var activeNc = d3.selectAll(".selected");
         var selection = Array.from(activeNc._groups[0]);
 

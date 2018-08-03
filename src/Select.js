@@ -36,14 +36,16 @@ export function ClickSelect (dragHandler, zoomHandler, neonView) {
                     }
                 }
                 else if ($("#selBySyl").hasClass("is-active") && isNc) {
+                    console.log("Test");
                     var ncParent = $(this).parent();
                     var neumeParent = $(this).parent().parent();
                     if($(neumeParent).hasClass("neume")){
                         var parentSiblings = Array.from($(neumeParent).siblings(".neume"));
+                        console.log("Neume siblings: " + parentSiblings.length);
                         if(parentSiblings.length != 0){
                             selectSyl(this, dragHandler);
                         }
-                        else{
+                        else if (!$(this).parent().parent().parent().hasClass("selected")){
                             var ncSiblings = Array.from($(ncParent).siblings(".nc"));
                             if(ncSiblings != 0){
                                 selectNeumes(this, dragHandler);
@@ -62,7 +64,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView) {
                     if(siblings.length != 0) {
                         selectNeumes(this, dragHandler);
                     }
-                    else{
+                    else if (!$(this).parent().parent().hasClass("selected")){
                         selectNcs(this, dragHandler);
                     }
                 }
@@ -545,6 +547,7 @@ function select(el) {
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
 function selectSyl(el, dragHandler) {
+    console.log($(el).parent().parent().parent().attr("class"));
     if(!$(el).parent().parent().parent().hasClass("selected")){
         unselect();
         select($(el).parent().parent().parent());
