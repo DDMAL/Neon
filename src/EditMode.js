@@ -11,10 +11,11 @@ import * as Notification from "./Notification.js";
  * Creates user interface for editing and creates necessary tools.
  * @constructor
  * @param {NeonView} neonView - The NeonView parent object.
+ * @param {module:Neon~Neon} neon - The Neon object.
  * @param {string} meiFile - The path to the MEi file.
  * @param {module:Zoom~ZoomHandler} zoomHandler - The ZoomHandler object.
  */
-function EditMode (neonView, meiFile, zoomHandler){
+function EditMode (neonView, neon, meiFile, zoomHandler){
     var dragHandler = null;
     var selectOptions = null;
     var select = null;
@@ -35,11 +36,11 @@ function EditMode (neonView, meiFile, zoomHandler){
         Notification.queueNotification("Edit Mode");
         dragHandler = new DragHandler(neonView);
         Controls.initNavbar(meiFile, neonView);
-        select = new ClickSelect(dragHandler, zoomHandler, neonView);
+        select = new ClickSelect(dragHandler, zoomHandler, neonView, neon);
         insertHandler = new InsertHandler(neonView);
         Controls.bindInsertTabs(insertHandler);
         $("#neumeTab").click();
-        dragSelect = new DragSelect(dragHandler, zoomHandler, neonView);
+        dragSelect = new DragSelect(dragHandler, zoomHandler, neonView, neon);
         SelectOptions.initNeonView(neonView);
 
         Controls.initInsertEditControls(neonView);

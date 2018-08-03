@@ -12,7 +12,7 @@ import * as SelectOptions from "./SelectOptions.js";
  * @param {DragHandler} dragHandler - An instantiated DragHandler object.
  * @param {NeonView} neonView - The NeonView parent.
  */
-export function ClickSelect (dragHandler, zoomHandler, neonView) {
+export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
     selectListeners();
 
     //Selection mode toggle
@@ -32,9 +32,10 @@ export function ClickSelect (dragHandler, zoomHandler, neonView) {
                         selectClefs(this, dragHandler);
                     }
                     else if($(this).parent().hasClass("custos")){
-                        selectNcs(this, dragHandler);
+                        selectNcs(this, dragHandler, neon);
                     }
                 }
+
                 else if ($("#selBySyl").hasClass("is-active") && isNc) {
                     var ncParent = $(this).parent();
                     var neumeParent = $(this).parent().parent();
@@ -49,7 +50,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView) {
                                 selectNeumes(this, dragHandler);
                             }
                             else{
-                                selectNcs(this, dragHandler);
+                                selectNcs(this, dragHandler, neon);
                             }
                         }
                     }
@@ -62,12 +63,18 @@ export function ClickSelect (dragHandler, zoomHandler, neonView) {
                     if(siblings.length != 0) {
                         selectNeumes(this, dragHandler);
                     }
-                    else if (!$(this).parent().parent().hasClass("selected")){
-                        selectNcs(this, dragHandler);
+                    else if (!$(this).parent().parent().hasClass("selected")) {
+                        var ncSiblings = Array.from($(ncParent).siblings(".nc"));
+                        if(ncSiblings != 0){
+                            selectNeumes(this, dragHandler);
+                        }
+                        else{
+                            selectNcs(this, dragHandler, neon);
+                        }  
                     }
                 }
                 else if ($("#selByNc").hasClass("is-active") && isNc){
-                    selectNcs(this, dragHandler);
+                    selectNcs(this, dragHandler, neon);
                 }
                 else if ($("#selByStaff").hasClass("is-active")) {
                     var staff = $(this).parents(".staff");
@@ -157,7 +164,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView) {
  * @param {module:Zoom~ZoomHandler} zoomHandler - Instantiated ZoomHandler object.
  * @param {NeonView} neonView - NeonView parent.
  */
-export function DragSelect (dragHandler, zoomHandler, neonView) {
+export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
     var initialX = 0;
     var initialY = 0;
     var panning = false;
@@ -442,7 +449,36 @@ export function DragSelect (dragHandler, zoomHandler, neonView) {
                     }
                 }
                 else if (ncs.length === 2 && noClefOrCustos) {
-                    Grouping.triggerGrouping("ligature");
+                    var firstX = $(ncs[0]).children()[0].x.baseVal.value;
+                    var secondX = $(ncs[1]).children()[0].x.baseVal.value;
+                    var firstY = 0;
+                    var secondY = 0;
+
+                    if(firstX == secondX){
+                        firstY = $(ncs[1]).children()[0].y.baseVal.value;
+                        secondY = $(ncs[0]).children()[0].y.baseVal.value;
+                    }
+                    else{
+                        firstY = $(ncs[0]).children()[0].y.baseVal.value;
+                        secondY = $(ncs[1]).children()[0].y.baseVal.value;
+                    }
+
+                    if(secondY > firstY){
+                        if($(ncs[0]).parent()[0].id === $(ncs[1]).parent()[0].id){
+                            if(isLigature($(ncs[0]), neon) && isLigature($(ncs[1]), neon)){
+                                Grouping.triggerGrouping("ligature");
+                            }
+                            else{
+                                Grouping.triggerGrouping("ligatureNc");
+                            }
+                        }
+                        else{
+                            Grouping.triggerGrouping("nc");
+                        }
+                    }
+                    else{
+                        Grouping.triggerGrouping("nc");
+                    }
                 }
                 else if (ncs.length > 1 && noClefOrCustos) {
                     Grouping.triggerGrouping("nc");
@@ -572,13 +608,32 @@ function selectNeumes(el, dragHandler) {
  * @param {SVGSVGElement} el - The nc element to select.
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
-function selectNcs(el, dragHandler) {
-    if(!$(el).parent().hasClass("selected")){
+function selectNcs(el, dragHandler, neon) {
+    if(!$(el).parent().hasClass("selected")){   
         var parent = $(el).parent();
         unselect();
         select(parent);
-        if(parent.hasClass("nc")){
+        if(isLigature(parent, neon)){
+            var prevNc = $(parent).prev();
+            if(isLigature(prevNc, neon)){
+                select(prevNc);
+            }
+            else{
+                var nextNc = $(parent).next();
+                if(isLigature(nextNc, neon)){
+                    select(nextNc);
+                }
+                else{
+                    console.warn("Error: Neither prev or next nc are ligatures");
+                }
+            }
+            Grouping.triggerGrouping("ligature");
+        }
+        else if(parent.hasClass("nc")){
             SelectOptions.triggerNcActions(parent[0]);
+        }
+        else{
+            console.warn("No action triggered!");
         }
         dragHandler.dragInit();
     }
@@ -597,6 +652,17 @@ function selectClefs(el, dragHandler){
         SelectOptions.triggerClefActions(parent[0]);
         dragHandler.dragInit();
     }
+}
+
+/**
+ * Check if neume component is part of a ligature
+ * @param {SVGSVGElement} nc - The neume component to check.
+ * @param {module:Neon~Neon} neon - An instantiated Neon.
+ */
+function isLigature(nc, neon){
+    var attributes = neon.getElementAttr(nc[0].id);
+    if(attributes.ligature == "true") return true;
+    return false;
 }
 
 
