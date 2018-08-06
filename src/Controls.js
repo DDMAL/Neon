@@ -383,7 +383,6 @@ export function initNavbar(filename, neonView) {
     // setup navbar listeners
     $("#save").on("click", () => {
         neonView.saveMEI();
-        Notification.queueNotification("File Saved");
     });
 
     $("#revert").on("click", function(){

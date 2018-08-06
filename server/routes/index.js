@@ -178,9 +178,12 @@ router.route('/save/:filename')
 router.route('/autosave/:filename')
     .post((req, res) => {
         fs.writeFile(__base + "public/uploads/mei-auto/" + req.params.filename, req.body.data, (err) => {
-            if (err)
-                return console.log(err);
-            console.log("Autosaved " + req.params.filename);
+            if (err) {
+                console.log(err);
+                res.status(500).send({error: "File" + req.body.fileName + "could not be autosaved."});
+            } else {
+                res.status(200).send({ success: "File autosaved" });
+            }
         });
     });
 
@@ -188,7 +191,7 @@ router.route('/autosave-clear/:filename')
     .post((req, res) => {
         fs.unlink(__base + "public/uploads/mei-auto/" + req.params.filename, (err) => {
             if (err)
-                return console.log(err)
+                console.log(err)
         });
     });
 
