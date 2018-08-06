@@ -1,7 +1,7 @@
 /**
  * Handle compatibility between standalone and Rodan versions of Neon.
  * Ideally the rest of the program doesn't need to know which version it's in.
- * @module Compatibility 
+ * @module Compatibility
  */
 
 import * as Notification from "./Notification.js";
@@ -50,7 +50,9 @@ export function saveFile(filename, mei) {
                 data: {
                     "meiData": mei,
                     "fileName": filename
-                }
+                },
+                success: () => { Notification.queueNotification("File Saved"); },
+                error: (jqXHR, textStatus, errorThrown) => { Notification.queueNotification(textStatus + " Error: " + errorThrown); }
             }
         );
     }
@@ -104,7 +106,8 @@ export function autosave(filename, mei) {
             "url": "/autosave/" + file,
             "data": {
                 "data": mei
-            }
+            },
+            error: () => { console.error("Could not autosave " + file); }
         });
     }
     else if (mode === modes.rodan) {
