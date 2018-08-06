@@ -121,13 +121,7 @@ function InsertHandler (neonView) {
 
         $("body").on("keyup", resetInsertHandler);
 
-        $("body").on("click", (evt) => {
-            if(evt.target.id != "bgimg" && !($(evt.target).hasClass("insertel") || $(evt.target).hasClass("image"))) {
-                insertDisabled();
-                $("body").off("keydown", staffHandler);
-                $("body").off("keydown", handler);
-            }
-        });
+        $("body").on("click", clickawayHandler);
 
         Notification.queueNotification("Insert Mode");
     }
@@ -140,10 +134,19 @@ function InsertHandler (neonView) {
         removeInsertClickHandlers();
         $("body").off("keydown", keydownListener);
         $("body").off("keyup", resetInsertHandler);
+        $("body").off("click", clickawayHandler);
         $(".insertel.is-active").removeClass("is-active");
         firstClick = true;
         Cursor.resetCursor();
         Notification.queueNotification("Edit Mode");
+    }
+
+    function clickawayHandler (evt) {
+        if(evt.target.id != "bgimg" && !($(evt.target).hasClass("insertel") || $(evt.target).hasClass("image"))) {
+            insertDisabled();
+            $("body").off("keydown", staffHandler);
+            $("body").off("keydown", handler);
+        }
     }
 
     function resetInsertHandler (evt) {

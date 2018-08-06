@@ -32,7 +32,11 @@ function startNotification() {
         notifying = true;
         let currentNotification = notifications.pop();
         displayNotification(currentNotification);
-        window.setTimeout(clearOrShowNextNotification, 5000, currentNotification.getId());
+        currentNotification.setTimeoutId(window.setTimeout(clearOrShowNextNotification, 5000, currentNotification.getId()));
+        $("#" + currentNotification.getId()).on("click", () => {
+            window.clearTimeout(currentNotification.timeoutID);
+            clearOrShowNextNotification(currentNotification.getId());
+        });
     }
 }
 
@@ -52,6 +56,7 @@ function displayNotification(notification) {
  */
 function clearOrShowNextNotification(currentId) {
     // clear notification currently displayed
+    $("#" + currentId).off("click");
     $(".neon-notification").remove("#" + currentId);
     if (notifications.length > 0) {
         startNotification();
@@ -73,6 +78,11 @@ class Notification {
         this.message = message;
         this.displayed = false;
         this.id = uuid();
+        this.timeoutID = -1;
+    }
+
+    setTimeoutId(id) {
+        this.timeoutID = Math.max(id, -1);
     }
 
     display() {
