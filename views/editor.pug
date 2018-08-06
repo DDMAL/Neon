@@ -2,26 +2,28 @@ html(style={height: "100%", overflow: "hidden"})
   head
     title Neon2
     script(src='/pretty.js')
-  body(style={height: "100%", width: "100%", overflow: "hidden"})
-    .navbar.is-light
-      .navbar-start
+  body(style={"height": "100%", "width": "100%", "overflow": "hidden"})
+    nav.navbar.is-light
+      .navbar-brand
         a.navbar-item(href='../')
           p Neon2
-        a.navbar-item
-          #dropdown_toggle
-            button.button#edit_mode Edit MEI
-        a.navbar-item#notification-content(style={display: "none"})
-      .navbar-end
-        .navbar-item.has-dropdown.is-hoverable
-          a.navbar-link Help
-          .navbar-dropdown.is-right
-            a.navbar-item(href="//github.com/DDMAL/Neon2/wiki/Instructions") User Guide
-            a.navbar-item(href="//github.com/DDMAL/Neon2/wiki") Wiki
-            a.navbar-item(href="//ddmal.music.mcgill.ca") DDMAL
-            a.navbar-item(onclick="hotkeyDialog()") Hotkeys
+      .navbar-menu
+        .navbar-start
+          a.navbar-item
+            #dropdown_toggle
+              button.button#edit_mode Edit MEI
+          a.navbar-item#notification-content(style={display: "none"})
+        .navbar-end
+          .navbar-item.has-dropdown.is-hoverable
+            a.navbar-link Help
+            .navbar-dropdown.is-right
+              a.navbar-item(href="//github.com/DDMAL/Neon2/wiki/Instructions") User Guide
+              a.navbar-item(href="//github.com/DDMAL/Neon2/wiki") Wiki
+              a.navbar-item(href="//ddmal.music.mcgill.ca") DDMAL
+              a.navbar-item(onclick="hotkeyDialog()") Hotkeys
     .columns(style={overflow: "hidden", height: "94%", "margin": "0"})
-      .column#svg_output.is-two-thirds.box(style={overflow: "hidden", height: "750px"})
-      .column.is-one-third(style={"overflow-x": "hidden", "overflow-y": "auto"})
+      .column#svg_output.is-two-thirds.box(style={overflow: "hidden", height: "850px"})
+      .column.is-one-third.is-hidden-mobile(style={"overflow-x": "hidden", "overflow-y": "auto"})
         .panel
           p.panel-heading.has-dropdown#displayHeader Display
             svg.icon.is-pulled-right
