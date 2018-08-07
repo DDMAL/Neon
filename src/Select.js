@@ -369,7 +369,6 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                     var bb1 = $(toSelect[0])[0].getBBox();
                     var bb2 = $(toSelect[1])[0].getBBox();
                     var avgHeight = (bb1.height + bb2.height)/2;
-                    console.log(avgHeight);
                     if(Math.abs(bb1.y - bb2.y) < avgHeight){
                         SelectOptions.triggerStaffActions();
                     }
@@ -583,6 +582,9 @@ export function unselect() {
     }
     if (!$("#selByStaff").hasClass("is-active")) {
         Grouping.endGroupingSelection();
+    } 
+    else{
+        SelectOptions.endOptionsSelection();
     }
     Controls.updateHighlight();
 }
