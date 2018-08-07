@@ -18,7 +18,6 @@ export function setGroupingHighlight(grouping) {
             groups[i].setAttribute("fill", groupColor);
             $(groups[i]).addClass("highlighted");
         } else {
-            console.log(groups[i].id);
             groups[i].setAttribute("fill", null);
             $(groups[i]).removeClass("highlighted");
         }
