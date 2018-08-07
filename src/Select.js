@@ -581,6 +581,7 @@ function select(el) {
         $(el).attr("fill", "#d00");
         $(el).addClass("selected");
     }
+    Controls.updateHighlight();
 }
 
 /**
