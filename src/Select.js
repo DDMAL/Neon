@@ -90,7 +90,6 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                         unselect();
                         staff.addClass("selected");
                         Color.highlight(staff[0], "#d00");
-                        SelectOptions.triggerStaffActions();
                         dragHandler.dragInit();
                     }
                 }
@@ -141,7 +140,6 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                     unselect();
                     $(staff).addClass("selected");
                     Color.highlight(staff, "#d00");
-                    SelectOptions.triggerStaffActions();
                     dragHandler.dragInit();
                 }
             }
