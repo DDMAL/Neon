@@ -60,10 +60,10 @@ describe("Check Info Box", () => {
 
     test("Check Info Box Clef", async () => {
         var firstClef = await browser.findElement(By.id("m-45439068-5e0c-4595-a820-4faa16771422"));
-        var notificationDelete = await browser.findElement(By.id("notification-delete"));
         const actions = browser.actions();
         var rect = await firstClef.getRect();
-        await actions.move({origin: firstClef, y: parseInt(rect.height / 2)}).click().perform();
+        await actions.move({origin: firstClef, y: parseInt(rect.height / 2)}).perform();
+        await actions.press().release().pause().perform();
         var notification = await browser.findElement(By.className("message"));
         await browser.wait(until.elementIsVisible(notification));
         var message = await browser.findElement(By.className("message")).getText();
@@ -259,7 +259,12 @@ describe("Check Controls UI", () => {
             let ncCount = (await browser.findElements(By.className("nc"))).length;
             let someNc = await browser.findElement(By.className("nc"));
             await browser.executeScript((id) => { document.getElementById(id).scrollIntoView(true); }, (await someNc.getAttribute("id")));
-            await actions.click(insertPunctum).perform();
+            let isDisp = await insertPunctum.isDisplayed();
+            expect(isDisp).toEqual(true);
+            await insertPunctum.click();
+            let clickedInsertPunctum = await browser.findElement(By.id("punctum"));
+            let buttonClass = await clickedInsertPunctum.getAttribute("class");
+            expect(buttonClass).toContain("is-active");
             await actions.move({origin: someNc, x: 100, y: 100}).click().perform();
             let newNcCount = (await browser.findElements(By.className("nc"))).length;
             expect(newNcCount).toBe(ncCount + 1);

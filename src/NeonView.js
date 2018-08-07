@@ -17,7 +17,7 @@ const verovio = require("verovio-dev");
  * @param {string} params.mode - The mode to run Neon in (standalone or rodan).
  */
 function NeonView (params) {
-    var viewHeight = 850;
+    var viewHeight = window.innerHeight;
     var viewWidth = 800;
     var meiFile = params.meifile;
     var bgimg = params.bgimg;

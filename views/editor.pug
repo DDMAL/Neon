@@ -1,12 +1,12 @@
 html(style={height: "100%", overflow: "hidden"})
   head
-    title Neon2
+    title Neon3
     script(src='/pretty.js')
   body(style={"height": "100%", "width": "100%", "overflow": "hidden"})
     nav.navbar.is-light
       .navbar-brand
         a.navbar-item(href='../')
-          p Neon2
+          p Neon3
       .navbar-menu
         .navbar-start
           a.navbar-item
@@ -22,7 +22,7 @@ html(style={height: "100%", overflow: "hidden"})
               a.navbar-item(href="//ddmal.music.mcgill.ca") DDMAL
               a.navbar-item(onclick="hotkeyDialog()") Hotkeys
     .columns(style={overflow: "hidden", height: "94%", "margin": "0"})
-      .column#svg_output.is-two-thirds.box(style={overflow: "hidden", height: "850px"})
+      .column#svg_output.is-two-thirds.box(style={overflow: "hidden", height: "getHeight()"})
       .column.is-one-third.is-hidden-mobile(style={"overflow-x": "hidden", "overflow-y": "auto"})
         .panel
           p.panel-heading.has-dropdown#displayHeader Display
@@ -78,5 +78,9 @@ html(style={height: "100%", overflow: "hidden"})
             "+ : Zoom in\t\ts : Save File\t\tCtrl-z or \u{2318}-z : Undo\n" +
             "\u{2013} : Zoom out\t\th : Hide MEI\t\tCtrl-Z or \u{2318}-Z : Redo\n" +
             "0 : Zoom reset\n\n1/2/3/4 : Select by Syllable/Neume/Neume Component/Staff");
+        }
+
+        function getHeight() {
+          alert(window.innerHeight);
         }
       script(src='/editor.js')
