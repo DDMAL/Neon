@@ -96,7 +96,7 @@ export const navbarFinalize =
 export const insertControlsPanel =
     "<p class='panel-heading' id='insertMenu'>Insert" +
     "<svg class='icon is-pulled-right'><use id='toggleInsert' xlink:href='" + Icons + "#dropdown-down'></use></svg></p>" +
-    "<div id='insertContents'>" +
+    "<div id='insertContents' style='overflow-y: hidden;'>" +
     "<p class='panel-tabs'>" +
     "<a id='neumeTab' class='insertTab'>Neume</a>" +
     "<a id='groupingTab' class='insertTab'>Grouping</a>" +
@@ -104,7 +104,7 @@ export const insertControlsPanel =
     "<a id='systemTab' class='insertTab'>System</a></p>" +
     // "<a id='divisionTab' class='insertTab'>Division</a></p>" +
     "<a class='panel-block has-text-centered'>" +
-    "<div id='insert_data' class='field is-grouped'/></a></div>";
+    "<div id='insert_data' class='field is-grouped buttons'/></a></div>";
 
 /**
  * Contents of edit panel with buttons.
@@ -116,7 +116,7 @@ export const editControlsPanel =
     "<div id='editContents'>" +
     "<a class='panel-block'>" +
     "<label>Select By:&nbsp;</label>" +
-    "<div class='field has-addons' style='overflow-x: auto;'>" +
+    "<div class='field has-addons buttons' style='overflow-x: auto;'>" +
     "<p class='control'>" +
     "<button class='button sel-by is-active' id='selBySyl'>Syllable</button></p>" +
     "<p class='control'>" +
@@ -126,7 +126,7 @@ export const editControlsPanel =
     "<p class='control'>" +
     "<button class='button sel-by' id='selByStaff'>Staff</button></p></div></a>" +
     "<a class='panel-block'>" +
-    "<div class='field is-grouped'>" +
+    "<div class='field is-grouped buttons'>" +
     "<p class='control'>" +
     "<button class='button' id='undo'>Undo</button></p>" +
     "<p class='control'>" +
