@@ -180,13 +180,7 @@ export function triggerClefActions(clef) {
 export function triggerStaffActions() {
     endOptionsSelection();
     $("#moreEdit").removeClass("is-invisible");
-    $("#moreEdit").append(
-        "<label>Merge Systems:&nbsp;</label>" +
-        "<div><p class='control'>" +
-        "<button id='merge-systems' class='button'>Merge</button></p></div>"
-    );
-
-    initOptionsListeners();
+    $("#moreEdit").append(Contents.staffActionContents);
 
     $("#merge-systems").on("click", (evt) => {
         let systems = Array.from($(".staff.selected"));
