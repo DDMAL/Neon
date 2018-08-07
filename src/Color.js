@@ -14,8 +14,13 @@ export function setGroupingHighlight(grouping) {
     let groups = Array.from($("." + grouping));
     for (var i = 0; i < groups.length; i++) {
         let groupColor = ColorPalette[i % ColorPalette.length];
-        groups[i].setAttribute("fill", groupColor);
-        $(groups[i]).addClass("highlighted");
+        if (!$(groups[i]).parents(".selected").length) {
+            groups[i].setAttribute("fill", groupColor);
+            $(groups[i]).addClass("highlighted");
+        } else {
+            groups[i].setAttribute("fill", null);
+            $(groups[i]).removeClass("highlighted");
+        }
     }
 }
 
