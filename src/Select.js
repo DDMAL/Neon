@@ -350,16 +350,30 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                 var toSelect = [];
                 elements.forEach(el => {
                     if (el.tagName === "use") {
-                        toSelect.push($(el).parents(".staff")[0]);
+                        var staff = $(el).parents(".staff")[0];
+                        if(!toSelect.includes(staff)){
+                            toSelect.push(staff);
+                        }    
                     } else {
-                        toSelect.push(el);
+                        if(!toSelect.includes(el)){
+                            toSelect.push(el);
+                        }   
                     }
                 });
                 toSelect.forEach(elem => {
                     Color.highlight(elem, "#d00");
                     $(elem).addClass("selected");
                 });
-                SelectOptions.triggerStaffActions();
+                
+                if(toSelect.length == 2){
+                    var bb1 = $(toSelect[0])[0].getBBox();
+                    var bb2 = $(toSelect[1])[0].getBBox();
+                    var avgHeight = (bb1.height + bb2.height)/2;
+                    console.log(avgHeight);
+                    if(Math.abs(bb1.y - bb2.y) < avgHeight){
+                        SelectOptions.triggerStaffActions();
+                    }
+                }
             }
             else if (selectMode === "selBySyl") {
                 var noClefOrCustos = selectNn(notNeumes);
