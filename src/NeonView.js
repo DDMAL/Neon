@@ -31,8 +31,12 @@ function NeonView (params) {
     let neonview = this;
     if (params.mode === "rodan") {
         Compatibility.setMode(Compatibility.modes.rodan);
-    } else {
+    } else if (params.mode === "standalone") {
         Compatibility.setMode(Compatibility.modes.standalone);
+    } else if (params.mode === "pages") {
+        Compatibility.setMode(Compatibility.modes.pages);
+    } else {
+        Compatibility.setMode(-1);
     }
     if (params.raw === "true") {
         init(meiFile);
