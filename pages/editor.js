@@ -1,4 +1,4 @@
-import NeonView from "./NeonView.js";
+import NeonView from "../src/NeonView.js";
 
 var view = new NeonView({
     meifile: meiFile,
