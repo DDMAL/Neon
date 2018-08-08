@@ -62,7 +62,7 @@ describe("Check Info Box", () => {
         var firstClef = await browser.findElement(By.id("m-45439068-5e0c-4595-a820-4faa16771422"));
         const actions = browser.actions();
         var rect = await firstClef.getRect();
-        await actions.move({origin: firstClef, y: parseInt(rect.height / 2)}).perform();
+        await actions.move({origin: firstClef, y: parseInt(rect.height / 4)}).perform();
         await actions.press().release().pause().perform();
         var notification = await browser.findElement(By.className("message"));
         await browser.wait(until.elementIsVisible(notification));
@@ -178,7 +178,7 @@ describe("Check Controls UI", () => {
             const actions = browser.actions();
             await actions.click(selByNcButton).perform();
             var nc = await browser.findElement(By.className("nc"));
-            await actions.click(nc).perform();
+            await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new Event('mousedown')); }, (await nc.getAttribute("id")));
             var ncClass = await nc.getAttribute("class");
             expect(ncClass).toBe("nc selected");
             await actions.click().perform();
@@ -191,7 +191,8 @@ describe("Check Controls UI", () => {
             expect(await selBySylButton.getAttribute("class")).toContain("is-active");
             var syl = await browser.findElement(By.id("m-ef58ea53-8d3a-4e9b-9b82-b9a057fe3fe4"));
             var sylNc = await syl.findElement(By.className("nc"));
-            await actions.click(sylNc).perform();
+            //await actions.click(sylNc).perform();
+            await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new Event('mousedown')); }, (await sylNc.getAttribute("id")));
             let sylClass = await syl.getAttribute("class");
             expect(sylClass).toBe("syllable selected");
             await actions.click().perform();
@@ -204,7 +205,8 @@ describe("Check Controls UI", () => {
             expect(await selByNeumeButton.getAttribute("class")).toContain("is-active");
             var neume = await browser.findElement(By.className("neume"));
             var neumeNc = await neume.findElement(By.className("nc"));
-            await actions.click(neumeNc).perform();
+            //await actions.click(neumeNc).perform();
+            await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new Event('mousedown')); }, (await neumeNc.getAttribute("id")));
             let neumeClass = await neume.getAttribute("class");
             expect(neumeClass).toBe("neume selected");
             await actions.click().perform();
@@ -233,7 +235,7 @@ describe("Check Controls UI", () => {
             let syl = await browser.findElement(By.className("syllable"));
             let sylNc = await syl.findElement(By.className("nc"));
             let id = await sylNc.getAttribute("id");
-            await actions.click(sylNc).perform();
+            await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new Event('mousedown')); }, id);
             let deleteButton = await browser.findElement(By.id("delete"));
             await actions.click(deleteButton).perform();
             return expect(browser.findElement(By.id(id))).rejects.toThrowError(error.NoSuchElementError);
