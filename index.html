@@ -1,5 +1,5 @@
 <html style="height:100%;overflow:hidden;">
-
+<meta charset="UTF-8">
 <head>
     <title>Neon2</title>
     <script src="./dist/pretty.js"></script>
@@ -12,7 +12,7 @@
                 <p>Neon2</p>
             </a>
             <a class="navbar-item">
-                <div id="dropdown_toggle"><button class="button" id="edit_mode" style="display: none;">Edit MEI</button></div>
+                <div id="dropdown_toggle"><button class="button" id="edit_mode">Edit MEI</button></div>
             </a><a class="navbar-item" id="notification-content" style="display:none;"></a></div>
         <div class="navbar-end">
             <div class="navbar-item has-dropdown is-hoverable"><a class="navbar-link">Help</a>
@@ -21,31 +21,7 @@
             </div>
         </div>
     </div>
-    <div class="file" id="file-input">
-      <label class="file-label">
-        <input class="file-input" type="file" name="mei" accept="application/mei+xml">
-        <span class="file-cta">
-          <span class="file-icon">
-            <i class="fas fa-upload"></i>
-          </span>
-          <span class="file-label">
-            Choose an MEI file...
-          </span>
-        </span>
-      </label>
-      <label class="file-label">
-        <input class="file-input" type="file" name="bgimg" accept="image/png">
-        <span class="file-cta">
-          <span class="file-icon">
-            <i class="fas fa-upload"></i>
-          </span>
-          <span class="file-label">
-            Choose a background image...
-          </span>
-        </span>
-      </label>
-    </div>
-    <div class="columns" style="display:none;overflow:hidden;height:94%;margin:0;" id="neon-columns">
+    <div class="columns" style="overflow:hidden;height:94%;margin:0;" id="neon-columns">
         <div class="column is-two-thirds box" id="svg_output" style="overflow:hidden;height:750px;"></div>
         <div class="column is-one-third" style="overflow-x:hidden;overflow-y:auto;">
             <div class="panel">
@@ -80,10 +56,6 @@
     <div class="box" id="syl_text" style="display:none;"></div>
     </div>
     <script type="text/javascript">
-        var meiFile = "{{ meifile|escapejs }}";
-        var rawData = "{{ data }}";
-        var bgImg = "{{ bgimg }}";
-
         function hotkeyDialog() {
             alert(
                 "Hotkey : Action\n\n" +
