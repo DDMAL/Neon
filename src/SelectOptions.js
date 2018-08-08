@@ -46,9 +46,11 @@ export function triggerNcActions(nc) {
                 "attrValue": ""
             }
         };
-        var success = neonView.edit({ "action": "chain", "param": [ unsetInclinatum, unsetVirga ]});
-        if(success){
+        if(neonView.edit({ "action": "chain", "param": [ unsetInclinatum, unsetVirga ]})){
             Notification.queueNotification("Shape Changed");
+        }
+        else{
+            Notification.queueNotification("Shape Change Failed");
         }
         neonView.refreshPage();
     });
@@ -70,9 +72,11 @@ export function triggerNcActions(nc) {
                 "attrValue": ""
             }
         };
-        var success = neonView.edit({ "action": "chain", "param": [ setInclinatum, unsetVirga ]});
-        if(success){
+        if(neonView.edit({ "action": "chain", "param": [ setInclinatum, unsetVirga ]})){
             Notification.queueNotification("Shape Changed");
+        }
+        else{
+            Notification.queueNotification("Shape Change Failed");
         }
         neonView.refreshPage();
     });
@@ -94,9 +98,11 @@ export function triggerNcActions(nc) {
                 "attrValue": "u"
             }
         };
-        var success = neonView.edit({ "action": "chain", "param": [ unsetInclinatum, setVirga ]});
-        if(success){
+        if(neonView.edit({ "action": "chain", "param": [ unsetInclinatum, setVirga ]})){
             Notification.queueNotification("Shape Changed");
+        }
+        else{
+            Notification.queueNotification("Shape Change Failed");
         }
         neonView.refreshPage();
     });
@@ -130,9 +136,11 @@ export function triggerNeumeActions() {
                 "contour": contour
             }
         }
-        var success = neonView.edit(changeGroupingAction);
-        if(success){
+        if(neonView.edit(changeGroupingAction)){
             Notification.queueNotification("Grouping Changed");
+        }
+        else{
+            Notification.queueNotification("Grouping Failed");
         }
         neonView.refreshPage();
     }
@@ -169,9 +177,11 @@ export function triggerClefActions(clef) {
                 "attrValue": "C"
             } 
         }
-        var success = neonView.edit(setCClef)
-        if(success){
+        if(neonView.edit(setCClef)){
             Notification.queueNotification("Shape Changed");
+        }
+        else{
+            Notification.queueNotification("Shape Change Failed");
         }
         neonView.refreshPage();
     })
@@ -184,9 +194,11 @@ export function triggerClefActions(clef) {
                 "attrValue": "F"
             }
         }
-        var success = neonView.edit(setFClef);
-        if(success){
+        if(neonView.edit(setFClef)){
             Notification.queueNotification("Shape Changed");
+        }
+        else{
+            Notification.queueNotification("Shape Change Failed");
         }
         neonView.refreshPage(); 
     })
@@ -213,7 +225,6 @@ export function triggerStaffActions() {
                 "elementIds": elementIds
             }
         };
-
         if (neonView.edit(editorAction)) {
             Notification.queueNotification("Staff Merged");
             neonView.refreshPage();

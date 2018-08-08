@@ -80,9 +80,7 @@ export function initGroupingListeners(){
                 "isLigature": isLigature.toString()
             }
         };
-
-        var success = neonView.edit(editorAction);
-        if(success){
+        if(neonView.edit(editorAction)){
             Notification.queueNotification("Ligature Toggled");
         }
         else{
@@ -106,8 +104,7 @@ function groupingAction(action, groupType, elementIds) {
             "elementIds": elementIds
         }
     };
-    var success = neonView.edit(editorAction);
-    if(success){
+    if(neonView.edit(editorAction)){
         if(action === "group"){
             Notification.queueNotification("Grouping Success");
         }
@@ -125,7 +122,7 @@ function groupingAction(action, groupType, elementIds) {
     }
     neonView.refreshPage();
 
-    //Prompt user to confirm if Neon does not recognize contour
+    //Prompt user to confirm if Neon does not re cognize contour
     if(groupType == "nc"){
         var neumeParent = $("#" + elementIds[0]).parent();
         var ncs = $(neumeParent).children();
