@@ -40,6 +40,18 @@ module.exports = {
                         }
                     }
                 ]
+            },
+            {
+                test: /\.mei$/,
+                use: [
+                    {
+                        loader: "file-loader",
+                        options: {
+                            name: "[name].[ext]",
+                            outputPath: "/mei/"
+                        }
+                    }
+                ]
             }
         ]
     }
