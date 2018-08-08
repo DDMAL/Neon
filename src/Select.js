@@ -10,7 +10,9 @@ import * as SelectOptions from "./SelectOptions.js";
  * Handle click selection and mark elements as selected.
  * @constructor
  * @param {DragHandler} dragHandler - An instantiated DragHandler object.
+ * @param {module:Zoom~Zoomhandler} zoomHandler
  * @param {NeonView} neonView - The NeonView parent.
+ * @param {module:Neon~Neon} neon
  */
 export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
     selectListeners();
@@ -169,6 +171,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
  * @param {DragHandler} dragHandler - Instantiated DragHandler object.
  * @param {module:Zoom~ZoomHandler} zoomHandler - Instantiated ZoomHandler object.
  * @param {NeonView} neonView - NeonView parent.
+ * @param {module:Neon~Neon} neon
  */
 export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
     var initialX = 0;
@@ -219,6 +222,11 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
         editing = false;
     }
 
+    /**
+     * Check if a point is within the bounding boxes of any staves.
+     * @param {number[]} point - An array where index 0 corresponds to x and 1 corresponds to y
+     * @returns {boolean}
+     */
     function pointNotInStaff(point) {
         let staves = Array.from($(".staff"));
         let filtered = staves.filter((staff) => {
@@ -351,18 +359,18 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                         var staff = $(el).parents(".staff")[0];
                         if(!toSelect.includes(staff)){
                             toSelect.push(staff);
-                        }    
+                        }
                     } else {
                         if(!toSelect.includes(el)){
                             toSelect.push(el);
-                        }   
+                        }
                     }
                 });
                 toSelect.forEach(elem => {
                     Color.highlight(elem, "#d00");
                     $(elem).addClass("selected");
                 });
-                
+
                 if(toSelect.length == 2){
                     var bb1 = $(toSelect[0])[0].getBBox();
                     var bb2 = $(toSelect[1])[0].getBBox();
@@ -580,7 +588,7 @@ export function unselect() {
     }
     if (!$("#selByStaff").hasClass("is-active")) {
         Grouping.endGroupingSelection();
-    } 
+    }
     else{
         SelectOptions.endOptionsSelection();
     }
@@ -589,6 +597,7 @@ export function unselect() {
 
 /**
  * Generic select function.
+ * @param {SVGSVGElement} el
  */
 function select(el) {
     if (!$(el).hasClass("selected")) {

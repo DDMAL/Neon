@@ -60,7 +60,7 @@ function Neon (mei, vrvToolkit) {
     /**
      * Execute an editor action in Verovio.
      * @param {object} editorAction - The action to execute.
-     * @param {boolean} addToUndo - Whether or not to make this action undoable.
+     * @param {boolean} [addToUndo=true] - Whether or not to make this action undoable.
      * @returns {boolean}
      */
     function edit (editorAction, addToUndo = true) {

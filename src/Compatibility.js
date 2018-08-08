@@ -8,7 +8,7 @@ import * as Notification from "./Notification.js";
 
 /**
  * The modes to run Neon in.
- * Either standalone (0) or rodan (1).
+ * Either standalone (0), rodan (1), or demo/pages (2).
  */
 export const modes = {
     standalone: 0,
@@ -20,8 +20,9 @@ var mode;
 
 /**
  * Set the mode to run Neon in.
- * @param {@module:compatibility~modes} currentMode
- */
+ * @see module:Compatibility.modes
+ * @param {integer} currentMode
+*/
 export function setMode(currentMode) {
     mode = currentMode;
 }
@@ -132,6 +133,11 @@ export function autosave(filename, mei) {
     }
 }
 
+/**
+ * Finalize the editing in the Neon2 job in Rodan.
+ * This should not be run outside of Rodan.
+ * @param {string} mei
+ */
 export function finalize(mei) {
     if (mode === modes.standalone) {
         console.error("This should not be called in standalone mode. Please report this.");

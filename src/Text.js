@@ -1,6 +1,6 @@
 /** @module Text */
 import * as Controls from "./Controls.js";
-
+import * as Notification from "./Notification.js";
 /** @var {NeonView} */
 var view;
 
@@ -48,7 +48,7 @@ export function getSylText() {
         }
     });
     if (firstDiamond && !messageSent) {
-        lyrics = "<h3>Blank syllables represented by &#x25CA;</h3><hr/>" + lyrics;
+        Notification.queueNotification("Blank syllables are represented by &#x25CA;!");
         messageSent = true;
     }
     return lyrics.replace(uniToDash, "-");
@@ -56,7 +56,7 @@ export function getSylText() {
 
 /**
  * Update the text for a syl tag by user input.
- * @param span
+ * @param {HTMLElement} span
  */
 export function updateSylText(span) {
     let orig = formatRaw($(span).html());

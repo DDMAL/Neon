@@ -162,6 +162,9 @@ export function setHighlightControls() {
     });
 }
 
+/**
+ * Clickaway listener for the highlight dropdown.
+ */
 function highlightClickaway () {
     $("body").off("click", highlightClickaway);
     $("#highlight-dropdown").removeClass("is-active");
