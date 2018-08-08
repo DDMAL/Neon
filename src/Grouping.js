@@ -108,10 +108,20 @@ function groupingAction(action, groupType, elementIds) {
     };
     var success = neonView.edit(editorAction);
     if(success){
-        Notification.queueNotification("Grouping Successful");
+        if(action === "group"){
+            Notification.queueNotification("Grouping Success");
+        }
+        else{
+            Notification.queueNotification("Ungrouping Success");
+        }
     }
     else{
-        Notification.queueNotification("Grouping Failed");
+        if(action === "group"){
+            Notification.queueNotification("Grouping Failed");
+        }
+        else{
+            Notification.queueNotification("Ungrouping Failed");
+        }
     }
     neonView.refreshPage();
 
