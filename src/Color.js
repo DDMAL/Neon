@@ -90,9 +90,9 @@ export function unhighlight(staff) {
 
 /**
  * Color palette from Figure 2 (Colors optimized for color-blind
- * individuals) from "Points of view: Color blindness" by Bang Wong
- * published in Nature Methods volume 8 on 27 May 2011
- * https://www.nature.com/articles/nmeth.1618?WT.ec_id=NMETH-201106
+ * individuals) from
+ * ["Points of view: Color blindness" by Bang Wong published in Nature Methods volume 8 on 27 May 2011]{@link https://www.nature.com/articles/nmeth.1618?WT.ec_id=NMETH-201106}
+ * @type {string[]}
  */
 const ColorPalette = [
 //    "rgb(0,0,0)",

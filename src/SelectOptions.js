@@ -175,7 +175,7 @@ export function triggerClefActions(clef) {
                 "elementId": clef.id,
                 "attrType": "shape",
                 "attrValue": "C"
-            } 
+            }
         }
         if(neonView.edit(setCClef)){
             Notification.queueNotification("Shape Changed");
@@ -200,7 +200,7 @@ export function triggerClefActions(clef) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
-        neonView.refreshPage(); 
+        neonView.refreshPage();
     })
     initOptionsListeners();
 }

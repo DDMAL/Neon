@@ -20,6 +20,7 @@ export function initNeonView(view) {
 
 /**
  * Trigger the grouping selection menu.
+ * @param {string} type - The grouping type: nc, neume, syl, ligatureNc, or ligature
  */
 export function triggerGrouping(type) {
     $("#moreEdit").removeClass("is-invisible");
