@@ -2,6 +2,7 @@
 
 import * as Contents from "./Contents.js";
 import * as Warnings from "./Warnings.js";
+import * as Notification from "./Notification.js";
 import InfoBox from "./InfoBox.js";
 
 /**
@@ -80,7 +81,13 @@ export function initGroupingListeners(){
             }
         };
 
-        neonView.edit(editorAction);
+        var success = neonView.edit(editorAction);
+        if(success){
+            Notification.queueNotification("Ligature Toggled");
+        }
+        else{
+            Notification.queueNotification("Ligature Toggle Failed");
+        }
         neonView.refreshPage();
     });
 }
@@ -99,7 +106,13 @@ function groupingAction(action, groupType, elementIds) {
             "elementIds": elementIds
         }
     };
-    neonView.edit(editorAction);
+    var success = neonView.edit(editorAction);
+    if(success){
+        Notification.queueNotification("Grouping Successful");
+    }
+    else{
+        Notification.queueNotification("Grouping Failed");
+    }
     neonView.refreshPage();
 
     //Prompt user to confirm if Neon does not recognize contour

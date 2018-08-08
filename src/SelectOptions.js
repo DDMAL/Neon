@@ -1,6 +1,7 @@
 /** @module SelectOptions */
 import * as Contents from "./Contents.js";
 import * as Grouping from "./Grouping.js";
+import * as Notification from "./Notification.js";
 import InfoBox from "./InfoBox.js";
 
 /**
@@ -45,7 +46,10 @@ export function triggerNcActions(nc) {
                 "attrValue": ""
             }
         };
-        neonView.edit({ "action": "chain", "param": [ unsetInclinatum, unsetVirga ]});
+        var success = neonView.edit({ "action": "chain", "param": [ unsetInclinatum, unsetVirga ]});
+        if(success){
+            Notification.queueNotification("Shape Changed");
+        }
         neonView.refreshPage();
     });
 
@@ -66,7 +70,10 @@ export function triggerNcActions(nc) {
                 "attrValue": ""
             }
         };
-        neonView.edit({ "action": "chain", "param": [ setInclinatum, unsetVirga ]});
+        var success = neonView.edit({ "action": "chain", "param": [ setInclinatum, unsetVirga ]});
+        if(success){
+            Notification.queueNotification("Shape Changed");
+        }
         neonView.refreshPage();
     });
 
@@ -87,7 +94,10 @@ export function triggerNcActions(nc) {
                 "attrValue": "u"
             }
         };
-        neonView.edit({ "action": "chain", "param": [ unsetInclinatum, setVirga ]});
+        var success = neonView.edit({ "action": "chain", "param": [ unsetInclinatum, setVirga ]});
+        if(success){
+            Notification.queueNotification("Shape Changed");
+        }
         neonView.refreshPage();
     });
 
@@ -120,7 +130,10 @@ export function triggerNeumeActions() {
                 "contour": contour
             }
         }
-        neonView.edit(changeGroupingAction);
+        var success = neonView.edit(changeGroupingAction);
+        if(success){
+            Notification.queueNotification("Grouping Changed");
+        }
         neonView.refreshPage();
     }
     initOptionsListeners();
@@ -156,7 +169,10 @@ export function triggerClefActions(clef) {
                 "attrValue": "C"
             } 
         }
-        neonView.edit(setCClef)
+        var success = neonView.edit(setCClef)
+        if(success){
+            Notification.queueNotification("Shape Changed");
+        }
         neonView.refreshPage();
     })
     $("#FClef.dropdown-item").on("click", (evt) => {
@@ -168,7 +184,10 @@ export function triggerClefActions(clef) {
                 "attrValue": "F"
             }
         }
-        neonView.edit(setFClef);
+        var success = neonView.edit(setFClef);
+        if(success){
+            Notification.queueNotification("Shape Changed");
+        }
         neonView.refreshPage(); 
     })
     initOptionsListeners();
@@ -196,10 +215,11 @@ export function triggerStaffActions() {
         };
 
         if (neonView.edit(editorAction)) {
+            Notification.queueNotification("Staff Merged");
             neonView.refreshPage();
         }
         else {
-            alert("Could not merge systems. :(");
+            Notification.queueNotification("Merge Failed");
         }
     });
 }
