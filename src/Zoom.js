@@ -75,12 +75,14 @@ function ZoomHandler () {
 
     function startDrag () {
         dragCoordinates = document.getElementById("svg_group").createSVGPoint();
-        if (d3.event.type === "mousedown") { // If drag is triggered by a mouse
-            dragCoordinates.x = d3.event.x;
-            dragCoordinates.y = d3.event.y;
-        } else {    // Otherwise triggered by a touch with two fingers
+        if (d3.event.type === "touchstart") {
+            // If drag is triggered by a touch event
             dragCoordinates.x = d3.event.touches[0].screenX;
             dragCoordinates.y = d3.event.touches[0].screenY;
+        } else {
+            // Otherwise triggered by a mouse click
+            dragCoordinates.x = d3.event.x;
+            dragCoordinates.y = d3.event.y;
         }
 
         matrix = document.getElementById("svg_group").getScreenCTM().inverse();
@@ -89,12 +91,13 @@ function ZoomHandler () {
 
     function dragging () {
         var newCoordinates = document.getElementById("svg_group").createSVGPoint();
-        if (d3.event.type === "mousedown") { // Same as in startDrag
-            newCoordinates.x = d3.event.x;
-            newCoordinates.y = d3.event.y;
-        } else {
+        // Same kind of checking as in startDrag
+        if (d3.event.type === "touchmove") {
             newCoordinates.x = d3.event.touches[0].screenX;
             newCoordinates.y = d3.event.touches[0].screenY;
+        } else {
+            newCoordinates.x = d3.event.x;
+            newCoordinates.y = d3.event.y;
         }
         newCoordinates = newCoordinates.matrixTransform(matrix);
         translate(-newCoordinates.x + dragCoordinates.x, -newCoordinates.y + dragCoordinates.y);
