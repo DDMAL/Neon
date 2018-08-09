@@ -75,8 +75,13 @@ function ZoomHandler () {
 
     function startDrag () {
         dragCoordinates = document.getElementById("svg_group").createSVGPoint();
-        dragCoordinates.x = d3.event.x;
-        dragCoordinates.y = d3.event.y;
+        if (d3.event.type === "mousedown") { // If drag is triggered by a mouse
+            dragCoordinates.x = d3.event.x;
+            dragCoordinates.y = d3.event.y;
+        } else {    // Otherwise triggered by a touch with two fingers
+            dragCoordinates.x = d3.event.touches[0].screenX;
+            dragCoordinates.y = d3.event.touches[0].screenY;
+        }
 
         matrix = document.getElementById("svg_group").getScreenCTM().inverse();
         dragCoordinates = dragCoordinates.matrixTransform(matrix);
@@ -84,8 +89,13 @@ function ZoomHandler () {
 
     function dragging () {
         var newCoordinates = document.getElementById("svg_group").createSVGPoint();
-        newCoordinates.x = d3.event.x;
-        newCoordinates.y = d3.event.y;
+        if (d3.event.type === "mousedown") { // Same as in startDrag
+            newCoordinates.x = d3.event.x;
+            newCoordinates.y = d3.event.y;
+        } else {
+            newCoordinates.x = d3.event.touches[0].screenX;
+            newCoordinates.y = d3.event.touches[0].screenY;
+        }
         newCoordinates = newCoordinates.matrixTransform(matrix);
         translate(-newCoordinates.x + dragCoordinates.x, -newCoordinates.y + dragCoordinates.y);
         dragCoordinates = newCoordinates;

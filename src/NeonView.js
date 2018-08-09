@@ -160,6 +160,17 @@ function NeonView (params) {
                 }
             }
         });
+        // Allow two finger panning of image on touch screens/touchpads
+        // So you can run Neon on a phone but you really shouldn't.
+        d3.select("#svg_output").on("touchstart", () => {
+            if (d3.event.touches.length === 2) {
+                zoomHandler.startDrag();
+                d3.select("#svg_output").on("touchmove", zoomHandler.dragging);
+                d3.select("#svg_output").on("touchend", () => {
+                    d3.select("#svg_output").on("touchmove", null);
+                });
+            }
+        });
         infoBox.infoListeners();
     }
 
