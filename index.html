@@ -1,72 +1,22 @@
-<html style="height:100%;overflow:hidden;">
-<meta charset="UTF-8">
-<head>
+<html>
+  <meta charset="UTF-8">
+  <head>
     <title>Neon2</title>
     <script src="./pretty.js"></script>
-</head>
-
-<body style="height:100%;width:100%;overflow:hidden;">
-    <div class="navbar is-light">
-        <div class="navbar-start">
-            <a class="navbar-item" href="//github.com/DDMAL/Neon2/wiki" target="_blank">
-                <p>Neon2</p>
-            </a>
-            <a class="navbar-item">
-                <div id="dropdown_toggle"><button class="button" id="edit_mode">Edit MEI</button></div>
-            </a><a class="navbar-item" id="notification-content" style="display:none;"></a></div>
-        <div class="navbar-end">
-            <div class="navbar-item has-dropdown is-hoverable"><a class="navbar-link">Help</a>
-                <div class="navbar-dropdown is-right"><a class="navbar-item" href="//github.com/DDMAL/Neon2/wiki/Instructions" target="_blank">User Guide</a><a class="navbar-item" href="//github.com/DDMAL/Neon2/wiki" target="_blank">Wiki</a><a class="navbar-item" href="http://ddmal.music.mcgill.ca" target="_blank">DDMAL</a><a class="navbar-item"
-                        onclick="hotkeyDialog()">Hotkeys</a></div>
-            </div>
+  </head>
+  <body>
+    <form action="./editor.html" id="page-form" method="get" style="margin:0px auto;width: 15em;">
+      <div class="field">
+        <label class="label">Select a Page:&nbsp;</label>
+        <div class="select">
+          <select name="page" id="page-selector" form="page-form" required>
+          </select>
         </div>
-    </div>
-    <div class="columns" style="overflow:hidden;height:94%;margin:0;" id="neon-columns">
-        <div class="column is-two-thirds box" id="svg_output" style="overflow:hidden;height:750px;"></div>
-        <div class="column is-one-third" style="overflow-x:hidden;overflow-y:auto;">
-            <div class="panel">
-                <p class="panel-heading has-dropdown" id="displayHeader">Display<svg class="icon is-pulled-right"><use id="toggleDisplay" xlink:href="./img/icons.svg#dropdown-down"></use></svg></p>
-                <div id="displayContents"><a class="panel-block has-text-centered"><button class="button" id="reset-zoom" style="width:12em;">Zoom</button><input class="slider is-fullwidth" id="zoomSlider" step="5" min="25" max="400" value="100" type="range"/><output id="zoomOutput" for="zoomSlider">100</output></a>
-                    <a
-                        class="panel-block has-text-centered"><button class="button" id="reset-opacity">Glyph Opacity</button><input class="slider is-fullwidth" id="opacitySlider" step="5" min="0" max="100" value="100" type="range" /><output id="opacityOutput" for="opacitySlider">100</output></a>
-                        <a
-                            class="panel-block has-text-centered"><button class="button" id="reset-bg-opacity">Image Opacity</button><input class="slider is-fullwidth" id="bgOpacitySlider" step="5" min="0" max="100" value="100" type="range" /><output id="bgOpacityOutput" for="bgOpacitySlider">100</output></a>
-                            <div
-                                class="panel-block"><label class="checkbox">Display Text:&nbsp;<input class="checkbox" id="displayText" type="checkbox"/></label>
-                                <div class="dropdown" id="highlight-dropdown">
-                                    <div class="dropdown-trigger"><button class="button" id="highlight-button" aria-haspopup="true" aria-controls="highlight-menu"><span>Highlight</span><span id="highlight-type">&nbsp;- Off</span><svg class="icon"><use id="toggleDisplay" xlink:href="./img/icons.svg#dropdown-down"></use></svg></button></div>
-                                    <div
-                                        class="dropdown-menu" id="highlight-menu" role="menu">
-                                        <div class="dropdown-content"><a class="dropdown-item" id="highlight-staff">Staff</a><a class="dropdown-item" id="highlight-syllable">Syllable</a><a class="dropdown-item" id="highlight-neume">Neume</a>
-                                            <hr class="dropdown-divider" /><a class="dropdown-item" id="highlight-none">None</a></div>
-                                </div>
-                </div>
-            </div>
-        </div>
-        <div id="insert_controls"></div>
-        <div id="edit_controls"></div>
-    </div>
-    <div id="neume_info">
-        <article class="message" style="display:none;">
-            <div class="message-header">
-                <p></p><button class="delete" id="notification-delete" aria-label="delete"></button></div>
-            <div class="message-body"></div>
-        </article>
-    </div>
-    <div class="box" id="syl_text" style="display:none;"></div>
-    </div>
-    <script type="text/javascript">
-        function hotkeyDialog() {
-            alert(
-                "Hotkey : Action\n\n" +
-                "+ : Zoom in\t\ts : Save File\t\tCtrl-z or \u{2318}-z : Undo\n" +
-                "\u{2013} : Zoom out\t\th : Hide MEI\t\tCtrl-Z or \u{2318}-Z : Redo\n" +
-                "0 : Zoom reset\n\n1/2/3/4 : Select by Syllable/Neume/Neume Component/Staff");
-        }
-    </script>
-    <script src="./editor.js"></script>
-    </div>
-</body>
-
+      </div>
+      <div class="control">
+        <button type="submit" class="button">Submit</button>
+      </div>
+    </form>
+    <script src="./index.js"></script>
+  </body>
 </html>
-
