@@ -70,6 +70,7 @@ function NeonView (params) {
             var mei = document.createElementNS("http://www.w3.org/2000/svg", "g");
             mei.id = "mei_output";
             group.append(bg);
+            bg.onload = () => { document.getElementById("loading").style = "display: none;"; };
             group.append(mei);
             $("#svg_output").append(group);
             loadSvg();
