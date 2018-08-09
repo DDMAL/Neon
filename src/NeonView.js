@@ -14,7 +14,9 @@ const verovio = require("verovio-dev");
  * @param {object} params - An object containing the filenames of the MEI file and background image.
  * @param {string} params.meifile - The filename of the MEI file.
  * @param {string} params.bgimg - The filename of the background image.
- * @param {string} params.mode - The mode to run Neon in (standalone or rodan).
+ * @param {string} params.mode - The mode to run Neon in.
+ * @see module:Compatibility.modes
+ * @param {string} [params.raw] - If the meifile parameter is actually the raw contents of an MEI file.
  */
 function NeonView (params) {
     var viewHeight = window.innerHeight;
@@ -31,8 +33,12 @@ function NeonView (params) {
     let neonview = this;
     if (params.mode === "rodan") {
         Compatibility.setMode(Compatibility.modes.rodan);
-    } else {
+    } else if (params.mode === "standalone") {
         Compatibility.setMode(Compatibility.modes.standalone);
+    } else if (params.mode === "pages") {
+        Compatibility.setMode(Compatibility.modes.pages);
+    } else {
+        Compatibility.setMode(-1);
     }
     if (params.raw === "true") {
         init(meiFile);
@@ -164,6 +170,7 @@ function NeonView (params) {
 
     /**
      * Get the MEI for use in Rodan.
+     * @returns {string}
      */
     function rodanGetMei() {
         return neon.getMEI();
@@ -172,7 +179,7 @@ function NeonView (params) {
     /**
      * Execute an editor action.
      * @param {object} editorAction - The editor action.
-     * @param {boolean} addToUndo - Whether or not to add the action to the undo stack.
+     * @param {boolean} [addToUndo=true] - Whether or not to add the action to the undo stack.
      * @returns {boolean} If the action succeeded.
      */
     function edit(editorAction, addToUndo = true) {

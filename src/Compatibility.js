@@ -8,19 +8,21 @@ import * as Notification from "./Notification.js";
 
 /**
  * The modes to run Neon in.
- * Either standalone (0) or rodan (1).
+ * Either standalone (0), rodan (1), or demo/pages (2).
  */
 export const modes = {
     standalone: 0,
-    rodan: 1
+    rodan: 1,
+    pages: 2
 };
 
 var mode;
 
 /**
  * Set the mode to run Neon in.
- * @param {@module:compatibility~modes} currentMode
- */
+ * @see module:Compatibility.modes
+ * @param {integer} currentMode
+*/
 export function setMode(currentMode) {
     mode = currentMode;
 }
@@ -59,6 +61,9 @@ export function saveFile(filename, mei) {
     else if (mode === modes.rodan) {
         console.warn("Rodan save not yet implemented!");
     }
+    else if (mode === modes.pages) {
+        console.warn("Saving is not supported on GitHub Pages!");
+    }
     else {
         console.error("Unsupported or unset mode!");
     }
@@ -85,6 +90,9 @@ export function revertFile(filename) {
             contentType: "application/json",
             success: () => { window.location.reload(); }
         });
+    }
+    else if (mode === modes.pages) {
+        console.warn("Revert for GH Pages not yet implemented!");
     }
     else {
         console.error("Unsupported or unset mode!");
@@ -117,11 +125,19 @@ export function autosave(filename, mei) {
             "contentType": "application/json",
         });
     }
+    else if (mode === modes.pages) {
+        // Do nothing this will be called no matter what
+    }
     else {
         console.error("Unsupported or unset mode!");
     }
 }
 
+/**
+ * Finalize the editing in the Neon2 job in Rodan.
+ * This should not be run outside of Rodan.
+ * @param {string} mei
+ */
 export function finalize(mei) {
     if (mode === modes.standalone) {
         console.error("This should not be called in standalone mode. Please report this.");
@@ -134,6 +150,9 @@ export function finalize(mei) {
             success: function () { window.close(); },
             error: (jqXHR, textStatus, errorThrown) => { Notification.queueNotification(textStatus + " Error: " + errorThrown); }
         });
+    }
+    else if (mode === modes.pages) {
+        console.error("This should not be called in pages mode. Please report this.");
     }
     else {
         console.error("Unsupported or unset mode!");

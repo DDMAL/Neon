@@ -1,6 +1,7 @@
 /** @module SelectOptions */
 import * as Contents from "./Contents.js";
 import * as Grouping from "./Grouping.js";
+import * as Notification from "./Notification.js";
 import InfoBox from "./InfoBox.js";
 
 /**
@@ -45,7 +46,12 @@ export function triggerNcActions(nc) {
                 "attrValue": ""
             }
         };
-        neonView.edit({ "action": "chain", "param": [ unsetInclinatum, unsetVirga ]});
+        if(neonView.edit({ "action": "chain", "param": [ unsetInclinatum, unsetVirga ]})){
+            Notification.queueNotification("Shape Changed");
+        }
+        else{
+            Notification.queueNotification("Shape Change Failed");
+        }
         neonView.refreshPage();
     });
 
@@ -66,7 +72,12 @@ export function triggerNcActions(nc) {
                 "attrValue": ""
             }
         };
-        neonView.edit({ "action": "chain", "param": [ setInclinatum, unsetVirga ]});
+        if(neonView.edit({ "action": "chain", "param": [ setInclinatum, unsetVirga ]})){
+            Notification.queueNotification("Shape Changed");
+        }
+        else{
+            Notification.queueNotification("Shape Change Failed");
+        }
         neonView.refreshPage();
     });
 
@@ -87,7 +98,12 @@ export function triggerNcActions(nc) {
                 "attrValue": "u"
             }
         };
-        neonView.edit({ "action": "chain", "param": [ unsetInclinatum, setVirga ]});
+        if(neonView.edit({ "action": "chain", "param": [ unsetInclinatum, setVirga ]})){
+            Notification.queueNotification("Shape Changed");
+        }
+        else{
+            Notification.queueNotification("Shape Change Failed");
+        }
         neonView.refreshPage();
     });
 
@@ -120,7 +136,12 @@ export function triggerNeumeActions() {
                 "contour": contour
             }
         }
-        neonView.edit(changeGroupingAction);
+        if(neonView.edit(changeGroupingAction)){
+            Notification.queueNotification("Grouping Changed");
+        }
+        else{
+            Notification.queueNotification("Grouping Failed");
+        }
         neonView.refreshPage();
     }
     initOptionsListeners();
@@ -154,9 +175,14 @@ export function triggerClefActions(clef) {
                 "elementId": clef.id,
                 "attrType": "shape",
                 "attrValue": "C"
-            } 
+            }
         }
-        neonView.edit(setCClef)
+        if(neonView.edit(setCClef)){
+            Notification.queueNotification("Shape Changed");
+        }
+        else{
+            Notification.queueNotification("Shape Change Failed");
+        }
         neonView.refreshPage();
     })
     $("#FClef.dropdown-item").on("click", (evt) => {
@@ -168,8 +194,13 @@ export function triggerClefActions(clef) {
                 "attrValue": "F"
             }
         }
-        neonView.edit(setFClef);
-        neonView.refreshPage(); 
+        if(neonView.edit(setFClef)){
+            Notification.queueNotification("Shape Changed");
+        }
+        else{
+            Notification.queueNotification("Shape Change Failed");
+        }
+        neonView.refreshPage();
     })
     initOptionsListeners();
 }
@@ -194,12 +225,12 @@ export function triggerStaffActions() {
                 "elementIds": elementIds
             }
         };
-
         if (neonView.edit(editorAction)) {
+            Notification.queueNotification("Staff Merged");
             neonView.refreshPage();
         }
         else {
-            alert("Could not merge systems. :(");
+            Notification.queueNotification("Merge Failed");
         }
     });
 }

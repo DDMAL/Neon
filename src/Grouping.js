@@ -2,6 +2,7 @@
 
 import * as Contents from "./Contents.js";
 import * as Warnings from "./Warnings.js";
+import * as Notification from "./Notification.js";
 import InfoBox from "./InfoBox.js";
 
 /**
@@ -19,6 +20,7 @@ export function initNeonView(view) {
 
 /**
  * Trigger the grouping selection menu.
+ * @param {string} type - The grouping type: nc, neume, syl, ligatureNc, or ligature
  */
 export function triggerGrouping(type) {
     $("#moreEdit").removeClass("is-invisible");
@@ -79,8 +81,12 @@ export function initGroupingListeners(){
                 "isLigature": isLigature.toString()
             }
         };
-
-        neonView.edit(editorAction);
+        if(neonView.edit(editorAction)){
+            Notification.queueNotification("Ligature Toggled");
+        }
+        else{
+            Notification.queueNotification("Ligature Toggle Failed");
+        }
         neonView.refreshPage();
     });
 }
@@ -99,10 +105,25 @@ function groupingAction(action, groupType, elementIds) {
             "elementIds": elementIds
         }
     };
-    neonView.edit(editorAction);
+    if(neonView.edit(editorAction)){
+        if(action === "group"){
+            Notification.queueNotification("Grouping Success");
+        }
+        else{
+            Notification.queueNotification("Ungrouping Success");
+        }
+    }
+    else{
+        if(action === "group"){
+            Notification.queueNotification("Grouping Failed");
+        }
+        else{
+            Notification.queueNotification("Ungrouping Failed");
+        }
+    }
     neonView.refreshPage();
 
-    //Prompt user to confirm if Neon does not recognize contour
+    //Prompt user to confirm if Neon does not re cognize contour
     if(groupType == "nc"){
         var neumeParent = $("#" + elementIds[0]).parent();
         var ncs = $(neumeParent).children();

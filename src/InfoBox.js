@@ -84,7 +84,7 @@ function InfoBox(neon) {
 
     /**
      * Get the individual pitches of a neume.
-     * @param {array} ncs - neume components in the neume.
+     * @param {array.<SVGSVGElement>} ncs - neume components in the neume.
      */
     function getPitches (ncs) {
         var pitches = "";
@@ -97,7 +97,7 @@ function InfoBox(neon) {
 
     /**
      * Get the contour of a neume.
-     * @param {array} ncs - neume components in the neume.
+     * @param {array.<SVGSVGElement>} ncs - neume components in the neume.
      */
     function getContour (ncs) {
         var contour = "";
@@ -176,6 +176,7 @@ function InfoBox(neon) {
     /**
      * Find the contour of an neume grouping based on the grouping name.
      * @param {string} value - the value name.
+     * @returns {string}
      */
     function getContourByValue(value) {
         for (let [cont, v] of neumeGroups.entries()) {
