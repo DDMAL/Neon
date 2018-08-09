@@ -142,7 +142,8 @@ function InsertHandler (neonView) {
     }
 
     function clickawayHandler (evt) {
-        if(evt.target.id != "bgimg" && !($(evt.target).hasClass("insertel") || $(evt.target).hasClass("image"))) {
+        if(evt.target.id !== "svg_group" && $("#svg_group").find(evt.target).length === 0 && evt.target.tagName !== "path"
+            && !($(evt.target).hasClass("insertel") || $(evt.target).hasClass("image"))) {
             insertDisabled();
             $("body").off("keydown", staffHandler);
             $("body").off("keydown", handler);
