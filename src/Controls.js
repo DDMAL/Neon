@@ -387,6 +387,11 @@ export function initNavbar(filename, neonView) {
     $("#save").on("click", () => {
         neonView.saveMEI();
     });
+    $("body").on("keydown", (evt) => {
+        if (evt.key === "s") {
+            neonView.saveMEI();
+        }
+    });
 
     $("#revert").on("click", function(){
         if (confirm("Reverting will cause all changes to be lost. Press OK to continue.")) {
