@@ -99,23 +99,18 @@ describe("Check Controls UI", () => {
         expect(output).toBe("100");
     });
 
-    /*
-     * For some reason selenium can't find the viewBox attribute and always returns null
-     * so there's nothing to check with panning
-
     test("Check Panning", async () => {
-        var originalTransform = await browser.findElement(By.id("svg_group")).getAttribute("transform");
+        var originalTransform = await browser.executeScript(() => { return document.getElementById("svg_group").getAttribute("viewBox"); });
         const actions = browser.actions();
         var svgGroup = await browser.findElement(By.id("svg_group"));
         await actions.keyDown(Key.SHIFT).dragAndDrop(svgGroup, {x: 100, y: 100}).keyUp(Key.SHIFT).perform();
-        var newTransform = await browser.findElement(By.id("svg_group")).getAttribute("transform");
+        var newTransform = await browser.executeScript(() => { return document.getElementById("svg_group").getAttribute("viewBox"); });
 
-        var originalSplit = originalTransform.slice(10, -10).split(",");
-        var newSplit = newTransform.slice(10, -10).split(",");
-        expect(parseInt(originalSplit[0])).toBeLessThan(parseInt(newSplit[0]));
-        expect(parseInt(originalSplit[1])).toBeLessThan(parseInt(newSplit[1]));
+        var originalSplit = originalTransform.split(" ");
+        var newSplit = newTransform.split(" ");
+        expect(parseInt(originalSplit[0])).toBeGreaterThan(parseInt(newSplit[0]));
+        expect(parseInt(originalSplit[1])).toBeGreaterThan(parseInt(newSplit[1]));
     });
-    */
 
     test("Check MEI Opacity Controls", async () => {
         var opacitySlider = await browser.findElement(By.id("opacitySlider"));
