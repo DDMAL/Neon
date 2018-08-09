@@ -456,7 +456,6 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                 else if (neumes.length == 1 && noClefOrCustos) {
                     var neume = neumes[0];
                     var ncChildren = $(neume).children();
-                    console.log(neon);
                     if(ncChildren.length == 1){
                         unselect();
                         select(ncChildren[0]);
