@@ -136,9 +136,6 @@ function NeonView (params) {
                         );
                         Cursor.updateCursorTo("grab");
                         break;
-                    case "s":
-                        saveMEI();
-                        break;
                     case "h":
                         $("#mei_output").css("visibility", "hidden");
                         break;
