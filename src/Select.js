@@ -54,7 +54,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                         }
                         else if (!$(this).parent().parent().parent().hasClass("selected")){
                             var ncSiblings = Array.from($(ncParent).siblings(".nc"));
-                            if(ncSiblings.length > 1){
+                            if(ncSiblings.length > 1 || (ncSiblings.length == 1 && (!isLigature($(ncSiblings[0]), neon)))){
                                 selectNeumes(this, dragHandler);
                             }
                             else{
@@ -72,8 +72,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                         selectNeumes(this, dragHandler);
                     }
                     else if (!$(this).parent().parent().hasClass("selected")) {
-                        var ncSiblings = Array.from($(ncParent).siblings(".nc"));
-                        if(ncSiblings.length > 1){
+                        if(siblings.length == 1 && (!isLigature($(siblings[0]), neon))){
                             selectNeumes(this, dragHandler);
                         }
                         else{
@@ -405,7 +404,8 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                         else if(ncChildren.length == 2){
                             unselect();
                             if(isLigature($(ncChildren[0]), neon)){
-                                selectNcs(ncChildren[0]);
+                                selectNcs(ncChildren[0], dragHandler, neon);
+                                Grouping.triggerGrouping("ligature");
                             }
                             else{
                                 select(neume);
