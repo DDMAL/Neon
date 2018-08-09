@@ -1,9 +1,8 @@
-import CF018_MEI from "./CF018.mei";
-import CF018_BG from "./CF018.png";
 import NeonView from "../src/NeonView.js";
 
+var params = JSON.parse(decodeURIComponent(window.location.search.substr(1).split('=')[1]));
 var view = new NeonView({
-    meifile: CF018_MEI,
-    bgimg: CF018_BG,
+    meifile: "./" + params.mei,
+    bgimg: "./" + params.img,
     mode: "pages"
 });

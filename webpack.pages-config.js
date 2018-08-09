@@ -5,6 +5,7 @@ module.exports = {
     mode: "production",
     entry: {
         editor: "./pages/editor.js",
+        index: "./pages/index.js",
         pretty: "./src/pretty.js"
     },
     output: {

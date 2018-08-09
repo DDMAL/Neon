@@ -62,7 +62,13 @@ export function saveFile(filename, mei) {
         console.warn("Rodan save not yet implemented!");
     }
     else if (mode === modes.pages) {
-        console.warn("Saving is not supported on GitHub Pages!");
+        var temp = document.createElement('a');
+        temp.setAttribute("href", "data:application/mei+xml;charset=utf-8," + encodeURIComponent(mei));
+        temp.setAttribute("download", file);
+        temp.style.display = "none";
+        document.body.append(temp);
+        temp.click();
+        document.body.removeChild(temp);
     }
     else {
         console.error("Unsupported or unset mode!");
@@ -92,7 +98,7 @@ export function revertFile(filename) {
         });
     }
     else if (mode === modes.pages) {
-        console.warn("Revert for GH Pages not yet implemented!");
+        window.location.reload();   // No actions since the source file can't be overwritten
     }
     else {
         console.error("Unsupported or unset mode!");
