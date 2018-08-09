@@ -4,6 +4,8 @@ const uuid = require('uuid/v4');
 
 /** @type {Array.<module:Notification~Notification>} */
 var notifications = new Array(0);
+/** @type {module:Notification~Notification} */
+var currentModeMessage = null;
 var notifying = false;
 
 /**
@@ -45,6 +47,16 @@ function startNotification() {
  * @param {module:Notification~Notification} notification
  */
 function displayNotification(notification) {
+    if (notification.isModeMessage) {
+        if (currentModeMessage === null) {
+            currentModeMessage = notification;
+        } else {
+            window.clearTimeout(currentModeMessage.timeoutID);
+            notifications.push(notification);
+            clearOrShowNextNotification(currentModeMessage.getId());
+            return;
+        }
+    }
     $("#notification-content").append("<span class='neon-notification' id='" + notification.getId() + "'>" + notification.message + "</span> ");
     $("#notification-content").css("display", "");
     notification.display();
@@ -58,6 +70,9 @@ function clearOrShowNextNotification(currentId) {
     // clear notification currently displayed
     $("#" + currentId).off("click");
     $(".neon-notification").remove("#" + currentId);
+    if (currentModeMessage.getId() === currentId) {
+        currentModeMessage = null;
+    }
     if (notifications.length > 0) {
         startNotification();
     } else if ($(".neon-notification").length === 0) {
@@ -78,6 +93,7 @@ class Notification {
         this.message = message;
         this.displayed = false;
         this.id = uuid();
+        this.isModeMessage = message.search("Mode") !== -1;
         this.timeoutID = -1;
     }
 
