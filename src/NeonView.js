@@ -158,6 +158,12 @@ function NeonView (params) {
                 }
             }
         });
+        $("#svg_output").on("touchstart", (evt) => {
+            console.log("Touches: " + evt.touches.length);
+            if (evt.touches.length === 2) {
+                zoomHandler.startDrag();
+            }
+        });
         infoBox.infoListeners();
     }
 
