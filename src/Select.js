@@ -297,11 +297,13 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
             var els = Array.from(nc);
 
             var elements = els.filter(function(d){
-                var elX, elY;
                 if (d.tagName === "use") {
-                    elX = d.x.baseVal.value;
-                    elY = d.y.baseVal.value;
-                    return elX > rx && elX < lx  && elY > ry && elY < ly;
+                    let box = d.getBBox();
+                    let ulx = box.x;
+                    let uly = box.y;
+                    let lrx = box.x + box.width;
+                    let lry = box.y + box.height;
+                    return !(((rx < ulx && lx < ulx) || (rx > lrx && lx > lrx)) || ((ry < uly && ly < uly) || (ry > lry && ly > lry)));
                 } else {
                     var uly, ulx, lry, lrx;
                     (Array.from($(d).children("path"))).forEach(path => {
