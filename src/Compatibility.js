@@ -59,7 +59,13 @@ export function saveFile(filename, mei) {
         );
     }
     else if (mode === modes.rodan) {
-        console.warn("Rodan save not yet implemented!");
+        $.ajax({
+            "type": "POST",
+            "data": JSON.stringify({"user_input": mei, "mode": "autosave"}),
+            "contentType": "application/json",
+            "success": () => { Notification.queueNotification("File Saved"); },
+            "error": (jqXHR, textStatus, errorThrown) => { Notification.queueNotification(textStatus + " Error: " + errorThrown); }
+        });
     }
     else if (mode === modes.pages) {
         var temp = document.createElement('a');
