@@ -55,6 +55,7 @@ function NeonView (params) {
         loadView();
         // editMode.getScale();
         Controls.setSylControls();
+        Controls.setInfoControls();
     }
 
     function hideLoad() {

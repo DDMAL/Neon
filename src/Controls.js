@@ -112,6 +112,14 @@ export function setSylControls() {
 }
 
 /**
+ * Set listener on info visibility checkbox.
+ */
+export function setInfoControls() {
+    updateInfoVisibility();
+    $("#displayInfo").click(updateInfoVisibility);
+}
+
+/**
  * Update MEI opacity to value from the slider.
  */
 export function setOpacityFromSlider() {
@@ -194,6 +202,20 @@ export function updateSylVisibility() {
         }
     } else {
         $("#syl_text").css("display", "none");
+    }
+}
+
+/**
+ * Update the visibility of infoBox
+ */
+export function updateInfoVisibility() {
+    if ($("#displayInfo").is(":checked")) {
+        $("#neume_info").append("<article class='message' style='display: none;'><div class='message-header'><p></p>" +
+            "<button class='delete' id='notification-delete' aria-label='delete'></button></div>" +
+            "<div class='message-body'></div>");
+    }
+    else {
+        $("#neume_info").empty();
     }
 }
 

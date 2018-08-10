@@ -46,6 +46,8 @@ html(style={height: "100%", overflow: "hidden"})
             .panel-block
               label.checkbox Display Text:&nbsp;
                 input.checkbox#displayText(type="checkbox")
+              label.checkbox Display Info:&nbsp;
+                input.checkbox(checked="checked")#displayInfo(type="checkbox")
               #highlight-dropdown.dropdown
                 .dropdown-trigger
                   button#highlight-button.button(aria-haspopup='true' aria-controls='highlight-menu')
@@ -63,11 +65,6 @@ html(style={height: "100%", overflow: "hidden"})
           #insert_controls
           #edit_controls
         #neume_info
-          article.message(style={display: "none"})
-            .message-header
-              p
-              button#notification-delete.delete("aria-label"="delete")
-            .message-body
         #syl_text.box(style={display: "none"})
       script(type='text/javascript').
         var meiFile = "#{meifile}";
