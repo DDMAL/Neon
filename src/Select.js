@@ -607,6 +607,9 @@ export function unselect() {
             $(selected[i]).removeClass("selected").attr("fill", null);
         }
     }
+    $(".syl-select").css("color", "");
+    $(".syl-select").removeClass("syl-select");
+
     if (!$("#selByStaff").hasClass("is-active")) {
         Grouping.endGroupingSelection();
     }
@@ -624,6 +627,19 @@ function select(el) {
     if (!$(el).hasClass("selected")) {
         $(el).attr("fill", "#d00");
         $(el).addClass("selected");
+
+        var sylId;
+        if ($(el).hasClass("syllable")) {
+            sylId = el.id;
+        } else if ($(el).parents(".syllable").length) {
+            sylId = $(el).parents(".syllable").attr("id");
+        }
+        if (sylId !== undefined) {
+            if ($("span").filter("." + sylId).length) {
+                $("span").filter("." + sylId).css("color", "#d00");
+                $("span").filter("." + sylId).addClass("syl-select");
+            }
+        }
     }
     Controls.updateHighlight();
 }
