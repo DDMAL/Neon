@@ -34,7 +34,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                     editing = true;
                 }
             })
-            if (editing) { return; }
+            if (editing || evt.shiftKey) { return; }
             if (this.tagName === "use") {
                 var isNc= $(this).parent().hasClass("nc");
                 if(!isNc && !($("#selByStaff").hasClass("is-active"))){
