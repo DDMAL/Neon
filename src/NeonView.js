@@ -57,6 +57,10 @@ function NeonView (params) {
         Controls.setSylControls();
     }
 
+    function hideLoad() {
+        $("#loading").css("display", "none");
+    }
+
     /**
      * Load the view, including background image and rendered MEI.
      */
@@ -65,12 +69,12 @@ function NeonView (params) {
             var group = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             group.id = "svg_group";
             var bg = document.createElementNS("http://www.w3.org/2000/svg", "image");
+            bg.onload = hideLoad();
             bg.id = "bgimg";
             bg.setAttributeNS("http://www.w3.org/1999/xlink", "href", bgimg);
             var mei = document.createElementNS("http://www.w3.org/2000/svg", "g");
             mei.id = "mei_output";
             group.append(bg);
-            bg.onload = () => { document.getElementById("loading").style = "display: none;"; };
             group.append(mei);
             $("#svg_output").append(group);
             loadSvg();
