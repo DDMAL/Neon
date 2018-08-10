@@ -14,11 +14,15 @@ export function setGroupingHighlight(grouping) {
     let groups = Array.from($("." + grouping));
     for (var i = 0; i < groups.length; i++) {
         let groupColor = ColorPalette[i % ColorPalette.length];
-        if (!$(groups[i]).parents(".selected").length) {
+        if (!$(groups[i]).parents(".selected").length && !$(groups[i]).hasClass("selected")) {
             groups[i].setAttribute("fill", groupColor);
             $(groups[i]).addClass("highlighted");
         } else {
-            groups[i].setAttribute("fill", null);
+            if (!$(groups[i]).hasClass("selected")) {
+                groups[i].setAttribute("fill", null);
+            } else {
+                groups[i].setAttribute("fill", "#d00");
+            }
             $(groups[i]).removeClass("highlighted");
         }
     }
@@ -29,7 +33,7 @@ export function setGroupingHighlight(grouping) {
  */
 export function unsetGroupingHighlight() {
     unsetStaffHighlight();
-    let highlighted = Array.from(document.getElementsByClassName("highlighted"));
+    let highlighted = Array.from($(".highlighted").filter((index, elem) => { console.log(elem); return !$(elem.parentElement).hasClass("selected"); }));
     highlighted.forEach(elem => {
         elem.setAttribute("fill", null);
         $(elem).removeClass("highlighted");
@@ -77,7 +81,7 @@ export function highlight(staff, color) {
  * @param {(SVGSVGElement|string)} staff - The staff's SVG element or a JQuery selector.
  */
 export function unhighlight(staff) {
-    let children = Array.from($(staff).children(".highlighted"));
+    let children = Array.from($(staff).filter(":not(.selected)").children(".highlighted"));
     children.forEach(elem => {
         if (elem.tagName === "path") {
             elem.setAttribute("stroke", "#000000");
@@ -85,7 +89,7 @@ export function unhighlight(staff) {
             elem.removeAttribute("fill");
         }
     });
-    $(staff).children(".highlighted").removeClass("highlighted");
+    $(staff).filter(":not(.selected)").children(".highlighted").removeClass("highlighted");
 }
 
 /**
