@@ -137,10 +137,11 @@ function InfoBox(neon) {
      * @param {string} body - The info box contents.
      */
     function updateInfoBox(title, body) {
-        $(".message").css("display", "");
-        $(".message-header").children("p").html(title);
-        $(".message-body").html(body);
-
+        if($("#displayInfo").is(":checked")){
+            $(".message").css("display", "");
+            $(".message-header").children("p").html(title);
+            $(".message-body").html(body);
+        }
         // Setting up listener for dismissing message
         $("#notification-delete").on("click", function () {
             $(".message").css("display", "none");
