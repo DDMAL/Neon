@@ -25,7 +25,7 @@
         </div>
     </div>
     <div class="columns" style="overflow:hidden;height:94%;margin:0;" id="neon-columns">
-        <div class="column is-two-thirds box" id="svg_output" style="overflow:hidden;height:750px;"></div>
+        <div class="column is-two-thirds box" id="svg_output" style="overflow:hidden;height:getHeight();"></div>
         <div class="column is-one-third" style="overflow-x:hidden;overflow-y:auto;">
             <div class="panel">
                 <p class="panel-heading has-dropdown" id="displayHeader">Display<svg class="icon is-pulled-right"><use id="toggleDisplay" xlink:href="./img/icons.svg#dropdown-down"></use></svg></p>
@@ -65,6 +65,9 @@
                 "+ : Zoom in\t\ts : Save File\t\tCtrl-z or \u{2318}-z : Undo\n" +
                 "\u{2013} : Zoom out\t\th : Hide MEI\t\tCtrl-Z or \u{2318}-Z : Redo\n" +
                 "0 : Zoom reset\n\n1/2/3/4 : Select by Syllable/Neume/Neume Component/Staff");
+        }
+        function getHeight() {
+            alert(window.innerHeight);
         }
     </script>
     <script src="./editor.js"></script>
