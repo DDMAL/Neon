@@ -65,7 +65,7 @@ export function updateSylText(span) {
         let editorAction = {
             "action": "setText",
             "param": {
-                "elementId": $("#" + $(span).attr('class')).attr("id"),
+                "elementId": $("#" + $(span).attr('class').replace("syl-select", "").trim()).attr("id"),
                 "text": corrected
             }
         };
