@@ -33,7 +33,7 @@ export function setGroupingHighlight(grouping) {
  */
 export function unsetGroupingHighlight() {
     unsetStaffHighlight();
-    let highlighted = Array.from($(".highlighted").filter((index, elem) => { console.log(elem); return !$(elem.parentElement).hasClass("selected"); }));
+    let highlighted = Array.from($(".highlighted").filter((index, elem) => { return !$(elem.parentElement).hasClass("selected"); }));
     highlighted.forEach(elem => {
         elem.setAttribute("fill", null);
         $(elem).removeClass("highlighted");
