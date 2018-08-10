@@ -191,7 +191,7 @@ function InfoBox(neon) {
      * A map containing neume groupings and their contours.
      */
     var neumeGroups = new Map (
-        [["", "Punctum"], ["u", "Pes"], ["d", "Clivis"], ["uu", "Scandicus"], ["ud", "Torculus"], ["du", "Porrectus"],
+        [["", "Punctum"], ["u", "Pes"], ["d", "Clivis"], ["uu", "Scandicus"], ["ud", "Torculus"], ["du", "Porrectus"], ["s", "Distropha"], ["ss", "Tristopha"],
          ["sd", "Pressus"], ["dd", "Climacus"], ["ddu", "Climacus resupinus"], ["udu", "Torculus resupinus"], ["dud", "Porrectus flexus"],
          ["udd", "Pes subpunctis"], ["uud", "Scandicus flexus"], ["uudd", "Scandicus subpunctis"], ["dudd", "Porrectus subpunctis"]]
     );
