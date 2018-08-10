@@ -489,6 +489,10 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
             }
             else if (selectMode === "selByNc") {
                 var noClefOrCustos = selectNn(notNeumes);
+                if(isLigature($(ncs[0]), neon)){
+                    var prevNc = $(ncs[0]).prev();
+                    ncs.push(prevNc);
+                }
                 ncs.forEach(nc => {
                     select(nc);
                 });
