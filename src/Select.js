@@ -463,7 +463,29 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                     }
                 }
                 else if (neumes.length > 1 && noClefOrCustos) {
-                    Grouping.triggerGrouping("neume");
+                    let syllable = neumes[0].parentElement;
+                    let group = false;
+                    for (var i = 1; i < neumes.length; i++) {
+                        if (syllable !== neumes[i].parentElement) {
+                            group = true;
+                            break;
+                        }
+                    }
+                    if (group) {
+                        Grouping.triggerGrouping("neume");
+                    }
+                    else {
+                        let sylNeumes = Array.from(syllable.children).filter(child => $(child).hasClass("neume"));
+                        let result = true;
+                        sylNeumes.forEach(neume => {
+                            result = result && neumes.includes(neume);
+                        });
+                        if (result) {
+                            unselect();
+                            select(syllable);
+                            SelectOptions.triggerSylActions();
+                        }
+                    }
                 }
                 else if (neumes.length == 1 && noClefOrCustos) {
                     var neume = neumes[0];
@@ -520,23 +542,50 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
 
                     if(secondY > firstY){
                         if($(ncs[0]).parent()[0].id === $(ncs[1]).parent()[0].id){
-                            if(isLigature($(ncs[0]), neon) && isLigature($(ncs[1]), neon)){
+                            let isFirstLigature = isLigature($(ncs[0]), neon);
+                            let isSecondLigature = isLigature($(ncs[1]), neon);
+                            if ((isFirstLigature && isSecondLigature) || (!isFirstLigature && !isSecondLigature)) {
                                 Grouping.triggerGrouping("ligature");
                             }
-                            else{
+                           /*else{
                                 Grouping.triggerGrouping("ligatureNc");
-                            }
+                            }*/
                         }
                         else{
-                            Grouping.triggerGrouping("nc");
+                            if (ncs[0].parentElement != ncs[1].parentElement) {
+                                Grouping.triggerGrouping("nc");
+                            }
                         }
                     }
                     else{
-                        Grouping.triggerGrouping("nc");
+                        if (ncs[0].parentElement != ncs[1].parentElement) {
+                            Grouping.triggerGrouping("nc");
+                        }
                     }
                 }
                 else if (ncs.length > 1 && noClefOrCustos) {
-                    Grouping.triggerGrouping("nc");
+                    let neume = ncs[0].parentElement;
+                    let group = false;
+                    for (var i = 1; i < ncs.length; i++) {
+                        if (ncs[i].parentElement !== neume) {
+                            group = true;
+                            break;
+                        }
+                    }
+                    if (group) {
+                        Grouping.triggerGrouping("nc");
+                    } else {
+                        let neumeNcs = Array.from(neume.children).filter(nc => $(nc).hasClass("nc"));
+                        let result = true;
+                        neumeNcs.forEach(nc => {
+                            result = result && ncs.includes(nc);
+                        });
+                        if (result) {
+                            unselect();
+                            select(neume);
+                            SelectOptions.triggerNeumeActions();
+                        }
+                    }
                 }
                 else if (ncs.length === 1 && noClefOrCustos) {
                     SelectOptions.triggerNcActions(ncs[0]);
