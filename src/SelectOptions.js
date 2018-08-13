@@ -170,11 +170,10 @@ export function triggerClefActions(clef) {
     $("#moreEdit").append(Contents.clefActionContents);
     $("#CClef.dropdown-item").on("click", (evt) => {
         let setCClef = {
-            "action": "set",
+            "action": "setClef",
             "param": {
                 "elementId": clef.id,
-                "attrType": "shape",
-                "attrValue": "C"
+                "shape": "C"
             }
         }
         if(neonView.edit(setCClef)){
@@ -187,11 +186,10 @@ export function triggerClefActions(clef) {
     })
     $("#FClef.dropdown-item").on("click", (evt) => {
         let setFClef = {
-            "action": "set",
+            "action": "setClef",
             "param": {
                 "elementId": clef.id,
-                "attrType": "shape",
-                "attrValue": "F"
+                "shape": "F"
             }
         }
         if(neonView.edit(setFClef)){
