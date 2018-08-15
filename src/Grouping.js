@@ -87,6 +87,7 @@ export function initGroupingListeners(){
         else{
             Notification.queueNotification("Ligature Toggle Failed");
         }
+        endGroupingSelection();
         neonView.refreshPage();
     });
 }
@@ -132,6 +133,7 @@ function groupingAction(action, groupType, elementIds) {
             Warnings.groupingNotRecognized();
         }
     }
+    endGroupingSelection();
 }
 
 /**
