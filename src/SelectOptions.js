@@ -52,6 +52,7 @@ export function triggerNcActions(nc) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
+        Grouping.endGroupingSelection();
         neonView.refreshPage();
     });
 
@@ -78,6 +79,7 @@ export function triggerNcActions(nc) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
+        Grouping.endGroupingSelection();
         neonView.refreshPage();
     });
 
@@ -104,6 +106,7 @@ export function triggerNcActions(nc) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
+        Grouping.endGroupingSelection();
         neonView.refreshPage();
     });
 
@@ -142,6 +145,7 @@ export function triggerNeumeActions() {
         else{
             Notification.queueNotification("Grouping Failed");
         }
+        Grouping.endGroupingSelection();
         neonView.refreshPage();
     }
     initOptionsListeners();
@@ -182,6 +186,7 @@ export function triggerClefActions(clef) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
+        Grouping.endGroupingSelection();
         neonView.refreshPage();
     })
     $("#FClef.dropdown-item").on("click", (evt) => {
@@ -225,6 +230,7 @@ export function triggerStaffActions() {
         };
         if (neonView.edit(editorAction)) {
             Notification.queueNotification("Staff Merged");
+            endOptionsSelection();
             neonView.refreshPage();
         }
         else {

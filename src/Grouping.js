@@ -58,6 +58,7 @@ export function initGroupingListeners(){
     $("#ungroupNeumes").on("click", function () {
         var elementIds = getChildrenIds();
         groupingAction("ungroup", "neume", elementIds);
+
     });
 
     $("#ungroupNcs").on("click", function() {
@@ -87,6 +88,7 @@ export function initGroupingListeners(){
         else{
             Notification.queueNotification("Ligature Toggle Failed");
         }
+        endGroupingSelection();
         neonView.refreshPage();
     });
 }
@@ -132,6 +134,7 @@ function groupingAction(action, groupType, elementIds) {
             Warnings.groupingNotRecognized();
         }
     }
+    endGroupingSelection();
 }
 
 /**
