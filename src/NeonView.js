@@ -223,6 +223,15 @@ function NeonView (params) {
         neon.addStateToUndo();
     }
 
+    //Window listener to update height
+    $(window).on('resize', function() {
+        var newHeight = window.innerHeight;
+        if(newHeight > $("#svg_group").attr("height")){
+            $("#svg_group").attr("height", newHeight);
+        }
+        refreshPage();
+    });
+
     NeonView.prototype.constructor = NeonView;
     NeonView.prototype.refreshPage = refreshPage;
     NeonView.prototype.resetListeners = resetListeners;
