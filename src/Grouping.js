@@ -58,7 +58,6 @@ export function initGroupingListeners(){
     $("#ungroupNeumes").on("click", function () {
         var elementIds = getChildrenIds();
         groupingAction("ungroup", "neume", elementIds);
-
     });
 
     $("#ungroupNcs").on("click", function() {

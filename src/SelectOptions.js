@@ -52,7 +52,7 @@ export function triggerNcActions(nc) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
-        Grouping.endGroupingSelection();
+        endOptionsSelection();
         neonView.refreshPage();
     });
 
@@ -79,7 +79,7 @@ export function triggerNcActions(nc) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
-        Grouping.endGroupingSelection();
+        endOptionsSelection();
         neonView.refreshPage();
     });
 
@@ -106,7 +106,7 @@ export function triggerNcActions(nc) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
-        Grouping.endGroupingSelection();
+        endOptionsSelection();
         neonView.refreshPage();
     });
 
@@ -145,7 +145,7 @@ export function triggerNeumeActions() {
         else{
             Notification.queueNotification("Grouping Failed");
         }
-        Grouping.endGroupingSelection();
+        endOptionsSelection();
         neonView.refreshPage();
     }
     initOptionsListeners();
@@ -186,7 +186,7 @@ export function triggerClefActions(clef) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
-        Grouping.endGroupingSelection();
+        endOptionsSelection();
         neonView.refreshPage();
     })
     $("#FClef.dropdown-item").on("click", (evt) => {
@@ -203,6 +203,7 @@ export function triggerClefActions(clef) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
+        endOptionsSelection();
         neonView.refreshPage();
     })
     initOptionsListeners();
