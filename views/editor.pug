@@ -9,12 +9,16 @@ html(style={height: "100%", overflow: "hidden"})
       .navbar-brand
         a.navbar-item(href='../')
           p Neon3
-      .navbar-menu
+        a.navbar-item#notification-content(style={display: "none"})
+        a.navbar-burger#burgerMenu(role="button" aria-label="menu" aria-expanded="false")
+          span(aria-hidden="true")
+          span(aria-hidden="true")
+          span(aria-hidden="true")
+      .navbar-menu#navMenu
         .navbar-start
           a.navbar-item
             #dropdown_toggle
               button.button#edit_mode Edit MEI
-          a.navbar-item#notification-content(style={display: "none"})
         .navbar-end
           .navbar-item.has-dropdown.is-hoverable
             a.navbar-link Help

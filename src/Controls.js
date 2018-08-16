@@ -24,6 +24,7 @@ export function initDisplayControls (zHandler) {
     setBackgroundOpacityControls();
     setSylControls();
     setHighlightControls();
+    setBurgerControls();
 
     $("#toggleDisplay").on("click", () => {
         if ($("#displayContents").is(":hidden")) {
@@ -168,6 +169,15 @@ export function setHighlightControls() {
             $("body").off("click", highlightClickaway);
         }
     });
+}
+/**
+ * Set listener on burger menu for smaller screens.
+ */
+function setBurgerControls () {
+    $("#burgerMenu").on("click", () => {
+        $(this).toggleClass('is-active');
+        $("#navMenu").toggleClass('is-active');
+    })
 }
 
 /**
