@@ -9,12 +9,16 @@ html(style={height: "100%", overflow: "hidden"})
       .navbar-brand
         a.navbar-item(href='../')
           p Neon3
-      .navbar-menu
+        a.navbar-item#notification-content(style={display: "none"})
+        a.navbar-burger#burgerMenu(role="button" aria-label="menu" aria-expanded="false")
+          span(aria-hidden="true")
+          span(aria-hidden="true")
+          span(aria-hidden="true")
+      .navbar-menu#navMenu
         .navbar-start
           a.navbar-item
             #dropdown_toggle
               button.button#edit_mode Edit MEI
-          a.navbar-item#notification-content(style={display: "none"})
         .navbar-end
           .navbar-item.has-dropdown.is-hoverable
             a.navbar-link Help
@@ -29,7 +33,7 @@ html(style={height: "100%", overflow: "hidden"})
         .panel
           p.panel-heading.has-dropdown#displayHeader Display
             svg.icon.is-pulled-right
-              use(id="toggleDisplay" xlink:href="/img/icons.svg#dropdown-down")
+              use(id="toggleDisplay" xlink:href="/img/icons.svg#dropdown-down") 
           #displayContents
             a.panel-block.has-text-centered
               button.button#reset-zoom(style={width: "12em"}) Zoom
