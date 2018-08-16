@@ -171,7 +171,7 @@ export function setHighlightControls() {
     });
 }
 /**
- * Set listener on burger mnu for smaller screens
+ * Set listener on burger menu for smaller screens.
  */
 function setBurgerControls () {
     $("#burgerMenu").on("click", () => {
