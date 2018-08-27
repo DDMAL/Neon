@@ -70,7 +70,7 @@ function clearOrShowNextNotification(currentId) {
     // clear notification currently displayed
     $("#" + currentId).off("click");
     $(".neon-notification").remove("#" + currentId);
-    if (currentModeMessage.getId() === currentId) {
+    if (currentModeMessage !== null && currentModeMessage.getId() === currentId) {
         currentModeMessage = null;
     }
     if (notifications.length > 0) {
