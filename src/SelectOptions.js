@@ -241,6 +241,17 @@ export function triggerStaffActions() {
 }
 
 /**
+ * Trigger split staff option
+ */
+export function triggerSplitActions() {
+    endOptionsSelection();
+    $("#moreEdit").removeClass("is-invisible");
+    $("#moreEdit").append(Contents.splitActionContents);
+
+    //TODO add trigger for split action
+}
+
+/**
  * End the extra options menu.
  */
 export function endOptionsSelection () {
