@@ -8,7 +8,7 @@ import * as Notification from "./Notification.js";
  */
 function SplitHandler (neonView) {
     function startSplit() {
-        removeSplitHandlers();
+        splitDisable();
 
         $("body").on("click", "#svg_output", handler);
 
@@ -44,6 +44,8 @@ function SplitHandler (neonView) {
     }
 
     function handler (evt) {
+        let id = $(".selected").id;
+
         var container = document.getElementsByClassName("definition-scale")[0];
         var pt = container.createSVGPoint();
         pt.x = evt.clientX;
@@ -66,6 +68,14 @@ function SplitHandler (neonView) {
 
         neonView.edit(editorAction);
         neonView.refreshPage();
+        splitDisable();
+    }
+
+    function splitDisable() {
+        $("body").off("keydown", keydownListener);
+        $("body").off("keyup", resetHandler);
+        $("body").off("click", clickawayHandler);
+        $("body").off("click", handler);
     }
 
     SplitHandler.prototype.constructor = SplitHandler;
