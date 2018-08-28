@@ -250,8 +250,11 @@ export function triggerSplitActions() {
     $("#moreEdit").append(Contents.splitActionContents);
 
     //TODO add trigger for split action
-    var split = new SplitHandler(neonView);
-    split.startSplit();
+    $("#split-system").on("click", (evt) => {
+        var split = new SplitHandler(neonView);
+        split.startSplit();
+        endOptionsSelection();
+    });
 }
 
 /**

@@ -44,7 +44,7 @@ function SplitHandler (neonView) {
     }
 
     function handler (evt) {
-        let id = $(".selected").id;
+        let id = $(".selected")[0].id;
 
         var container = document.getElementsByClassName("definition-scale")[0];
         var pt = container.createSVGPoint();
@@ -54,7 +54,7 @@ function SplitHandler (neonView) {
         //Transform to SVG coordinate system.
         var transformMatrix = container.getScreenCTM().inverse();
         var cursorPt = pt.matrixTransform(transformMatrix);
-
+        console.log(cursorPt.x);
         // Find staff point corresponds to if one exists
         // TODO
 
@@ -62,12 +62,12 @@ function SplitHandler (neonView) {
             "action": "split",
             "param": {
                 "elementId": id,
-                "x": cursorPt.x
+                "x": parseInt(cursorPt.x)
             }
         };
 
-        neonView.edit(editorAction);
-        neonView.refreshPage();
+        if (neonView.edit(editorAction))
+            neonView.refreshPage();
         splitDisable();
     }
 
