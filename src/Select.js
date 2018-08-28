@@ -96,7 +96,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                     if (!staff.hasClass("selected")) {
                         selectStaff(staff[0], dragHandler);
                         SelectOptions.triggerSplitActions();
-                        let resize = new Resize(staff[0].id);
+                        let resize = new Resize(staff[0].id, neonView);
                         resize.drawInitialRect();
                     }
                 }
@@ -146,7 +146,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                 if (!$(staff).hasClass("selected")) {
                     selectStaff(staff, dragHandler);
                     SelectOptions.triggerSplitActions();
-                    let resize = new Resize(staff.id);
+                    let resize = new Resize(staff.id, neonView);
                     resize.drawInitialRect();
                 }
             }
@@ -383,7 +383,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                 });
                 if(toSelect.length == 1){
                     SelectOptions.triggerSplitActions();
-                    let resize = new Resize(toSelect[0].id);
+                    let resize = new Resize(toSelect[0].id, neonView);
                     resize.drawInitialRect();
                 }
                 else if(toSelect.length == 2){

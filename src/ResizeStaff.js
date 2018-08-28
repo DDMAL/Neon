@@ -5,7 +5,7 @@ const Side = {
     Right: 3
 };
 
-function Resize(staffId) {
+function Resize(staffId, neon) {
     var staff = document.getElementById(staffId);
     var ulx, uly, lrx, lry;
 
@@ -94,6 +94,19 @@ function Resize(staffId) {
         }
 
         function resizeEnd () {
+            let editorAction = {
+                "action": "resize",
+                "param": {
+                    "elementId": staff.id,
+                    "ulx": ulx,
+                    "uly": uly,
+                    "lrx": lrx,
+                    "lry": lry
+                }
+            };
+            if (neon.edit(editorAction)) {
+                neon.refreshPage();
+            }
         }
     }
 
