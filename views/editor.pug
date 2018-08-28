@@ -9,7 +9,6 @@ html(style={height: "100%", overflow: "hidden"})
       .navbar-brand
         a.navbar-item(href='../')
           p Neon3
-        a.navbar-item#notification-content(style={display: "none"})
         a.navbar-burger#burgerMenu(role="button" aria-label="menu" aria-expanded="false")
           span(aria-hidden="true")
           span(aria-hidden="true")
@@ -28,6 +27,7 @@ html(style={height: "100%", overflow: "hidden"})
               a.navbar-item(href="//ddmal.music.mcgill.ca" target="_blank") DDMAL
               a.navbar-item(onclick="hotkeyDialog()") Hotkeys
     .columns(style={overflow: "hidden", height: "94%", "margin": "0"})
+      #notification-content(style={display: "none"})
       .column#svg_output.is-two-thirds.box(style={overflow: "hidden", height: "getHeight()"})
       .column.is-one-third.is-hidden-mobile(style={"overflow-x": "hidden", "overflow-y": "auto"})
         .panel
