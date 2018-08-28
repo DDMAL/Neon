@@ -3,6 +3,7 @@ import * as Contents from "./Contents.js";
 import * as Grouping from "./Grouping.js";
 import * as Notification from "./Notification.js";
 import InfoBox from "./InfoBox.js";
+import SplitHandler from "./SplitHandler.js";
 
 /**
  * The NeonView parent to call editor actions.
@@ -237,6 +238,22 @@ export function triggerStaffActions() {
         else {
             Notification.queueNotification("Merge Failed");
         }
+    });
+}
+
+/**
+ * Trigger split staff option
+ */
+export function triggerSplitActions() {
+    endOptionsSelection();
+    $("#moreEdit").removeClass("is-invisible");
+    $("#moreEdit").append(Contents.splitActionContents);
+
+    //TODO add trigger for split action
+    $("#split-system").on("click", (evt) => {
+        var split = new SplitHandler(neonView);
+        split.startSplit();
+        endOptionsSelection();
     });
 }
 

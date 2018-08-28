@@ -27,12 +27,12 @@ test("Test 'drag' action, neume", () => {
         "param": {
             "elementId": "m-54220197-ac7d-452c-8c34-b3d0bdbaefa0",
             "x": 2,
-            "y": 34 
+            "y": 34
         }
     };
     neon.edit(editorAction);
     let newAtts = neon.getElementAttr("m-5ba56425-5c59-4f34-9e56-b86779cb4d6d");
-    
+
     expect(originalAtts["pname"]).toBe("a");
     expect(originalAtts["oct"]).toBe("2");
 
@@ -119,13 +119,13 @@ test("Test undo and redo", () => {
     //Should not be able to undo or redo now
     expect(neon.undo()).toBeFalsy();
     expect(neon.redo()).toBeFalsy();
-    
+
     let editorAction = {
         "action": "drag",
         "param": {
             "elementId": "m-54220197-ac7d-452c-8c34-b3d0bdbaefa0",
             "x": 2,
-            "y": 34 
+            "y": 34
         }
     };
     // Ensure the editor is working
@@ -152,7 +152,7 @@ test("Test chain action", () => {
                 "param": {
                     "elementId": "m-5ba56425-5c59-4f34-9e56-b86779cb4d6d",
                     "x": 2,
-                    "y": 34 
+                    "y": 34
                 }
             },
             {
@@ -189,4 +189,19 @@ test("Test 'set' action", () => {
     };
     neon.edit(setAction);
     expect(neon.getElementAttr("m-6831ff33-aa39-4b0d-a383-e44585c6c644")).toEqual({pname: "g", oct: "2", diagonalright: "u"});
+});
+
+test("Test 'split' action", () => {
+    let neon = new Neon(mei, new verovio.toolkit());
+    neon.getSVG();
+    let editorAction = {
+        "action": "split",
+        "param": {
+            "elementId": "m-6231e253-9c3a-4e4b-a9a8-a15b0091677d",
+            "x": 1000
+        }
+    };
+    expect(neon.edit(editorAction)).toBeTruthy();
+    let newId = neon.info();
+    expect(neon.getElementAttr(newId)).toEqual({n: '17'});
 });

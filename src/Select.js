@@ -98,6 +98,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                         Controls.updateHighlight();
                         Color.highlight(staff[0], "#d00");
                         dragHandler.dragInit();
+                        SelectOptions.triggerSplitActions();
                     }
                 }
                 else {
@@ -149,6 +150,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                     Controls.updateHighlight();
                     Color.highlight(staff, "#d00");
                     dragHandler.dragInit();
+                    SelectOptions.triggerSplitActions();
                 }
             }
         }
@@ -382,7 +384,10 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                 toSelect.forEach(elem => {
                     Color.highlight(elem, "#d00");
                 });
-                if(toSelect.length == 2){
+                if(toSelect.length == 1){
+                    SelectOptions.triggerSplitActions();
+                }
+                else if(toSelect.length == 2){
                     var bb1 = $(toSelect[0])[0].getBBox();
                     var bb2 = $(toSelect[1])[0].getBBox();
                     var avgHeight = (bb1.height + bb2.height)/2;

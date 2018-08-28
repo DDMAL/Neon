@@ -194,6 +194,15 @@ export const staffActionContents =
     "<button id='merge-systems' class='button'>Merge</button></p></div>";
 
 /**
+ * Contents of split action menu.
+ * @type {string}
+ */
+export const splitActionContents =
+    "<label>Split System:&nbsp;</label>" +
+    "<div><p class='control'>" +
+    "<button id='split-system' class='button'>Split</button></p></div>";
+
+/**
  * Contents of extra clef action menu.
  * @type {string}
  */
