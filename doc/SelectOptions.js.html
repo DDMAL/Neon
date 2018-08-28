@@ -31,6 +31,7 @@ import * as Contents from "./Contents.js";
 import * as Grouping from "./Grouping.js";
 import * as Notification from "./Notification.js";
 import InfoBox from "./InfoBox.js";
+import SplitHandler from "./SplitHandler.js";
 
 /**
  * The NeonView parent to call editor actions.
@@ -80,6 +81,7 @@ export function triggerNcActions(nc) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
+        endOptionsSelection();
         neonView.refreshPage();
     });
 
@@ -106,6 +108,7 @@ export function triggerNcActions(nc) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
+        endOptionsSelection();
         neonView.refreshPage();
     });
 
@@ -132,6 +135,7 @@ export function triggerNcActions(nc) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
+        endOptionsSelection();
         neonView.refreshPage();
     });
 
@@ -170,6 +174,7 @@ export function triggerNeumeActions() {
         else{
             Notification.queueNotification("Grouping Failed");
         }
+        endOptionsSelection();
         neonView.refreshPage();
     }
     initOptionsListeners();
@@ -198,11 +203,10 @@ export function triggerClefActions(clef) {
     $("#moreEdit").append(Contents.clefActionContents);
     $("#CClef.dropdown-item").on("click", (evt) => {
         let setCClef = {
-            "action": "set",
+            "action": "setClef",
             "param": {
                 "elementId": clef.id,
-                "attrType": "shape",
-                "attrValue": "C"
+                "shape": "C"
             }
         }
         if(neonView.edit(setCClef)){
@@ -211,15 +215,15 @@ export function triggerClefActions(clef) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
+        endOptionsSelection();
         neonView.refreshPage();
     })
     $("#FClef.dropdown-item").on("click", (evt) => {
         let setFClef = {
-            "action": "set",
+            "action": "setClef",
             "param": {
                 "elementId": clef.id,
-                "attrType": "shape",
-                "attrValue": "F"
+                "shape": "F"
             }
         }
         if(neonView.edit(setFClef)){
@@ -228,6 +232,7 @@ export function triggerClefActions(clef) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
+        endOptionsSelection();
         neonView.refreshPage();
     })
     initOptionsListeners();
@@ -255,11 +260,28 @@ export function triggerStaffActions() {
         };
         if (neonView.edit(editorAction)) {
             Notification.queueNotification("Staff Merged");
+            endOptionsSelection();
             neonView.refreshPage();
         }
         else {
             Notification.queueNotification("Merge Failed");
         }
+    });
+}
+
+/**
+ * Trigger split staff option
+ */
+export function triggerSplitActions() {
+    endOptionsSelection();
+    $("#moreEdit").removeClass("is-invisible");
+    $("#moreEdit").append(Contents.splitActionContents);
+
+    //TODO add trigger for split action
+    $("#split-system").on("click", (evt) => {
+        var split = new SplitHandler(neonView);
+        split.startSplit();
+        endOptionsSelection();
     });
 }
 
@@ -289,13 +311,13 @@ function initOptionsListeners(){
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-ResizeStaff.html">ResizeStaff</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-ResizeStaff-Resize.html">Resize</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Aug 08 2018 15:44:08 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 28 2018 15:08:46 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

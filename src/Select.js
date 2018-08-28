@@ -5,6 +5,7 @@ import * as Contents from "./Contents.js";
 import * as Controls from "./Controls.js";
 import * as Grouping from "./Grouping.js";
 import * as SelectOptions from "./SelectOptions.js";
+import Resize from "./ResizeStaff.js";
 
 /**
  * Handle click selection and mark elements as selected.
@@ -93,12 +94,10 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                 else if ($("#selByStaff").hasClass("is-active")) {
                     var staff = $(this).parents(".staff");
                     if (!staff.hasClass("selected")) {
-                        unselect();
-                        staff.addClass("selected");
-                        Controls.updateHighlight();
-                        Color.highlight(staff[0], "#d00");
-                        dragHandler.dragInit();
+                        selectStaff(staff[0], dragHandler);
                         SelectOptions.triggerSplitActions();
+                        let resize = new Resize(staff[0].id, neonView, dragHandler);
+                        resize.drawInitialRect();
                     }
                 }
                 else {
@@ -145,12 +144,10 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
 
                 var staff = selectedStaves[0];
                 if (!$(staff).hasClass("selected")) {
-                    unselect();
-                    $(staff).addClass("selected");
-                    Controls.updateHighlight();
-                    Color.highlight(staff, "#d00");
-                    dragHandler.dragInit();
+                    selectStaff(staff, dragHandler);
                     SelectOptions.triggerSplitActions();
+                    let resize = new Resize(staff.id, neonView, dragHandler);
+                    resize.drawInitialRect();
                 }
             }
         }
@@ -386,6 +383,8 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                 });
                 if(toSelect.length == 1){
                     SelectOptions.triggerSplitActions();
+                    let resize = new Resize(toSelect[0].id, neonView, dragHandler);
+                    resize.drawInitialRect();
                 }
                 else if(toSelect.length == 2){
                     var bb1 = $(toSelect[0])[0].getBBox();
@@ -675,6 +674,8 @@ export function unselect() {
     $(".syl-select").css("color", "");
     $(".syl-select").removeClass("syl-select");
 
+    d3.select("#resizeRect").remove();
+
     if (!$("#selByStaff").hasClass("is-active")) {
         Grouping.endGroupingSelection();
     }
@@ -784,6 +785,22 @@ function selectClefs(el, dragHandler){
         unselect();
         select(parent);
         SelectOptions.triggerClefActions(parent[0]);
+        dragHandler.dragInit();
+    }
+}
+
+/**
+ * Select a staff.
+ * @param {SVGSVGElement} el - The staff element to select.
+ * @param {DragHandler} dragHandler - An instantiated DragHandler.
+ */
+export function selectStaff(el, dragHandler){
+    let staff = $(el);
+    if (!staff.hasClass("selected")) {
+        unselect();
+        staff.addClass("selected");
+        Controls.updateHighlight();
+        Color.highlight(el, "#d00");
         dragHandler.dragInit();
     }
 }
