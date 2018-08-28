@@ -672,6 +672,7 @@ export function unselect() {
         }
     }
     $(".syl-select").css("color", "");
+    $(".syl-select").css("font-weight", "");
     $(".syl-select").removeClass("syl-select");
 
     d3.select("#resizeRect").remove();
@@ -703,6 +704,7 @@ function select(el) {
         if (sylId !== undefined) {
             if ($("span").filter("." + sylId).length) {
                 $("span").filter("." + sylId).css("color", "#d00");
+                $("span").filter("." + sylId).css("font-weight", "bold");
                 $("span").filter("." + sylId).addClass("syl-select");
             }
         }
