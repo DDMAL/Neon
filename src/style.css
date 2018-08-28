@@ -34,12 +34,19 @@ button:focus {
     overflow: auto;
 }
 
-span.neon-notification {
+#notification-content {
+    z-index: 8;
+    position: fixed;
+}
+
+.neon-notification {
     padding: 0.4rem;
-    margin: 0 0.25rem 0;
-    background-color: whitesmoke;
+    margin: 0.5rem;
+    background: #f5f5f577; /* whitesmoke with opacity */
     border: 0.05rem solid;
     border-radius: 1rem;
+    z-index: 8;
+    cursor: pointer;
 }
 
 .overlay {

@@ -57,7 +57,7 @@ function displayNotification(notification) {
             return;
         }
     }
-    $("#notification-content").append("<span class='neon-notification' id='" + notification.getId() + "'>" + notification.message + "</span> ");
+    $("#notification-content").append("<div class='neon-notification' id='" + notification.getId() + "'>" + notification.message + "</div> ");
     $("#notification-content").css("display", "");
     notification.display();
 }
