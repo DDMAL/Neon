@@ -83,6 +83,11 @@ function NeonView (params) {
         loadView();
         // editMode.getScale();
         Controls.setSylControls();
+        Controls.setInfoControls();
+    }
+
+    function hideLoad() {
+        $("#loading").css("display", "none");
     }
 
     /**
@@ -93,6 +98,7 @@ function NeonView (params) {
             var group = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             group.id = "svg_group";
             var bg = document.createElementNS("http://www.w3.org/2000/svg", "image");
+            bg.onload = hideLoad();
             bg.id = "bgimg";
             bg.setAttributeNS("http://www.w3.org/1999/xlink", "href", bgimg);
             var mei = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -163,9 +169,6 @@ function NeonView (params) {
                         );
                         Cursor.updateCursorTo("grab");
                         break;
-                    case "s":
-                        saveMEI();
-                        break;
                     case "h":
                         $("#mei_output").css("visibility", "hidden");
                         break;
@@ -186,6 +189,16 @@ function NeonView (params) {
                         break;
                     default: break;
                 }
+            }
+        });
+        // Allow two finger panning of image on touch screens/touchpads
+        d3.select("#svg_output").on("touchstart", () => {
+            if (d3.event.touches.length === 2) {
+                zoomHandler.startDrag();
+                d3.select("#svg_output").on("touchmove", zoomHandler.dragging);
+                d3.select("#svg_output").on("touchend", () => {
+                    d3.select("#svg_output").on("touchmove", null);
+                });
             }
         });
         infoBox.infoListeners();
@@ -238,6 +251,15 @@ function NeonView (params) {
         neon.addStateToUndo();
     }
 
+    //Window listener to update height
+    $(window).on('resize', function() {
+        var newHeight = window.innerHeight;
+        if(newHeight > $("#svg_group").attr("height")){
+            $("#svg_group").attr("height", newHeight);
+        }
+        refreshPage();
+    });
+
     NeonView.prototype.constructor = NeonView;
     NeonView.prototype.refreshPage = refreshPage;
     NeonView.prototype.resetListeners = resetListeners;
@@ -260,13 +282,13 @@ export {NeonView as default};
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-ResizeStaff.html">ResizeStaff</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-ResizeStaff-Resize.html">Resize</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Aug 08 2018 15:44:08 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 28 2018 15:08:46 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

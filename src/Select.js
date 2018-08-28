@@ -96,7 +96,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                     if (!staff.hasClass("selected")) {
                         selectStaff(staff[0], dragHandler);
                         SelectOptions.triggerSplitActions();
-                        let resize = new Resize(staff[0].id, neonView);
+                        let resize = new Resize(staff[0].id, neonView, dragHandler);
                         resize.drawInitialRect();
                     }
                 }
@@ -146,7 +146,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                 if (!$(staff).hasClass("selected")) {
                     selectStaff(staff, dragHandler);
                     SelectOptions.triggerSplitActions();
-                    let resize = new Resize(staff.id, neonView);
+                    let resize = new Resize(staff.id, neonView, dragHandler);
                     resize.drawInitialRect();
                 }
             }
@@ -383,7 +383,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                 });
                 if(toSelect.length == 1){
                     SelectOptions.triggerSplitActions();
-                    let resize = new Resize(toSelect[0].id, neonView);
+                    let resize = new Resize(toSelect[0].id, neonView, dragHandler);
                     resize.drawInitialRect();
                 }
                 else if(toSelect.length == 2){
@@ -789,7 +789,12 @@ function selectClefs(el, dragHandler){
     }
 }
 
-function selectStaff(el, dragHandler){
+/**
+ * Select a staff.
+ * @param {SVGSVGElement} el - The staff element to select.
+ * @param {DragHandler} dragHandler - An instantiated DragHandler.
+ */
+export function selectStaff(el, dragHandler){
     let staff = $(el);
     if (!staff.hasClass("selected")) {
         unselect();

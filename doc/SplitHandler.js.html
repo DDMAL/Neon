@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: Text.js</title>
+    <title>JSDoc: Source: SplitHandler.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: Text.js</h1>
+    <h1 class="page-title">Source: SplitHandler.js</h1>
 
     
 
@@ -26,91 +26,90 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/** @module Text */
-import * as Controls from "./Controls.js";
+            <pre class="prettyprint source linenums"><code>import * as Cursor from "./Cursor.js";
 import * as Notification from "./Notification.js";
-/** @var {NeonView} */
-var view;
-
-var firstDiamond = false;
-var messageSent = false;
-
-/** @var {boolean} */
-export var editText = false;
 
 /**
- * Enable editing text and set listeners.
- * @param {NeonView} neonView
+ * Handler splitting a staff into two staves through Verovio.
+ * @constructor
+ * @param {NeonView} neonView - The NeonView parent.
  */
-export function enableEditText(neonView) {
-    editText = true;
-    view = neonView;
-    Controls.setTextEdit();
-    Controls.updateSylVisibility();
-}
+function SplitHandler (neonView) {
+    function startSplit() {
+        splitDisable();
 
-/**
- * Get the syllable text of the loaded file.
- * @returns {string}
- */
-export function getSylText() {
-    var lyrics = "";
-    let uniToDash = /\ue551/g;
-    let syllables = Array.from($(".syllable"));
-    syllables.forEach(syllable => {
-        if ($(syllable).has(".syl").length) {
-            let syl = $(syllable).children(".syl")[0];
-            lyrics += "&lt;span class='" + syllable.id + "'>";
-            if (syl.textContent.trim() === "") {
-                lyrics += "&amp;#x25CA; ";
-            } else {
-                Array.from(syl.children[0].children[0].children).forEach(text => {
-                    lyrics += text.textContent !== "" ? text.textContent : "&amp;#x25CA; ";
-                });
-            }
-            lyrics += " &lt;/span>";
-        }
-        else if (editText){
-            lyrics += "&lt;span class='" + syllable.id + "'>&amp;#x25CA; &lt;/span>";
-            firstDiamond = true;
-        }
-    });
-    if (firstDiamond &amp;&amp; !messageSent) {
-        Notification.queueNotification("Blank syllables are represented by &amp;#x25CA;!");
-        messageSent = true;
+        $("body").on("click", "#svg_output", handler);
+
+        // Handle keypresses
+        $("body").on("keydown", keydownListener);
+        $("body").on("keyup", resetHandler);
+        $("body").on("click", clickawayHandler);
+
+        Notification.queueNotification("Click Where to Split");
     }
-    return lyrics.replace(uniToDash, "-");
-}
 
-/**
- * Update the text for a syl tag by user input.
- * @param {HTMLElement} span
- */
-export function updateSylText(span) {
-    let orig = formatRaw($(span).html());
-    let corrected = window.prompt("", orig);
-    if (corrected !== null &amp;&amp; corrected !== orig) {
+    function keydownListener (evt) {
+        if (evt.key === "Escape") {
+            splitDisable();
+        }
+        else if (evt.key === "Shift") {
+            $("body").off("click", "#svg_output", handler);
+        }
+    }
+
+    function clickawayHandler (evt) {
+        if (evt.target.id != "svg_group" &amp;&amp; $("#svg_group").find(evt.target).length === 0 &amp;&amp; evt.target.tagName !== "path"
+            &amp;&amp; evt.target.id != "split-system") {
+            splitDisable();
+            $("body").off("click", "#svg_output", handler);
+        }
+    }
+
+    function resetHandler (evt) {
+        if (evt.key === "Shift") {
+            $("body").on("click", "#svg_output", handler);
+        }
+    }
+
+    function handler (evt) {
+        let id = $(".selected")[0].id;
+
+        var container = document.getElementsByClassName("definition-scale")[0];
+        var pt = container.createSVGPoint();
+        pt.x = evt.clientX;
+        pt.y = evt.clientY;
+
+        //Transform to SVG coordinate system.
+        var transformMatrix = container.getScreenCTM().inverse();
+        var cursorPt = pt.matrixTransform(transformMatrix);
+        console.log(cursorPt.x);
+        // Find staff point corresponds to if one exists
+        // TODO
+
         let editorAction = {
-            "action": "setText",
+            "action": "split",
             "param": {
-                "elementId": $("#" + $(span).attr('class').replace("syl-select", "").trim()).attr("id"),
-                "text": corrected
+                "elementId": id,
+                "x": parseInt(cursorPt.x)
             }
         };
-        if (view.edit(editorAction))
-            view.refreshPage();
-    }
-}
 
-/**
- * Format a string for prompting the user.
- * @param {string} rawString
- * @returns {string}
- */
-function formatRaw(rawString) {
-    let removeSymbol = /\u{25CA}/u;
-    return rawString.replace(removeSymbol, "").trim();
+        if (neonView.edit(editorAction))
+            neonView.refreshPage();
+        splitDisable();
+    }
+
+    function splitDisable() {
+        $("body").off("keydown", keydownListener);
+        $("body").off("keyup", resetHandler);
+        $("body").off("click", clickawayHandler);
+        $("body").off("click", handler);
+    }
+
+    SplitHandler.prototype.constructor = SplitHandler;
+    SplitHandler.prototype.startSplit = startSplit;
 }
+export {SplitHandler as default};
 </code></pre>
         </article>
     </section>
