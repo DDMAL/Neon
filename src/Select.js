@@ -5,6 +5,7 @@ import * as Contents from "./Contents.js";
 import * as Controls from "./Controls.js";
 import * as Grouping from "./Grouping.js";
 import * as SelectOptions from "./SelectOptions.js";
+import Resize from "./ResizeStaff.js";
 
 /**
  * Handle click selection and mark elements as selected.
@@ -99,6 +100,8 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                         Color.highlight(staff[0], "#d00");
                         dragHandler.dragInit();
                         SelectOptions.triggerSplitActions();
+                        let resize = new Resize(staff[0].id);
+                        resize.drawInitialRect();
                     }
                 }
                 else {
@@ -674,6 +677,8 @@ export function unselect() {
     }
     $(".syl-select").css("color", "");
     $(".syl-select").removeClass("syl-select");
+
+    d3.select("#resizeRect").remove();
 
     if (!$("#selByStaff").hasClass("is-active")) {
         Grouping.endGroupingSelection();
