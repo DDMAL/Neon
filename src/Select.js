@@ -94,11 +94,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                 else if ($("#selByStaff").hasClass("is-active")) {
                     var staff = $(this).parents(".staff");
                     if (!staff.hasClass("selected")) {
-                        unselect();
-                        staff.addClass("selected");
-                        Controls.updateHighlight();
-                        Color.highlight(staff[0], "#d00");
-                        dragHandler.dragInit();
+                        selectStaff(staff[0], dragHandler);
                         SelectOptions.triggerSplitActions();
                         let resize = new Resize(staff[0].id);
                         resize.drawInitialRect();
@@ -148,12 +144,10 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
 
                 var staff = selectedStaves[0];
                 if (!$(staff).hasClass("selected")) {
-                    unselect();
-                    $(staff).addClass("selected");
-                    Controls.updateHighlight();
-                    Color.highlight(staff, "#d00");
-                    dragHandler.dragInit();
+                    selectStaff(staff, dragHandler);
                     SelectOptions.triggerSplitActions();
+                    let resize = new Resize(staff.id);
+                    resize.drawInitialRect();
                 }
             }
         }
@@ -389,6 +383,8 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                 });
                 if(toSelect.length == 1){
                     SelectOptions.triggerSplitActions();
+                    let resize = new Resize(toSelect[0].id);
+                    resize.drawInitialRect();
                 }
                 else if(toSelect.length == 2){
                     var bb1 = $(toSelect[0])[0].getBBox();
@@ -789,6 +785,17 @@ function selectClefs(el, dragHandler){
         unselect();
         select(parent);
         SelectOptions.triggerClefActions(parent[0]);
+        dragHandler.dragInit();
+    }
+}
+
+function selectStaff(el, dragHandler){
+    let staff = $(el);
+    if (!staff.hasClass("selected")) {
+        unselect();
+        staff.addClass("selected");
+        Controls.updateHighlight();
+        Color.highlight(el, "#d00");
         dragHandler.dragInit();
     }
 }
