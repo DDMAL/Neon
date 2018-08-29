@@ -79,3 +79,10 @@ button:focus {
         transform: rotate(360deg);
     }
 }
+
+@media only screen and (max-width: 1088px) {
+    #navMenu {
+        position: fixed;
+        height: 100%;
+    }
+}
