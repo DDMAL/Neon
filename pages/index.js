@@ -2,6 +2,8 @@ import CF009_MEI from "./CF009.mei";
 import CF009_BG from "./CF009.png";
 import CF018_MEI from "./CF018.mei";
 import CF018_BG from "./CF018.png";
+import CF036_MEI from "./CF036.mei";
+import CF036_PNG from "./CF036.png";
 
 /**
  * Pages that can be loaded.
@@ -17,6 +19,11 @@ const selectionOptions = [
         name: "CF018",
         mei: CF018_MEI,
         img: CF018_BG
+    },
+    {
+        name: "CF036",
+        mei: CF036_MEI,
+        img: CF036_PNG
     }
 ];
 
