@@ -1,11 +1,10 @@
 import NeonView from "../src/NeonView.js";
 
-let mei = getGetParam("mei");
-let img = getGetParam("img");
+let mei = getGetParam("page");
 
 var view = new NeonView({
-    meifile: "./" + mei,
-    bgimg: "./" + img,
+    meifile: "./mei/" + mei + ".mei",
+    bgimg: "./img/" + mei + ".png",
     mode: "pages"
 });
 

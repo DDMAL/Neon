@@ -8,7 +8,7 @@ for file in *.mei; do
     mei="${base}_MEI"
     background="${base}_PNG"
     imports="${imports}import $mei from \"./$file\";\nimport $background from \"./${filename}.png\";\n"
-    json="${json}    { name: \"$filename\", mei: $mei, img: $background },\n"
+    json="${json}    \"$filename\",\n"
 done
 
 printf "${imports}\n" > index.js
