@@ -86,7 +86,6 @@ function ZoomHandler () {
         }
 
         matrix = document.getElementById("svg_group").getScreenCTM().inverse();
-        dragCoordinates = dragCoordinates.matrixTransform(matrix);
     }
 
     function dragging () {
@@ -95,12 +94,25 @@ function ZoomHandler () {
         if (d3.event.type === "touchmove") {
             newCoordinates.x = d3.event.touches[0].screenX;
             newCoordinates.y = d3.event.touches[0].screenY;
+        } else if (d3.event.type === "wheel") {
+            if (matrix === undefined) {
+                matrix = document.getElementById("svg_group").getScreenCTM().inverse();
+            }
+            if (dragCoordinates === undefined) {
+                dragCoordinates = document.getElementById("svg_group").createSVGPoint();
+            }
+            dragCoordinates.x = d3.event.x;
+            dragCoordinates.y = d3.event.y;
+            newCoordinates.x = dragCoordinates.x - d3.event.deltaX;
+            newCoordinates.y = dragCoordinates.y - d3.event.deltaY;
+            d3.event.preventDefault();
         } else {
             newCoordinates.x = d3.event.x;
             newCoordinates.y = d3.event.y;
         }
-        newCoordinates = newCoordinates.matrixTransform(matrix);
-        translate(-newCoordinates.x + dragCoordinates.x, -newCoordinates.y + dragCoordinates.y);
+        let newTransform = newCoordinates.matrixTransform(matrix);
+        let dragTransform = dragCoordinates.matrixTransform(matrix);
+        translate(-newTransform.x + dragTransform.x, -newTransform.y + dragTransform.y);
         dragCoordinates = newCoordinates;
     }
 

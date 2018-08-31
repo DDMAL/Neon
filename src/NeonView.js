@@ -163,6 +163,7 @@ function NeonView (params) {
                 }
             }
         });
+
         // Allow two finger panning of image on touch screens/touchpads
         d3.select("#svg_output").on("touchstart", () => {
             if (d3.event.touches.length === 2) {
@@ -173,6 +174,7 @@ function NeonView (params) {
                 });
             }
         });
+        d3.select("#svg_output").on("wheel", zoomHandler.dragging, false);
         infoBox.infoListeners();
     }
 
