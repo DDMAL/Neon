@@ -103,8 +103,8 @@ function ZoomHandler () {
             }
             dragCoordinates.x = d3.event.x;
             dragCoordinates.y = d3.event.y;
-            newCoordinates.x = dragCoordinates.x + d3.event.deltaX;
-            newCoordinates.y = dragCoordinates.y + d3.event.deltaY;
+            newCoordinates.x = dragCoordinates.x - d3.event.deltaX;
+            newCoordinates.y = dragCoordinates.y - d3.event.deltaY;
             d3.event.preventDefault();
         } else {
             newCoordinates.x = d3.event.x;
