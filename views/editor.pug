@@ -1,8 +1,8 @@
-html(style={height: "100%", overflow: "hidden"})
+html
   head
     title Neon3
     script(src='/pretty.js')
-  body(style={"height": "100%", "width": "100%", "overflow": "hidden"})
+  body
     .overlay#loading
       .loader
     nav.navbar.is-light
@@ -26,17 +26,17 @@ html(style={height: "100%", overflow: "hidden"})
               a.navbar-item(href="//github.com/DDMAL/Neon2/wiki" target="_blank") Wiki
               a.navbar-item(href="//ddmal.music.mcgill.ca" target="_blank") DDMAL
               a.navbar-item(onclick="hotkeyDialog()") Hotkeys
-    .columns(style={overflow: "hidden", height: "94%", "margin": "0"})
+    .columns
       #notification-content(style={display: "none"})
-      .column#svg_output.is-two-thirds.box(style={overflow: "hidden", height: "getHeight()"})
-      .column.is-one-third.is-hidden-mobile(style={"overflow-x": "hidden", "overflow-y": "auto"})
+      .column#svg_output.is-two-thirds.box(style={height: "getHeight()"})
+      .column.is-one-third.is-hidden-mobile#right-column
         .panel
           p.panel-heading.has-dropdown#displayHeader Display
             svg.icon.is-pulled-right
               use(id="toggleDisplay" xlink:href="/img/icons.svg#dropdown-down")
           #displayContents
             a.panel-block.has-text-centered
-              button.button#reset-zoom(style={width: "12em"}) Zoom
+              button.button#reset-zoom Zoom
               input.slider.is-fullwidth#zoomSlider(step="5", min="25", max="400", value="100", type="range")
               output#zoomOutput(for="zoomSlider") 100
             a.panel-block.has-text-centered
@@ -69,7 +69,7 @@ html(style={height: "100%", overflow: "hidden"})
           #insert_controls
           #edit_controls
         #neume_info
-        #syl_text.box(style={display: "none"})
+        #syl_text.box(style={"display": "none"})
       script(type='text/javascript').
         var meiFile = "#{meifile}";
         var bgImg = "#{bgimg}";

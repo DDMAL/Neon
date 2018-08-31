@@ -1,3 +1,32 @@
+html {
+    overflow: hidden;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.columns {
+    overflow: hidden;
+    height: 94%;
+    margin: 0;
+}
+
+#right-column {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#svg_output {
+    overflow: hidden;
+}
+
+#reset-zoom {
+    width: 12em;
+}
+
 .container {
     display: flex;
 }
