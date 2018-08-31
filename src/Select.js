@@ -297,7 +297,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
 
             var elements = els.filter(function(d){
                 if (d.tagName === "use") {
-                    let box = d.getBBox();
+                    let box = d.parentNode.getBBox();
                     let ulx = box.x;
                     let uly = box.y;
                     let lrx = box.x + box.width;
