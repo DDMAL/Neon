@@ -53,23 +53,8 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                 pt = pt.matrixTransform(transformMatrix.inverse());
 
                 let selectedStaves = staves.filter((staff) => {
-                    var ulx, uly, lrx, lry;
-                    (Array.from($(staff).children("path"))).forEach(path => {
-                        let box = path.getBBox();
-                        if (uly === undefined || box.y < uly) {
-                            uly = box.y;
-                        }
-                        if (ulx === undefined || box.x < ulx) {
-                            ulx = box.x;
-                        }
-                        if (lry === undefined || box.y + box.height > lry) {
-                            lry = box.y + box.height;
-                        }
-                        if (lrx === undefined || box.x + box.width > lrx) {
-                            lrx = box.x + box.width;
-                        }
-                    });
-                    return (ulx < pt.x && pt.x < lrx) && (uly < pt.y && pt.y < lry);
+                    let box = getStaffBBox(staff);
+                    return (box.ulx < pt.x && pt.x < box.lrx) && (box.uly < pt.y && pt.y < box.lry);
                 });
                 if (selectedStaves.length != 1) {
                     unselect();
@@ -169,23 +154,8 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
     function pointNotInStaff(point) {
         let staves = Array.from($(".staff"));
         let filtered = staves.filter((staff) => {
-            var ulx, uly, lrx, lry;
-            (Array.from($(staff).children("path"))).forEach(path => {
-                let box = path.getBBox();
-                if (uly === undefined || box.y < uly) {
-                    uly = box.y;
-                }
-                if (ulx === undefined || box.x < ulx) {
-                    ulx = box.x;
-                }
-                if (lry === undefined || box.y + box.height > lry) {
-                    lry = box.y + box.height;
-                }
-                if (lrx === undefined || box.x + box.width > lrx) {
-                    lrx = box.x + box.width;
-                }
-            });
-            return (ulx < point[0] && point[0] < lrx) && (uly < point[1] && point[1] < lry);
+            let box = getStaffBBox(staff);
+            return (box.ulx < point[0] && point[0] < box.lrx) && (box.uly < point[1] && point[1] < box.lry);
         });
         return (filtered.length == 0);
     }
@@ -238,23 +208,8 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                     let lry = box.y + box.height;
                     return !(((rx < ulx && lx < ulx) || (rx > lrx && lx > lrx)) || ((ry < uly && ly < uly) || (ry > lry && ly > lry)));
                 } else {
-                    var uly, ulx, lry, lrx;
-                    (Array.from($(d).children("path"))).forEach(path => {
-                        let box = path.getBBox();
-                        if (uly === undefined || box.y < uly) {
-                            uly = box.y;
-                        }
-                        if (ulx === undefined || box.x < ulx) {
-                            ulx = box.x;
-                        }
-                        if (lry === undefined || box.y + box.height > lry) {
-                            lry = box.y + box.height;
-                        }
-                        if (lrx === undefined || box.x + box.width > lrx) {
-                            lrx = box.x + box.width;
-                        }
-                    });
-                    return !(((rx < ulx && lx < ulx) || (rx > lrx && lx > lrx)) || ((ry < uly && ly < uly) || (ry > lry && ly > lry)));
+                    let box = getStaffBBox(d);
+                    return !(((rx < box.ulx && lx < box.ulx) || (rx > box.lrx && lx > box.lrx)) || ((ry < box.uly && ly < box.uly) || (ry > box.lry && ly > box.lry)));
                 }
             });
 
@@ -301,6 +256,31 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
 }
 
 /**
+ * Get the bounding box of a staff based on its staff lines.
+ * @param {SVGSVGElement} staff
+ * @returns {object}
+ */
+function getStaffBBox(staff) {
+    let ulx, uly, lrx, lry;
+    Array.from($(staff).children("path")).forEach(path => {
+        let box = path.getBBox();
+        if (uly === undefined || box.y < uly) {
+            uly = box.y;
+        }
+        if (ulx === undefined || box.x < ulx) {
+            ulx = box.x;
+        }
+        if (lry === undefined || box.y + box.height > lry) {
+            lry = box.y + box.height;
+        }
+        if (lrx === undefined || box.x + box.width > lrx) {
+            lrx = box.x + box.width;
+        }
+    });
+    return {"ulx": ulx, "uly": uly, "lrx": lrx, "lry": lry};
+}
+
+/**
  * Select not neume elements.
  * @param {object[]} notNeumes - An array of not neumes elements.
  */
@@ -315,6 +295,13 @@ function selectNn(notNeumes) {
     }
 }
 
+/**
+ * Handle selecting an array of elements based on the selection type.
+ * @param {SVGSVGElement[]} elements - The elements to select. Either <g> or <use>.
+ * @param {module:Neon~Neon} neon - A neon instance.
+ * @param {NeonView} neonView - The NeonView parent.
+ * @param {dragHandler} dragHandler - A DragHandler to alow staff resizing and some neume component selection cases.
+ */
 function selectAll(elements, neon, neonView, dragHandler) {
     var syls = [];
     var neumes = [];
