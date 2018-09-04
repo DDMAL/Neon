@@ -324,284 +324,8 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                 }
             });
 
-            var syls = [];
-            var neumes = [];
-            var ncs = [];
-            var notNeumes = [];
+            selectAll(elements, neon, neonView, dragHandler);
 
-            elements.forEach(el => {
-                var firstParent = $(el).parent()[0];
-                var isNc = $(firstParent).hasClass("nc");
-
-                if (isNc) {
-                    ncs.push(firstParent);
-
-                    var neume = $(firstParent).parent()[0];
-                    if (!neumes.includes(neume)) {
-                        neumes.push(neume);
-                    }
-
-                    var syl = $(neume).parent()[0];
-                    if (!syls.includes(syl)) {
-                        syls.push(syl);
-                    }
-                }
-                else {
-                    notNeumes.push(firstParent);
-                }
-            });
-
-            var selectMode = null;
-            var tabs = Array.from($(".sel-by"));
-            tabs.forEach(tab => {
-                if ($(tab).hasClass("is-active")) {
-                    selectMode = $(tab)[0].id;
-                }
-            });
-
-            if (selectMode == "selByStaff") {
-                var toSelect = [];
-                elements.forEach(el => {
-                    if (el.tagName === "use") {
-                        var staff = $(el).parents(".staff")[0];
-                        if(!toSelect.includes(staff)){
-                            toSelect.push(staff);
-                        }
-                    } else {
-                        if(!toSelect.includes(el)){
-                            toSelect.push(el);
-                        }
-                    }
-                });
-                toSelect.forEach(elem => {
-                    $(elem).addClass("selected");
-                });
-
-                Controls.updateHighlight();
-                toSelect.forEach(elem => {
-                    Color.highlight(elem, "#d00");
-                });
-                if(toSelect.length == 1){
-                    SelectOptions.triggerSplitActions();
-                    let resize = new Resize(toSelect[0].id, neonView, dragHandler);
-                    resize.drawInitialRect();
-                }
-                else if(toSelect.length == 2){
-                    var bb1 = $(toSelect[0])[0].getBBox();
-                    var bb2 = $(toSelect[1])[0].getBBox();
-                    var avgHeight = (bb1.height + bb2.height)/2;
-                    if(Math.abs(bb1.y - bb2.y) < avgHeight){
-                        SelectOptions.triggerStaffActions();
-                    }
-                }
-            }
-            else if (selectMode === "selBySyl") {
-                var noClefOrCustos = selectNn(notNeumes);
-                syls.forEach(s => {
-                    select(s);
-                });
-                if(!noClefOrCustos){
-                    if(notNeumes.length == 1 && ncs.length == 0){
-                        var el = notNeumes[0];
-                        // if($(el).hasClass("custos")){
-                        //     SelectOptions.triggerNcActions([el]);
-                        // }
-                        if($(el).hasClass("clef")){
-                            SelectOptions.triggerClefActions([el]);
-                        }
-                    }
-                }
-                else if (syls.length > 1 && noClefOrCustos) {
-                    Grouping.triggerGrouping("syl");
-                }
-                else if (syls.length === 1 && noClefOrCustos) {
-                    var syl = syls[0];
-                    var nmChildren = $(syl).children(".neume");
-                    if(nmChildren.length === 1){
-                        var neume = nmChildren[0];
-                        var ncChildren = $(neume).children();
-                        if(ncChildren.length === 1){
-                            unselect();
-                            select(ncChildren[0]);
-                            SelectOptions.triggerNcActions(ncChildren[0]);
-                        }
-                        else if(ncChildren.length == 2){
-                            unselect();
-                            if(isLigature($(ncChildren[0]), neon)){
-                                selectNcs(ncChildren[0], dragHandler, neon);
-                                Grouping.triggerGrouping("ligature");
-                            }
-                            else{
-                                select(neume);
-                                SelectOptions.triggerNeumeActions();
-                            }
-                        }
-                        else{
-                            unselect();
-                            select(neume);
-                            SelectOptions.triggerNeumeActions();
-                        }
-                    }
-                    else{
-                        SelectOptions.triggerSylActions();
-                    }
-                }
-                else {
-                    console.log("Warning: no selection made");
-                }
-            }
-            else if (selectMode === "selByNeume") {
-                var noClefOrCustos = selectNn(notNeumes);
-                neumes.forEach(n => {
-                    select(n);
-                });
-                if(!noClefOrCustos){
-                    if(notNeumes.length == 1 && ncs.length == 0){
-                        var el = notNeumes[0];
-                        // if($(el).hasClass("custos")){
-                        //     SelectOptions.triggerNcActions([el]);
-                        // }
-                        if($(el).hasClass("clef")){
-                            SelectOptions.triggerClefActions([el]);
-                        }
-                    }
-                }
-                else if (neumes.length > 1 && noClefOrCustos) {
-                    let syllable = neumes[0].parentElement;
-                    let group = false;
-                    for (var i = 1; i < neumes.length; i++) {
-                        if (syllable !== neumes[i].parentElement) {
-                            group = true;
-                            break;
-                        }
-                    }
-                    if (group) {
-                        Grouping.triggerGrouping("neume");
-                    }
-                    else {
-                        let sylNeumes = Array.from(syllable.children).filter(child => $(child).hasClass("neume"));
-                        let result = true;
-                        sylNeumes.forEach(neume => {
-                            result = result && neumes.includes(neume);
-                        });
-                        if (result) {
-                            unselect();
-                            select(syllable);
-                            SelectOptions.triggerSylActions();
-                        }
-                    }
-                }
-                else if (neumes.length == 1 && noClefOrCustos) {
-                    var neume = neumes[0];
-                    var ncChildren = $(neume).children();
-                    if(ncChildren.length == 1){
-                        unselect();
-                        select(ncChildren[0]);
-                        SelectOptions.triggerNcActions(ncChildren[0]);
-                    }
-                    else if(ncChildren.length == 2 && isLigature($(ncChildren[0]), neon)){
-                        unselect();
-                        select(ncChildren[0]);
-                        select(ncChildren[1]);
-                        Grouping.triggerGrouping("ligature");
-                    }
-                    else{
-                        SelectOptions.triggerNeumeActions();
-                    }
-                }
-                else {
-                    console.log("no selection made");
-                }
-            }
-            else if (selectMode === "selByNc") {
-                var noClefOrCustos = selectNn(notNeumes);
-                var prev = $(ncs[0]).prev();
-                if(ncs.length != 0 && isLigature($(ncs[0]), neon) && prev.length != 0 && isLigature($(ncs[0]).prev(), neon)){
-                    ncs.push($(ncs[0]).prev());
-                }
-                ncs.forEach(nc => {
-                    select(nc);
-                });
-                if(!noClefOrCustos){
-                    if(notNeumes.length == 1 && ncs.length == 0){
-                        var el = notNeumes[0];
-                        // if($(el).hasClass("custos")){
-                        //     SelectOptions.triggerNcActions([el]);
-                        // }
-                        if($(el).hasClass("clef")){
-                            SelectOptions.triggerClefActions([el]);
-                        }
-                    }
-                }
-                else if (ncs.length === 2 && noClefOrCustos) {
-                    var firstX = $(ncs[0]).children()[0].x.baseVal.value;
-                    var secondX = $(ncs[1]).children()[0].x.baseVal.value;
-                    var firstY = 0;
-                    var secondY = 0;
-
-                    if(firstX == secondX){
-                        firstY = $(ncs[1]).children()[0].y.baseVal.value;
-                        secondY = $(ncs[0]).children()[0].y.baseVal.value;
-                    }
-                    else{
-                        firstY = $(ncs[0]).children()[0].y.baseVal.value;
-                        secondY = $(ncs[1]).children()[0].y.baseVal.value;
-                    }
-
-                    if(secondY > firstY){
-                        if($(ncs[0]).parent()[0].id === $(ncs[1]).parent()[0].id){
-                            let isFirstLigature = isLigature($(ncs[0]), neon);
-                            let isSecondLigature = isLigature($(ncs[1]), neon);
-                            if ((isFirstLigature && isSecondLigature) || (!isFirstLigature && !isSecondLigature)) {
-                                Grouping.triggerGrouping("ligature");
-                            }
-                           /*else{
-                                Grouping.triggerGrouping("ligatureNc");
-                            }*/
-                        }
-                        else{
-                            if (ncs[0].parentElement != ncs[1].parentElement) {
-                                Grouping.triggerGrouping("nc");
-                            }
-                        }
-                    }
-                    else{
-                        if (ncs[0].parentElement != ncs[1].parentElement) {
-                            Grouping.triggerGrouping("nc");
-                        }
-                    }
-                }
-                else if (ncs.length > 1 && noClefOrCustos) {
-                    let neume = ncs[0].parentElement;
-                    let group = false;
-                    for (var i = 1; i < ncs.length; i++) {
-                        if (ncs[i].parentElement !== neume) {
-                            group = true;
-                            break;
-                        }
-                    }
-                    if (group) {
-                        Grouping.triggerGrouping("nc");
-                    } else {
-                        let neumeNcs = Array.from(neume.children).filter(nc => $(nc).hasClass("nc"));
-                        let result = true;
-                        neumeNcs.forEach(nc => {
-                            result = result && ncs.includes(nc);
-                        });
-                        if (result) {
-                            unselect();
-                            select(neume);
-                            SelectOptions.triggerNeumeActions();
-                        }
-                    }
-                }
-                else if (ncs.length === 1 && noClefOrCustos) {
-                    SelectOptions.triggerNcActions(ncs[0]);
-                }
-                else {
-                    console.log("Warning: no selection made");
-                }
-            }
             dragHandler.dragInit();
             d3.selectAll("#selectRect").remove();
             dragSelecting = false;
@@ -640,19 +364,300 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
             .attr("width", currentWidth)
             .attr("height", currentHeight)
     }
+}
 
-    /**
-     * Select not neume elements.
-     * @param {object[]} notNeumes - An array of not neumes elements.
-     */
-    function selectNn(notNeumes) {
-        if (notNeumes.length > 0) {
-            notNeumes.forEach(nn => {
-                select(nn);
-            });
-            return false;
-        } else {
-            return true;
+/**
+ * Select not neume elements.
+ * @param {object[]} notNeumes - An array of not neumes elements.
+ */
+function selectNn(notNeumes) {
+    if (notNeumes.length > 0) {
+        notNeumes.forEach(nn => {
+            select(nn);
+        });
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function selectAll(elements, neon, neonView, dragHandler) {
+    var syls = [];
+    var neumes = [];
+    var ncs = [];
+    var notNeumes = [];
+
+    elements.forEach(el => {
+        var firstParent = $(el).parent()[0];
+        var isNc = $(firstParent).hasClass("nc");
+
+        if (isNc) {
+            ncs.push(firstParent);
+
+            var neume = $(firstParent).parent()[0];
+            if (!neumes.includes(neume)) {
+                neumes.push(neume);
+            }
+
+            var syl = $(neume).parent()[0];
+            if (!syls.includes(syl)) {
+                syls.push(syl);
+            }
+        }
+        else {
+            notNeumes.push(firstParent);
+        }
+    });
+
+    var selectMode = null;
+    var tabs = Array.from($(".sel-by"));
+    tabs.forEach(tab => {
+        if ($(tab).hasClass("is-active")) {
+            selectMode = $(tab)[0].id;
+        }
+    });
+
+    if (selectMode == "selByStaff") {
+        var toSelect = [];
+        elements.forEach(el => {
+            if (el.tagName === "use") {
+                var staff = $(el).parents(".staff")[0];
+                if(!toSelect.includes(staff)){
+                    toSelect.push(staff);
+                }
+            } else {
+                if(!toSelect.includes(el)){
+                    toSelect.push(el);
+                }
+            }
+        });
+        toSelect.forEach(elem => {
+            $(elem).addClass("selected");
+        });
+
+        Controls.updateHighlight();
+        toSelect.forEach(elem => {
+            Color.highlight(elem, "#d00");
+        });
+        if(toSelect.length == 1){
+            SelectOptions.triggerSplitActions();
+            let resize = new Resize(toSelect[0].id, neonView, dragHandler);
+            resize.drawInitialRect();
+        }
+        else if(toSelect.length == 2){
+            var bb1 = $(toSelect[0])[0].getBBox();
+            var bb2 = $(toSelect[1])[0].getBBox();
+            var avgHeight = (bb1.height + bb2.height)/2;
+            if(Math.abs(bb1.y - bb2.y) < avgHeight){
+                SelectOptions.triggerStaffActions();
+            }
+        }
+    }
+    else if (selectMode === "selBySyl") {
+        var noClefOrCustos = selectNn(notNeumes);
+        syls.forEach(s => {
+            select(s);
+        });
+        if(!noClefOrCustos){
+            if(notNeumes.length == 1 && ncs.length == 0){
+                var el = notNeumes[0];
+                // if($(el).hasClass("custos")){
+                //     SelectOptions.triggerNcActions([el]);
+                // }
+                if($(el).hasClass("clef")){
+                    SelectOptions.triggerClefActions([el]);
+                }
+            }
+        }
+        else if (syls.length > 1 && noClefOrCustos) {
+            Grouping.triggerGrouping("syl");
+        }
+        else if (syls.length === 1 && noClefOrCustos) {
+            var syl = syls[0];
+            var nmChildren = $(syl).children(".neume");
+            if(nmChildren.length === 1){
+                var neume = nmChildren[0];
+                var ncChildren = $(neume).children();
+                if(ncChildren.length === 1){
+                    unselect();
+                    select(ncChildren[0]);
+                    SelectOptions.triggerNcActions(ncChildren[0]);
+                }
+                else if(ncChildren.length == 2){
+                    unselect();
+                    if(isLigature($(ncChildren[0]), neon)){
+                        selectNcs(ncChildren[0], dragHandler, neon);
+                        Grouping.triggerGrouping("ligature");
+                    }
+                    else{
+                        select(neume);
+                        SelectOptions.triggerNeumeActions();
+                    }
+                }
+                else{
+                    unselect();
+                    select(neume);
+                    SelectOptions.triggerNeumeActions();
+                }
+            }
+            else{
+                SelectOptions.triggerSylActions();
+            }
+        }
+        else {
+            console.log("Warning: no selection made");
+        }
+    }
+    else if (selectMode === "selByNeume") {
+        var noClefOrCustos = selectNn(notNeumes);
+        neumes.forEach(n => {
+            select(n);
+        });
+        if(!noClefOrCustos){
+            if(notNeumes.length == 1 && ncs.length == 0){
+                var el = notNeumes[0];
+                // if($(el).hasClass("custos")){
+                //     SelectOptions.triggerNcActions([el]);
+                // }
+                if($(el).hasClass("clef")){
+                    SelectOptions.triggerClefActions([el]);
+                }
+            }
+        }
+        else if (neumes.length > 1 && noClefOrCustos) {
+            let syllable = neumes[0].parentElement;
+            let group = false;
+            for (var i = 1; i < neumes.length; i++) {
+                if (syllable !== neumes[i].parentElement) {
+                    group = true;
+                    break;
+                }
+            }
+            if (group) {
+                Grouping.triggerGrouping("neume");
+            }
+            else {
+                let sylNeumes = Array.from(syllable.children).filter(child => $(child).hasClass("neume"));
+                let result = true;
+                sylNeumes.forEach(neume => {
+                    result = result && neumes.includes(neume);
+                });
+                if (result) {
+                    unselect();
+                    select(syllable);
+                    SelectOptions.triggerSylActions();
+                }
+            }
+        }
+        else if (neumes.length == 1 && noClefOrCustos) {
+            var neume = neumes[0];
+            var ncChildren = $(neume).children();
+            if(ncChildren.length == 1){
+                unselect();
+                select(ncChildren[0]);
+                SelectOptions.triggerNcActions(ncChildren[0]);
+            }
+            else if(ncChildren.length == 2 && isLigature($(ncChildren[0]), neon)){
+                unselect();
+                select(ncChildren[0]);
+                select(ncChildren[1]);
+                Grouping.triggerGrouping("ligature");
+            }
+            else{
+                SelectOptions.triggerNeumeActions();
+            }
+        }
+        else {
+            console.log("no selection made");
+        }
+    }
+    else if (selectMode === "selByNc") {
+        var noClefOrCustos = selectNn(notNeumes);
+        var prev = $(ncs[0]).prev();
+        if(ncs.length != 0 && isLigature($(ncs[0]), neon) && prev.length != 0 && isLigature($(ncs[0]).prev(), neon)){
+            ncs.push($(ncs[0]).prev());
+        }
+        ncs.forEach(nc => {
+            select(nc);
+        });
+        if(!noClefOrCustos){
+            if(notNeumes.length == 1 && ncs.length == 0){
+                var el = notNeumes[0];
+                // if($(el).hasClass("custos")){
+                //     SelectOptions.triggerNcActions([el]);
+                // }
+                if($(el).hasClass("clef")){
+                    SelectOptions.triggerClefActions([el]);
+                }
+            }
+        }
+        else if (ncs.length === 2 && noClefOrCustos) {
+            var firstX = $(ncs[0]).children()[0].x.baseVal.value;
+            var secondX = $(ncs[1]).children()[0].x.baseVal.value;
+            var firstY = 0;
+            var secondY = 0;
+
+            if(firstX == secondX){
+                firstY = $(ncs[1]).children()[0].y.baseVal.value;
+                secondY = $(ncs[0]).children()[0].y.baseVal.value;
+            }
+            else{
+                firstY = $(ncs[0]).children()[0].y.baseVal.value;
+                secondY = $(ncs[1]).children()[0].y.baseVal.value;
+            }
+
+            if(secondY > firstY){
+                if($(ncs[0]).parent()[0].id === $(ncs[1]).parent()[0].id){
+                    let isFirstLigature = isLigature($(ncs[0]), neon);
+                    let isSecondLigature = isLigature($(ncs[1]), neon);
+                    if ((isFirstLigature && isSecondLigature) || (!isFirstLigature && !isSecondLigature)) {
+                        Grouping.triggerGrouping("ligature");
+                    }
+                   /*else{
+                        Grouping.triggerGrouping("ligatureNc");
+                    }*/
+                }
+                else{
+                    if (ncs[0].parentElement != ncs[1].parentElement) {
+                        Grouping.triggerGrouping("nc");
+                    }
+                }
+            }
+            else{
+                if (ncs[0].parentElement != ncs[1].parentElement) {
+                    Grouping.triggerGrouping("nc");
+                }
+            }
+        }
+        else if (ncs.length > 1 && noClefOrCustos) {
+            let neume = ncs[0].parentElement;
+            let group = false;
+            for (var i = 1; i < ncs.length; i++) {
+                if (ncs[i].parentElement !== neume) {
+                    group = true;
+                    break;
+                }
+            }
+            if (group) {
+                Grouping.triggerGrouping("nc");
+            } else {
+                let neumeNcs = Array.from(neume.children).filter(nc => $(nc).hasClass("nc"));
+                let result = true;
+                neumeNcs.forEach(nc => {
+                    result = result && ncs.includes(nc);
+                });
+                if (result) {
+                    unselect();
+                    select(neume);
+                    SelectOptions.triggerNeumeActions();
+                }
+            }
+        }
+        else if (ncs.length === 1 && noClefOrCustos) {
+            SelectOptions.triggerNcActions(ncs[0]);
+        }
+        else {
+            console.log("Warning: no selection made");
         }
     }
 }
