@@ -644,34 +644,6 @@ function select(el) {
 }
 
 /**
- * Select a syllable.
- * @param {SVGSVGElement} el - The nc element whose syllable to select.
- * @param {DragHandler} dragHandler - An instantiated DragHandler.
- */
-function selectSyl(el, dragHandler) {
-    if(!$(el).parent().parent().parent().hasClass("selected")){
-        unselect();
-        select($(el).parent().parent().parent());
-        SelectOptions.triggerSylActions();
-        dragHandler.dragInit();
-    }
-}
-
-/**
- * Select a neume.
- * @param {SVGSVGElement} el - The nc element whose neume to select.
- * @param {DragHandler} dragHandler - An instantiated DragHandler.
- */
-function selectNeumes(el, dragHandler) {
-    if(!$(el).parent().parent().hasClass("selected")){
-        unselect();
-        select($(el).parent().parent());
-        SelectOptions.triggerNeumeActions();
-        dragHandler.dragInit();
-    }
-}
-
-/**
  * Select an nc.
  * @param {SVGSVGElement} el - The nc element to select.
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
@@ -703,21 +675,6 @@ function selectNcs(el, dragHandler, neon) {
         else{
             console.warn("No action triggered!");
         }
-        dragHandler.dragInit();
-    }
-}
-
-/**
- * Select a clef.
- * @param {SVGSVGElement} el - The clef element to select.
- * @param {DragHandler} dragHandler - An instantiated DragHandler.
- */
-function selectClefs(el, dragHandler){
-    if(!$(el).parent().hasClass("selected")){
-        var parent = $(el).parent();
-        unselect();
-        select(parent);
-        SelectOptions.triggerClefActions(parent[0]);
         dragHandler.dragInit();
     }
 }
