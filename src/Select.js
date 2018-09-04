@@ -37,73 +37,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
             })
             if (editing || evt.shiftKey) { return; }
             if (this.tagName === "use") {
-                var isNc= $(this).parent().hasClass("nc");
-                if(!isNc && !($("#selByStaff").hasClass("is-active"))){
-                    if ($(this).parent().hasClass("clef")){
-                        selectClefs(this, dragHandler);
-                    }
-                    else if($(this).parent().hasClass("custos")){
-                        selectNcs(this, dragHandler, neon);
-                    }
-                }
-
-                else if ($("#selBySyl").hasClass("is-active") && isNc) {
-                    var ncParent = $(this).parent();
-                    var neumeParent = $(this).parent().parent();
-                    if($(neumeParent).hasClass("neume")){
-                        var parentSiblings = Array.from($(neumeParent).siblings(".neume"));
-                        if(parentSiblings.length != 0){
-                            selectSyl(this, dragHandler);
-                        }
-                        else if (!$(this).parent().parent().parent().hasClass("selected")){
-                            var ncSiblings = Array.from($(ncParent).siblings(".nc"));
-                            //Select neumes if there is more than one nc or if two ncs are not a ligature
-                            if(ncSiblings.length > 1 || (ncSiblings.length == 1 && (!isLigature($(ncSiblings[0]), neon)))){
-                                selectNeumes(this, dragHandler);
-                            }
-                            //Select ncs if there is only one nc or if two ncs are a ligature
-                            else{
-                                selectNcs(this, dragHandler, neon);
-                            }
-                        }
-                    }
-                    else{
-                        console.log("Error: parent should be neume.");
-                    }
-                }
-                else if ($("#selByNeume").hasClass("is-active") && isNc){
-                    var siblings = Array.from($(this).parent().siblings());
-                    //Select neumes if there is more than two ncs
-                    if(siblings.length > 1) {
-                        selectNeumes(this, dragHandler);
-                    }
-                    else if (!$(this).parent().parent().hasClass("selected")) {
-                        //select neumes if there are two ncs that are not a ligature
-                        if(siblings.length == 1 && (!isLigature($(siblings[0]), neon))){
-                            selectNeumes(this, dragHandler);
-                        }
-                        //select ncs if there is one nc or if two ncs are a ligature.
-                        else{
-                            selectNcs(this, dragHandler, neon);
-                        }
-                    }
-                }
-                else if ($("#selByNc").hasClass("is-active") && isNc){
-                    selectNcs(this, dragHandler, neon);
-                }
-                else if ($("#selByStaff").hasClass("is-active")) {
-                    var staff = $(this).parents(".staff");
-                    if (!staff.hasClass("selected")) {
-                        selectStaff(staff[0], dragHandler);
-                        SelectOptions.triggerSplitActions();
-                        let resize = new Resize(staff[0].id, neonView, dragHandler);
-                        resize.drawInitialRect();
-                    }
-                }
-                else {
-                    console.log("error: selection mode not activated");
-                    return;
-                }
+                selectAll([this], neon, neonView, dragHandler);
             }
             else {
                 if (!$("#selByStaff").hasClass("is-active")) {
@@ -573,6 +507,10 @@ function selectAll(elements, neon, neonView, dragHandler) {
     }
     else if (selectMode === "selByNc") {
         var noClefOrCustos = selectNn(notNeumes);
+        if (ncs.length == 1 && noClefOrCustos) {
+            selectNcs(ncs[0].children[0], dragHandler, neon);
+            return;
+        }
         var prev = $(ncs[0]).prev();
         if(ncs.length != 0 && isLigature($(ncs[0]), neon) && prev.length != 0 && isLigature($(ncs[0]).prev(), neon)){
             ncs.push($(ncs[0]).prev());
@@ -654,6 +592,7 @@ function selectAll(elements, neon, neonView, dragHandler) {
             }
         }
         else if (ncs.length === 1 && noClefOrCustos) {
+            console.log("Just one");
             SelectOptions.triggerNcActions(ncs[0]);
         }
         else {
