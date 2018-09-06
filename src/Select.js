@@ -19,7 +19,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
     selectListeners();
 
     //Selection mode toggle
-    function selectListeners() {
+    function selectListeners () {
         var classesToSelect = "use, #svg_group";
         Controls.initSelectionButtons();
 
@@ -27,7 +27,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
         $(classesToSelect).off("mousedown", handler);
         $(classesToSelect).on("mousedown", handler);
 
-        function handler(evt) {
+        function handler (evt) {
             var editing = false;
             var insertEls = Array.from(d3.selectAll(".insertel")._groups[0]);
             insertEls.forEach(el => {
@@ -113,7 +113,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
     /**
      * Start drag selecting musical elements.
      */
-    function selStart(){
+    function selStart () {
         var editing = false;
         var insertEls = Array.from(d3.selectAll(".insertel")._groups[0]);
         insertEls.forEach(el => {
@@ -122,7 +122,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
             }
         })
         if (d3.event.sourceEvent.target.nodeName != "use" && !editing){
-            if(!d3.event.sourceEvent.shiftKey){
+            if (!d3.event.sourceEvent.shiftKey){
                 if (!$("#selByStaff").hasClass("is-active") || pointNotInStaff(d3.mouse(this))) {
                     unselect();
                     dragSelecting = true;
@@ -149,7 +149,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
      * @param {number[]} point - An array where index 0 corresponds to x and 1 corresponds to y
      * @returns {boolean}
      */
-    function pointNotInStaff(point) {
+    function pointNotInStaff (point) {
         let staves = Array.from($(".staff"));
         let filtered = staves.filter((staff) => {
             let box = getStaffBBox(staff);
@@ -161,8 +161,8 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
     /**
      * Action to run while the drag select continues. Updates the rectangle.
      */
-    function selecting(){
-        if(!panning && dragSelecting){
+    function selecting () {
+        if (!panning && dragSelecting){
             var currentPt = d3.mouse(this);
             var curX = currentPt[0];
             var curY = currentPt[1];
@@ -174,7 +174,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
 
             updateRect(newX, newY, width, height);
         }
-        else if(panning){
+        else if (panning){
             zoomHandler.dragging();
         }
     }
@@ -182,8 +182,8 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
     /**
      * Finish the selection and mark elements within the rectangle as being selected.
      */
-    function selEnd(){
-        if(!panning && dragSelecting){
+    function selEnd () {
+        if (!panning && dragSelecting){
             var rx = parseInt($("#selectRect").attr("x"));
             var ry = parseInt($("#selectRect").attr("y"));
             var lx = parseInt($("#selectRect").attr("x")) + parseInt($("#selectRect").attr("width"));
@@ -225,7 +225,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
      * @param {number} ulx - The upper left x-position of the new rectangle.
      * @param {number} uly - The upper left y-position of the new rectangle.
      */
-    function initRect(ulx, uly){
+    function initRect (ulx, uly) {
         canvas.append("rect")
             .attr("x", ulx)
             .attr("y", uly)
@@ -244,7 +244,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
      * @param {number} currentWidth - The width of the rectangle in pixels.
      * @param {number} currentHeight - The height of the rectangle in pixels.
      */
-    function updateRect(newX, newY, currentWidth, currentHeight){
+    function updateRect (newX, newY, currentWidth, currentHeight) {
         d3.select("#selectRect")
             .attr("x", newX)
             .attr("y", newY)
@@ -258,7 +258,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
  * @param {SVGSVGElement} staff
  * @returns {object}
  */
-function getStaffBBox(staff) {
+function getStaffBBox (staff) {
     let ulx, uly, lrx, lry;
     Array.from($(staff).children("path")).forEach(path => {
         let box = path.getBBox();
@@ -282,7 +282,7 @@ function getStaffBBox(staff) {
  * Select not neume elements.
  * @param {object[]} notNeumes - An array of not neumes elements.
  */
-function selectNn(notNeumes) {
+function selectNn (notNeumes) {
     if (notNeumes.length > 0) {
         notNeumes.forEach(nn => { select(nn); });
         return false;
@@ -298,24 +298,24 @@ function selectNn(notNeumes) {
  * @param {NeonView} neonView - The NeonView parent.
  * @param {dragHandler} dragHandler - A DragHandler to alow staff resizing and some neume component selection cases.
  */
-function selectAll(elements, neon, neonView, dragHandler) {
+function selectAll (elements, neon, neonView, dragHandler) {
     var syls = [],
         neumes = [],
         ncs = [],
         notNeumes = [];
 
     elements.forEach(el => {
-        var firstParent = el.parentNode; // $(el).parent()[0];
+        var firstParent = el.parentNode;
 
         if ($(firstParent).hasClass("nc")) {
             ncs.push(firstParent);
 
-            let neume = firstParent.parentNode; // $(firstParent).parent()[0];
+            let neume = firstParent.parentNode;
             if (!neumes.includes(neume)) {
                 neumes.push(neume);
             }
 
-            var syl = neume.parentNode; // $(neume).parent()[0];
+            var syl = neume.parentNode;
             if (!syls.includes(syl)) {
                 syls.push(syl);
             }
@@ -327,8 +327,7 @@ function selectAll(elements, neon, neonView, dragHandler) {
 
     // Determine selection mode
     var selectMode = null;
-    var tabs = Array.from($(".sel-by"));
-    tabs.forEach(tab => {
+    Array.from($(".sel-by")).forEach(tab => {
         if ($(tab).hasClass("is-active")) {
             selectMode = $(tab)[0].id;
         }
@@ -339,11 +338,11 @@ function selectAll(elements, neon, neonView, dragHandler) {
         elements.forEach(el => {
             if (el.tagName === "use") {
                 let staff = $(el).parents(".staff")[0];
-                if(!toSelect.includes(staff)) {
+                if (!toSelect.includes(staff)) {
                     toSelect.push(staff);
                 }
             } else {
-                if(!toSelect.includes(el)) {
+                if (!toSelect.includes(el)) {
                     toSelect.push(el);
                 }
             }
@@ -356,16 +355,16 @@ function selectAll(elements, neon, neonView, dragHandler) {
         toSelect.forEach(elem => {
             Color.highlight(elem, "#d00");
         });
-        if(toSelect.length == 1) {
+        if (toSelect.length == 1) {
             SelectOptions.triggerSplitActions();
             let resize = new Resize(toSelect[0].id, neonView, dragHandler);
             resize.drawInitialRect();
         }
-        else if(toSelect.length == 2) {
-            var bb1 = toSelect[0].getBBox(); // $(toSelect[0])[0].getBBox();
-            var bb2 = toSelect[1].getBBox(); // $(toSelect[1])[0].getBBox();
-            var avgHeight = (bb1.height + bb2.height) / 2;
-            if(Math.abs(bb1.y - bb2.y) < avgHeight) {
+        else if (toSelect.length == 2) {
+            let bb1 = getStaffBBox(toSelect[0]);
+            let bb2 = getStaffBBox(toSelect[1]);
+            var avgHeight = (bb1.lry - bb1.uly + bb2.lry - bb2.uly) / 2;
+            if (Math.abs(bb1.uly - bb2.uly) < avgHeight) {
                 SelectOptions.triggerStaffActions();
             }
         }
@@ -373,13 +372,13 @@ function selectAll(elements, neon, neonView, dragHandler) {
     else if (selectMode === "selBySyl") {
         let noClefOrCustos = selectNn(notNeumes);
         syls.forEach(s => { select(s); });
-        if(!noClefOrCustos) {
-            if(notNeumes.length == 1 && ncs.length == 0){
-                var el = notNeumes[0];
-                // if($(el).hasClass("custos")){
+        if (!noClefOrCustos) {
+            if (notNeumes.length == 1 && ncs.length == 0){
+                let el = notNeumes[0];
+                // if ($(el).hasClass("custos")){
                 //     SelectOptions.triggerNcActions([el]);
                 // }
-                if($(el).hasClass("clef")) {
+                if ($(el).hasClass("clef")) {
                     SelectOptions.triggerClefActions([el]);
                 }
             }
@@ -390,17 +389,17 @@ function selectAll(elements, neon, neonView, dragHandler) {
         else if (syls.length == 1) {
             var syl = syls[0];
             var nmChildren = $(syl).children(".neume");
-            if(nmChildren.length == 1) {
+            if (nmChildren.length == 1) {
                 let neume = nmChildren[0];
-                let ncChildren = $(neume).children();
-                if(ncChildren.length == 1) {
+                let ncChildren = neume.children;
+                if (ncChildren.length == 1) {
                     unselect();
                     select(ncChildren[0]);
                     SelectOptions.triggerNcActions(ncChildren[0]);
                 }
-                else if(ncChildren.length == 2) {
+                else if (ncChildren.length == 2) {
                     unselect();
-                    if(isLigature($(ncChildren[0]), neon)) {
+                    if (isLigature(ncChildren[0], neon)) {
                         selectNcs(ncChildren[0], dragHandler, neon);
                         Grouping.triggerGrouping("ligature");
                     }
@@ -421,15 +420,16 @@ function selectAll(elements, neon, neonView, dragHandler) {
         }
     }
     else if (selectMode === "selByNeume") {
+        unselect();
         let noClefOrCustos = selectNn(notNeumes);
         neumes.forEach(n => { select(n); });
-        if(!noClefOrCustos) {
-            if(notNeumes.length == 1 && ncs.length == 0) {
+        if (!noClefOrCustos) {
+            if (notNeumes.length == 1 && ncs.length == 0) {
                 let el = notNeumes[0];
-                // if($(el).hasClass("custos")){
+                // if ($(el).hasClass("custos")){
                 //     SelectOptions.triggerNcActions([el]);
                 // }
-                if($(el).hasClass("clef")) {
+                if ($(el).hasClass("clef")) {
                     SelectOptions.triggerClefActions([el]);
                 }
             }
@@ -458,14 +458,14 @@ function selectAll(elements, neon, neonView, dragHandler) {
             }
         }
         else if (neumes.length == 1) {
-            var neume = neumes[0];
-            var ncChildren = $(neume).children();
-            if(ncChildren.length == 1) {
+            let neume = neumes[0];
+            let ncChildren = neume.children;
+            if (ncChildren.length == 1) {
                 unselect();
                 select(ncChildren[0]);
                 SelectOptions.triggerNcActions(ncChildren[0]);
             }
-            else if(ncChildren.length == 2 && isLigature($(ncChildren[0]), neon)) {
+            else if (ncChildren.length == 2 && isLigature(ncChildren[0], neon)) {
                 unselect();
                 select(ncChildren[0]);
                 select(ncChildren[1]);
@@ -483,40 +483,42 @@ function selectAll(elements, neon, neonView, dragHandler) {
             return;
         }
         var prev = $(ncs[0]).prev();
-        if(ncs.length != 0 && isLigature($(ncs[0]), neon) && prev.length != 0 && isLigature($(ncs[0]).prev(), neon)) {
-            ncs.push($(ncs[0]).prev());
+        if (ncs.length != 0 && isLigature(ncs[0], neon) && prev.length != 0 && isLigature($(ncs[0]).prev()[0], neon)) {
+            ncs.push($(ncs[0]).prev()[0]);
         }
         ncs.forEach(nc => { select(ncs); });
-        if(!noClefOrCustos) {
-            if(notNeumes.length == 1 && ncs.length == 0) {
+        if (!noClefOrCustos) {
+            if (notNeumes.length == 1 && ncs.length == 0) {
                 var el = notNeumes[0];
-                // if($(el).hasClass("custos")){
+                // if ($(el).hasClass("custos")){
                 //     SelectOptions.triggerNcActions([el]);
                 // }
-                if($(el).hasClass("clef")) {
+                if ($(el).hasClass("clef")) {
                     SelectOptions.triggerClefActions([el]);
                 }
             }
         }
         else if (ncs.length == 2) {
-            var firstX = $(ncs[0]).children()[0].x.baseVal.value;
-            var secondX = $(ncs[1]).children()[0].x.baseVal.value;
+            let firstChild = ncs[0].children[0];
+            let secondChild = ncs[1].children[0];
+            var firstX = firstChild.x.baseVal.value;    //$(ncs[0]).children()[0].x.baseVal.value;
+            var secondX = secondChild.x.baseVal.value;   //$(ncs[1]).children()[0].x.baseVal.value;
             var firstY = 0;
             var secondY = 0;
 
-            if(firstX == secondX) {
-                firstY = $(ncs[1]).children()[0].y.baseVal.value;
-                secondY = $(ncs[0]).children()[0].y.baseVal.value;
+            if (firstX == secondX) {
+                firstY = secondChild.y.baseVal.value;
+                secondY = firstChild.y.baseVal.value;
             }
             else {
-                firstY = $(ncs[0]).children()[0].y.baseVal.value;
-                secondY = $(ncs[1]).children()[0].y.baseVal.value;
+                firstY = firstChild.y.baseVal.value;
+                secondY = secondChild.y.baseVal.value;
             }
 
-            if(secondY > firstY) {
-                if($(ncs[0]).parent()[0].id === $(ncs[1]).parent()[0].id) {
-                    let isFirstLigature = isLigature($(ncs[0]), neon);
-                    let isSecondLigature = isLigature($(ncs[1]), neon);
+            if (secondY > firstY) {
+                if (ncs[0].parentNode.id === ncs[1].parentNode.id) {
+                    let isFirstLigature = isLigature(ncs[0], neon);
+                    let isSecondLigature = isLigature(ncs[1], neon);
                     if ((isFirstLigature && isSecondLigature) || (!isFirstLigature && !isSecondLigature)) {
                         Grouping.triggerGrouping("ligature");
                     }
@@ -568,7 +570,7 @@ function selectAll(elements, neon, neonView, dragHandler) {
  * Unselect all selected elements and run undo any extra
  * actions.
  */
-export function unselect() {
+export function unselect () {
     var selected = $(".selected");
     for (var i=0; i < selected.length; i++) {
         if ($(selected[i]).hasClass("staff")) {
@@ -597,7 +599,7 @@ export function unselect() {
  * Generic select function.
  * @param {SVGSVGElement} el
  */
-function select(el) {
+function select (el) {
     if (!$(el).hasClass("selected")) {
         $(el).attr("fill", "#d00");
         $(el).addClass("selected");
@@ -624,19 +626,19 @@ function select(el) {
  * @param {SVGSVGElement} el - The nc element to select.
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
-function selectNcs(el, dragHandler, neon) {
-    if(!$(el).parent().hasClass("selected")){
-        var parent = $(el).parent();
+function selectNcs (el, dragHandler, neon) {
+    if (!$(el).parent().hasClass("selected")){
+        var parent = el.parentNode;
         unselect();
         select(parent);
-        if(isLigature(parent, neon)){
-            var prevNc = $(parent).prev();
-            if(isLigature(prevNc, neon)){
+        if (isLigature(parent, neon)){
+            var prevNc = $(parent).prev()[0];
+            if (isLigature(prevNc, neon)){
                 select(prevNc);
             }
             else{
-                var nextNc = $(parent).next();
-                if(isLigature(nextNc, neon)){
+                var nextNc = $(parent).next()[0];
+                if (isLigature(nextNc, neon)){
                     select(nextNc);
                 }
                 else{
@@ -645,8 +647,8 @@ function selectNcs(el, dragHandler, neon) {
             }
             Grouping.triggerGrouping("ligature");
         }
-        else if(parent.hasClass("nc")){
-            SelectOptions.triggerNcActions(parent[0]);
+        else if (parent.hasClass("nc")){
+            SelectOptions.triggerNcActions(parent);
         }
         else{
             console.warn("No action triggered!");
@@ -660,7 +662,7 @@ function selectNcs(el, dragHandler, neon) {
  * @param {SVGSVGElement} el - The staff element to select.
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
-export function selectStaff(el, dragHandler){
+export function selectStaff (el, dragHandler){
     let staff = $(el);
     if (!staff.hasClass("selected")) {
         unselect();
@@ -676,9 +678,9 @@ export function selectStaff(el, dragHandler){
  * @param {SVGSVGElement} nc - The neume component to check.
  * @param {module:Neon~Neon} neon - An instantiated Neon.
  */
-function isLigature(nc, neon){
-    var attributes = neon.getElementAttr(nc[0].id);
-    if(attributes.ligature == "true") return true;
+function isLigature (nc, neon) {
+    var attributes = neon.getElementAttr(nc.id);
+    if (attributes.ligature == "true") return true;
     return false;
 }
 
