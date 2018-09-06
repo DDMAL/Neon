@@ -438,8 +438,19 @@ export function initNavbar(filename, neonView) {
     $("#getmei").attr("href", filename);
 
     //png download setup
-    let regex = /\/uploads\/mei\/([-\.\w]+)\.mei/;
-    var pngFile = "/uploads/png/" + filename.replace(regex, '$1') + ".png";
+    /*
+    let regex = /[-\/\w]+\/([-\.\w]+)\.mei/;
+    if (Compatibility.getMode() === Compatibility.modes.pages) {
+        var pngFile = "/img/" + filename.replace(regex, '$1') + ".png";
+    } else {
+        var pngFile = "/uploads/png/" + filename.replace(regex, '$1') + ".png";
+    }
+    */
+    let regex = /mei/g;
+    var pngFile = filename.replace(regex, "png");
+    if (Compatibility.getMode () === Compatibility.modes.pages) {
+        pngFile = pngFile.replace("png", "img");
+    }
     $("#getpng").attr("href", pngFile);
 
     if (Compatibility.getMode() === Compatibility.modes.rodan) {
