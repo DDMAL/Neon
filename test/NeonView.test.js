@@ -244,7 +244,8 @@ describe("Check Controls UI", () => {
             await actions.click(undoButton).perform();
             let newCount = (await browser.findElements(By.className("nc"))).length;
             expect(newCount).toBeGreaterThan(origCount);
-            await actions.click(redoButton).perform();
+            //await actions.click(redoButton).perform();
+            await browser.executeScript(() => { document.getElementById("redo").dispatchEvent(new Event('click')); });
             newCount = (await browser.findElements(By.className("nc"))).length;
             expect(newCount).toEqual(origCount);
         });
