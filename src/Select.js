@@ -37,7 +37,10 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
             })
             if (editing || evt.shiftKey) { return; }
             if (this.tagName === "use") {
-                selectAll([this], neon, neonView, dragHandler);
+                // If this was part of a drag select, drag don't reselect the one component
+                if ($(this).parents(".selected").length === 0) {
+                    selectAll([this], neon, neonView, dragHandler);
+                }
             }
             else {
                 if (!$("#selByStaff").hasClass("is-active")) {
@@ -296,7 +299,7 @@ function selectNn (notNeumes) {
  * @param {SVGSVGElement[]} elements - The elements to select. Either <g> or <use>.
  * @param {module:Neon~Neon} neon - A neon instance.
  * @param {NeonView} neonView - The NeonView parent.
- * @param {dragHandler} dragHandler - A DragHandler to alow staff resizing and some neume component selection cases.
+ * @param {DragHandler} dragHandler - A DragHandler to alow staff resizing and some neume component selection cases.
  */
 function selectAll (elements, neon, neonView, dragHandler) {
     var syls = [],
@@ -564,6 +567,7 @@ function selectAll (elements, neon, neonView, dragHandler) {
             SelectOptions.triggerNcActions(ncs[0]);
         }
     }
+    dragHandler.dragInit();
 }
 
 /**
@@ -647,7 +651,7 @@ function selectNcs (el, dragHandler, neon) {
             }
             Grouping.triggerGrouping("ligature");
         }
-        else if (parent.hasClass("nc")){
+        else if ($(parent).hasClass("nc")){
             SelectOptions.triggerNcActions(parent);
         }
         else{
