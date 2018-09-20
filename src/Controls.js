@@ -388,6 +388,13 @@ function bindElements(insertHandler) {
             activate(el, insertHandler);
             Cursor.updateCursor();
         });
+        document.body.addEventListener("keydown", (evt) => {
+            if (evt.code === "Digit" + (i+1) && evt.shiftKey) {
+                deactivate('.insertel');
+                activate(el, insertHandler);
+                Cursor.updateCursor();
+            }
+        });
     });
 }
 
