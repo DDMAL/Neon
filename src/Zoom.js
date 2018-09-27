@@ -17,12 +17,13 @@ function ZoomHandler () {
      * Reset the zoom and pan of the viewbox for the SVG.
      */
     function resetZoomAndPan () {
+        let bgimg = document.getElementById("bgimg");
         viewBox.a = 0;
         viewBox.b = 0;
-        viewBox.c = parseInt($("#bgimg").attr("width"));
-        viewBox.d = parseInt($("#bgimg").attr("height"));
+        viewBox.c = parseInt(bgimg.getAttribute("width"));
+        viewBox.d = parseInt(bgimg.getAttribute("height"));
 
-        $("#svg_group").attr("viewBox", viewBox.get());
+        updateViewBox();
     }
 
     /**
@@ -31,9 +32,10 @@ function ZoomHandler () {
      */
     function zoomTo (k) {
         getViewBox();
-        viewBox.zoomTo(k, parseInt($("#bgimg").attr("width")), parseInt($("#bgimg").attr("height")));
-        //$("#svg_group").attr("viewBox", viewBox.a + " " + viewBox.b + " " + viewBox.c + " " + viewBox.d);
-        $("#svg_group").attr("viewBox", viewBox.get());
+        let bgimg = document.getElementById("bgimg");
+        viewBox.zoomTo(k, parseInt(bgimg.getAttribute("width")), parseInt(bgimg.getAttribute("height")));
+
+        updateViewBox();
     }
 
     /**
@@ -44,7 +46,7 @@ function ZoomHandler () {
     function translate (xDiff, yDiff) {
         getViewBox();
         viewBox.translate(xDiff, yDiff);
-        $("#svg_group").attr("viewBox", viewBox.get());
+        updateViewBox();
     }
 
     /**
@@ -55,7 +57,7 @@ function ZoomHandler () {
             resetZoomAndPan();
         }
         else {
-        $("#svg_group").attr("viewBox", viewBox.get());
+            updateViewBox();
         }
     }
 
@@ -63,7 +65,7 @@ function ZoomHandler () {
      * Get the view box from the SVG in the page.
      */
     function getViewBox () {
-        var rawViewBox = $("#svg_group").attr("viewBox").split(" ");
+        var rawViewBox = document.getElementById("svg_group").getAttribute("viewBox").split(" ");
         viewBox.set(
             parseInt(rawViewBox[0]),
             parseInt(rawViewBox[1]),
@@ -72,6 +74,12 @@ function ZoomHandler () {
         );
     }
 
+    /**
+     * Update the viewBox attribute of svg_group.
+     */
+    function updateViewBox() {
+        document.getElementById("svg_group").setAttribute("viewBox", viewBox.get());
+    }
 
     function startDrag () {
         dragCoordinates = document.getElementById("svg_group").createSVGPoint();
