@@ -69,7 +69,20 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                     SelectOptions.triggerSplitActions();
                     let resize = new Resize(staff.id, neonView, dragHandler);
                     resize.drawInitialRect();
+                    // Start staff dragging
+                    dragHandler.dragInit();
                 }
+                staff.dispatchEvent(new MouseEvent("mousedown", {
+                    screenX: evt.screenX,
+                    screenY: evt.screenY,
+                    clientX: evt.clientX,
+                    clientY: evt.clientY,
+                    ctrlKey: evt.ctrlKey,
+                    shiftKey: evt.shiftKey,
+                    altKey: evt.altKey,
+                    metaKey: evt.metaKey,
+                    view: evt.view
+                }));
             }
         }
 

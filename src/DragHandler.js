@@ -29,12 +29,14 @@ function DragHandler (neonView) {
         // Drag effects
         function dragStarted () {
             dragStartCoords = d3.mouse(this);
+            if (this.classList.contains("staff")) {
+                d3.select("#svg_group").call(dragBehaviour);
+            }
         }
 
         function dragging () {
             var relativeY = d3.event.y - dragStartCoords[1];
             var relativeX = d3.event.x - dragStartCoords[0];
-
             selection.forEach((el) => {
                 d3.select(el).attr("transform", function() {
                     return "translate(" + [relativeX, relativeY] + ")"
@@ -65,6 +67,7 @@ function DragHandler (neonView) {
                 neonView.refreshPage();
                 endOptionsSelection();
             }
+            d3.select("#svg_group").on(".drag", null);
             dragInit();
         }
     }
