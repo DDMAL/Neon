@@ -123,6 +123,18 @@ function InsertHandler (neonView) {
 
         $("body").on("click", clickawayHandler);
 
+        // Add 'return to edit mode' button
+        let editModeContainer = document.createElement("p");
+        editModeContainer.classList.add("control");
+        let editModeButton = document.createElement("button");
+        editModeButton.id = "returnToEditMode";
+        editModeButton.classList.add("button");
+        editModeButton.innerHTML = "Return to Edit Mode";
+        editModeContainer.appendChild(editModeButton);
+        document.getElementById("delete").parentNode.parentNode.appendChild(editModeContainer);
+
+        editModeButton.addEventListener("click", insertDisabled);
+
         Notification.queueNotification("Insert Mode");
     }
 
@@ -138,6 +150,7 @@ function InsertHandler (neonView) {
         $(".insertel.is-active").removeClass("is-active");
         firstClick = true;
         Cursor.resetCursor();
+        $(document.getElementById("returnToEditMode").parentNode).remove();
         Notification.queueNotification("Edit Mode");
     }
 
