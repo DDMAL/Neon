@@ -14,8 +14,9 @@ import * as Notification from "./Notification.js";
  * @param {module:Neon~Neon} neon - The Neon object.
  * @param {string} meiFile - The path to the MEi file.
  * @param {module:Zoom~ZoomHandler} zoomHandler - The ZoomHandler object.
+ * @param {InfoBox} infoBox
  */
-function EditMode (neonView, neon, meiFile, zoomHandler){
+function EditMode (neonView, neon, meiFile, zoomHandler, infoBox){
     var dragHandler = null;
     var selectOptions = null;
     var select = null;
@@ -36,11 +37,11 @@ function EditMode (neonView, neon, meiFile, zoomHandler){
         Notification.queueNotification("Edit Mode");
         dragHandler = new DragHandler(neonView);
         Controls.initNavbar(meiFile, neonView);
-        select = new ClickSelect(dragHandler, zoomHandler, neonView, neon);
+        select = new ClickSelect(dragHandler, zoomHandler, neonView, neon, infoBox);
         insertHandler = new InsertHandler(neonView);
         Controls.bindInsertTabs(insertHandler);
         $("#neumeTab").click();
-        dragSelect = new DragSelect(dragHandler, zoomHandler, neonView, neon);
+        dragSelect = new DragSelect(dragHandler, zoomHandler, neonView, neon, infoBox);
         SelectOptions.initNeonView(neonView);
 
         Controls.initInsertEditControls(neonView);
