@@ -32,8 +32,7 @@ function ZoomHandler () {
      */
     function zoomTo (k) {
         getViewBox();
-        let bgimg = document.getElementById("bgimg");
-        viewBox.zoomTo(k, parseInt(bgimg.getAttribute("width")), parseInt(bgimg.getAttribute("height")));
+        viewBox.zoomTo(k);
 
         updateViewBox();
     }
@@ -102,7 +101,7 @@ function ZoomHandler () {
         if (d3.event.type === "touchmove") {
             newCoordinates.x = d3.event.touches[0].screenX;
             newCoordinates.y = d3.event.touches[0].screenY;
-        } else if (d3.event.type === "wheel") {
+        } else if (d3.event.type === "wheel" && d3.event.shiftKey === false) {
             if (matrix === undefined) {
                 matrix = document.getElementById("svg_group").getScreenCTM().inverse();
             }
@@ -124,6 +123,12 @@ function ZoomHandler () {
         dragCoordinates = newCoordinates;
     }
 
+    function scrollZoom () {
+        if (d3.event.type !== "wheel" || d3.event.shiftKey === false) return;
+        let k = viewBox.getZoom();
+        zoomTo(d3.event.deltaY + k);
+    }
+
     ZoomHandler.prototype.constructor = ZoomHandler;
     ZoomHandler.prototype.resetZoomAndPan = resetZoomAndPan;
     ZoomHandler.prototype.zoomTo = zoomTo;
@@ -132,17 +137,20 @@ function ZoomHandler () {
     ZoomHandler.prototype.restoreTransformation = restoreTransformation;
     ZoomHandler.prototype.startDrag = startDrag;
     ZoomHandler.prototype.dragging = dragging;
+    ZoomHandler.prototype.scrollZoom = scrollZoom;
 }
 
 /**
  * A class representing an SVG view box.
  * @constructor
+ * @param {number} imageWidth - The width of the original image in pixels.
+ * @param {number} imageHeight - The height of the original image in pixels.
  */
-export function ViewBox () {
-    var a;
-    var b;
-    var c;
-    var d;
+export function ViewBox (imageWidth, imageHeight) {
+    var a = 0,
+        b = 0,
+        c = imageWidth,
+        d = imageHeight;
 
     /**
      * Set the parameters of a view box.
@@ -169,15 +177,21 @@ export function ViewBox () {
     /**
      * Zoom to a certain scale.
      * @param {number} k - The zoom scale.
-     * @param {number} imageHeight - The height of the original image in pixels.
-     * @param {number} imageWidth - The width of the original image in pixels.
      */
-    function zoomTo(k, imageHeight, imageWidth) {
+    function zoomTo(k) {
         let zoomHeight = (imageWidth / k);
         let zoomWidth = (imageHeight / k);
 
         this.c = zoomWidth;
         this.d = zoomHeight;
+    }
+
+    /**
+     * Get the current zoom level of the view box.
+     * @returns {number}
+     */
+    function getZoom() {
+        return imageWidth / this.c;
     }
 
     /**
