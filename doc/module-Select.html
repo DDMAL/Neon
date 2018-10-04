@@ -198,7 +198,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line797">line 797</a>
+        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line682">line 682</a>
     </li></ul></dd>
     
 
@@ -285,7 +285,7 @@ actions.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line664">line 664</a>
+        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line590">line 590</a>
     </li></ul></dd>
     
 
@@ -308,6 +308,159 @@ actions.
 
 
 
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getStaffBBox"><span class="type-signature">(inner) </span>getStaffBBox<span class="signature">(staff)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get the bounding box of a staff based on its staff lines.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>staff</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">SVGSVGElement</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line273">line 273</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -443,7 +596,7 @@ actions.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line813">line 813</a>
+        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line698">line 698</a>
     </li></ul></dd>
     
 
@@ -578,7 +731,7 @@ actions.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line692">line 692</a>
+        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line619">line 619</a>
     </li></ul></dd>
     
 
@@ -612,7 +765,7 @@ actions.
     
 
     
-    <h4 class="name" id="~selectClefs"><span class="type-signature">(inner) </span>selectClefs<span class="signature">(el, dragHandler)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~selectAll"><span class="type-signature">(inner) </span>selectAll<span class="signature">(elements, neon, neonView, dragHandler, infoBox)</span><span class="type-signature"></span></h4>
     
 
     
@@ -620,7 +773,7 @@ actions.
 
 
 <div class="description">
-    Select a clef.
+    Handle selecting an array of elements based on the selection type.
 </div>
 
 
@@ -656,13 +809,13 @@ actions.
 
         <tr>
             
-                <td class="name"><code>el</code></td>
+                <td class="name"><code>elements</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">SVGSVGElement</span>
+<span class="param-type">Array.&lt;SVGSVGElement></span>
 
 
             
@@ -672,7 +825,53 @@ actions.
 
             
 
-            <td class="description last">The clef element to select.</td>
+            <td class="description last">The elements to select. Either <g> or <use>.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>neon</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-Neon-Neon.html">module:Neon~Neon</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A neon instance.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>neonView</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NeonView.html">NeonView</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The NeonView parent.</td>
         </tr>
 
     
@@ -695,7 +894,30 @@ actions.
 
             
 
-            <td class="description last">An instantiated DragHandler.</td>
+            <td class="description last">A DragHandler to alow staff resizing and some neume component selection cases.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>infoBox</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="InfoBox.html">InfoBox</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
         </tr>
 
     
@@ -736,7 +958,7 @@ actions.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line782">line 782</a>
+        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line314">line 314</a>
     </li></ul></dd>
     
 
@@ -894,7 +1116,7 @@ actions.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line746">line 746</a>
+        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line646">line 646</a>
     </li></ul></dd>
     
 
@@ -928,7 +1150,7 @@ actions.
     
 
     
-    <h4 class="name" id="~selectNeumes"><span class="type-signature">(inner) </span>selectNeumes<span class="signature">(el, dragHandler)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~selectNn"><span class="type-signature">(inner) </span>selectNn<span class="signature">(notNeumes)</span><span class="type-signature"></span></h4>
     
 
     
@@ -936,7 +1158,7 @@ actions.
 
 
 <div class="description">
-    Select a neume.
+    Select not neume elements.
 </div>
 
 
@@ -972,13 +1194,13 @@ actions.
 
         <tr>
             
-                <td class="name"><code>el</code></td>
+                <td class="name"><code>notNeumes</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">SVGSVGElement</span>
+<span class="param-type">Array.&lt;object></span>
 
 
             
@@ -988,30 +1210,7 @@ actions.
 
             
 
-            <td class="description last">The nc element whose neume to select.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>dragHandler</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="DragHandler.html">DragHandler</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">An instantiated DragHandler.</td>
+            <td class="description last">An array of not neumes elements.</td>
         </tr>
 
     
@@ -1052,165 +1251,7 @@ actions.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line732">line 732</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~selectSyl"><span class="type-signature">(inner) </span>selectSyl<span class="signature">(el, dragHandler)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Select a syllable.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>el</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">SVGSVGElement</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The nc element whose syllable to select.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>dragHandler</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="DragHandler.html">DragHandler</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">An instantiated DragHandler.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line718">line 718</a>
+        <a href="Select.js.html">Select.js</a>, <a href="Select.js.html#line297">line 297</a>
     </li></ul></dd>
     
 
@@ -1260,7 +1301,7 @@ actions.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Aug 28 2018 15:08:46 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Sep 27 2018 13:20:39 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>

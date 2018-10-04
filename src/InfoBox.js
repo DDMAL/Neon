@@ -11,6 +11,13 @@ function InfoBox(neon) {
         $(".neume,.custos,.clef").on("mouseover", setInfo);
     }
 
+    /**
+     * Disable the mouseover listener for the info box.
+     */
+    function stopListeners() {
+        $(".neume,.custos,.clef").off("mouseover", setInfo);
+    }
+
     function setInfo() {
         updateInfo(this.id);
     }
@@ -197,6 +204,7 @@ function InfoBox(neon) {
     );
 
     InfoBox.prototype.infoListeners = infoListeners;
+    InfoBox.prototype.stopListeners = stopListeners;
     InfoBox.getContour = getContour;
     InfoBox.getContourByValue = getContourByValue;
 }
