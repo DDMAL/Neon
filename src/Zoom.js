@@ -147,10 +147,10 @@ function ZoomHandler () {
  * @param {number} imageHeight - The height of the original image in pixels.
  */
 export function ViewBox (imageWidth, imageHeight) {
-    var a = 0,
-        b = 0,
-        c = imageWidth,
-        d = imageHeight;
+    this.a = 0;
+    this.b = 0;
+    this.c = (imageWidth != undefined ? imageWidth : 0);
+    this.d = (imageHeight != undefined ? imageHeight : 0);
 
     /**
      * Set the parameters of a view box.
@@ -179,8 +179,8 @@ export function ViewBox (imageWidth, imageHeight) {
      * @param {number} k - The zoom scale.
      */
     function zoomTo(k) {
-        let zoomHeight = (imageWidth / k);
-        let zoomWidth = (imageHeight / k);
+        let zoomHeight = (imageHeight/ k);
+        let zoomWidth = (imageWidth / k);
 
         this.c = zoomWidth;
         this.d = zoomHeight;
@@ -202,18 +202,9 @@ export function ViewBox (imageWidth, imageHeight) {
         this.b += yDiff;
     }
 
-    /**
-     * Check if any ViewBox parameters are unset.
-     * @returns {boolean}
-     */
-    function isUnset () {
-        return (this.a === undefined || this.b === undefined || this.c === undefined || this.d === undefined);
-    }
-
     ViewBox.prototype.constructor = ViewBox;
     ViewBox.prototype.set = set;
     ViewBox.prototype.translate = translate;
-    ViewBox.prototype.isUnset = isUnset;
     ViewBox.prototype.zoomTo = zoomTo;
     ViewBox.prototype.get = get;
 }
