@@ -174,7 +174,8 @@ function NeonView (params) {
                 });
             }
         });
-        d3.select("#svg_output").on("wheel", zoomHandler.dragging, false);
+        d3.select("#svg_output").on("wheel", zoomHandler.scrollZoom, false);
+
         infoBox.infoListeners();
     }
 

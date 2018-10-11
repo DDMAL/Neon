@@ -62,7 +62,7 @@ function EditMode (neonView, neon, meiFile, zoomHandler){
     // }
 
     function isInsertMode() {
-        return insertHandler.isInsertMode();
+        return (insertHandler != null && insertHandler.isInsertMode());
     }
 
     EditMode.prototype.init = init;

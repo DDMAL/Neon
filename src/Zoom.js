@@ -10,7 +10,7 @@ function ZoomHandler () {
      * The internal view box of the SVG container.
      * @type {module:Zoom.ViewBox}
      */
-    var viewBox = new ViewBox();
+    var viewBox;
     var matrix;
 
     /**
@@ -18,10 +18,7 @@ function ZoomHandler () {
      */
     function resetZoomAndPan () {
         let bgimg = document.getElementById("bgimg");
-        viewBox.a = 0;
-        viewBox.b = 0;
-        viewBox.c = parseInt(bgimg.getAttribute("width"));
-        viewBox.d = parseInt(bgimg.getAttribute("height"));
+        viewBox = new ViewBox(parseInt(bgimg.getAttribute("width")), parseInt(bgimg.getAttribute("height")));
 
         updateViewBox();
     }
@@ -52,7 +49,7 @@ function ZoomHandler () {
      * Restore the view box to what it was before the editor action.
      */
     function restoreTransformation () {
-        if (viewBox.isUnset()) {
+        if (viewBox === undefined) {
             resetZoomAndPan();
         }
         else {
@@ -64,6 +61,10 @@ function ZoomHandler () {
      * Get the view box from the SVG in the page.
      */
     function getViewBox () {
+        if (viewBox === undefined) {
+            let bgimg = document.getElementById("bgimg");
+            viewBox = new ViewBox(parseInt(bgimg.getAttribute("width")), parseInt(bgimg.getAttribute("height")));
+        }
         var rawViewBox = document.getElementById("svg_group").getAttribute("viewBox").split(" ");
         viewBox.set(
             parseInt(rawViewBox[0]),
@@ -124,9 +125,22 @@ function ZoomHandler () {
     }
 
     function scrollZoom () {
-        if (d3.event.type !== "wheel" || d3.event.shiftKey === false) return;
+        if (d3.event.type !== "wheel") return;
+        if (!d3.event.shiftKey) {
+            dragging();
+            return;
+        }
+        let slider = document.getElementById("zoomSlider");
+        getViewBox();
         let k = viewBox.getZoom();
-        zoomTo(d3.event.deltaY + k);
+        let newK = k - d3.event.deltaX / 100;
+        if (newK < parseInt(slider.getAttribute("min")) / 100) newK = 0.25;
+        if (newK > parseInt(slider.getAttribute("max")) / 100) newK = 4;
+        zoomTo(newK);
+
+        // Update zoom slider
+        slider.value = newK * 100;
+        document.getElementById("zoomOutput").value = parseInt(newK * 100);
     }
 
     ZoomHandler.prototype.constructor = ZoomHandler;
@@ -207,6 +221,7 @@ export function ViewBox (imageWidth, imageHeight) {
     ViewBox.prototype.translate = translate;
     ViewBox.prototype.zoomTo = zoomTo;
     ViewBox.prototype.get = get;
+    ViewBox.prototype.getZoom = getZoom;
 }
 
 export {ZoomHandler as default};
