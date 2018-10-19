@@ -3,7 +3,7 @@ const $ = require('jquery');
 /**
  * Gets information on musical elements and displays them.
  * @constructor
- * @param {NeonView} neon - The NeonView parent
+ * @param {module:Neon~Neon} neon
  */
 function InfoBox(neon) {
     /**

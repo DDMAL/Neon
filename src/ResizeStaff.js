@@ -21,10 +21,10 @@ const Side = {
  * Handle the resizing of the selected staff.
  * @constructor
  * @param {string} staffId - The ID of the staff to resize.
- * @param {NeonView} neon - The NeonView parent for editing and refreshing.
+ * @param {NeonView} neonView - The NeonView parent for editing and refreshing.
  * @param {DragHandler} dragHandler - A drag handler object.
  */
-function Resize(staffId, neon, dragHandler) {
+function Resize(staffId, neonView, dragHandler) {
     var staff = document.getElementById(staffId);
     /**
      * The upper-left x-coordinate of the staff.
@@ -144,8 +144,8 @@ function Resize(staffId, neon, dragHandler) {
                     "lry": lry
                 }
             };
-            if (neon.edit(editorAction)) {
-                neon.refreshPage();
+            if (neonView.edit(editorAction)) {
+                neonView.refreshPage();
             }
             staff = document.getElementById(staffId);
             ulx = undefined;
