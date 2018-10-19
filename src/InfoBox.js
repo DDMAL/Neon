@@ -1,3 +1,5 @@
+const $ = require('jquery');
+
 /**
  * Gets information on musical elements and displays them.
  * @constructor

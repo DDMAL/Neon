@@ -4,6 +4,7 @@ import * as Contents from "./Contents.js";
 import * as Warnings from "./Warnings.js";
 import * as Notification from "./Notification.js";
 import InfoBox from "./InfoBox.js";
+const $ = require('jquery');
 
 /**
  * The NeonView parent to access editor actions.

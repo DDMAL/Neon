@@ -6,6 +6,7 @@ import * as Contents from "./Contents.js";
 import * as SelectOptions from "./SelectOptions.js";
 import * as Text from "./Text.js";
 import * as Notification from "./Notification.js";
+const $ = require('jquery');
 
 /**
  * Creates user interface for editing and creates necessary tools.

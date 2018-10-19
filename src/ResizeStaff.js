@@ -1,3 +1,5 @@
+const d3 = require('d3');
+
 /**
  * Support for resizing the staff by creating a resizable box around it.
  * @module ResizeStaff

@@ -1,3 +1,6 @@
+const d3 = require('d3');
+const $ = require('jquery');
+
 /**
  * Handle the dragging of musical elements and communicate actions.
  * @constructor

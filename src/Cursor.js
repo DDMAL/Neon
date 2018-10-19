@@ -1,5 +1,7 @@
 /** @module Cursor */
 
+const $ = require('jquery');
+
 /**
  * Update the cursor to a crosshair.
  */

@@ -4,6 +4,7 @@ import * as Grouping from "./Grouping.js";
 import * as Notification from "./Notification.js";
 import InfoBox from "./InfoBox.js";
 import SplitHandler from "./SplitHandler.js";
+const $ = require('jquery');
 
 /**
  * The NeonView parent to call editor actions.

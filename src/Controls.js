@@ -8,6 +8,7 @@ import * as Text from "./Text.js";
 import * as Select from "./Select.js";
 import Icons from "./img/icons.svg";
 import * as Notification from "./Notification.js";
+const $ = require('jquery');
 
 /** @type {module:Zoom~ZoomHandler} */
 var zoomHandler;

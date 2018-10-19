@@ -1,6 +1,8 @@
 import * as Cursor from "./Cursor.js";
 import InfoBox from "./InfoBox.js";
 import * as Notification from "./Notification.js";
+const d3 = require('d3');
+const $ = require('jquery');
 
 /**
  * Handle inserting new musical elements and communicate this to Verovio.

@@ -6,7 +6,9 @@ import * as Cursor from "./Cursor.js";
 import EditMode from "./EditMode.js";
 import * as Compatibility from "./Compatibility.js";
 
+const d3 = require('d3');
 const verovio = require("verovio-dev");
+const $ = require('jquery');
 
 /**
  * The class managing DOM objects and the Neon class for the application.

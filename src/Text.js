@@ -1,6 +1,8 @@
 /** @module Text */
 import * as Controls from "./Controls.js";
 import * as Notification from "./Notification.js";
+const $ = require('jquery');
+
 /** @var {NeonView} */
 var view;
 

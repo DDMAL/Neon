@@ -5,6 +5,7 @@
  */
 
 import * as Notification from "./Notification.js";
+const $ = require('jquery');
 
 /**
  * The modes to run Neon in.

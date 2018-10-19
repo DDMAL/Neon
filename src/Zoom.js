@@ -5,6 +5,9 @@
  * @constructor ZoomHandler
  */
 function ZoomHandler () {
+    const d3 = require('d3');
+    const $ = require('jquery');
+
     var dragCoordinates;
     /**
      * The internal view box of the SVG container.

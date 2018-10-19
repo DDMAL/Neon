@@ -6,6 +6,8 @@ import * as Controls from "./Controls.js";
 import * as Grouping from "./Grouping.js";
 import * as SelectOptions from "./SelectOptions.js";
 import Resize from "./ResizeStaff.js";
+const d3 = require('d3');
+const $ = require('jquery');
 
 /**
  * Handle click selection and mark elements as selected.
