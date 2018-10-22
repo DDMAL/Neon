@@ -1,6 +1,6 @@
 /** @module Color*/
 
-const $ = require('jquery');
+const $ = require("jquery");
 
 /**
  * Set a highlight by a different grouping. Either staff, syllable, or neume.

@@ -1,7 +1,7 @@
 /** @module Notification */
 
-const uuid = require('uuid/v4');
-const $ = require('jquery');
+const uuid = require("uuid/v4");
+const $ = require("jquery");
 
 /** @type {Array.<module:Notification~Notification>} */
 var notifications = new Array(0);

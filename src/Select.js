@@ -1,13 +1,12 @@
 /** @module Select */
 
 import * as Color from "./Color.js";
-import * as Contents from "./Contents.js";
 import * as Controls from "./Controls.js";
 import * as Grouping from "./Grouping.js";
 import * as SelectOptions from "./SelectOptions.js";
 import Resize from "./ResizeStaff.js";
-const d3 = require('d3');
-const $ = require('jquery');
+const d3 = require("d3");
+const $ = require("jquery");
 
 /**
  * Handle click selection and mark elements as selected.
@@ -37,7 +36,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon, infoBox) 
                 if ($(el).hasClass("is-active")){
                     editing = true;
                 }
-            })
+            });
             if (editing || evt.shiftKey) { return; }
             if (this.tagName === "use") {
                 // If this was part of a drag select, drag don't reselect the one component
@@ -101,15 +100,15 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon, infoBox) 
                 infoBox.infoListeners();
             }
             unselect();
-        })
+        });
 
         $("use").on("click", function(e){
             e.stopPropagation();
-        })
+        });
 
         $("#moreEdit").on("click", function(e) {
             e.stopPropagation();
-        })
+        });
     }
     ClickSelect.prototype.selectListeners = selectListeners;
 }
@@ -276,7 +275,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon, infoBox) {
             .attr("x", newX)
             .attr("y", newY)
             .attr("width", currentWidth)
-            .attr("height", currentHeight)
+            .attr("height", currentHeight);
     }
 }
 
@@ -514,7 +513,7 @@ function selectAll (elements, neon, neonView, dragHandler, infoBox) {
         if (ncs.length != 0 && isLigature(ncs[0], neon) && prev.length != 0 && isLigature($(ncs[0]).prev()[0], neon)) {
             ncs.push($(ncs[0]).prev()[0]);
         }
-        ncs.forEach(nc => { select(ncs); });
+        ncs.forEach(nc => { select(nc); });
         if (!noClefOrCustos) {
             if (notNeumes.length == 1 && ncs.length == 0) {
                 var el = notNeumes[0];
@@ -550,7 +549,7 @@ function selectAll (elements, neon, neonView, dragHandler, infoBox) {
                     if ((isFirstLigature && isSecondLigature) || (!isFirstLigature && !isSecondLigature)) {
                         Grouping.triggerGrouping("ligature");
                     }
-                   /*else{
+                    /*else{
                         Grouping.triggerGrouping("ligatureNc");
                     }*/
                 }
@@ -569,7 +568,7 @@ function selectAll (elements, neon, neonView, dragHandler, infoBox) {
         else if (ncs.length > 1 && noClefOrCustos) {
             let neume = ncs[0].parentElement;
             let group = false;
-            for (var i = 1; i < ncs.length; i++) {
+            for (i = 1; i < ncs.length; i++) {
                 if (ncs[i].parentElement !== neume) {
                     group = true;
                     break;

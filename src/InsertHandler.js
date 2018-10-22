@@ -1,8 +1,8 @@
 import * as Cursor from "./Cursor.js";
 import InfoBox from "./InfoBox.js";
 import * as Notification from "./Notification.js";
-const d3 = require('d3');
-const $ = require('jquery');
+const d3 = require("d3");
+const $ = require("jquery");
 
 /**
  * Handle inserting new musical elements and communicate this to Verovio.
@@ -37,49 +37,49 @@ function InsertHandler (neonView) {
             };
         }
         else if (buttonId == "pes") {
-            var contour = InfoBox.getContourByValue("Pes");
+            let contour = InfoBox.getContourByValue("Pes");
             type = "grouping";
             attributes = {
                 "contour": contour
             };
         }
         else if (buttonId == "clivis") {
-            var contour = InfoBox.getContourByValue("Clivis");
+            let contour = InfoBox.getContourByValue("Clivis");
             type = "grouping";
             attributes = {
                 "contour": contour
             };
         }
         else if (buttonId == "scandicus") {
-            var contour = InfoBox.getContourByValue("Scandicus");
+            let contour = InfoBox.getContourByValue("Scandicus");
             type = "grouping";
             attributes = {
                 "contour": contour
             };
         }
         else if (buttonId == "climacus") {
-            var contour = InfoBox.getContourByValue("Climacus");
+            let contour = InfoBox.getContourByValue("Climacus");
             type = "grouping";
             attributes = {
                 "contour": contour
             };
         }
         else if (buttonId == "torculus") {
-            var contour = InfoBox.getContourByValue("Torculus");
+            let contour = InfoBox.getContourByValue("Torculus");
             type = "grouping";
             attributes = {
                 "contour": contour
             };
         }
         else if (buttonId == "porrectus") {
-            var contour = InfoBox.getContourByValue("Porrectus");
+            let contour = InfoBox.getContourByValue("Porrectus");
             type = "grouping";
             attributes = {
                 "contour": contour
             };
         }
         else if (buttonId == "pressus") {
-            var contour = InfoBox.getContourByValue("Pressus");
+            let contour = InfoBox.getContourByValue("Pressus");
             type = "grouping";
             attributes = {
                 "contour": contour
@@ -227,11 +227,11 @@ function InsertHandler (neonView) {
 
         if (firstClick) {
             coord = cursorpt;
-            d3.select(container).append('circle').attr('cx', cursorpt.x)
-                .attr('cy', cursorpt.y)
-                .attr('r', 10)
-                .attr('id', 'staff-circle')
-                .attr('fill', 'green');
+            d3.select(container).append("circle").attr("cx", cursorpt.x)
+                .attr("cy", cursorpt.y)
+                .attr("r", 10)
+                .attr("id", "staff-circle")
+                .attr("fill", "green");
             firstClick = false;
         }
         else {

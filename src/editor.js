@@ -1,5 +1,5 @@
 import NeonView from "./NeonView.js";
-const $ = require('jquery');
+const $ = require("jquery");
 
 if (autosave) {
     let url = window.location.href;

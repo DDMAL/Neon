@@ -1,13 +1,13 @@
 /** @module Cursor */
 
-const $ = require('jquery');
+const $ = require("jquery");
 
 /**
  * Update the cursor to a crosshair.
  */
 export function updateCursor() {
-    $("#bgimg").css('cursor', 'crosshair');
-    $("#mei_output").css('cursor', 'crosshair');
+    $("#bgimg").css("cursor", "crosshair");
+    $("#mei_output").css("cursor", "crosshair");
 
     /////TODO: Find a way to scale cursor image to the same sice as current svg mei output
     // var nc = d3.selectAll(".nc").node().getBBox();
@@ -35,8 +35,8 @@ export function updateCursor() {
  * Reset the cursor to the typical pointer.
  */
 export function resetCursor() {
-    $("#bgimg").css('cursor', 'default');
-    $("#mei_output").css('cursor', 'default');
+    $("#bgimg").css("cursor", "default");
+    $("#mei_output").css("cursor", "default");
 }
 
 /**
@@ -44,7 +44,7 @@ export function resetCursor() {
  * @param {string} type - The CSS cursor property value.
  */
 export function updateCursorTo(type) {
-    $("#svg_group").css('cursor', type);
-    $("#bgimg").css('cursor', type);
-    $("#mei_output").css('cursor', type);
+    $("#svg_group").css("cursor", type);
+    $("#bgimg").css("cursor", type);
+    $("#mei_output").css("cursor", type);
 }

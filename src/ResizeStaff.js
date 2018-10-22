@@ -1,11 +1,11 @@
-const d3 = require('d3');
+const d3 = require("d3");
 
 /**
  * Support for resizing the staff by creating a resizable box around it.
  * @module ResizeStaff
  */
 
-import {selectStaff} from "./Select.js"
+import {selectStaff} from "./Select.js";
 
 /**
  * The sides of the rectangle
@@ -84,9 +84,9 @@ function Resize(staffId, neonView, dragHandler) {
 
         d3.select("#resizeRect").call(
             d3.drag()
-             .on("start", resizeStart)
-             .on("drag", resizeDrag)
-             .on("end", resizeEnd)
+                .on("start", resizeStart)
+                .on("drag", resizeDrag)
+                .on("end", resizeEnd)
         );
 
         var side;
@@ -115,20 +115,20 @@ function Resize(staffId, neonView, dragHandler) {
         function resizeDrag () {
             let currentPoint = d3.mouse(this);
             switch(side) {
-                case Side.Left:
-                    ulx = currentPoint[0];
-                    break;
-                case Side.Right:
-                    lrx = currentPoint[0];
-                    break;
-                case Side.Top:
-                    uly = currentPoint[1];
-                    break;
-                case Side.Bottom:
-                    lry = currentPoint[1];
-                    break;
-                default:
-                    console.error("Something that wasn't a side of the rectangle was dragged. This shouldn't happen.");
+            case Side.Left:
+                ulx = currentPoint[0];
+                break;
+            case Side.Right:
+                lrx = currentPoint[0];
+                break;
+            case Side.Top:
+                uly = currentPoint[1];
+                break;
+            case Side.Bottom:
+                lry = currentPoint[1];
+                break;
+            default:
+                console.error("Something that wasn't a side of the rectangle was dragged. This shouldn't happen.");
             }
             redraw();
         }

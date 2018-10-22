@@ -1,6 +1,6 @@
 /** @module Warnings */
 
-const $ = require('jquery');
+const $ = require("jquery");
 
 /**
  * Warn when grouped neume components form an unrecognized neume.

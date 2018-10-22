@@ -5,8 +5,8 @@
  * @constructor ZoomHandler
  */
 function ZoomHandler () {
-    const d3 = require('d3');
-    const $ = require('jquery');
+    const d3 = require("d3");
+    const $ = require("jquery");
 
     var dragCoordinates;
     /**
@@ -134,11 +134,6 @@ function ZoomHandler () {
  * @constructor
  */
 export function ViewBox () {
-    var a;
-    var b;
-    var c;
-    var d;
-
     /**
      * Set the parameters of a view box.
      * @param {number} w - New value for a.

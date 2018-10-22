@@ -5,7 +5,7 @@
  */
 
 import * as Notification from "./Notification.js";
-const $ = require('jquery');
+const $ = require("jquery");
 
 /**
  * The modes to run Neon in.
@@ -22,7 +22,7 @@ var mode;
 /**
  * Set the mode to run Neon in.
  * @see module:Compatibility.modes
- * @param {integer} currentMode
+ * @param {number} currentMode
 */
 export function setMode(currentMode) {
     mode = currentMode;
@@ -30,7 +30,7 @@ export function setMode(currentMode) {
 
 /**
  * Return the mode Neon is in.
- * @returns {integer}
+ * @returns {number}
  */
 export function getMode() {
     return mode;
@@ -42,7 +42,7 @@ export function getMode() {
  * @param {string} mei - The MEI data.
  */
 export function saveFile(filename, mei) {
-    var pathSplit = filename.split('/');
+    var pathSplit = filename.split("/");
     let file = pathSplit[pathSplit.length - 1];
 
     if (mode === modes.standalone) {
@@ -69,7 +69,7 @@ export function saveFile(filename, mei) {
         });
     }
     else if (mode === modes.pages) {
-        var temp = document.createElement('a');
+        var temp = document.createElement("a");
         temp.setAttribute("href", "data:application/mei+xml;charset=utf-8," + encodeURIComponent(mei));
         temp.setAttribute("download", file);
         temp.style.display = "none";
@@ -88,7 +88,7 @@ export function saveFile(filename, mei) {
  */
 export function revertFile(filename) {
     if (mode === modes.standalone) {
-        var pathSplit = filename.split('/');
+        var pathSplit = filename.split("/");
         let file = pathSplit[pathSplit.length - 1];
         $.ajax({
             type: "POST",
@@ -118,7 +118,7 @@ export function revertFile(filename) {
  * @param {string} mei
  */
 export function autosave(filename, mei) {
-    var pathSplit = filename.split('/');
+    var pathSplit = filename.split("/");
     let file = pathSplit[pathSplit.length - 1];
 
     if (mode === modes.standalone) {
@@ -157,9 +157,9 @@ export function finalize(mei) {
     }
     else if (mode === modes.rodan) {
         $.ajax({
-            type: 'POST',
-            data: JSON.stringify({'user_input': mei, 'mode': 'finalize'}),
-            contentType: 'application/json',
+            type: "POST",
+            data: JSON.stringify({"user_input": mei, "mode": "finalize"}),
+            contentType: "application/json",
             success: function () { window.close(); },
             error: (jqXHR, textStatus, errorThrown) => { Notification.queueNotification(textStatus + " Error: " + errorThrown); }
         });
