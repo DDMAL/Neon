@@ -3,6 +3,7 @@
 import * as Contents from "./Contents.js";
 import * as Warnings from "./Warnings.js";
 import * as Notification from "./Notification.js";
+import {unsetVirgaAction, unsetInclinatumAction} from "./SelectOptions.js";
 import InfoBox from "./InfoBox.js";
 
 /**
@@ -72,6 +73,11 @@ export function initGroupingListeners(){
             isLigature = true;
         } else {
             isLigature = false;
+            let chainAction = { "action": "chain", "param": [
+                unsetInclinatumAction(elementIds[0]), unsetVirgaAction(elementIds[0]),
+                unsetInclinatumAction(elementIds[1]), unsetVirgaAction(elementIds[1])
+            ]};
+            neonView.edit(chainAction);
         }
 
         let editorAction = {
