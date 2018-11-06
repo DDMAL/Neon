@@ -183,12 +183,12 @@ test("Test 'set' action", () => {
         "action": "set",
         "param": {
             "elementId": "m-6831ff33-aa39-4b0d-a383-e44585c6c644",
-            "attrType": "diagonalright",
-            "attrValue": "u"
+            "attrType": "tilt",
+            "attrValue": "n"
         }
     };
     neon.edit(setAction);
-    expect(neon.getElementAttr("m-6831ff33-aa39-4b0d-a383-e44585c6c644")).toEqual({pname: "g", oct: "2", diagonalright: "u"});
+    expect(neon.getElementAttr("m-6831ff33-aa39-4b0d-a383-e44585c6c644")).toEqual({pname: "g", oct: "2", tilt: "n"});
 });
 
 test("Test 'split' action", () => {

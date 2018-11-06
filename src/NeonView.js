@@ -234,6 +234,10 @@ function NeonView (params) {
         refreshPage();
     });
 
+    function getElementAttr(xmlId) {
+        return neon.getElementAttr(xmlId);
+    }
+
     NeonView.prototype.constructor = NeonView;
     NeonView.prototype.refreshPage = refreshPage;
     NeonView.prototype.resetListeners = resetListeners;
@@ -243,6 +247,7 @@ function NeonView (params) {
     NeonView.prototype.undo = undo;
     NeonView.prototype.redo = redo;
     NeonView.prototype.addStateToUndo = addStateToUndo;
+    NeonView.prototype.getElementAttr = getElementAttr;
 }
 
 export {NeonView as default};

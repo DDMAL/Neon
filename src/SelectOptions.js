@@ -30,7 +30,7 @@ export function unsetInclinatumAction(id) {
         "action": "set",
         "param": {
             "elementId": id,
-            "attrType": "name",
+            "attrType": "tilt",
             "attrValue": ""
         }
     };
@@ -46,7 +46,7 @@ export function unsetVirgaAction(id) {
         "action": "set",
         "param": {
             "elementId": id,
-            "attrType": "diagonalright",
+            "attrType": "tilt",
             "attrValue": ""
         }
     };
@@ -80,12 +80,11 @@ export function triggerNcActions(nc) {
             "action": "set",
             "param": {
                 "elementId": nc.id,
-                "attrType": "name",
-                "attrValue": "inclinatum"
+                "attrType": "tilt",
+                "attrValue": "se"
             }
         };
-        let unsetVirga = unsetVirgaAction(nc.id);
-        if(neonView.edit({ "action": "chain", "param": [ setInclinatum, unsetVirga ]})){
+        if(neonView.edit(setInclinatum)){
             Notification.queueNotification("Shape Changed");
         }
         else{
@@ -101,8 +100,8 @@ export function triggerNcActions(nc) {
             "action": "set",
             "param": {
                 "elementId": nc.id,
-                "attrType": "diagonalright",
-                "attrValue": "u"
+                "attrType": "tilt",
+                "attrValue": "n"
             }
         };
         if(neonView.edit({ "action": "chain", "param": [ unsetInclinatum, setVirga ]})){
@@ -111,6 +110,7 @@ export function triggerNcActions(nc) {
         else{
             Notification.queueNotification("Shape Change Failed");
         }
+        console.log(neonView.getElementAttr(nc.id));
         endOptionsSelection();
         neonView.refreshPage();
     });
