@@ -13,19 +13,17 @@ function ZoomHandler () {
      * The internal view box of the SVG container.
      * @type {module:Zoom.ViewBox}
      */
-    var viewBox = new ViewBox();
+    var viewBox;
     var matrix;
 
     /**
      * Reset the zoom and pan of the viewbox for the SVG.
      */
     function resetZoomAndPan () {
-        viewBox.a = 0;
-        viewBox.b = 0;
-        viewBox.c = parseInt($("#bgimg").attr("width"));
-        viewBox.d = parseInt($("#bgimg").attr("height"));
+        let bgimg = document.getElementById("bgimg");
+        viewBox = new ViewBox(parseInt(bgimg.getAttribute("width")), parseInt(bgimg.getAttribute("height")));
 
-        $("#svg_group").attr("viewBox", viewBox.get());
+        updateViewBox();
     }
 
     /**
@@ -34,9 +32,9 @@ function ZoomHandler () {
      */
     function zoomTo (k) {
         getViewBox();
-        viewBox.zoomTo(k, parseInt($("#bgimg").attr("width")), parseInt($("#bgimg").attr("height")));
-        //$("#svg_group").attr("viewBox", viewBox.a + " " + viewBox.b + " " + viewBox.c + " " + viewBox.d);
-        $("#svg_group").attr("viewBox", viewBox.get());
+        viewBox.zoomTo(k);
+
+        updateViewBox();
     }
 
     /**
@@ -47,18 +45,18 @@ function ZoomHandler () {
     function translate (xDiff, yDiff) {
         getViewBox();
         viewBox.translate(xDiff, yDiff);
-        $("#svg_group").attr("viewBox", viewBox.get());
+        updateViewBox();
     }
 
     /**
      * Restore the view box to what it was before the editor action.
      */
     function restoreTransformation () {
-        if (viewBox.isUnset()) {
+        if (viewBox === undefined) {
             resetZoomAndPan();
         }
         else {
-        $("#svg_group").attr("viewBox", viewBox.get());
+            updateViewBox();
         }
     }
 
@@ -66,7 +64,11 @@ function ZoomHandler () {
      * Get the view box from the SVG in the page.
      */
     function getViewBox () {
-        var rawViewBox = $("#svg_group").attr("viewBox").split(" ");
+        if (viewBox === undefined) {
+            let bgimg = document.getElementById("bgimg");
+            viewBox = new ViewBox(parseInt(bgimg.getAttribute("width")), parseInt(bgimg.getAttribute("height")));
+        }
+        var rawViewBox = document.getElementById("svg_group").getAttribute("viewBox").split(" ");
         viewBox.set(
             parseInt(rawViewBox[0]),
             parseInt(rawViewBox[1]),
@@ -75,6 +77,12 @@ function ZoomHandler () {
         );
     }
 
+    /**
+     * Update the viewBox attribute of svg_group.
+     */
+    function updateViewBox() {
+        document.getElementById("svg_group").setAttribute("viewBox", viewBox.get());
+    }
 
     function startDrag () {
         dragCoordinates = document.getElementById("svg_group").createSVGPoint();
@@ -97,7 +105,7 @@ function ZoomHandler () {
         if (d3.event.type === "touchmove") {
             newCoordinates.x = d3.event.touches[0].screenX;
             newCoordinates.y = d3.event.touches[0].screenY;
-        } else if (d3.event.type === "wheel") {
+        } else if (d3.event.type === "wheel" && d3.event.shiftKey === false) {
             if (matrix === undefined) {
                 matrix = document.getElementById("svg_group").getScreenCTM().inverse();
             }
@@ -119,6 +127,25 @@ function ZoomHandler () {
         dragCoordinates = newCoordinates;
     }
 
+    function scrollZoom () {
+        if (d3.event.type !== "wheel") return;
+        if (!d3.event.shiftKey) {
+            dragging();
+            return;
+        }
+        let slider = document.getElementById("zoomSlider");
+        getViewBox();
+        let k = viewBox.getZoom();
+        let newK = k - d3.event.deltaX / 100;
+        if (newK < parseInt(slider.getAttribute("min")) / 100) newK = 0.25;
+        if (newK > parseInt(slider.getAttribute("max")) / 100) newK = 4;
+        zoomTo(newK);
+
+        // Update zoom slider
+        slider.value = newK * 100;
+        document.getElementById("zoomOutput").value = parseInt(newK * 100);
+    }
+
     ZoomHandler.prototype.constructor = ZoomHandler;
     ZoomHandler.prototype.resetZoomAndPan = resetZoomAndPan;
     ZoomHandler.prototype.zoomTo = zoomTo;
@@ -127,13 +154,21 @@ function ZoomHandler () {
     ZoomHandler.prototype.restoreTransformation = restoreTransformation;
     ZoomHandler.prototype.startDrag = startDrag;
     ZoomHandler.prototype.dragging = dragging;
+    ZoomHandler.prototype.scrollZoom = scrollZoom;
 }
 
 /**
  * A class representing an SVG view box.
  * @constructor
+ * @param {number} imageWidth - The width of the original image in pixels.
+ * @param {number} imageHeight - The height of the original image in pixels.
  */
-export function ViewBox () {
+export function ViewBox (imageWidth, imageHeight) {
+    this.a = 0;
+    this.b = 0;
+    this.c = (imageWidth != undefined ? imageWidth : 0);
+    this.d = (imageHeight != undefined ? imageHeight : 0);
+
     /**
      * Set the parameters of a view box.
      * @param {number} w - New value for a.
@@ -159,15 +194,21 @@ export function ViewBox () {
     /**
      * Zoom to a certain scale.
      * @param {number} k - The zoom scale.
-     * @param {number} imageHeight - The height of the original image in pixels.
-     * @param {number} imageWidth - The width of the original image in pixels.
      */
-    function zoomTo(k, imageHeight, imageWidth) {
-        let zoomHeight = (imageWidth / k);
-        let zoomWidth = (imageHeight / k);
+    function zoomTo(k) {
+        let zoomHeight = (imageHeight/ k);
+        let zoomWidth = (imageWidth / k);
 
         this.c = zoomWidth;
         this.d = zoomHeight;
+    }
+
+    /**
+     * Get the current zoom level of the view box.
+     * @returns {number}
+     */
+    function getZoom() {
+        return imageWidth / this.c;
     }
 
     /**
@@ -178,20 +219,12 @@ export function ViewBox () {
         this.b += yDiff;
     }
 
-    /**
-     * Check if any ViewBox parameters are unset.
-     * @returns {boolean}
-     */
-    function isUnset () {
-        return (this.a === undefined || this.b === undefined || this.c === undefined || this.d === undefined);
-    }
-
     ViewBox.prototype.constructor = ViewBox;
     ViewBox.prototype.set = set;
     ViewBox.prototype.translate = translate;
-    ViewBox.prototype.isUnset = isUnset;
     ViewBox.prototype.zoomTo = zoomTo;
     ViewBox.prototype.get = get;
+    ViewBox.prototype.getZoom = getZoom;
 }
 
 export {ZoomHandler as default};

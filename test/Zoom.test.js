@@ -1,10 +1,9 @@
 import {ViewBox} from "../src/Zoom.js";
 
-test("Check 'isUnset', 'set' functions", () => {
-    let viewBox = new ViewBox();
-    expect(viewBox.isUnset()).toBe(true);
-    viewBox.set(0, 0, 30, 30);
-    expect(viewBox.isUnset()).toBe(false);
+test("Check ViewBox constructor", () => {
+    let viewBox = new ViewBox(300, 400);
+    expect(viewBox.c).toBe(300);
+    expect(viewBox.d).toBe(400);
 });
 
 test("Check 'get' function", () => {
@@ -24,9 +23,8 @@ test("Check 'translate' function", () => {
 });
 
 test("Check 'zoomTo' function", () => {
-    let viewBox = new ViewBox();
-    viewBox.set(0, 0, 0, 0);
-    viewBox.zoomTo(2, 100, 200);
+    let viewBox = new ViewBox(100, 200);
+    viewBox.zoomTo(2);
     expect(viewBox.c).toBe(50);
     expect(viewBox.d).toBe(100);
 });
