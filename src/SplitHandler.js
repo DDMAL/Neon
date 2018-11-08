@@ -1,5 +1,5 @@
-import * as Cursor from "./Cursor.js";
 import * as Notification from "./Notification.js";
+const $ = require("jquery");
 
 /**
  * Handler splitting a staff into two staves through Verovio.

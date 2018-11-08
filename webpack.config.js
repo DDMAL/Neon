@@ -11,12 +11,6 @@ module.exports = {
         path: path.resolve(__dirname, "public"),
         filename: "[name].js",
     },
-    plugins: [
-        new webpack.ProvidePlugin({
-            d3: 'd3',
-            $: 'jquery'
-        })
-    ],
     node: {
         fs: 'empty'
     },

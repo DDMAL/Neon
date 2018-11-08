@@ -2,10 +2,10 @@ import DragHandler from "./DragHandler.js";
 import {ClickSelect, DragSelect} from "./Select.js";
 import InsertHandler from "./InsertHandler.js";
 import * as Controls from "./Controls.js";
-import * as Contents from "./Contents.js";
 import * as SelectOptions from "./SelectOptions.js";
 import * as Text from "./Text.js";
 import * as Notification from "./Notification.js";
+const $ = require("jquery");
 
 /**
  * Creates user interface for editing and creates necessary tools.
@@ -18,9 +18,7 @@ import * as Notification from "./Notification.js";
  */
 function EditMode (neonView, neon, meiFile, zoomHandler, infoBox){
     var dragHandler = null;
-    var selectOptions = null;
     var select = null;
-    var insertControls = null;
     var dragSelect = null;
     var insertHandler = null;
     // var vbHeight = null;

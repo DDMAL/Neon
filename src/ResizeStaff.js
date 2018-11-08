@@ -1,9 +1,11 @@
+const d3 = require("d3");
+
 /**
  * Support for resizing the staff by creating a resizable box around it.
  * @module ResizeStaff
  */
 
-import {selectStaff} from "./Select.js"
+import {selectStaff} from "./Select.js";
 
 /**
  * The sides of the rectangle
@@ -19,10 +21,10 @@ const Side = {
  * Handle the resizing of the selected staff.
  * @constructor
  * @param {string} staffId - The ID of the staff to resize.
- * @param {NeonView} neon - The NeonView parent for editing and refreshing.
+ * @param {NeonView} neonView - The NeonView parent for editing and refreshing.
  * @param {DragHandler} dragHandler - A drag handler object.
  */
-function Resize(staffId, neon, dragHandler) {
+function Resize(staffId, neonView, dragHandler) {
     var staff = document.getElementById(staffId);
     /**
      * The upper-left x-coordinate of the staff.
@@ -82,9 +84,9 @@ function Resize(staffId, neon, dragHandler) {
 
         d3.select("#resizeRect").call(
             d3.drag()
-             .on("start", resizeStart)
-             .on("drag", resizeDrag)
-             .on("end", resizeEnd)
+                .on("start", resizeStart)
+                .on("drag", resizeDrag)
+                .on("end", resizeEnd)
         );
 
         var side;
@@ -113,20 +115,20 @@ function Resize(staffId, neon, dragHandler) {
         function resizeDrag () {
             let currentPoint = d3.mouse(this);
             switch(side) {
-                case Side.Left:
-                    ulx = currentPoint[0];
-                    break;
-                case Side.Right:
-                    lrx = currentPoint[0];
-                    break;
-                case Side.Top:
-                    uly = currentPoint[1];
-                    break;
-                case Side.Bottom:
-                    lry = currentPoint[1];
-                    break;
-                default:
-                    console.error("Something that wasn't a side of the rectangle was dragged. This shouldn't happen.");
+            case Side.Left:
+                ulx = currentPoint[0];
+                break;
+            case Side.Right:
+                lrx = currentPoint[0];
+                break;
+            case Side.Top:
+                uly = currentPoint[1];
+                break;
+            case Side.Bottom:
+                lry = currentPoint[1];
+                break;
+            default:
+                console.error("Something that wasn't a side of the rectangle was dragged. This shouldn't happen.");
             }
             redraw();
         }
@@ -142,8 +144,8 @@ function Resize(staffId, neon, dragHandler) {
                     "lry": lry
                 }
             };
-            if (neon.edit(editorAction)) {
-                neon.refreshPage();
+            if (neonView.edit(editorAction)) {
+                neonView.refreshPage();
             }
             staff = document.getElementById(staffId);
             ulx = undefined;
