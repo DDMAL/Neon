@@ -9,6 +9,7 @@ const $ = require("jquery");
 function DragHandler (neonView) {
     var dragStartCoords;
     var dragEndCoords;
+    var resetToAction;
 
     /**
      * Initialize the dragging action and handler for selected elements.
@@ -70,9 +71,18 @@ function DragHandler (neonView) {
                 neonView.refreshPage();
                 endOptionsSelection();
             }
-            d3.select("#svg_group").on(".drag", null);
+
+            reset();
             dragInit();
         }
+    }
+
+    function resetTo(reset) {
+        resetToAction = reset;
+    }
+
+    function reset() {
+        d3.select("#svg_group").call(resetToAction);
     }
 
     function endOptionsSelection () {
@@ -81,6 +91,7 @@ function DragHandler (neonView) {
     }
 
     DragHandler.prototype.dragInit = dragInit;
+    DragHandler.prototype.resetTo = resetTo;
 }
 
 export {DragHandler as default};

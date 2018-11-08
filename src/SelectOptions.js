@@ -21,6 +21,38 @@ export function initNeonView(view) {
     Grouping.initNeonView(view);
 }
 
+/**
+ * Return a JSON action that unsets the inclinatum parameter of an nc.
+ * @param {string} id - The id of the neume component.
+ * @returns {object}
+ */
+export function unsetInclinatumAction(id) {
+    return {
+        "action": "set",
+        "param": {
+            "elementId": id,
+            "attrType": "name",
+            "attrValue": ""
+        }
+    };
+}
+
+/**
+ * Return a JSON action that unsets the virga parameter of an nc.
+ * @param {string} id - The id of the neume component.
+ * @returns {object}
+ */
+export function unsetVirgaAction(id) {
+    return {
+        "action": "set",
+        "param": {
+            "elementId": id,
+            "attrType": "diagonalright",
+            "attrValue": ""
+        }
+    };
+}
+
 //TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
 /**
  * Trigger the extra nc action menu.
@@ -30,24 +62,10 @@ export function triggerNcActions(nc) {
     endOptionsSelection();
     $("#moreEdit").removeClass("is-invisible");
     $("#moreEdit").append(Contents.ncActionContents);
-
+  
     $("#Punctum.dropdown-item").on("click", () => {
-        let unsetInclinatum = {
-            "action": "set",
-            "param": {
-                "elementId": nc.id,
-                "attrType": "name",
-                "attrValue": ""
-            }
-        };
-        let unsetVirga = {
-            "action": "set",
-            "param": {
-                "elementId": nc.id,
-                "attrType": "diagonalright",
-                "attrValue": ""
-            }
-        };
+        let unsetInclinatum = unsetInclinatumAction(nc.id);
+        let unsetVirga = unsetVirgaAction(nc.id);
         if(neonView.edit({ "action": "chain", "param": [ unsetInclinatum, unsetVirga ]})){
             Notification.queueNotification("Shape Changed");
         }
@@ -67,14 +85,7 @@ export function triggerNcActions(nc) {
                 "attrValue": "inclinatum"
             }
         };
-        let unsetVirga = {
-            "action": "set",
-            "param": {
-                "elementId": nc.id,
-                "attrType": "diagonalright",
-                "attrValue": ""
-            }
-        };
+        let unsetVirga = unsetVirgaAction(nc.id);
         if(neonView.edit({ "action": "chain", "param": [ setInclinatum, unsetVirga ]})){
             Notification.queueNotification("Shape Changed");
         }
@@ -85,15 +96,9 @@ export function triggerNcActions(nc) {
         neonView.refreshPage();
     });
 
+
     $("#Virga.dropdown-item").on("click", () => {
-        let unsetInclinatum = {
-            "action": "set",
-            "param": {
-                "elementId": nc.id,
-                "attrType": "name",
-                "attrValue": ""
-            }
-        };
+        let unsetInclinatum = unsetInclinatumAction(nc.id);
         let setVirga = {
             "action": "set",
             "param": {

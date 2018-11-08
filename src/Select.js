@@ -129,12 +129,12 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon, infoBox) {
         dragSelecting = false;
 
     var canvas = d3.select("#svg_group");
-    canvas.call(
-        d3.drag()
-            .on("start", selStart)
-            .on("drag", selecting)
-            .on("end", selEnd)
-    );
+    var dragSelectAction = d3.drag()
+        .on("start", selStart)
+        .on("drag", selecting)
+        .on("end", selEnd);
+    canvas.call(dragSelectAction);
+    dragHandler.resetTo(dragSelectAction);
 
     /**
      * Start drag selecting musical elements.
