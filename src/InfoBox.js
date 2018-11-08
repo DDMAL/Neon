@@ -1,7 +1,9 @@
+const $ = require("jquery");
+
 /**
  * Gets information on musical elements and displays them.
  * @constructor
- * @param {NeonView} neon - The NeonView parent
+ * @param {module:Neon~Neon} neon
  */
 function InfoBox(neon) {
     /**
@@ -11,17 +13,15 @@ function InfoBox(neon) {
         $(".neume,.custos,.clef").on("mouseover", setInfo);
     }
 
-    function setInfo() {
-        updateInfo(this.id);
+    /**
+     * Disable the mouseover listener for the info box.
+     */
+    function stopListeners() {
+        $(".neume,.custos,.clef").off("mouseover", setInfo);
     }
 
-    function setInfoClef() {
-        if (neon.getElementAttr(this.id).shape !== undefined) {
-            updateInfo(this.id);
-        }
-        else {
-            updateInfo(this.parentNode.id);
-        }
+    function setInfo() {
+        updateInfo(this.id);
     }
 
     /**
@@ -41,43 +41,44 @@ function InfoBox(neon) {
         var classRe = /neume|nc|clef|custos|staff/;
         var elementClass = element.attr("class").match(classRe)[0];
         var body = "";
+        var attributes;
 
         // Gets the pitches depending on element type and
         switch(elementClass) {
-            case "neume":
-                // Select neume components of selected neume
-                var ncs = element.children(".nc");
-                var contour = getContour(ncs);
-                if(contour == "Clivis"){
-                    var attr = neon.getElementAttr($(ncs[0])[0].id);
-                    if(attr.ligature){
-                        contour = "Ligature";
-                    }
+        case "neume":
+            // Select neume components of selected neume
+            var ncs = element.children(".nc");
+            var contour = getContour(ncs);
+            if(contour == "Clivis"){
+                var attr = neon.getElementAttr($(ncs[0])[0].id);
+                if(attr.ligature){
+                    contour = "Ligature";
                 }
-                var pitches = getPitches(ncs);
+            }
+            var pitches = getPitches(ncs);
 
-                pitches = pitches.trim().toUpperCase();
-                body = "Shape: " + (contour === undefined ? "Compound" : contour) + "<br/>"
-                    + "Pitch(es): " + pitches;
-                break;
-            case "custos":
-                var attributes = neon.getElementAttr(id);
-                body += "Pitch: " + (attributes.pname).toUpperCase() + attributes.oct;
-                break;
-            case "clef":
-                var attributes = neon.getElementAttr(id);
-                body += "Shape: " + attributes.shape + "<br/>"
-                    + "Line: " + attributes.line;
-                break;
-            case "staff":
-                elementClass = "clef";
-                var staffDefAttributes = neon.getElementStaffDef(id);
-                body = "Shape: " + staffDefAttributes["clef.shape"] + "<br/>"
-                    + "Line: " + staffDefAttributes["clef.line"];
-                break;
-            default:
-                body += "nothing";
-                break;
+            pitches = pitches.trim().toUpperCase();
+            body = "Shape: " + (contour === undefined ? "Compound" : contour) + "<br/>"
+                + "Pitch(es): " + pitches;
+            break;
+        case "custos":
+            attributes = neon.getElementAttr(id);
+            body += "Pitch: " + (attributes.pname).toUpperCase() + attributes.oct;
+            break;
+        case "clef":
+            attributes = neon.getElementAttr(id);
+            body += "Shape: " + attributes.shape + "<br/>"
+                + "Line: " + attributes.line;
+            break;
+        case "staff":
+            elementClass = "clef";
+            var staffDefAttributes = neon.getElementStaffDef(id);
+            body = "Shape: " + staffDefAttributes["clef.shape"] + "<br/>"
+                + "Line: " + staffDefAttributes["clef.line"];
+            break;
+        default:
+            body += "nothing";
+            break;
         }
         updateInfoBox(elementClass, body);
     }
@@ -145,7 +146,7 @@ function InfoBox(neon) {
         // Setting up listener for dismissing message
         $("#notification-delete").on("click", function () {
             $(".message").css("display", "none");
-        })
+        });
     }
 
     /**
@@ -155,22 +156,22 @@ function InfoBox(neon) {
      */
     function pitchNameToNum(pname) {
         switch(pname) {
-            case "c":
-                return 1;
-            case "d":
-                return 2;
-            case "e":
-                return 3;
-            case "f":
-                return 4;
-            case "g":
-                return 5;
-            case "a":
-                return 6;
-            case "b":
-                return 7;
-            default:
-                console.log("Unknown pitch name");
+        case "c":
+            return 1;
+        case "d":
+            return 2;
+        case "e":
+            return 3;
+        case "f":
+            return 4;
+        case "g":
+            return 5;
+        case "a":
+            return 6;
+        case "b":
+            return 7;
+        default:
+            console.log("Unknown pitch name");
         }
     }
 
@@ -197,6 +198,7 @@ function InfoBox(neon) {
     );
 
     InfoBox.prototype.infoListeners = infoListeners;
+    InfoBox.prototype.stopListeners = stopListeners;
     InfoBox.getContour = getContour;
     InfoBox.getContourByValue = getContourByValue;
 }

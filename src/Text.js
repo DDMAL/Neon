@@ -1,6 +1,8 @@
 /** @module Text */
 import * as Controls from "./Controls.js";
 import * as Notification from "./Notification.js";
+const $ = require("jquery");
+
 /** @var {NeonView} */
 var view;
 
@@ -65,7 +67,7 @@ export function updateSylText(span) {
         let editorAction = {
             "action": "setText",
             "param": {
-                "elementId": $("#" + $(span).attr('class').replace("syl-select", "").trim()).attr("id"),
+                "elementId": $("#" + $(span).attr("class").replace("syl-select", "").trim()).attr("id"),
                 "text": corrected
             }
         };

@@ -7,7 +7,7 @@ import * as Cursor from "./Cursor.js";
 import * as Text from "./Text.js";
 import * as Select from "./Select.js";
 import Icons from "./img/icons.svg";
-import * as Notification from "./Notification.js";
+const $ = require("jquery");
 
 /** @type {module:Zoom~ZoomHandler} */
 var zoomHandler;
@@ -88,7 +88,7 @@ function setOpacityControls() {
         $("#opacityOutput").val(100);
     });
 
-    $(document).on('input change', '#opacitySlider', setOpacityFromSlider);
+    $(document).on("input change", "#opacitySlider", setOpacityFromSlider);
 }
 
 /** * Set background image opacity button and slider listeners.
@@ -102,7 +102,7 @@ function setBackgroundOpacityControls() {
         $("#bgOpacityOutput").val(100);
     });
 
-    $(document).on('input change', '#bgOpacitySlider', function () {
+    $(document).on("input change", "#bgOpacitySlider", function () {
         $("#bgimg").css("opacity", $("#bgOpacityOutput").val() / 100.0);
     });
 }
@@ -178,8 +178,8 @@ export function setHighlightControls() {
  */
 function setBurgerControls () {
     $("#burgerMenu").on("click", () => {
-        $(this).toggleClass('is-active');
-        $("#navMenu").toggleClass('is-active');
+        $(this).toggleClass("is-active");
+        $("#navMenu").toggleClass("is-active");
     })
 }
 
@@ -296,21 +296,21 @@ export function initInsertEditControls(neonView) {
     $("#undo").on("click", undoHandler);
     $("body").on("keydown", (evt) => {
         if (evt.key === "z" && (evt.ctrlKey || evt.metaKey)) {
-            undoHandler(evt);
+            undoHandler();
         }
     });
 
     $("#redo").on("click", redoHandler);
     $("body").on("keydown", (evt) => {
         if ((evt.key === "Z" || (evt.key === "z" && evt.shiftKey)) && (evt.ctrlKey || evt.metaKey)) {
-            redoHandler(evt);
+            redoHandler();
         }
     });
 
     $("#delete").on("click", removeHandler);
     $("body").on("keydown", (evt) => {
         if (evt.key === "d" || evt.key === "Backspace")
-            removeHandler(evt);
+            removeHandler();
     });
 
     function undoHandler () {
@@ -383,14 +383,14 @@ function bindElements(insertHandler) {
         return el.id;
     });
     $.each(elementIds, function(i, el){
-        $('#' + el).on('click', function(){
-            deactivate('.insertel');
+        $("#" + el).on("click", function(){
+            deactivate(".insertel");
             activate(el, insertHandler);
             Cursor.updateCursor();
         });
         document.body.addEventListener("keydown", (evt) => {
             if (evt.code === "Digit" + (i+1) && evt.shiftKey) {
-                deactivate('.insertel');
+                deactivate(".insertel");
                 activate(el, insertHandler);
                 Cursor.updateCursor();
             }
@@ -494,7 +494,7 @@ export function initSelectionButtons() {
     $("#selBySyl").on("click", selectBySylHandler);
     $("body").on("keydown", (evt) => {
         if (evt.key === "1") {
-            selectBySylHandler(evt);
+            selectBySylHandler();
         }
     });
 
@@ -512,7 +512,7 @@ export function initSelectionButtons() {
     $("#selByNeume").on("click", selectByNeumeHandler);
     $("body").on("keydown", (evt) => {
         if (evt.key === "2") {
-            selectByNeumeHandler(evt);
+            selectByNeumeHandler();
         }
     });
 
@@ -530,7 +530,7 @@ export function initSelectionButtons() {
     $("#selByNc").on("click", selectByNcHandler);
     $("body").on("keydown", (evt) => {
         if (evt.key === "3") {
-            selectByNcHandler(evt);
+            selectByNcHandler();
         }
     });
 
@@ -548,7 +548,7 @@ export function initSelectionButtons() {
     $("#selByStaff").on("click", selectByStaffHandler);
     $("body").on("keydown", (evt) => {
         if (evt.key === "4") {
-            selectByStaffHandler(evt);
+            selectByStaffHandler();
         }
     });
 

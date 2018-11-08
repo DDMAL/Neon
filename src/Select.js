@@ -1,11 +1,12 @@
 /** @module Select */
 
 import * as Color from "./Color.js";
-import * as Contents from "./Contents.js";
 import * as Controls from "./Controls.js";
 import * as Grouping from "./Grouping.js";
 import * as SelectOptions from "./SelectOptions.js";
 import Resize from "./ResizeStaff.js";
+const d3 = require("d3");
+const $ = require("jquery");
 
 /**
  * Handle click selection and mark elements as selected.
@@ -14,8 +15,9 @@ import Resize from "./ResizeStaff.js";
  * @param {module:Zoom~Zoomhandler} zoomHandler
  * @param {NeonView} neonView - The NeonView parent.
  * @param {module:Neon~Neon} neon
+ * @param {InfoBox} infoBox
  */
-export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
+export function ClickSelect (dragHandler, zoomHandler, neonView, neon, infoBox) {
     selectListeners();
 
     //Selection mode toggle
@@ -34,16 +36,17 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                 if ($(el).hasClass("is-active")){
                     editing = true;
                 }
-            })
+            });
             if (editing || evt.shiftKey) { return; }
             if (this.tagName === "use") {
                 // If this was part of a drag select, drag don't reselect the one component
                 if ($(this).parents(".selected").length === 0) {
-                    selectAll([this], neon, neonView, dragHandler);
+                    selectAll([this], neon, neonView, dragHandler, infoBox);
                 }
             }
             else {
                 if (!$("#selByStaff").hasClass("is-active")) {
+                    infoBox.infoListeners();
                     return;
                 }
                 // Check if point is in staff.
@@ -59,6 +62,9 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                     return (box.ulx < pt.x && pt.x < box.lrx) && (box.uly < pt.y && pt.y < box.lry);
                 });
                 if (selectedStaves.length != 1) {
+                    if ($(".selected").length > 0) {
+                        infoBox.infoListeners();
+                    }
                     unselect();
                     return;
                 }
@@ -69,7 +75,20 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
                     SelectOptions.triggerSplitActions();
                     let resize = new Resize(staff.id, neonView, dragHandler);
                     resize.drawInitialRect();
+                    // Start staff dragging
+                    dragHandler.dragInit();
                 }
+                staff.dispatchEvent(new MouseEvent("mousedown", {
+                    screenX: evt.screenX,
+                    screenY: evt.screenY,
+                    clientX: evt.clientX,
+                    clientY: evt.clientY,
+                    ctrlKey: evt.ctrlKey,
+                    shiftKey: evt.shiftKey,
+                    altKey: evt.altKey,
+                    metaKey: evt.metaKey,
+                    view: evt.view
+                }));
             }
         }
 
@@ -77,16 +96,19 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
         $("body").on("keydown", (evt) => { // click
             if (evt.type === "keydown" && evt.key !== "Escape") return;
             SelectOptions.endOptionsSelection();
+            if ($(".selected").length > 0) {
+                infoBox.infoListeners();
+            }
             unselect();
-        })
+        });
 
         $("use").on("click", function(e){
             e.stopPropagation();
-        })
+        });
 
         $("#moreEdit").on("click", function(e) {
             e.stopPropagation();
-        })
+        });
     }
     ClickSelect.prototype.selectListeners = selectListeners;
 }
@@ -98,20 +120,21 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon) {
  * @param {module:Zoom~ZoomHandler} zoomHandler - Instantiated ZoomHandler object.
  * @param {NeonView} neonView - NeonView parent.
  * @param {module:Neon~Neon} neon
+ * @param {InfoBox} infoBox
  */
-export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
+export function DragSelect (dragHandler, zoomHandler, neonView, neon, infoBox) {
     var initialX = 0,
         initialY = 0,
         panning = false,
         dragSelecting = false;
 
     var canvas = d3.select("#svg_group");
-    canvas.call(
-        d3.drag()
-            .on("start", selStart)
-            .on("drag", selecting)
-            .on("end", selEnd)
-    );
+    var dragSelectAction = d3.drag()
+        .on("start", selStart)
+        .on("drag", selecting)
+        .on("end", selEnd);
+    canvas.call(dragSelectAction);
+    dragHandler.resetTo(dragSelectAction);
 
     /**
      * Start drag selecting musical elements.
@@ -214,7 +237,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
                 }
             });
 
-            selectAll(elements, neon, neonView, dragHandler);
+            selectAll(elements, neon, neonView, dragHandler, infoBox);
 
             dragHandler.dragInit();
             d3.selectAll("#selectRect").remove();
@@ -252,7 +275,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon) {
             .attr("x", newX)
             .attr("y", newY)
             .attr("width", currentWidth)
-            .attr("height", currentHeight)
+            .attr("height", currentHeight);
     }
 }
 
@@ -300,8 +323,9 @@ function selectNn (notNeumes) {
  * @param {module:Neon~Neon} neon - A neon instance.
  * @param {NeonView} neonView - The NeonView parent.
  * @param {DragHandler} dragHandler - A DragHandler to alow staff resizing and some neume component selection cases.
+ * @param {InfoBox} infoBox
  */
-function selectAll (elements, neon, neonView, dragHandler) {
+function selectAll (elements, neon, neonView, dragHandler, infoBox) {
     var syls = [],
         neumes = [],
         ncs = [],
@@ -489,7 +513,7 @@ function selectAll (elements, neon, neonView, dragHandler) {
         if (ncs.length != 0 && isLigature(ncs[0], neon) && prev.length != 0 && isLigature($(ncs[0]).prev()[0], neon)) {
             ncs.push($(ncs[0]).prev()[0]);
         }
-        ncs.forEach(nc => { select(ncs); });
+        ncs.forEach(nc => { select(nc); });
         if (!noClefOrCustos) {
             if (notNeumes.length == 1 && ncs.length == 0) {
                 var el = notNeumes[0];
@@ -525,7 +549,7 @@ function selectAll (elements, neon, neonView, dragHandler) {
                     if ((isFirstLigature && isSecondLigature) || (!isFirstLigature && !isSecondLigature)) {
                         Grouping.triggerGrouping("ligature");
                     }
-                   /*else{
+                    /*else{
                         Grouping.triggerGrouping("ligatureNc");
                     }*/
                 }
@@ -544,7 +568,7 @@ function selectAll (elements, neon, neonView, dragHandler) {
         else if (ncs.length > 1 && noClefOrCustos) {
             let neume = ncs[0].parentElement;
             let group = false;
-            for (var i = 1; i < ncs.length; i++) {
+            for (i = 1; i < ncs.length; i++) {
                 if (ncs[i].parentElement !== neume) {
                     group = true;
                     break;
@@ -566,6 +590,9 @@ function selectAll (elements, neon, neonView, dragHandler) {
         else if (ncs.length === 1) {
             SelectOptions.triggerNcActions(ncs[0]);
         }
+    }
+    if ($(".selected").length > 0) {
+        infoBox.stopListeners();
     }
     dragHandler.dragInit();
 }

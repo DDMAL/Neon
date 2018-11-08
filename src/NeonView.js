@@ -6,7 +6,9 @@ import * as Cursor from "./Cursor.js";
 import EditMode from "./EditMode.js";
 import * as Compatibility from "./Compatibility.js";
 
+const d3 = require("d3");
 const verovio = require("verovio-dev");
+const $ = require("jquery");
 
 /**
  * The class managing DOM objects and the Neon class for the application.
@@ -15,12 +17,12 @@ const verovio = require("verovio-dev");
  * @param {string} params.meifile - The filename of the MEI file.
  * @param {string} params.bgimg - The filename of the background image.
  * @param {string} params.mode - The mode to run Neon in.
- * @see module:Compatibility.modes
  * @param {string} [params.raw] - If the meifile parameter is actually the raw contents of an MEI file.
+ * @see module:Compatibility.modes
  */
 function NeonView (params) {
     var viewHeight = window.innerHeight;
-    var viewWidth = 800;
+    //var viewWidth = 800;
     var meiFile = params.meifile;
     var bgimg = params.bgimg;
     var initialPage = true;
@@ -51,7 +53,7 @@ function NeonView (params) {
         zoomHandler = new ZoomHandler();
         infoBox = new InfoBox(neon);
         Controls.initDisplayControls(zoomHandler);
-        editMode = new EditMode(neonview, neon, meiFile, zoomHandler);
+        editMode = new EditMode(neonview, neon, meiFile, zoomHandler, infoBox);
         loadView();
         // editMode.getScale();
         Controls.setSylControls();
@@ -70,7 +72,7 @@ function NeonView (params) {
             var group = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             group.id = "svg_group";
             var bg = document.createElementNS("http://www.w3.org/2000/svg", "image");
-            bg.onload = hideLoad();
+            bg.onload = hideLoad;
             bg.id = "bgimg";
             bg.setAttributeNS("http://www.w3.org/1999/xlink", "href", bgimg);
             var mei = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -133,33 +135,33 @@ function NeonView (params) {
         $("body").on("keydown keyup", (evt) => {
             if (evt.type === "keydown") {
                 switch (evt.key) {
-                    case "Shift":
-                        d3.select("#svg_output").on(".drag", null);
-                        d3.select("#svg_output").call(
-                            d3.drag().on("start", zoomHandler.startDrag)
-                                .on("drag", zoomHandler.dragging)
-                        );
-                        Cursor.updateCursorTo("grab");
-                        break;
-                    case "h":
-                        $("#mei_output").css("visibility", "hidden");
-                        break;
-                    default: break;
+                case "Shift":
+                    d3.select("#svg_output").on(".drag", null);
+                    d3.select("#svg_output").call(
+                        d3.drag().on("start", zoomHandler.startDrag)
+                            .on("drag", zoomHandler.dragging)
+                    );
+                    Cursor.updateCursorTo("grab");
+                    break;
+                case "h":
+                    $("#mei_output").css("visibility", "hidden");
+                    break;
+                default: break;
                 }
             }
             else {
                 switch (evt.key) {
-                    case "Shift":
-                        d3.select("#svg_output").on(".drag", null);
-                        Cursor.updateCursorTo("");
-                        if (editMode.isInsertMode()) {
-                            Cursor.updateCursor();
-                        }
-                        break;
-                    case "h":
-                        $("#mei_output").css("visibility", "visible");
-                        break;
-                    default: break;
+                case "Shift":
+                    d3.select("#svg_output").on(".drag", null);
+                    Cursor.updateCursorTo("");
+                    if (editMode.isInsertMode()) {
+                        Cursor.updateCursor();
+                    }
+                    break;
+                case "h":
+                    $("#mei_output").css("visibility", "visible");
+                    break;
+                default: break;
                 }
             }
         });
@@ -227,9 +229,9 @@ function NeonView (params) {
     }
 
     //Window listener to update height
-    $(window).on('resize', function() {
+    $(window).on("resize", function() {
         var newHeight = window.innerHeight;
-        if(newHeight > $("#svg_group").attr("height")){
+        if(newHeight > Number($("#svg_group").attr("height"))){
             $("#svg_group").attr("height", newHeight);
         }
         refreshPage();
