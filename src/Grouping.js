@@ -5,6 +5,7 @@ import * as Warnings from "./Warnings.js";
 import * as Notification from "./Notification.js";
 import {unsetVirgaAction, unsetInclinatumAction} from "./SelectOptions.js";
 import InfoBox from "./InfoBox.js";
+const $ = require("jquery");
 
 /**
  * The NeonView parent to access editor actions.
@@ -27,7 +28,7 @@ export function triggerGrouping(type) {
     $("#moreEdit").removeClass("is-invisible");
     $("#moreEdit").append(Contents.groupingMenu[type]);
     initGroupingListeners();
-};
+}
 
 /**
  * Remove the grouping selection menu.
@@ -68,7 +69,7 @@ export function initGroupingListeners(){
     $("#toggle-ligature").on("click", function () {
         var elementIds = getIds();
         var isLigature;
-        let ligatureRegex = /#E99[016]/
+        let ligatureRegex = /#E99[016]/;
         if (!ligatureRegex.test(document.getElementById(elementIds[0]).children[0].getAttribute("xlink:href"))) { // SMUFL codes for ligature glyphs
             isLigature = true;
         } else {

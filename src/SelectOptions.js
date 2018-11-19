@@ -4,6 +4,7 @@ import * as Grouping from "./Grouping.js";
 import * as Notification from "./Notification.js";
 import InfoBox from "./InfoBox.js";
 import SplitHandler from "./SplitHandler.js";
+const $ = require("jquery");
 
 /**
  * The NeonView parent to call editor actions.
@@ -61,8 +62,8 @@ export function triggerNcActions(nc) {
     endOptionsSelection();
     $("#moreEdit").removeClass("is-invisible");
     $("#moreEdit").append(Contents.ncActionContents);
-
-    $("#Punctum.dropdown-item").on("click", (evt) => {
+  
+    $("#Punctum.dropdown-item").on("click", () => {
         let unsetInclinatum = unsetInclinatumAction(nc.id);
         let unsetVirga = unsetVirgaAction(nc.id);
         if(neonView.edit({ "action": "chain", "param": [ unsetInclinatum, unsetVirga ]})){
@@ -75,7 +76,7 @@ export function triggerNcActions(nc) {
         neonView.refreshPage();
     });
 
-    $("#Inclinatum.dropdown-item").on("click", (evt) => {
+    $("#Inclinatum.dropdown-item").on("click", () => {
         let setInclinatum = {
             "action": "set",
             "param": {
@@ -94,7 +95,8 @@ export function triggerNcActions(nc) {
         neonView.refreshPage();
     });
 
-    $("#Virga.dropdown-item").on("click", (evt) => {
+
+    $("#Virga.dropdown-item").on("click", () => {
         let unsetInclinatum = unsetInclinatumAction(nc.id);
         let setVirga = {
             "action": "set",
@@ -122,7 +124,7 @@ export function triggerNcActions(nc) {
  * Trigger extra neume actions.
  */
 export function triggerNeumeActions() {
-    endOptionsSelection()
+    endOptionsSelection();
     $("#moreEdit").removeClass("is-invisible");
     $("#moreEdit").append(Contents.neumeActionContents);
     var neume = $(".selected");
@@ -143,7 +145,7 @@ export function triggerNeumeActions() {
                 "elementId": neume[0].id,
                 "contour": contour
             }
-        }
+        };
         if(neonView.edit(changeGroupingAction)){
             Notification.queueNotification("Grouping Changed");
         }
@@ -161,7 +163,7 @@ export function triggerNeumeActions() {
  * Trigger extra syllable actions.
  */
 export function triggerSylActions() {
-    endOptionsSelection()
+    endOptionsSelection();
     $("#moreEdit").removeClass("is-invisible");
     $("#moreEdit").append(
         "<div><p class='control'>" +
@@ -177,7 +179,7 @@ export function triggerClefActions(clef) {
     endOptionsSelection();
     $("#moreEdit").removeClass("is-invisible");
     $("#moreEdit").append(Contents.clefActionContents);
-    $("#CClef.dropdown-item").on("click", (evt) => {
+    $("#CClef.dropdown-item").on("click", () => {
         let setCClef = {
             "action": "setClef",
             "param": {
@@ -193,15 +195,15 @@ export function triggerClefActions(clef) {
         }
         endOptionsSelection();
         neonView.refreshPage();
-    })
-    $("#FClef.dropdown-item").on("click", (evt) => {
+    });
+    $("#FClef.dropdown-item").on("click", () => {
         let setFClef = {
             "action": "setClef",
             "param": {
                 "elementId": clef.id,
                 "shape": "F"
             }
-        }
+        };
         if(neonView.edit(setFClef)){
             Notification.queueNotification("Shape Changed");
         }
@@ -210,7 +212,7 @@ export function triggerClefActions(clef) {
         }
         endOptionsSelection();
         neonView.refreshPage();
-    })
+    });
     initOptionsListeners();
 }
 
@@ -222,7 +224,7 @@ export function triggerStaffActions() {
     $("#moreEdit").removeClass("is-invisible");
     $("#moreEdit").append(Contents.staffActionContents);
 
-    $("#merge-systems").on("click", (evt) => {
+    $("#merge-systems").on("click", () => {
         let systems = Array.from($(".staff.selected"));
         let elementIds = [];
         systems.forEach(staff => {
@@ -254,7 +256,7 @@ export function triggerSplitActions() {
     $("#moreEdit").append(Contents.splitActionContents);
 
     //TODO add trigger for split action
-    $("#split-system").on("click", (evt) => {
+    $("#split-system").on("click", () => {
         var split = new SplitHandler(neonView);
         split.startSplit();
         endOptionsSelection();
@@ -275,5 +277,5 @@ export function endOptionsSelection () {
 function initOptionsListeners(){
     $("#drop_select").on("click", function() {
         $(this).toggleClass("is-active");
-    })
+    });
 }
