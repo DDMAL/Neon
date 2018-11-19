@@ -446,8 +446,8 @@
 										<nc xml:id="m-b0521c34-dd2f-41d3-8b23-517e3f0767a8" facs="m-e3b8a826-9e90-42ac-8fc0-9d7f11fbb450" pname="g" oct="2" />
 										<nc xml:id="m-4dc4e74b-cad1-4cf8-ae60-a264e5ec19a4" facs="m-35beabaa-cc59-489c-a105-8b0aebc5f161" pname="a" oct="2" />
 										<nc xml:id="m-a5efcaaa-a7cd-4e27-9c15-a3fbe58d20a7" facs="m-8abbf2c7-5671-4b58-8689-928f36aeb3a4" pname="c" oct="3" />
-										<nc xml:id="m-a06817e4-252f-4e82-83fe-f7bf0261f794" facs="m-ac2d3e78-8b26-4af1-b12b-8e3cff568a8f" pname="b" oct="2" name="inclinatum" />
-										<nc xml:id="m-f6dcaee9-b150-43dc-8647-5cc27973001a" facs="m-71e36b43-8d6f-4ee6-a8a9-2bd5423a691e" pname="a" oct="2" name="inclinatum" />
+										<nc xml:id="m-a06817e4-252f-4e82-83fe-f7bf0261f794" facs="m-ac2d3e78-8b26-4af1-b12b-8e3cff568a8f" pname="b" oct="2" tilt="se" />
+										<nc xml:id="m-f6dcaee9-b150-43dc-8647-5cc27973001a" facs="m-71e36b43-8d6f-4ee6-a8a9-2bd5423a691e" pname="a" oct="2" tilt="se" />
 									</neume>
 								</syllable>
 								<syllable xml:id="m-cc57d7db-2374-4725-829d-a0a039ceeabd">
@@ -481,9 +481,9 @@
 									<neume xml:id="m-78ee27a6-dbe8-414b-b501-c28426fe375f">
 										<nc xml:id="m-35b335fb-a437-43c0-b5fa-39d9611aa84f" facs="m-a7e103c4-ad3d-42dd-bf2f-df80751d71f3" pname="c" oct="3" />
 										<nc xml:id="m-174f348a-8db5-426d-bc26-7e42a58b6ec5" facs="m-c09d3d0f-11a5-4baf-95b7-611de7483915" pname="c" oct="3" />
-										<nc xml:id="m-de107ee8-57d3-4cdc-82d0-305f941de1bc" facs="m-75808a17-1564-40be-8663-7c62bdc18b97" pname="b" oct="2" name="inclinatum" />
-										<nc xml:id="m-4a43ba2d-9363-4354-8a77-b68b0c38ad63" facs="m-dd0506c1-d0fd-4b5e-a939-96b6f029b331" pname="a" oct="2" name="inclinatum" />
-										<nc xml:id="m-82d91da1-21c5-40d5-b448-c3655ed0511e" facs="m-b56996a6-9352-4ae6-9a77-da2c41e683db" pname="g" oct="2" name="inclinatum" />
+										<nc xml:id="m-de107ee8-57d3-4cdc-82d0-305f941de1bc" facs="m-75808a17-1564-40be-8663-7c62bdc18b97" pname="b" oct="2" tilt="se" />
+										<nc xml:id="m-4a43ba2d-9363-4354-8a77-b68b0c38ad63" facs="m-dd0506c1-d0fd-4b5e-a939-96b6f029b331" pname="a" oct="2" tilt="se" />
+										<nc xml:id="m-82d91da1-21c5-40d5-b448-c3655ed0511e" facs="m-b56996a6-9352-4ae6-9a77-da2c41e683db" pname="g" oct="2" tilt="se" />
 									</neume>
 								</syllable>
 								<syllable xml:id="m-7f9b3ca4-f3be-4709-abf1-8014ad782c89">
@@ -502,8 +502,8 @@
 								<syllable xml:id="m-30f0c830-281c-4ba6-9771-6a02a740e141">
 									<!--oblique2, punctum-->
 									<neume xml:id="m-6dad360d-3aec-43f1-b1c7-db1148d425f1">
-										<nc xml:id="m-fa1463c0-fdb1-4b07-874f-631137cf13b2" facs="m-68552fc3-9d71-4f60-a0d4-3a16dc334017" pname="b" oct="2" ligature="true" />
-										<nc xml:id="m-c43779b1-71ee-476e-bbf9-6976f79fc7c7" facs="m-bf68ba6d-95dd-409b-a4ad-b486ea24a4ba" pname="a" oct="2" ligature="true" />
+										<nc xml:id="m-fa1463c0-fdb1-4b07-874f-631137cf13b2" facs="m-68552fc3-9d71-4f60-a0d4-3a16dc334017" pname="b" oct="2" ligated="true" />
+										<nc xml:id="m-c43779b1-71ee-476e-bbf9-6976f79fc7c7" facs="m-bf68ba6d-95dd-409b-a4ad-b486ea24a4ba" pname="a" oct="2" ligated="true" />
 										<nc xml:id="m-b4fdd841-f2e8-4de4-aa37-a4819d7eb19c" facs="m-43865094-7997-4f6f-a9c1-c4aead33bcb0" pname="b" oct="2" />
 									</neume>
 								</syllable>
@@ -615,8 +615,8 @@
 									<!--punctum, oblique2, punctum-->
 									<neume xml:id="m-df2655e1-2a29-4afb-b8e4-5c487e63a835">
 										<nc xml:id="m-3a913bc3-6b59-4ad5-bd28-93340d25f01f" facs="m-2eee0b97-c60d-48ec-9112-63a67e4b2ba4" pname="g" oct="2" />
-										<nc xml:id="m-a22947b4-6164-461c-b62e-829439cb7e4b" facs="m-db8fd328-0d19-4fe9-b228-81acafc0ee1a" pname="a" oct="2" ligature="true" />
-										<nc xml:id="m-699a9102-319a-4b87-a3eb-13dbaeff1c6f" facs="m-0cc62f52-8837-47ef-bd73-ab0105155050" pname="g" oct="2" ligature="true" />
+										<nc xml:id="m-a22947b4-6164-461c-b62e-829439cb7e4b" facs="m-db8fd328-0d19-4fe9-b228-81acafc0ee1a" pname="a" oct="2" ligated="true" />
+										<nc xml:id="m-699a9102-319a-4b87-a3eb-13dbaeff1c6f" facs="m-0cc62f52-8837-47ef-bd73-ab0105155050" pname="g" oct="2" ligated="true" />
 										<nc xml:id="m-05c937d5-6cdd-4c53-a9d5-5f1340e1f940" facs="m-66faedc4-7631-4c64-8f82-528edc131898" pname="a" oct="2" />
 									</neume>
 								</syllable>
@@ -639,7 +639,7 @@
 								<syllable xml:id="m-b5cad702-d9aa-4366-a31a-bf9ea7b900ea">
 									<!--inclinatum, punctum-->
 									<neume xml:id="m-9a1a81c6-d8e3-4854-9527-d72c5af42fbf">
-										<nc xml:id="m-f6425ecc-8ec3-4bb3-90b1-266add7db454" facs="m-4893cfd8-1d4b-4018-855d-d74822a53385" pname="d" oct="3" name="inclinatum" />
+										<nc xml:id="m-f6425ecc-8ec3-4bb3-90b1-266add7db454" facs="m-4893cfd8-1d4b-4018-855d-d74822a53385" pname="d" oct="3" tilt="se" />
 										<nc xml:id="m-66daf4cb-e8e3-43db-b3d5-abb1c9fbc295" facs="m-1e2bb151-6c22-43f3-bc07-9e00fb270907" pname="b" oct="2" />
 									</neume>
 								</syllable>
@@ -720,8 +720,8 @@
 										<nc xml:id="m-9c566324-b9aa-465f-9c57-b3a24676646a" facs="m-3d2f16d4-13ab-497d-9626-be84c26406d8" pname="d" oct="3" />
 										<nc xml:id="m-44d9c6c2-97af-4c37-8ef8-bec41483fea6" facs="m-6a7e4711-9909-4ca5-8deb-c2c63c5f4a3b" pname="c" oct="3" />
 										<nc xml:id="m-f1e6c682-181b-428f-a929-762efc29d245" facs="m-c36ceaf5-5c0e-46b5-9b52-8afb1fa6f9fe" pname="c" oct="3" />
-										<nc xml:id="m-a30519b2-7cb8-402a-9427-61a32f63dc10" facs="m-520f92f6-e495-4add-bd2d-56626672e352" pname="a" oct="2" name="inclinatum" />
-										<nc xml:id="m-f2d482ee-9c11-42d3-b234-c7d80eaeeacd" facs="m-85f6e17c-583c-4e8e-8bb9-dde6c4409e5f" pname="g" oct="2" name="inclinatum" />
+										<nc xml:id="m-a30519b2-7cb8-402a-9427-61a32f63dc10" facs="m-520f92f6-e495-4add-bd2d-56626672e352" pname="a" oct="2" tilt="se" />
+										<nc xml:id="m-f2d482ee-9c11-42d3-b234-c7d80eaeeacd" facs="m-85f6e17c-583c-4e8e-8bb9-dde6c4409e5f" pname="g" oct="2" tilt="se" />
 										<nc xml:id="m-f91405ad-6552-486d-a831-e5dbf8fbf667" facs="m-0d95ca15-c5ba-4bf8-b819-aa36744b1f18" pname="b" oct="2" />
 									</neume>
 								</syllable>
@@ -746,7 +746,7 @@
 								<syllable xml:id="m-7312a092-18e0-4695-a3d6-116725573f10">
 									<!--inclinatum, punctum-->
 									<neume xml:id="m-513c9ddc-ef9e-4413-b120-48dc38b8a87b">
-										<nc xml:id="m-b03a1155-a507-48fd-8da8-7fb35c484a9c" facs="m-d972c99e-a9ca-4250-9c1d-4d1e65828426" pname="d" oct="3" name="inclinatum" />
+										<nc xml:id="m-b03a1155-a507-48fd-8da8-7fb35c484a9c" facs="m-d972c99e-a9ca-4250-9c1d-4d1e65828426" pname="d" oct="3" tilt="se" />
 										<nc xml:id="m-a0cbddf0-fed5-41d5-a02f-1ccf764c2535" facs="m-e9e3ec0f-cbc4-40b3-8561-b7f858fb2487" pname="b" oct="2" />
 									</neume>
 								</syllable>
@@ -768,8 +768,8 @@
 								<syllable xml:id="m-0b42813b-628f-468e-a47c-1b94e8154d2a">
 									<!--oblique4-->
 									<neume xml:id="m-e091434a-f6ea-4338-8208-f27cb04fd9f6">
-										<nc xml:id="m-cd0be573-1362-4b3c-985e-526243ad6554" facs="m-f6f78795-4fcf-42ad-bb20-fb94ec491068" pname="c" oct="2" ligature="true" />
-										<nc xml:id="m-7946a7c1-79c3-49e3-8198-ad9ceb7d557c" facs="m-f592ce84-d4ff-415d-94a9-ee8a143bfbe7" pname="g" oct="1" ligature="true" />
+										<nc xml:id="m-cd0be573-1362-4b3c-985e-526243ad6554" facs="m-f6f78795-4fcf-42ad-bb20-fb94ec491068" pname="c" oct="2" ligated="true" />
+										<nc xml:id="m-7946a7c1-79c3-49e3-8198-ad9ceb7d557c" facs="m-f592ce84-d4ff-415d-94a9-ee8a143bfbe7" pname="g" oct="1" ligated="true" />
 									</neume>
 								</syllable>
 								<custos xml:id="m-66567693-e80a-42e2-82fc-b08189dd4910" facs="m-175df0d2-4de5-4cde-ad77-4fa3eeb6982d" oct="3" pname="d" />
@@ -797,8 +797,8 @@
 										<nc xml:id="m-9aa76b1d-07c6-4658-9e2c-3584515140e9" facs="m-f54f1296-ec9b-4abd-a71d-9c13732e6dad" pname="c" oct="3" />
 										<nc xml:id="m-1e6aa022-01ce-497e-9b45-1129bb30bdca" facs="m-54acf6b5-7e1a-426a-bb4f-eb25acf6cf85" pname="d" oct="3" />
 										<nc xml:id="m-47f98c6a-3b9f-48d5-ad24-8ef31efa3bfe" facs="m-d31e453d-8b36-4f9e-a257-f57c5090b8a4" pname="c" oct="3" />
-										<nc xml:id="m-74e12aa4-466c-48c1-b6d4-94dbb45c7827" facs="m-fb37c569-fcbf-4ea3-a005-a1a3ab969c31" pname="c" oct="3" ligature="true" />
-										<nc xml:id="m-15e6d0aa-8307-4b12-9673-2cd6ac2ddb2f" facs="m-cc182623-40f4-43ae-9442-5361dae03573" pname="a" oct="2" ligature="true" />
+										<nc xml:id="m-74e12aa4-466c-48c1-b6d4-94dbb45c7827" facs="m-fb37c569-fcbf-4ea3-a005-a1a3ab969c31" pname="c" oct="3" ligated="true" />
+										<nc xml:id="m-15e6d0aa-8307-4b12-9673-2cd6ac2ddb2f" facs="m-cc182623-40f4-43ae-9442-5361dae03573" pname="a" oct="2" ligated="true" />
 										<nc xml:id="m-975091bb-e59f-4488-854c-21f105c7cbdc" facs="m-0d17cf05-6444-4e47-b9eb-1aec982c9079" pname="b" oct="2" />
 										<nc xml:id="m-21c284a7-223f-4abf-acf0-5ac9a76c80a3" facs="m-bbcb2eb9-c671-4070-9635-7171b5af8b8c" pname="a" oct="2" />
 									</neume>
@@ -900,8 +900,8 @@
 								<syllable xml:id="m-76b61cca-1086-4193-951e-3aee1e2c85b7">
 									<!--oblique2, punctum, punctum-->
 									<neume xml:id="m-07f27dad-0ec5-4db6-a401-acf3c0a02b6d">
-										<nc xml:id="m-f9cdbeac-032a-48cb-a26a-2885515ca171" facs="m-88eabd40-7bc0-44a1-a9a9-f61eb7465def" pname="c" oct="3" ligature="true" />
-										<nc xml:id="m-19f14ec2-719d-4533-9824-7d2f25b0a1a6" facs="m-cb7c0a2e-dd38-4f45-8792-febf15caf4f5" pname="b" oct="2" ligature="true" />
+										<nc xml:id="m-f9cdbeac-032a-48cb-a26a-2885515ca171" facs="m-88eabd40-7bc0-44a1-a9a9-f61eb7465def" pname="c" oct="3" ligated="true" />
+										<nc xml:id="m-19f14ec2-719d-4533-9824-7d2f25b0a1a6" facs="m-cb7c0a2e-dd38-4f45-8792-febf15caf4f5" pname="b" oct="2" ligated="true" />
 										<nc xml:id="m-0b051213-ca72-47bc-a690-a3660aa7cd31" facs="m-41db4cdb-c624-4dee-9eab-ba811dae5773" pname="c" oct="3" />
 										<nc xml:id="m-e6a1802d-812d-4399-9ec6-23e0138d3c15" facs="m-1ba80f15-0f19-46fa-b3ce-fd79d4ca439c" pname="d" oct="3" />
 									</neume>
@@ -1008,8 +1008,8 @@
 								<syllable xml:id="m-1f1e4a5e-cf64-4a25-bb90-6571adb14e72">
 									<!--oblique2, punctum, punctum-->
 									<neume xml:id="m-863414e9-c04b-4ec5-9393-aadb3d1cb09d">
-										<nc xml:id="m-d8fffed4-9fc1-40e8-9992-87c1975611a5" facs="m-5f1ec0a2-e8e4-4285-a40b-322bd181a8b1" pname="c" oct="3" ligature="true" />
-										<nc xml:id="m-96f269e0-0cdf-4237-a251-28f8d7132be6" facs="m-b5da64b4-ecaf-4135-a0c9-e01ca11b6159" pname="b" oct="2" ligature="true" />
+										<nc xml:id="m-d8fffed4-9fc1-40e8-9992-87c1975611a5" facs="m-5f1ec0a2-e8e4-4285-a40b-322bd181a8b1" pname="c" oct="3" ligated="true" />
+										<nc xml:id="m-96f269e0-0cdf-4237-a251-28f8d7132be6" facs="m-b5da64b4-ecaf-4135-a0c9-e01ca11b6159" pname="b" oct="2" ligated="true" />
 										<nc xml:id="m-f24ccb95-9908-4195-841d-329b30be155e" facs="m-1c11b418-14f1-4f8d-bec3-cc75c6230b6e" pname="c" oct="3" />
 										<nc xml:id="m-f71b7d8e-9228-4b98-817b-21580e164ba0" facs="m-4e0db95f-aa23-497a-8a83-f62eb61d71bd" pname="b" oct="2" />
 									</neume>
@@ -1040,9 +1040,9 @@
 									<neume xml:id="m-c6200d83-bd5b-447b-983d-057ddecbb031">
 										<nc xml:id="m-b1c2d86f-48d4-4ea4-987b-7cf2b463b73d" facs="m-9e0032ef-7f1b-4643-ae1e-ca5ae7769d4c" pname="c" oct="3" />
 										<nc xml:id="m-ac242774-e580-47dd-bd26-1ee21b5bea1c" facs="m-f6ab0be0-d3bc-45ae-9b31-35ab7875807a" pname="d" oct="3" />
-										<nc xml:id="m-0e3b9792-4945-415f-b7a2-2d2aab43a17d" facs="m-b69b4afe-5d7b-4bc7-811b-fb132f5d1719" pname="c" oct="3" name="inclinatum" />
-										<nc xml:id="m-6558f9c7-e9ca-4f2d-8101-13d7fbdad44f" facs="m-ce2daff7-79e3-4978-8e1d-0c049d98bde3" pname="b" oct="2" name="inclinatum" />
-										<nc xml:id="m-60602241-332a-4410-a0af-eed3945e1b4e" facs="m-58aac8e6-ed15-49b2-bd8b-5fa5a6a0dda3" pname="a" oct="2" name="inclinatum" />
+										<nc xml:id="m-0e3b9792-4945-415f-b7a2-2d2aab43a17d" facs="m-b69b4afe-5d7b-4bc7-811b-fb132f5d1719" pname="c" oct="3" tilt="se" />
+										<nc xml:id="m-6558f9c7-e9ca-4f2d-8101-13d7fbdad44f" facs="m-ce2daff7-79e3-4978-8e1d-0c049d98bde3" pname="b" oct="2" tilt="se" />
+										<nc xml:id="m-60602241-332a-4410-a0af-eed3945e1b4e" facs="m-58aac8e6-ed15-49b2-bd8b-5fa5a6a0dda3" pname="a" oct="2" tilt="se" />
 										<nc xml:id="m-e47597c2-ecbf-463b-a5d5-e0833ef12555" facs="m-f16a3593-1764-4f70-907b-b9508d766d14" pname="b" oct="2" />
 									</neume>
 								</syllable>
@@ -1096,8 +1096,8 @@
 									<!--punctum, inclinatum, inclinatum-->
 									<neume xml:id="m-db6bb813-6337-4df0-84b7-d00d1cf2c3c5">
 										<nc xml:id="m-00d1f230-8a65-45c2-bce9-b9ed5f5c1379" facs="m-ef69bed3-248d-4f28-b5b5-07d6b6c53efa" pname="b" oct="2" />
-										<nc xml:id="m-05a733d3-75ce-4b30-84ac-3411c3289d73" facs="m-ca6a60b7-60e1-4259-adaf-cd8dea9662e7" pname="g" oct="2" name="inclinatum" />
-										<nc xml:id="m-9bacf8cb-9496-49e9-b39a-e78c851ca43b" facs="m-ca2dae42-0036-42e2-bb57-48b52cd45552" pname="b" oct="2" name="inclinatum" />
+										<nc xml:id="m-05a733d3-75ce-4b30-84ac-3411c3289d73" facs="m-ca6a60b7-60e1-4259-adaf-cd8dea9662e7" pname="g" oct="2" tilt="se" />
+										<nc xml:id="m-9bacf8cb-9496-49e9-b39a-e78c851ca43b" facs="m-ca2dae42-0036-42e2-bb57-48b52cd45552" pname="b" oct="2" tilt="se" />
 									</neume>
 								</syllable>
 								<syllable xml:id="m-95b84b13-cb61-4a31-bfe5-23ef90eefe0a">
@@ -1111,8 +1111,8 @@
 									<neume xml:id="m-d810d8ca-60a3-4415-a639-518c5d0a2f8c">
 										<nc xml:id="m-6f0e6e44-cf32-465e-84c3-4cfa8dc7b2d5" facs="m-7729c71b-99d3-49f9-9ab3-d82afb702a76" pname="a" oct="2" />
 										<nc xml:id="m-c7c5b8f9-ae63-446e-945c-19c6a5a0613e" facs="m-832a8945-df49-400f-85b5-252206f54478" pname="b" oct="2" />
-										<nc xml:id="m-630151d7-310b-405b-a8ca-ee1c945472c0" facs="m-9fd70e7f-1a9f-40be-82aa-791b90565ea2" pname="a" oct="2" name="inclinatum" />
-										<nc xml:id="m-d4cb684c-1a06-4e1d-8e64-8a3d3e54c085" facs="m-5d68f196-3fbd-4bb0-a65c-ad7b8031fc24" pname="f" oct="2" name="inclinatum" />
+										<nc xml:id="m-630151d7-310b-405b-a8ca-ee1c945472c0" facs="m-9fd70e7f-1a9f-40be-82aa-791b90565ea2" pname="a" oct="2" tilt="se" />
+										<nc xml:id="m-d4cb684c-1a06-4e1d-8e64-8a3d3e54c085" facs="m-5d68f196-3fbd-4bb0-a65c-ad7b8031fc24" pname="f" oct="2" tilt="se" />
 									</neume>
 								</syllable>
 								<syllable xml:id="m-53f7a080-78ab-4f19-b5e4-1cef68654cf8">
@@ -1209,8 +1209,8 @@
 										<nc xml:id="m-fe56c0eb-b677-428d-831c-d46699d3a9db" facs="m-be0fb216-071c-4b1e-a3dc-0fe753390f84" pname="g" oct="2" />
 										<nc xml:id="m-33b96f04-99b9-4afe-8f82-be564d96ee80" facs="m-e7512a95-f282-40e0-80bb-73b736091630" pname="a" oct="2" />
 										<nc xml:id="m-8eb8a9ec-d6b7-49bb-a8ac-7e51ff753c30" facs="m-6e1ad3d7-4f4f-4ede-b405-479443fba55e" pname="b" oct="2" />
-										<nc xml:id="m-f42926f3-7d60-4572-8d48-ba14e3b1db97" facs="m-6bc7faac-1cda-41a6-b847-a814824005d9" pname="a" oct="2" name="inclinatum" />
-										<nc xml:id="m-3d922812-7cee-4f55-a51a-2aaf69ee0f0d" facs="m-cc982fc9-6c51-4d25-9565-69c3b3e03244" pname="g" oct="2" name="inclinatum" />
+										<nc xml:id="m-f42926f3-7d60-4572-8d48-ba14e3b1db97" facs="m-6bc7faac-1cda-41a6-b847-a814824005d9" pname="a" oct="2" tilt="se" />
+										<nc xml:id="m-3d922812-7cee-4f55-a51a-2aaf69ee0f0d" facs="m-cc982fc9-6c51-4d25-9565-69c3b3e03244" pname="g" oct="2" tilt="se" />
 									</neume>
 								</syllable>
 								<syllable xml:id="m-2493604c-967a-4193-964a-6eaa14283644">
@@ -1305,8 +1305,8 @@
 									<!--punctum, oblique2, punctum-->
 									<neume xml:id="m-9a6c8d0b-984d-4a03-883e-ae1294927e93">
 										<nc xml:id="m-a0fb9c45-8c56-4643-aeb4-6e418aad22a5" facs="m-086f5895-ce23-4abf-98f7-040c79a1fe04" pname="g" oct="2" />
-										<nc xml:id="m-a3527d6c-9aa4-4f54-9acf-1aa5bf31eaad" facs="m-8652b95f-7e93-41d2-a8f9-f4697d7324fc" pname="a" oct="2" ligature="true" />
-										<nc xml:id="m-d0000631-616b-49ca-88b1-34d583510910" facs="m-956f8ef0-faa1-4de4-8770-2d97ba8bff8b" pname="g" oct="2" ligature="true" />
+										<nc xml:id="m-a3527d6c-9aa4-4f54-9acf-1aa5bf31eaad" facs="m-8652b95f-7e93-41d2-a8f9-f4697d7324fc" pname="a" oct="2" ligated="true" />
+										<nc xml:id="m-d0000631-616b-49ca-88b1-34d583510910" facs="m-956f8ef0-faa1-4de4-8770-2d97ba8bff8b" pname="g" oct="2" ligated="true" />
 										<nc xml:id="m-8aaec5dd-8de0-42e0-b4c2-4448221cd52d" facs="m-e834613b-031d-4cfd-9531-e8c0d1629017" pname="a" oct="2" />
 									</neume>
 								</syllable>
@@ -1399,8 +1399,8 @@
 									<!--punctum, oblique2, punctum-->
 									<neume xml:id="m-429ff4a3-e332-41f1-a91b-c1ae2e7b8b6b">
 										<nc xml:id="m-5a99ebe8-5673-43c9-8372-07c724a64a3a" facs="m-7d09b60d-ab2c-4cf4-96d3-113289188b6a" pname="c" oct="3" />
-										<nc xml:id="m-b11f266f-506d-462e-a4cd-f3549e1570c0" facs="m-387fb87d-36e4-46ed-a4db-e2a8c37ad098" pname="d" oct="3" ligature="true" />
-										<nc xml:id="m-d8eb705a-087d-4a2a-9797-4af4d3e22fc0" facs="m-efc5091a-8049-4afa-80e4-06972cb4c898" pname="c" oct="3" ligature="true" />
+										<nc xml:id="m-b11f266f-506d-462e-a4cd-f3549e1570c0" facs="m-387fb87d-36e4-46ed-a4db-e2a8c37ad098" pname="d" oct="3" ligated="true" />
+										<nc xml:id="m-d8eb705a-087d-4a2a-9797-4af4d3e22fc0" facs="m-efc5091a-8049-4afa-80e4-06972cb4c898" pname="c" oct="3" ligated="true" />
 										<nc xml:id="m-869b5b0e-35e7-40f9-a429-1c0065b5618d" facs="m-1653f0cb-46f3-4110-b0c1-d9a0ee2df95f" pname="d" oct="3" />
 									</neume>
 								</syllable>
@@ -1448,8 +1448,8 @@
 									<!--punctum, inclinatum, inclinatum-->
 									<neume xml:id="m-951503b6-9bbf-4f65-9372-db465c9e1438">
 										<nc xml:id="m-9ff244c0-06aa-4938-abc5-e838bd4e702e" facs="m-4b7acbf6-e2c7-47fd-91bc-992c3acbb91f" pname="c" oct="3" />
-										<nc xml:id="m-dbc55bf6-21fb-46b2-8dda-8b3fbe9eecde" facs="m-62842733-39a5-48c5-bb0f-716d4dbf51a3" pname="b" oct="2" name="inclinatum" />
-										<nc xml:id="m-b1833391-6513-4798-8df6-370703f18a0d" facs="m-bc04b0e6-f1ba-4def-a2b7-f1b68fc1803a" pname="a" oct="2" name="inclinatum" />
+										<nc xml:id="m-dbc55bf6-21fb-46b2-8dda-8b3fbe9eecde" facs="m-62842733-39a5-48c5-bb0f-716d4dbf51a3" pname="b" oct="2" tilt="se" />
+										<nc xml:id="m-b1833391-6513-4798-8df6-370703f18a0d" facs="m-bc04b0e6-f1ba-4def-a2b7-f1b68fc1803a" pname="a" oct="2" tilt="se" />
 									</neume>
 								</syllable>
 								<syllable xml:id="m-e9706d90-27ed-4f3a-b872-aae41a7a21c0">
@@ -1477,8 +1477,8 @@
 									<neume xml:id="m-3b921cb0-68c6-4188-b59b-f87929babf70">
 										<nc xml:id="m-178c7106-f472-4d37-8a22-e0faba0c2b93" facs="m-6aacf61d-b316-4fc2-8cbe-ca35d8b29260" pname="g" oct="2" />
 										<nc xml:id="m-f25ee208-b9cf-493d-9aa8-45c7f7605ba2" facs="m-54417671-7899-46d7-8d73-fb5bcff7aa12" pname="b" oct="2" />
-										<nc xml:id="m-22f08ad9-e0e1-4b3e-8b9f-86ca16e333ae" facs="m-3f359eb7-1635-4d3d-b14d-21a1767203f6" pname="a" oct="2" name="inclinatum" />
-										<nc xml:id="m-17ab881b-7911-4725-87f0-9e6991cb5c6b" facs="m-513514be-fc50-4ab9-ba79-cf4e8b56497f" pname="g" oct="2" name="inclinatum" />
+										<nc xml:id="m-22f08ad9-e0e1-4b3e-8b9f-86ca16e333ae" facs="m-3f359eb7-1635-4d3d-b14d-21a1767203f6" pname="a" oct="2" tilt="se" />
+										<nc xml:id="m-17ab881b-7911-4725-87f0-9e6991cb5c6b" facs="m-513514be-fc50-4ab9-ba79-cf4e8b56497f" pname="g" oct="2" tilt="se" />
 									</neume>
 								</syllable>
 								<syllable xml:id="m-93650b2e-419d-4140-8b17-a1615779f17d">
@@ -1544,8 +1544,8 @@
 									<neume xml:id="m-4997090c-343a-4158-b000-156ce148193a">
 										<nc xml:id="m-209ff24a-8b87-414d-b296-32ad2d01233b" facs="m-c2760ccb-a3f2-4a71-b7ae-36fc245692bc" pname="g" oct="2" />
 										<nc xml:id="m-71e7a311-6a2f-4d2a-98e8-c9048feaada6" facs="m-4ffb4932-2b1f-4e22-818c-ce9501f8acff" pname="a" oct="2" />
-										<nc xml:id="m-1c387742-c828-4914-ad20-73bee2f40399" facs="m-d793a789-9ee6-4174-beb9-8119c5f6b08b" pname="g" oct="2" name="inclinatum" />
-										<nc xml:id="m-90600d60-1c2e-41a7-8746-f4ec878be692" facs="m-80c621cf-29cf-4a59-a18c-279b111f746b" pname="f" oct="2" name="inclinatum" />
+										<nc xml:id="m-1c387742-c828-4914-ad20-73bee2f40399" facs="m-d793a789-9ee6-4174-beb9-8119c5f6b08b" pname="g" oct="2" tilt="se" />
+										<nc xml:id="m-90600d60-1c2e-41a7-8746-f4ec878be692" facs="m-80c621cf-29cf-4a59-a18c-279b111f746b" pname="f" oct="2" tilt="se" />
 										<nc xml:id="m-9ee652af-dd16-44ec-8188-51e693ef7b19" facs="m-ab6261f2-b79e-4bed-a6ff-eabd6419ad65" pname="g" oct="2" />
 										<nc xml:id="m-bf2edae5-9486-4f24-94ac-5f1fee209854" facs="m-79e1f3e4-ba1e-41c6-b3a7-696056a18cda" pname="f" oct="2" />
 									</neume>
@@ -1582,9 +1582,9 @@
 									<!--punctum, inclinatum, oblique3, punctum-->
 									<neume xml:id="m-e7692b41-bb13-4a92-b536-f711f75a60c3">
 										<nc xml:id="m-c93e6b1f-910f-40bd-93cb-43cb5b3210c9" facs="m-17e94b78-3756-4b5a-9179-b19f1e6e47ec" pname="b" oct="2" />
-										<nc xml:id="m-e8442c94-79e5-466e-99bc-67184deefd8d" facs="m-3d4e9e6d-83e7-4777-bec7-adda2d146a86" pname="c" oct="3" name="inclinatum" />
-										<nc xml:id="m-a37f8b58-0a1b-46e5-a185-f41860b26925" facs="m-7fb66fc4-a377-4f02-bce7-2ed8c4b31b65" pname="e" oct="3" ligature="true" />
-										<nc xml:id="m-5622b585-43d7-4fca-a47c-3c458894e162" facs="m-eee07ffd-10c0-46a5-a5a5-e010d5d58bdd" pname="c" oct="3" ligature="true" />
+										<nc xml:id="m-e8442c94-79e5-466e-99bc-67184deefd8d" facs="m-3d4e9e6d-83e7-4777-bec7-adda2d146a86" pname="c" oct="3" tilt="se" />
+										<nc xml:id="m-a37f8b58-0a1b-46e5-a185-f41860b26925" facs="m-7fb66fc4-a377-4f02-bce7-2ed8c4b31b65" pname="e" oct="3" ligated="true" />
+										<nc xml:id="m-5622b585-43d7-4fca-a47c-3c458894e162" facs="m-eee07ffd-10c0-46a5-a5a5-e010d5d58bdd" pname="c" oct="3" ligated="true" />
 										<nc xml:id="m-15d6fa63-fa3b-4ff6-bf11-caeb1da9d645" facs="m-c4232c33-e517-4d2b-9471-2ea36ee6409b" pname="d" oct="3" />
 									</neume>
 								</syllable>
@@ -1609,7 +1609,7 @@
 									<!--punctum, inclinatum, punctum-->
 									<neume xml:id="m-fe88091c-1ad8-4733-9984-787d06c39a97">
 										<nc xml:id="m-9f839c2e-4aee-4e7b-874b-790552972c9f" facs="m-88774cc9-bac1-4808-9346-a524361b2666" pname="e" oct="2" />
-										<nc xml:id="m-666d49b1-dd6a-48c9-8df9-842ee41539ed" facs="m-b5f9cef4-b66d-42ae-96d6-e7d6696d3a60" pname="d" oct="3" name="inclinatum" />
+										<nc xml:id="m-666d49b1-dd6a-48c9-8df9-842ee41539ed" facs="m-b5f9cef4-b66d-42ae-96d6-e7d6696d3a60" pname="d" oct="3" tilt="se" />
 										<nc xml:id="m-dab1f824-3aaf-4efc-aace-0ac5e18f2603" facs="m-d1dc1a0b-49f1-4c4a-9eae-e3b801151e3d" pname="b" oct="2" />
 									</neume>
 								</syllable>
@@ -1644,11 +1644,11 @@
 									<neume xml:id="m-690f8c34-6736-4c23-b4c5-3c0a8ae002f2">
 										<nc xml:id="m-4e14e852-ab9c-4ac1-88e8-3c55de3d8eaf" facs="m-ed703740-7327-4187-8ca8-4e663a5b348a" pname="c" oct="3" />
 										<nc xml:id="m-79ae2b0c-c270-4b2d-985f-0723a3a48794" facs="m-6c9ebf07-305e-4861-bfe7-0a3d50d82a75" pname="d" oct="3" />
-										<nc xml:id="m-b98cf357-54f3-4014-ae2a-25ce5f9a9fdd" facs="m-b0055ef7-79fc-4b96-a8d0-986237e9164f" pname="c" oct="3" name="inclinatum" />
-										<nc xml:id="m-61165309-04fe-47f3-83df-2928a16c6bf7" facs="m-0a550fb5-eba0-468e-aa12-f32f787db2f5" pname="b" oct="2" name="inclinatum" />
+										<nc xml:id="m-b98cf357-54f3-4014-ae2a-25ce5f9a9fdd" facs="m-b0055ef7-79fc-4b96-a8d0-986237e9164f" pname="c" oct="3" tilt="se" />
+										<nc xml:id="m-61165309-04fe-47f3-83df-2928a16c6bf7" facs="m-0a550fb5-eba0-468e-aa12-f32f787db2f5" pname="b" oct="2" tilt="se" />
 										<nc xml:id="m-f3303087-0d00-4c8a-96a7-333192f6a96c" facs="m-7e5f24f0-816c-4ec8-89f5-e4d1f7ca6fe8" pname="c" oct="3" />
-										<nc xml:id="m-2dfe549f-4c85-442d-bace-0c289671ea43" facs="m-44cf79c6-3134-49f6-929a-e47110ec9cfb" pname="b" oct="2" name="inclinatum" />
-										<nc xml:id="m-282440ec-fb3f-46a4-a19f-323a8b5088fc" facs="m-a8ef332f-211e-419b-82b1-576cf1b301b5" pname="a" oct="2" name="inclinatum" />
+										<nc xml:id="m-2dfe549f-4c85-442d-bace-0c289671ea43" facs="m-44cf79c6-3134-49f6-929a-e47110ec9cfb" pname="b" oct="2" tilt="se" />
+										<nc xml:id="m-282440ec-fb3f-46a4-a19f-323a8b5088fc" facs="m-a8ef332f-211e-419b-82b1-576cf1b301b5" pname="a" oct="2" tilt="se" />
 									</neume>
 								</syllable>
 								<syllable xml:id="m-1587e88d-4ec2-47c4-b964-5d95e53764f8">
@@ -1696,7 +1696,7 @@
 									<!--punctum, inclinatum, punctum, punctum, punctum-->
 									<neume xml:id="m-989d0eb7-84e4-427a-a1fe-d1b811a1d997">
 										<nc xml:id="m-76fa24a5-2623-4a87-b13d-50a3a98f0200" facs="m-c4db520c-f5e3-4860-aeb2-308b63d43dd6" pname="g" oct="2" />
-										<nc xml:id="m-6914a212-5d65-450a-8329-0a1afa466c75" facs="m-d2ead43c-2349-4096-99cd-96bc255cfefb" pname="g" oct="2" name="inclinatum" />
+										<nc xml:id="m-6914a212-5d65-450a-8329-0a1afa466c75" facs="m-d2ead43c-2349-4096-99cd-96bc255cfefb" pname="g" oct="2" tilt="se" />
 										<nc xml:id="m-4a095705-a03b-429a-8f85-b8c90d0bf8fd" facs="m-dd913da2-c2e6-44e7-ba84-ead17eb5accc" pname="a" oct="2" />
 										<nc xml:id="m-00b59b13-bffa-48d0-b371-2b5019242e92" facs="m-c1a3d2a9-4593-4044-a299-bd806c0e6234" pname="b" oct="2" />
 										<nc xml:id="m-db200f27-aba2-411a-97aa-6cd8078bc5d1" facs="m-671898d2-056e-43b3-95c5-b20ddb29ed35" pname="a" oct="2" />
