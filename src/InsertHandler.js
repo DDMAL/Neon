@@ -28,13 +28,13 @@ function InsertHandler (neonView) {
         else if (buttonId === "diamond") {
             type = "nc";
             attributes = {
-                "name": "inclinatum"
+                "tilt": "se"
             };
         }
         else if (buttonId === "virga") {
             type = "nc";
             attributes = {
-                "diagonalright": "u"
+                "tilt": "n"
             };
         }
         else if (buttonId == "pes") {

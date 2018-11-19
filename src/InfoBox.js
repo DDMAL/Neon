@@ -51,7 +51,7 @@ function InfoBox(neon) {
             var contour = getContour(ncs);
             if(contour == "Clivis"){
                 var attr = neon.getElementAttr($(ncs[0])[0].id);
-                if(attr.ligature){
+                if(attr.ligated){
                     contour = "Ligature";
                 }
             }

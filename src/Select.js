@@ -711,7 +711,7 @@ export function selectStaff (el, dragHandler){
  */
 function isLigature (nc, neon) {
     var attributes = neon.getElementAttr(nc.id);
-    if (attributes.ligature == "true") return true;
+    if (attributes.ligated == "true") return true;
     return false;
 }
 
