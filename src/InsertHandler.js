@@ -136,9 +136,8 @@ function InsertHandler (neonView) {
             editModeButton.innerHTML = "Return to Edit Mode";
             editModeContainer.appendChild(editModeButton);
             document.getElementById("delete").parentNode.parentNode.appendChild(editModeContainer);
+            editModeButton.addEventListener("click", insertDisabled);
         }
-
-        editModeButton.addEventListener("click", insertDisabled);
 
         Notification.queueNotification("Insert Mode");
     }

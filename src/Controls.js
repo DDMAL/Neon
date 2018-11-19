@@ -405,7 +405,9 @@ function bindElements(insertHandler) {
  */
 function activate(id, insertHandler) {
     $("#" + id).addClass("is-active");
-    insertHandler.insertActive(id);
+    if (document.getElementById(id).classList.contains("insertel")) {
+        insertHandler.insertActive(id);
+    }
 }
 
 /**

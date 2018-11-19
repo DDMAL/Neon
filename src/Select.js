@@ -22,7 +22,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon, infoBox) 
 
     //Selection mode toggle
     function selectListeners () {
-        var classesToSelect = "use, #svg_group";
+        var classesToSelect = "#svg_group use, #svg_group";
         Controls.initSelectionButtons();
 
         //Activating selected neumes
@@ -217,9 +217,9 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon, infoBox) {
 
             var nc;
             if ($("#selByStaff").hasClass("is-active")) {
-                nc = d3.selectAll("use, .staff")._groups[0];
+                nc = d3.selectAll("#svg_group use, .staff")._groups[0];
             } else {
-                nc = d3.selectAll("use")._groups[0];
+                nc = d3.selectAll("#svg_group use")._groups[0];
             }
             var els = Array.from(nc);
 
