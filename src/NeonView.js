@@ -39,6 +39,9 @@ function NeonView (params) {
         Compatibility.setMode(Compatibility.modes.standalone);
     } else if (params.mode === "pages") {
         Compatibility.setMode(Compatibility.modes.pages);
+    } else if (params.mode === "local") {
+        Compatibility.setMode(Compatibility.modes.local);
+        meiFile = window.localStorage.getItem("neon2-mei");
     } else {
         Compatibility.setMode(-1);
     }
@@ -74,7 +77,13 @@ function NeonView (params) {
             var bg = document.createElementNS("http://www.w3.org/2000/svg", "image");
             bg.onload = hideLoad;
             bg.id = "bgimg";
-            bg.setAttributeNS("http://www.w3.org/1999/xlink", "href", bgimg);
+            if (Compatibility.getMode() === Compatibility.modes.local) {
+                let image = window.localStorage.getItem("neon2-img");
+                bg.value = image;
+                bg.setAttribute("src", image);
+            } else {
+                bg.setAttributeNS("http://www.w3.org/1999/xlink", "href", bgimg);
+            }
             var mei = document.createElementNS("http://www.w3.org/2000/svg", "g");
             mei.id = "mei_output";
             group.append(bg);

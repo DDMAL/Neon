@@ -34,7 +34,9 @@ import * as Cursor from "./Cursor.js";
 import EditMode from "./EditMode.js";
 import * as Compatibility from "./Compatibility.js";
 
+const d3 = require("d3");
 const verovio = require("verovio-dev");
+const $ = require("jquery");
 
 /**
  * The class managing DOM objects and the Neon class for the application.
@@ -43,12 +45,12 @@ const verovio = require("verovio-dev");
  * @param {string} params.meifile - The filename of the MEI file.
  * @param {string} params.bgimg - The filename of the background image.
  * @param {string} params.mode - The mode to run Neon in.
- * @see module:Compatibility.modes
  * @param {string} [params.raw] - If the meifile parameter is actually the raw contents of an MEI file.
+ * @see module:Compatibility.modes
  */
 function NeonView (params) {
     var viewHeight = window.innerHeight;
-    var viewWidth = 800;
+    //var viewWidth = 800;
     var meiFile = params.meifile;
     var bgimg = params.bgimg;
     var initialPage = true;
@@ -65,6 +67,9 @@ function NeonView (params) {
         Compatibility.setMode(Compatibility.modes.standalone);
     } else if (params.mode === "pages") {
         Compatibility.setMode(Compatibility.modes.pages);
+    } else if (params.mode === "local") {
+        Compatibility.setMode(Compatibility.modes.local);
+        meiFile = window.localStorage.getItem("neon2-mei");
     } else {
         Compatibility.setMode(-1);
     }
@@ -98,9 +103,15 @@ function NeonView (params) {
             var group = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             group.id = "svg_group";
             var bg = document.createElementNS("http://www.w3.org/2000/svg", "image");
-            bg.onload = hideLoad();
+            bg.onload = hideLoad;
             bg.id = "bgimg";
-            bg.setAttributeNS("http://www.w3.org/1999/xlink", "href", bgimg);
+            if (Compatibility.getMode() === Compatibility.modes.local) {
+                let image = window.localStorage.getItem("neon2-img");
+                bg.value = image;
+                bg.setAttribute("src", image);
+            } else {
+                bg.setAttributeNS("http://www.w3.org/1999/xlink", "href", bgimg);
+            }
             var mei = document.createElementNS("http://www.w3.org/2000/svg", "g");
             mei.id = "mei_output";
             group.append(bg);
@@ -161,33 +172,33 @@ function NeonView (params) {
         $("body").on("keydown keyup", (evt) => {
             if (evt.type === "keydown") {
                 switch (evt.key) {
-                    case "Shift":
-                        d3.select("#svg_output").on(".drag", null);
-                        d3.select("#svg_output").call(
-                            d3.drag().on("start", zoomHandler.startDrag)
-                                .on("drag", zoomHandler.dragging)
-                        );
-                        Cursor.updateCursorTo("grab");
-                        break;
-                    case "h":
-                        $("#mei_output").css("visibility", "hidden");
-                        break;
-                    default: break;
+                case "Shift":
+                    d3.select("#svg_output").on(".drag", null);
+                    d3.select("#svg_output").call(
+                        d3.drag().on("start", zoomHandler.startDrag)
+                            .on("drag", zoomHandler.dragging)
+                    );
+                    Cursor.updateCursorTo("grab");
+                    break;
+                case "h":
+                    $("#mei_output").css("visibility", "hidden");
+                    break;
+                default: break;
                 }
             }
             else {
                 switch (evt.key) {
-                    case "Shift":
-                        d3.select("#svg_output").on(".drag", null);
-                        Cursor.updateCursorTo("");
-                        if (editMode.isInsertMode()) {
-                            Cursor.updateCursor();
-                        }
-                        break;
-                    case "h":
-                        $("#mei_output").css("visibility", "visible");
-                        break;
-                    default: break;
+                case "Shift":
+                    d3.select("#svg_output").on(".drag", null);
+                    Cursor.updateCursorTo("");
+                    if (editMode.isInsertMode()) {
+                        Cursor.updateCursor();
+                    }
+                    break;
+                case "h":
+                    $("#mei_output").css("visibility", "visible");
+                    break;
+                default: break;
                 }
             }
         });
@@ -202,7 +213,8 @@ function NeonView (params) {
                 });
             }
         });
-        d3.select("#svg_output").on("wheel", zoomHandler.dragging, false);
+        d3.select("#svg_output").on("wheel", zoomHandler.scrollZoom, false);
+
         infoBox.infoListeners();
     }
 
@@ -254,13 +266,17 @@ function NeonView (params) {
     }
 
     //Window listener to update height
-    $(window).on('resize', function() {
+    $(window).on("resize", function() {
         var newHeight = window.innerHeight;
-        if(newHeight > $("#svg_group").attr("height")){
+        if(newHeight > Number($("#svg_group").attr("height"))){
             $("#svg_group").attr("height", newHeight);
         }
         refreshPage();
     });
+
+    function getElementAttr(xmlId) {
+        return neon.getElementAttr(xmlId);
+    }
 
     NeonView.prototype.constructor = NeonView;
     NeonView.prototype.refreshPage = refreshPage;
@@ -271,6 +287,7 @@ function NeonView (params) {
     NeonView.prototype.undo = undo;
     NeonView.prototype.redo = redo;
     NeonView.prototype.addStateToUndo = addStateToUndo;
+    NeonView.prototype.getElementAttr = getElementAttr;
 }
 
 export {NeonView as default};
@@ -290,7 +307,7 @@ export {NeonView as default};
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Sep 27 2018 13:20:39 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jan 10 2019 13:01:01 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>

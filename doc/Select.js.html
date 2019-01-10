@@ -29,11 +29,12 @@
             <pre class="prettyprint source linenums"><code>/** @module Select */
 
 import * as Color from "./Color.js";
-import * as Contents from "./Contents.js";
 import * as Controls from "./Controls.js";
 import * as Grouping from "./Grouping.js";
 import * as SelectOptions from "./SelectOptions.js";
 import Resize from "./ResizeStaff.js";
+const d3 = require("d3");
+const $ = require("jquery");
 
 /**
  * Handle click selection and mark elements as selected.
@@ -49,7 +50,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon, infoBox) 
 
     //Selection mode toggle
     function selectListeners () {
-        var classesToSelect = "use, #svg_group";
+        var classesToSelect = "#svg_group use, #svg_group";
         Controls.initSelectionButtons();
 
         //Activating selected neumes
@@ -63,7 +64,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon, infoBox) 
                 if ($(el).hasClass("is-active")){
                     editing = true;
                 }
-            })
+            });
             if (editing || evt.shiftKey) { return; }
             if (this.tagName === "use") {
                 // If this was part of a drag select, drag don't reselect the one component
@@ -102,7 +103,20 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon, infoBox) 
                     SelectOptions.triggerSplitActions();
                     let resize = new Resize(staff.id, neonView, dragHandler);
                     resize.drawInitialRect();
+                    // Start staff dragging
+                    dragHandler.dragInit();
                 }
+                staff.dispatchEvent(new MouseEvent("mousedown", {
+                    screenX: evt.screenX,
+                    screenY: evt.screenY,
+                    clientX: evt.clientX,
+                    clientY: evt.clientY,
+                    ctrlKey: evt.ctrlKey,
+                    shiftKey: evt.shiftKey,
+                    altKey: evt.altKey,
+                    metaKey: evt.metaKey,
+                    view: evt.view
+                }));
             }
         }
 
@@ -114,15 +128,15 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon, infoBox) 
                 infoBox.infoListeners();
             }
             unselect();
-        })
+        });
 
         $("use").on("click", function(e){
             e.stopPropagation();
-        })
+        });
 
         $("#moreEdit").on("click", function(e) {
             e.stopPropagation();
-        })
+        });
     }
     ClickSelect.prototype.selectListeners = selectListeners;
 }
@@ -143,12 +157,12 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon, infoBox) {
         dragSelecting = false;
 
     var canvas = d3.select("#svg_group");
-    canvas.call(
-        d3.drag()
-            .on("start", selStart)
-            .on("drag", selecting)
-            .on("end", selEnd)
-    );
+    var dragSelectAction = d3.drag()
+        .on("start", selStart)
+        .on("drag", selecting)
+        .on("end", selEnd);
+    canvas.call(dragSelectAction);
+    dragHandler.resetTo(dragSelectAction);
 
     /**
      * Start drag selecting musical elements.
@@ -231,9 +245,9 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon, infoBox) {
 
             var nc;
             if ($("#selByStaff").hasClass("is-active")) {
-                nc = d3.selectAll("use, .staff")._groups[0];
+                nc = d3.selectAll("#svg_group use, .staff")._groups[0];
             } else {
-                nc = d3.selectAll("use")._groups[0];
+                nc = d3.selectAll("#svg_group use")._groups[0];
             }
             var els = Array.from(nc);
 
@@ -289,7 +303,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon, infoBox) {
             .attr("x", newX)
             .attr("y", newY)
             .attr("width", currentWidth)
-            .attr("height", currentHeight)
+            .attr("height", currentHeight);
     }
 }
 
@@ -527,7 +541,7 @@ function selectAll (elements, neon, neonView, dragHandler, infoBox) {
         if (ncs.length != 0 &amp;&amp; isLigature(ncs[0], neon) &amp;&amp; prev.length != 0 &amp;&amp; isLigature($(ncs[0]).prev()[0], neon)) {
             ncs.push($(ncs[0]).prev()[0]);
         }
-        ncs.forEach(nc => { select(ncs); });
+        ncs.forEach(nc => { select(nc); });
         if (!noClefOrCustos) {
             if (notNeumes.length == 1 &amp;&amp; ncs.length == 0) {
                 var el = notNeumes[0];
@@ -563,7 +577,7 @@ function selectAll (elements, neon, neonView, dragHandler, infoBox) {
                     if ((isFirstLigature &amp;&amp; isSecondLigature) || (!isFirstLigature &amp;&amp; !isSecondLigature)) {
                         Grouping.triggerGrouping("ligature");
                     }
-                   /*else{
+                    /*else{
                         Grouping.triggerGrouping("ligatureNc");
                     }*/
                 }
@@ -582,7 +596,7 @@ function selectAll (elements, neon, neonView, dragHandler, infoBox) {
         else if (ncs.length > 1 &amp;&amp; noClefOrCustos) {
             let neume = ncs[0].parentElement;
             let group = false;
-            for (var i = 1; i &lt; ncs.length; i++) {
+            for (i = 1; i &lt; ncs.length; i++) {
                 if (ncs[i].parentElement !== neume) {
                     group = true;
                     break;
@@ -725,7 +739,7 @@ export function selectStaff (el, dragHandler){
  */
 function isLigature (nc, neon) {
     var attributes = neon.getElementAttr(nc.id);
-    if (attributes.ligature == "true") return true;
+    if (attributes.ligated == "true") return true;
     return false;
 }
 
@@ -746,7 +760,7 @@ function isLigature (nc, neon) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Sep 27 2018 13:20:39 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jan 10 2019 13:01:01 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>

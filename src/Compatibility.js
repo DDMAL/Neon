@@ -14,7 +14,8 @@ const $ = require("jquery");
 export const modes = {
     standalone: 0,
     rodan: 1,
-    pages: 2
+    pages: 2,
+    local: 3
 };
 
 var mode;
@@ -77,6 +78,9 @@ export function saveFile(filename, mei) {
         temp.click();
         document.body.removeChild(temp);
     }
+    else if (mode === modes.local) {
+        window.localStorage.setItem("neon2-mei", mei);
+    }
     else {
         console.error("Unsupported or unset mode!");
     }
@@ -106,6 +110,12 @@ export function revertFile(filename) {
     }
     else if (mode === modes.pages) {
         window.location.reload();   // No actions since the source file can't be overwritten
+    }
+    else if (mode === modes.local) {
+        let storage = window.localStorage;
+        storage.setItem("neon2-mei", storage.getItem("neon2-mei.original"));
+        storage.removeItem("neon2-mei.autosave");
+        window.location.reload();
     }
     else {
         console.error("Unsupported or unset mode!");
@@ -141,6 +151,9 @@ export function autosave(filename, mei) {
     else if (mode === modes.pages) {
         // Do nothing this will be called no matter what
     }
+    else if (mode === modes.local) {
+        window.localStorage.setItem("neon2-mei.autosave", mei);
+    }
     else {
         console.error("Unsupported or unset mode!");
     }
@@ -166,6 +179,9 @@ export function finalize(mei) {
     }
     else if (mode === modes.pages) {
         console.error("This should not be called in pages mode. Please report this.");
+    }
+    else if (mode === modes.local) {
+        console.error("This should not be called in local mode. Please report this.");
     }
     else {
         console.error("Unsupported or unset mode!");

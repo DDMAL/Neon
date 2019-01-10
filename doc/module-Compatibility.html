@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: InfoBox</title>
+    <title>JSDoc: Module: Compatibility</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: InfoBox</h1>
+    <h1 class="page-title">Module: Compatibility</h1>
 
     
 
@@ -28,7 +28,8 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>InfoBox<span class="signature">(neon)</span><span class="type-signature"></span></h2>
+        
+            
         
     
 </header>
@@ -37,11 +38,179 @@
     <div class="container-overview">
     
         
+            <div class="description">Handle compatibility between standalone and Rodan versions of Neon.
+Ideally the rest of the program doesn't need to know which version it's in.</div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
 
     
 
     
-    <h4 class="name" id="InfoBox"><span class="type-signature"></span>new InfoBox<span class="signature">(neon)</span><span class="type-signature"></span></h4>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Compatibility.js.html">Compatibility.js</a>, <a href="Compatibility.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id=".modes"><span class="type-signature">(static, constant) </span>modes<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    The modes to run Neon in.
+Either standalone (0), rodan (1), or demo/pages (2).
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Compatibility.js.html">Compatibility.js</a>, <a href="Compatibility.js.html#line14">line 14</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".autosave"><span class="type-signature">(static) </span>autosave<span class="signature">(filename, mei)</span><span class="type-signature"></span></h4>
     
 
     
@@ -49,7 +218,7 @@
 
 
 <div class="description">
-    Gets information on musical elements and displays them.
+    Compatible autosave function.
 </div>
 
 
@@ -85,13 +254,36 @@
 
         <tr>
             
-                <td class="name"><code>neon</code></td>
+                <td class="name"><code>filename</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="module-Neon-Neon.html">module:Neon~Neon</a></span>
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mei</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
 
 
             
@@ -142,7 +334,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InfoBox.js.html">InfoBox.js</a>, <a href="InfoBox.js.html#line8">line 8</a>
+        <a href="Compatibility.js.html">Compatibility.js</a>, <a href="Compatibility.js.html#line130">line 130</a>
     </li></ul></dd>
     
 
@@ -170,99 +362,13 @@
 
 
 
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id="~neumeGroups"><span class="type-signature">(inner) </span>neumeGroups<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    A map containing neume groupings and their contours.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InfoBox.js.html">InfoBox.js</a>, <a href="InfoBox.js.html#line194">line 194</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
         
             
 
     
 
     
-    <h4 class="name" id="~getContour"><span class="type-signature">(inner) </span>getContour<span class="signature">(ncs)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".finalize"><span class="type-signature">(static) </span>finalize<span class="signature">(mei)</span><span class="type-signature"></span></h4>
     
 
     
@@ -270,7 +376,8 @@
 
 
 <div class="description">
-    Get the contour of a neume.
+    Finalize the editing in the Neon2 job in Rodan.
+This should not be run outside of Rodan.
 </div>
 
 
@@ -306,142 +413,7 @@
 
         <tr>
             
-                <td class="name"><code>ncs</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">array.&lt;SVGSVGElement></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">neume components in the neume.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InfoBox.js.html">InfoBox.js</a>, <a href="InfoBox.js.html#line103">line 103</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~getContourByValue"><span class="type-signature">(inner) </span>getContourByValue<span class="signature">(value)</span><span class="type-signature"> &rarr; {string}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Find the contour of an neume grouping based on the grouping name.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
+                <td class="name"><code>mei</code></td>
             
 
             <td class="type">
@@ -457,7 +429,7 @@
 
             
 
-            <td class="description last">the value name.</td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -498,160 +470,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InfoBox.js.html">InfoBox.js</a>, <a href="InfoBox.js.html#line183">line 183</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~getPitches"><span class="type-signature">(inner) </span>getPitches<span class="signature">(ncs)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Get the individual pitches of a neume.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>ncs</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">array.&lt;SVGSVGElement></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">neume components in the neume.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InfoBox.js.html">InfoBox.js</a>, <a href="InfoBox.js.html#line90">line 90</a>
+        <a href="Compatibility.js.html">Compatibility.js</a>, <a href="Compatibility.js.html#line167">line 167</a>
     </li></ul></dd>
     
 
@@ -685,7 +504,7 @@
     
 
     
-    <h4 class="name" id="~infoListeners"><span class="type-signature">(inner) </span>infoListeners<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".getMode"><span class="type-signature">(static) </span>getMode<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
     
 
     
@@ -693,7 +512,7 @@
 
 
 <div class="description">
-    Set the info box listener on neumes, clefs, and custos.
+    Return the mode Neon is in.
 </div>
 
 
@@ -737,142 +556,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InfoBox.js.html">InfoBox.js</a>, <a href="InfoBox.js.html#line12">line 12</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~pitchNameToNum"><span class="type-signature">(inner) </span>pitchNameToNum<span class="signature">(pname)</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Convert a pitch name (a-g) to a number (where c is 1, d is 2 and b is 7).
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>pname</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The pitch name.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InfoBox.js.html">InfoBox.js</a>, <a href="InfoBox.js.html#line157">line 157</a>
+        <a href="Compatibility.js.html">Compatibility.js</a>, <a href="Compatibility.js.html#line36">line 36</a>
     </li></ul></dd>
     
 
@@ -924,7 +608,7 @@
     
 
     
-    <h4 class="name" id="~stopListeners"><span class="type-signature">(inner) </span>stopListeners<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".revertFile"><span class="type-signature">(static) </span>revertFile<span class="signature">(filename)</span><span class="type-signature"></span></h4>
     
 
     
@@ -932,93 +616,7 @@
 
 
 <div class="description">
-    Disable the mouseover listener for the info box.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InfoBox.js.html">InfoBox.js</a>, <a href="InfoBox.js.html#line19">line 19</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~updateInfo"><span class="type-signature">(inner) </span>updateInfo<span class="signature">(id)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Gets element info from Verovio and updates/creates the info box.
+    Compatible revert function.
 </div>
 
 
@@ -1054,7 +652,7 @@
 
         <tr>
             
-                <td class="name"><code>id</code></td>
+                <td class="name"><code>filename</code></td>
             
 
             <td class="type">
@@ -1070,7 +668,7 @@
 
             
 
-            <td class="description last">The element ID</td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -1111,7 +709,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InfoBox.js.html">InfoBox.js</a>, <a href="InfoBox.js.html#line31">line 31</a>
+        <a href="Compatibility.js.html">Compatibility.js</a>, <a href="Compatibility.js.html#line93">line 93</a>
     </li></ul></dd>
     
 
@@ -1145,7 +743,7 @@
     
 
     
-    <h4 class="name" id="~updateInfoBox"><span class="type-signature">(inner) </span>updateInfoBox<span class="signature">(title, body)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".saveFile"><span class="type-signature">(static) </span>saveFile<span class="signature">(filename, mei)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1153,7 +751,7 @@
 
 
 <div class="description">
-    Show and update the info box.
+    Compatible save file function.
 </div>
 
 
@@ -1189,7 +787,7 @@
 
         <tr>
             
-                <td class="name"><code>title</code></td>
+                <td class="name"><code>filename</code></td>
             
 
             <td class="type">
@@ -1205,14 +803,14 @@
 
             
 
-            <td class="description last">The info box title.</td>
+            <td class="description last">The path for the MEI file.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>body</code></td>
+                <td class="name"><code>mei</code></td>
             
 
             <td class="type">
@@ -1228,7 +826,7 @@
 
             
 
-            <td class="description last">The info box contents.</td>
+            <td class="description last">The MEI data.</td>
         </tr>
 
     
@@ -1269,12 +867,154 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="InfoBox.js.html">InfoBox.js</a>, <a href="InfoBox.js.html#line140">line 140</a>
+        <a href="Compatibility.js.html">Compatibility.js</a>, <a href="Compatibility.js.html#line45">line 45</a>
     </li></ul></dd>
     
 
     
 
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".setMode"><span class="type-signature">(static) </span>setMode<span class="signature">(currentMode)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Set the mode to run Neon in.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>currentMode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Compatibility.js.html">Compatibility.js</a>, <a href="Compatibility.js.html#line28">line 28</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="module-Compatibility.html#.modes">module:Compatibility.modes</a></li>
+        </ul>
+    </dd>
     
 
     
