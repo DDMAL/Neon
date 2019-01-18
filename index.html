@@ -3,6 +3,7 @@
   <head>
     <title>Neon2</title>
     <script src="./pretty.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/pouchdb@7.0.0/dist/pouchdb.min.js"></script>
   </head>
   <body>
     <form action="./editor.html" id="page-form" method="get" style="margin:20% auto 0;width: 15em;">
@@ -17,6 +18,20 @@
         <button type="submit" class="button">Submit</button>
       </div>
     </form>
+    <div class="field">
+      <label class="label">Upload MEI:&nbsp;</label>
+      <div class="select">
+        <input type="file" accept="application/mei+xml" id="mei-file">
+      </div>
+      <label class="label">Upload PNG:&nbsp;</label>
+      <div class="select">
+        <input type="file" accept="image/png" id="png-file">
+      </div>
+    </div>
+    <div class="control">
+      <button type="button" class="button" id="submit-storage">Submit</button>
+    </div>
     <script src="./index.js"></script>
+    <script src="./storage.js"></script>
   </body>
 </html>
