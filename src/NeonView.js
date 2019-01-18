@@ -9,6 +9,7 @@ import * as Compatibility from "./Compatibility.js";
 const d3 = require("d3");
 const verovio = require("verovio-dev");
 const $ = require("jquery");
+import PouchDb from "pouchdb";
 
 /**
  * The class managing DOM objects and the Neon class for the application.
@@ -32,6 +33,7 @@ function NeonView (params) {
     var zoomHandler = null;
     var infoBox = null;
     var editMode = null;
+    var db = null;
     let neonview = this;
     if (params.mode === "rodan") {
         Compatibility.setMode(Compatibility.modes.rodan);
@@ -41,12 +43,20 @@ function NeonView (params) {
         Compatibility.setMode(Compatibility.modes.pages);
     } else if (params.mode === "local") {
         Compatibility.setMode(Compatibility.modes.local);
-        meiFile = window.localStorage.getItem("neon2-mei");
+        db = new PouchDb("Neon2");
+        db.get("mei", (err, result) => {
+            console.log(result);
+            meiFile = result.data;
+            init(meiFile);
+        });
+        Compatibility.setDB(db);
     } else {
         Compatibility.setMode(-1);
     }
     if (params.raw === "true") {
-        init(meiFile);
+        if (params.mode !== "local") {
+            init(meiFile);
+        }
     } else {
         $.get(meiFile, init);
     }
@@ -78,9 +88,16 @@ function NeonView (params) {
             bg.onload = hideLoad;
             bg.id = "bgimg";
             if (Compatibility.getMode() === Compatibility.modes.local) {
-                let image = window.localStorage.getItem("neon2-img");
-                bg.value = image;
-                bg.setAttribute("src", image);
+                db.get("img", (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log(result.data);
+                        bg.value = result.data;
+                        bg.setAttribute("src", result.data);
+                    }
+                });
             } else {
                 bg.setAttributeNS("http://www.w3.org/1999/xlink", "href", bgimg);
             }

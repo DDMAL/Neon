@@ -19,6 +19,7 @@ export const modes = {
 };
 
 var mode;
+var db;
 
 /**
  * Set the mode to run Neon in.
@@ -35,6 +36,14 @@ export function setMode(currentMode) {
  */
 export function getMode() {
     return mode;
+}
+
+/**
+ * Let Compatibility use an initialized PouchDB
+ * @param {object} pouchDB
+*/
+export function setDB(pouchDB) {
+    db = pouchDB;
 }
 
 /**
@@ -79,7 +88,13 @@ export function saveFile(filename, mei) {
         document.body.removeChild(temp);
     }
     else if (mode === modes.local) {
-        window.localStorage.setItem("neon2-mei", mei);
+        db.put({
+            _id: "mei",
+            data: mei
+        }, (err, result) => {
+            if (err) { console.log(err); }
+            else { Notification.queueNotification("File Saved"); }
+        });
     }
     else {
         console.error("Unsupported or unset mode!");
@@ -112,10 +127,15 @@ export function revertFile(filename) {
         window.location.reload();   // No actions since the source file can't be overwritten
     }
     else if (mode === modes.local) {
-        let storage = window.localStorage;
-        storage.setItem("neon2-mei", storage.getItem("neon2-mei.original"));
-        storage.removeItem("neon2-mei.autosave");
-        window.location.reload();
+        db.get("mei.original", (err, original) => {
+            if (!err) {
+                db.put({ _id: "mei", data: original }, (err, result) => {
+                    if (!err) {
+                        window.location.reload();
+                    }
+                });
+            }
+        });
     }
     else {
         console.error("Unsupported or unset mode!");
@@ -152,7 +172,7 @@ export function autosave(filename, mei) {
         // Do nothing this will be called no matter what
     }
     else if (mode === modes.local) {
-        window.localStorage.setItem("neon2-mei.autosave", mei);
+        // TODO implement
     }
     else {
         console.error("Unsupported or unset mode!");
