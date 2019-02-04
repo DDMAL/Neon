@@ -9,7 +9,7 @@ const $ = require("jquery");
 
 /**
  * The modes to run Neon in.
- * Either standalone (0), rodan (1), or demo/pages (2).
+ * Either standalone (0), rodan (1), demo/pages (2), or local (3)
  */
 export const modes = {
     standalone: 0,
@@ -88,13 +88,10 @@ export function saveFile(filename, mei) {
         document.body.removeChild(temp);
     }
     else if (mode === modes.local) {
-        db.put({
-            _id: "mei",
-            data: mei
-        }, (err, result) => {
-            if (err) { console.log(err); }
-            else { Notification.queueNotification("File Saved"); }
-        });
+        db.get("mei").then((doc) => {
+            doc.data = mei;
+            return db.put(doc);
+        }).catch((err) => { console.log(err) }).then(() => { Notification.queueNotification("File Saved"); });
     }
     else {
         console.error("Unsupported or unset mode!");
@@ -127,15 +124,12 @@ export function revertFile(filename) {
         window.location.reload();   // No actions since the source file can't be overwritten
     }
     else if (mode === modes.local) {
-        db.get("mei.original", (err, original) => {
-            if (!err) {
-                db.put({ _id: "mei", data: original }, (err, result) => {
-                    if (!err) {
-                        window.location.reload();
-                    }
-                });
-            }
-        });
+        db.get("mei.original").then((original) => {
+            return db.get("mei").then((doc) => {
+                doc.data = original.data;
+                return db.put(doc);
+            });
+        }).then(() => { window.location.reload(); }).catch((err) => { console.log(err); })
     }
     else {
         console.error("Unsupported or unset mode!");
@@ -172,7 +166,10 @@ export function autosave(filename, mei) {
         // Do nothing this will be called no matter what
     }
     else if (mode === modes.local) {
-        // TODO implement
+        db.get("mei").then((doc) => {
+            doc.data = mei;
+            return db.put(doc);
+        }).catch((err) => { console.log(err); });
     }
     else {
         console.error("Unsupported or unset mode!");
