@@ -45,7 +45,6 @@ function NeonView (params) {
         Compatibility.setMode(Compatibility.modes.local);
         db = new PouchDb("Neon2");
         db.get("mei", (err, result) => {
-            console.log(result);
             meiFile = result.data;
             init(meiFile);
         });
@@ -93,9 +92,7 @@ function NeonView (params) {
                         console.log(err);
                     }
                     else {
-                        console.log(result.data);
-                        bg.value = result.data;
-                        bg.setAttribute("src", result.data);
+                        bg.setAttributeNS("http://www.w3.org/1999/xlink", "href", result.data);
                     }
                 });
             } else {
