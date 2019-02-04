@@ -24,8 +24,7 @@ document.getElementById("png-file").onchange = (e) => {
     let reader = new FileReader();
     pngReady = false;
     reader.onload = (res) => {
-        fileInfo.png = res.target.result.split(",")[1];
-        console.log(res.target.result);
+        fileInfo.png = res.target.result;
         pngReady = true;
     }
     let file = e.target.files[0];
@@ -33,50 +32,64 @@ document.getElementById("png-file").onchange = (e) => {
         reader.readAsDataURL(file);
     }
 };
-document.getElementById("submit-storage").onclick = (e) => {
+document.getElementById("submit-storage").onclick = async (e) => {
     if (meiReady && pngReady) {
         const data = [
-            { name: "mei.original", data: fileInfo.mei },
-            { name: "mei", data: fileInfo.mei },
-            { name: "img", data: fileInfo.png }
+            { _id: "mei.original", data: fileInfo.mei },
+            { _id: "mei", data: fileInfo.mei },
+            { _id: "img", data: fileInfo.png }
         ];
 
-        db.put(
-            {
-                _id: "mei.original",
-                data: fileInfo.mei
-            }, (err, result) => {
-                if (err) { console.error("Failed to store the original MEI"); }
-                else {
-                   db.put(
-                       {
-                           _id: "mei",
-                           data: fileInfo.mei
-                       }, (err, result) => {
-                           if (err) { console.error("Failed to store the MEI"); }
-                           else {
-                               db.put(
-                                   {
-                                       _id: "img",
-                                       data: fileInfo.png
-                                   }, (err, result) => {
-                                       if (err) { console.error("Failed to store the background image"); }
-                                       else {
-                                           let editor = document.createElement("a");
-                                           editor.setAttribute("href", "editor.html");
-                                           editor.style.display = "none";
-                                           document.body.append(editor);
-                                           editor.click();
-                                           document.body.removeChild(editor);
-                                       }
-                                   }
-                               );
-                           }
-                       }
-                   );
-                }
+        // Update with new documents
+        let didError = false;
+        await db.get("mei.original").catch((err) => {
+            if (err.name === "not_found") {
+                return {
+                    _id: "mei.original",
+                    data: ""
+                };
+            } else {
+                throw err;
             }
-        );
+        }).then((doc) => {
+            doc.data = fileInfo.mei;
+            return db.put(doc);
+        }).catch((err) => { console.log(err); didError = true; });
+        await db.get("mei").catch((err) => {
+            if (err.name === "not_found") {
+                return {
+                    _id: "mei",
+                    data: ""
+                };
+            } else {
+                throw err;
+            }
+        }).then((doc) => {
+            doc.data = fileInfo.mei;
+            return db.put(doc);
+        }).catch((err) => { console.log(err); didError = true; });
+        await db.get("img").catch((err) => {
+            if (err.name === "not_found") {
+                return {
+                    _id: "img",
+                    data: ""
+                };
+            }
+            else {
+                throw err;
+            }
+        }).then((doc) => {
+            doc.data = fileInfo.png;
+            return db.put(doc);
+        }).catch((err) => { console.log(err); didError = true; });
+        if (!didError) {
+            let editor = document.createElement("a");
+            editor.setAttribute("href", "editor.html");
+            editor.style.display = "none";
+            document.body.append(editor);
+            editor.click();
+            document.body.removeChild(editor);
+        }
     }
     else {
         // give alert
