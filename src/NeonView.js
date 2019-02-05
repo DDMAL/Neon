@@ -264,6 +264,12 @@ function NeonView (params) {
         return neon.getElementAttr(xmlId);
     }
 
+    // Returns a URI to the file as local to Neon2
+    function getDynamicDownload() {
+        return "data:application/mei+xml;charset=utf-8," +
+            encodeURIComponent(neon.getMEI());
+    }
+
     NeonView.prototype.constructor = NeonView;
     NeonView.prototype.refreshPage = refreshPage;
     NeonView.prototype.resetListeners = resetListeners;
@@ -274,6 +280,7 @@ function NeonView (params) {
     NeonView.prototype.redo = redo;
     NeonView.prototype.addStateToUndo = addStateToUndo;
     NeonView.prototype.getElementAttr = getElementAttr;
+    NeonView.prototype.getDynamicDownload = getDynamicDownload;
 }
 
 export {NeonView as default};

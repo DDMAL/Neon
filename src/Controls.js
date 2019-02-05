@@ -444,7 +444,12 @@ export function initNavbar(filename, neonView) {
     });
 
     //mei download link
-    $("#getmei").attr("href", filename);
+    if (Compatibility.getMode() == Compatibility.modes.local) {
+        $("#getmei").attr("href", neonView.getDynamicDownload())
+            .attr("download", "Neon2 Corrected.mei");
+    } else {
+        $("#getmei").attr("href", filename);
+    }
 
     //png download setup
     /*
@@ -455,12 +460,21 @@ export function initNavbar(filename, neonView) {
         var pngFile = "/uploads/png/" + filename.replace(regex, '$1') + ".png";
     }
     */
-    let regex = /mei/g;
-    var pngFile = filename.replace(regex, "png");
-    if (Compatibility.getMode () === Compatibility.modes.pages) {
-        pngFile = pngFile.replace("png", "img");
+    if (Compatibility.getMode() === Compatibility.modes.local) {
+        console.log("Hello");
+        let link = document.getElementById("bgimg")
+            .getAttributeNS("http://www.w3.org/1999/xlink", "href");
+        $("#getpng").attr("href", link)
+            .attr("download", "Neon2 Background.png");
     }
-    $("#getpng").attr("href", pngFile);
+    else {
+        let regex = /mei/g;
+        var pngFile = filename.replace(regex, "png");
+        if (Compatibility.getMode () === Compatibility.modes.pages) {
+            pngFile = pngFile.replace("png", "img");
+        }
+        $("#getpng").attr("href", pngFile);
+    }
 
     if (Compatibility.getMode() === Compatibility.modes.rodan) {
         $("#finalize").on("click", () => {
