@@ -6,7 +6,7 @@
     <script src="//cdn.jsdelivr.net/npm/pouchdb@7.0.0/dist/pouchdb.min.js"></script>
   </head>
   <body>
-    <form action="./editor.html" id="page-form" method="get" style="margin:20% auto 0;width: 15em;">
+    <form action="./editor.html" id="page-form" method="get" style="margin:15% auto 0;width: 15em;">
       <div class="field">
         <label class="label">Select a Page:&nbsp;</label>
         <div class="select">
@@ -18,7 +18,7 @@
         <button type="submit" class="button">Submit</button>
       </div>
     </form>
-    <div class="field">
+    <div class="field" style="margin:5% auto 0;width:15em;">
       <label class="label">Upload MEI:&nbsp;</label>
       <div class="select">
         <input type="file" accept="application/mei+xml" id="mei-file">
@@ -28,7 +28,7 @@
         <input type="file" accept="image/png" id="png-file">
       </div>
     </div>
-    <div class="control">
+    <div class="control" style="margin:0 auto 0; width:15em;">
       <button type="button" class="button" id="submit-storage">Submit</button>
     </div>
     <script src="./index.js"></script>
