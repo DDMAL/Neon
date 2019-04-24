@@ -443,7 +443,8 @@ export function initNavbar(filename, neonView) {
         }
     });
 
-    //mei download link
+    // Download link for MEI
+    // Is an actual file with a valid URI except in local mode where it must be generated.
     if (Compatibility.getMode() == Compatibility.modes.local) {
         $("#getmei").attr("href", neonView.getDynamicDownload())
             .attr("download", "Neon2 Corrected.mei");
@@ -451,23 +452,15 @@ export function initNavbar(filename, neonView) {
         $("#getmei").attr("href", filename);
     }
 
-    //png download setup
-    /*
-    let regex = /[-\/\w]+\/([-\.\w]+)\.mei/;
-    if (Compatibility.getMode() === Compatibility.modes.pages) {
-        var pngFile = "/img/" + filename.replace(regex, '$1') + ".png";
-    } else {
-        var pngFile = "/uploads/png/" + filename.replace(regex, '$1') + ".png";
-    }
-    */
+    // Download link for background image as PNG
+    // Is an actual file on the system except in local mode.
     if (Compatibility.getMode() === Compatibility.modes.local) {
-        console.log("Hello");
         let link = document.getElementById("bgimg")
             .getAttributeNS("http://www.w3.org/1999/xlink", "href");
         $("#getpng").attr("href", link)
             .attr("download", "Neon2 Background.png");
     }
-    else {
+    else { // There is an actual file for the background image
         let regex = /mei/g;
         var pngFile = filename.replace(regex, "png");
         if (Compatibility.getMode () === Compatibility.modes.pages) {
