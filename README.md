@@ -2,6 +2,7 @@ Neon3
 =====
 [![Build_Status](https://travis-ci.org/DDMAL/Neon2.svg?branch=develop)](https://travis-ci.org/DDMAL/Neon2)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
 
 **N**eume **E**ditor **ON**line.
 
@@ -9,11 +10,11 @@ Neon3
 Neon3 is a browser-based music notation editor written in JavaScript using the Verovio music engraving library. The editor can be used to manipulate digitally encoded early musical scores in square-note notation.
 
 
-Neon2 is a re-write of [Neon.JS](https://github.com/DDMAL/Neon.js) using a modified version of [Verovio](https://github.com/DDMAL/verovio) to render MEI-Neume files according to the MEI 4.0 specifications. 
+Neon2 is a re-write of [Neon.JS](https://github.com/DDMAL/Neon.js) using a modified version of [Verovio](https://github.com/DDMAL/verovio) to render MEI-Neume files according to the MEI 4.0 specifications.
 
 Requirements
 ------------
- * [yarn](https://yarnpkg.com/en/docs/install): 
+ * [yarn](https://yarnpkg.com/en/docs/install):
     * `brew install yarn` on Mac
 
 Setup
