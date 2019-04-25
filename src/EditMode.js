@@ -11,12 +11,12 @@ const $ = require('jquery');
  * Creates user interface for editing and creates necessary tools.
  * @constructor
  * @param {NeonView} neonView - The NeonView parent object.
- * @param {module:Neon~Neon} neon - The Neon object.
+ * @param {NeonCore} neonCore - The NeonCore object.
  * @param {string} meiFile - The path to the MEi file.
  * @param {module:Zoom~ZoomHandler} zoomHandler - The ZoomHandler object.
  * @param {InfoBox} infoBox
  */
-function EditMode (neonView, neon, meiFile, zoomHandler, infoBox) {
+function EditMode (neonView, neonCore, meiFile, zoomHandler, infoBox) {
   var dragHandler = null;
   var select = null;
   var dragSelect = null;
@@ -34,11 +34,11 @@ function EditMode (neonView, neon, meiFile, zoomHandler, infoBox) {
     Notification.queueNotification('Edit Mode');
     dragHandler = new DragHandler(neonView);
     Controls.initNavbar(meiFile, neonView);
-    select = new ClickSelect(dragHandler, zoomHandler, neonView, neon, infoBox);
+    select = new ClickSelect(dragHandler, zoomHandler, neonView, neonCore, infoBox);
     insertHandler = new InsertHandler(neonView);
     Controls.bindInsertTabs(insertHandler);
     $('#neumeTab').click();
-    dragSelect = new DragSelect(dragHandler, zoomHandler, neonView, neon, infoBox);
+    dragSelect = new DragSelect(dragHandler, zoomHandler, neonView, neonCore, infoBox);
     SelectOptions.initNeonView(neonView);
 
     Controls.initInsertEditControls(neonView);

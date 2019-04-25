@@ -3,9 +3,9 @@ const $ = require('jquery');
 /**
  * Gets information on musical elements and displays them.
  * @constructor
- * @param {module:Neon~Neon} neon
+ * @param {NeonCore} neonCore
  */
-function InfoBox (neon) {
+function InfoBox (neonCore) {
   /**
      * Set the info box listener on neumes, clefs, and custos.
      */
@@ -50,7 +50,7 @@ function InfoBox (neon) {
         var ncs = element.children('.nc');
         var contour = getContour(ncs);
         if (contour === 'Clivis') {
-          var attr = neon.getElementAttr($(ncs[0])[0].id);
+          var attr = neonCore.getElementAttr($(ncs[0])[0].id);
           if (attr.ligated) {
             contour = 'Ligature';
           }
@@ -62,17 +62,17 @@ function InfoBox (neon) {
                 'Pitch(es): ' + pitches;
         break;
       case 'custos':
-        attributes = neon.getElementAttr(id);
+        attributes = neonCore.getElementAttr(id);
         body += 'Pitch: ' + (attributes.pname).toUpperCase() + attributes.oct;
         break;
       case 'clef':
-        attributes = neon.getElementAttr(id);
+        attributes = neonCore.getElementAttr(id);
         body += 'Shape: ' + attributes.shape + '<br/>' +
                 'Line: ' + attributes.line;
         break;
       case 'staff':
         elementClass = 'clef';
-        var staffDefAttributes = neon.getElementStaffDef(id);
+        var staffDefAttributes = neonCore.getElementStaffDef(id);
         body = 'Shape: ' + staffDefAttributes['clef.shape'] + '<br/>' +
                 'Line: ' + staffDefAttributes['clef.line'];
         break;
@@ -90,7 +90,7 @@ function InfoBox (neon) {
   function getPitches (ncs) {
     var pitches = '';
     ncs.each(function () {
-      var attributes = neon.getElementAttr(this.id);
+      var attributes = neonCore.getElementAttr(this.id);
       pitches += attributes.pname + attributes.oct + ' ';
     });
     return pitches;
@@ -104,7 +104,7 @@ function InfoBox (neon) {
     var contour = '';
     var previous = null;
     ncs.each(function () {
-      var attributes = neon.getElementAttr(this.id);
+      var attributes = neonCore.getElementAttr(this.id);
       if (previous !== null) {
         if (previous.oct > attributes.oct) {
           contour += 'd';

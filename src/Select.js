@@ -14,10 +14,10 @@ const $ = require('jquery');
  * @param {DragHandler} dragHandler - An instantiated DragHandler object.
  * @param {module:Zoom~Zoomhandler} zoomHandler
  * @param {NeonView} neonView - The NeonView parent.
- * @param {module:Neon~Neon} neon
+ * @param {NeonCore} neonCore
  * @param {InfoBox} infoBox
  */
-export function ClickSelect (dragHandler, zoomHandler, neonView, neon, infoBox) {
+export function ClickSelect (dragHandler, zoomHandler, neonView, neonCore, infoBox) {
   selectListeners();
 
   // Selection mode toggle
@@ -41,7 +41,7 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon, infoBox) 
       if (this.tagName === 'use') {
         // If this was part of a drag select, drag don't reselect the one component
         if ($(this).parents('.selected').length === 0) {
-          selectAll([this], neon, neonView, dragHandler, infoBox);
+          selectAll([this], neonCore, neonView, dragHandler, infoBox);
         }
       } else {
         if (!$('#selByStaff').hasClass('is-active')) {
@@ -118,10 +118,10 @@ export function ClickSelect (dragHandler, zoomHandler, neonView, neon, infoBox) 
  * @param {DragHandler} dragHandler - Instantiated DragHandler object.
  * @param {module:Zoom~ZoomHandler} zoomHandler - Instantiated ZoomHandler object.
  * @param {NeonView} neonView - NeonView parent.
- * @param {module:Neon~Neon} neon
+ * @param {NeonCore} neonCore
  * @param {InfoBox} infoBox
  */
-export function DragSelect (dragHandler, zoomHandler, neonView, neon, infoBox) {
+export function DragSelect (dragHandler, zoomHandler, neonView, neonCore, infoBox) {
   var initialX = 0;
 
   var initialY = 0;
@@ -236,7 +236,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neon, infoBox) {
         }
       });
 
-      selectAll(elements, neon, neonView, dragHandler, infoBox);
+      selectAll(elements, neonCore, neonView, dragHandler, infoBox);
 
       dragHandler.dragInit();
       d3.selectAll('#selectRect').remove();
@@ -319,12 +319,12 @@ function selectNn (notNeumes) {
 /**
  * Handle selecting an array of elements based on the selection type.
  * @param {SVGSVGElement[]} elements - The elements to select. Either <g> or <use>.
- * @param {module:Neon~Neon} neon - A neon instance.
+ * @param {NeonCore} neonCore - A neonCore instance.
  * @param {NeonView} neonView - The NeonView parent.
  * @param {DragHandler} dragHandler - A DragHandler to alow staff resizing and some neume component selection cases.
  * @param {InfoBox} infoBox
  */
-function selectAll (elements, neon, neonView, dragHandler, infoBox) {
+function selectAll (elements, neonCore, neonView, dragHandler, infoBox) {
   var syls = [];
 
   var neumes = [];
@@ -422,8 +422,8 @@ function selectAll (elements, neon, neonView, dragHandler, infoBox) {
           SelectOptions.triggerNcActions(ncChildren[0]);
         } else if (ncChildren.length === 2) {
           unselect();
-          if (isLigature(ncChildren[0], neon)) {
-            selectNcs(ncChildren[0], dragHandler, neon);
+          if (isLigature(ncChildren[0], neonCore)) {
+            selectNcs(ncChildren[0], dragHandler, neonCore);
             Grouping.triggerGrouping('ligature');
           } else {
             select(neume);
@@ -480,7 +480,7 @@ function selectAll (elements, neon, neonView, dragHandler, infoBox) {
         unselect();
         select(ncChildren[0]);
         SelectOptions.triggerNcActions(ncChildren[0]);
-      } else if (ncChildren.length === 2 && isLigature(ncChildren[0], neon)) {
+      } else if (ncChildren.length === 2 && isLigature(ncChildren[0], neonCore)) {
         unselect();
         select(ncChildren[0]);
         select(ncChildren[1]);
@@ -492,11 +492,11 @@ function selectAll (elements, neon, neonView, dragHandler, infoBox) {
   } else if (selectMode === 'selByNc') {
     let noClefOrCustos = selectNn(notNeumes);
     if (ncs.length === 1 && noClefOrCustos) {
-      selectNcs(ncs[0].children[0], dragHandler, neon);
+      selectNcs(ncs[0].children[0], dragHandler, neonCore);
       return;
     }
     var prev = $(ncs[0]).prev();
-    if (ncs.length !== 0 && isLigature(ncs[0], neon) && prev.length !== 0 && isLigature($(ncs[0]).prev()[0], neon)) {
+    if (ncs.length !== 0 && isLigature(ncs[0], neonCore) && prev.length !== 0 && isLigature($(ncs[0]).prev()[0], neonCore)) {
       ncs.push($(ncs[0]).prev()[0]);
     }
     ncs.forEach(nc => { select(nc); });
@@ -528,8 +528,8 @@ function selectAll (elements, neon, neonView, dragHandler, infoBox) {
 
       if (secondY > firstY) {
         if (ncs[0].parentNode.id === ncs[1].parentNode.id) {
-          let isFirstLigature = isLigature(ncs[0], neon);
-          let isSecondLigature = isLigature(ncs[1], neon);
+          let isFirstLigature = isLigature(ncs[0], neonCore);
+          let isSecondLigature = isLigature(ncs[1], neonCore);
           if ((isFirstLigature && isSecondLigature) || (!isFirstLigature && !isSecondLigature)) {
             Grouping.triggerGrouping('ligature');
           }
@@ -636,18 +636,18 @@ function select (el) {
  * @param {SVGSVGElement} el - The nc element to select.
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
-function selectNcs (el, dragHandler, neon) {
+function selectNcs (el, dragHandler, neonCore) {
   if (!$(el).parent().hasClass('selected')) {
     var parent = el.parentNode;
     unselect();
     select(parent);
-    if (isLigature(parent, neon)) {
+    if (isLigature(parent, neonCore)) {
       var prevNc = $(parent).prev()[0];
-      if (isLigature(prevNc, neon)) {
+      if (isLigature(prevNc, neonCore)) {
         select(prevNc);
       } else {
         var nextNc = $(parent).next()[0];
-        if (isLigature(nextNc, neon)) {
+        if (isLigature(nextNc, neonCore)) {
           select(nextNc);
         } else {
           console.warn('Error: Neither prev or next nc are ligatures');
@@ -682,10 +682,10 @@ export function selectStaff (el, dragHandler) {
 /**
  * Check if neume component is part of a ligature
  * @param {SVGSVGElement} nc - The neume component to check.
- * @param {module:Neon~Neon} neon - An instantiated Neon.
+ * @param {NeonCore} neonCore - An instantiated NeonCore.
  */
-function isLigature (nc, neon) {
-  var attributes = neon.getElementAttr(nc.id);
+function isLigature (nc, neonCore) {
+  var attributes = neonCore.getElementAttr(nc.id);
   if (attributes.ligated === 'true') return true;
   return false;
 }

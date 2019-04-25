@@ -1,12 +1,10 @@
-/** @module Neon */
-
 /**
- * Underlying Neon class that communicates with Verovio.
+ * Underlying NeonCore class that communicates with Verovio.
  * @constructor
  * @param {string} mei - Contents of the MEI file.
  * @param {object} vrvToolkit - An instantiated Verovio toolkit.
  */
-function Neon (mei, vrvToolkit) {
+function NeonCore (mei, vrvToolkit) {
   /// ///////////
   // Constructor
   /// ///////////
@@ -114,16 +112,16 @@ function Neon (mei, vrvToolkit) {
   }
 
   // Constructor reference
-  Neon.prototype.constructor = Neon;
-  Neon.prototype.loadData = loadData;
-  Neon.prototype.getSVG = getSVG;
-  Neon.prototype.getMEI = getMEI;
-  Neon.prototype.getElementAttr = getElementAttr;
-  Neon.prototype.edit = edit;
-  Neon.prototype.info = info;
-  Neon.prototype.undo = undo;
-  Neon.prototype.redo = redo;
-  Neon.prototype.addStateToUndo = addStateToUndo;
+  NeonCore.prototype.constructor = NeonCore;
+  NeonCore.prototype.loadData = loadData;
+  NeonCore.prototype.getSVG = getSVG;
+  NeonCore.prototype.getMEI = getMEI;
+  NeonCore.prototype.getElementAttr = getElementAttr;
+  NeonCore.prototype.edit = edit;
+  NeonCore.prototype.info = info;
+  NeonCore.prototype.undo = undo;
+  NeonCore.prototype.redo = redo;
+  NeonCore.prototype.addStateToUndo = addStateToUndo;
 }
 
-export { Neon as default };
+export { NeonCore as default };

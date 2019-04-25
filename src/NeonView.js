@@ -1,4 +1,4 @@
-import Neon from './Neon.js';
+import NeonCore from './NeonCore.js';
 import ZoomHandler from './Zoom.js';
 import InfoBox from './InfoBox.js';
 import * as Controls from './Controls.js';
@@ -11,12 +11,12 @@ const verovio = require('verovio-dev');
 const $ = require('jquery');
 
 /**
- * The class managing DOM objects and the Neon class for the application.
+ * The class managing DOM objects and the NeonCore class for the application.
  * @constructor
  * @param {object} params - An object containing the filenames of the MEI file and background image.
  * @param {string} params.meifile - The filename of the MEI file.
  * @param {string} params.bgimg - The filename of the background image.
- * @param {string} params.mode - The mode to run Neon in.
+ * @param {string} params.mode - The mode to run NeonCore in.
  * @param {string} [params.raw] - If the meifile parameter is actually the raw contents of an MEI file.
  * @see module:Compatibility.modes
  */
@@ -28,7 +28,7 @@ function NeonView (params) {
   var initialPage = true;
   var vrvToolkit = new verovio.toolkit();
 
-  var neon = null;
+  var neonCore = null;
   var zoomHandler = null;
   var infoBox = null;
   var editMode = null;
@@ -49,11 +49,11 @@ function NeonView (params) {
   }
 
   function init (data) {
-    neon = new Neon(data, vrvToolkit);
+    neonCore = new NeonCore(data, vrvToolkit);
     zoomHandler = new ZoomHandler();
-    infoBox = new InfoBox(neon);
+    infoBox = new InfoBox(neonCore);
     Controls.initDisplayControls(zoomHandler);
-    editMode = new EditMode(neonview, neon, meiFile, zoomHandler, infoBox);
+    editMode = new EditMode(neonview, neonCore, meiFile, zoomHandler, infoBox);
     loadView();
     // editMode.getScale();
     Controls.setSylControls();
@@ -104,7 +104,7 @@ function NeonView (params) {
      * Refresh the page, often after an editor action.
      */
   function refreshPage () {
-    $('mei_output').html(neon.getSVG());
+    $('mei_output').html(neonCore.getSVG());
     initialPage = false;
     loadView();
     resetTransformations();
@@ -115,14 +115,14 @@ function NeonView (params) {
      * Save the MEI to a file.
      */
   function saveMEI () {
-    Compatibility.saveFile(meiFile, neon.getMEI());
+    Compatibility.saveFile(meiFile, neonCore.getMEI());
   }
 
   /**
      * Load the SVG and put it in the SVG container.
      */
   function loadSvg () {
-    var svg = neon.getSVG();
+    var svg = neonCore.getSVG();
     $('#mei_output').html(svg);
     $('#mei_output').children('svg').attr('id', 'svg_container');
   }
@@ -189,7 +189,7 @@ function NeonView (params) {
      * @returns {string}
      */
   function rodanGetMei () {
-    return neon.getMEI();
+    return neonCore.getMEI();
   }
 
   /**
@@ -199,9 +199,9 @@ function NeonView (params) {
      * @returns {boolean} If the action succeeded.
      */
   function edit (editorAction, addToUndo = true) {
-    var val = neon.edit(editorAction, addToUndo);
+    var val = neonCore.edit(editorAction, addToUndo);
     if (val) {
-      Compatibility.autosave(meiFile, neon.getMEI());
+      Compatibility.autosave(meiFile, neonCore.getMEI());
     }
     return val;
   }
@@ -211,7 +211,7 @@ function NeonView (params) {
      * @returns {boolean}
      */
   function undo () {
-    return neon.undo();
+    return neonCore.undo();
   }
 
   /**
@@ -219,11 +219,11 @@ function NeonView (params) {
      * @returns {boolean}
      */
   function redo () {
-    return neon.redo();
+    return neonCore.redo();
   }
 
   function addStateToUndo () {
-    neon.addStateToUndo();
+    neonCore.addStateToUndo();
   }
 
   // Window listener to update height
@@ -236,7 +236,7 @@ function NeonView (params) {
   });
 
   function getElementAttr (xmlId) {
-    return neon.getElementAttr(xmlId);
+    return neonCore.getElementAttr(xmlId);
   }
 
   NeonView.prototype.constructor = NeonView;
