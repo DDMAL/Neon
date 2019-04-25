@@ -26,211 +26,207 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const $ = require("jquery");
+            <pre class="prettyprint source linenums"><code>const $ = require('jquery');
 
 /**
  * Gets information on musical elements and displays them.
  * @constructor
- * @param {module:Neon~Neon} neon
+ * @param {NeonCore} neonCore
  */
-function InfoBox(neon) {
-    /**
+function InfoBox (neonCore) {
+  /**
      * Set the info box listener on neumes, clefs, and custos.
      */
-    function infoListeners() {
-        $(".neume,.custos,.clef").on("mouseover", setInfo);
-    }
+  function infoListeners () {
+    $('.neume,.custos,.clef').on('mouseover', setInfo);
+  }
 
-    /**
+  /**
      * Disable the mouseover listener for the info box.
      */
-    function stopListeners() {
-        $(".neume,.custos,.clef").off("mouseover", setInfo);
-    }
+  function stopListeners () {
+    $('.neume,.custos,.clef').off('mouseover', setInfo);
+  }
 
-    function setInfo() {
-        updateInfo(this.id);
-    }
+  function setInfo () {
+    updateInfo(this.id);
+  }
 
-    /**
+  /**
      * Gets element info from Verovio and updates/creates the info box.
      * @param {string} id - The element ID
      */
-    function updateInfo(id) {
-        // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the &lt;g> element
-        // So we will simply return if ID does not exist for now
-        if (id == "") {
-            $("#neume_info").empty();
-            console.log("No id!");
-            return;
-        }
-
-        var element = $("#" + id);
-        var classRe = /neume|nc|clef|custos|staff/;
-        var elementClass = element.attr("class").match(classRe)[0];
-        var body = "";
-        var attributes;
-
-        // Gets the pitches depending on element type and
-        switch(elementClass) {
-        case "neume":
-            // Select neume components of selected neume
-            var ncs = element.children(".nc");
-            var contour = getContour(ncs);
-            if(contour == "Clivis"){
-                var attr = neon.getElementAttr($(ncs[0])[0].id);
-                if(attr.ligated){
-                    contour = "Ligature";
-                }
-            }
-            var pitches = getPitches(ncs);
-
-            pitches = pitches.trim().toUpperCase();
-            body = "Shape: " + (contour === undefined ? "Compound" : contour) + "&lt;br/>"
-                + "Pitch(es): " + pitches;
-            break;
-        case "custos":
-            attributes = neon.getElementAttr(id);
-            body += "Pitch: " + (attributes.pname).toUpperCase() + attributes.oct;
-            break;
-        case "clef":
-            attributes = neon.getElementAttr(id);
-            body += "Shape: " + attributes.shape + "&lt;br/>"
-                + "Line: " + attributes.line;
-            break;
-        case "staff":
-            elementClass = "clef";
-            var staffDefAttributes = neon.getElementStaffDef(id);
-            body = "Shape: " + staffDefAttributes["clef.shape"] + "&lt;br/>"
-                + "Line: " + staffDefAttributes["clef.line"];
-            break;
-        default:
-            body += "nothing";
-            break;
-        }
-        updateInfoBox(elementClass, body);
+  function updateInfo (id) {
+    // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the &lt;g> element
+    // So we will simply return if ID does not exist for now
+    if (id === '') {
+      $('#neume_info').empty();
+      console.log('No id!');
+      return;
     }
 
-    /**
+    var element = $('#' + id);
+    var classRe = /neume|nc|clef|custos|staff/;
+    var elementClass = element.attr('class').match(classRe)[0];
+    var body = '';
+    var attributes;
+
+    // Gets the pitches depending on element type and
+    switch (elementClass) {
+      case 'neume':
+        // Select neume components of selected neume
+        var ncs = element.children('.nc');
+        var contour = getContour(ncs);
+        if (contour === 'Clivis') {
+          var attr = neonCore.getElementAttr($(ncs[0])[0].id);
+          if (attr.ligated) {
+            contour = 'Ligature';
+          }
+        }
+        var pitches = getPitches(ncs);
+
+        pitches = pitches.trim().toUpperCase();
+        body = 'Shape: ' + (contour === undefined ? 'Compound' : contour) + '&lt;br/>' +
+                'Pitch(es): ' + pitches;
+        break;
+      case 'custos':
+        attributes = neonCore.getElementAttr(id);
+        body += 'Pitch: ' + (attributes.pname).toUpperCase() + attributes.oct;
+        break;
+      case 'clef':
+        attributes = neonCore.getElementAttr(id);
+        body += 'Shape: ' + attributes.shape + '&lt;br/>' +
+                'Line: ' + attributes.line;
+        break;
+      case 'staff':
+        elementClass = 'clef';
+        var staffDefAttributes = neonCore.getElementStaffDef(id);
+        body = 'Shape: ' + staffDefAttributes['clef.shape'] + '&lt;br/>' +
+                'Line: ' + staffDefAttributes['clef.line'];
+        break;
+      default:
+        body += 'nothing';
+        break;
+    }
+    updateInfoBox(elementClass, body);
+  }
+
+  /**
      * Get the individual pitches of a neume.
      * @param {array.&lt;SVGSVGElement>} ncs - neume components in the neume.
      */
-    function getPitches (ncs) {
-        var pitches = "";
-        ncs.each( function () {
-            var attributes = neon.getElementAttr(this.id);
-            pitches += attributes.pname + attributes.oct + " ";
-        });
-        return pitches;
-    }
+  function getPitches (ncs) {
+    var pitches = '';
+    ncs.each(function () {
+      var attributes = neonCore.getElementAttr(this.id);
+      pitches += attributes.pname + attributes.oct + ' ';
+    });
+    return pitches;
+  }
 
-    /**
+  /**
      * Get the contour of a neume.
      * @param {array.&lt;SVGSVGElement>} ncs - neume components in the neume.
      */
-    function getContour (ncs) {
-        var contour = "";
-        var previous = null;
-        ncs.each( function () {
-            var attributes = neon.getElementAttr(this.id);
-            if (previous !== null) {
-                if (previous.oct > attributes.oct) {
-                    contour += "d";
-                }
-                else if (previous.oct &lt; attributes.oct) {
-                    contour += "u";
-                }
-                else {
-                    if (pitchNameToNum(previous.pname) &lt; pitchNameToNum(attributes.pname)) {
-                        contour += "u";
-                    }
-                    else if (pitchNameToNum(previous.pname) > pitchNameToNum(attributes.pname)) {
-                        contour += "d";
-                    }
-                    else {
-                        contour += "s";
-                    }
-                }
-            }
-            previous = attributes;
-        });
-        if (neumeGroups.get(contour) === undefined) {
-            console.warn("Unknown contour: " + contour);
+  function getContour (ncs) {
+    var contour = '';
+    var previous = null;
+    ncs.each(function () {
+      var attributes = neonCore.getElementAttr(this.id);
+      if (previous !== null) {
+        if (previous.oct > attributes.oct) {
+          contour += 'd';
+        } else if (previous.oct &lt; attributes.oct) {
+          contour += 'u';
+        } else {
+          if (pitchNameToNum(previous.pname) &lt; pitchNameToNum(attributes.pname)) {
+            contour += 'u';
+          } else if (pitchNameToNum(previous.pname) > pitchNameToNum(attributes.pname)) {
+            contour += 'd';
+          } else {
+            contour += 's';
+          }
         }
-        return neumeGroups.get(contour);
+      }
+      previous = attributes;
+    });
+    if (neumeGroups.get(contour) === undefined) {
+      console.warn('Unknown contour: ' + contour);
     }
+    return neumeGroups.get(contour);
+  }
 
-    /**
+  /**
      * Show and update the info box.
      * @param {string} title - The info box title.
      * @param {string} body - The info box contents.
      */
-    function updateInfoBox(title, body) {
-        if($("#displayInfo").is(":checked")){
-            $(".message").css("display", "");
-            $(".message-header").children("p").html(title);
-            $(".message-body").html(body);
-        }
-        // Setting up listener for dismissing message
-        $("#notification-delete").on("click", function () {
-            $(".message").css("display", "none");
-        });
+  function updateInfoBox (title, body) {
+    if ($('#displayInfo').is(':checked')) {
+      $('.message').css('display', '');
+      $('.message-header').children('p').html(title);
+      $('.message-body').html(body);
     }
+    // Setting up listener for dismissing message
+    $('#notification-delete').on('click', function () {
+      $('.message').css('display', 'none');
+    });
+  }
 
-    /**
+  /**
      * Convert a pitch name (a-g) to a number (where c is 1, d is 2 and b is 7).
      * @param {string} pname - The pitch name.
      * @returns {number}
      */
-    function pitchNameToNum(pname) {
-        switch(pname) {
-        case "c":
-            return 1;
-        case "d":
-            return 2;
-        case "e":
-            return 3;
-        case "f":
-            return 4;
-        case "g":
-            return 5;
-        case "a":
-            return 6;
-        case "b":
-            return 7;
-        default:
-            console.log("Unknown pitch name");
-        }
+  function pitchNameToNum (pname) {
+    switch (pname) {
+      case 'c':
+        return 1;
+      case 'd':
+        return 2;
+      case 'e':
+        return 3;
+      case 'f':
+        return 4;
+      case 'g':
+        return 5;
+      case 'a':
+        return 6;
+      case 'b':
+        return 7;
+      default:
+        console.log('Unknown pitch name');
     }
+  }
 
-    /**
+  /**
      * Find the contour of an neume grouping based on the grouping name.
      * @param {string} value - the value name.
      * @returns {string}
      */
-    function getContourByValue(value) {
-        for (let [cont, v] of neumeGroups.entries()) {
-            if (v === value){
-                return cont;
-            }
-        }
+  function getContourByValue (value) {
+    for (let [cont, v] of neumeGroups.entries()) {
+      if (v === value) {
+        return cont;
+      }
     }
+  }
 
-    /**
+  /**
      * A map containing neume groupings and their contours.
      */
-    var neumeGroups = new Map (
-        [["", "Punctum"], ["u", "Pes"], ["d", "Clivis"], ["uu", "Scandicus"], ["ud", "Torculus"], ["du", "Porrectus"], ["s", "Distropha"], ["ss", "Tristopha"],
-         ["sd", "Pressus"], ["dd", "Climacus"], ["ddu", "Climacus resupinus"], ["udu", "Torculus resupinus"], ["dud", "Porrectus flexus"],
-         ["udd", "Pes subpunctis"], ["uud", "Scandicus flexus"], ["uudd", "Scandicus subpunctis"], ["dudd", "Porrectus subpunctis"]]
-    );
+  var neumeGroups = new Map(
+    [['', 'Punctum'], ['u', 'Pes'], ['d', 'Clivis'], ['uu', 'Scandicus'], ['ud', 'Torculus'], ['du', 'Porrectus'], ['s', 'Distropha'], ['ss', 'Tristopha'],
+      ['sd', 'Pressus'], ['dd', 'Climacus'], ['ddu', 'Climacus resupinus'], ['udu', 'Torculus resupinus'], ['dud', 'Porrectus flexus'],
+      ['udd', 'Pes subpunctis'], ['uud', 'Scandicus flexus'], ['uudd', 'Scandicus subpunctis'], ['dudd', 'Porrectus subpunctis']]
+  );
 
-    InfoBox.prototype.infoListeners = infoListeners;
-    InfoBox.prototype.stopListeners = stopListeners;
-    InfoBox.getContour = getContour;
-    InfoBox.getContourByValue = getContourByValue;
+  InfoBox.prototype.infoListeners = infoListeners;
+  InfoBox.prototype.stopListeners = stopListeners;
+  InfoBox.getContour = getContour;
+  InfoBox.getContourByValue = getContourByValue;
 }
-export {InfoBox as default};
+export { InfoBox as default };
 </code></pre>
         </article>
     </section>
@@ -241,13 +237,13 @@ export {InfoBox as default};
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-ResizeStaff.html">ResizeStaff</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-ResizeStaff-Resize.html">Resize</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-ResizeStaff.html">ResizeStaff</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-ResizeStaff-Resize.html">Resize</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Feb 04 2019 11:37:22 GMT-0500 (GMT-05:00)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Apr 25 2019 17:27:40 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>

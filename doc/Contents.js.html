@@ -28,51 +28,51 @@
         <article>
             <pre class="prettyprint source linenums"><code>/** @module Contents */
 
-import PunctumIcon from "./img/punctum.png";
-import VirgaIcon from "./img/virga.png";
-import DiamondIcon from "./img/diamond.png";
+import PunctumIcon from './img/punctum.png';
+import VirgaIcon from './img/virga.png';
+import DiamondIcon from './img/diamond.png';
 // import WhitePunctumIcon from "./img/white_punct.png";
 // import QuilismaIcon from "./img/quilisma.png";
-import CustosIcon from "./img/custos.png";
-import CClefIcon from "./img/cClef.png";
-import FClefIcon from "./img/fClef.png";
-import StaffIcon from "./img/staff.png";
+import CustosIcon from './img/custos.png';
+import CClefIcon from './img/cClef.png';
+import FClefIcon from './img/fClef.png';
+import StaffIcon from './img/staff.png';
 // import SmallDivIcon from "./img/smallDiv.png";
 // import MinorDivIcon from "./img/minorDiv.png";
 // import MajorDivIcon from "./img/majorDiv.png";
 // import FinalDivIcon from "./img/finalDiv.png";
-import PesIcon from "./img/pes.png";
-import ClivisIcon from "./img/clivis.png";
-import ScandicusIcon from "./img/scandicus.png";
-import ClimacusIcon from "./img/climacus.png";
-import TorculusIcon from "./img/torculus.png";
-import PorrectusIcon from "./img/porrectus.png";
-import PressusIcon from "./img/pressus.png";
-import Icons from "./img/icons.svg";
+import PesIcon from './img/pes.png';
+import ClivisIcon from './img/clivis.png';
+import ScandicusIcon from './img/scandicus.png';
+import ClimacusIcon from './img/climacus.png';
+import TorculusIcon from './img/torculus.png';
+import PorrectusIcon from './img/porrectus.png';
+import PressusIcon from './img/pressus.png';
+import Icons from './img/icons.svg';
 
 /**
  * HTML for each insert tab (neume, grouping, clef, system, and division).
  * @type {object}
  */
 export const insertTabHtml = {
-    neumeTab: "&lt;p class='control'>" +
+  neumeTab: "&lt;p class='control'>" +
         "&lt;button id='punctum' class='button insertel smallel' title='punctum'>&lt;img src='" + PunctumIcon + "' class='image'/>&lt;/button>&lt;/p>" +
         "&lt;p class='control'>" +
         "&lt;button id='virga' class='button insertel smallel' title='virga'>&lt;img src='" + VirgaIcon + "' class='image'/>&lt;/button>&lt;/p>" +
         "&lt;p class='control'>" +
         "&lt;button id='diamond' class='button insertel smallel' title='inclinatum'>&lt;img src='" + DiamondIcon + "' class='image'/>&lt;/button>&lt;/p>" +
-    /*  "&lt;p class='control'>" +
+  /*  "&lt;p class='control'>" +
         "&lt;button id='white_punct' class='button insertel smallel' title='white punctum'>&lt;img src='" + WhitePunctumIcon + "' class='image'/>&lt;/button>&lt;/p>" +
         "&lt;p class='control'>" +
         "&lt;button id='quilisma' class='button insertel smallel' title='quilisma'>&lt;img src='" + QuilismaIcon + "' class='image'/>&lt;/button>&lt;/p>" + */
         "&lt;p class='control'>" +
         "&lt;button id='custos' class='button insertel smallel' title='custos'>&lt;img src='" + CustosIcon + "' class='image'/>&lt;/button>&lt;/p>",
-    groupingTab: "&lt;p class='control'>" +
+  groupingTab: "&lt;p class='control'>" +
         "&lt;button id='pes' class='button insertel smallel' title='pes'>&lt;img src='" + PesIcon + "' class='image'/>&lt;/button>&lt;/p>" +
         "&lt;p class='control'>" +
-        "&lt;button id='clivis' class='button insertel smallel' title='clivis'>&lt;img src='"+ ClivisIcon +"' class='image'/>&lt;/button>&lt;/p>" +
+        "&lt;button id='clivis' class='button insertel smallel' title='clivis'>&lt;img src='" + ClivisIcon + "' class='image'/>&lt;/button>&lt;/p>" +
         "&lt;p class='control'>" +
-        "&lt;button id='scandicus' class='button insertel smallel' title='scandicus'>&lt;img src='"+ ScandicusIcon +"' class='image'/>&lt;/button>&lt;/p>" +
+        "&lt;button id='scandicus' class='button insertel smallel' title='scandicus'>&lt;img src='" + ScandicusIcon + "' class='image'/>&lt;/button>&lt;/p>" +
         "&lt;p class='control'>" +
         "&lt;button id='climacus' class='button insertel smallel' title='climacus'>&lt;img src='" + ClimacusIcon + "' class='image'/>&lt;/button>&lt;/p>" +
         "&lt;p class='control'>" +
@@ -80,22 +80,22 @@ export const insertTabHtml = {
         "&lt;p class='control'>" +
         "&lt;button id='porrectus' class='button insertel smallel' title='porrectus'>&lt;img src='" + PorrectusIcon + "' class='image'/>&lt;/button>&lt;/p>" +
         "&lt;p class='control'>" +
-        "&lt;button id='pressus' class='button insertel smallel' title='pressus'>&lt;img src='" + PressusIcon +"' class='image'/>&lt;/button>&lt;/p>",
-    clefTab: "&lt;p class='control'>" +
+        "&lt;button id='pressus' class='button insertel smallel' title='pressus'>&lt;img src='" + PressusIcon + "' class='image'/>&lt;/button>&lt;/p>",
+  clefTab: "&lt;p class='control'>" +
         "&lt;button id='cClef' class='button insertel smallel' title=' C Clef'>&lt;img src='" + CClefIcon + "' class='image' />&lt;/button>&lt;/p>" +
         "&lt;p class='control'>" +
         "&lt;button id='fClef' class='button insertel smallel' title='F Clef'>&lt;img src='" + FClefIcon + "' class='image'/>&lt;/button>&lt;/p>",
-    systemTab: "&lt;p class='control'>" +
+  systemTab: "&lt;p class='control'>" +
         "&lt;button id='staff' class='button insertel longel' title='system'>&lt;img src='" + StaffIcon + "' class='image' />&lt;/button>&lt;/p>" +
-        "&lt;p>Click upper left and lower right corners of new staff.&lt;/p>",
-    // divisionTab: "&lt;p class='control'>" +
-    //     "&lt;button id='smallDiv' class='button insertel tallel'>&lt;img src='" + SmallDivIcon + "' class='image'/>&lt;/button>&lt;/p>" +
-    //     "&lt;p class='control'>" +
-    //     "&lt;button id='minorDiv' class='button insertel tallel'>&lt;img src='" + MinorDivIcon +"' class='image'/>&lt;/button>&lt;/p>" +
-    //     "&lt;p class='control'>" +
-    //     "&lt;button id='majorDiv' class='button insertel tallel'>&lt;img src='" + MajorDivIcon + "' class='image'/>&lt;/button>&lt;/p>" +
-    //     "&lt;p class='control'>" +
-    //     "&lt;button id='finalDiv' class='button insertel tallel'>&lt;img src='" + FinalDivIcon + "' class='image'/>&lt;/button>&lt;/p>"
+        '&lt;p>Click upper left and lower right corners of new staff.&lt;/p>'
+  // divisionTab: "&lt;p class='control'>" +
+  //     "&lt;button id='smallDiv' class='button insertel tallel'>&lt;img src='" + SmallDivIcon + "' class='image'/>&lt;/button>&lt;/p>" +
+  //     "&lt;p class='control'>" +
+  //     "&lt;button id='minorDiv' class='button insertel tallel'>&lt;img src='" + MinorDivIcon +"' class='image'/>&lt;/button>&lt;/p>" +
+  //     "&lt;p class='control'>" +
+  //     "&lt;button id='majorDiv' class='button insertel tallel'>&lt;img src='" + MajorDivIcon + "' class='image'/>&lt;/button>&lt;/p>" +
+  //     "&lt;p class='control'>" +
+  //     "&lt;button id='finalDiv' class='button insertel tallel'>&lt;img src='" + FinalDivIcon + "' class='image'/>&lt;/button>&lt;/p>"
 };
 
 /**
@@ -143,7 +143,7 @@ export const editControlsPanel =
     "&lt;svg class='icon is-pulled-right'>&lt;use id='toggleEdit' xlink:href='" + Icons + "#dropdown-down'>&lt;/use>&lt;/svg>&lt;/p>" +
     "&lt;div id='editContents'>" +
     "&lt;a class='panel-block'>" +
-    "&lt;label>Select By:&amp;nbsp;&lt;/label>" +
+    '&lt;label>Select By:&amp;nbsp;&lt;/label>' +
     "&lt;div class='field has-addons buttons' style='overflow-x: auto;'>" +
     "&lt;p class='control'>" +
     "&lt;button class='button sel-by is-active' id='selBySyl'>Syllable&lt;/button>&lt;/p>" +
@@ -169,11 +169,11 @@ export const editControlsPanel =
  * @type {string}
  */
 export const ncActionContents =
-        "&lt;label>Change Head Shape:&amp;nbsp;&lt;/label>" +
+        '&lt;label>Change Head Shape:&amp;nbsp;&lt;/label>' +
         "&lt;div id='drop_select' class='dropdown'>" +
         "&lt;div class='dropdown-trigger'>" +
         "&lt;button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-        "&lt;span>Head Shapes&lt;/span>" +
+        '&lt;span>Head Shapes&lt;/span>' +
         "&lt;svg class='icon'>&lt;use xlink:href='" + Icons + "#dropdown-down'>&lt;/use>&lt;/svg>&lt;/button>&lt;/div>" +
         "&lt;div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
         "&lt;div class='dropdown-content'>" +
@@ -186,11 +186,11 @@ export const ncActionContents =
  * @type {string}
  */
 export const neumeActionContents =
-        "&lt;label>Change Grouping:&amp;nbsp;&lt;/label>" +
+        '&lt;label>Change Grouping:&amp;nbsp;&lt;/label>' +
         "&lt;div id='drop_select' class='dropdown'>" +
         "&lt;div class='dropdown-trigger'>" +
         "&lt;button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-        "&lt;span>Groupings&lt;/span>" +
+        '&lt;span>Groupings&lt;/span>' +
         "&lt;svg class='icon'>&lt;use xlink:href='" + Icons + "#dropdown-down'>&lt;/use>&lt;/svg>&lt;/button>&lt;/div>" +
         "&lt;div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
         "&lt;div class='dropdown-content scrollable-dropdown'>" +
@@ -208,7 +208,7 @@ export const neumeActionContents =
         "&lt;a id='Porrectus flexus' class='dropdown-item grouping'>Porrectus Flexus&lt;/a>" +
         "&lt;a id='Porrectus subpunctis' class='dropdown-item grouping'>Porrectus Subpunctis&lt;/a>" +
         "&lt;a id='Pressus' class='dropdown-item grouping'>Pressus&lt;/a>" +
-        "&lt;/div>&lt;/div>&lt;/div>" +
+        '&lt;/div>&lt;/div>&lt;/div>' +
         "&lt;div>&lt;p class='control'>" +
         "&lt;button class='button' id='ungroupNcs'>Ungroup&lt;/button>&lt;/p>&lt;/div>";
 
@@ -217,7 +217,7 @@ export const neumeActionContents =
  * @type {string}
  */
 export const staffActionContents =
-    "&lt;label>Merge Systems:&amp;nbsp;&lt;/label>" +
+    '&lt;label>Merge Systems:&amp;nbsp;&lt;/label>' +
     "&lt;div>&lt;p class='control'>" +
     "&lt;button id='merge-systems' class='button'>Merge&lt;/button>&lt;/p>&lt;/div>";
 
@@ -226,7 +226,7 @@ export const staffActionContents =
  * @type {string}
  */
 export const splitActionContents =
-    "&lt;label>Split System:&amp;nbsp;&lt;/label>" +
+    '&lt;label>Split System:&amp;nbsp;&lt;/label>' +
     "&lt;div>&lt;p class='control'>" +
     "&lt;button id='split-system' class='button'>Split&lt;/button>&lt;/p>&lt;/div>";
 
@@ -235,11 +235,11 @@ export const splitActionContents =
  * @type {string}
  */
 export const clefActionContents =
-    "&lt;label>Change Clef Shape:&amp;nbsp;&lt;/label>" +
+    '&lt;label>Change Clef Shape:&amp;nbsp;&lt;/label>' +
     "&lt;div id='drop_select' class='dropdown'>" +
     "&lt;div class='dropdown-trigger'>" +
     "&lt;button id='select-options' class='button' aria-haspopup='true' aria-controls='dropdown-menu'>" +
-    "&lt;span>Clef Shapes&lt;/span>" +
+    '&lt;span>Clef Shapes&lt;/span>' +
     "&lt;svg class='icon'>&lt;use xlink:href='" + Icons + "#dropdown-down'>&lt;/use>&lt;/svg>&lt;/button>&lt;/div>" +
     "&lt;div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
     "&lt;div class='dropdown-content'>" +
@@ -251,21 +251,21 @@ export const clefActionContents =
  * @type {object}
  */
 export const groupingMenu = {
-    "nc": "&lt;div class='field is-grouped'>" +
+  'nc': "&lt;div class='field is-grouped'>" +
         "&lt;div>&lt;p class='control'>" +
         "&lt;button class='button' id='groupNcs'>Group Neume Components&lt;/button>&lt;/p>&lt;/div>",
-    "neume": "&lt;div class='field is-grouped'>" +
+  'neume': "&lt;div class='field is-grouped'>" +
         "&lt;div>&lt;p class='control'>" +
         "&lt;button class='button' id='groupNeumes'>Group Neumes&lt;/button>&lt;/p>&lt;/div>",
-    "syl": "&lt;div class='field is-grouped'>" +
+  'syl': "&lt;div class='field is-grouped'>" +
         "&lt;div>&lt;p class='control'>" +
         "&lt;button class='button' id='mergeSyls'>Merge Syllables&lt;/button>&lt;/p>&lt;/div>",
-    "ligatureNc": "&lt;div class='field is-grouped'>" +
+  'ligatureNc': "&lt;div class='field is-grouped'>" +
         "&lt;div>&lt;p class='control'>" +
         "&lt;button class='button' id='groupNcs'>Group Neume Components&lt;/button>&lt;/p>&lt;/div>" +
         "&lt;div>&lt;p class='control'>" +
         "&lt;button class='button' id='toggle-ligature'>Toggle Ligature&lt;/button>&lt;/p>&lt;/div>&lt;/div>",
-    "ligature": "&lt;div class='field is-grouped'>" +
+  'ligature': "&lt;div class='field is-grouped'>" +
         "&lt;div>&lt;p class='control'>" +
         "&lt;button class='button' id='toggle-ligature'>Toggle Ligature&lt;/button>&lt;/p>&lt;/div>&lt;/div>"
 };
@@ -279,13 +279,13 @@ export const groupingMenu = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-ResizeStaff.html">ResizeStaff</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-ResizeStaff-Resize.html">Resize</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-ResizeStaff.html">ResizeStaff</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-ResizeStaff-Resize.html">Resize</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Feb 04 2019 11:37:22 GMT-0500 (GMT-05:00)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Apr 25 2019 17:27:40 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>

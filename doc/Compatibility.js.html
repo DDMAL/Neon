@@ -32,18 +32,18 @@
  * @module Compatibility
  */
 
-import * as Notification from "./Notification.js";
-const $ = require("jquery");
+import * as Notification from './Notification.js';
+const $ = require('jquery');
 
 /**
  * The modes to run Neon in.
  * Either standalone (0), rodan (1), demo/pages (2), or local (3)
  */
 export const modes = {
-    standalone: 0,
-    rodan: 1,
-    pages: 2,
-    local: 3
+  standalone: 0,
+  rodan: 1,
+  pages: 2,
+  local: 3
 };
 
 var mode;
@@ -54,24 +54,24 @@ var db;
  * @see module:Compatibility.modes
  * @param {number} currentMode
 */
-export function setMode(currentMode) {
-    mode = currentMode;
+export function setMode (currentMode) {
+  mode = currentMode;
 }
 
 /**
  * Return the mode Neon is in.
  * @returns {number}
  */
-export function getMode() {
-    return mode;
+export function getMode () {
+  return mode;
 }
 
 /**
  * Let Compatibility use an initialized PouchDB
  * @param {object} pouchDB
 */
-export function setDB(pouchDB) {
-    db = pouchDB;
+export function setDB (pouchDB) {
+  db = pouchDB;
 }
 
 /**
@@ -79,89 +79,81 @@ export function setDB(pouchDB) {
  * @param {string} filename - The path for the MEI file.
  * @param {string} mei - The MEI data.
  */
-export function saveFile(filename, mei) {
-    var pathSplit = filename.split("/");
-    let file = pathSplit[pathSplit.length - 1];
+export function saveFile (filename, mei) {
+  var pathSplit = filename.split('/');
+  let file = pathSplit[pathSplit.length - 1];
 
-    if (mode === modes.standalone) {
-        $.ajax(
-            {
-                type: "POST",
-                url: "/save/" + file,
-                data: {
-                    "meiData": mei,
-                    "fileName": filename
-                },
-                success: () => { Notification.queueNotification("File Saved"); },
-                error: (jqXHR, textStatus, errorThrown) => { Notification.queueNotification(textStatus + " Error: " + errorThrown); }
-            }
-        );
-    }
-    else if (mode === modes.rodan) {
-        $.ajax({
-            "type": "POST",
-            "data": JSON.stringify({"user_input": mei, "mode": "autosave"}),
-            "contentType": "application/json",
-            "success": () => { Notification.queueNotification("File Saved"); },
-            "error": (jqXHR, textStatus, errorThrown) => { Notification.queueNotification(textStatus + " Error: " + errorThrown); }
-        });
-    }
-    else if (mode === modes.pages) {
-        var temp = document.createElement("a");
-        temp.setAttribute("href", "data:application/mei+xml;charset=utf-8," + encodeURIComponent(mei));
-        temp.setAttribute("download", file);
-        temp.style.display = "none";
-        document.body.append(temp);
-        temp.click();
-        document.body.removeChild(temp);
-    }
-    else if (mode === modes.local) {
-        db.get("mei").then((doc) => {
-            doc.data = mei;
-            return db.put(doc);
-        }).catch((err) => { console.log(err) }).then(() => { Notification.queueNotification("File Saved"); });
-    }
-    else {
-        console.error("Unsupported or unset mode!");
-    }
+  if (mode === modes.standalone) {
+    $.ajax(
+      {
+        type: 'POST',
+        url: '/save/' + file,
+        data: {
+          'meiData': mei,
+          'fileName': filename
+        },
+        success: () => { Notification.queueNotification('File Saved'); },
+        error: (jqXHR, textStatus, errorThrown) => { Notification.queueNotification(textStatus + ' Error: ' + errorThrown); }
+      }
+    );
+  } else if (mode === modes.rodan) {
+    $.ajax({
+      'type': 'POST',
+      'data': JSON.stringify({ 'user_input': mei, 'mode': 'autosave' }),
+      'contentType': 'application/json',
+      'success': () => { Notification.queueNotification('File Saved'); },
+      'error': (jqXHR, textStatus, errorThrown) => { Notification.queueNotification(textStatus + ' Error: ' + errorThrown); }
+    });
+  } else if (mode === modes.pages) {
+    var temp = document.createElement('a');
+    temp.setAttribute('href', 'data:application/mei+xml;charset=utf-8,' + encodeURIComponent(mei));
+    temp.setAttribute('download', file);
+    temp.style.display = 'none';
+    document.body.append(temp);
+    temp.click();
+    document.body.removeChild(temp);
+  } else if (mode === modes.local) {
+    db.get('mei').then((doc) => {
+      doc.data = mei;
+      return db.put(doc);
+    }).catch((err) => { console.log(err); }).then(() => { Notification.queueNotification('File Saved'); });
+  } else {
+    console.error('Unsupported or unset mode!');
+  }
 }
 
 /**
  * Compatible revert function.
  * @param {string} filename
  */
-export function revertFile(filename) {
-    if (mode === modes.standalone) {
-        var pathSplit = filename.split("/");
-        let file = pathSplit[pathSplit.length - 1];
-        $.ajax({
-            type: "POST",
-            url: "/revert/" + file,
-            success: () => { window.location.reload(); }
-        });
-    }
-    else if (mode === modes.rodan) {
-        $.ajax({
-            type: "POST",
-            data: JSON.stringify({"user_input": "", "mode": "revert"}),
-            contentType: "application/json",
-            success: () => { window.location.reload(); }
-        });
-    }
-    else if (mode === modes.pages) {
-        window.location.reload();   // No actions since the source file can't be overwritten
-    }
-    else if (mode === modes.local) {
-        db.get("mei.original").then((original) => {
-            return db.get("mei").then((doc) => {
-                doc.data = original.data;
-                return db.put(doc);
-            });
-        }).then(() => { window.location.reload(); }).catch((err) => { console.log(err); })
-    }
-    else {
-        console.error("Unsupported or unset mode!");
-    }
+export function revertFile (filename) {
+  if (mode === modes.standalone) {
+    var pathSplit = filename.split('/');
+    let file = pathSplit[pathSplit.length - 1];
+    $.ajax({
+      type: 'POST',
+      url: '/revert/' + file,
+      success: () => { window.location.reload(); }
+    });
+  } else if (mode === modes.rodan) {
+    $.ajax({
+      type: 'POST',
+      data: JSON.stringify({ 'user_input': '', 'mode': 'revert' }),
+      contentType: 'application/json',
+      success: () => { window.location.reload(); }
+    });
+  } else if (mode === modes.pages) {
+    window.location.reload(); // No actions since the source file can't be overwritten
+  } else if (mode === modes.local) {
+    db.get('mei.original').then((original) => {
+      return db.get('mei').then((doc) => {
+        doc.data = original.data;
+        return db.put(doc);
+      });
+    }).then(() => { window.location.reload(); }).catch((err) => { console.log(err); });
+  } else {
+    console.error('Unsupported or unset mode!');
+  }
 }
 
 /**
@@ -169,39 +161,35 @@ export function revertFile(filename) {
  * @param {string} filename
  * @param {string} mei
  */
-export function autosave(filename, mei) {
-    var pathSplit = filename.split("/");
-    let file = pathSplit[pathSplit.length - 1];
+export function autosave (filename, mei) {
+  var pathSplit = filename.split('/');
+  let file = pathSplit[pathSplit.length - 1];
 
-    if (mode === modes.standalone) {
-        $.ajax({
-            "type": "POST",
-            "url": "/autosave/" + file,
-            "data": {
-                "data": mei
-            },
-            error: () => { console.error("Could not autosave " + file); }
-        });
-    }
-    else if (mode === modes.rodan) {
-        $.ajax({
-            "type": "POST",
-            "data": JSON.stringify({"user_input": mei, "mode": "autosave"}),
-            "contentType": "application/json",
-        });
-    }
-    else if (mode === modes.pages) {
-        // Do nothing this will be called no matter what
-    }
-    else if (mode === modes.local) {
-        db.get("mei").then((doc) => {
-            doc.data = mei;
-            return db.put(doc);
-        }).catch((err) => { console.log(err); });
-    }
-    else {
-        console.error("Unsupported or unset mode!");
-    }
+  if (mode === modes.standalone) {
+    $.ajax({
+      'type': 'POST',
+      'url': '/autosave/' + file,
+      'data': {
+        'data': mei
+      },
+      error: () => { console.error('Could not autosave ' + file); }
+    });
+  } else if (mode === modes.rodan) {
+    $.ajax({
+      'type': 'POST',
+      'data': JSON.stringify({ 'user_input': mei, 'mode': 'autosave' }),
+      'contentType': 'application/json'
+    });
+  } else if (mode === modes.pages) {
+    // Do nothing this will be called no matter what
+  } else if (mode === modes.local) {
+    db.get('mei').then((doc) => {
+      doc.data = mei;
+      return db.put(doc);
+    }).catch((err) => { console.log(err); });
+  } else {
+    console.error('Unsupported or unset mode!');
+  }
 }
 
 /**
@@ -209,28 +197,24 @@ export function autosave(filename, mei) {
  * This should not be run outside of Rodan.
  * @param {string} mei
  */
-export function finalize(mei) {
-    if (mode === modes.standalone) {
-        console.error("This should not be called in standalone mode. Please report this.");
-    }
-    else if (mode === modes.rodan) {
-        $.ajax({
-            type: "POST",
-            data: JSON.stringify({"user_input": mei, "mode": "finalize"}),
-            contentType: "application/json",
-            success: function () { window.close(); },
-            error: (jqXHR, textStatus, errorThrown) => { Notification.queueNotification(textStatus + " Error: " + errorThrown); }
-        });
-    }
-    else if (mode === modes.pages) {
-        console.error("This should not be called in pages mode. Please report this.");
-    }
-    else if (mode === modes.local) {
-        console.error("This should not be called in local mode. Please report this.");
-    }
-    else {
-        console.error("Unsupported or unset mode!");
-    }
+export function finalize (mei) {
+  if (mode === modes.standalone) {
+    console.error('This should not be called in standalone mode. Please report this.');
+  } else if (mode === modes.rodan) {
+    $.ajax({
+      type: 'POST',
+      data: JSON.stringify({ 'user_input': mei, 'mode': 'finalize' }),
+      contentType: 'application/json',
+      success: function () { window.close(); },
+      error: (jqXHR, textStatus, errorThrown) => { Notification.queueNotification(textStatus + ' Error: ' + errorThrown); }
+    });
+  } else if (mode === modes.pages) {
+    console.error('This should not be called in pages mode. Please report this.');
+  } else if (mode === modes.local) {
+    console.error('This should not be called in local mode. Please report this.');
+  } else {
+    console.error('Unsupported or unset mode!');
+  }
 }
 </code></pre>
         </article>
@@ -242,13 +226,13 @@ export function finalize(mei) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Neon.html">Neon</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-ResizeStaff.html">ResizeStaff</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Neon-Neon.html">Neon</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-ResizeStaff-Resize.html">Resize</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-ResizeStaff.html">ResizeStaff</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-ResizeStaff-Resize.html">Resize</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Feb 04 2019 11:37:22 GMT-0500 (GMT-05:00)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Apr 25 2019 17:27:40 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>
