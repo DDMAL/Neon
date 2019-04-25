@@ -445,9 +445,11 @@ export function initNavbar(filename, neonView) {
 
     // Download link for MEI
     // Is an actual file with a valid URI except in local mode where it must be generated.
-    if (Compatibility.getMode() == Compatibility.modes.local) {
-        $("#getmei").attr("href", neonView.getDynamicDownload())
+    if (Compatibility.getMode() === Compatibility.modes.local) {
+        $("#getmei").on("click", () => {
+          $("#getmei").attr("href", neonView.getDynamicDownload())
             .attr("download", "Neon2 Corrected.mei");
+        });
     } else {
         $("#getmei").attr("href", filename);
     }
