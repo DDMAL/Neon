@@ -115,6 +115,7 @@ function NeonView (params) {
             $("#svg_group").attr("width", "100%")
                 .attr("height", viewHeight)
                 .attr("viewBox", "0 0 " + width + " " + height);
+            hideLoad();
         }
         else {
             loadSvg();
