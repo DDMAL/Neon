@@ -24,3 +24,4 @@ var view = new NeonView({
   bgimg: bgImg,
   mode: 'standalone'
 });
+view.start();

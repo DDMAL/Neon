@@ -3,20 +3,23 @@ import NeonView from '../src/NeonView.js';
 let mei = getGetParam('page');
 
 // Since in local mode there are no GET parameters, mei will be null
+var view;
 if (mei === null) {
-  NeonView({
+  view = new NeonView({
     meifile: '',
     bgimg: '',
     mode: 'local',
     raw: 'true'
   });
 } else {
-  NeonView({
+  view = new NeonView({
     meifile: './mei/' + mei + '.mei',
     bgimg: './img/' + mei + '.png',
     mode: 'pages'
   });
 }
+
+view.start();
 
 function getGetParam (paramName) {
   let result = null;

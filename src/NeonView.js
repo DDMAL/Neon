@@ -47,18 +47,28 @@ function NeonView (params) {
     db = new PouchDb('Neon2');
     db.get('mei', (err, result) => {
       meiFile = result.data;
-      init(meiFile);
     });
     Compatibility.setDB(db);
   } else {
     Compatibility.setMode(-1);
   }
-  if (params.raw === 'true') {
+
+  var directInit = ((params.raw === 'true') || (params.mode === 'local'));
+
+  /* if (params.raw === 'true') {
     if (params.mode !== 'local') {
       init(meiFile);
     }
   } else {
     $.get(meiFile, init);
+} */
+
+  function start () {
+    if (directInit) {
+      init(meiFile);
+    } else {
+      $.get(meiFile, init);
+    }
   }
 
   function init (data) {
@@ -273,6 +283,7 @@ function NeonView (params) {
   NeonView.prototype.redo = redo;
   NeonView.prototype.addStateToUndo = addStateToUndo;
   NeonView.prototype.getElementAttr = getElementAttr;
+  NeonView.prototype.start = start;
 }
 
 export { NeonView as default };
