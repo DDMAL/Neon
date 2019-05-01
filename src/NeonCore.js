@@ -9,7 +9,6 @@ function NeonCore (mei, vrvToolkit) {
   // Constructor
   /// ///////////
   var vrvOptions = {
-    inputFormat: 'mei',
     noFooter: 1,
     noHeader: 1,
     pageMarginLeft: 0,
