@@ -11,5 +11,3 @@ cat verovio-util/verovio-npm-start.js verovio-util/verovio.js verovio-util/verov
 
 cat verovio-util/verovio.js verovio-util/verovio-js-start.js verovio-util/verovio-proxy.js \
     > public/verovio-toolkit.js
-
-cp public/verovio-toolkit.js dist/verovio-toolkit.js

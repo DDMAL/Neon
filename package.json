@@ -35,7 +35,7 @@
         "build": "./setup-verovio && webpack --config webpack.config.js",
         "test": "jest --silent",
         "doc": "jsdoc -d ./doc/ ./src/ -R ./README.md",
-        "pages": "./setup-verovio && webpack --config webpack.pages-config.js"
+        "pages": "./setup-verovio && webpack --config webpack.pages-config.js && cp public/verovio-toolkit.js dist/verovio-toolkit.js"
     },
     "jest": {
         "testPathIgnorePatterns": [
