@@ -49,7 +49,9 @@ module.exports = {
       }
     ]
   },
-  optimization: {
-    minimize: false
+  externals: {
+    'verovio-dev': 'verovio',
+    jquery: 'jQuery',
+    d3: 'd3'
   }
 };
