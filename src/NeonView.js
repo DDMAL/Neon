@@ -5,6 +5,7 @@ import * as Controls from './Controls.js';
 import * as Cursor from './Cursor.js';
 import EditMode from './EditMode.js';
 import * as Compatibility from './Compatibility.js';
+import * as Validation from './Validation.js';
 
 import PouchDb from 'pouchdb';
 
@@ -72,6 +73,7 @@ function NeonView (params) {
   }
 
   function init (data) {
+    Validation.init();
     neonCore = new NeonCore(data, vrvToolkit);
     zoomHandler = new ZoomHandler();
     infoBox = new InfoBox(neonCore);
@@ -273,6 +275,11 @@ function NeonView (params) {
     return neonCore.getElementAttr(xmlId);
   }
 
+  function getDynamicDownload () {
+    return 'data:application/mei+xml;charset=utf-8,' +
+      encodeURIComponent(neonCore.getMEI());
+  }
+
   NeonView.prototype.constructor = NeonView;
   NeonView.prototype.refreshPage = refreshPage;
   NeonView.prototype.resetListeners = resetListeners;
@@ -284,6 +291,7 @@ function NeonView (params) {
   NeonView.prototype.addStateToUndo = addStateToUndo;
   NeonView.prototype.getElementAttr = getElementAttr;
   NeonView.prototype.start = start;
+  NeonView.prototype.getDynamicDownload = getDynamicDownload;
 }
 
 export { NeonView as default };

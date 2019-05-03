@@ -8,6 +8,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'public'),
+    publicPath: '/',
     filename: '[name].js'
   },
   node: {
@@ -33,12 +34,19 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.rng$/,
+        use: [
+          'raw-loader'
+        ]
       }
     ]
   },
   externals: {
     'verovio-dev': 'verovio',
     jquery: 'jQuery',
-    d3: 'd3'
+    d3: 'd3',
+    xmllint: 'xmllint'
   }
 };
