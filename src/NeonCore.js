@@ -43,7 +43,8 @@ function NeonCore (mei, vrvToolkit) {
      * @returns {string}
      */
   function getMEI () {
-    return vrvToolkit.getMEI(0, true);
+    let mei = vrvToolkit.getMEI(0, true);
+    return mei;
   }
 
   /**

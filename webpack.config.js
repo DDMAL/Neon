@@ -8,6 +8,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'public'),
+    publicPath: '/',
     filename: '[name].js'
   },
   node: {
@@ -32,6 +33,18 @@ module.exports = {
               outputPath: '/img/'
             }
           }
+        ]
+      },
+      {
+        test: /\.rng$/,
+        use: [
+          'raw-loader'
+        ]
+      },
+      {
+        test: /Worker\.js/,
+        use: [
+          'worker-loader'
         ]
       }
     ]

@@ -77,7 +77,7 @@ export function saveFile (filename, mei) {
       'error': (jqXHR, textStatus, errorThrown) => { Notification.queueNotification(textStatus + ' Error: ' + errorThrown); }
     });
   } else if (mode === modes.pages) {
-    var temp = document.createElement('a');
+    let temp = document.createElement('a');
     temp.setAttribute('href', 'data:application/mei+xml;charset=utf-8,' + encodeURIComponent(mei));
     temp.setAttribute('download', file);
     temp.style.display = 'none';

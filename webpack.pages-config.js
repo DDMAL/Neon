@@ -9,6 +9,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
     filename: '[name].js'
   },
   node: {
@@ -45,6 +46,18 @@ module.exports = {
               outputPath: './mei/'
             }
           }
+        ]
+      },
+      {
+        test: /\.rng$/,
+        use: [
+          'raw-loader'
+        ]
+      },
+      {
+        test: /Worker\.js/,
+        use: [
+          'worker-loader'
         ]
       }
     ]
