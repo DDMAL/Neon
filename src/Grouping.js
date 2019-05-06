@@ -43,7 +43,9 @@ export function endGroupingSelection () {
  */
 export function initGroupingListeners () {
   $('#mergeSyls').on('click', function () {
-    var elementIds = getChildrenIds();
+    var elementIds = getChildrenIds().filter(e =>
+      document.getElementById(e).classList.contains('neume')
+    );
     groupingAction('group', 'neume', elementIds);
   });
 
