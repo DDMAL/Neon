@@ -2,7 +2,7 @@
 
  const schemaPromise = import('./validation/mei-all.rng');
 
-import Worker from 'worker-loader!./Worker.js';
+import Worker from './Worker.js';
 var worker, schema;
 var statusField = document.getElementById('validation_status');
 

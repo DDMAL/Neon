@@ -40,6 +40,12 @@ module.exports = {
         use: [
           'raw-loader'
         ]
+      },
+      {
+        test: /Worker\.js/,
+        use: [
+          'worker-loader'
+        ]
       }
     ]
   },
