@@ -53,13 +53,18 @@ module.exports = {
         use: [
           'raw-loader'
         ]
+      },
+      {
+        test: /Worker\.js/,
+        use: [
+          'worker-loader'
+        ]
       }
     ]
   },
   externals: {
     'verovio-dev': 'verovio',
     jquery: 'jQuery',
-    d3: 'd3',
-    xmllint: 'xmllint'
+    d3: 'd3'
   }
 };
