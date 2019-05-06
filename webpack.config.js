@@ -46,7 +46,6 @@ module.exports = {
   externals: {
     'verovio-dev': 'verovio',
     jquery: 'jQuery',
-    d3: 'd3',
-    xmllint: 'xmllint'
+    d3: 'd3'
   }
 };

@@ -1,17 +1,20 @@
 /** @module Validation */
 
-const schema = require('./validation/mei-all.rng');
+ const schemaPromise = import('./validation/mei-all.rng');
 
 import Worker from 'worker-loader!./Worker.js';
-var worker;
+var worker, schema;
 var statusField = document.getElementById('validation_status');
 
-export function init () {
+export async function init () {
   worker = new Worker();
   worker.onmessage = updateUI;
 }
 
-export function sendForValidation (meiData) {
+export async function sendForValidation (meiData) {
+  if (schema === undefined) {
+    schema = await schemaPromise;
+  }
   statusField.textContent = 'checking...';
   statusField.style = 'color:gray';
   worker.postMessage({
