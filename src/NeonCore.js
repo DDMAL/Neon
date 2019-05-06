@@ -1,5 +1,3 @@
-import * as Validation from './Validation.js';
-
 /**
  * Underlying NeonCore class that communicates with Verovio.
  * @constructor
@@ -29,7 +27,6 @@ function NeonCore (mei, vrvToolkit) {
      * @param {string} data - MEI data.
      */
   function loadData (data) {
-    Validation.sendForValidation(data);
     vrvToolkit.loadData(data);
   }
 
@@ -47,7 +44,6 @@ function NeonCore (mei, vrvToolkit) {
      */
   function getMEI () {
     let mei = vrvToolkit.getMEI(0, true);
-    Validation.sendForValidation(mei);
     return mei;
   }
 

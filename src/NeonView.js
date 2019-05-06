@@ -131,6 +131,7 @@ function NeonView (params) {
     } else {
       loadSvg();
     }
+    Validation.sendForValidation(neonCore.getMEI());
     Controls.updateSylVisibility();
     Controls.updateHighlight();
     resetListeners();
