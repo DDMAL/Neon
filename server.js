@@ -1,15 +1,16 @@
+/* eslint spaced-comment: ["error", "always", { "exceptions": ["="] }] */
 var express = require('express');
 var app = express();
 var routes = require('./server/routes/index');
 var bodyParser = require('body-parser');
 
-global.__base = __dirname + "/";
+global.__base = __dirname + '/';
 
 //===========
 // Bodyparser
 //===========
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
 
 //=====================
 // Route import & setup

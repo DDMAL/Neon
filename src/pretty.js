@@ -1,3 +1,4 @@
 import 'bulma/css/bulma.css';
-import './bulma-slider.min.css';
-import './bulma-slider.min.js';
+import './vendor/bulma-slider.min.css';
+import './vendor/bulma-slider.min.js';
+import './style.css';

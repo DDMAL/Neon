@@ -1,6 +1,6 @@
 {
     "name": "Neon2",
-    "version": "1.0.0",
+    "version": "3.0.0",
     "description": "A web-based editor for correcting MEI-Neume files",
     "main": "server.js",
     "license": "MIT",
@@ -32,13 +32,18 @@
     },
     "scripts": {
         "start": "nodemon server.js",
-        "build": "webpack --config webpack.config.js",
-        "test": "jest"
+        "build": "./setup-verovio && webpack --config webpack.config.js",
+        "test": "jest --silent",
+        "doc": "jsdoc -d ./doc/ ./src/ -R ./README.md",
+        "pages": "./setup-verovio && webpack --config webpack.pages-config.js && cp public/verovio-toolkit.js dist/verovio-toolkit.js"
     },
     "jest": {
         "testPathIgnorePatterns": [
             "<rootDir>/node_modules/"
         ]
+    },
+    "babel": {
+        "presets": "env"
     },
     "dependencies": {
         "express": "^4.16.3",
@@ -48,16 +53,25 @@
         "verovio-dev": "file:src/verovio-dev"
     },
     "devDependencies": {
+        "babel-preset-env": "^1.7.0",
         "bulma": "^0.7.1",
         "bulma-extensions": "^2.2.1",
         "bulma-slider": "^2.0.0",
         "css-loader": "^0.28.11",
         "d3": "^5.5.0",
+        "file-loader": "^1.1.11",
         "jest": "^23.1.0",
-        "jquery": "^3.3.1",
+        "jquery": "^3.4.1",
+        "jsdoc": "^3.5.5",
+        "pouchdb": "^7.0.0",
+        "raw-loader": "^2.0.0",
         "selenium-webdriver": "^4.0.0-alpha.1",
+        "semistandard": "^13.0.1",
         "style-loader": "^0.21.0",
+        "uuid": "^3.3.2",
+        "verovio-dev": "file:src/verovio-dev",
         "webpack": "^4.12.0",
-        "webpack-command": "^0.2.1"
+        "webpack-command": "^0.2.1",
+        "worker-loader": "^2.0.0"
     }
 }

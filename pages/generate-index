@@ -1,0 +1,19 @@
+#!/bin/bash
+imports=""
+json=""
+doc="/**\n * Pages that can be loaded.\n * @type {{name: string, mei: string, img: string}[]}\n */"
+for file in *.mei; do
+    filename=`basename "$file" .mei`
+    base=`echo $filename | tr - _`
+    mei="${base}_MEI"
+    background="${base}_PNG"
+    imports="${imports}import $mei from \"./$file\";\nimport $background from \"./${filename}.png\";\n"
+    json="${json}    \"$filename\",\n"
+done
+
+printf "${imports}\n" > index.js
+printf "${doc}\n" >> index.js
+printf "const selectionOptions = [\n" >> index.js
+printf "${json}" >> index.js
+printf "];\n" >> index.js
+cat index-end.js >> index.js

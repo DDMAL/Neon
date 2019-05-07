@@ -5,7 +5,7 @@
 # Requires emscripten and git
 
 BUILDDIR="verovio-build"
-USAGE="./update-verovio [-b build-directory [-d]] [-l local-verovio] [-h]\n\n-b | --build-dir\t\tSpecify the build directory for verovio.\n-d | --delete\t\tDelete the build directory after building.\n-l | --local\t\tSpecify the path to a preexisting root of verovio source.\n-h | --help\t\tDisplay this dialogue.\n"
+USAGE="./update-verovio [-b build-directory [-d]] [-l local-verovio] [-h]\n\n-b | --build-dir\t\tSpecify the build directory for verovio.\n-d | --delete\t\tDelete the build directory after building.\n-l | --local\t\tSpecify the path to a preexisting root of verovio source.\n-s | --standalone\t\tBuild a standalone verovio toolkit (not an npm package).\n-h | --help\t\tDisplay this dialogue.\n"
 
 GIT=`which git`
 if [[ 0 -ne $? ]]; then
@@ -15,6 +15,11 @@ fi
 which emcc > /dev/null 2>&1
 if [[ 0 -ne $? ]]; then
     echo >&2 "Emscripten (emcc) could not be found.";
+    exit 127;
+fi
+which yarn > /dev/null 2>&1
+if [[ 0 -ne $? ]]; then
+    echo >&2 "Yarn could not be found.";
     exit 127;
 fi
 
@@ -42,6 +47,10 @@ while [[ $# -gt 0 ]]; do
         -h|--help)
             printf "$USAGE"
             exit 0 
+            ;;
+        -s|--standalone)
+            STANDALONE=true
+            shift
             ;;
         *)
             echo >&2 "Unknown option $1"
@@ -81,7 +90,14 @@ fi
 
 # Build
 (cd "$BUILDDIR/emscripten"; ./buildToolkit -H)
-cp "$BUILDDIR/emscripten/build/verovio-toolkit.js" src/
+
+# Copy file
+if [ "$STANDALONE" ]; then
+   cp "$BUILDDIR/emscripten/build/verovio-toolkit.js" src/
+else
+   cp -R "$BUILDDIR/emscripten/npm-dev/" src/verovio-dev
+   yarn upgrade verovio-dev
+fi
 
 if [ "$DELETE" ]; then
     rm -rf $BUILDDIR

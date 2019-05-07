@@ -1,94 +1,298 @@
-import Neon from "./Neon.js";
-import ZoomHandler from "./ZoomHandler.js";
-import InfoBox from "./InfoBox.js";
-import Controls from "./Controls.js";
+import NeonCore from './NeonCore.js';
+import ZoomHandler from './Zoom.js';
+import InfoBox from './InfoBox.js';
+import * as Controls from './Controls.js';
+import * as Cursor from './Cursor.js';
+import EditMode from './EditMode.js';
+import * as Compatibility from './Compatibility.js';
+import * as Validation from './Validation.js';
 
-const verovio = require("verovio-dev");
+import PouchDb from 'pouchdb';
 
-export default function NeonView (params) {
-    var viewHeight = 800;
-    var viewWidth = 600;
-    var meiFile = params.meifile;
-    var bgimg = params.bgimg;
-    var vrvToolkit = new verovio.toolkit();
-    
-    var neon = null;
-    var zoomHandler = null;
-    var infoBox = null;
-    var controls = null;
+const d3 = require('d3');
+const verovio = require('verovio-dev');
+const $ = require('jquery');
 
-    $.get(meiFile, (data) => {
-        neon = new Neon(data, vrvToolkit);
-        zoomHandler = new ZoomHandler();
-        infoBox = new InfoBox(neon);
-        controls = new Controls(zoomHandler);
-        loadView();
-        controls.setSylControls();
-        controls.setHighlightControls();
+/**
+ * The class managing DOM objects and the NeonCore class for the application.
+ * @constructor
+ * @param {object} params - An object containing the filenames of the MEI file and background image.
+ * @param {string} params.meifile - The filename of the MEI file.
+ * @param {string} params.bgimg - The filename of the background image.
+ * @param {string} params.mode - The mode to run NeonCore in.
+ * @param {string} [params.raw] - If the meifile parameter is actually the raw contents of an MEI file.
+ * @see module:Compatibility.modes
+ */
+function NeonView (params) {
+  var viewHeight = window.innerHeight;
+  // var viewWidth = 800;
+  var meiFile = params.meifile;
+  var bgimg = params.bgimg;
+  var initialPage = true;
+  var vrvToolkit = new verovio.toolkit();
+
+  var neonCore = null;
+  var zoomHandler = null;
+  var infoBox = null;
+  var editMode = null;
+  var db = null;
+  let neonview = this;
+  if (params.mode === 'rodan') {
+    Compatibility.setMode(Compatibility.modes.rodan);
+  } else if (params.mode === 'standalone') {
+    Compatibility.setMode(Compatibility.modes.standalone);
+  } else if (params.mode === 'pages') {
+    Compatibility.setMode(Compatibility.modes.pages);
+  } else if (params.mode === 'local') {
+    Compatibility.setMode(Compatibility.modes.local);
+    db = new PouchDb('Neon2');
+    db.get('mei', (err, result) => {
+      meiFile = result.data;
+    });
+    Compatibility.setDB(db);
+  } else {
+    Compatibility.setMode(-1);
+  }
+
+  var directInit = ((params.raw === 'true') || (params.mode === 'local'));
+
+  /* if (params.raw === 'true') {
+    if (params.mode !== 'local') {
+      init(meiFile);
+    }
+  } else {
+    $.get(meiFile, init);
+} */
+
+  function start () {
+    if (directInit) {
+      init(meiFile);
+    } else {
+      $.get(meiFile, init);
+    }
+  }
+
+  function init (data) {
+    Validation.init();
+    neonCore = new NeonCore(data, vrvToolkit);
+    zoomHandler = new ZoomHandler();
+    infoBox = new InfoBox(neonCore);
+    Controls.initDisplayControls(zoomHandler);
+    editMode = new EditMode(neonview, neonCore, meiFile, zoomHandler, infoBox);
+    loadView();
+    // editMode.getScale();
+    Controls.setSylControls();
+    Controls.setInfoControls();
+  }
+
+  function hideLoad () {
+    $('#loading').css('display', 'none');
+  }
+
+  /**
+   * Load the view, including background image and rendered MEI.
+   */
+  function loadView () {
+    if (initialPage) {
+      var group = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      group.id = 'svg_group';
+      var bg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      bg.onload = hideLoad;
+      bg.id = 'bgimg';
+      if (Compatibility.getMode() === Compatibility.modes.local) {
+        db.get('img', (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            bg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', result.data);
+          }
+        });
+      } else {
+        bg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', bgimg);
+      }
+      var mei = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      mei.id = 'mei_output';
+      group.append(bg);
+      group.append(mei);
+      $('#svg_output').append(group);
+      loadSvg();
+
+      var height = parseInt($('#svg_container').attr('height'));
+      var width = parseInt($('#svg_container').attr('width'));
+      $('#bgimg').attr('x', 0)
+        .attr('y', 0)
+        .attr('height', height)
+        .attr('width', width);
+
+      $('#svg_group').attr('width', '100%')
+        .attr('height', viewHeight)
+        .attr('viewBox', '0 0 ' + width + ' ' + height);
+      hideLoad();
+    } else {
+      loadSvg();
+    }
+    Validation.sendForValidation(neonCore.getMEI());
+    Controls.updateSylVisibility();
+    Controls.updateHighlight();
+    resetListeners();
+  }
+
+  /**
+     * Refresh the page, often after an editor action.
+     */
+  function refreshPage () {
+    $('mei_output').html(neonCore.getSVG());
+    initialPage = false;
+    loadView();
+    resetTransformations();
+    editMode.resetListeners();
+  }
+
+  /**
+     * Save the MEI to a file.
+     */
+  function saveMEI () {
+    Compatibility.saveFile(meiFile, neonCore.getMEI());
+  }
+
+  /**
+     * Load the SVG and put it in the SVG container.
+     */
+  function loadSvg () {
+    var svg = neonCore.getSVG();
+    $('#mei_output').html(svg);
+    $('#mei_output').children('svg').attr('id', 'svg_container');
+  }
+
+  /**
+     * Reset hotkey and panning listeners
+     */
+  function resetListeners () {
+    $('body').on('keydown keyup', (evt) => {
+      if (evt.type === 'keydown') {
+        switch (evt.key) {
+          case 'Shift':
+            d3.select('#svg_output').on('.drag', null);
+            d3.select('#svg_output').call(
+              d3.drag().on('start', zoomHandler.startDrag)
+                .on('drag', zoomHandler.dragging)
+            );
+            Cursor.updateCursorTo('grab');
+            break;
+          case 'h':
+            $('#mei_output').css('visibility', 'hidden');
+            break;
+          default: break;
+        }
+      } else {
+        switch (evt.key) {
+          case 'Shift':
+            d3.select('#svg_output').on('.drag', null);
+            Cursor.updateCursorTo('');
+            if (editMode.isInsertMode()) {
+              Cursor.updateCursor();
+            }
+            break;
+          case 'h':
+            $('#mei_output').css('visibility', 'visible');
+            break;
+          default: break;
+        }
+      }
     });
 
-    function loadView () {
-        var view_layer = d3.select("#svg_output").append("svg");
-        var bg_img = view_layer.append("image");
-        view_layer.append("g").attr("id", "mei_output");
+    // Allow two finger panning of image on touch screens/touchpads
+    d3.select('#svg_output').on('touchstart', () => {
+      if (d3.event.touches.length === 2) {
+        zoomHandler.startDrag();
+        d3.select('#svg_output').on('touchmove', zoomHandler.dragging);
+        d3.select('#svg_output').on('touchend', () => {
+          d3.select('#svg_output').on('touchmove', null);
+        });
+      }
+    });
+    d3.select('#svg_output').on('wheel', zoomHandler.scrollZoom, false);
 
-        var svg = neon.getSVG();
-        $("#mei_output").html(svg);
-        d3.select("#mei_output").select("svg").attr("id", "svg_container");
+    infoBox.infoListeners();
+  }
 
-        var height = parseInt(d3.select("#svg_container").attr("height"));
-        var width = parseInt(d3.select("#svg_container").attr("width"));
-        bg_img.attr("id", "bgimg")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("height", height)
-            .attr("width", width)
-            .attr("xlink:href", bgimg);
-       
-        view_layer.attr("id", "svg_group")
-            .attr("width", viewWidth)
-            .attr("height", viewHeight)
-            .attr("viewBox", "0 0 " + width + " " + height);
-        controls.updateHighlight();
-        controls.updateSylVisibility();
-        resetListeners();
+  function resetTransformations () {
+    zoomHandler.restoreTransformation();
+    Controls.setOpacityFromSlider();
+  }
+
+  /**
+     * Get the MEI for use in Rodan.
+     * @returns {string}
+     */
+  function rodanGetMei () {
+    return neonCore.getMEI();
+  }
+
+  /**
+     * Execute an editor action.
+     * @param {object} editorAction - The editor action.
+     * @param {boolean} [addToUndo=true] - Whether or not to add the action to the undo stack.
+     * @returns {boolean} If the action succeeded.
+     */
+  function edit (editorAction, addToUndo = true) {
+    var val = neonCore.edit(editorAction, addToUndo);
+    if (val) {
+      Compatibility.autosave(meiFile, neonCore.getMEI());
     }
+    return val;
+  }
 
-    function refreshPage () {
-        $("mei_output").html(neon.getSVG());
-        resetListeners();
-        resetTransformations();
+  /**
+     * Undo the last action.
+     * @returns {boolean}
+     */
+  function undo () {
+    return neonCore.undo();
+  }
+
+  /**
+     * Redo the last undone action.
+     * @returns {boolean}
+     */
+  function redo () {
+    return neonCore.redo();
+  }
+
+  function addStateToUndo () {
+    neonCore.addStateToUndo();
+  }
+
+  // Window listener to update height
+  $(window).on('resize', function () {
+    var newHeight = window.innerHeight;
+    if (newHeight > Number($('#svg_group').attr('height'))) {
+      $('#svg_group').attr('height', newHeight);
     }
+    refreshPage();
+  });
 
-    function resetListeners () {
-        d3.select("body")
-            .on("keydown", () => {
-                if (d3.event.key == "Shift") {
-                    d3.select("body").call(
-                        d3.drag()
-                            .on("start", zoomHandler.startDrag)
-                            .on("drag", zoomHandler.dragging)
-                    );
-                }
-            })
-            .on("keyup", () => {
-                if (d3.event.key == "Shift") {
-                    d3.select("body").on(".drag", null);
-                }
-            });
-        infoBox.infoListeners();
-    }
+  function getElementAttr (xmlId) {
+    return neonCore.getElementAttr(xmlId);
+  }
 
-    function resetTransformations () {
-        zoomHandler.restoreTransformation();
-        controls.setOpacityFromSlider();
-    }
+  function getDynamicDownload () {
+    return 'data:application/mei+xml;charset=utf-8,' +
+      encodeURIComponent(neonCore.getMEI());
+  }
 
-    function rodanGetMei() {
-        return neon.getMEI();
-    }
-
-    NeonView.prototype.constructor = NeonView;
-    NeonView.prototype.refreshPage = refreshPage;
-    NeonView.prototype.rodanGetMei = rodanGetMei;
+  NeonView.prototype.constructor = NeonView;
+  NeonView.prototype.refreshPage = refreshPage;
+  NeonView.prototype.resetListeners = resetListeners;
+  NeonView.prototype.rodanGetMei = rodanGetMei;
+  NeonView.prototype.edit = edit;
+  NeonView.prototype.saveMEI = saveMEI;
+  NeonView.prototype.undo = undo;
+  NeonView.prototype.redo = redo;
+  NeonView.prototype.addStateToUndo = addStateToUndo;
+  NeonView.prototype.getElementAttr = getElementAttr;
+  NeonView.prototype.start = start;
+  NeonView.prototype.getDynamicDownload = getDynamicDownload;
 }
+
+export { NeonView as default };
