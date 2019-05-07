@@ -409,7 +409,9 @@ function selectAll (elements, neonCore, neonView, dragHandler, infoBox) {
         }
       }
     } else if (syls.length > 1) {
-      Grouping.triggerGrouping('syl');
+      if (sharedSecondLevelParent(syls)) {
+        Grouping.triggerGrouping('syl');
+      }
     } else if (syls.length === 1) {
       var syl = syls[0];
       var nmChildren = $(syl).children('.neume');
@@ -424,7 +426,9 @@ function selectAll (elements, neonCore, neonView, dragHandler, infoBox) {
           unselect();
           if (isLigature(ncChildren[0], neonCore)) {
             selectNcs(ncChildren[0], dragHandler, neonCore);
-            Grouping.triggerGrouping('ligature');
+            if (sharedSecondLevelParent(Array.from(document.getElementsByClassName('selected')))) {
+              Grouping.triggerGrouping('ligature');
+            }
           } else {
             select(neume);
             SelectOptions.triggerNeumeActions();
@@ -462,7 +466,9 @@ function selectAll (elements, neonCore, neonView, dragHandler, infoBox) {
         }
       }
       if (group) {
-        Grouping.triggerGrouping('neume');
+        if (sharedSecondLevelParent(neumes)) {
+          Grouping.triggerGrouping('neume');
+        }
       } else {
         let sylNeumes = Array.from(syllable.children).filter(child => $(child).hasClass('neume'));
         let result = true;
@@ -538,12 +544,16 @@ function selectAll (elements, neonCore, neonView, dragHandler, infoBox) {
                     } */
         } else {
           if (ncs[0].parentElement !== ncs[1].parentElement) {
-            Grouping.triggerGrouping('nc');
+            if (sharedSecondLevelParent(ncs)) {
+              Grouping.triggerGrouping('nc');
+            }
           }
         }
       } else {
         if (ncs[0].parentElement !== ncs[1].parentElement) {
-          Grouping.triggerGrouping('nc');
+          if (sharedSecondLevelParent(ncs)) {
+            Grouping.triggerGrouping('nc');
+          }
         }
       }
     } else if (ncs.length > 1 && noClefOrCustos) {
@@ -556,7 +566,9 @@ function selectAll (elements, neonCore, neonView, dragHandler, infoBox) {
         }
       }
       if (group) {
-        Grouping.triggerGrouping('nc');
+        if (sharedSecondLevelParent(ncs)) {
+          Grouping.triggerGrouping('nc');
+        }
       } else {
         let neumeNcs = Array.from(neume.children).filter(nc => $(nc).hasClass('nc'));
         let result = true;
@@ -688,4 +700,21 @@ function isLigature (nc, neonCore) {
   var attributes = neonCore.getElementAttr(nc.id);
   if (attributes.ligated === 'true') return true;
   return false;
+}
+
+/**
+ * Check if the elements have the same parent up two levels.
+ * @param {Array<Element>} elements - The array of elements.
+ * @returns {boolean} - If the elements share the same second level parent.
+ */
+function sharedSecondLevelParent (elements) {
+  let firstElement = elements.pop();
+  let secondParent = firstElement.parentElement.parentElement;
+  for (let element of elements) {
+    let secPar = element.parentElement.parentElement;
+    if (secPar.id !== secondParent.id) {
+      return false;
+    }
+  }
+  return true;
 }
