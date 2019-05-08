@@ -122,8 +122,11 @@ function InsertHandler (neonView) {
       document.getElementById('delete').parentNode.parentNode.appendChild(editModeContainer);
       editModeButton.addEventListener('click', insertDisabled);
     }
-
-    Notification.queueNotification('Insert Mode');
+    $('#editMenu').css('backgroundColor', "whitesmoke");
+    $('#editMenu').css('font-weight', '');
+    $('#insertMenu').css('backgroundColor', "#ffc7c7");
+    $('#insertMenu').css('font-weight', 'bold');
+    //Notification.queueNotification('Insert Mode');
   }
 
   /**
@@ -139,7 +142,11 @@ function InsertHandler (neonView) {
     firstClick = true;
     Cursor.resetCursor();
     $(document.getElementById('returnToEditMode').parentNode).remove();
-    Notification.queueNotification('Edit Mode');
+    $('#insertMenu').css('backgroundColor', "whitesmoke");
+    $('#insertMenu').css('font-weight', '');
+    $('#editMenu').css('backgroundColor', "#ffc7c7");
+    $('#editMenu').css('font-weight', 'bold');
+    //Notification.queueNotification('Edit Mode');
   }
 
   function clickawayHandler (evt) {
