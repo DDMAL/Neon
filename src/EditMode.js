@@ -31,7 +31,10 @@ function EditMode (neonView, neonCore, meiFile, zoomHandler, infoBox) {
      * Initialize handlers and controls and create event listeners.
      */
   function init () {
-    Notification.queueNotification('Edit Mode');
+    //Notification.queueNotification('Edit Mode');
+
+    // add something to change colour/bold insert panel and text
+
     dragHandler = new DragHandler(neonView);
     Controls.initNavbar(meiFile, neonView);
     select = new ClickSelect(dragHandler, zoomHandler, neonView, neonCore, infoBox);
@@ -43,6 +46,8 @@ function EditMode (neonView, neonCore, meiFile, zoomHandler, infoBox) {
 
     Controls.initInsertEditControls(neonView);
     Text.enableEditText(neonView);
+    $('#editMenu').css('backgroundColor', "#ffc7c7");
+    $('#editMenu').css('font-weight', 'bold');
   }
 
   /**
