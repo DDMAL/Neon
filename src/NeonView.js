@@ -23,9 +23,9 @@ export default class NeonView {
     }
 
     if (this.mode === 'single') {
-      this.view = new params.View(params.Display, params.options.image);
+      this.view = new params.View(this, params.Display, params.options.image);
     } else {
-      this.view = new params.View(params.Display, params.options.manifest);
+      this.view = new params.View(this, params.Display, params.options.manifest);
     }
 
     this.core = new NeonCore(params.options.meiMap);
@@ -59,5 +59,13 @@ export default class NeonView {
     let svg = parser.parseFromString(this.core.getSVG(pageNo), 'image/svg+xml')
       .documentElement;
     this.view.updateSVG(svg, pageNo);
+  }
+
+  getUserMode () {
+    if (this.edit === undefined) {
+      return 'viewer';
+    } else {
+      return this.edit.getUserMode();
+    }
   }
 }
