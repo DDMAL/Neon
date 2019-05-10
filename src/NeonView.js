@@ -25,6 +25,7 @@ export default class NeonView {
 
     if (this.mode === 'single') {
       this.view = new params.View(this, params.Display, params.options.image);
+      this.name = params.options.name;
     } else {
       this.view = new params.View(this, params.Display, params.options.manifest);
     }
@@ -32,10 +33,10 @@ export default class NeonView {
     this.core = new NeonCore(params.options.meiMap);
 
     this.display = this.view.display;
+    this.InfoModule = params.Info;
     this.info = new params.Info(this);
 
-    if (params.edit !== undefined) {
-      this.edit = new params.Edit();
+    if (params.Edit !== undefined) {
       // Set up display for edit button
       let parent = document.getElementById('dropdown_toggle');
       let editItem = document.createElement('a');
@@ -46,6 +47,8 @@ export default class NeonView {
       editButton.textContent = 'Edit MEI';
       editItem.appendChild(editButton);
       parent.appendChild(editItem);
+
+      this.editor = new params.Edit(this);
     }
   }
 
@@ -62,11 +65,23 @@ export default class NeonView {
     this.view.updateSVG(svg, pageNo);
   }
 
+  edit (action, addToUndo = true) {
+    return this.core.edit(action, addToUndo);
+  }
+
+  redo () {
+    return this.core.redo();
+  }
+
+  undo () {
+    return this.core.undo();
+  }
+
   getUserMode () {
-    if (this.edit === undefined) {
+    if (this.editor === undefined) {
       return 'viewer';
     } else {
-      return this.edit.getUserMode();
+      return this.editor.getUserMode();
     }
   }
 }

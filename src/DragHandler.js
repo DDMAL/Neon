@@ -69,7 +69,7 @@ function DragHandler (neonView) {
 
       if (xDiff > 5 || yDiff > 5) {
         neonView.edit(editorAction);
-        neonView.refreshPage();
+        neonView.updateForCurrentPage();
         endOptionsSelection();
       }
 

@@ -65,7 +65,7 @@ function SplitHandler (neonView) {
       }
     };
 
-    if (neonView.edit(editorAction)) { neonView.refreshPage(); }
+    if (neonView.edit(editorAction)) { neonView.updateForCurrentPage(); }
     splitDisable();
   }
 

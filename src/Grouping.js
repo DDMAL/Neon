@@ -97,7 +97,7 @@ export function initGroupingListeners () {
       Notification.queueNotification('Ligature Toggle Failed');
     }
     endGroupingSelection();
-    neonView.refreshPage();
+    neonView.updateForCurrentPage();
   });
 }
 
@@ -128,7 +128,7 @@ function groupingAction (action, groupType, elementIds) {
       Notification.queueNotification('Ungrouping Failed');
     }
   }
-  neonView.refreshPage();
+  neonView.updateForCurrentPage();
 
   // Prompt user to confirm if Neon does not re cognize contour
   if (groupType === 'nc') {

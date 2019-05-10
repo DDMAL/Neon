@@ -315,7 +315,7 @@ export function initInsertEditControls (neonView) {
     if (!neonView.undo()) {
       console.error('Failed to undo action.');
     } else {
-      neonView.refreshPage();
+      neonView.updateForCurrentPage();
     }
   }
 
@@ -323,7 +323,7 @@ export function initInsertEditControls (neonView) {
     if (!neonView.redo()) {
       console.error('Failed to redo action');
     } else {
-      neonView.refreshPage();
+      neonView.updateForCurrentPage();
     }
   }
 
@@ -345,7 +345,7 @@ export function initInsertEditControls (neonView) {
       'param': toRemove
     };
     neonView.edit(chainAction);
-    neonView.refreshPage();
+    neonView.updateForCurrentPage();
   }
 }
 
@@ -482,6 +482,9 @@ export function initNavbar (filename, neonView) {
  * @param {EditMode} editMode - The EditMode object.
  */
 export function initEditMode (editMode) {
+  /* document.getElementById('dropdown_toggle').innerHTML =
+    '<a class="navbar-item"><button class="button" id="edit_mode">' +
+    'Edit MEI</button></a>'; */
   $('#edit_mode').on('click', function () {
     $('#dropdown_toggle').empty();
     $('#dropdown_toggle').append(Contents.navbarDropdownMenu);
@@ -491,7 +494,7 @@ export function initEditMode (editMode) {
     $('#insert_controls').append(Contents.insertControlsPanel);
     $('#edit_controls').append(Contents.editControlsPanel);
 
-    editMode.init();
+    editMode.initEditMode();
   });
 }
 

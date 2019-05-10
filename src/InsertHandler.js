@@ -100,8 +100,8 @@ function InsertHandler (neonView) {
     }
     removeInsertClickHandlers();
     if (type === 'staff') {
-      $('body').on('click', '#svg_output', staffHandler);
-    } else { $('body').on('click', '#svg_output', handler); }
+      $('body').on('click', '#svg_group', staffHandler);
+    } else { $('body').on('click', '#svg_group', handler); }
 
     // Disable edit mode listeners
     $('body').on('keydown', keydownListener);
@@ -160,7 +160,7 @@ function InsertHandler (neonView) {
 
   function resetInsertHandler (evt) {
     if (evt.key === 'Shift') {
-      $('body').on('click', '#svg_output', type === 'staff' ? staffHandler : handler);
+      $('body').on('click', '#svg_group', type === 'staff' ? staffHandler : handler);
     }
   }
 
@@ -202,7 +202,7 @@ function InsertHandler (neonView) {
     }
 
     neonView.edit(editorAction);
-    neonView.refreshPage();
+    neonView.updateForCurrentPage();
   }
 
   /**
@@ -248,14 +248,14 @@ function InsertHandler (neonView) {
       };
 
       neonView.edit(action);
-      neonView.refreshPage();
+      neonView.updateForCurrentPage();
       insertDisabled();
     }
   }
 
   function removeInsertClickHandlers () {
-    $('body').off('click', '#svg_output', staffHandler);
-    $('body').off('click', '#svg_output', handler);
+    $('body').off('click', '#svg_group', staffHandler);
+    $('body').off('click', '#svg_group', handler);
   }
 
   /**

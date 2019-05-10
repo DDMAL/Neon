@@ -72,7 +72,7 @@ export function triggerNcActions (nc) {
       Notification.queueNotification('Shape Change Failed');
     }
     endOptionsSelection();
-    neonView.refreshPage();
+    neonView.updateForCurrentPage();
   });
 
   $('#Inclinatum.dropdown-item').on('click', () => {
@@ -90,7 +90,7 @@ export function triggerNcActions (nc) {
       Notification.queueNotification('Shape Change Failed');
     }
     endOptionsSelection();
-    neonView.refreshPage();
+    neonView.updateForCurrentPage();
   });
 
   $('#Virga.dropdown-item').on('click', () => {
@@ -110,7 +110,7 @@ export function triggerNcActions (nc) {
     }
     console.log(neonView.getElementAttr(nc.id));
     endOptionsSelection();
-    neonView.refreshPage();
+    neonView.updateForCurrentPage();
   });
 
   initOptionsListeners();
@@ -148,7 +148,7 @@ export function triggerNeumeActions () {
       Notification.queueNotification('Grouping Failed');
     }
     endOptionsSelection();
-    neonView.refreshPage();
+    neonView.updateForCurrentPage();
   }
   initOptionsListeners();
   Grouping.initGroupingListeners();
@@ -188,7 +188,7 @@ export function triggerClefActions (clef) {
       Notification.queueNotification('Shape Change Failed');
     }
     endOptionsSelection();
-    neonView.refreshPage();
+    neonView.updateForCurrentPage();
   });
   $('#FClef.dropdown-item').on('click', () => {
     let setFClef = {
@@ -204,7 +204,7 @@ export function triggerClefActions (clef) {
       Notification.queueNotification('Shape Change Failed');
     }
     endOptionsSelection();
-    neonView.refreshPage();
+    neonView.updateForCurrentPage();
   });
   initOptionsListeners();
 }
@@ -232,7 +232,7 @@ export function triggerStaffActions () {
     if (neonView.edit(editorAction)) {
       Notification.queueNotification('Staff Merged');
       endOptionsSelection();
-      neonView.refreshPage();
+      neonView.updateForCurrentPage();
     } else {
       Notification.queueNotification('Merge Failed');
     }

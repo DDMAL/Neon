@@ -145,7 +145,7 @@ function Resize (staffId, neonView, dragHandler) {
         }
       };
       if (neonView.edit(editorAction)) {
-        neonView.refreshPage();
+        neonView.updateForCurrentPage();
       }
       staff = document.getElementById(staffId);
       ulx = undefined;

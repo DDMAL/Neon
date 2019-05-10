@@ -12,13 +12,21 @@ export default class InfoModule {
       block.innerHTML;
 
     InfoModule.core = this.neonView.core;
-    this.neonView.view.addUpdateCallback(this.resetInfoListeners);
+    this.neonView.view.addUpdateCallback(InfoModule.resetInfoListeners);
     setInfoControls();
   }
 
-  resetInfoListeners () {
-    $('.neume,.custos,.clef').off('mouseover', InfoModule.updateInfo);
+  static infoListeners () {
     $('.active-page').find('.neume,.custos,.clef').on('mouseover', InfoModule.updateInfo);
+  }
+
+  static stopListeners () {
+    $('.neume,.custos,.clef').off('mouseover', InfoModule.updateInfo);
+  }
+
+  static resetInfoListeners () {
+    InfoModule.stopListeners();
+    InfoModule.infoListeners();
   }
 
   static updateInfo () {
