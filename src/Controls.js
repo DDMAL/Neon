@@ -12,17 +12,18 @@ const $ = require('jquery');
 /** @type {module:Zoom~ZoomHandler} */
 var zoomHandler;
 
+export function setZoomHandler (zHandler) {
+  zoomHandler = zHandler;
+}
+
 /**
  * Initialize listeners and controls for display panel.
- * @param {module:Zoom~ZoomHandler} zHandler - An instantiated ZoomHandler.
  */
-export function initDisplayControls (zHandler) {
-  zoomHandler = zHandler;
-
+export function initDisplayControls () {
   setZoomControls();
   setOpacityControls();
   setBackgroundOpacityControls();
-  setSylControls();
+  // setSylControls();
   setHighlightControls();
   setBurgerControls();
 
@@ -41,6 +42,9 @@ export function initDisplayControls (zHandler) {
  * Set zoom control listener for button and slider
  */
 function setZoomControls () {
+  if (zoomHandler === undefined) {
+    return;
+  }
   $('#zoomSlider').val(100);
   $('#reset-zoom').click(() => {
     $('#zoomOutput').val(100);
@@ -49,6 +53,7 @@ function setZoomControls () {
   });
 
   $(document).on('input change', '#zoomSlider', () => {
+    $('#zoomOutput').val($('#zoomSlider').val());
     zoomHandler.zoomTo($('#zoomOutput').val() / 100.0);
   });
 
@@ -100,6 +105,7 @@ function setBackgroundOpacityControls () {
   });
 
   $(document).on('input change', '#bgOpacitySlider', function () {
+    $('#bgOpacityOutput').val(parseInt($('#bgOpacitySlider').val()));
     $('#bgimg').css('opacity', $('#bgOpacityOutput').val() / 100.0);
   });
 }
@@ -124,6 +130,7 @@ export function setInfoControls () {
  * Update MEI opacity to value from the slider.
  */
 export function setOpacityFromSlider () {
+  $('#opacityOutput').val($('#opacitySlider').val());
   $('.definition-scale').css('opacity', $('#opacityOutput').val() / 100.0);
 }
 

@@ -1,27 +1,20 @@
 import NeonView from './NeonView.js';
+import DisplayPanel from './DisplayPanel.js';
+import SingleView from './SingleView.js';
+
 const $ = require('jquery');
 
-if (autosave) {
-  let url = window.location.href;
-  let regex = /\/edit\//;
-  if (window.confirm('Newer autosave detected! Do you want to recover lost work?')) {
-    $.ajax({
-      type: 'POST',
-      url: url.replace(regex, '/restore/'),
-      data: {}
-    });
-  } else {
-    $.ajax({
-      type: 'POST',
-      url: url.replace(regex, '/autosave-clear/'),
-      data: {}
-    });
-  }
-}
+$.get(meiFile, (data) => {
+  let params = {
+    mode: 'single',
+    options: {
+      image: bgImg,
+      meiMap: data
+    },
+    View: SingleView,
+    Display: DisplayPanel,
+  };
 
-var view = new NeonView({
-  meifile: meiFile,
-  bgimg: bgImg,
-  mode: 'standalone'
+  var view = new NeonView(params);
+  view.start();
 });
-view.start();

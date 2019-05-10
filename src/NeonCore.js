@@ -1,10 +1,12 @@
+const verovio = require('verovio-dev');
+
 /**
  * Underlying NeonCore class that communicates with Verovio.
  * @constructor
  * @param {string} mei - Contents of the MEI file.
  * @param {object} vrvToolkit - An instantiated Verovio toolkit.
  */
-function NeonCore (mei, vrvToolkit) {
+function NeonCore (mei) {
   /// ///////////
   // Constructor
   /// ///////////
@@ -16,6 +18,7 @@ function NeonCore (mei, vrvToolkit) {
     pageMarginTop: 0,
     font: 'Bravura'
   };
+  var vrvToolkit = new verovio.toolkit();
   var undoStack = new Array(0);
   var redoStack = new Array(0);
 
