@@ -3,10 +3,14 @@
  const schemaPromise = import('./validation/mei-all.rng');
 
 import Worker from './Worker.js';
-var worker, schema;
-var statusField = document.getElementById('validation_status');
+var worker, schema, statusField;
 
 export async function init () {
+  let displayContents = document.getElementById('displayContents');
+  displayContents.innerHTML +=
+    '<div class="panel-block"><p>MEI Status:&nbsp;' +
+    '<span id="validation_status">unknown</span></p></div>';
+  statusField = document.getElementById('validation_status');
   worker = new Worker();
   worker.onmessage = updateUI;
 }

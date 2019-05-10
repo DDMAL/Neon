@@ -1,6 +1,7 @@
 import NeonView from './NeonView.js';
 import DisplayPanel from './DisplayPanel.js';
 import SingleView from './SingleView.js';
+import InfoModule from './InfoModule.js';
 
 const $ = require('jquery');
 
@@ -13,6 +14,7 @@ $.get(meiFile, (data) => {
     },
     View: SingleView,
     Display: DisplayPanel,
+    Info: InfoModule
   };
 
   var view = new NeonView(params);

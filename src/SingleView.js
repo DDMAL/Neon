@@ -23,6 +23,7 @@ export default class SingleView {
 
     this.mei = document.createElementNS('http://www.w3.org/svg', 'svg');
     this.mei.id = 'mei_output';
+    this.mei.classList.add('active-page');
 
     this.group.appendChild(this.bg);
     this.group.appendChild(this.mei);
@@ -39,6 +40,7 @@ export default class SingleView {
     this.group.replaceChild(svg, this.mei);
     this.mei = svg;
     this.mei.id = 'mei_output';
+    this.mei.classList.add('active-page');
     let height = parseInt(this.mei.getAttribute('height'));
     let width = parseInt(this.mei.getAttribute('width'));
 
@@ -116,5 +118,12 @@ export default class SingleView {
       }
     });
     d3.select('#container').on('wheel', this.displayPanel.zoomHandler.scrollZoom, false);
+    // Update height of container based on window
+    $(window).on('resize', () => {
+      let newHeight = window.innerHeight;
+      if (newHeight > Number($('#container').attr('height'))) {
+        $('#container').attr('height', newHeight);
+      }
+    });
   }
 }

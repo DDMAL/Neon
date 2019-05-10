@@ -1,3 +1,5 @@
+import * as Validation from './Validation';
+
 const verovio = require('verovio-dev');
 
 /**
@@ -24,12 +26,14 @@ function NeonCore (mei) {
 
   vrvToolkit.setOptions(vrvOptions);
   loadData(mei);
+  Validation.init();
 
   /**
      * Load MEI data into Verovio.
      * @param {string} data - MEI data.
      */
   function loadData (data) {
+    Validation.sendForValidation(data);
     vrvToolkit.loadData(data);
   }
 

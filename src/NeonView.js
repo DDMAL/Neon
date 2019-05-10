@@ -14,6 +14,7 @@ export default class NeonView {
    * @param {object} params.Display - Constructor for DisplayPanel module
    * @param {object} params.Info - Constructor for InfoModule module
    * @param {object} [params.Edit] - Constructor for EditMode module
+   * @param {object} [params.TextView] - Constructor for TextView module
    */
   constructor (params) {
     if (params.mode === 'single' || params.mode === 'iiif') {
@@ -31,7 +32,7 @@ export default class NeonView {
     this.core = new NeonCore(params.options.meiMap);
 
     this.display = this.view.display;
-    // this.info = new params.Info();
+    this.info = new params.Info(this);
 
     if (params.edit !== undefined) {
       this.edit = new params.Edit();

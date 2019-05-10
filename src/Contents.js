@@ -40,7 +40,7 @@ export function displayControlsPanel (handleZoom) {
   "<a class='panel-block has-text-centered'><button class='button' id='reset-bg-opacity'>Image Opacity</button>" +
   "<input class='slider is-fullwidth' id='bgOpacitySlider' step='5' min='0' max='100' value='100' type='range'/>" +
   "<output id='bgOpacityOutput' for='bgOpacitySlider'>100</output></a>" +
-  "<div class='panel-block'><label class='checkbox' id='displayText' type='checkbox'/></label>" +
+  "<div class='panel-block' id='extensible-block'>" +
   "<div class='dropdown' id='highlight-dropdown'><div class='dropdown-trigger'>" +
   "<button class='button' id='highlight-button' aria-haspopup='true' aria-controls='highlight-menu'>" +
   "<span>Highlight</span><span id='highlight-type'>&nbsp;- Off</span>" +
@@ -49,8 +49,7 @@ export function displayControlsPanel (handleZoom) {
   "<div class='dropdown-content'><a class='dropdown-item' id='highlight-staff'>Staff</a>" +
   "<a class='dropdown-item' id='highlight-syllable'>Syllable</a>" +
   "<a class='dropdown-item' id='highlight-neume'>Neume</a><hr class='dropdown-divider'/>" +
-  "<a class='dropdown-item' id='highlight-none'>None</a></div></div></div></div>" +
-  "<div class='panel-block'><p>MEI Status:&nbsp;<span id='validation-status'>unknown</span></p></div></div>";
+  "<a class='dropdown-item' id='highlight-none'>None</a></div></div></div></div></div>";
   return contents;
 }
 
