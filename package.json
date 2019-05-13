@@ -40,7 +40,10 @@
     "jest": {
         "testPathIgnorePatterns": [
             "<rootDir>/node_modules/"
-        ]
+        ],
+        "moduleNameMapper": {
+            "Validation": "<rootDir>/test/SubstituteValidation.js"
+        }
     },
     "babel": {
         "presets": "env"

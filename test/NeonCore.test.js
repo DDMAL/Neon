@@ -2,7 +2,6 @@
 import NeonCore from '../src/NeonCore.js';
 
 const fs = require('fs');
-const verovio = require('verovio-dev');
 
 const pathToMei = './test/resources/test.mei';
 var mei;
@@ -12,7 +11,7 @@ beforeAll(() => {
 });
 
 test("Test 'getElementAttr' function", () => {
-  let neon = new NeonCore(mei, new verovio.toolkit());
+  let neon = new NeonCore(mei);
   neon.getSVG(); // for some reason verovio can't recognize the ids if this isn't done
   let atts = neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d');
   expect(atts['pname']).toBe('a');
@@ -20,7 +19,7 @@ test("Test 'getElementAttr' function", () => {
 });
 
 test("Test 'drag' action, neume", () => {
-  let neon = new NeonCore(mei, new verovio.toolkit());
+  let neon = new NeonCore(mei);
   neon.getSVG();
   let originalAtts = neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d');
   let editorAction = {
@@ -43,7 +42,7 @@ test("Test 'drag' action, neume", () => {
 
 describe('Test insert editor action', () => {
   test("Test 'insert' action, punctum", () => {
-    let neon = new NeonCore(mei, new verovio.toolkit());
+    let neon = new NeonCore(mei);
     neon.getSVG();
     let editorAction = {
       'action': 'insert',
@@ -61,7 +60,7 @@ describe('Test insert editor action', () => {
   });
 
   test("Test 'insert' action, clef", () => {
-    let neon = new NeonCore(mei, new verovio.toolkit());
+    let neon = new NeonCore(mei);
     neon.getSVG();
     let editorAction = {
       'action': 'insert',
@@ -82,7 +81,7 @@ describe('Test insert editor action', () => {
   });
 
   test("Test 'insert' action, custos", () => {
-    let neon = new NeonCore(mei, new verovio.toolkit());
+    let neon = new NeonCore(mei);
     neon.getSVG();
     let editorAction = {
       'action': 'insert',
@@ -101,7 +100,7 @@ describe('Test insert editor action', () => {
 });
 
 test("Test 'remove' action", () => {
-  let neon = new NeonCore(mei, new verovio.toolkit());
+  let neon = new NeonCore(mei);
   neon.getSVG();
   let editorAction = {
     'action': 'remove',
@@ -115,7 +114,7 @@ test("Test 'remove' action", () => {
 });
 
 test('Test undo and redo', () => {
-  let neon = new NeonCore(mei, new verovio.toolkit());
+  let neon = new NeonCore(mei);
   neon.getSVG();
   // Should not be able to undo or redo now
   expect(neon.undo()).toBeFalsy();
@@ -143,7 +142,7 @@ test('Test undo and redo', () => {
 });
 
 test('Test chain action', () => {
-  let neon = new NeonCore(mei, new verovio.toolkit());
+  let neon = new NeonCore(mei);
   neon.getSVG();
   let editorAction = {
     'action': 'chain',
@@ -177,7 +176,7 @@ test('Test chain action', () => {
 });
 
 test("Test 'set' action", () => {
-  let neon = new NeonCore(mei, new verovio.toolkit());
+  let neon = new NeonCore(mei);
   neon.getSVG();
   expect(neon.getElementAttr('m-6831ff33-aa39-4b0d-a383-e44585c6c644')).toEqual({ pname: 'g', oct: '2' });
   let setAction = {
@@ -193,7 +192,7 @@ test("Test 'set' action", () => {
 });
 
 test("Test 'split' action", () => {
-  let neon = new NeonCore(mei, new verovio.toolkit());
+  let neon = new NeonCore(mei);
   neon.getSVG();
   let editorAction = {
     'action': 'split',
