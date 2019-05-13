@@ -110,7 +110,6 @@ export const navbarDropdownMenu =
     "<div id='navbar-dropdown-options' class='navbar-dropdown'>" +
     "<a id='save' class='navbar-item'>Save File</a>" +
     "<a id='getmei' class='navbar-item' href='' download=''> Download MEI </a>" +
-    "<a id='getpng' class='navbar-item' href='' download=''> Download PNG </a>" +
     "<a id='revert' class='navbar-item'> Revert </a>";
 
 /**

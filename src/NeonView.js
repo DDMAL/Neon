@@ -1,4 +1,5 @@
 import NeonCore from './NeonCore.js';
+import * as Notification from './Notification.js';
 
 /**
  * NeonView class. Manages the other modules of Neon and communicates with
@@ -53,7 +54,14 @@ export default class NeonView {
   }
 
   start () {
-    this.core.initDb().then(() => { this.updateForCurrentPage(); });
+    this.core.db.info().then((info) => {
+      if (info.doc_count === 0) {
+        this.core.initDb().then(() => { this.updateForCurrentPage(); });
+      } else {
+        Notification.queueNotification('Existing database found. Revert to start from the beginning.');
+        this.updateForCurrentPage();
+      }
+    });
   }
 
   updateForCurrentPage () {
@@ -95,12 +103,22 @@ export default class NeonView {
   }
 
   save () {
-    this.core.updateDatabase();
+    return this.core.updateDatabase();
+  }
+
+  deleteDb () {
+    return this.core.db.destroy();
   }
 
   getPageURI (pageNo) {
-    let mei = this.core.getMEI(pageNo);
-    return 'data:application/mei+xml;charset=utf-8,' + encodeURIComponent(mei);
+    if (pageNo === undefined) {
+      pageNo = this.view.getCurrentPage();
+    }
+    return new Promise((resolve) => {
+      this.core.getMEI(pageNo).then((mei) => {
+        resolve('data:application/mei+xml;charset=utf-8,' + encodeURIComponent(mei));
+      });
+    });
   }
 
   getPageMEI (pageNo) {

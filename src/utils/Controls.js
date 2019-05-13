@@ -1,9 +1,9 @@
 /** @module Controls */
 
 import * as Color from './Color.js';
-import * as Compatibility from './Compatibility.js';
 import * as Contents from './Contents.js';
 import * as Cursor from './Cursor.js';
+import * as Notification from '../Notification.js';
 import * as Text from '../Text.js';
 import * as Select from '../SingleEdit/Select.js';
 import Icons from '../img/icons.svg';
@@ -423,57 +423,37 @@ function deactivate (type) {
  * @param {string} filename - The name of the MEI file.
  * @param {NeonView} neonView
  */
-export function initNavbar (filename, neonView) {
+export function initNavbar (neonView) {
   // setup navbar listeners
   $('#save').on('click', () => {
-    neonView.saveMEI();
+    neonView.save().then(() => {
+      Notification.queueNotification('Saved');
+    });
   });
   $('body').on('keydown', (evt) => {
     if (evt.key === 's') {
-      neonView.saveMEI();
+      neonView.save().then(() => {
+        Notification.queueNotification('Saved');
+      });
     }
   });
 
   $('#revert').on('click', function () {
     if (window.confirm('Reverting will cause all changes to be lost. Press OK to continue.')) {
-      Compatibility.revertFile(filename);
+      neonView.deleteDb().then(() => {
+        window.location.reload();
+      });
     }
   });
 
   // Download link for MEI
   // Is an actual file with a valid URI except in local mode where it must be generated.
-  if (Compatibility.getMode() === Compatibility.modes.local) {
-    $('#getmei').on('click', () => {
-      $('#getmei').attr('href', neonView.getDynamicDownload())
-        .attr('download', 'Neon2 Corrected.mei');
+  $('#getmei').on('click', () => {
+    neonView.getPageURI().then((uri) => {
+      $('#getmei').attr('href', uri)
+        .attr('download', neonView.name);
     });
-  } else {
-    $('#getmei').attr('href', filename);
-  }
-
-  // Download link for background image as PNG
-  // Is an actual file on the system except in local mode.
-  if (Compatibility.getMode() === Compatibility.modes.local) {
-    let link = document.getElementById('bgimg')
-      .getAttributeNS('http://www.w3.org/1999/xlink', 'href');
-    $('#getpng').attr('href', link)
-      .attr('download', 'Neon2 Background.png');
-  } else { // There is an actual file for the background image
-    let regex = /mei/g;
-    var pngFile = filename.replace(regex, 'png');
-    if (Compatibility.getMode() === Compatibility.modes.pages) {
-      pngFile = pngFile.replace('png', 'img');
-    }
-    $('#getpng').attr('href', pngFile);
-  }
-
-  if (Compatibility.getMode() === Compatibility.modes.rodan) {
-    $('#finalize').on('click', () => {
-      if (window.confirm('Finalizing will save your work and end the job. You will not be able to resume it. Continue?')) {
-        Compatibility.finalize(neonView.rodanGetMei());
-      }
-    });
-  }
+  });
 }
 
 /**
@@ -487,9 +467,6 @@ export function initEditMode (editMode) {
   $('#edit_mode').on('click', function () {
     $('#dropdown_toggle').empty();
     $('#dropdown_toggle').append(Contents.navbarDropdownMenu);
-    if (Compatibility.getMode() === Compatibility.modes.rodan) {
-      $('#navbar-dropdown-options').append(Contents.navbarFinalize);
-    }
     $('#insert_controls').append(Contents.insertControlsPanel);
     $('#edit_controls').append(Contents.editControlsPanel);
 

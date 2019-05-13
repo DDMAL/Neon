@@ -12,7 +12,7 @@ export default class EditMode {
 
   initEditMode () {
     this.dragHandler = new DragHandler(this.neonView);
-    // Controls.initNavbar(this.neonView.name);
+    Controls.initNavbar(this.neonView);
     Select.setSelectHelperObjects(this.dragHandler, this.neonView);
     Select.clickSelect();
     this.insertHandler = new InsertHandler(this.neonView);

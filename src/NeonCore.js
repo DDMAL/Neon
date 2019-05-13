@@ -169,17 +169,21 @@ export default class NeonCore {
     return false;
   }
 
-  updateDatabase () {
-    this.neonCache.forEach(async (value, key) => {
+  async updateDatabase () {
+    for (let pair of this.neonCache) {
+      let key = pair[0];
+      let value = pair[1];
       if (value.dirty) {
         await this.db.get(key.toString()).then((doc) => {
           doc.data = value.mei;
+          return this.db.put(doc);
         }).then(() => {
+          console.log('done');
           value.dirty = false;
         }).catch((err) => {
           console.error(err);
         });
       }
-    });
+    }
   }
 }
