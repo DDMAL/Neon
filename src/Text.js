@@ -1,5 +1,5 @@
 /** @module Text */
-import * as Controls from './Controls.js';
+import * as Controls from './utils/Controls.js';
 import * as Notification from './Notification.js';
 const $ = require('jquery');
 
@@ -70,7 +70,7 @@ export function updateSylText (span) {
         'text': corrected
       }
     };
-    if (view.edit(editorAction)) { view.refreshPage(); }
+    if (view.edit(editorAction)) { view.updateForCurrentPage(); }
   }
 }
 

@@ -4,9 +4,9 @@ import * as Color from './Color.js';
 import * as Compatibility from './Compatibility.js';
 import * as Contents from './Contents.js';
 import * as Cursor from './Cursor.js';
-import * as Text from './Text.js';
-import * as Select from './Select.js';
-import Icons from './img/icons.svg';
+import * as Text from '../Text.js';
+import * as Select from '../SingleEdit/Select.js';
+import Icons from '../img/icons.svg';
 const $ = require('jquery');
 
 /** @type {module:Zoom~ZoomHandler} */

@@ -1,5 +1,5 @@
-import * as Controls from './Controls.js';
-import * as Cursor from './Cursor.js';
+import * as Controls from '../utils/Controls.js';
+import * as Cursor from '../utils/Cursor.js';
 
 const d3 = require('d3');
 const $ = require('jquery');

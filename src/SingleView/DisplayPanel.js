@@ -1,5 +1,5 @@
-import * as Contents from './Contents.js';
-import * as Controls from './Controls.js';
+import * as Contents from '../utils/Contents.js';
+import * as Controls from '../utils/Controls.js';
 import ZoomHandler from './Zoom.js';
 
 export default class DisplayPanel {

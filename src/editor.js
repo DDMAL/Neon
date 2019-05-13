@@ -1,7 +1,7 @@
 import NeonView from './NeonView.js';
-import DisplayPanel from './DisplayPanel.js';
-import SingleView from './SingleView.js';
-import SingleEditMode from './SingleEditMode.js';
+import DisplayPanel from './SingleView/DisplayPanel.js';
+import SingleView from './SingleView/SingleView.js';
+import SingleEditMode from './SingleEdit/SingleEditMode.js';
 import InfoModule from './InfoModule.js';
 
 const $ = require('jquery');

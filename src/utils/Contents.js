@@ -1,26 +1,26 @@
 /** @module Contents */
 
-import PunctumIcon from './img/punctum.png';
-import VirgaIcon from './img/virga.png';
-import DiamondIcon from './img/diamond.png';
+import PunctumIcon from '../img/punctum.png';
+import VirgaIcon from '../img/virga.png';
+import DiamondIcon from '../img/diamond.png';
 // import WhitePunctumIcon from "./img/white_punct.png";
 // import QuilismaIcon from "./img/quilisma.png";
-import CustosIcon from './img/custos.png';
-import CClefIcon from './img/cClef.png';
-import FClefIcon from './img/fClef.png';
-import StaffIcon from './img/staff.png';
+import CustosIcon from '../img/custos.png';
+import CClefIcon from '../img/cClef.png';
+import FClefIcon from '../img/fClef.png';
+import StaffIcon from '../img/staff.png';
 // import SmallDivIcon from "./img/smallDiv.png";
 // import MinorDivIcon from "./img/minorDiv.png";
 // import MajorDivIcon from "./img/majorDiv.png";
 // import FinalDivIcon from "./img/finalDiv.png";
-import PesIcon from './img/pes.png';
-import ClivisIcon from './img/clivis.png';
-import ScandicusIcon from './img/scandicus.png';
-import ClimacusIcon from './img/climacus.png';
-import TorculusIcon from './img/torculus.png';
-import PorrectusIcon from './img/porrectus.png';
-import PressusIcon from './img/pressus.png';
-import Icons from './img/icons.svg';
+import PesIcon from '../img/pes.png';
+import ClivisIcon from '../img/clivis.png';
+import ScandicusIcon from '../img/scandicus.png';
+import ClimacusIcon from '../img/climacus.png';
+import TorculusIcon from '../img/torculus.png';
+import PorrectusIcon from '../img/porrectus.png';
+import PressusIcon from '../img/pressus.png';
+import Icons from '../img/icons.svg';
 
 export function displayControlsPanel (handleZoom) {
   let contents =

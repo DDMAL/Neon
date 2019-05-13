@@ -4,7 +4,7 @@
  * @module Compatibility
  */
 
-import * as Notification from './Notification.js';
+import * as Notification from '../Notification.js';
 const $ = require('jquery');
 
 /**

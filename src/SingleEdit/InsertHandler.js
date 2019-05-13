@@ -1,6 +1,5 @@
-import * as Cursor from './Cursor.js';
-import InfoBox from './InfoBox.js';
-import * as Notification from './Notification.js';
+import * as Cursor from '../utils/Cursor.js';
+import InfoModule from '../InfoModule.js';
 const d3 = require('d3');
 const $ = require('jquery');
 
@@ -35,43 +34,43 @@ function InsertHandler (neonView) {
         'tilt': 'n'
       };
     } else if (buttonId === 'pes') {
-      let contour = InfoBox.getContourByValue('Pes');
+      let contour = InfoModule.getContourByValue('Pes');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'clivis') {
-      let contour = InfoBox.getContourByValue('Clivis');
+      let contour = InfoModule.getContourByValue('Clivis');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'scandicus') {
-      let contour = InfoBox.getContourByValue('Scandicus');
+      let contour = InfoModule.getContourByValue('Scandicus');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'climacus') {
-      let contour = InfoBox.getContourByValue('Climacus');
+      let contour = InfoModule.getContourByValue('Climacus');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'torculus') {
-      let contour = InfoBox.getContourByValue('Torculus');
+      let contour = InfoModule.getContourByValue('Torculus');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'porrectus') {
-      let contour = InfoBox.getContourByValue('Porrectus');
+      let contour = InfoModule.getContourByValue('Porrectus');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'pressus') {
-      let contour = InfoBox.getContourByValue('Pressus');
+      let contour = InfoModule.getContourByValue('Pressus');
       type = 'grouping';
       attributes = {
         'contour': contour
@@ -122,11 +121,10 @@ function InsertHandler (neonView) {
       document.getElementById('delete').parentNode.parentNode.appendChild(editModeContainer);
       editModeButton.addEventListener('click', insertDisabled);
     }
-    $('#editMenu').css('backgroundColor', "whitesmoke");
+    $('#editMenu').css('backgroundColor', 'whitesmoke');
     $('#editMenu').css('font-weight', '');
-    $('#insertMenu').css('backgroundColor', "#ffc7c7");
+    $('#insertMenu').css('backgroundColor', '#ffc7c7');
     $('#insertMenu').css('font-weight', 'bold');
-    //Notification.queueNotification('Insert Mode');
   }
 
   /**
@@ -142,11 +140,10 @@ function InsertHandler (neonView) {
     firstClick = true;
     Cursor.resetCursor();
     $(document.getElementById('returnToEditMode').parentNode).remove();
-    $('#insertMenu').css('backgroundColor', "whitesmoke");
+    $('#insertMenu').css('backgroundColor', 'whitesmoke');
     $('#insertMenu').css('font-weight', '');
-    $('#editMenu').css('backgroundColor', "#ffc7c7");
+    $('#editMenu').css('backgroundColor', '#ffc7c7');
     $('#editMenu').css('font-weight', 'bold');
-    //Notification.queueNotification('Edit Mode');
   }
 
   function clickawayHandler (evt) {

@@ -1,5 +1,5 @@
-import * as Color from './Color.js';
-import * as Controls from './Controls.js';
+import * as Color from '../utils/Color.js';
+import * as Controls from '../utils/Controls.js';
 import * as Grouping from './Grouping.js';
 import * as SelectOptions from './SelectOptions.js';
 import Resize from './ResizeStaff.js';

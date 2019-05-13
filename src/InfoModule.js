@@ -1,4 +1,4 @@
-import { setInfoControls } from './Controls.js';
+import { setInfoControls } from './utils/Controls.js';
 
 const $ = require('jquery');
 

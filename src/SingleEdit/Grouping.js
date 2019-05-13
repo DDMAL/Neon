@@ -1,10 +1,10 @@
 /** @module Grouping */
 
-import * as Contents from './Contents.js';
-import * as Warnings from './Warnings.js';
-import * as Notification from './Notification.js';
+import * as Contents from '../utils/Contents.js';
+import * as Warnings from '../Warnings.js';
+import * as Notification from '../Notification.js';
 import { unsetVirgaAction, unsetInclinatumAction } from './SelectOptions.js';
-import InfoBox from './InfoBox.js';
+import InfoModule from '../InfoModule.js';
 const $ = require('jquery');
 
 /**
@@ -134,7 +134,7 @@ function groupingAction (action, groupType, elementIds) {
   if (groupType === 'nc') {
     var neumeParent = $('#' + elementIds[0]).parent();
     var ncs = $(neumeParent).children();
-    var contour = InfoBox.getContour((ncs));
+    var contour = InfoModule.getContour((ncs));
     if (contour === undefined) {
       Warnings.groupingNotRecognized();
     }
