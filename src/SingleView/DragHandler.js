@@ -68,13 +68,16 @@ function DragHandler (neonView) {
       var yDiff = Math.abs(dragStartCoords[1] - dragEndCoords[1]);
 
       if (xDiff > 5 || yDiff > 5) {
-        neonView.edit(editorAction);
-        neonView.updateForCurrentPage();
-        endOptionsSelection();
+        neonView.edit(editorAction).then(() => {
+          neonView.updateForCurrentPage();
+          endOptionsSelection();
+          reset();
+          dragInit();
+        });
+      } else {
+        reset();
+        dragInit();
       }
-
-      reset();
-      dragInit();
     }
   }
 

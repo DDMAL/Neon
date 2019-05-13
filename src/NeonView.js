@@ -65,10 +65,6 @@ export default class NeonView {
     this.view.updateSVG(svg, pageNo);
   }
 
-  edit (action, addToUndo = true) {
-    return this.core.edit(action, addToUndo);
-  }
-
   redo () {
     return this.core.redo();
   }
@@ -83,5 +79,19 @@ export default class NeonView {
     } else {
       return this.editor.getUserMode();
     }
+  }
+
+  edit (action, addToUndo = true) {
+    let editPromise = new Promise((resolve) => {
+      resolve(this.core.edit(action, addToUndo));
+    });
+    return editPromise;
+  }
+
+  getElementAttr (elementID) {
+    let elementPromise = new Promise((resolve, reject) => {
+      resolve(this.core.getElementAttr(elementID));
+    });
+    return elementPromise;
   }
 }

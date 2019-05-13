@@ -68,7 +68,7 @@ export function initGroupingListeners () {
     var elementIds = getChildrenIds();
     groupingAction('ungroup', 'nc', elementIds);
   });
-  $('#toggle-ligature').on('click', function () {
+  $('#toggle-ligature').on('click', async function () {
     var elementIds = getIds();
     var isLigature;
     let ligatureRegex = /#E99[016]/;
@@ -81,7 +81,7 @@ export function initGroupingListeners () {
           unsetInclinatumAction(elementIds[0]), unsetVirgaAction(elementIds[0]),
           unsetInclinatumAction(elementIds[1]), unsetVirgaAction(elementIds[1])
         ] };
-      neonView.edit(chainAction);
+      await neonView.edit(chainAction);
     }
 
     let editorAction = {
@@ -91,13 +91,15 @@ export function initGroupingListeners () {
         'isLigature': isLigature.toString()
       }
     };
-    if (neonView.edit(editorAction)) {
-      Notification.queueNotification('Ligature Toggled');
-    } else {
-      Notification.queueNotification('Ligature Toggle Failed');
-    }
-    endGroupingSelection();
-    neonView.updateForCurrentPage();
+    neonView.edit(editorAction).then((result) => {
+      if (result) {
+        Notification.queueNotification('Ligature Toggled');
+      } else {
+        Notification.queueNotification('Ligature Toggle Failed');
+      }
+      endGroupingSelection();
+      neonView.updateForCurrentPage();
+    });
   });
 }
 
@@ -115,31 +117,33 @@ function groupingAction (action, groupType, elementIds) {
       'elementIds': elementIds
     }
   };
-  if (neonView.edit(editorAction)) {
-    if (action === 'group') {
-      Notification.queueNotification('Grouping Success');
+  neonView.edit(editorAction).then((result) => {
+    if (result) {
+      if (action === 'group') {
+        Notification.queueNotification('Grouping Success');
+      } else {
+        Notification.queueNotification('Ungrouping Success');
+      }
     } else {
-      Notification.queueNotification('Ungrouping Success');
+      if (action === 'group') {
+        Notification.queueNotification('Grouping Failed');
+      } else {
+        Notification.queueNotification('Ungrouping Failed');
+      }
     }
-  } else {
-    if (action === 'group') {
-      Notification.queueNotification('Grouping Failed');
-    } else {
-      Notification.queueNotification('Ungrouping Failed');
-    }
-  }
-  neonView.updateForCurrentPage();
+    neonView.updateForCurrentPage();
 
-  // Prompt user to confirm if Neon does not re cognize contour
-  if (groupType === 'nc') {
-    var neumeParent = $('#' + elementIds[0]).parent();
-    var ncs = $(neumeParent).children();
-    var contour = InfoModule.getContour((ncs));
-    if (contour === undefined) {
-      Warnings.groupingNotRecognized();
+    // Prompt user to confirm if Neon does not re cognize contour
+    if (groupType === 'nc') {
+      var neumeParent = $('#' + elementIds[0]).parent();
+      var ncs = $(neumeParent).children();
+      var contour = InfoModule.getContour((ncs));
+      if (contour === undefined) {
+        Warnings.groupingNotRecognized();
+      }
     }
-  }
-  endGroupingSelection();
+    endGroupingSelection();
+  });
 }
 
 /**

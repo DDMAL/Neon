@@ -11,7 +11,7 @@ export default class InfoModule {
       '<input class="checkbox" id="displayInfo" type="checkbox" checked="checked"/></label>' +
       block.innerHTML;
 
-    InfoModule.core = this.neonView.core;
+    InfoModule.neonView = this.neonView;
     this.neonView.view.addUpdateCallback(InfoModule.resetInfoListeners);
     setInfoControls();
   }
@@ -29,7 +29,7 @@ export default class InfoModule {
     InfoModule.infoListeners();
   }
 
-  static updateInfo () {
+  static async updateInfo () {
   // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the <g> element
   // So we will simply return if ID does not exist for now
     let id = this.id;
@@ -50,31 +50,31 @@ export default class InfoModule {
       case 'neume':
         // Select neume components of selected neume
         var ncs = element.children('.nc');
-        var contour = InfoModule.getContour(ncs);
+        var contour = await InfoModule.getContour(ncs);
         if (contour === 'Clivis') {
-          var attr = InfoModule.core.getElementAttr($(ncs[0])[0].id);
+          var attr = await InfoModule.neonView.getElementAttr($(ncs[0])[0].id);
           if (attr.ligated) {
             contour = 'Ligature';
           }
         }
-        var pitches = InfoModule.getPitches(ncs);
+        var pitches = await InfoModule.getPitches(ncs);
 
         pitches = pitches.trim().toUpperCase();
         body = 'Shape: ' + (contour === undefined ? 'Compound' : contour) + '<br/>' +
                 'Pitch(es): ' + pitches;
         break;
       case 'custos':
-        attributes = InfoModule.core.getElementAttr(id);
+        attributes = await InfoModule.neonView.getElementAttr(id);
         body += 'Pitch: ' + (attributes.pname).toUpperCase() + attributes.oct;
         break;
       case 'clef':
-        attributes = InfoModule.core.getElementAttr(id);
+        attributes = await InfoModule.neonView.getElementAttr(id);
         body += 'Shape: ' + attributes.shape + '<br/>' +
                 'Line: ' + attributes.line;
         break;
       case 'staff':
         elementClass = 'clef';
-        var staffDefAttributes = InfoModule.core.getElementStaffDef(id);
+        var staffDefAttributes = await InfoModule.neonView.getElementStaffDef(id);
         body = 'Shape: ' + staffDefAttributes['clef.shape'] + '<br/>' +
                 'Line: ' + staffDefAttributes['clef.line'];
         break;
@@ -89,12 +89,12 @@ export default class InfoModule {
      * Get the individual pitches of a neume.
      * @param {array.<SVGSVGElement>} ncs - neume components in the neume.
      */
-  static getPitches (ncs) {
+  static async getPitches (ncs) {
     var pitches = '';
-    ncs.each(function () {
-      var attributes = InfoModule.core.getElementAttr(this.id);
+    for (let nc of ncs) {
+      var attributes = await InfoModule.neonView.getElementAttr(nc.id);
       pitches += attributes.pname + attributes.oct + ' ';
-    });
+    }
     return pitches;
   }
 
@@ -102,11 +102,11 @@ export default class InfoModule {
      * Get the contour of a neume.
      * @param {array.<SVGSVGElement>} ncs - neume components in the neume.
      */
-  static getContour (ncs) {
+  static async getContour (ncs) {
     var contour = '';
     var previous = null;
-    ncs.each(function () {
-      var attributes = InfoModule.core.getElementAttr(this.id);
+    for (let nc of ncs) {
+      var attributes = await InfoModule.neonView.getElementAttr(nc.id);
       if (previous !== null) {
         if (previous.oct > attributes.oct) {
           contour += 'd';
@@ -123,7 +123,7 @@ export default class InfoModule {
         }
       }
       previous = attributes;
-    });
+    }
     if (InfoModule.neumeGroups.get(contour) === undefined) {
       console.warn('Unknown contour: ' + contour);
     }

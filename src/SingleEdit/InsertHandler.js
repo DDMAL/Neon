@@ -198,8 +198,9 @@ function InsertHandler (neonView) {
       editorAction['param']['attributes'] = attributes;
     }
 
-    neonView.edit(editorAction);
-    neonView.updateForCurrentPage();
+    neonView.edit(editorAction).then(() => {
+      neonView.updateForCurrentPage();
+    });
   }
 
   /**
@@ -244,9 +245,10 @@ function InsertHandler (neonView) {
         }
       };
 
-      neonView.edit(action);
-      neonView.updateForCurrentPage();
-      insertDisabled();
+      neonView.edit(action).then(() => {
+        neonView.updateForCurrentPage();
+        insertDisabled();
+      });
     }
   }
 

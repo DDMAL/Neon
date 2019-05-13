@@ -66,13 +66,15 @@ export function triggerNcActions (nc) {
   $('#Punctum.dropdown-item').on('click', () => {
     let unsetInclinatum = unsetInclinatumAction(nc.id);
     let unsetVirga = unsetVirgaAction(nc.id);
-    if (neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] })) {
-      Notification.queueNotification('Shape Changed');
-    } else {
-      Notification.queueNotification('Shape Change Failed');
-    }
-    endOptionsSelection();
-    neonView.updateForCurrentPage();
+    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] }).then((result) => {
+      if (result) {
+        Notification.queueNotification('Shape Changed');
+      } else {
+        Notification.queueNotification('Shape Change Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
   });
 
   $('#Inclinatum.dropdown-item').on('click', () => {
@@ -84,13 +86,15 @@ export function triggerNcActions (nc) {
         'attrValue': 'se'
       }
     };
-    if (neonView.edit(setInclinatum)) {
-      Notification.queueNotification('Shape Changed');
-    } else {
-      Notification.queueNotification('Shape Change Failed');
-    }
-    endOptionsSelection();
-    neonView.updateForCurrentPage();
+    neonView.edit(setInclinatum).then((result) => {
+      if (result) {
+        Notification.queueNotification('Shape Changed');
+      } else {
+        Notification.queueNotification('Shape Change Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
   });
 
   $('#Virga.dropdown-item').on('click', () => {
@@ -103,14 +107,15 @@ export function triggerNcActions (nc) {
         'attrValue': 'n'
       }
     };
-    if (neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, setVirga ] })) {
-      Notification.queueNotification('Shape Changed');
-    } else {
-      Notification.queueNotification('Shape Change Failed');
-    }
-    console.log(neonView.getElementAttr(nc.id));
-    endOptionsSelection();
-    neonView.updateForCurrentPage();
+    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, setVirga ] }).then((result) => {
+      if (result) {
+        Notification.queueNotification('Shape Changed');
+      } else {
+        Notification.queueNotification('Shape Change Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
   });
 
   initOptionsListeners();
@@ -142,13 +147,15 @@ export function triggerNeumeActions () {
         'contour': contour
       }
     };
-    if (neonView.edit(changeGroupingAction)) {
-      Notification.queueNotification('Grouping Changed');
-    } else {
-      Notification.queueNotification('Grouping Failed');
-    }
-    endOptionsSelection();
-    neonView.updateForCurrentPage();
+    neonView.edit(changeGroupingAction).then((result) => {
+      if (result) {
+        Notification.queueNotification('Grouping Changed');
+      } else {
+        Notification.queueNotification('Grouping Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
   }
   initOptionsListeners();
   Grouping.initGroupingListeners();
@@ -182,13 +189,15 @@ export function triggerClefActions (clef) {
         'shape': 'C'
       }
     };
-    if (neonView.edit(setCClef)) {
-      Notification.queueNotification('Shape Changed');
-    } else {
-      Notification.queueNotification('Shape Change Failed');
-    }
-    endOptionsSelection();
-    neonView.updateForCurrentPage();
+    neonView.edit(setCClef).then((result) => {
+      if (result) {
+        Notification.queueNotification('Shape Changed');
+      } else {
+        Notification.queueNotification('Shape Change Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
   });
   $('#FClef.dropdown-item').on('click', () => {
     let setFClef = {
@@ -198,13 +207,15 @@ export function triggerClefActions (clef) {
         'shape': 'F'
       }
     };
-    if (neonView.edit(setFClef)) {
-      Notification.queueNotification('Shape Changed');
-    } else {
-      Notification.queueNotification('Shape Change Failed');
-    }
-    endOptionsSelection();
-    neonView.updateForCurrentPage();
+    neonView.edit(setFClef).then((result) => {
+      if (result) {
+        Notification.queueNotification('Shape Changed');
+      } else {
+        Notification.queueNotification('Shape Change Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
   });
   initOptionsListeners();
 }
@@ -229,13 +240,15 @@ export function triggerStaffActions () {
         'elementIds': elementIds
       }
     };
-    if (neonView.edit(editorAction)) {
-      Notification.queueNotification('Staff Merged');
-      endOptionsSelection();
-      neonView.updateForCurrentPage();
-    } else {
-      Notification.queueNotification('Merge Failed');
-    }
+    neonView.edit(editorAction).then((result) => {
+      if (result) {
+        Notification.queueNotification('Staff Merged');
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      } else {
+        Notification.queueNotification('Merge Failed');
+      }
+    });
   });
 }
 

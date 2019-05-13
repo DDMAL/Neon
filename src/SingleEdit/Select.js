@@ -616,10 +616,9 @@ function selectNcs (el, dragHandler, neonCore) {
  * Check if neume component is part of a ligature
  * @param {SVGSVGElement} nc - The neume component to check.
  */
-function isLigature (nc) {
-  var attributes = neonView.core.getElementAttr(nc.id);
-  if (attributes.ligated === 'true') return true;
-  return false;
+async function isLigature (nc) {
+  var attributes = await neonView.core.getElementAttr(nc.id);
+  return (attributes.ligated === 'true');
 }
 
 /**

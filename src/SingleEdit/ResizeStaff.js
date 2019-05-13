@@ -144,16 +144,18 @@ function Resize (staffId, neonView, dragHandler) {
           'lry': lry
         }
       };
-      if (neonView.edit(editorAction)) {
-        neonView.updateForCurrentPage();
-      }
-      staff = document.getElementById(staffId);
-      ulx = undefined;
-      uly = undefined;
-      lrx = undefined;
-      lry = undefined;
-      selectStaff(staff, dragHandler);
-      drawInitialRect();
+      neonView.edit(editorAction).then((result) => {
+        if (result) {
+          neonView.updateForCurrentPage();
+        }
+        staff = document.getElementById(staffId);
+        ulx = undefined;
+        uly = undefined;
+        lrx = undefined;
+        lry = undefined;
+        selectStaff(staff, dragHandler);
+        drawInitialRect();
+      });
     }
   }
 

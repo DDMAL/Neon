@@ -70,7 +70,11 @@ export function updateSylText (span) {
         'text': corrected
       }
     };
-    if (view.edit(editorAction)) { view.updateForCurrentPage(); }
+    view.edit(editorAction).then((result) => {
+      if (result) {
+        view.updateForCurrentPage();
+      }
+    });
   }
 }
 

@@ -344,8 +344,7 @@ export function initInsertEditControls (neonView) {
       'action': 'chain',
       'param': toRemove
     };
-    neonView.edit(chainAction);
-    neonView.updateForCurrentPage();
+    neonView.edit(chainAction).then(() => { neonView.updateForCurrentPage(); });
   }
 }
 
