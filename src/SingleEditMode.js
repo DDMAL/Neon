@@ -1,6 +1,6 @@
 import * as Controls from './Controls.js';
 import DragHandler from './DragHandler.js';
-import { ClickSelect, DragSelect } from './Select.js';
+import * as Select from './Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';
 
@@ -13,23 +13,12 @@ export default class EditMode {
   initEditMode () {
     this.dragHandler = new DragHandler(this.neonView);
     // Controls.initNavbar(this.neonView.name);
-    this.clickSelect = new ClickSelect(
-      this.dragHandler,
-      this.neonView.view.displayPanel.zoomHandler,
-      this.neonView,
-      this.neonView.core,
-      this.neonView.InfoModule
-    );
+    Select.setSelectHelperObjects(this.dragHandler, this.neonView);
+    Select.clickSelect();
     this.insertHandler = new InsertHandler(this.neonView);
     Controls.bindInsertTabs(this.insertHandler);
     document.getElementById('neumeTab').click();
-    this.dragSelect = new DragSelect(
-      this.dragHandler,
-      this.neonView.view.displayPanel.zoomHandler,
-      this.neonView,
-      this.neonView.core,
-      this.neonView.InfoModule
-    );
+    Select.dragSelect();
     SelectOptions.initNeonView(this.neonView);
     Controls.initInsertEditControls(this.neonView);
     let editMenu = document.getElementById('editMenu');

@@ -1,135 +1,124 @@
-/** @module Select */
-
 import * as Color from './Color.js';
 import * as Controls from './Controls.js';
 import * as Grouping from './Grouping.js';
 import * as SelectOptions from './SelectOptions.js';
 import Resize from './ResizeStaff.js';
+
 const d3 = require('d3');
 const $ = require('jquery');
 
-/**
- * Handle click selection and mark elements as selected.
- * @constructor
- * @param {DragHandler} dragHandler - An instantiated DragHandler object.
- * @param {module:Zoom~Zoomhandler} zoomHandler
- * @param {NeonView} neonView - The NeonView parent.
- * @param {NeonCore} neonCore
- * @param {InfoBox} infoBox
- */
-export function ClickSelect (dragHandler, zoomHandler, neonView, neonCore, infoBox) {
-  selectListeners();
+var dragHandler, neonView, info, zoomHandler;
 
-  // Selection mode toggle
-  function selectListeners () {
-    var classesToSelect = '#svg_group use, #svg_group';
-    Controls.initSelectionButtons();
-
-    // Activating selected neumes
-    $(classesToSelect).off('mousedown', handler);
-    $(classesToSelect).on('mousedown', handler);
-
-    function handler (evt) {
-      var editing = false;
-      var insertEls = Array.from(d3.selectAll('.insertel')._groups[0]);
-      insertEls.forEach(el => {
-        if ($(el).hasClass('is-active')) {
-          editing = true;
-        }
-      });
-      if (editing || evt.shiftKey) { return; }
-      if (this.tagName === 'use') {
-        // If this was part of a drag select, drag don't reselect the one component
-        if ($(this).parents('.selected').length === 0) {
-          selectAll([this], neonCore, neonView, dragHandler, infoBox);
-        }
-      } else {
-        if (!$('#selByStaff').hasClass('is-active')) {
-          infoBox.infoListeners();
-          return;
-        }
-        // Check if point is in staff.
-        var container = document.getElementsByClassName('definition-scale')[0];
-        let pt = container.createSVGPoint();
-        pt.x = evt.clientX;
-        pt.y = evt.clientY;
-        let transformMatrix = container.getScreenCTM();
-        pt = pt.matrixTransform(transformMatrix.inverse());
-
-        let selectedStaves = Array.from($('.staff')).filter((staff) => {
-          let box = getStaffBBox(staff);
-          return (box.ulx < pt.x && pt.x < box.lrx) && (box.uly < pt.y && pt.y < box.lry);
-        });
-        if (selectedStaves.length !== 1) {
-          if ($('.selected').length > 0) {
-            infoBox.infoListeners();
-          }
-          unselect();
-          return;
-        }
-
-        var staff = selectedStaves[0];
-        if (!$(staff).hasClass('selected')) {
-          selectStaff(staff, dragHandler);
-          SelectOptions.triggerSplitActions();
-          let resize = new Resize(staff.id, neonView, dragHandler);
-          resize.drawInitialRect();
-          // Start staff dragging
-          dragHandler.dragInit();
-        }
-        staff.dispatchEvent(new MouseEvent('mousedown', {
-          screenX: evt.screenX,
-          screenY: evt.screenY,
-          clientX: evt.clientX,
-          clientY: evt.clientY,
-          ctrlKey: evt.ctrlKey,
-          shiftKey: evt.shiftKey,
-          altKey: evt.altKey,
-          metaKey: evt.metaKey,
-          view: evt.view
-        }));
-      }
-    }
-
-    // click away listeners
-    $('body').on('keydown', (evt) => { // click
-      if (evt.type === 'keydown' && evt.key !== 'Escape') return;
-      SelectOptions.endOptionsSelection();
-      if ($('.selected').length > 0) {
-        infoBox.infoListeners();
-      }
-      unselect();
-    });
-
-    $('use').on('click', function (e) {
-      e.stopPropagation();
-    });
-
-    $('#moreEdit').on('click', function (e) {
-      e.stopPropagation();
-    });
+function getSelectionType () {
+  let element = document.getElementsByClassName('sel-by active');
+  if (element.length !== 0) {
+    return element[0].id;
+  } else {
+    return null;
   }
-  ClickSelect.prototype.selectListeners = selectListeners;
 }
 
 /**
- * Handle dragging to select musical elements and staves.
- * @constructor
- * @param {DragHandler} dragHandler - Instantiated DragHandler object.
- * @param {module:Zoom~ZoomHandler} zoomHandler - Instantiated ZoomHandler object.
- * @param {NeonView} neonView - NeonView parent.
- * @param {NeonCore} neonCore
- * @param {InfoBox} infoBox
+ * Set the objects for this module.
+ * @param {object} dh - The drag handler object
+ * @param {object} nv - The NeonView object
  */
-export function DragSelect (dragHandler, zoomHandler, neonView, neonCore, infoBox) {
+export function setSelectHelperObjects (dh, nv) {
+  dragHandler = dh;
+  neonView = nv;
+  info = neonView.InfoModule;
+  zoomHandler = neonView.view.zoomHandler;
+
+  Controls.initSelectionButtons();
+  neonView.view.addUpdateCallback(clickSelect);
+  neonView.view.addUpdateCallback(dragSelect);
+}
+
+export function clickSelect () {
+  $('#svg_group, #svg_group use').off('mousedown', clickHandler);
+  $('#svg_group, #svg_group use').on('mousedown', clickHandler);
+
+  // Click away listeners
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'Escape') {
+      if ($('.selected').length > 0) {
+        info.infoListeners();
+      }
+      unselect();
+    }
+  });
+
+  $('use').on('click', (e) => { e.stopPropagation(); });
+  $('#moreEdit').on('click', (e) => { e.stopPropagation(); });
+}
+
+function clickHandler (evt) {
+  let mode = neonView.getUserMode();
+
+  // If in insert mode or panning is active from shift key
+  if (mode === 'insert' || evt.shiftKey) { return; }
+
+  // Check if the element being clicked on is part of a drag Selection
+  if (this.tagName === 'use') {
+    if ($(this).parents('.selected').length === 0) {
+      selectAll([this]);
+    }
+  } else {
+    // Check if the point being clicked on is a staff selection (if applicable)
+    if (getSelectionType() !== 'selByStaff') {
+      info.infoListeners();
+      return;
+    }
+
+    // Check if the point is in a staff.
+    let container = document.getElementsByClassName('definition-scale')[0];
+    let pt = container.createSVGPoint();
+    pt.x = evt.clientX;
+    pt.y = evt.clientY;
+    let transformMatrix = container.getScreenCTM();
+    pt = pt.matrixTransform(transformMatrix.inverse());
+
+    let selectedStaves = Array.from($('.staff')).filter((staff) => {
+      let bbox = getStaffBBox(staff);
+      return (bbox.ulx < pt.x && pt.x < bbox.lrx) && (bbox.uly < pt.y && pt.y < bbox.lry);
+    });
+    if (selectedStaves.length !== 1) {
+      if ($('.selected').length > 0) {
+        info.infoListeners();
+      }
+      unselect();
+      return;
+    }
+
+    // Select a staff
+    let staff = selectedStaves[0];
+    if (!staff.classList.contains('selected')) {
+      // Select previously unselected staff
+      selectStaff(staff, this.dragHandler);
+      let resize = new Resize(staff.id, neonView, dragHandler);
+      resize.drawInitialRect();
+      this.dragHandler.dragInit();
+    }
+    // Trigger mousedown event on the staff
+    staff.dispatchEvent(new MouseEvent('mousedown', {
+      screenX: evt.screenX,
+      screenY: evt.screenY,
+      clientX: evt.clientX,
+      clientY: evt.clientY,
+      ctrlKey: evt.ctrlKey,
+      shiftKey: evt.shiftKey,
+      altKey: evt.altKey,
+      metaKey: evt.metaKey,
+      view: evt.view
+    }));
+  }
+}
+
+export function dragSelect () {
   var initialX = 0;
-
   var initialY = 0;
-
   var panning = false;
-
   var dragSelecting = false;
-
   var canvas = d3.select('#svg_group');
   var dragSelectAction = d3.drag()
     .on('start', selStart)
@@ -138,23 +127,14 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neonCore, infoBo
   canvas.call(dragSelectAction);
   dragHandler.resetTo(dragSelectAction);
 
-  /**
-     * Start drag selecting musical elements.
-     */
   function selStart () {
-    var editing = false;
-    var insertEls = Array.from(d3.selectAll('.insertel')._groups[0]);
-    insertEls.forEach(el => {
-      if ($(el).hasClass('is-active')) {
-        editing = true;
-      }
-    });
-    if (d3.event.sourceEvent.target.nodeName !== 'use' && !editing) {
-      if (!d3.event.sourceEvent.shiftKey) {
+    let userMode = neonView.getUserMode();
+    if (d3.event.sourceEvent.target.nodeName !== 'use' && userMode !== 'insert') {
+      if (!d3.event.sourceEvent.shiftKey) { // If not holding down shift key to pan
         if (!$('#selByStaff').hasClass('is-active') || pointNotInStaff(d3.mouse(this))) {
           unselect();
           dragSelecting = true;
-          var initialP = d3.mouse(this);
+          let initialP = d3.mouse(this);
           initialX = initialP[0];
           initialY = initialP[1];
           initRect(initialX, initialY);
@@ -167,16 +147,10 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neonCore, infoBo
       panning = true;
       zoomHandler.startDrag();
     }
-    editing = false;
   }
 
-  /**
-     * Check if a point is within the bounding boxes of any staves.
-     * @param {number[]} point - An array where index 0 corresponds to x and 1 corresponds to y
-     * @returns {boolean}
-     */
   function pointNotInStaff (point) {
-    let staves = Array.from($('.staff'));
+    let staves = Array.from(document.getElementsByClassName('staff'));
     let filtered = staves.filter((staff) => {
       let box = getStaffBBox(staff);
       return (box.ulx < point[0] && point[0] < box.lrx) && (box.uly < point[1] && point[1] < box.lry);
@@ -184,9 +158,6 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neonCore, infoBo
     return (filtered.length === 0);
   }
 
-  /**
-     * Action to run while the drag select continues. Updates the rectangle.
-     */
   function selecting () {
     if (!panning && dragSelecting) {
       var currentPt = d3.mouse(this);
@@ -204,9 +175,6 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neonCore, infoBo
     }
   }
 
-  /**
-     * Finish the selection and mark elements within the rectangle as being selected.
-     */
   function selEnd () {
     if (!panning && dragSelecting) {
       var rx = parseInt($('#selectRect').attr('x'));
@@ -236,7 +204,7 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neonCore, infoBo
         }
       });
 
-      selectAll(elements, neonCore, neonView, dragHandler, infoBox);
+      selectAll(elements);
 
       dragHandler.dragInit();
       d3.selectAll('#selectRect').remove();
@@ -278,53 +246,22 @@ export function DragSelect (dragHandler, zoomHandler, neonView, neonCore, infoBo
   }
 }
 
-/**
- * Get the bounding box of a staff based on its staff lines.
- * @param {SVGSVGElement} staff
- * @returns {object}
- */
-function getStaffBBox (staff) {
-  let ulx, uly, lrx, lry;
-  Array.from($(staff).children('path')).forEach(path => {
-    let box = path.getBBox();
-    if (uly === undefined || box.y < uly) {
-      uly = box.y;
-    }
-    if (ulx === undefined || box.x < ulx) {
-      ulx = box.x;
-    }
-    if (lry === undefined || box.y + box.height > lry) {
-      lry = box.y + box.height;
-    }
-    if (lrx === undefined || box.x + box.width > lrx) {
-      lrx = box.x + box.width;
-    }
-  });
-  return { 'ulx': ulx, 'uly': uly, 'lrx': lrx, 'lry': lry };
-}
-
-/**
- * Select not neume elements.
- * @param {object[]} notNeumes - An array of not neumes elements.
- */
-function selectNn (notNeumes) {
-  if (notNeumes.length > 0) {
-    notNeumes.forEach(nn => { select(nn); });
-    return false;
-  } else {
-    return true;
+export function selectStaff (el, dragHandler) {
+  let staff = $(el);
+  if (!staff.hasClass('selected')) {
+    unselect();
+    staff.addClass('selected');
+    Controls.updateHighlight();
+    Color.highlight(el, '#d00');
+    dragHandler.dragInit();
   }
 }
 
 /**
  * Handle selecting an array of elements based on the selection type.
  * @param {SVGSVGElement[]} elements - The elements to select. Either <g> or <use>.
- * @param {NeonCore} neonCore - A neonCore instance.
- * @param {NeonView} neonView - The NeonView parent.
- * @param {DragHandler} dragHandler - A DragHandler to alow staff resizing and some neume component selection cases.
- * @param {InfoBox} infoBox
  */
-function selectAll (elements, neonCore, neonView, dragHandler, infoBox) {
+function selectAll (elements) {
   var syls = [];
 
   var neumes = [];
@@ -424,8 +361,8 @@ function selectAll (elements, neonCore, neonView, dragHandler, infoBox) {
           SelectOptions.triggerNcActions(ncChildren[0]);
         } else if (ncChildren.length === 2) {
           unselect();
-          if (isLigature(ncChildren[0], neonCore)) {
-            selectNcs(ncChildren[0], dragHandler, neonCore);
+          if (isLigature(ncChildren[0], neonView.core)) {
+            selectNcs(ncChildren[0], dragHandler, neonView.core);
             if (sharedSecondLevelParent(Array.from(document.getElementsByClassName('selected')))) {
               Grouping.triggerGrouping('ligature');
             }
@@ -486,7 +423,7 @@ function selectAll (elements, neonCore, neonView, dragHandler, infoBox) {
         unselect();
         select(ncChildren[0]);
         SelectOptions.triggerNcActions(ncChildren[0]);
-      } else if (ncChildren.length === 2 && isLigature(ncChildren[0], neonCore)) {
+      } else if (ncChildren.length === 2 && isLigature(ncChildren[0], neonView.core)) {
         unselect();
         select(ncChildren[0]);
         select(ncChildren[1]);
@@ -498,11 +435,11 @@ function selectAll (elements, neonCore, neonView, dragHandler, infoBox) {
   } else if (selectMode === 'selByNc') {
     let noClefOrCustos = selectNn(notNeumes);
     if (ncs.length === 1 && noClefOrCustos) {
-      selectNcs(ncs[0].children[0], dragHandler, neonCore);
+      selectNcs(ncs[0].children[0], dragHandler, neonView.core);
       return;
     }
     var prev = $(ncs[0]).prev();
-    if (ncs.length !== 0 && isLigature(ncs[0], neonCore) && prev.length !== 0 && isLigature($(ncs[0]).prev()[0], neonCore)) {
+    if (ncs.length !== 0 && isLigature(ncs[0], neonView.core) && prev.length !== 0 && isLigature($(ncs[0]).prev()[0], neonView.core)) {
       ncs.push($(ncs[0]).prev()[0]);
     }
     ncs.forEach(nc => { select(nc); });
@@ -534,8 +471,8 @@ function selectAll (elements, neonCore, neonView, dragHandler, infoBox) {
 
       if (secondY > firstY) {
         if (ncs[0].parentNode.id === ncs[1].parentNode.id) {
-          let isFirstLigature = isLigature(ncs[0], neonCore);
-          let isSecondLigature = isLigature(ncs[1], neonCore);
+          let isFirstLigature = isLigature(ncs[0], neonView.core);
+          let isSecondLigature = isLigature(ncs[1], neonView.core);
           if ((isFirstLigature && isSecondLigature) || (!isFirstLigature && !isSecondLigature)) {
             Grouping.triggerGrouping('ligature');
           }
@@ -584,7 +521,7 @@ function selectAll (elements, neonCore, neonView, dragHandler, infoBox) {
     }
   }
   if ($('.selected').length > 0) {
-    infoBox.stopListeners();
+    info.stopListeners();
   }
   dragHandler.dragInit();
 }
@@ -676,28 +613,11 @@ function selectNcs (el, dragHandler, neonCore) {
 }
 
 /**
- * Select a staff.
- * @param {SVGSVGElement} el - The staff element to select.
- * @param {DragHandler} dragHandler - An instantiated DragHandler.
- */
-export function selectStaff (el, dragHandler) {
-  let staff = $(el);
-  if (!staff.hasClass('selected')) {
-    unselect();
-    staff.addClass('selected');
-    Controls.updateHighlight();
-    Color.highlight(el, '#d00');
-    dragHandler.dragInit();
-  }
-}
-
-/**
  * Check if neume component is part of a ligature
  * @param {SVGSVGElement} nc - The neume component to check.
- * @param {NeonCore} neonCore - An instantiated NeonCore.
  */
-function isLigature (nc, neonCore) {
-  var attributes = neonCore.getElementAttr(nc.id);
+function isLigature (nc) {
+  var attributes = neonView.core.getElementAttr(nc.id);
   if (attributes.ligated === 'true') return true;
   return false;
 }
@@ -717,4 +637,42 @@ function sharedSecondLevelParent (elements) {
     }
   }
   return true;
+}
+
+/**
+ * Get the bounding box of a staff based on its staff lines.
+ * @param {SVGSVGElement} staff
+ * @returns {object}
+ */
+function getStaffBBox (staff) {
+  let ulx, uly, lrx, lry;
+  Array.from($(staff).children('path')).forEach(path => {
+    let box = path.getBBox();
+    if (uly === undefined || box.y < uly) {
+      uly = box.y;
+    }
+    if (ulx === undefined || box.x < ulx) {
+      ulx = box.x;
+    }
+    if (lry === undefined || box.y + box.height > lry) {
+      lry = box.y + box.height;
+    }
+    if (lrx === undefined || box.x + box.width > lrx) {
+      lrx = box.x + box.width;
+    }
+  });
+  return { 'ulx': ulx, 'uly': uly, 'lrx': lrx, 'lry': lry };
+}
+
+/**
+ * Select not neume elements.
+ * @param {object[]} notNeumes - An array of not neumes elements.
+ */
+function selectNn (notNeumes) {
+  if (notNeumes.length > 0) {
+    notNeumes.forEach(nn => { select(nn); });
+    return false;
+  } else {
+    return true;
+  }
 }

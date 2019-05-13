@@ -83,7 +83,9 @@ function DragHandler (neonView) {
   }
 
   function reset () {
-    d3.select('#svg_group').call(resetToAction);
+    if (resetToAction !== undefined) {
+      d3.select('#svg_group').call(resetToAction);
+    }
   }
 
   function endOptionsSelection () {

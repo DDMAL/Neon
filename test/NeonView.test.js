@@ -161,7 +161,7 @@ describe('Check Controls UI', () => {
 
     // get rid of imaginary numbers
     test('Test drag selection', async () => {
-      var canvas = await browser.findElement(By.id('svg_group'));
+      var canvas = await browser.findElement(By.id('mei_output'));
       const actions = browser.actions();
       await actions.move({ origin: canvas }).press().move({ x: 200, y: 200 }).perform();
       await browser.findElement(By.id('selectRect'));
