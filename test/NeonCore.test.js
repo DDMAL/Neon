@@ -13,6 +13,7 @@ beforeAll(() => {
 
 test("Test 'getElementAttr' function", async () => {
   let neon = new NeonCore(mei, 'test');
+  await neon.initDb();
   await neon.getSVG(0); // for some reason verovio can't recognize the ids if this isn't done
   let atts = await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', 0);
   expect(atts['pname']).toBe('a');
@@ -21,6 +22,7 @@ test("Test 'getElementAttr' function", async () => {
 
 test("Test 'drag' action, neume", async () => {
   let neon = new NeonCore(mei, 'test');
+  await neon.initDb();
   await neon.getSVG(0);
   let originalAtts = await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', 0);
   let editorAction = {
@@ -44,6 +46,7 @@ test("Test 'drag' action, neume", async () => {
 describe('Test insert editor action', () => {
   test("Test 'insert' action, punctum", async () => {
     let neon = new NeonCore(mei, 'test');
+    await neon.initDb();
     await neon.getSVG(0);
     let editorAction = {
       'action': 'insert',
@@ -62,6 +65,7 @@ describe('Test insert editor action', () => {
 
   test("Test 'insert' action, clef", async () => {
     let neon = new NeonCore(mei, 'test');
+    await neon.initDb();
     await neon.getSVG(0);
     let editorAction = {
       'action': 'insert',
@@ -83,6 +87,7 @@ describe('Test insert editor action', () => {
 
   test("Test 'insert' action, custos", async () => {
     let neon = new NeonCore(mei, 'test');
+    await neon.initDb();
     await neon.getSVG(0);
     let editorAction = {
       'action': 'insert',
@@ -116,6 +121,7 @@ test("Test 'remove' action", async () => {
 
 test('Test undo and redo', async () => {
   let neon = new NeonCore(mei, 'test');
+  await neon.initDb();
   await neon.getSVG(0);
   // Should not be able to undo or redo now
   expect(await neon.undo(0)).toBeFalsy();
@@ -144,6 +150,7 @@ test('Test undo and redo', async () => {
 
 test('Test chain action', async () => {
   let neon = new NeonCore(mei, 'test');
+  await neon.initDb();
   await neon.getSVG(0);
   let editorAction = {
     'action': 'chain',
@@ -179,6 +186,7 @@ test('Test chain action', async () => {
 
 test("Test 'set' action", async () => {
   let neon = new NeonCore(mei, 'test');
+  await neon.initDb();
   await await neon.getSVG(0);
   expect(await await neon.getElementAttr('m-6831ff33-aa39-4b0d-a383-e44585c6c644', 0)).toEqual({ pname: 'g', oct: '2' });
   let setAction = {
@@ -195,6 +203,7 @@ test("Test 'set' action", async () => {
 
 test("Test 'split' action", async () => {
   let neon = new NeonCore(mei, 'test');
+    await neon.initDb();
   await neon.getSVG(0);
   let editorAction = {
     'action': 'split',
