@@ -144,7 +144,7 @@ function Resize (staffId, neonView, dragHandler) {
           'lry': lry
         }
       };
-      neonView.edit(editorAction).then((result) => {
+      neonView.edit(editorAction, 0).then((result) => {
         if (result) {
           neonView.updateForCurrentPage();
         }

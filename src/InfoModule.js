@@ -52,7 +52,7 @@ export default class InfoModule {
         var ncs = element.children('.nc');
         var contour = await InfoModule.getContour(ncs);
         if (contour === 'Clivis') {
-          var attr = await InfoModule.neonView.getElementAttr($(ncs[0])[0].id);
+          var attr = await InfoModule.neonView.getElementAttr($(ncs[0])[0].id, 0);
           if (attr.ligated) {
             contour = 'Ligature';
           }
@@ -64,11 +64,11 @@ export default class InfoModule {
                 'Pitch(es): ' + pitches;
         break;
       case 'custos':
-        attributes = await InfoModule.neonView.getElementAttr(id);
+        attributes = await InfoModule.neonView.getElementAttr(id, 0);
         body += 'Pitch: ' + (attributes.pname).toUpperCase() + attributes.oct;
         break;
       case 'clef':
-        attributes = await InfoModule.neonView.getElementAttr(id);
+        attributes = await InfoModule.neonView.getElementAttr(id, 0);
         body += 'Shape: ' + attributes.shape + '<br/>' +
                 'Line: ' + attributes.line;
         break;
@@ -92,7 +92,7 @@ export default class InfoModule {
   static async getPitches (ncs) {
     var pitches = '';
     for (let nc of ncs) {
-      var attributes = await InfoModule.neonView.getElementAttr(nc.id);
+      var attributes = await InfoModule.neonView.getElementAttr(nc.id, 0);
       pitches += attributes.pname + attributes.oct + ' ';
     }
     return pitches;
@@ -106,7 +106,7 @@ export default class InfoModule {
     var contour = '';
     var previous = null;
     for (let nc of ncs) {
-      var attributes = await InfoModule.neonView.getElementAttr(nc.id);
+      var attributes = await InfoModule.neonView.getElementAttr(nc.id, 0);
       if (previous !== null) {
         if (previous.oct > attributes.oct) {
           contour += 'd';

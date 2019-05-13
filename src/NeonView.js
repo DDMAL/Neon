@@ -30,7 +30,7 @@ export default class NeonView {
       this.view = new params.View(this, params.Display, params.options.manifest);
     }
 
-    this.core = new NeonCore(params.options.meiMap);
+    this.core = new NeonCore(params.options.meiMap, this.name);
 
     this.display = this.view.display;
     this.InfoModule = params.Info;
@@ -53,24 +53,23 @@ export default class NeonView {
   }
 
   start () {
-    this.updateForCurrentPage();
+    this.core.initDb().then(() => { this.updateForCurrentPage(); });
   }
 
   updateForCurrentPage () {
     let pageNo = this.view.getCurrentPage();
     // load pages
-    let parser = new DOMParser();
-    let svg = parser.parseFromString(this.core.getSVG(pageNo), 'image/svg+xml')
-      .documentElement;
-    this.view.updateSVG(svg, pageNo);
+    this.core.getSVG(pageNo).then((svg) => {
+      this.view.updateSVG(svg, pageNo);
+    });
   }
 
   redo () {
-    return this.core.redo();
+    return this.core.redo(this.view.getCurrentPage());
   }
 
   undo () {
-    return this.core.undo();
+    return this.core.undo(this.view.getCurrentPage());
   }
 
   getUserMode () {
@@ -81,17 +80,30 @@ export default class NeonView {
     }
   }
 
-  edit (action, addToUndo = true) {
+  edit (action, pageNo) {
     let editPromise = new Promise((resolve) => {
-      resolve(this.core.edit(action, addToUndo));
+      resolve(this.core.edit(action, pageNo));
     });
     return editPromise;
   }
 
-  getElementAttr (elementID) {
+  getElementAttr (elementID, pageNo) {
     let elementPromise = new Promise((resolve, reject) => {
-      resolve(this.core.getElementAttr(elementID));
+      resolve(this.core.getElementAttr(elementID, pageNo));
     });
     return elementPromise;
+  }
+
+  save () {
+    this.core.updateDatabase();
+  }
+
+  getPageURI (pageNo) {
+    let mei = this.core.getMEI(pageNo);
+    return 'data:application/mei+xml;charset=utf-8,' + encodeURIComponent(mei);
+  }
+
+  getPageMEI (pageNo) {
+    return this.core.getMEI(pageNo);
   }
 }

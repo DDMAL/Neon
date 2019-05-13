@@ -261,7 +261,7 @@ export function selectStaff (el, dragHandler) {
  * Handle selecting an array of elements based on the selection type.
  * @param {SVGSVGElement[]} elements - The elements to select. Either <g> or <use>.
  */
-function selectAll (elements) {
+async function selectAll (elements) {
   var syls = [];
 
   var neumes = [];
@@ -361,8 +361,8 @@ function selectAll (elements) {
           SelectOptions.triggerNcActions(ncChildren[0]);
         } else if (ncChildren.length === 2) {
           unselect();
-          if (isLigature(ncChildren[0], neonView.core)) {
-            selectNcs(ncChildren[0], dragHandler, neonView.core);
+          if (await isLigature(ncChildren[0])) {
+            selectNcs(ncChildren[0], dragHandler);
             if (sharedSecondLevelParent(Array.from(document.getElementsByClassName('selected')))) {
               Grouping.triggerGrouping('ligature');
             }
@@ -423,7 +423,7 @@ function selectAll (elements) {
         unselect();
         select(ncChildren[0]);
         SelectOptions.triggerNcActions(ncChildren[0]);
-      } else if (ncChildren.length === 2 && isLigature(ncChildren[0], neonView.core)) {
+      } else if (ncChildren.length === 2 && await isLigature(ncChildren[0])) {
         unselect();
         select(ncChildren[0]);
         select(ncChildren[1]);
@@ -435,11 +435,11 @@ function selectAll (elements) {
   } else if (selectMode === 'selByNc') {
     let noClefOrCustos = selectNn(notNeumes);
     if (ncs.length === 1 && noClefOrCustos) {
-      selectNcs(ncs[0].children[0], dragHandler, neonView.core);
+      selectNcs(ncs[0].children[0], dragHandler);
       return;
     }
     var prev = $(ncs[0]).prev();
-    if (ncs.length !== 0 && isLigature(ncs[0], neonView.core) && prev.length !== 0 && isLigature($(ncs[0]).prev()[0], neonView.core)) {
+    if (ncs.length !== 0 && await isLigature(ncs[0]) && prev.length !== 0 && await isLigature($(ncs[0]).prev()[0])) {
       ncs.push($(ncs[0]).prev()[0]);
     }
     ncs.forEach(nc => { select(nc); });
@@ -471,8 +471,8 @@ function selectAll (elements) {
 
       if (secondY > firstY) {
         if (ncs[0].parentNode.id === ncs[1].parentNode.id) {
-          let isFirstLigature = isLigature(ncs[0], neonView.core);
-          let isSecondLigature = isLigature(ncs[1], neonView.core);
+          let isFirstLigature = await isLigature(ncs[0]);
+          let isSecondLigature = await isLigature(ncs[1]);
           if ((isFirstLigature && isSecondLigature) || (!isFirstLigature && !isSecondLigature)) {
             Grouping.triggerGrouping('ligature');
           }
@@ -585,18 +585,18 @@ function select (el) {
  * @param {SVGSVGElement} el - The nc element to select.
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
-function selectNcs (el, dragHandler, neonCore) {
+async function selectNcs (el, dragHandler) {
   if (!$(el).parent().hasClass('selected')) {
     var parent = el.parentNode;
     unselect();
     select(parent);
-    if (isLigature(parent, neonCore)) {
+    if (await isLigature(parent)) {
       var prevNc = $(parent).prev()[0];
-      if (isLigature(prevNc, neonCore)) {
+      if (await isLigature(prevNc)) {
         select(prevNc);
       } else {
         var nextNc = $(parent).next()[0];
-        if (isLigature(nextNc, neonCore)) {
+        if (await isLigature(nextNc)) {
           select(nextNc);
         } else {
           console.warn('Error: Neither prev or next nc are ligatures');
@@ -617,7 +617,7 @@ function selectNcs (el, dragHandler, neonCore) {
  * @param {SVGSVGElement} nc - The neume component to check.
  */
 async function isLigature (nc) {
-  var attributes = await neonView.core.getElementAttr(nc.id);
+  var attributes = await neonView.getElementAttr(nc.id, 0);
   return (attributes.ligated === 'true');
 }
 

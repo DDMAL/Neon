@@ -312,7 +312,7 @@ export function initInsertEditControls (neonView) {
   });
 
   function undoHandler () {
-    if (!neonView.undo()) {
+    if (!neonView.undo(0)) {
       console.error('Failed to undo action.');
     } else {
       neonView.updateForCurrentPage();
@@ -320,7 +320,7 @@ export function initInsertEditControls (neonView) {
   }
 
   function redoHandler () {
-    if (!neonView.redo()) {
+    if (!neonView.redo(0)) {
       console.error('Failed to redo action');
     } else {
       neonView.updateForCurrentPage();
@@ -344,7 +344,7 @@ export function initInsertEditControls (neonView) {
       'action': 'chain',
       'param': toRemove
     };
-    neonView.edit(chainAction).then(() => { neonView.updateForCurrentPage(); });
+    neonView.edit(chainAction, 0).then(() => { neonView.updateForCurrentPage(); });
   }
 }
 

@@ -7,11 +7,14 @@ import InfoModule from './InfoModule.js';
 const $ = require('jquery');
 
 $.get(meiFile, (data) => {
+  let map = new Map();
+  map.set(0, data);
   let params = {
     mode: 'single',
     options: {
       image: bgImg,
-      meiMap: data
+      meiMap: map,
+      name: 'test'
     },
     View: SingleView,
     Display: DisplayPanel,

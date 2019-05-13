@@ -68,7 +68,7 @@ function DragHandler (neonView) {
       var yDiff = Math.abs(dragStartCoords[1] - dragEndCoords[1]);
 
       if (xDiff > 5 || yDiff > 5) {
-        neonView.edit(editorAction).then(() => {
+        neonView.edit(editorAction, 0).then(() => {
           neonView.updateForCurrentPage();
           endOptionsSelection();
           reset();
