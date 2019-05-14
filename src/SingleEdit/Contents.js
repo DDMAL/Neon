@@ -1,4 +1,4 @@
-/** @module utils/Contents */
+/** @module SingleEdit/Contents */
 
 import PunctumIcon from '../img/punctum.png';
 import VirgaIcon from '../img/virga.png';
@@ -21,37 +21,6 @@ import TorculusIcon from '../img/torculus.png';
 import PorrectusIcon from '../img/porrectus.png';
 import PressusIcon from '../img/pressus.png';
 import Icons from '../img/icons.svg';
-
-export function displayControlsPanel (handleZoom) {
-  let contents =
-  "<p class='panel-heading' id='displayHeader'>Display" +
-  "<svg class='icon is-pulled-right'><use id='toggleDisplay' xlink:href='" + Icons + "#dropdown-down'></use></svg></p>" +
-  "<div id='displayContents'>";
-  if (handleZoom) {
-    contents +=
-    "<a class='panel-block has-text-centered'><button class='button' id='reset-zoom'>Zoom</button>" +
-    "<input class='slider is-fullwidth' id='zoomSlider' step='5' min='25' max='400' value='100' type='range'/>" +
-    "<output id='zoomOutput' for='zoomSlider'>100</output></a>";
-  }
-  contents +=
-  "<a class='panel-block has-text-centered'><button class='button' id='reset-opacity'>Glyph Opacity</button>" +
-  "<input class='slider is-fullwidth' id='opacitySlider' step='5' min='0' max='100' value='100' type='range'/>" +
-  "<output id='opacityOutput' for='opacitySlider'>100</output></a>" +
-  "<a class='panel-block has-text-centered'><button class='button' id='reset-bg-opacity'>Image Opacity</button>" +
-  "<input class='slider is-fullwidth' id='bgOpacitySlider' step='5' min='0' max='100' value='100' type='range'/>" +
-  "<output id='bgOpacityOutput' for='bgOpacitySlider'>100</output></a>" +
-  "<div class='panel-block' id='extensible-block'>" +
-  "<div class='dropdown' id='highlight-dropdown'><div class='dropdown-trigger'>" +
-  "<button class='button' id='highlight-button' aria-haspopup='true' aria-controls='highlight-menu'>" +
-  "<span>Highlight</span><span id='highlight-type'>&nbsp;- Off</span>" +
-  "<svg class='icon'><use id='toggleDisplay' xlink:href='" + Icons + "#dropdown-down'></use>" +
-  "</svg></button></div><div class='dropdown-menu' id='highlight-menu' role='menu'>" +
-  "<div class='dropdown-content'><a class='dropdown-item' id='highlight-staff'>Staff</a>" +
-  "<a class='dropdown-item' id='highlight-syllable'>Syllable</a>" +
-  "<a class='dropdown-item' id='highlight-neume'>Neume</a><hr class='dropdown-divider'/>" +
-  "<a class='dropdown-item' id='highlight-none'>None</a></div></div></div></div></div>";
-  return contents;
-}
 
 /**
  * HTML for each insert tab (neume, grouping, clef, system, and division).

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: utils/Contents.js</title>
+    <title>JSDoc: Source: SingleEdit/Contents.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: utils/Contents.js</h1>
+    <h1 class="page-title">Source: SingleEdit/Contents.js</h1>
 
     
 
@@ -26,7 +26,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/** @module utils/Contents */
+            <pre class="prettyprint source linenums"><code>/** @module SingleEdit/Contents */
 
 import PunctumIcon from '../img/punctum.png';
 import VirgaIcon from '../img/virga.png';
@@ -49,37 +49,6 @@ import TorculusIcon from '../img/torculus.png';
 import PorrectusIcon from '../img/porrectus.png';
 import PressusIcon from '../img/pressus.png';
 import Icons from '../img/icons.svg';
-
-export function displayControlsPanel (handleZoom) {
-  let contents =
-  "&lt;p class='panel-heading' id='displayHeader'>Display" +
-  "&lt;svg class='icon is-pulled-right'>&lt;use id='toggleDisplay' xlink:href='" + Icons + "#dropdown-down'>&lt;/use>&lt;/svg>&lt;/p>" +
-  "&lt;div id='displayContents'>";
-  if (handleZoom) {
-    contents +=
-    "&lt;a class='panel-block has-text-centered'>&lt;button class='button' id='reset-zoom'>Zoom&lt;/button>" +
-    "&lt;input class='slider is-fullwidth' id='zoomSlider' step='5' min='25' max='400' value='100' type='range'/>" +
-    "&lt;output id='zoomOutput' for='zoomSlider'>100&lt;/output>&lt;/a>";
-  }
-  contents +=
-  "&lt;a class='panel-block has-text-centered'>&lt;button class='button' id='reset-opacity'>Glyph Opacity&lt;/button>" +
-  "&lt;input class='slider is-fullwidth' id='opacitySlider' step='5' min='0' max='100' value='100' type='range'/>" +
-  "&lt;output id='opacityOutput' for='opacitySlider'>100&lt;/output>&lt;/a>" +
-  "&lt;a class='panel-block has-text-centered'>&lt;button class='button' id='reset-bg-opacity'>Image Opacity&lt;/button>" +
-  "&lt;input class='slider is-fullwidth' id='bgOpacitySlider' step='5' min='0' max='100' value='100' type='range'/>" +
-  "&lt;output id='bgOpacityOutput' for='bgOpacitySlider'>100&lt;/output>&lt;/a>" +
-  "&lt;div class='panel-block' id='extensible-block'>" +
-  "&lt;div class='dropdown' id='highlight-dropdown'>&lt;div class='dropdown-trigger'>" +
-  "&lt;button class='button' id='highlight-button' aria-haspopup='true' aria-controls='highlight-menu'>" +
-  "&lt;span>Highlight&lt;/span>&lt;span id='highlight-type'>&amp;nbsp;- Off&lt;/span>" +
-  "&lt;svg class='icon'>&lt;use id='toggleDisplay' xlink:href='" + Icons + "#dropdown-down'>&lt;/use>" +
-  "&lt;/svg>&lt;/button>&lt;/div>&lt;div class='dropdown-menu' id='highlight-menu' role='menu'>" +
-  "&lt;div class='dropdown-content'>&lt;a class='dropdown-item' id='highlight-staff'>Staff&lt;/a>" +
-  "&lt;a class='dropdown-item' id='highlight-syllable'>Syllable&lt;/a>" +
-  "&lt;a class='dropdown-item' id='highlight-neume'>Neume&lt;/a>&lt;hr class='dropdown-divider'/>" +
-  "&lt;a class='dropdown-item' id='highlight-none'>None&lt;/a>&lt;/div>&lt;/div>&lt;/div>&lt;/div>&lt;/div>";
-  return contents;
-}
 
 /**
  * HTML for each insert tab (neume, grouping, clef, system, and division).
@@ -309,13 +278,13 @@ export const groupingMenu = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Contents.html">utils/Contents</a></li><li><a href="module-utils_Controls.html">utils/Controls</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DisplayPanel.html">DisplayPanel</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InfoModule.html">InfoModule</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_DisplayControls.html">SingleView/DisplayControls</a></li><li><a href="module-SingleView_DisplayPanel.html">SingleView/DisplayPanel</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.1</a> on Tue May 14 2019 10:04:59 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.1</a> on Tue May 14 2019 10:56:12 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>

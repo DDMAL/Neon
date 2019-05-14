@@ -1,4 +1,4 @@
-import * as Controls from '../utils/Controls.js';
+import { bindInsertTabs, initEditModeControls, initNavbar, initInsertEditControls } from './EditControls.js';
 import DragHandler from '../SingleView/DragHandler.js';
 import * as Select from './Select.js';
 import InsertHandler from './InsertHandler.js';
@@ -15,7 +15,7 @@ class SingleEditMode {
    */
   constructor (neonView) {
     this.neonView = neonView;
-    Controls.initEditMode(this);
+    initEditModeControls(this);
   }
 
   /**
@@ -23,15 +23,15 @@ class SingleEditMode {
    */
   initEditMode () {
     this.dragHandler = new DragHandler(this.neonView);
-    Controls.initNavbar(this.neonView);
+    initNavbar(this.neonView);
     Select.setSelectHelperObjects(this.dragHandler, this.neonView);
     Select.clickSelect();
     this.insertHandler = new InsertHandler(this.neonView);
-    Controls.bindInsertTabs(this.insertHandler);
+    bindInsertTabs(this.insertHandler);
     document.getElementById('neumeTab').click();
     Select.dragSelect();
     SelectOptions.initNeonView(this.neonView);
-    Controls.initInsertEditControls(this.neonView);
+    initInsertEditControls(this.neonView);
     let editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = '#ffc7c7';
     editMenu.style.fontWeight = 'bold';

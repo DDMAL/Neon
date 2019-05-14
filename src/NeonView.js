@@ -1,5 +1,5 @@
 import NeonCore from './NeonCore.js';
-import * as Notification from './Notification.js';
+import * as Notification from './utils/Notification.js';
 
 /**
  * NeonView class. Manages the other modules of Neon and communicates with

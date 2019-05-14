@@ -1,7 +1,7 @@
 /** @module SingleEdit/SelectOptions */
-import * as Contents from '../utils/Contents.js';
+import * as Contents from './Contents.js';
 import * as Grouping from './Grouping.js';
-import * as Notification from '../Notification.js';
+import * as Notification from '../utils/Notification.js';
 import InfoModule from '../InfoModule.js';
 import SplitHandler from './SplitHandler.js';
 const $ = require('jquery');

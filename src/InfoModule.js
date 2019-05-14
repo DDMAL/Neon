@@ -1,4 +1,4 @@
-import { setInfoControls } from './utils/Controls.js';
+/** @module InfoModule */
 
 const $ = require('jquery');
 
@@ -215,5 +215,26 @@ InfoModule.neumeGroups = new Map(
     ['sd', 'Pressus'], ['dd', 'Climacus'], ['ddu', 'Climacus resupinus'], ['udu', 'Torculus resupinus'], ['dud', 'Porrectus flexus'],
     ['udd', 'Pes subpunctis'], ['uud', 'Scandicus flexus'], ['uudd', 'Scandicus subpunctis'], ['dudd', 'Porrectus subpunctis']]
 );
+
+/**
+ * Set listener on info visibility checkbox.
+ */
+function setInfoControls () {
+  updateInfoVisibility();
+  $('#displayInfo').click(updateInfoVisibility);
+}
+
+/**
+ * Update the visibility of infoBox
+ */
+function updateInfoVisibility () {
+  if ($('#displayInfo').is(':checked')) {
+    $('#neume_info').append("<article class='message' style='display: none;'><div class='message-header'><p></p>" +
+            "<button class='delete' id='notification-delete' aria-label='delete'></button></div>" +
+            "<div class='message-body'></div>");
+  } else {
+    $('#neume_info').empty();
+  }
+}
 
 export { InfoModule as default };

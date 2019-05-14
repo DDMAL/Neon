@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: SingleView</title>
+    <title>JSDoc: Module: SingleEdit/EditControls</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: SingleView</h1>
+    <h1 class="page-title">Module: SingleEdit/EditControls</h1>
 
     
 
@@ -28,9 +28,6 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>SingleView<span class="signature">(neonView, DisplayPanel, image)</span><span class="type-signature"></span></h2>
-        
-            <div class="class-description">A view module for displaying a single page of a manuscript.</div>
         
     
 </header>
@@ -40,12 +37,34 @@
     
         
 
+        
     
-    <h2>Constructor</h2>
+    </div>
+
     
 
     
-    <h4 class="name" id="SingleView"><span class="type-signature"></span>new SingleView<span class="signature">(neonView, DisplayPanel, image)</span><span class="type-signature"></span></h4>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".bindInsertTabs"><span class="type-signature">(static) </span>bindInsertTabs<span class="signature">(insertHandler)</span><span class="type-signature"></span></h4>
     
 
     
@@ -53,7 +72,281 @@
 
 
 <div class="description">
-    Constructor for SingleView.
+    Bind listeners to insert tabs.'
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>insertHandler</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="InsertHandler.html">InsertHandler</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An InsertHandler to run the tasks.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="SingleEdit_EditControls.js.html">SingleEdit/EditControls.js</a>, <a href="SingleEdit_EditControls.js.html#line32">line 32</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".initEditModeControls"><span class="type-signature">(static) </span>initEditModeControls<span class="signature">(editMode)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Set listener on EditMode button.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>editMode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SingleEditMode.html">SingleEditMode</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The EditMode object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="SingleEdit_EditControls.js.html">SingleEdit/EditControls.js</a>, <a href="SingleEdit_EditControls.js.html#line14">line 14</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".initInsertEditControls"><span class="type-signature">(static) </span>initInsertEditControls<span class="signature">(neonView)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Initialize Edit and Insert control panels.
 </div>
 
 
@@ -109,33 +402,124 @@
         </tr>
 
     
+    </tbody>
+</table>
 
-        <tr>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="SingleEdit_EditControls.js.html">SingleEdit/EditControls.js</a>, <a href="SingleEdit_EditControls.js.html#line91">line 91</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
             
-                <td class="name"><code>DisplayPanel</code></td>
-            
 
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
+    
+
+    
+    <h4 class="name" id=".initNavbar"><span class="type-signature">(static) </span>initNavbar<span class="signature">(filename, neonView)</span><span class="type-signature"></span></h4>
+    
+
+    
 
 
-            
-            </td>
 
-            
+<div class="description">
+    Set listener on switching EditMode button to File dropdown in the navbar.
+</div>
 
-            
 
-            <td class="description last">The constructor for a DisplayPanel.</td>
-        </tr>
 
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
 
         <tr>
             
-                <td class="name"><code>image</code></td>
+                <td class="name"><code>filename</code></td>
             
 
             <td class="type">
@@ -151,7 +535,30 @@
 
             
 
-            <td class="description last">The link to the background image for the page.</td>
+            <td class="description last">The name of the MEI file.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>neonView</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NeonView.html">NeonView</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
         </tr>
 
     
@@ -192,7 +599,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SingleView_SingleView.js.html">SingleView/SingleView.js</a>, <a href="SingleView_SingleView.js.html#line17">line 17</a>
+        <a href="SingleEdit_EditControls.js.html">SingleEdit/EditControls.js</a>, <a href="SingleEdit_EditControls.js.html#line55">line 55</a>
     </li></ul></dd>
     
 
@@ -222,33 +629,13 @@
 
 
 
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
         
             
 
     
 
     
-    <h4 class="name" id="addUpdateCallback"><span class="type-signature"></span>addUpdateCallback<span class="signature">(cb)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".initSelectionButtons"><span class="type-signature">(static) </span>initSelectionButtons<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -256,7 +643,95 @@
 
 
 <div class="description">
-    Add a callback to the list of those be called when the page updates.
+    Set listeners on the buttons to change selection modes.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="SingleEdit_EditControls.js.html">SingleEdit/EditControls.js</a>, <a href="SingleEdit_EditControls.js.html#line219">line 219</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~activate"><span class="type-signature">(inner) </span>activate<span class="signature">(id, insertHandler)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Activate a certain insert action.
 </div>
 
 
@@ -292,13 +767,13 @@
 
         <tr>
             
-                <td class="name"><code>cb</code></td>
+                <td class="name"><code>id</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type">string</span>
 
 
             
@@ -308,7 +783,30 @@
 
             
 
-            <td class="description last">The callback function to add to the list.</td>
+            <td class="description last">The ID of the insert action tab.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>insertHandler</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="InsertHandler.html">InsertHandler</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An InsertHandler object.</td>
         </tr>
 
     
@@ -349,7 +847,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SingleView_SingleView.js.html">SingleView/SingleView.js</a>, <a href="SingleView_SingleView.js.html#line72">line 72</a>
+        <a href="SingleEdit_EditControls.js.html">SingleEdit/EditControls.js</a>, <a href="SingleEdit_EditControls.js.html#line173">line 173</a>
     </li></ul></dd>
     
 
@@ -385,7 +883,7 @@
     
 
     
-    <h4 class="name" id="getCurrentPage"><span class="type-signature"></span>getCurrentPage<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
+    <h4 class="name" id="~bindElements"><span class="type-signature">(inner) </span>bindElements<span class="signature">(insertHandler)</span><span class="type-signature"></span></h4>
     
 
     
@@ -393,113 +891,7 @@
 
 
 <div class="description">
-    Returns the zero-indexed number of the current page. This will always be zero.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SingleView_SingleView.js.html">SingleView/SingleView.js</a>, <a href="SingleView_SingleView.js.html#line101">line 101</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">number</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="removeUpdateCallback"><span class="type-signature"></span>removeUpdateCallback<span class="signature">(cb)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Remove a callback from the list of callbacks if it is part of the list.
+    Bind listeners to insert tab elements.
 </div>
 
 
@@ -535,13 +927,13 @@
 
         <tr>
             
-                <td class="name"><code>cb</code></td>
+                <td class="name"><code>insertHandler</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type"><a href="InsertHandler.html">InsertHandler</a></span>
 
 
             
@@ -551,7 +943,7 @@
 
             
 
-            <td class="description last">The callback to be removed.</td>
+            <td class="description last">An InsertHandler object.</td>
         </tr>
 
     
@@ -592,7 +984,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SingleView_SingleView.js.html">SingleView/SingleView.js</a>, <a href="SingleView_SingleView.js.html#line80">line 80</a>
+        <a href="SingleEdit_EditControls.js.html">SingleEdit/EditControls.js</a>, <a href="SingleEdit_EditControls.js.html#line195">line 195</a>
     </li></ul></dd>
     
 
@@ -628,7 +1020,7 @@
     
 
     
-    <h4 class="name" id="resetTransformations"><span class="type-signature"></span>resetTransformations<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~deactivate"><span class="type-signature">(inner) </span>deactivate<span class="signature">(type)</span><span class="type-signature"></span></h4>
     
 
     
@@ -636,183 +1028,7 @@
 
 
 <div class="description">
-    Reset the transformations that have been applied to the SVG upon update.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SingleView_SingleView.js.html">SingleView/SingleView.js</a>, <a href="SingleView_SingleView.js.html#line92">line 92</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="setViewEventHandlers"><span class="type-signature"></span>setViewEventHandlers<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Set event handlers for the view and display panel.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SingleView_SingleView.js.html">SingleView/SingleView.js</a>, <a href="SingleView_SingleView.js.html#line108">line 108</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="updateSVG"><span class="type-signature"></span>updateSVG<span class="signature">(svg)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Update the SVG being displayed.
+    Deactivate a certain insert action.
 </div>
 
 
@@ -848,13 +1064,13 @@
 
         <tr>
             
-                <td class="name"><code>svg</code></td>
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">SVGSVGElement</span>
+<span class="param-type">string</span>
 
 
             
@@ -864,7 +1080,7 @@
 
             
 
-            <td class="description last">The SVG to update to.</td>
+            <td class="description last">A JQuery selector for the action tab.</td>
         </tr>
 
     
@@ -905,7 +1121,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SingleView_SingleView.js.html">SingleView/SingleView.js</a>, <a href="SingleView_SingleView.js.html#line52">line 52</a>
+        <a href="SingleEdit_EditControls.js.html">SingleEdit/EditControls.js</a>, <a href="SingleEdit_EditControls.js.html#line184">line 184</a>
     </li></ul></dd>
     
 

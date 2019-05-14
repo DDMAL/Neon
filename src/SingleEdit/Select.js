@@ -1,7 +1,8 @@
 /** @module SingleEdit/Select */
 
 import * as Color from '../utils/Color.js';
-import * as Controls from '../utils/Controls.js';
+import { updateHighlight } from '../SingleView/DisplayControls.js';
+import { initSelectionButtons } from './EditControls.js';
 import * as Grouping from './Grouping.js';
 import * as SelectOptions from './SelectOptions.js';
 import Resize from './ResizeStaff.js';
@@ -35,7 +36,7 @@ export function setSelectHelperObjects (dh, nv) {
   info = neonView.InfoModule;
   zoomHandler = neonView.view.zoomHandler;
 
-  Controls.initSelectionButtons();
+  initSelectionButtons();
   neonView.view.addUpdateCallback(clickSelect);
   neonView.view.addUpdateCallback(dragSelect);
 }
@@ -277,7 +278,7 @@ export function selectStaff (el, dragHandler) {
   if (!staff.hasClass('selected')) {
     unselect();
     staff.addClass('selected');
-    Controls.updateHighlight();
+    updateHighlight();
     Color.highlight(el, '#d00');
     dragHandler.dragInit();
   }
@@ -342,7 +343,7 @@ async function selectAll (elements) {
       $(elem).addClass('selected');
     });
 
-    Controls.updateHighlight();
+    updateHighlight();
     toSelect.forEach(elem => {
       Color.highlight(elem, '#d00');
     });
@@ -577,7 +578,7 @@ export function unselect () {
   } else {
     SelectOptions.endOptionsSelection();
   }
-  Controls.updateHighlight();
+  updateHighlight();
 }
 
 /**
@@ -603,7 +604,7 @@ function select (el) {
       }
     }
   }
-  Controls.updateHighlight();
+  updateHighlight();
 }
 
 /**

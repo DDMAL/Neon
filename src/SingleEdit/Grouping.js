@@ -1,8 +1,8 @@
 /** @module SingleEdit/Grouping */
 
-import * as Contents from '../utils/Contents.js';
+import * as Contents from './Contents.js';
 import * as Warnings from '../Warnings.js';
-import * as Notification from '../Notification.js';
+import * as Notification from '../utils/Notification.js';
 import { unsetVirgaAction, unsetInclinatumAction } from './SelectOptions.js';
 import InfoModule from '../InfoModule.js';
 const $ = require('jquery');

@@ -27,8 +27,30 @@ class NeonCore {
 
     Validation.init();
 
+    /**
+     * Stacks of previous MEI files representing actions that can be undone for each page.
+     * @type {Map.<number, Array.<string>>}
+     */
     this.undoStacks = new Map();
+
+    /**
+     * Stacks of previous MEI files representing actions that can be redone for each page.
+     * @type {Map.<number, Array.<string>>}
+     */
     this.redoStacks = new Map();
+
+    /**
+     * A cache entry.
+     * @typedef {Object} CacheEntry
+     * @property {boolean} dirty - If the entry has been modified since being fetched from the database.
+     * @property {string} mei - The MEI data for the page.
+     * @property {SVGSVGElement} svg - The rendered SVG for the page.
+     */
+
+    /**
+     * A cache mapping a page number to a {@link CacheEntry}.
+     * @type {Map.<number, CacheEntry>}
+     */
     this.neonCache = new Map();
 
     this.parser = new DOMParser();

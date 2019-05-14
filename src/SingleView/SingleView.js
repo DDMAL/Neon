@@ -1,4 +1,4 @@
-import * as Controls from '../utils/Controls.js';
+import { updateHighlight, setOpacityFromSlider } from './DisplayControls.js';
 import * as Cursor from '../utils/Cursor.js';
 
 const d3 = require('d3');
@@ -60,7 +60,7 @@ class SingleView {
     this.bg.setAttribute('height', height);
     this.bg.setAttribute('width', width);
     this.group.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
-    Controls.updateHighlight();
+    updateHighlight();
     this.resetTransformations();
     this.updateCallbacks.forEach(callback => callback());
   }
@@ -91,7 +91,7 @@ class SingleView {
    */
   resetTransformations () {
     this.displayPanel.zoomHandler.restoreTransformation();
-    Controls.setOpacityFromSlider();
+    setOpacityFromSlider();
   }
 
   /**
