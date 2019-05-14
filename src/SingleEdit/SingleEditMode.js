@@ -4,12 +4,23 @@ import * as Select from './Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';
 
-export default class EditMode {
+/**
+ * An Edit Module for a single page of a manuscript.
+ * Works with the SingleView module.
+ */
+class SingleEditMode {
+  /**
+   * Constructor for an EditMode object.
+   * @param {NeonView} neonView - The NeonView parent.
+   */
   constructor (neonView) {
     this.neonView = neonView;
     Controls.initEditMode(this);
   }
 
+  /**
+   * Initialize the start of edit mode when first leaving viewer mode.
+   */
   initEditMode () {
     this.dragHandler = new DragHandler(this.neonView);
     Controls.initNavbar(this.neonView);
@@ -26,6 +37,10 @@ export default class EditMode {
     editMenu.style.fontWeight = 'bold';
   }
 
+  /**
+   * Get the user mode that Neon is in. Either insert, edit, or viewer.
+   * @returns {string}
+   */
   getUserMode () {
     if (this.insertHandler !== undefined) {
       if (this.insertHandler.isInsertMode()) {
@@ -36,3 +51,5 @@ export default class EditMode {
     return 'viewer';
   }
 }
+
+export { SingleEditMode as default };

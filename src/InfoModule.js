@@ -2,7 +2,14 @@ import { setInfoControls } from './utils/Controls.js';
 
 const $ = require('jquery');
 
-export default class InfoModule {
+/**
+ * Class that manages getting information for elements in Neon from Verovio.
+ */
+class InfoModule {
+  /**
+   * A constructor for an InfoModule.
+   * @param {NeonView} neonView - The NeonView parent.
+   */
   constructor (neonView) {
     this.neonView = neonView;
     // Add info box enable/disable check box
@@ -16,19 +23,32 @@ export default class InfoModule {
     setInfoControls();
   }
 
+  /**
+   * Set listeners for the InfoModule.
+   */
   static infoListeners () {
     $('.active-page').find('.neume,.custos,.clef').on('mouseover', InfoModule.updateInfo);
   }
 
+  /**
+   * Stop listeners for the InfoModule.
+   */
   static stopListeners () {
     $('.neume,.custos,.clef').off('mouseover', InfoModule.updateInfo);
   }
 
+  /**
+   * Restart listeners for the InfoModule.
+   */
   static resetInfoListeners () {
     InfoModule.stopListeners();
     InfoModule.infoListeners();
   }
 
+  /**
+   * Get updated info for the calling element based on its element type.
+   * Makes calls to NeonCore to get the information necessary.
+   */
   static async updateInfo () {
   // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the <g> element
   // So we will simply return if ID does not exist for now
@@ -87,7 +107,7 @@ export default class InfoModule {
 
   /**
      * Get the individual pitches of a neume.
-     * @param {array.<SVGSVGElement>} ncs - neume components in the neume.
+     * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
      */
   static async getPitches (ncs) {
     var pitches = '';
@@ -100,7 +120,7 @@ export default class InfoModule {
 
   /**
      * Get the contour of a neume.
-     * @param {array.<SVGSVGElement>} ncs - neume components in the neume.
+     * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
      */
   static async getContour (ncs) {
     var contour = '';
@@ -187,8 +207,13 @@ export default class InfoModule {
   }
 }
 
+/**
+ * Map of contours to neume names.
+ */
 InfoModule.neumeGroups = new Map(
   [['', 'Punctum'], ['u', 'Pes'], ['d', 'Clivis'], ['uu', 'Scandicus'], ['ud', 'Torculus'], ['du', 'Porrectus'], ['s', 'Distropha'], ['ss', 'Tristopha'],
     ['sd', 'Pressus'], ['dd', 'Climacus'], ['ddu', 'Climacus resupinus'], ['udu', 'Torculus resupinus'], ['dud', 'Porrectus flexus'],
     ['udd', 'Pes subpunctis'], ['uud', 'Scandicus flexus'], ['uudd', 'Scandicus subpunctis'], ['dudd', 'Porrectus subpunctis']]
 );
+
+export { InfoModule as default };

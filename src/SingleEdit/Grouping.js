@@ -1,4 +1,4 @@
-/** @module Grouping */
+/** @module SingleEdit/Grouping */
 
 import * as Contents from '../utils/Contents.js';
 import * as Warnings from '../Warnings.js';
@@ -15,6 +15,7 @@ var neonView;
 
 /**
  * Set the neonView member.
+ * @param {NeonView} view
  */
 export function initNeonView (view) {
   neonView = view;

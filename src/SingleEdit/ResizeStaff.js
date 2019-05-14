@@ -1,6 +1,6 @@
 /**
  * Support for resizing the staff by creating a resizable box around it.
- * @module ResizeStaff
+ * @module SingleEdit/ResizeStaff
  */
 
 import { selectStaff } from './Select.js';

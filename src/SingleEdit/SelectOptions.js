@@ -1,4 +1,4 @@
-/** @module SelectOptions */
+/** @module SingleEdit/SelectOptions */
 import * as Contents from '../utils/Contents.js';
 import * as Grouping from './Grouping.js';
 import * as Notification from '../Notification.js';
@@ -56,7 +56,7 @@ export function unsetVirgaAction (id) {
 // TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
 /**
  * Trigger the extra nc action menu.
- * @param {SVGSVGElement} nc - The last selected elements.
+ * @param {SVGGraphicsElement} nc - The last selected elements.
  */
 export function triggerNcActions (nc) {
   endOptionsSelection();
@@ -176,6 +176,7 @@ export function triggerSylActions () {
 
 /**
  * Trigger extra clef actions.
+ * @param {SVGGraphicsElement} clef - The clef that actions would be applied to.
  */
 export function triggerClefActions (clef) {
   endOptionsSelection();

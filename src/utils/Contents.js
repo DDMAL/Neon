@@ -1,4 +1,4 @@
-/** @module Contents */
+/** @module utils/Contents */
 
 import PunctumIcon from '../img/punctum.png';
 import VirgaIcon from '../img/virga.png';

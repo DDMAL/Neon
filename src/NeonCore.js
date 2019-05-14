@@ -3,10 +3,16 @@ import PouchDb from 'pouchdb';
 
 const verovio = require('verovio-dev');
 
-export default class NeonCore {
+/**
+ * The core component of Neon. This manages the database,
+ * the verovio toolkit, the cache, and undo/redo stacks.
+ */
+class NeonCore {
   /**
    * Constructor for NeonCore
    * @param {Map<number, string>} meiMap - Map of zero-indexed page no to MEI.
+   * @param {string} title - The title of the page or manuscript.
+   * @returns {object} A NeonCore object.
    */
   constructor (meiMap, title) {
     this.vrvToolkit = new verovio.toolkit();
@@ -32,6 +38,10 @@ export default class NeonCore {
     this.meiMap = meiMap;
   }
 
+  /**
+   * Initialize the PouchDb database based on the provided MEI.
+   * This should only be run if previous data does not exist.
+   */
   async initDb () {
     for (let pair of this.meiMap) {
       let key = pair[0];
@@ -55,6 +65,12 @@ export default class NeonCore {
     }
   }
 
+  /**
+   * Load a page into the verovio toolkit. This will fetch the
+   * page from the cache or from the database.
+   * @param {number} pageNo - The zero-indexed page number to load.
+   * @returns {Promise} A promise that resolves to the cache entry.
+   */
   loadPage (pageNo) {
     return new Promise((resolve, reject) => {
       if (this.currentPage !== pageNo) {
@@ -75,6 +91,12 @@ export default class NeonCore {
     });
   }
 
+  /**
+   * Load data into the verovio toolkit and update the cache.
+   * @param {number} pageNo - The zero-indexed page number.
+   * @param {string} data - The MEI of the page as a string.
+   * @param {boolean} [dirty] - If the cache entry should be marked as dirty. Defaults to false.
+   */
   loadData (pageNo, data, dirty = false) {
     Validation.sendForValidation(data);
     let svg = this.parser.parseFromString(
@@ -89,6 +111,11 @@ export default class NeonCore {
     this.currentPage = pageNo;
   }
 
+  /**
+   * Get the SVG for a specific page number.
+   * @param {number} pageNo - The zero-indexed page number.
+   * @returns {Promise} A promise that resolves to the SVG.
+   */
   getSVG (pageNo) {
     return new Promise((resolve, reject) => {
       this.loadPage(pageNo).then((entry) => {
@@ -97,6 +124,11 @@ export default class NeonCore {
     });
   }
 
+  /**
+   * Get the MEI for a specific page number.
+   * @param {number} pageNo - The zero-indexed page number.
+   * @returns {Promise} A promise that resolves to the MEI as a string.
+   */
   getMEI (pageNo) {
     return new Promise((resolve, reject) => {
       this.loadPage(pageNo).then((entry) => {
@@ -105,7 +137,13 @@ export default class NeonCore {
     });
   }
 
-  async getElementAttr (elementId, pageNo) {
+  /**
+   * Get musical element attributes from the verovio toolkit.
+   * @param {string} elementId - The unique ID of the musical element.
+   * @param {number} pageNo - The zero-indexed page number the element is on.
+   * @returns {Promise} A promise that resolves to the attributes in an object.
+   */
+  getElementAttr (elementId, pageNo) {
     return new Promise((resolve) => {
       this.loadPage(pageNo).then(() => {
         resolve(this.vrvToolkit.getElementAttr(elementId));
@@ -113,6 +151,14 @@ export default class NeonCore {
     });
   }
 
+  /**
+   * Perform an editor action on a specific page.
+   * @param {object} action - The editor toolkit action object.
+   * @param {string} action.action - The name of the action to perform.
+   * @param {object|array} action.param - The parameters of the action(s)
+   * @param {number} pageNo - The zero-indexed page number to perform the action on.
+   * @returns {boolean} If the action succeeded or not.
+   */
   async edit (editorAction, pageNo) {
     if (this.currentPage !== pageNo) {
       await this.loadPage(pageNo);
@@ -137,10 +183,19 @@ export default class NeonCore {
     return result;
   }
 
+  /**
+   * Get the edit info string from the verovio toolkit.
+   * @returns {string}
+   */
   info () {
     return this.vrvToolkit.editInfo();
   }
 
+  /**
+   * Undo the last action performed on a specific page.
+   * @param {number} pageNo - The zero-indexed page number.
+   * @returns {boolean} If an action undone.
+   */
   undo (pageNo) {
     if (this.undoStacks.has(pageNo)) {
       let state = this.undoStacks.get(pageNo).pop();
@@ -155,6 +210,11 @@ export default class NeonCore {
     return false;
   }
 
+  /**
+   * Redo the last action performed on a page.
+   * @param {number} pageNo - The zero-indexed page number.
+   * @returns {boolean} If an action was redone or not.
+   */
   redo (pageNo) {
     if (this.redoStacks.has(pageNo)) {
       let state = this.redoStacks.get(pageNo).pop();
@@ -169,6 +229,11 @@ export default class NeonCore {
     return false;
   }
 
+  /**
+   * Update the PouchDb database stored in the browser.
+   * This is based on the data stored in the cache. To save time,
+   * only entries marked as dirty will be updated.
+   */
   async updateDatabase () {
     for (let pair of this.neonCache) {
       let key = pair[0];
@@ -187,3 +252,5 @@ export default class NeonCore {
     }
   }
 }
+
+export { NeonCore as default };

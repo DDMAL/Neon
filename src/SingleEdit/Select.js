@@ -1,3 +1,5 @@
+/** @module SingleEdit/Select */
+
 import * as Color from '../utils/Color.js';
 import * as Controls from '../utils/Controls.js';
 import * as Grouping from './Grouping.js';
@@ -9,6 +11,10 @@ const $ = require('jquery');
 
 var dragHandler, neonView, info, zoomHandler;
 
+/**
+ * Get the selection mode chosen by the user.
+ * @returns {string|null}
+ */
 function getSelectionType () {
   let element = document.getElementsByClassName('sel-by active');
   if (element.length !== 0) {
@@ -20,8 +26,8 @@ function getSelectionType () {
 
 /**
  * Set the objects for this module.
- * @param {object} dh - The drag handler object
- * @param {object} nv - The NeonView object
+ * @param {DragHandler} dh - The drag handler object
+ * @param {NeonView} nv - The NeonView object
  */
 export function setSelectHelperObjects (dh, nv) {
   dragHandler = dh;
@@ -34,6 +40,9 @@ export function setSelectHelperObjects (dh, nv) {
   neonView.view.addUpdateCallback(dragSelect);
 }
 
+/**
+ * Apply listeners for click selection.
+ */
 export function clickSelect () {
   $('#svg_group, #svg_group use').off('mousedown', clickHandler);
   $('#svg_group, #svg_group use').on('mousedown', clickHandler);
@@ -52,6 +61,10 @@ export function clickSelect () {
   $('#moreEdit').on('click', (e) => { e.stopPropagation(); });
 }
 
+/**
+ * Handle click events related to element selection.
+ * @param {object} evt
+ */
 function clickHandler (evt) {
   let mode = neonView.getUserMode();
 
@@ -114,6 +127,9 @@ function clickHandler (evt) {
   }
 }
 
+/**
+ * Apply listeners for drag selection.
+ */
 export function dragSelect () {
   var initialX = 0;
   var initialY = 0;
@@ -149,6 +165,11 @@ export function dragSelect () {
     }
   }
 
+  /**
+   * Check if a point is in the bounds of a staff element.
+   * @param {SVGPoint} point
+   * @returns {boolean}
+   */
   function pointNotInStaff (point) {
     let staves = Array.from(document.getElementsByClassName('staff'));
     let filtered = staves.filter((staff) => {
@@ -246,6 +267,11 @@ export function dragSelect () {
   }
 }
 
+/**
+ * Select a staff element.
+ * @param {SVGGElement} el - The staff element in the DOM.
+ * @param {DragHandler} dragHandler - The drag handler in use.
+ */
 export function selectStaff (el, dragHandler) {
   let staff = $(el);
   if (!staff.hasClass('selected')) {
@@ -259,7 +285,7 @@ export function selectStaff (el, dragHandler) {
 
 /**
  * Handle selecting an array of elements based on the selection type.
- * @param {SVGSVGElement[]} elements - The elements to select. Either <g> or <use>.
+ * @param {SVGGraphicsElement[]} elements - The elements to select. Either <g> or <use>.
  */
 async function selectAll (elements) {
   var syls = [];
@@ -556,7 +582,7 @@ export function unselect () {
 
 /**
  * Generic select function.
- * @param {SVGSVGElement} el
+ * @param {SVGGraphicsElement} el
  */
 function select (el) {
   if (!$(el).hasClass('selected')) {
@@ -582,7 +608,7 @@ function select (el) {
 
 /**
  * Select an nc.
- * @param {SVGSVGElement} el - The nc element to select.
+ * @param {SVGGraphicsElement} el - The nc element to select.
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  */
 async function selectNcs (el, dragHandler) {
@@ -614,7 +640,8 @@ async function selectNcs (el, dragHandler) {
 
 /**
  * Check if neume component is part of a ligature
- * @param {SVGSVGElement} nc - The neume component to check.
+ * @param {SVGGraphicsElement} nc - The neume component to check.
+ * @returns {boolean}
  */
 async function isLigature (nc) {
   var attributes = await neonView.getElementAttr(nc.id, 0);
@@ -640,7 +667,7 @@ function sharedSecondLevelParent (elements) {
 
 /**
  * Get the bounding box of a staff based on its staff lines.
- * @param {SVGSVGElement} staff
+ * @param {SVGGElement} staff
  * @returns {object}
  */
 function getStaffBBox (staff) {
@@ -665,7 +692,7 @@ function getStaffBBox (staff) {
 
 /**
  * Select not neume elements.
- * @param {object[]} notNeumes - An array of not neumes elements.
+ * @param {SVGGraphicsElement[]} notNeumes - An array of not neumes elements.
  */
 function selectNn (notNeumes) {
   if (notNeumes.length > 0) {

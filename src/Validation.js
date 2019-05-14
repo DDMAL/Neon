@@ -5,6 +5,10 @@
 import Worker from './Worker.js';
 var worker, schema, statusField;
 
+/**
+ * Add the validation information to the display and create the WebWorker
+ * for validation MEI.
+ */
 export async function init () {
   let displayContents = document.getElementById('displayContents');
   displayContents.innerHTML +=
@@ -15,6 +19,10 @@ export async function init () {
   worker.onmessage = updateUI;
 }
 
+/**
+ * Send the contents of an MEI file to the WebWorker for validation.
+ * @param {string} meiData
+ */
 export async function sendForValidation (meiData) {
   if (schema === undefined) {
     schema = await schemaPromise;
@@ -27,6 +35,11 @@ export async function sendForValidation (meiData) {
   });
 }
 
+/**
+ * Update the UI with the validation results. Called when the WebWorker finishes validating.
+ * @param {object} message - The message sent by the WebWorker.
+ * @param {object} message.data - The errors object produced by XML.js
+ */
 function updateUI (message) {
   let errors = message.data;
   if (errors === null) {

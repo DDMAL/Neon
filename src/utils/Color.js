@@ -1,4 +1,4 @@
-/** @module Color */
+/** @module utils/Color */
 
 const $ = require('jquery');
 
@@ -62,7 +62,7 @@ export function unsetStaffHighlight () {
 
 /**
  * Highlight a staff a certain color.
- * @param {SVGSVGElement} staff - The staff's SVG element.
+ * @param {SVGGElement} staff - The staff's SVG element.
  * @param {string} color - The color to highlight the staff.
  */
 export function highlight (staff, color) {
@@ -79,7 +79,7 @@ export function highlight (staff, color) {
 
 /**
  * Remove the highlight from a staff.
- * @param {(SVGSVGElement|string)} staff - The staff's SVG element or a JQuery selector.
+ * @param {(SVGGElement|string)} staff - The staff's SVG element or a JQuery selector.
  */
 export function unhighlight (staff) {
   let children = Array.from($(staff).filter(':not(.selected)').children('.highlighted'));

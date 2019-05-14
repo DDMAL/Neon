@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: SingleEdit/SelectOptions.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: SingleEdit/SelectOptions.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module SingleEdit/SelectOptions */
+import * as Contents from '../utils/Contents.js';
+import * as Grouping from './Grouping.js';
+import * as Notification from '../Notification.js';
+import InfoModule from '../InfoModule.js';
+import SplitHandler from './SplitHandler.js';
+const $ = require('jquery');
+
+/**
+ * The NeonView parent to call editor actions.
+ * @type {NeonView}
+ */
+var neonView;
+
+/**
+ * Initialize NeonView for this and {@link module:Grouping}
+ * @param {NeonView} view - The parent NeonView.
+ */
+export function initNeonView (view) {
+  neonView = view;
+  Grouping.initNeonView(view);
+}
+
+/**
+ * Return a JSON action that unsets the inclinatum parameter of an nc.
+ * @param {string} id - The id of the neume component.
+ * @returns {object}
+ */
+export function unsetInclinatumAction (id) {
+  return {
+    'action': 'set',
+    'param': {
+      'elementId': id,
+      'attrType': 'tilt',
+      'attrValue': ''
+    }
+  };
+}
+
+/**
+ * Return a JSON action that unsets the virga parameter of an nc.
+ * @param {string} id - The id of the neume component.
+ * @returns {object}
+ */
+export function unsetVirgaAction (id) {
+  return {
+    'action': 'set',
+    'param': {
+      'elementId': id,
+      'attrType': 'tilt',
+      'attrValue': ''
+    }
+  };
+}
+
+// TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
+/**
+ * Trigger the extra nc action menu.
+ * @param {SVGGraphicsElement} nc - The last selected elements.
+ */
+export function triggerNcActions (nc) {
+  endOptionsSelection();
+  $('#moreEdit').removeClass('is-invisible');
+  $('#moreEdit').append(Contents.ncActionContents);
+
+  $('#Punctum.dropdown-item').on('click', () => {
+    let unsetInclinatum = unsetInclinatumAction(nc.id);
+    let unsetVirga = unsetVirgaAction(nc.id);
+    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] }, 0).then((result) => {
+      if (result) {
+        Notification.queueNotification('Shape Changed');
+      } else {
+        Notification.queueNotification('Shape Change Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
+  });
+
+  $('#Inclinatum.dropdown-item').on('click', () => {
+    let setInclinatum = {
+      'action': 'set',
+      'param': {
+        'elementId': nc.id,
+        'attrType': 'tilt',
+        'attrValue': 'se'
+      }
+    };
+    neonView.edit(setInclinatum, 0).then((result) => {
+      if (result) {
+        Notification.queueNotification('Shape Changed');
+      } else {
+        Notification.queueNotification('Shape Change Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
+  });
+
+  $('#Virga.dropdown-item').on('click', () => {
+    let unsetInclinatum = unsetInclinatumAction(nc.id);
+    let setVirga = {
+      'action': 'set',
+      'param': {
+        'elementId': nc.id,
+        'attrType': 'tilt',
+        'attrValue': 'n'
+      }
+    };
+    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, setVirga ] }, 0).then((result) => {
+      if (result) {
+        Notification.queueNotification('Shape Changed');
+      } else {
+        Notification.queueNotification('Shape Change Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
+  });
+
+  initOptionsListeners();
+}
+
+/**
+ * Trigger extra neume actions.
+ */
+export function triggerNeumeActions () {
+  endOptionsSelection();
+  $('#moreEdit').removeClass('is-invisible');
+  $('#moreEdit').append(Contents.neumeActionContents);
+  var neume = $('.selected');
+  if (neume.length !== 1) {
+    console.warn('More than one neume selected! Cannot trigger Neume ClickSelect actions.');
+    return;
+  }
+
+  $('.grouping').on('click', (e) => {
+    var contour = InfoModule.getContourByValue(e.target.id);
+    triggerChangeGroup(contour);
+  });
+
+  function triggerChangeGroup (contour) {
+    let changeGroupingAction = {
+      'action': 'changeGroup',
+      'param': {
+        'elementId': neume[0].id,
+        'contour': contour
+      }
+    };
+    neonView.edit(changeGroupingAction, 0).then((result) => {
+      if (result) {
+        Notification.queueNotification('Grouping Changed');
+      } else {
+        Notification.queueNotification('Grouping Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
+  }
+  initOptionsListeners();
+  Grouping.initGroupingListeners();
+}
+
+/**
+ * Trigger extra syllable actions.
+ */
+export function triggerSylActions () {
+  endOptionsSelection();
+  $('#moreEdit').removeClass('is-invisible');
+  $('#moreEdit').append(
+    "&lt;div>&lt;p class='control'>" +
+        "&lt;button class='button' id='ungroupNeumes'>Ungroup&lt;/button>&lt;/p>&lt;/div>"
+  );
+  Grouping.initGroupingListeners();
+}
+
+/**
+ * Trigger extra clef actions.
+ * @param {SVGGraphicsElement} clef - The clef that actions would be applied to.
+ */
+export function triggerClefActions (clef) {
+  endOptionsSelection();
+  $('#moreEdit').removeClass('is-invisible');
+  $('#moreEdit').append(Contents.clefActionContents);
+  $('#CClef.dropdown-item').on('click', () => {
+    let setCClef = {
+      'action': 'setClef',
+      'param': {
+        'elementId': clef.id,
+        'shape': 'C'
+      }
+    };
+    neonView.edit(setCClef, 0).then((result) => {
+      if (result) {
+        Notification.queueNotification('Shape Changed');
+      } else {
+        Notification.queueNotification('Shape Change Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
+  });
+  $('#FClef.dropdown-item').on('click', () => {
+    let setFClef = {
+      'action': 'setClef',
+      'param': {
+        'elementId': clef.id,
+        'shape': 'F'
+      }
+    };
+    neonView.edit(setFClef, 0).then((result) => {
+      if (result) {
+        Notification.queueNotification('Shape Changed');
+      } else {
+        Notification.queueNotification('Shape Change Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
+  });
+  initOptionsListeners();
+}
+
+/**
+ * Trigger extra staff actions.
+ */
+export function triggerStaffActions () {
+  endOptionsSelection();
+  $('#moreEdit').removeClass('is-invisible');
+  $('#moreEdit').append(Contents.staffActionContents);
+
+  $('#merge-systems').on('click', () => {
+    let systems = Array.from($('.staff.selected'));
+    let elementIds = [];
+    systems.forEach(staff => {
+      elementIds.push(staff.id);
+    });
+    let editorAction = {
+      'action': 'merge',
+      'param': {
+        'elementIds': elementIds
+      }
+    };
+    neonView.edit(editorAction, 0).then((result) => {
+      if (result) {
+        Notification.queueNotification('Staff Merged');
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      } else {
+        Notification.queueNotification('Merge Failed');
+      }
+    });
+  });
+}
+
+/**
+ * Trigger split staff option
+ */
+export function triggerSplitActions () {
+  endOptionsSelection();
+  $('#moreEdit').removeClass('is-invisible');
+  $('#moreEdit').append(Contents.splitActionContents);
+
+  // TODO add trigger for split action
+  $('#split-system').on('click', () => {
+    var split = new SplitHandler(neonView);
+    split.startSplit();
+    endOptionsSelection();
+  });
+}
+
+/**
+ * End the extra options menu.
+ */
+export function endOptionsSelection () {
+  $('#moreEdit').empty();
+  $('#moreEdit').addClass('is-invisible');
+}
+
+/**
+ * Initialize extra dropdown options.
+ */
+function initOptionsListeners () {
+  $('#drop_select').on('click', function () {
+    $(this).toggleClass('is-active');
+  });
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Contents.html">utils/Contents</a></li><li><a href="module-utils_Controls.html">utils/Controls</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DisplayPanel.html">DisplayPanel</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InfoModule.html">InfoModule</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.1</a> on Tue May 14 2019 10:04:59 GMT-0400 (GMT-04:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

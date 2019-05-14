@@ -1,4 +1,4 @@
-/** @module Controls */
+/** @module utils/Controls */
 
 import * as Color from './Color.js';
 import * as Contents from './Contents.js';
@@ -458,7 +458,7 @@ export function initNavbar (neonView) {
 
 /**
  * Set listener on EditMode button.
- * @param {EditMode} editMode - The EditMode object.
+ * @param {SingleEditMode} editMode - The EditMode object.
  */
 export function initEditMode (editMode) {
   /* document.getElementById('dropdown_toggle').innerHTML =

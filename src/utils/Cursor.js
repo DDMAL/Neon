@@ -1,4 +1,4 @@
-/** @module Cursor */
+/** @module utils/Cursor */
 
 const $ = require('jquery');
 

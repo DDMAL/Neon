@@ -1,4 +1,4 @@
-/** @module Zoom */
+/** @module SingleView/Zoom */
 
 /**
  * Creates a Zoom Handler object.

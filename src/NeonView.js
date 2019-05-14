@@ -5,7 +5,7 @@ import * as Notification from './Notification.js';
  * NeonView class. Manages the other modules of Neon and communicates with
  * NeonCore.
  */
-export default class NeonView {
+class NeonView {
   /**
    * Constructor for NeonView. Sets mode and passes constructors.
    * @param {object} params
@@ -53,6 +53,9 @@ export default class NeonView {
     }
   }
 
+  /**
+   * Start Neon
+   */
   start () {
     this.core.db.info().then((info) => {
       if (info.doc_count === 0) {
@@ -64,6 +67,10 @@ export default class NeonView {
     });
   }
 
+  /**
+   * Get the current page from the loaded view and then display the
+   * most up to date SVG.
+   */
   updateForCurrentPage () {
     let pageNo = this.view.getCurrentPage();
     // load pages
@@ -72,14 +79,23 @@ export default class NeonView {
     });
   }
 
+  /**
+   * Redo an action performed on the current page (if any)
+   */
   redo () {
     return this.core.redo(this.view.getCurrentPage());
   }
 
+  /**
+   * Undo the last action performed on the current page (if any)
+   */
   undo () {
     return this.core.undo(this.view.getCurrentPage());
   }
 
+  /**
+   * Get the mode Neon is in: viewer, insert, or edit.
+   */
   getUserMode () {
     if (this.editor === undefined) {
       return 'viewer';
@@ -88,6 +104,14 @@ export default class NeonView {
     }
   }
 
+  /**
+   * Perform an editor action
+   * @param {object} action - The editor toolkit action object.
+   * @param {string} action.action - The name of the action to perform.
+   * @param {object|array} action.param - The parameters of the action(s)
+   * @param {number} pageNo - The zero-indexed page number to perform the action on.
+   * @returns {Promise} A promise that resolves to the result of the action.
+   */
   edit (action, pageNo) {
     let editPromise = new Promise((resolve) => {
       resolve(this.core.edit(action, pageNo));
@@ -95,6 +119,12 @@ export default class NeonView {
     return editPromise;
   }
 
+  /**
+   * Get the attributes for a specific musical element.
+   * @param {string} elementID - The unique ID of the element.
+   * @param {number} pageNo - The zero-indexed page number the ID is found on.
+   * @returns {Promise} A promise that resolves to the available attributes.
+   */
   getElementAttr (elementID, pageNo) {
     let elementPromise = new Promise((resolve, reject) => {
       resolve(this.core.getElementAttr(elementID, pageNo));
@@ -102,14 +132,27 @@ export default class NeonView {
     return elementPromise;
   }
 
+  /**
+   * Save the current state of the MEI file(s) to the browser database.
+   * @returns {Promise} A promise that resolves when the save action is finished.
+   */
   save () {
     return this.core.updateDatabase();
   }
 
+  /**
+   * Deletes the local database of the loaded MEI file(s).
+   * @returns {Promise} A promise that resolves when the database is deleted.
+   */
   deleteDb () {
     return this.core.db.destroy();
   }
 
+  /**
+   * Get the page's MEI file encoded as a data URI.
+   * @param {number} pageNo - The zero-indexed page to encode.
+   * @returns {Promise} A promise that resolves to the URI.
+   */
   getPageURI (pageNo) {
     if (pageNo === undefined) {
       pageNo = this.view.getCurrentPage();
@@ -121,7 +164,14 @@ export default class NeonView {
     });
   }
 
+  /**
+   * Get the page's MEI file as a string.
+   * @param {number} pageNo - The zero-indexed page to get.
+   * @returns {Promise} A promise that resolves to the string.
+   */
   getPageMEI (pageNo) {
     return this.core.getMEI(pageNo);
   }
 }
+
+export { NeonView as default };

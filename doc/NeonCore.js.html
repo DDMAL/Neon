@@ -26,130 +26,259 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Underlying NeonCore class that communicates with Verovio.
- * @constructor
- * @param {string} mei - Contents of the MEI file.
- * @param {object} vrvToolkit - An instantiated Verovio toolkit.
+            <pre class="prettyprint source linenums"><code>import * as Validation from './Validation.js';
+import PouchDb from 'pouchdb';
+
+const verovio = require('verovio-dev');
+
+/**
+ * The core component of Neon. This manages the database,
+ * the verovio toolkit, the cache, and undo/redo stacks.
  */
-function NeonCore (mei, vrvToolkit) {
-  /// ///////////
-  // Constructor
-  /// ///////////
-  var vrvOptions = {
-    noFooter: 1,
-    noHeader: 1,
-    pageMarginLeft: 0,
-    pageMarginTop: 0,
-    font: 'Bravura'
-  };
-  var undoStack = new Array(0);
-  var redoStack = new Array(0);
-
-  vrvToolkit.setOptions(vrvOptions);
-  loadData(mei);
-
+class NeonCore {
   /**
-     * Load MEI data into Verovio.
-     * @param {string} data - MEI data.
-     */
-  function loadData (data) {
-    vrvToolkit.loadData(data);
+   * Constructor for NeonCore
+   * @param {Map&lt;number, string>} meiMap - Map of zero-indexed page no to MEI.
+   * @param {string} title - The title of the page or manuscript.
+   * @returns {object} A NeonCore object.
+   */
+  constructor (meiMap, title) {
+    this.vrvToolkit = new verovio.toolkit();
+    this.vrvToolkit.setOptions({
+      inputFormat: 'mei',
+      noFooter: 1,
+      noHeader: 1,
+      pageMarginLeft: 0,
+      pageMarginTop: 0,
+      font: 'Bravura'
+    });
+
+    Validation.init();
+
+    this.undoStacks = new Map();
+    this.redoStacks = new Map();
+    this.neonCache = new Map();
+
+    this.parser = new DOMParser();
+
+    this.db = new PouchDb(title);
+    // Add each MEI to the database
+    this.meiMap = meiMap;
   }
 
   /**
-     * Get the SVG from Verovio.
-     * @returns {string}
-     */
-  function getSVG () {
-    return vrvToolkit.renderToSVG(1);
-  }
-
-  /**
-     * Get the MEI data from Verovio.
-     * @returns {string}
-     */
-  function getMEI () {
-    return vrvToolkit.getMEI(0, true);
-  }
-
-  /**
-     * Get MEI element attributes from Verovio.
-     * @param {string} elementId - The ID of the MEI element.
-     * @returns {object}
-     */
-  function getElementAttr (elementId) {
-    return vrvToolkit.getElementAttr(elementId);
-  }
-
-  /**
-     * Execute an editor action in Verovio.
-     * @param {object} editorAction - The action to execute.
-     * @param {boolean} [addToUndo=true] - Whether or not to make this action undoable.
-     * @returns {boolean}
-     */
-  function edit (editorAction, addToUndo = true) {
-    let currentMEI = getMEI();
-    // console.log(editorAction); // Useful for debugging actions
-    let value = vrvToolkit.edit(editorAction);
-    if (value &amp;&amp; addToUndo) {
-      undoStack.push(currentMEI);
-      redoStack = new Array(0);
+   * Initialize the PouchDb database based on the provided MEI.
+   * This should only be run if previous data does not exist.
+   */
+  async initDb () {
+    for (let pair of this.meiMap) {
+      let key = pair[0];
+      let value = pair[1];
+      await this.db.get(key.toString()).catch((err) => {
+        if (err.name === 'not_found') {
+          // Create new document
+          return {
+            _id: key.toString(),
+            data: ''
+          };
+        } else {
+          throw err;
+        }
+      }).then((doc) => {
+        doc.data = value;
+        return this.db.put(doc);
+      }).catch((err) => {
+        console.error(err);
+      });
     }
-    return value;
-  }
-
-  function addStateToUndo () {
-    undoStack.push(getMEI());
   }
 
   /**
-     * Get additional information on the last editor action from Verovio.
-     * @returns {string}
-     */
-  function info () {
-    return vrvToolkit.editInfo();
+   * Load a page into the verovio toolkit. This will fetch the
+   * page from the cache or from the database.
+   * @param {number} pageNo - The zero-indexed page number to load.
+   * @returns {Promise} A promise that resolves to the cache entry.
+   */
+  loadPage (pageNo) {
+    return new Promise((resolve, reject) => {
+      if (this.currentPage !== pageNo) {
+        if (this.neonCache.has(pageNo)) {
+          this.loadData(pageNo, this.neonCache.get(pageNo).mei);
+          resolve(this.neonCache.get(pageNo));
+        } else {
+          this.db.get(pageNo.toString()).then((doc) => {
+            this.loadData(pageNo, doc.data);
+            resolve(this.neonCache.get(pageNo));
+          }).catch((err) => {
+            reject(err);
+          });
+        }
+      } else {
+        resolve(this.neonCache.get(pageNo));
+      }
+    });
   }
 
   /**
-     * Undo the last editor action.
-     * @returns {boolean}
-     */
-  function undo () {
-    let state = undoStack.pop();
-    if (state !== undefined) {
-      redoStack.push(getMEI());
-      loadData(state);
-      return true;
+   * Load data into the verovio toolkit and update the cache.
+   * @param {number} pageNo - The zero-indexed page number.
+   * @param {string} data - The MEI of the page as a string.
+   * @param {boolean} [dirty] - If the cache entry should be marked as dirty. Defaults to false.
+   */
+  loadData (pageNo, data, dirty = false) {
+    Validation.sendForValidation(data);
+    let svg = this.parser.parseFromString(
+      this.vrvToolkit.renderData(data, {}),
+      'image/svg+xml'
+    ).documentElement;
+    this.neonCache.set(pageNo, {
+      svg: svg,
+      mei: data,
+      dirty: dirty
+    });
+    this.currentPage = pageNo;
+  }
+
+  /**
+   * Get the SVG for a specific page number.
+   * @param {number} pageNo - The zero-indexed page number.
+   * @returns {Promise} A promise that resolves to the SVG.
+   */
+  getSVG (pageNo) {
+    return new Promise((resolve, reject) => {
+      this.loadPage(pageNo).then((entry) => {
+        resolve(entry.svg);
+      }).catch((err) => { reject(err); });
+    });
+  }
+
+  /**
+   * Get the MEI for a specific page number.
+   * @param {number} pageNo - The zero-indexed page number.
+   * @returns {Promise} A promise that resolves to the MEI as a string.
+   */
+  getMEI (pageNo) {
+    return new Promise((resolve, reject) => {
+      this.loadPage(pageNo).then((entry) => {
+        resolve(entry.mei);
+      }).catch((err) => { reject(err); });
+    });
+  }
+
+  /**
+   * Get musical element attributes from the verovio toolkit.
+   * @param {string} elementId - The unique ID of the musical element.
+   * @param {number} pageNo - The zero-indexed page number the element is on.
+   * @returns {Promise} A promise that resolves to the attributes in an object.
+   */
+  getElementAttr (elementId, pageNo) {
+    return new Promise((resolve) => {
+      this.loadPage(pageNo).then(() => {
+        resolve(this.vrvToolkit.getElementAttr(elementId));
+      });
+    });
+  }
+
+  /**
+   * Perform an editor action on a specific page.
+   * @param {object} action - The editor toolkit action object.
+   * @param {string} action.action - The name of the action to perform.
+   * @param {object|array} action.param - The parameters of the action(s)
+   * @param {number} pageNo - The zero-indexed page number to perform the action on.
+   * @returns {boolean} If the action succeeded or not.
+   */
+  async edit (editorAction, pageNo) {
+    if (this.currentPage !== pageNo) {
+      await this.loadPage(pageNo);
+    }
+    let currentMEI = this.getMEI(pageNo);
+    let result = this.vrvToolkit.edit(editorAction);
+    if (result) {
+      if (!this.undoStacks.has(pageNo)) {
+        this.undoStacks.set(pageNo, []);
+      }
+      this.undoStacks.get(pageNo).push(await currentMEI);
+      this.redoStacks.set(pageNo, []);
+
+      // Update cache
+      this.neonCache.set(pageNo, {
+        mei: this.vrvToolkit.getMEI(0, true),
+        svg: this.parser.parseFromString(this.vrvToolkit.renderToSVG(1),
+          'image/svg+xml').documentElement,
+        dirty: true
+      });
+    }
+    return result;
+  }
+
+  /**
+   * Get the edit info string from the verovio toolkit.
+   * @returns {string}
+   */
+  info () {
+    return this.vrvToolkit.editInfo();
+  }
+
+  /**
+   * Undo the last action performed on a specific page.
+   * @param {number} pageNo - The zero-indexed page number.
+   * @returns {boolean} If an action undone.
+   */
+  undo (pageNo) {
+    if (this.undoStacks.has(pageNo)) {
+      let state = this.undoStacks.get(pageNo).pop();
+      if (state !== undefined) {
+        this.getMEI(0).then((mei) => {
+          this.redoStacks.get(pageNo).push(mei);
+        });
+        this.loadData(pageNo, state, true);
+        return true;
+      }
     }
     return false;
   }
 
   /**
-     * Redo an undone action.
-     * @returns {boolean}
-     */
-  function redo () {
-    let state = redoStack.pop();
-    if (state !== undefined) {
-      undoStack.push(getMEI());
-      loadData(state);
-      return true;
+   * Redo the last action performed on a page.
+   * @param {number} pageNo - The zero-indexed page number.
+   * @returns {boolean} If an action was redone or not.
+   */
+  redo (pageNo) {
+    if (this.redoStacks.has(pageNo)) {
+      let state = this.redoStacks.get(pageNo).pop();
+      if (state !== undefined) {
+        this.getMEI(0).then((mei) => {
+          this.undoStacks.get(pageNo).push(mei);
+        });
+        this.loadData(pageNo, state, true);
+        return true;
+      }
     }
     return false;
   }
 
-  // Constructor reference
-  NeonCore.prototype.constructor = NeonCore;
-  NeonCore.prototype.loadData = loadData;
-  NeonCore.prototype.getSVG = getSVG;
-  NeonCore.prototype.getMEI = getMEI;
-  NeonCore.prototype.getElementAttr = getElementAttr;
-  NeonCore.prototype.edit = edit;
-  NeonCore.prototype.info = info;
-  NeonCore.prototype.undo = undo;
-  NeonCore.prototype.redo = redo;
-  NeonCore.prototype.addStateToUndo = addStateToUndo;
+  /**
+   * Update the PouchDb database stored in the browser.
+   * This is based on the data stored in the cache. To save time,
+   * only entries marked as dirty will be updated.
+   */
+  async updateDatabase () {
+    for (let pair of this.neonCache) {
+      let key = pair[0];
+      let value = pair[1];
+      if (value.dirty) {
+        await this.db.get(key.toString()).then((doc) => {
+          doc.data = value.mei;
+          return this.db.put(doc);
+        }).then(() => {
+          console.log('done');
+          value.dirty = false;
+        }).catch((err) => {
+          console.error(err);
+        });
+      }
+    }
+  }
 }
 
 export { NeonCore as default };
@@ -163,13 +292,13 @@ export { NeonCore as default };
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-ResizeStaff.html">ResizeStaff</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-ResizeStaff-Resize.html">Resize</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Contents.html">utils/Contents</a></li><li><a href="module-utils_Controls.html">utils/Controls</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DisplayPanel.html">DisplayPanel</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InfoModule.html">InfoModule</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Apr 25 2019 17:27:40 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.1</a> on Tue May 14 2019 10:04:59 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>

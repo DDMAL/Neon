@@ -4,7 +4,16 @@ import * as Cursor from '../utils/Cursor.js';
 const d3 = require('d3');
 const $ = require('jquery');
 
-export default class SingleView {
+/**
+ * A view module for displaying a single page of a manuscript.
+ */
+class SingleView {
+  /**
+   * Constructor for SingleView.
+   * @param {NeonView} neonView - The NeonView parent.
+   * @param {function} DisplayPanel - The constructor for a DisplayPanel.
+   * @param {string} image - The link to the background image for the page.
+   */
   constructor (neonView, DisplayPanel, image) {
     this.neonView = neonView;
     this.container = document.getElementById('container');
@@ -36,6 +45,10 @@ export default class SingleView {
     document.getElementById('loading').style.display = 'none';
   }
 
+  /**
+   * Update the SVG being displayed.
+   * @param {SVGSVGElement} svg - The SVG to update to.
+   */
   updateSVG (svg/*, pageNo */) {
     this.group.replaceChild(svg, this.mei);
     this.mei = svg;
@@ -52,10 +65,18 @@ export default class SingleView {
     this.updateCallbacks.forEach(callback => callback());
   }
 
+  /**
+   * Add a callback to the list of those be called when the page updates.
+   * @param {function} cb - The callback function to add to the list.
+   */
   addUpdateCallback (cb) {
     this.updateCallbacks.push(cb);
   }
 
+  /**
+   * Remove a callback from the list of callbacks if it is part of the list.
+   * @param {function} cb - The callback to be removed.
+   */
   removeUpdateCallback (cb) {
     let index = this.updateCallbacks.findIndex((elem) => {
       return elem === cb;
@@ -65,15 +86,25 @@ export default class SingleView {
     }
   }
 
+  /**
+   * Reset the transformations that have been applied to the SVG upon update.
+   */
   resetTransformations () {
     this.displayPanel.zoomHandler.restoreTransformation();
     Controls.setOpacityFromSlider();
   }
 
+  /**
+   * Returns the zero-indexed number of the current page. This will always be zero.
+   * @returns {number}
+   */
   getCurrentPage () {
     return 0;
   }
 
+  /**
+   * Set event handlers for the view and display panel.
+   */
   setViewEventHandlers () {
     $('body').on('keydown keyup', (evt) => {
       if (evt.type === 'keydown') {
@@ -127,3 +158,5 @@ export default class SingleView {
     });
   }
 }
+
+export { SingleView as default };

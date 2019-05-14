@@ -27,280 +27,179 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import NeonCore from './NeonCore.js';
-import ZoomHandler from './Zoom.js';
-import InfoBox from './InfoBox.js';
-import * as Controls from './Controls.js';
-import * as Cursor from './Cursor.js';
-import EditMode from './EditMode.js';
-import * as Compatibility from './Compatibility.js';
-
-import PouchDb from 'pouchdb';
-
-const d3 = require('d3');
-const verovio = require('verovio-dev');
-const $ = require('jquery');
+import * as Notification from './Notification.js';
 
 /**
- * The class managing DOM objects and the NeonCore class for the application.
- * @constructor
- * @param {object} params - An object containing the filenames of the MEI file and background image.
- * @param {string} params.meifile - The filename of the MEI file.
- * @param {string} params.bgimg - The filename of the background image.
- * @param {string} params.mode - The mode to run NeonCore in.
- * @param {string} [params.raw] - If the meifile parameter is actually the raw contents of an MEI file.
- * @see module:Compatibility.modes
+ * NeonView class. Manages the other modules of Neon and communicates with
+ * NeonCore.
  */
-function NeonView (params) {
-  var viewHeight = window.innerHeight;
-  // var viewWidth = 800;
-  var meiFile = params.meifile;
-  var bgimg = params.bgimg;
-  var initialPage = true;
-  var vrvToolkit = new verovio.toolkit();
-
-  var neonCore = null;
-  var zoomHandler = null;
-  var infoBox = null;
-  var editMode = null;
-  var db = null;
-  let neonview = this;
-  if (params.mode === 'rodan') {
-    Compatibility.setMode(Compatibility.modes.rodan);
-  } else if (params.mode === 'standalone') {
-    Compatibility.setMode(Compatibility.modes.standalone);
-  } else if (params.mode === 'pages') {
-    Compatibility.setMode(Compatibility.modes.pages);
-  } else if (params.mode === 'local') {
-    Compatibility.setMode(Compatibility.modes.local);
-    db = new PouchDb('Neon2');
-    db.get('mei', (err, result) => {
-      meiFile = result.data;
-      init(meiFile);
-    });
-    Compatibility.setDB(db);
-  } else {
-    Compatibility.setMode(-1);
-  }
-  if (params.raw === 'true') {
-    if (params.mode !== 'local') {
-      init(meiFile);
-    }
-  } else {
-    $.get(meiFile, init);
-  }
-
-  function init (data) {
-    neonCore = new NeonCore(data, vrvToolkit);
-    zoomHandler = new ZoomHandler();
-    infoBox = new InfoBox(neonCore);
-    Controls.initDisplayControls(zoomHandler);
-    editMode = new EditMode(neonview, neonCore, meiFile, zoomHandler, infoBox);
-    loadView();
-    // editMode.getScale();
-    Controls.setSylControls();
-    Controls.setInfoControls();
-  }
-
-  function hideLoad () {
-    $('#loading').css('display', 'none');
-  }
-
+class NeonView {
   /**
-   * Load the view, including background image and rendered MEI.
+   * Constructor for NeonView. Sets mode and passes constructors.
+   * @param {object} params
+   * @param {string} params.mode
+   * @param {object} params.options
+   * @param {object} params.View - Constructor for a View module
+   * @param {object} params.Display - Constructor for DisplayPanel module
+   * @param {object} params.Info - Constructor for InfoModule module
+   * @param {object} [params.Edit] - Constructor for EditMode module
+   * @param {object} [params.TextView] - Constructor for TextView module
    */
-  function loadView () {
-    if (initialPage) {
-      var group = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      group.id = 'svg_group';
-      var bg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-      bg.onload = hideLoad;
-      bg.id = 'bgimg';
-      if (Compatibility.getMode() === Compatibility.modes.local) {
-        db.get('img', (err, result) => {
-          if (err) {
-            console.log(err);
-          } else {
-            bg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', result.data);
-          }
-        });
-      } else {
-        bg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', bgimg);
-      }
-      var mei = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-      mei.id = 'mei_output';
-      group.append(bg);
-      group.append(mei);
-      $('#svg_output').append(group);
-      loadSvg();
-
-      var height = parseInt($('#svg_container').attr('height'));
-      var width = parseInt($('#svg_container').attr('width'));
-      $('#bgimg').attr('x', 0)
-        .attr('y', 0)
-        .attr('height', height)
-        .attr('width', width);
-
-      $('#svg_group').attr('width', '100%')
-        .attr('height', viewHeight)
-        .attr('viewBox', '0 0 ' + width + ' ' + height);
-      hideLoad();
+  constructor (params) {
+    if (params.mode === 'single' || params.mode === 'iiif') {
+      this.mode = params.mode;
     } else {
-      loadSvg();
+      console.error('Invalid mode');
     }
-    Controls.updateSylVisibility();
-    Controls.updateHighlight();
-    resetListeners();
+
+    if (this.mode === 'single') {
+      this.view = new params.View(this, params.Display, params.options.image);
+      this.name = params.options.name;
+    } else {
+      this.view = new params.View(this, params.Display, params.options.manifest);
+    }
+
+    this.core = new NeonCore(params.options.meiMap, this.name);
+
+    this.display = this.view.display;
+    this.InfoModule = params.Info;
+    this.info = new params.Info(this);
+
+    if (params.Edit !== undefined) {
+      // Set up display for edit button
+      let parent = document.getElementById('dropdown_toggle');
+      let editItem = document.createElement('a');
+      editItem.classList.add('navbar-item');
+      let editButton = document.createElement('button');
+      editButton.classList.add('button');
+      editButton.id = 'edit_mode';
+      editButton.textContent = 'Edit MEI';
+      editItem.appendChild(editButton);
+      parent.appendChild(editItem);
+
+      this.editor = new params.Edit(this);
+    }
   }
 
   /**
-     * Refresh the page, often after an editor action.
-     */
-  function refreshPage () {
-    $('mei_output').html(neonCore.getSVG());
-    initialPage = false;
-    loadView();
-    resetTransformations();
-    editMode.resetListeners();
-  }
-
-  /**
-     * Save the MEI to a file.
-     */
-  function saveMEI () {
-    Compatibility.saveFile(meiFile, neonCore.getMEI());
-  }
-
-  /**
-     * Load the SVG and put it in the SVG container.
-     */
-  function loadSvg () {
-    var svg = neonCore.getSVG();
-    $('#mei_output').html(svg);
-    $('#mei_output').children('svg').attr('id', 'svg_container');
-  }
-
-  /**
-     * Reset hotkey and panning listeners
-     */
-  function resetListeners () {
-    $('body').on('keydown keyup', (evt) => {
-      if (evt.type === 'keydown') {
-        switch (evt.key) {
-          case 'Shift':
-            d3.select('#svg_output').on('.drag', null);
-            d3.select('#svg_output').call(
-              d3.drag().on('start', zoomHandler.startDrag)
-                .on('drag', zoomHandler.dragging)
-            );
-            Cursor.updateCursorTo('grab');
-            break;
-          case 'h':
-            $('#mei_output').css('visibility', 'hidden');
-            break;
-          default: break;
-        }
+   * Start Neon
+   */
+  start () {
+    this.core.db.info().then((info) => {
+      if (info.doc_count === 0) {
+        this.core.initDb().then(() => { this.updateForCurrentPage(); });
       } else {
-        switch (evt.key) {
-          case 'Shift':
-            d3.select('#svg_output').on('.drag', null);
-            Cursor.updateCursorTo('');
-            if (editMode.isInsertMode()) {
-              Cursor.updateCursor();
-            }
-            break;
-          case 'h':
-            $('#mei_output').css('visibility', 'visible');
-            break;
-          default: break;
-        }
+        Notification.queueNotification('Existing database found. Revert to start from the beginning.');
+        this.updateForCurrentPage();
       }
     });
+  }
 
-    // Allow two finger panning of image on touch screens/touchpads
-    d3.select('#svg_output').on('touchstart', () => {
-      if (d3.event.touches.length === 2) {
-        zoomHandler.startDrag();
-        d3.select('#svg_output').on('touchmove', zoomHandler.dragging);
-        d3.select('#svg_output').on('touchend', () => {
-          d3.select('#svg_output').on('touchmove', null);
-        });
-      }
+  /**
+   * Get the current page from the loaded view and then display the
+   * most up to date SVG.
+   */
+  updateForCurrentPage () {
+    let pageNo = this.view.getCurrentPage();
+    // load pages
+    this.core.getSVG(pageNo).then((svg) => {
+      this.view.updateSVG(svg, pageNo);
     });
-    d3.select('#svg_output').on('wheel', zoomHandler.scrollZoom, false);
-
-    infoBox.infoListeners();
-  }
-
-  function resetTransformations () {
-    zoomHandler.restoreTransformation();
-    Controls.setOpacityFromSlider();
   }
 
   /**
-     * Get the MEI for use in Rodan.
-     * @returns {string}
-     */
-  function rodanGetMei () {
-    return neonCore.getMEI();
+   * Redo an action performed on the current page (if any)
+   */
+  redo () {
+    return this.core.redo(this.view.getCurrentPage());
   }
 
   /**
-     * Execute an editor action.
-     * @param {object} editorAction - The editor action.
-     * @param {boolean} [addToUndo=true] - Whether or not to add the action to the undo stack.
-     * @returns {boolean} If the action succeeded.
-     */
-  function edit (editorAction, addToUndo = true) {
-    var val = neonCore.edit(editorAction, addToUndo);
-    if (val) {
-      Compatibility.autosave(meiFile, neonCore.getMEI());
+   * Undo the last action performed on the current page (if any)
+   */
+  undo () {
+    return this.core.undo(this.view.getCurrentPage());
+  }
+
+  /**
+   * Get the mode Neon is in: viewer, insert, or edit.
+   */
+  getUserMode () {
+    if (this.editor === undefined) {
+      return 'viewer';
+    } else {
+      return this.editor.getUserMode();
     }
-    return val;
   }
 
   /**
-     * Undo the last action.
-     * @returns {boolean}
-     */
-  function undo () {
-    return neonCore.undo();
+   * Perform an editor action
+   * @param {object} action - The editor toolkit action object.
+   * @param {string} action.action - The name of the action to perform.
+   * @param {object|array} action.param - The parameters of the action(s)
+   * @param {number} pageNo - The zero-indexed page number to perform the action on.
+   * @returns {Promise} A promise that resolves to the result of the action.
+   */
+  edit (action, pageNo) {
+    let editPromise = new Promise((resolve) => {
+      resolve(this.core.edit(action, pageNo));
+    });
+    return editPromise;
   }
 
   /**
-     * Redo the last undone action.
-     * @returns {boolean}
-     */
-  function redo () {
-    return neonCore.redo();
+   * Get the attributes for a specific musical element.
+   * @param {string} elementID - The unique ID of the element.
+   * @param {number} pageNo - The zero-indexed page number the ID is found on.
+   * @returns {Promise} A promise that resolves to the available attributes.
+   */
+  getElementAttr (elementID, pageNo) {
+    let elementPromise = new Promise((resolve, reject) => {
+      resolve(this.core.getElementAttr(elementID, pageNo));
+    });
+    return elementPromise;
   }
 
-  function addStateToUndo () {
-    neonCore.addStateToUndo();
+  /**
+   * Save the current state of the MEI file(s) to the browser database.
+   * @returns {Promise} A promise that resolves when the save action is finished.
+   */
+  save () {
+    return this.core.updateDatabase();
   }
 
-  // Window listener to update height
-  $(window).on('resize', function () {
-    var newHeight = window.innerHeight;
-    if (newHeight > Number($('#svg_group').attr('height'))) {
-      $('#svg_group').attr('height', newHeight);
+  /**
+   * Deletes the local database of the loaded MEI file(s).
+   * @returns {Promise} A promise that resolves when the database is deleted.
+   */
+  deleteDb () {
+    return this.core.db.destroy();
+  }
+
+  /**
+   * Get the page's MEI file encoded as a data URI.
+   * @param {number} pageNo - The zero-indexed page to encode.
+   * @returns {Promise} A promise that resolves to the URI.
+   */
+  getPageURI (pageNo) {
+    if (pageNo === undefined) {
+      pageNo = this.view.getCurrentPage();
     }
-    refreshPage();
-  });
-
-  function getElementAttr (xmlId) {
-    return neonCore.getElementAttr(xmlId);
+    return new Promise((resolve) => {
+      this.core.getMEI(pageNo).then((mei) => {
+        resolve('data:application/mei+xml;charset=utf-8,' + encodeURIComponent(mei));
+      });
+    });
   }
 
-  NeonView.prototype.constructor = NeonView;
-  NeonView.prototype.refreshPage = refreshPage;
-  NeonView.prototype.resetListeners = resetListeners;
-  NeonView.prototype.rodanGetMei = rodanGetMei;
-  NeonView.prototype.edit = edit;
-  NeonView.prototype.saveMEI = saveMEI;
-  NeonView.prototype.undo = undo;
-  NeonView.prototype.redo = redo;
-  NeonView.prototype.addStateToUndo = addStateToUndo;
-  NeonView.prototype.getElementAttr = getElementAttr;
+  /**
+   * Get the page's MEI file as a string.
+   * @param {number} pageNo - The zero-indexed page to get.
+   * @returns {Promise} A promise that resolves to the string.
+   */
+  getPageMEI (pageNo) {
+    return this.core.getMEI(pageNo);
+  }
 }
 
 export { NeonView as default };
@@ -314,13 +213,13 @@ export { NeonView as default };
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-ResizeStaff.html">ResizeStaff</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-ResizeStaff-Resize.html">Resize</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Contents.html">utils/Contents</a></li><li><a href="module-utils_Controls.html">utils/Controls</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DisplayPanel.html">DisplayPanel</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InfoModule.html">InfoModule</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Apr 25 2019 17:27:40 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.1</a> on Tue May 14 2019 10:04:59 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>
