@@ -11,6 +11,11 @@ beforeAll(() => {
   mei.set(0, fs.readFileSync(pathToMei).toString());
 });
 
+afterAll(async () => {
+  let neon = new NeonCore(mei, 'test');
+  await neon.db.destroy();
+});
+
 test("Test 'getElementAttr' function", async () => {
   let neon = new NeonCore(mei, 'test');
   await neon.initDb();
