@@ -26,12 +26,11 @@ class NeonView {
 
     if (this.mode === 'single') {
       this.view = new params.View(this, params.Display, params.options.image);
-      this.name = params.options.name;
     } else {
       this.view = new params.View(this, params.Display, params.options.manifest);
     }
 
-    this.core = new NeonCore(params.options.meiMap, this.name);
+    this.core = new NeonCore(params.options.meiMap, params.options.name);
 
     this.display = this.view.display;
     this.InfoModule = params.Info;
@@ -57,14 +56,15 @@ class NeonView {
    * Start Neon
    */
   start () {
-    this.core.db.info().then((info) => {
+    /* this.core.db.info().then((info) => {
       if (info.doc_count === 0) {
         this.core.initDb().then(() => { this.updateForCurrentPage(); });
       } else {
         Notification.queueNotification('Existing database found. Revert to start from the beginning.');
         this.updateForCurrentPage();
       }
-    });
+    }); */
+    this.core.initDb().then(() => { this.updateForCurrentPage(); });
   }
 
   /**
@@ -171,6 +171,15 @@ class NeonView {
    */
   getPageMEI (pageNo) {
     return this.core.getMEI(pageNo);
+  }
+
+  /**
+   * Get the page's SVG.
+   * @param {number} pageNo - The zero-indexed page to get.
+   * @returns {Promise} A promise that resolves to the SVG.
+   */
+  getPageSVG (pageNo) {
+    return this.core.getSVG(pageNo);
   }
 }
 

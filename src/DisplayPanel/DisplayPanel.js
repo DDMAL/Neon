@@ -1,43 +1,53 @@
-/** @module SingleView/DisplayPanel */
+/** @module DisplayPanel/DisplayPanel */
 
-import { setZoomHandler, initDisplayControls } from './DisplayControls.js';
+import * as DisplayControls from './DisplayControls.js';
 import Icons from '../img/icons.svg';
-import ZoomHandler from './Zoom.js';
 
 /**
- * A class that sets up and manages the display panel in Neon.
+ * A class that sets the content of the display panel to the right and
+ * manages controls for viewing.
  */
 class DisplayPanel {
   /**
-   * Constructor for a DisplayPanel.
-   * @param {object} view - The parent View module.
-   * @param {SVGSVGElement} mei - The DOM element for the MEI rendering.
-   * @param {SVGImageElement} background - The DOM element for the background.
-   * @param {boolean} - Whether or not the display panel should manage zooming.
+   * Constructor for DisplayPanel.
+   * @param {SingleView | DivaView} view - The View parent.
+   * @param {string} className - The class name for the rendered SVG object(s).
+   * @param {string} background - The class name associated with the background.
+   * @param {ZoomHandler} [zoomHandler] - The ZoomHandler object, if SingleView.
    */
-  constructor (view, mei, background, handleZoom) {
-    this.mei = mei;
-    this.background = background;
-    this.handleZoom = handleZoom;
+  constructor (view, className, background, zoomHandler = undefined) {
     this.view = view;
+    this.className = className;
+    this.background = background;
+    this.zoomHandler = zoomHandler;
 
     let displayPanel = document.getElementById('display_controls');
-    displayPanel.innerHTML = displayControlsPanel(handleZoom);
-    if (handleZoom) {
-      this.zoomHandler = new ZoomHandler();
-      setZoomHandler(this.zoomHandler);
-    }
-    this.view.addUpdateCallback(this.setDisplayListeners);
+    displayPanel.innerHTML = displayControlsPanel(this.zoomHandler);
+    this.view.addUpdateCallback(this.updateGlyphOpacity.bind(this));
   }
 
+  /**
+   * Apply event listeners related to the DisplayPanel.
+   */
   setDisplayListeners () {
-    initDisplayControls();
+    if (this.zoomHandler) {
+      // Zoom handler stuff
+      DisplayControls.setZoomControls(this.zoomHandler);
+    }
+    DisplayControls.initDisplayControls(this.className, this.background);
+  }
+
+  /**
+   * Update the opacity of rendered SVGs.
+   */
+  updateGlyphOpacity () {
+    DisplayControls.setOpacityFromSlider(this.className);
   }
 }
 
 /**
  * Return the HTML for the display panel.
- * @param {boolean} handleZoom - Whether or not to include zoom controls.
+ * @param {ZoomHandler} handleZoom - Includes zoom controls if defined.
  * @returns {string}
  */
 function displayControlsPanel (handleZoom) {
@@ -45,7 +55,7 @@ function displayControlsPanel (handleZoom) {
   "<p class='panel-heading' id='displayHeader'>Display" +
   "<svg class='icon is-pulled-right'><use id='toggleDisplay' xlink:href='" + Icons + "#dropdown-down'></use></svg></p>" +
   "<div id='displayContents'>";
-  if (handleZoom) {
+  if (handleZoom !== undefined) {
     contents +=
     "<a class='panel-block has-text-centered'><button class='button' id='reset-zoom'>Zoom</button>" +
     "<input class='slider is-fullwidth' id='zoomSlider' step='5' min='25' max='400' value='100' type='range'/>" +
@@ -60,7 +70,7 @@ function displayControlsPanel (handleZoom) {
   "<output id='bgOpacityOutput' for='bgOpacitySlider'>100</output></a>" +
   "<div class='panel-block' id='extensible-block'>" +
   "<div class='dropdown' id='highlight-dropdown'><div class='dropdown-trigger'>" +
-  "<button class='button' id='highlight-button' aria-haspopup='true' aria-controls='highlight-menu'>" +
+  "<button class='button' id='highlight-button' aria-haspopup='true' aria-controls='highlight-menu' style='width: auto'>" +
   "<span>Highlight</span><span id='highlight-type'>&nbsp;- Off</span>" +
   "<svg class='icon'><use id='toggleDisplay' xlink:href='" + Icons + "#dropdown-down'></use>" +
   "</svg></button></div><div class='dropdown-menu' id='highlight-menu' role='menu'>" +

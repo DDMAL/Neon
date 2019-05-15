@@ -14,9 +14,16 @@ class InfoModule {
     this.neonView = neonView;
     // Add info box enable/disable check box
     let block = document.getElementById('extensible-block');
-    block.innerHTML = '<label class="checkbox">Display Info:&nbsp;' +
-      '<input class="checkbox" id="displayInfo" type="checkbox" checked="checked"/></label>' +
-      block.innerHTML;
+    let label = document.createElement('label');
+    label.classList.add('checkbox');
+    label.textContent = 'DisplayInfo: ';
+    let input = document.createElement('input');
+    input.classList.add('checkbox');
+    input.id = 'displayInfo';
+    input.type = 'checkbox';
+    input.checked = 'checked';
+    label.appendChild(input);
+    block.prepend(label);
 
     InfoModule.neonView = this.neonView;
     this.neonView.view.addUpdateCallback(InfoModule.resetInfoListeners);

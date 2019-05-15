@@ -11,7 +11,7 @@ class NeonCore {
   /**
    * Constructor for NeonCore
    * @param {Map<number, string>} meiMap - Map of zero-indexed page no to MEI.
-   * @param {string} title - The title of the page or manuscript.
+   * @param {Promise} title - The title of the page or manuscript.
    * @returns {object} A NeonCore object.
    */
   constructor (meiMap, title) {
@@ -56,6 +56,7 @@ class NeonCore {
     this.parser = new DOMParser();
 
     this.db = new PouchDb(title);
+
     // Add each MEI to the database
     this.meiMap = meiMap;
   }

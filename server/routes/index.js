@@ -152,4 +152,11 @@ router.route('/edit/:filename')
     });
   });
 
+// redirect to salzinnes editor
+router.route('/edit-iiif')
+  .get((req, res) => {
+    var manifest = 'https://images.simssa.ca/iiif/manuscripts/cdn-hsmu-m2149l4/manifest.json';
+    res.render('editor', { 'manifest': manifest });
+  });
+
 module.exports = router;

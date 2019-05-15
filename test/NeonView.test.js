@@ -118,12 +118,12 @@ describe('Check Controls UI', () => {
     const actions = browser.actions();
     var rect = await opacitySlider.getRect();
     await actions.dragAndDrop(opacitySlider, { x: -1 * parseInt(rect.width), y: 0 }).perform();
-    var meiStyle = await browser.findElement(By.className('definition-scale')).getAttribute('style');
+    var meiStyle = await browser.findElement(By.className('neon-container')).getAttribute('style');
     expect(meiStyle).toContain('opacity: 0;');
 
     var opacityButton = await browser.findElement(By.id('reset-opacity'));
     await actions.click(opacityButton).perform();
-    meiStyle = await browser.findElement(By.className('definition-scale')).getAttribute('style');
+    meiStyle = await browser.findElement(By.className('neon-container')).getAttribute('style');
     expect(meiStyle).toContain('opacity: 1;');
   });
 

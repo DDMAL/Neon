@@ -1,5 +1,6 @@
 import { updateHighlight, setOpacityFromSlider } from './DisplayControls.js';
 import * as Cursor from '../utils/Cursor.js';
+import ZoomHandler from './Zoom.js';
 
 const d3 = require('d3');
 const $ = require('jquery');
@@ -26,21 +27,24 @@ class SingleView {
 
     this.bg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
     this.bg.id = 'bgimg';
+    this.bg.classList.add('background');
     this.bg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', image);
     this.bg.setAttribute('x', 0);
     this.bg.setAttribute('y', 0);
 
     this.mei = document.createElementNS('http://www.w3.org/svg', 'svg');
     this.mei.id = 'mei_output';
-    this.mei.classList.add('active-page');
+    this.mei.classList.add('neon-container', 'active-page');
 
     this.group.appendChild(this.bg);
     this.group.appendChild(this.mei);
     this.container.appendChild(this.group);
 
-    this.displayPanel = new DisplayPanel(this, this.mei.id, this.bg.id, true);
+    this.zoomHandler = new ZoomHandler();
+    this.displayPanel = new DisplayPanel(this, 'neon-container', 'background', this.zoomHandler);
 
     this.setViewEventHandlers();
+    this.displayPanel.setDisplayListeners();
 
     document.getElementById('loading').style.display = 'none';
   }
@@ -53,7 +57,7 @@ class SingleView {
     this.group.replaceChild(svg, this.mei);
     this.mei = svg;
     this.mei.id = 'mei_output';
-    this.mei.classList.add('active-page');
+    this.mei.classList.add('neon-container', 'active-page');
     let height = parseInt(this.mei.getAttribute('height'));
     let width = parseInt(this.mei.getAttribute('width'));
 

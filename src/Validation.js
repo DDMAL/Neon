@@ -11,12 +11,21 @@ var worker, schema, statusField;
  */
 export async function init () {
   let displayContents = document.getElementById('displayContents');
-  displayContents.innerHTML +=
-    '<div class="panel-block"><p>MEI Status:&nbsp;' +
-    '<span id="validation_status">unknown</span></p></div>';
-  statusField = document.getElementById('validation_status');
-  worker = new Worker();
-  worker.onmessage = updateUI;
+  if (displayContents !== null) {
+    let panelBlock = document.createElement('div');
+    panelBlock.classList.add('panel-block');
+    let pNotif = document.createElement('p');
+    pNotif.textContent = 'MEI Status: ';
+    let span = document.createElement('span');
+    span.id = 'validation_status';
+    span.textContent = 'unknown';
+    pNotif.appendChild(span);
+    panelBlock.appendChild(pNotif);
+    displayContents.appendChild(panelBlock);
+    statusField = document.getElementById('validation_status');
+    worker = new Worker();
+    worker.onmessage = updateUI;
+  }
 }
 
 /**
@@ -24,6 +33,9 @@ export async function init () {
  * @param {string} meiData
  */
 export async function sendForValidation (meiData) {
+  if (statusField === undefined) {
+    return;
+  }
   if (schema === undefined) {
     schema = await schemaPromise;
   }
