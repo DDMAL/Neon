@@ -1,4 +1,4 @@
-import { updateHighlight, setOpacityFromSlider } from './DisplayControls.js';
+import { updateHighlight, setOpacityFromSlider } from '../DisplayPanel/DisplayControls.js';
 import * as Cursor from '../utils/Cursor.js';
 import ZoomHandler from './Zoom.js';
 

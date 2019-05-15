@@ -16,50 +16,50 @@ class InfoModule {
     let block = document.getElementById('extensible-block');
     let label = document.createElement('label');
     label.classList.add('checkbox');
-    label.textContent = 'DisplayInfo: ';
+    label.textContent = 'Display Info: ';
     let input = document.createElement('input');
     input.classList.add('checkbox');
     input.id = 'displayInfo';
     input.type = 'checkbox';
-    input.checked = 'checked';
+    input.checked = true;
     label.appendChild(input);
     block.prepend(label);
 
-    InfoModule.neonView = this.neonView;
-    this.neonView.view.addUpdateCallback(InfoModule.resetInfoListeners);
+    this.neonView.view.addUpdateCallback(this.resetInfoListeners.bind(this));
     setInfoControls();
   }
 
   /**
    * Set listeners for the InfoModule.
    */
-  static infoListeners () {
-    $('.active-page').find('.neume,.custos,.clef').on('mouseover', InfoModule.updateInfo);
+  infoListeners () {
+    $('.active-page').find('.neume,.custos,.clef').on('mouseover', this.updateInfo.bind(this));
   }
 
   /**
    * Stop listeners for the InfoModule.
    */
-  static stopListeners () {
-    $('.neume,.custos,.clef').off('mouseover', InfoModule.updateInfo);
+  stopListeners () {
+    $('.neume,.custos,.clef').off('mouseover', this.updateInfo.bind(this));
   }
 
   /**
    * Restart listeners for the InfoModule.
    */
-  static resetInfoListeners () {
-    InfoModule.stopListeners();
-    InfoModule.infoListeners();
+  resetInfoListeners () {
+    this.stopListeners();
+    this.infoListeners();
   }
 
   /**
    * Get updated info for the calling element based on its element type.
    * Makes calls to NeonCore to get the information necessary.
    */
-  static async updateInfo () {
+  async updateInfo (event) {
   // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the <g> element
   // So we will simply return if ID does not exist for now
-    let id = this.id;
+    console.log('called');
+    let id = event.currentTarget.id;
     if (id === '') {
       $('#neume_info').empty();
       console.log('No id!');
@@ -77,31 +77,31 @@ class InfoModule {
       case 'neume':
         // Select neume components of selected neume
         var ncs = element.children('.nc');
-        var contour = await InfoModule.getContour(ncs);
+        var contour = await this.getContour(ncs);
         if (contour === 'Clivis') {
-          var attr = await InfoModule.neonView.getElementAttr($(ncs[0])[0].id, 0);
+          var attr = await this.neonView.getElementAttr($(ncs[0])[0].id, this.neonView.view.getCurrentPage());
           if (attr.ligated) {
             contour = 'Ligature';
           }
         }
-        var pitches = await InfoModule.getPitches(ncs);
+        var pitches = await this.getPitches(ncs);
 
         pitches = pitches.trim().toUpperCase();
         body = 'Shape: ' + (contour === undefined ? 'Compound' : contour) + '<br/>' +
                 'Pitch(es): ' + pitches;
         break;
       case 'custos':
-        attributes = await InfoModule.neonView.getElementAttr(id, 0);
+        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPage());
         body += 'Pitch: ' + (attributes.pname).toUpperCase() + attributes.oct;
         break;
       case 'clef':
-        attributes = await InfoModule.neonView.getElementAttr(id, 0);
+        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPage());
         body += 'Shape: ' + attributes.shape + '<br/>' +
                 'Line: ' + attributes.line;
         break;
       case 'staff':
         elementClass = 'clef';
-        var staffDefAttributes = await InfoModule.neonView.getElementStaffDef(id);
+        var staffDefAttributes = await this.neonView.getElementStaffDef(id);
         body = 'Shape: ' + staffDefAttributes['clef.shape'] + '<br/>' +
                 'Line: ' + staffDefAttributes['clef.line'];
         break;
@@ -109,17 +109,17 @@ class InfoModule {
         body += 'nothing';
         break;
     }
-    InfoModule.updateInfoModule(elementClass, body);
+    this.updateInfoModule(elementClass, body);
   }
 
   /**
      * Get the individual pitches of a neume.
      * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
      */
-  static async getPitches (ncs) {
+  async getPitches (ncs) {
     var pitches = '';
     for (let nc of ncs) {
-      var attributes = await InfoModule.neonView.getElementAttr(nc.id, 0);
+      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPage());
       pitches += attributes.pname + attributes.oct + ' ';
     }
     return pitches;
@@ -129,20 +129,20 @@ class InfoModule {
      * Get the contour of a neume.
      * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
      */
-  static async getContour (ncs) {
+  async getContour (ncs) {
     var contour = '';
     var previous = null;
     for (let nc of ncs) {
-      var attributes = await InfoModule.neonView.getElementAttr(nc.id, 0);
+      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPage());
       if (previous !== null) {
         if (previous.oct > attributes.oct) {
           contour += 'd';
         } else if (previous.oct < attributes.oct) {
           contour += 'u';
         } else {
-          if (InfoModule.pitchNameToNum(previous.pname) < InfoModule.pitchNameToNum(attributes.pname)) {
+          if (this.pitchNameToNum(previous.pname) < this.pitchNameToNum(attributes.pname)) {
             contour += 'u';
-          } else if (InfoModule.pitchNameToNum(previous.pname) > InfoModule.pitchNameToNum(attributes.pname)) {
+          } else if (this.pitchNameToNum(previous.pname) > this.pitchNameToNum(attributes.pname)) {
             contour += 'd';
           } else {
             contour += 's';
@@ -162,7 +162,7 @@ class InfoModule {
      * @param {string} title - The info box title.
      * @param {string} body - The info box contents.
      */
-  static updateInfoModule (title, body) {
+  updateInfoModule (title, body) {
     if ($('#displayInfo').is(':checked')) {
       $('.message').css('display', '');
       $('.message-header').children('p').html(title);
@@ -179,7 +179,7 @@ class InfoModule {
      * @param {string} pname - The pitch name.
      * @returns {number}
      */
-  static pitchNameToNum (pname) {
+  pitchNameToNum (pname) {
     switch (pname) {
       case 'c':
         return 1;
@@ -205,7 +205,7 @@ class InfoModule {
      * @param {string} value - the value name.
      * @returns {string}
      */
-  static getContourByValue (value) {
+  getContourByValue (value) {
     for (let [cont, v] of InfoModule.neumeGroups.entries()) {
       if (v === value) {
         return cont;

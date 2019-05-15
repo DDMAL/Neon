@@ -1,7 +1,7 @@
 /** @module SingleEdit/Select */
 
 import * as Color from '../utils/Color.js';
-import { updateHighlight } from '../SingleView/DisplayControls.js';
+import { updateHighlight } from '../DisplayPanel/DisplayControls.js';
 import { initSelectionButtons } from './EditControls.js';
 import * as Grouping from './Grouping.js';
 import * as SelectOptions from './SelectOptions.js';

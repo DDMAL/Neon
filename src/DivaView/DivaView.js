@@ -26,6 +26,9 @@ class DivaView {
     if (typeof pageIndexes !== 'object') {
       pageIndexes = [pageIndexes];
     }
+    Array.from(document.getElementsByClassName('active-page')).forEach(elem => {
+      elem.classList.remove('active-page');
+    });
     for (let page of pageIndexes) {
       this.neonView.getPageSVG(page).then((svg) => {
         this.updateSVG(svg, page);
@@ -94,6 +97,7 @@ class DivaView {
     container.style.position = 'absolute';
     container.style.top = `${offset.top}px`;
     container.style.left = `${offset.left - parseInt(marginLeft)}px`;
+    container.classList.add('active-page');
 
     container.appendChild(svg);
 
