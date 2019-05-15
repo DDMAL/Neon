@@ -27,8 +27,9 @@ section.container
   h3.subtitle
   | IIIF Demo:
   ul
-    li
-      a(href='/edit-iiif') Salzinnes, CDN-Hsmu M2149.L4
+    each entry in iiif
+      li
+        a(href='/edit-iiif/' + entry[0] + '/' + entry[1])= entry[0] + ' (' + entry[1] + ')'
 
 section.container
   h3.subtitle

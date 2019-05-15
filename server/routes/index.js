@@ -13,6 +13,8 @@ const __base = '';
 // Main Page
 router.route('/')
   .get(function (req, res) {
+    var meiFiles = [];
+    var iiifFiles = [];
     fs.readdir(__base + 'public/uploads/mei', function (err, files) {
       if (err) {
         res.status(500).send(err);
@@ -21,10 +23,33 @@ router.route('/')
       if (files.length !== 0) {
         var index = files.indexOf('.gitignore');
         files.splice(index, (index < 0 ? 0 : 1));
-        res.render('index', { 'files': files });
-      } else {
-        res.render('index', { 'nofiles': 'No files Uploaded', 'files': files });
+        meiFiles = files;
       }
+
+      fs.readdir(__base + 'public/uploads/iiif', { withFileTypes: true }, function (err, files) {
+        if (err) {
+          res.status(500).send(err);
+          return;
+        }
+        files.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
+          let label = entry.name;
+          fs.readdir(__base + 'public/uploads/iiif/' + label, { withFileTypes: true }, (err, revisions) => {
+            revisions.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
+              if (err) {
+                console.error(err);
+                res.status(500).send(err);
+              } else {
+                iiifFiles.push([label, entry.name]);
+              }
+            });
+            if (meiFiles.length !== 0 || iiifFiles.length !== 0) {
+              res.render('index', { 'files': meiFiles, 'iiif': iiifFiles });
+            } else {
+              res.render('index', { 'nofiles': 'No files uploaded', 'files': meiFiles, 'iiif': iiifFiles });
+            }
+          });
+        });
+      });
     });
   });
 
@@ -153,10 +178,31 @@ router.route('/edit/:filename')
   });
 
 // redirect to salzinnes editor
-router.route('/edit-iiif')
-  .get((req, res) => {
-    var manifest = 'https://images.simssa.ca/iiif/manuscripts/cdn-hsmu-m2149l4/manifest.json';
-    res.render('editor', { 'manifest': manifest });
+router.route('/edit-iiif/:label/:rev')
+  .get(function (req, res) {
+    let label = req.params.label + '/' + req.params.rev;
+    fs.readFile(__base + 'public/uploads/iiif/' + label + '/manifest.link', (err, data) => {
+      if (err) {
+        console.error('Could not find manifest for IIIF entry with label ' + label);
+        console.error(err);
+      } else {
+        var manifest = data.toString().trim();
+        let map = new Map();
+        let regex = /page-(\d+)\.mei/;
+        fs.readdir(__base + 'public/uploads/iiif/' + label, (err, files) => {
+          if (err) {
+            console.error(err);
+          } else {
+            files.filter(file => { return regex.test(file); }).forEach(mei => {
+              let num = parseInt(regex.exec(mei)[1]);
+              let contents = fs.readFileSync(__base + 'public/uploads/iiif/' + label + '/' + mei);
+              map.set(num, contents);
+            });
+            res.render('editor', { 'manifest': manifest, 'meiMap': map });
+          }
+        });
+      }
+    });
   });
 
 module.exports = router;

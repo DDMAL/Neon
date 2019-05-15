@@ -58,7 +58,6 @@ class InfoModule {
   async updateInfo (event) {
   // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the <g> element
   // So we will simply return if ID does not exist for now
-    console.log('called');
     let id = event.currentTarget.id;
     if (id === '') {
       $('#neume_info').empty();
