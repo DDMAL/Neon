@@ -33,7 +33,7 @@ function getSelectionType () {
 export function setSelectHelperObjects (dh, nv) {
   dragHandler = dh;
   neonView = nv;
-  info = neonView.InfoModule;
+  info = neonView.info;
   zoomHandler = neonView.view.zoomHandler;
 
   initSelectionButtons();
