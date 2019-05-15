@@ -43,7 +43,7 @@ html
         var meiFile = "#{meifile}";
         var bgImg = "#{bgimg}";
         var manifest = "#{manifest}";
-        var meiMap = "#{meiMap}"
+        var meiMap = new Map(JSON.parse(decodeURIComponent("#{meiMap}")));
 
         function hotkeyDialog() {
           alert(

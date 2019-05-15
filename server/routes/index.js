@@ -195,10 +195,10 @@ router.route('/edit-iiif/:label/:rev')
           } else {
             files.filter(file => { return regex.test(file); }).forEach(mei => {
               let num = parseInt(regex.exec(mei)[1]);
-              let contents = fs.readFileSync(__base + 'public/uploads/iiif/' + label + '/' + mei);
+              let contents = fs.readFileSync(__base + 'public/uploads/iiif/' + label + '/' + mei).toString();
               map.set(num, contents);
             });
-            res.render('editor', { 'manifest': manifest, 'meiMap': map });
+            res.render('editor', { 'manifest': manifest, 'meiMap': encodeURIComponent(JSON.stringify([...map])) });
           }
         });
       }
