@@ -10,6 +10,7 @@ class DivaView {
     this.diva.disableDragScrollable();
     this.displayPanel = new Display(this, 'neon-container', 'diva-viewer-canvas');
     this.initDivaEvents();
+    this.setViewEventHandlers();
   }
 
   initDivaEvents () {
@@ -125,6 +126,27 @@ class DivaView {
     if (index !== -1) {
       this.updateCallbacks.splice(index, 1);
     }
+  }
+
+  setViewEventHandlers () {
+    document.body.addEventListener('keydown', (event) => {
+      switch (event.key) {
+        case 'Shift':
+          this.diva.enableDragScrollable();
+          break;
+        default:
+          break;
+      }
+    });
+    document.body.addEventListener('keyup', (event) => {
+      switch (event.key) {
+        case 'Shift':
+          this.diva.disableDragScrollable();
+          break;
+        default:
+          break;
+      }
+    });
   }
 }
 
