@@ -24,6 +24,12 @@ section.container
         a(href='/delete/' + file)
           span.icon
              i.fas.fa-times
+  h3.subtitle
+  | IIIF Demo:
+  ul
+    each entry in iiif
+      li
+        a(href='/edit-iiif/' + entry[0] + '/' + entry[1])= entry[0] + ' (' + entry[1] + ')'
 
 section.container
   h3.subtitle

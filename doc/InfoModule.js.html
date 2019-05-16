@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: InfoModule.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: InfoModule.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module InfoModule */
+
+const $ = require('jquery');
+
+/**
+ * Class that manages getting information for elements in Neon from Verovio.
+ */
+class InfoModule {
+  /**
+   * A constructor for an InfoModule.
+   * @param {NeonView} neonView - The NeonView parent.
+   */
+  constructor (neonView) {
+    this.neonView = neonView;
+    // Add info box enable/disable check box
+    let block = document.getElementById('extensible-block');
+    block.innerHTML = '&lt;label class="checkbox">Display Info:&amp;nbsp;' +
+      '&lt;input class="checkbox" id="displayInfo" type="checkbox" checked="checked"/>&lt;/label>' +
+      block.innerHTML;
+
+    InfoModule.neonView = this.neonView;
+    this.neonView.view.addUpdateCallback(InfoModule.resetInfoListeners);
+    setInfoControls();
+  }
+
+  /**
+   * Set listeners for the InfoModule.
+   */
+  static infoListeners () {
+    $('.active-page').find('.neume,.custos,.clef').on('mouseover', InfoModule.updateInfo);
+  }
+
+  /**
+   * Stop listeners for the InfoModule.
+   */
+  static stopListeners () {
+    $('.neume,.custos,.clef').off('mouseover', InfoModule.updateInfo);
+  }
+
+  /**
+   * Restart listeners for the InfoModule.
+   */
+  static resetInfoListeners () {
+    InfoModule.stopListeners();
+    InfoModule.infoListeners();
+  }
+
+  /**
+   * Get updated info for the calling element based on its element type.
+   * Makes calls to NeonCore to get the information necessary.
+   */
+  static async updateInfo () {
+  // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the &lt;g> element
+  // So we will simply return if ID does not exist for now
+    let id = this.id;
+    if (id === '') {
+      $('#neume_info').empty();
+      console.log('No id!');
+      return;
+    }
+
+    var element = $('#' + id);
+    var classRe = /neume|nc|clef|custos|staff/;
+    var elementClass = element.attr('class').match(classRe)[0];
+    var body = '';
+    var attributes;
+
+    // Gets the pitches depending on element type and
+    switch (elementClass) {
+      case 'neume':
+        // Select neume components of selected neume
+        var ncs = element.children('.nc');
+        var contour = await InfoModule.getContour(ncs);
+        if (contour === 'Clivis') {
+          var attr = await InfoModule.neonView.getElementAttr($(ncs[0])[0].id, 0);
+          if (attr.ligated) {
+            contour = 'Ligature';
+          }
+        }
+        var pitches = await InfoModule.getPitches(ncs);
+
+        pitches = pitches.trim().toUpperCase();
+        body = 'Shape: ' + (contour === undefined ? 'Compound' : contour) + '&lt;br/>' +
+                'Pitch(es): ' + pitches;
+        break;
+      case 'custos':
+        attributes = await InfoModule.neonView.getElementAttr(id, 0);
+        body += 'Pitch: ' + (attributes.pname).toUpperCase() + attributes.oct;
+        break;
+      case 'clef':
+        attributes = await InfoModule.neonView.getElementAttr(id, 0);
+        body += 'Shape: ' + attributes.shape + '&lt;br/>' +
+                'Line: ' + attributes.line;
+        break;
+      case 'staff':
+        elementClass = 'clef';
+        var staffDefAttributes = await InfoModule.neonView.getElementStaffDef(id);
+        body = 'Shape: ' + staffDefAttributes['clef.shape'] + '&lt;br/>' +
+                'Line: ' + staffDefAttributes['clef.line'];
+        break;
+      default:
+        body += 'nothing';
+        break;
+    }
+    InfoModule.updateInfoModule(elementClass, body);
+  }
+
+  /**
+     * Get the individual pitches of a neume.
+     * @param {array.&lt;SVGGraphicsElement>} ncs - neume components in the neume.
+     */
+  static async getPitches (ncs) {
+    var pitches = '';
+    for (let nc of ncs) {
+      var attributes = await InfoModule.neonView.getElementAttr(nc.id, 0);
+      pitches += attributes.pname + attributes.oct + ' ';
+    }
+    return pitches;
+  }
+
+  /**
+     * Get the contour of a neume.
+     * @param {array.&lt;SVGGraphicsElement>} ncs - neume components in the neume.
+     */
+  static async getContour (ncs) {
+    var contour = '';
+    var previous = null;
+    for (let nc of ncs) {
+      var attributes = await InfoModule.neonView.getElementAttr(nc.id, 0);
+      if (previous !== null) {
+        if (previous.oct > attributes.oct) {
+          contour += 'd';
+        } else if (previous.oct &lt; attributes.oct) {
+          contour += 'u';
+        } else {
+          if (InfoModule.pitchNameToNum(previous.pname) &lt; InfoModule.pitchNameToNum(attributes.pname)) {
+            contour += 'u';
+          } else if (InfoModule.pitchNameToNum(previous.pname) > InfoModule.pitchNameToNum(attributes.pname)) {
+            contour += 'd';
+          } else {
+            contour += 's';
+          }
+        }
+      }
+      previous = attributes;
+    }
+    if (InfoModule.neumeGroups.get(contour) === undefined) {
+      console.warn('Unknown contour: ' + contour);
+    }
+    return InfoModule.neumeGroups.get(contour);
+  }
+
+  /**
+     * Show and update the info box.
+     * @param {string} title - The info box title.
+     * @param {string} body - The info box contents.
+     */
+  static updateInfoModule (title, body) {
+    if ($('#displayInfo').is(':checked')) {
+      $('.message').css('display', '');
+      $('.message-header').children('p').html(title);
+      $('.message-body').html(body);
+    }
+    // Setting up listener for dismissing message
+    $('#notification-delete').on('click', function () {
+      $('.message').css('display', 'none');
+    });
+  }
+
+  /**
+     * Convert a pitch name (a-g) to a number (where c is 1, d is 2 and b is 7).
+     * @param {string} pname - The pitch name.
+     * @returns {number}
+     */
+  static pitchNameToNum (pname) {
+    switch (pname) {
+      case 'c':
+        return 1;
+      case 'd':
+        return 2;
+      case 'e':
+        return 3;
+      case 'f':
+        return 4;
+      case 'g':
+        return 5;
+      case 'a':
+        return 6;
+      case 'b':
+        return 7;
+      default:
+        console.log('Unknown pitch name');
+    }
+  }
+
+  /**
+     * Find the contour of an neume grouping based on the grouping name.
+     * @param {string} value - the value name.
+     * @returns {string}
+     */
+  static getContourByValue (value) {
+    for (let [cont, v] of InfoModule.neumeGroups.entries()) {
+      if (v === value) {
+        return cont;
+      }
+    }
+  }
+}
+
+/**
+ * Map of contours to neume names.
+ */
+InfoModule.neumeGroups = new Map(
+  [['', 'Punctum'], ['u', 'Pes'], ['d', 'Clivis'], ['uu', 'Scandicus'], ['ud', 'Torculus'], ['du', 'Porrectus'], ['s', 'Distropha'], ['ss', 'Tristopha'],
+    ['sd', 'Pressus'], ['dd', 'Climacus'], ['ddu', 'Climacus resupinus'], ['udu', 'Torculus resupinus'], ['dud', 'Porrectus flexus'],
+    ['udd', 'Pes subpunctis'], ['uud', 'Scandicus flexus'], ['uudd', 'Scandicus subpunctis'], ['dudd', 'Porrectus subpunctis']]
+);
+
+/**
+ * Set listener on info visibility checkbox.
+ */
+function setInfoControls () {
+  updateInfoVisibility();
+  $('#displayInfo').click(updateInfoVisibility);
+}
+
+/**
+ * Update the visibility of infoBox
+ */
+function updateInfoVisibility () {
+  if ($('#displayInfo').is(':checked')) {
+    $('#neume_info').append("&lt;article class='message' style='display: none;'>&lt;div class='message-header'>&lt;p>&lt;/p>" +
+            "&lt;button class='delete' id='notification-delete' aria-label='delete'>&lt;/button>&lt;/div>" +
+            "&lt;div class='message-body'>&lt;/div>");
+  } else {
+    $('#neume_info').empty();
+  }
+}
+
+export { InfoModule as default };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_DisplayControls.html">SingleView/DisplayControls</a></li><li><a href="module-SingleView_DisplayPanel.html">SingleView/DisplayPanel</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.1</a> on Tue May 14 2019 10:56:12 GMT-0400 (GMT-04:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

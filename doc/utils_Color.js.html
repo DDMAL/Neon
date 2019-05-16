@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utils/Color.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utils/Color.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module utils/Color */
+
+const $ = require('jquery');
+
+/**
+ * Set a highlight by a different grouping. Either staff, syllable, or neume.
+ * @param {string} grouping - The grouping name.
+ */
+export function setGroupingHighlight (grouping) {
+  unsetGroupingHighlight();
+  if (grouping === 'staff') {
+    setStaffHighlight();
+    return;
+  }
+
+  let groups = Array.from($('.' + grouping));
+  for (var i = 0; i &lt; groups.length; i++) {
+    let groupColor = ColorPalette[i % ColorPalette.length];
+    if (!$(groups[i]).parents('.selected').length &amp;&amp; !$(groups[i]).hasClass('selected')) {
+      groups[i].setAttribute('fill', groupColor);
+      $(groups[i]).addClass('highlighted');
+    } else {
+      if (!$(groups[i]).hasClass('selected')) {
+        groups[i].setAttribute('fill', null);
+      } else {
+        groups[i].setAttribute('fill', '#d00');
+      }
+      $(groups[i]).removeClass('highlighted');
+    }
+  }
+}
+
+/**
+ * Unset highlight for all grouping types
+ */
+export function unsetGroupingHighlight () {
+  unsetStaffHighlight();
+  let highlighted = Array.from($('.highlighted').filter((index, elem) => { return !$(elem.parentElement).hasClass('selected'); }));
+  highlighted.forEach(elem => {
+    elem.setAttribute('fill', null);
+    $(elem).removeClass('highlighted');
+  });
+}
+
+/**
+ * Highlight each staff a different color.
+ */
+export function setStaffHighlight () {
+  let staves = Array.from(document.getElementsByClassName('staff'));
+  for (var i = 0; i &lt; staves.length; i++) {
+    let staffColor = ColorPalette[i % ColorPalette.length];
+    highlight(staves[i], staffColor);
+  }
+}
+
+/**
+ * Remove the highlight from each staff.
+ */
+export function unsetStaffHighlight () {
+  unhighlight('.staff');
+}
+
+/**
+ * Highlight a staff a certain color.
+ * @param {SVGGElement} staff - The staff's SVG element.
+ * @param {string} color - The color to highlight the staff.
+ */
+export function highlight (staff, color) {
+  let children = Array.from($('#' + staff.id).children());
+  children.forEach(child => {
+    if (child.tagName === 'path') {
+      child.setAttribute('stroke', color);
+    } else {
+      child.setAttribute('fill', color);
+    }
+    $(child).addClass('highlighted');
+  });
+}
+
+/**
+ * Remove the highlight from a staff.
+ * @param {(SVGGElement|string)} staff - The staff's SVG element or a JQuery selector.
+ */
+export function unhighlight (staff) {
+  let children = Array.from($(staff).filter(':not(.selected)').children('.highlighted'));
+  children.forEach(elem => {
+    if (elem.tagName === 'path') {
+      elem.setAttribute('stroke', '#000000');
+    } else {
+      elem.removeAttribute('fill');
+    }
+  });
+  $(staff).filter(':not(.selected)').children('.highlighted').removeClass('highlighted');
+}
+
+/**
+ * Color palette from Figure 2 (Colors optimized for color-blind
+ * individuals) from
+ * ["Points of view: Color blindness" by Bang Wong published in Nature Methods volume 8 on 27 May 2011]{@link https://www.nature.com/articles/nmeth.1618?WT.ec_id=NMETH-201106}
+ * @type {string[]}
+ */
+const ColorPalette = [
+//    "rgb(0,0,0)",
+  'rgb(230, 159, 0)',
+  'rgb(86, 180, 233)',
+  'rgb(0, 158, 115)',
+  'rgb(240, 228, 66)',
+  'rgb(0, 114, 178)',
+  'rgb(213, 94, 0)',
+  'rgb(204, 121, 167)'
+];
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_DisplayControls.html">SingleView/DisplayControls</a></li><li><a href="module-SingleView_DisplayPanel.html">SingleView/DisplayPanel</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.1</a> on Tue May 14 2019 10:56:12 GMT-0400 (GMT-04:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

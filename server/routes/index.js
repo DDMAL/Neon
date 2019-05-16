@@ -4,6 +4,7 @@ var fs = require('fs');
 var multer = require('multer');
 
 var router = express.Router();
+const __base = '';
 
 //////////////////
 // Index routes //
@@ -12,6 +13,8 @@ var router = express.Router();
 // Main Page
 router.route('/')
   .get(function (req, res) {
+    var meiFiles = [];
+    var iiifFiles = [];
     fs.readdir(__base + 'public/uploads/mei', function (err, files) {
       if (err) {
         res.status(500).send(err);
@@ -20,10 +23,33 @@ router.route('/')
       if (files.length !== 0) {
         var index = files.indexOf('.gitignore');
         files.splice(index, (index < 0 ? 0 : 1));
-        res.render('index', { 'files': files });
-      } else {
-        res.render('index', { 'nofiles': 'No files Uploaded', 'files': files });
+        meiFiles = files;
       }
+
+      fs.readdir(__base + 'public/uploads/iiif', { withFileTypes: true }, function (err, files) {
+        if (err) {
+          res.status(500).send(err);
+          return;
+        }
+        files.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
+          let label = entry.name;
+          fs.readdir(__base + 'public/uploads/iiif/' + label, { withFileTypes: true }, (err, revisions) => {
+            revisions.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
+              if (err) {
+                console.error(err);
+                res.status(500).send(err);
+              } else {
+                iiifFiles.push([label, entry.name]);
+              }
+            });
+            if (meiFiles.length !== 0 || iiifFiles.length !== 0) {
+              res.render('index', { 'files': meiFiles, 'iiif': iiifFiles });
+            } else {
+              res.render('index', { 'nofiles': 'No files uploaded', 'files': meiFiles, 'iiif': iiifFiles });
+            }
+          });
+        });
+      });
     });
   });
 
@@ -45,16 +71,22 @@ var upload = multer({
 router.route('/upload_file')
   .post(function (req, res) {
     upload(req, res, function (err) {
+      if (err) {
+        return console.error(err);
+      }
       // Check if two files were uploaded
       if (req.files.length !== 2) {
         for (let i = 0; i < req.files.length; i++) {
           fs.unlink(__base + 'public/uploads/' + req.files[i].originalname, function (err) {
             if (err) {
-              return console.log('Failed to delete file');
+              return console.log('Failed to delete file' + err);
             }
           });
         }
         fs.readdir(__base + 'public/uploads/mei', function (err, files) {
+          if (err) {
+            return console.error(err);
+          }
           res.render('index', { 'files': files, 'err': 'Error: must upload two files' });
         });
         return;
@@ -94,9 +126,6 @@ router.route('/upload_file')
             return console.log('Failed to rename file');
           }
         });
-        // Copy MEI file to backup
-        fs.createReadStream(__base + 'public/uploads/mei/' + files[0])
-          .pipe(fs.createWriteStream(__base + 'public/uploads/backup/' + files[0]));
       }
       // Reload page
       res.redirect('/');
@@ -106,17 +135,12 @@ router.route('/upload_file')
 // Delete file TODO: Optimize function with regex
 router.route('/delete/:filename')
   .get(function (req, res) {
-    meifile = req.params.filename;
-    pngfile = meifile.split('.')[0] + '.png';
+    var meifile = req.params.filename;
+    var pngfile = meifile.split('.')[0] + '.png';
     // delete file from all folders
     fs.unlink(__base + 'public/uploads/mei/' + meifile, function (err) {
       if (err) {
         return console.log('failed to delete mei file');
-      }
-    });
-    fs.unlink(__base + 'public/uploads/backup/' + meifile, function (err) {
-      if (err) {
-        return console.log('failed to delete backup mei file');
       }
     });
     fs.unlink(__base + 'public/uploads/png/' + pngfile, function (err) {
@@ -153,64 +177,32 @@ router.route('/edit/:filename')
     });
   });
 
-/////////////////
-// NEON routes //
-/////////////////
-
-router.route('/save/:filename')
-  .post(function (req, res) {
-    console.log(req.body.fileName);
-    fs.writeFile(__base + 'public/' + req.body.fileName,
-      req.body.meiData,
-      function (err) {
-        if (err) {
-          console.log(err);
-          res.status(500).send({ error: 'File ' + req.body.fileName + ' could not be saved.' });
-        } else {
-          res.status(200).send({ success: 'File Saved' });
-        }
-      }
-    );
-  });
-
-router.route('/autosave/:filename')
-  .post((req, res) => {
-    fs.writeFile(__base + 'public/uploads/mei-auto/' + req.params.filename, req.body.data, (err) => {
+// redirect to salzinnes editor
+router.route('/edit-iiif/:label/:rev')
+  .get(function (req, res) {
+    let label = req.params.label + '/' + req.params.rev;
+    fs.readFile(__base + 'public/uploads/iiif/' + label + '/manifest.link', (err, data) => {
       if (err) {
-        console.log(err);
-        res.status(500).send({ error: 'File' + req.body.fileName + 'could not be autosaved.' });
+        console.error('Could not find manifest for IIIF entry with label ' + label);
+        console.error(err);
       } else {
-        res.status(200).send({ success: 'File autosaved' });
+        var manifest = data.toString().trim();
+        let map = new Map();
+        let regex = /page-(\d+)\.mei/;
+        fs.readdir(__base + 'public/uploads/iiif/' + label, (err, files) => {
+          if (err) {
+            console.error(err);
+          } else {
+            files.filter(file => { return regex.test(file); }).forEach(mei => {
+              let num = parseInt(regex.exec(mei)[1]);
+              let contents = fs.readFileSync(__base + 'public/uploads/iiif/' + label + '/' + mei).toString();
+              map.set(num, contents);
+            });
+            res.render('editor', { 'manifest': manifest, 'meiMap': encodeURIComponent(JSON.stringify([...map])) });
+          }
+        });
       }
     });
-  });
-
-router.route('/autosave-clear/:filename')
-  .post((req, res) => {
-    fs.unlink(__base + 'public/uploads/mei-auto/' + req.params.filename, (err) => {
-      if (err) { console.log(err); }
-    });
-  });
-
-router.route('/revert/:filename')
-  .post(function (req, res) {
-    var file = req.params.filename;
-    fs.createReadStream(__base + 'public/uploads/backup/' + file)
-      .pipe(fs.createWriteStream(__base + 'public/uploads/mei/' + file));
-    try {
-      fs.unlinkSync(__base + 'public/uploads/mei-auto/' + file);
-    } catch (err) { console.log('Could not delete autosave: ' + err.message); }
-
-    res.redirect('/edit/' + file);
-  });
-
-router.route('/restore/:filename')
-  .post((req, res) => {
-    var file = req.params.filename;
-    fs.createReadStream(__base + 'public/uploads/mei-auto/' + file)
-      .pipe(fs.createWriteStream(__base + 'public/uploads/mei/' + file));
-
-    res.redirect('/edit/' + file);
   });
 
 module.exports = router;
