@@ -21,7 +21,7 @@ var dragHandler, neonView, info, zoomHandler;
  * @returns {string|null}
  */
 function getSelectionType () {
-  let element = document.getElementsByClassName('sel-by active');
+  let element = document.getElementsByClassName('sel-by is-active');
   if (element.length !== 0) {
     return element[0].id;
   } else {
@@ -112,10 +112,10 @@ function clickHandler (evt) {
     let staff = selectedStaves[0];
     if (!staff.classList.contains('selected')) {
       // Select previously unselected staff
-      selectStaff(staff, this.dragHandler);
+      selectStaff(staff, dragHandler);
       let resize = new Resize(staff.id, neonView, dragHandler);
       resize.drawInitialRect();
-      this.dragHandler.dragInit();
+      dragHandler.dragInit();
     }
     // Trigger mousedown event on the staff
     staff.dispatchEvent(new window.MouseEvent('mousedown', {
