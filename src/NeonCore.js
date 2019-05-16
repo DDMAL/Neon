@@ -15,15 +15,14 @@ class NeonCore {
    * @returns {object} A NeonCore object.
    */
   constructor (meiMap, title) {
-    this.vrvToolkit = new verovio.toolkit();
-    this.vrvToolkit.setOptions({
+    this.verovioOptions = {
       inputFormat: 'mei',
       noFooter: 1,
       noHeader: 1,
       pageMarginLeft: 0,
       pageMarginTop: 0,
       font: 'Bravura'
-    });
+    };
 
     Validation.init();
 
@@ -56,6 +55,8 @@ class NeonCore {
     this.parser = new DOMParser();
 
     this.db = new PouchDb(title);
+
+    this.toolkits = new Map();
 
     // Add each MEI to the database
     this.meiMap = meiMap;
@@ -96,20 +97,15 @@ class NeonCore {
    */
   loadPage (pageNo) {
     return new Promise((resolve, reject) => {
-      if (this.currentPage !== pageNo) {
-        if (this.neonCache.has(pageNo)) {
-          this.loadData(pageNo, this.neonCache.get(pageNo).mei);
-          resolve(this.neonCache.get(pageNo));
-        } else {
-          this.db.get(pageNo.toString()).then((doc) => {
-            this.loadData(pageNo, doc.data);
-            resolve(this.neonCache.get(pageNo));
-          }).catch((err) => {
-            reject(err);
-          });
-        }
-      } else {
+      if (this.neonCache.has(pageNo)) {
         resolve(this.neonCache.get(pageNo));
+      } else {
+        this.db.get(pageNo.toString()).then((doc) => {
+          this.loadData(pageNo, doc.data);
+          resolve(this.neonCache.get(pageNo));
+        }).catch((err) => {
+          reject(err);
+        });
       }
     });
   }
@@ -123,7 +119,7 @@ class NeonCore {
   loadData (pageNo, data, dirty = false) {
     Validation.sendForValidation(data);
     let svg = this.parser.parseFromString(
-      this.vrvToolkit.renderData(data, {}),
+      this.getToolkit(pageNo).renderData(data, {}),
       'image/svg+xml'
     ).documentElement;
     this.neonCache.set(pageNo, {
@@ -131,7 +127,6 @@ class NeonCore {
       mei: data,
       dirty: dirty
     });
-    this.currentPage = pageNo;
   }
 
   /**
@@ -169,7 +164,7 @@ class NeonCore {
   getElementAttr (elementId, pageNo) {
     return new Promise((resolve) => {
       this.loadPage(pageNo).then(() => {
-        resolve(this.vrvToolkit.getElementAttr(elementId));
+        resolve(this.getToolkit(pageNo).getElementAttr(elementId));
       });
     });
   }
@@ -187,7 +182,7 @@ class NeonCore {
       await this.loadPage(pageNo);
     }
     let currentMEI = this.getMEI(pageNo);
-    let result = this.vrvToolkit.edit(editorAction);
+    let result = this.getToolkit(pageNo).edit(editorAction);
     if (result) {
       if (!this.undoStacks.has(pageNo)) {
         this.undoStacks.set(pageNo, []);
@@ -197,8 +192,8 @@ class NeonCore {
 
       // Update cache
       this.neonCache.set(pageNo, {
-        mei: this.vrvToolkit.getMEI(0, true),
-        svg: this.parser.parseFromString(this.vrvToolkit.renderToSVG(1),
+        mei: this.getToolkit(pageNo).getMEI(0, true),
+        svg: this.parser.parseFromString(this.getToolkit(pageNo).renderToSVG(1),
           'image/svg+xml').documentElement,
         dirty: true
       });
@@ -210,8 +205,8 @@ class NeonCore {
    * Get the edit info string from the verovio toolkit.
    * @returns {string}
    */
-  info () {
-    return this.vrvToolkit.editInfo();
+  info (pageNo) {
+    return this.getToolkit(pageNo).editInfo();
   }
 
   /**
@@ -273,6 +268,14 @@ class NeonCore {
         });
       }
     }
+  }
+
+  getToolkit (pageNo) {
+    if (!this.toolkits.has(pageNo)) {
+      this.toolkits.set(pageNo, new verovio.toolkit());
+      this.toolkits.get(pageNo).setOptions(this.verovioOptions);
+    }
+    return this.toolkits.get(pageNo);
   }
 }
 

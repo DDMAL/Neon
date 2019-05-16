@@ -63,7 +63,7 @@ describe('Test insert editor action', () => {
       }
     };
     await neon.edit(editorAction, 0);
-    let insertAtts = await neon.getElementAttr(await neon.info(), 0);
+    let insertAtts = await neon.getElementAttr(await neon.info(0), 0);
     expect(insertAtts['pname']).toBe('e');
     expect(insertAtts['oct']).toBe('3');
   });
@@ -85,7 +85,7 @@ describe('Test insert editor action', () => {
       }
     };
     await neon.edit(editorAction, 0);
-    let insertAtts = await neon.getElementAttr(await neon.info(), 0);
+    let insertAtts = await neon.getElementAttr(await neon.info(0), 0);
     expect(insertAtts['shape']).toBe('C');
     expect(insertAtts['line']).toBe('3');
   });
@@ -104,7 +104,7 @@ describe('Test insert editor action', () => {
       }
     };
     await neon.edit(editorAction, 0);
-    let insertAtts = await neon.getElementAttr(await neon.info(), 0);
+    let insertAtts = await neon.getElementAttr(await neon.info(0), 0);
     expect(insertAtts.pname).toBe('g');
     expect(insertAtts.oct).toBe('2');
   });
@@ -182,7 +182,7 @@ test('Test chain action', async () => {
   expect(await neon.edit(editorAction, 0)).toBeTruthy();
   console.log('Hello');
   let dragAtts = await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', 0);
-  let insertAtts = await neon.getElementAttr(JSON.parse(neon.info())[1], 0);
+  let insertAtts = await neon.getElementAttr(JSON.parse(neon.info(0))[1], 0);
   expect(dragAtts.pname).toBe('b');
   expect(dragAtts.oct).toBe('2');
   expect(insertAtts.pname).toBe('e');
@@ -218,6 +218,6 @@ test("Test 'split' action", async () => {
     }
   };
   expect(await neon.edit(editorAction, 0)).toBeTruthy();
-  let newId = await neon.info();
+  let newId = await neon.info(0);
   expect(await neon.getElementAttr(newId, 0)).toEqual({ n: '17' });
 });
