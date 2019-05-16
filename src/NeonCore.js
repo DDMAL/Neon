@@ -56,7 +56,14 @@ class NeonCore {
 
     this.db = new PouchDb(title);
 
+    /**
+     * A map associating page numbers with their respective Verovio toolkit
+     * instances. This is used to decrease latency in loading files.
+     * @type {Map.<number, object>}
+     */
     this.toolkits = new Map();
+
+    this.blankPages = [];
 
     // Add each MEI to the database
     this.meiMap = meiMap;
@@ -99,11 +106,18 @@ class NeonCore {
     return new Promise((resolve, reject) => {
       if (this.neonCache.has(pageNo)) {
         resolve(this.neonCache.get(pageNo));
+      } else if (this.blankPages.includes(pageNo)) {
+        let e = new Error('No MEI file for page ' + pageNo);
+        e.name = 'missing_mei';
+        reject(e);
       } else {
         this.db.get(pageNo.toString()).then((doc) => {
           this.loadData(pageNo, doc.data);
           resolve(this.neonCache.get(pageNo));
         }).catch((err) => {
+          if (err.name === 'not_found') {
+            this.blankPages.push(pageNo);
+          }
           reject(err);
         });
       }
