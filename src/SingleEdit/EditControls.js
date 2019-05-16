@@ -1,10 +1,10 @@
 /** @module SingleEdit/EditControls */
 
-import * as Contents from './Contents.js';
+import * as Contents from '../UnifiedEdit/EditContents.js';
 import * as Cursor from '../utils/Cursor.js';
 import Icons from '../img/icons.svg';
 import * as Notification from '../utils/Notification.js';
-import { unselect } from './Select.js';
+import { unselect } from '../UnifiedEdit/SelectTools.js';
 const $ = require('jquery');
 
 /**

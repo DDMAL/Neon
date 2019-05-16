@@ -1,9 +1,9 @@
 /** @module SingleEdit/SelectOptions */
-import * as Contents from './Contents.js';
+import * as Contents from '../UnifiedEdit/EditContents.js';
 import * as Grouping from './Grouping.js';
 import * as Notification from '../utils/Notification.js';
 import InfoModule from '../InfoModule.js';
-import SplitHandler from './SplitHandler.js';
+import { SplitHandler } from '../UnifiedEdit/StaffTools.js';
 const $ = require('jquery');
 
 /**
@@ -53,7 +53,6 @@ export function unsetVirgaAction (id) {
   };
 }
 
-// TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
 /**
  * Trigger the extra nc action menu.
  * @param {SVGGraphicsElement} nc - The last selected elements.
