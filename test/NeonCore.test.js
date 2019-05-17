@@ -18,7 +18,7 @@ beforeAll(() => {
 test("Test 'SetText' function", async () => {
   let neon = new NeonCore(mei, 'test');
   await neon.initDb();
-  let svg = parser.parseFromString(await neon.getSVG(0), 'image/svg+xml').documentElement;
+  let svg = await neon.getSVG(0);
   let syl = svg.getElementById('test syl :)').textContent.trim();
   expect(syl).toBe('Hello');
   let editorAction = {
@@ -29,7 +29,7 @@ test("Test 'SetText' function", async () => {
     }
   };
   expect(await neon.edit(editorAction, 0)).toBeTruthy();
-  svg = parser.parseFromString(await neon.getSVG(0), 'image/svg+xml').documentElement;
+  svg = await neon.getSVG(0);
   syl = svg.getElementById('test syl :)').textContent.trim();
   expect(syl).toBe('asdf');
 });
@@ -216,7 +216,7 @@ describe("Test 'group and ungroup' functions", () => {
     };
     expect(await neon.edit(editorAction2, 0)).toBeTruthy();
     let info = await neon.info(0);
-    let svg = parser.parseFromString(await neon.getSVG(0), 'image/svg+xml').documentElement;
+    let svg = await neon.getSVG(0);
     // svg is doing weird stuff with whitespace so I'm removing all of it before compairing
     let syl = svg.getElementById(info).textContent.trim();
     expect(syl).toBe('Helloworld!');
@@ -231,7 +231,7 @@ describe("Test 'group and ungroup' functions", () => {
     };
     expect(await neon.edit(editorAction3, 0)).toBeTruthy();
     let info2 = await neon.info(0);
-    svg = parser.parseFromString(await neon.getSVG(0), 'image/svg+xml').documentElement;
+    svg = await neon.getSVG(0);
     let array = info2.split(' ');
     syl = svg.getElementById(array[0]).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('Helloworld!');
@@ -252,7 +252,7 @@ describe("Test 'group and ungroup' functions", () => {
     };
     expect(await neon.edit(setupGroup, 0)).toBeTruthy();
     let firstGroup = await neon.info(0);
-    let svg = parser.parseFromString(await neon.getSVG(0), 'image/svg+xml').documentElement;
+    let svg = await neon.getSVG(0);
     let syl = svg.getElementById(firstGroup).textContent.trim();
     expect(syl).toBe('Hello');
     let setupSetText = {
@@ -264,7 +264,7 @@ describe("Test 'group and ungroup' functions", () => {
     };
 
     expect(await neon.edit(setupSetText, 0)).toBeTruthy();
-    svg = parser.parseFromString(await neon.getSVG(0), 'image/svg+xml').documentElement;
+    svg = await neon.getSVG(0);
     syl = svg.getElementById('m-4450b0db-733d-459c-afad-e050eab0af63').textContent.trim();
     expect(syl).toBe('world!');
 
@@ -277,7 +277,7 @@ describe("Test 'group and ungroup' functions", () => {
     };
     expect(await neon.edit(editorAction, 0)).toBeTruthy();
     let info = await neon.info(0);
-    svg = parser.parseFromString(await neon.getSVG(0), 'image/svg+xml').documentElement;
+    svg = await neon.getSVG(0);
     syl = svg.getElementById(info).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('world!');
     syl = svg.getElementById(firstGroup).textContent.trim().replace(/\s/g, '');
@@ -293,7 +293,7 @@ describe("Test 'group and ungroup' functions", () => {
     expect(await neon.edit(ungroupAction, 0)).toBeTruthy();
     let ungroupInfo = await neon.info(0);
     let array = ungroupInfo.split(' ');
-    svg = parser.parseFromString(await neon.getSVG(0), 'image/svg+xml').documentElement;
+    svg = await neon.getSVG(0);
     syl = svg.getElementById(array[0]).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('world!');
     syl = svg.getElementById(array[1]).textContent.trim().replace(/\s/g, '');
@@ -304,7 +304,7 @@ describe("Test 'group and ungroup' functions", () => {
     let neon = new NeonCore(mei, 'test');
     await neon.initDb();
     await neon.getSVG(0);
-    let svg = parser.parseFromString(await neon.getSVG(0), 'image/svg+xml').documentElement;
+    let svg = await neon.getSVG(0);
     let setupGroup1 = {
       'action': 'group',
       'param': {
@@ -322,7 +322,7 @@ describe("Test 'group and ungroup' functions", () => {
       }
     };
     expect(await neon.edit(setupName1, 0)).toBeTruthy();
-    svg = parser.parseFromString(await neon.getSVG(0), 'image/svg+xml').documentElement;
+    svg = await neon.getSVG(0);
     let syl = svg.getElementById(firstSyl).textContent.trim();
     expect(syl).toBe('hello1');
     let setupGroup2 = {
@@ -342,7 +342,7 @@ describe("Test 'group and ungroup' functions", () => {
       }
     };
     expect(await neon.edit(setupName2, 0)).toBeTruthy();
-    svg = parser.parseFromString(await neon.getSVG(0), 'image/svg+xml').documentElement;
+    svg = await neon.getSVG(0);
     syl = svg.getElementById(secondSyl).textContent.trim();
     expect(syl).toBe('hello2');
 
@@ -355,7 +355,7 @@ describe("Test 'group and ungroup' functions", () => {
     };
     expect(await neon.edit(editorAction, 0)).toBeTruthy();
     let mergedSyl = await neon.info(0);
-    svg = parser.parseFromString(await neon.getSVG(0), 'image/svg+xml').documentElement;
+    svg = await neon.getSVG(0);
     syl = svg.getElementById(mergedSyl).textContent.trim();
     expect(syl).toBe('');
 
