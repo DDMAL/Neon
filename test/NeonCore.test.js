@@ -2,17 +2,15 @@
 import NeonCore from '../src/NeonCore.js';
 
 const fs = require('fs');
-
 const verovio = require('verovio-dev');
-const jsdom = require('jsdom');
 
 const pathToMei = './test/resources/test.mei';
 var mei, DOMParser, parser;
 
 beforeAll(() => {
   mei = fs.readFileSync(pathToMei).toString();
-  DOMParser = new jsdom.JSDOM().window.DOMParser;
-  parser = new DOMParser();
+  // DOMParser = new jsdom.JSDOM().window.DOMParser;
+  parser = new window.DOMParser();
   mei = new Map();
   mei.set(0, fs.readFileSync(pathToMei).toString());
 });
