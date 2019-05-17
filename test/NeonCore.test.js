@@ -3,12 +3,33 @@ import NeonCore from '../src/NeonCore.js';
 
 const fs = require('fs');
 const verovio = require('verovio-dev');
+const jsdom = require('jsdom');
 
 const pathToMei = './test/resources/test.mei';
-var mei;
+var mei, DOMParser, parser;
 
 beforeAll(() => {
   mei = fs.readFileSync(pathToMei).toString();
+  DOMParser = new jsdom.JSDOM().window.DOMParser;
+  parser = new DOMParser();
+});
+
+test("Test 'SetText' function", () => {
+  let neon = new NeonCore(mei, new verovio.toolkit());
+  let svg = parser.parseFromString(neon.getSVG(), 'image/svg+xml').documentElement;
+  let syl = svg.getElementById('test syl :)').textContent.trim();
+  expect(syl).toBe("Hello");
+  let editorAction = {
+    'action': 'setText', 
+    'param': {
+      'elementId': 'm-f715514e-cb0c-48e4-a1f9-a265ec1d5ca1',
+      'text': 'asdf'
+    }
+  };
+  expect(neon.edit(editorAction)).toBeTruthy();
+  svg = parser.parseFromString(neon.getSVG(), 'image/svg+xml').documentElement;
+  syl = svg.getElementById('test syl :)').textContent.trim();
+  expect(syl).toBe('asdf');
 });
 
 test("Test 'getElementAttr' function", () => {
@@ -97,6 +118,237 @@ describe('Test insert editor action', () => {
     let insertAtts = neon.getElementAttr(neon.info());
     expect(insertAtts.pname).toBe('g');
     expect(insertAtts.oct).toBe('2');
+  });
+  test("Test 'insert' action, nc", () => {
+    let neon = new NeonCore(mei, new verovio.toolkit());
+    neon.getSVG();
+    let editorAction = {
+      'action': 'insert',
+      'param': {
+        'elementType': 'nc',
+        'staffId': 'auto',
+        'ulx': 1337,
+        'uly': 655
+      }
+    }
+    neon.edit(editorAction);
+    let insertAtts = neon.getElementAttr(neon.info());
+    expect(insertAtts.pname).toBe('a');
+    expect(insertAtts.oct).toBe('2');
+  });
+});
+
+describe("Test 'group and ungroup' functions", () => {
+  test("Test 'group/ungroup' functions, nc, syllable", () => {
+    let neon = new NeonCore(mei, new verovio.toolkit());
+    neon.getSVG();
+    //group
+    let editorAction = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ["m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5", "m-4475cbc8-ad26-44ee-999b-d18ce43600ab"]
+      }
+    };
+    expect(neon.edit(editorAction)).toBeTruthy();
+    let editorAction2 = {
+      'action': 'group',
+      'param': {
+        'groupType': 'nc',
+        'elementIds': ["m-ceab54b1-893e-42de-8fca-aeeb13254e19", "m-2cf5243a-7042-42f9-b0c0-fd65f3ed67e0"]
+      }
+    }
+    expect(neon.edit(editorAction2)).toBeTruthy();
+
+    //ungroup
+    let editorAction3 = {
+      'action': 'ungroup',
+      'param': {
+        'groupType': 'nc',
+        'elementIds': ["m-ceab54b1-893e-42de-8fca-aeeb13254e19", "m-2cf5243a-7042-42f9-b0c0-fd65f3ed67e0"]
+      }
+    }
+    expect(neon.edit(editorAction3)).toBeTruthy();
+    let editorAction4 = {
+      'action': 'ungroup',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ["m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5", "m-4475cbc8-ad26-44ee-999b-d18ce43600ab"]
+      }
+    }
+    expect(neon.edit(editorAction4)).toBeTruthy();
+  });
+  test("Test 'group/ungroup' functions, neume with multiple fullParents", () => {
+    let neon = new NeonCore(mei, new verovio.toolkit());
+    neon.getSVG();
+
+    //group
+    let editorAction = {
+      'action': 'setText',
+      'param': {
+        'elementId': 'm-ef58ea53-8d3a-4e9b-9b82-b9a057fe3fe4',
+        'text': 'world!'
+      }
+    }
+    expect(neon.edit(editorAction)).toBeTruthy(); 
+    let editorAction2 = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ["m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5", "m-4475cbc8-ad26-44ee-999b-d18ce43600ab"]
+      }
+    }
+    expect(neon.edit(editorAction2)).toBeTruthy(); 
+    let info = neon.info();
+    let svg = parser.parseFromString(neon.getSVG(), 'image/svg+xml').documentElement;
+    //svg is doing weird stuff with whitespace so I'm removing all of it before compairing
+    let syl = svg.getElementById(info).textContent.trim();
+    expect(syl).toBe('Helloworld!');
+
+    //ungroup
+    let editorAction3 = {
+      'action': 'ungroup',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ["m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5", "m-4475cbc8-ad26-44ee-999b-d18ce43600ab"]
+      }
+    }
+    expect(neon.edit(editorAction3)).toBeTruthy();
+    let info2 = neon.info();
+    svg = parser.parseFromString(neon.getSVG(), 'image/svg+xml').documentElement;
+    let array = info2.split(" ");
+    syl = svg.getElementById(array[0]).textContent.trim().replace(/\s/g,'');
+    expect(syl).toBe('Helloworld!');
+    syl = svg.getElementById(array[1]).textContent.trim();
+    expect(syl).toBe('');
+  });
+  test("Test 'group/ungroup' functions, neueme with one fullParent", () => {
+    let neon = new NeonCore(mei, new verovio.toolkit());
+    neon.getSVG();
+    let setupGroup = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ["m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5", "m-4475cbc8-ad26-44ee-999b-d18ce43600ab"]
+      }
+    }
+    expect(neon.edit(setupGroup)).toBeTruthy();
+    let firstGroup = neon.info();
+    let svg = parser.parseFromString(neon.getSVG(), 'image/svg+xml').documentElement;
+    let syl = svg.getElementById(firstGroup).textContent.trim();
+    expect(syl).toBe("Hello");
+    let setupSetText = {
+      'action': 'setText',
+      'param': {
+        'elementId': 'm-4450b0db-733d-459c-afad-e050eab0af63',
+        'text': 'world!'
+      }
+    }
+
+    expect(neon.edit(setupSetText)).toBeTruthy();
+    svg = parser.parseFromString(neon.getSVG(), 'image/svg+xml').documentElement;
+    syl = svg.getElementById("m-4450b0db-733d-459c-afad-e050eab0af63").textContent.trim();
+    expect(syl).toBe("world!");
+
+    let editorAction = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ["m-4475cbc8-ad26-44ee-999b-d18ce43600ab", "m-07ad2140-4fa1-45d4-af47-6733add00825"]
+      }
+    }
+    expect(neon.edit(editorAction)).toBeTruthy();
+    let info = neon.info();
+    svg = parser.parseFromString(neon.getSVG(), 'image/svg+xml').documentElement;
+    syl = svg.getElementById(info).textContent.trim().replace(/\s/g,'');
+    expect(syl).toBe("world!");
+    syl = svg.getElementById(firstGroup).textContent.trim().replace(/\s/g,'');
+    expect(syl).toBe("Hello");
+
+    let ungroupAction = {
+      'action': 'ungroup',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ["m-4475cbc8-ad26-44ee-999b-d18ce43600ab", "m-07ad2140-4fa1-45d4-af47-6733add00825"]
+      }
+    }
+    expect(neon.edit(ungroupAction)).toBeTruthy();
+    let ungroupInfo = neon.info();
+    let array = ungroupInfo.split(" ");
+    svg = parser.parseFromString(neon.getSVG(), 'image/svg+xml').documentElement;
+    syl = svg.getElementById(array[0]).textContent.trim().replace(/\s/g,'');
+    expect(syl).toBe("world!");
+    syl = svg.getElementById(array[1]).textContent.trim().replace(/\s/g,'');
+    expect(syl).toBe("");
+  });
+
+  test("Test 'group/ungroup' functions, neume with no fullParents", () => {
+    let neon = new NeonCore(mei, new verovio.toolkit());
+    neon.getSVG();
+    let svg = parser.parseFromString(neon.getSVG(), 'image/svg+xml').documentElement;
+    let setupGroup1 = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ["m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5", "m-4475cbc8-ad26-44ee-999b-d18ce43600ab"]
+      }
+    }
+    expect(neon.edit(setupGroup1)).toBeTruthy();
+    let firstSyl = neon.info();
+    let setupName1 = {
+      'action': 'setText',
+      'param': {
+        'elementId': firstSyl,
+        'text' : 'hello1'
+      }
+    }
+    expect(neon.edit(setupName1)).toBeTruthy();
+    svg = parser.parseFromString(neon.getSVG(), 'image/svg+xml').documentElement;
+    let syl = svg.getElementById(firstSyl).textContent.trim();
+    expect(syl).toBe('hello1');
+    let setupGroup2 = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ["m-07ad2140-4fa1-45d4-af47-6733add00825", "m-2292df83-f3ad-400e-8fc3-4b69b241a30f"]
+      }
+    }
+    expect(neon.edit(setupGroup2)).toBeTruthy();
+    let secondSyl = neon.info();
+    let setupName2 = {
+      'action': 'setText',
+      'param': {
+        'elementId': secondSyl,
+        'text': 'hello2'
+      }
+    }
+    expect(neon.edit(setupName2)).toBeTruthy();
+    svg = parser.parseFromString(neon.getSVG(), 'image/svg+xml').documentElement;
+    syl = svg.getElementById(secondSyl).textContent.trim();
+    expect(syl).toBe('hello2');
+
+    let editorAction = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ["m-4475cbc8-ad26-44ee-999b-d18ce43600ab", "m-07ad2140-4fa1-45d4-af47-6733add00825"]
+      }
+    }
+    expect(neon.edit(editorAction)).toBeTruthy();
+    let mergedSyl = neon.info();
+    svg = parser.parseFromString(neon.getSVG(), 'image/svg+xml').documentElement;
+    syl = svg.getElementById(mergedSyl).textContent.trim();
+    expect(syl).toBe('');
+
+    syl = svg.getElementById(firstSyl).textContent.trim();
+    expect(syl).toBe('hello1');
+
+    syl = svg.getElementById(secondSyl).textContent.trim();
+    expect(syl).toBe('hello2');
+
+
+
+
   });
 });
 
