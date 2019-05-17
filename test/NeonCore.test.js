@@ -19,7 +19,7 @@ test("Test 'SetText' function", async () => {
   let neon = new NeonCore(mei, 'test');
   await neon.initDb();
   let svg = await neon.getSVG(0);
-  let syl = svg.getElementById('test syl :)').textContent.trim();
+  let syl = svg.getElementById('testsyl').textContent.trim();
   expect(syl).toBe('Hello');
   let editorAction = {
     'action': 'setText',
@@ -30,7 +30,7 @@ test("Test 'SetText' function", async () => {
   };
   expect(await neon.edit(editorAction, 0)).toBeTruthy();
   svg = await neon.getSVG(0);
-  syl = svg.getElementById('test syl :)').textContent.trim();
+  syl = svg.getElementById('testsyl').textContent.trim();
   expect(syl).toBe('asdf');
 });
 
@@ -193,7 +193,7 @@ describe("Test 'group and ungroup' functions", () => {
     expect(await neon.edit(editorAction4, 0)).toBeTruthy();
   });
 
-  test("Test 'group/ungroup' functions, neume with multiple fullParents", async () => {
+  test("the test", async () => {
     let neon = new NeonCore(mei, 'test');
     await neon.initDb();
     await neon.getSVG(0);
@@ -207,6 +207,9 @@ describe("Test 'group and ungroup' functions", () => {
       }
     };
     expect(await neon.edit(editorAction, 0)).toBeTruthy();
+    let svg = await neon.getSVG(0);
+    let syl = svg.getElementById('m-ef58ea53-8d3a-4e9b-9b82-b9a057fe3fe4').textContent.trim();
+    expect(syl).toBe('world!');
     let editorAction2 = {
       'action': 'group',
       'param': {
@@ -216,9 +219,8 @@ describe("Test 'group and ungroup' functions", () => {
     };
     expect(await neon.edit(editorAction2, 0)).toBeTruthy();
     let info = await neon.info(0);
-    let svg = await neon.getSVG(0);
-    // svg is doing weird stuff with whitespace so I'm removing all of it before compairing
-    let syl = svg.getElementById(info).textContent.trim();
+    svg = await neon.getSVG(0);
+    syl = svg.getElementById(info).textContent.trim().replace(/\s/g,'');
     expect(syl).toBe('Helloworld!');
 
     // ungroup
@@ -297,7 +299,7 @@ describe("Test 'group and ungroup' functions", () => {
     syl = svg.getElementById(array[0]).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('world!');
     syl = svg.getElementById(array[1]).textContent.trim().replace(/\s/g, '');
-    expect(syl).toBe(' ');
+    expect(syl).toBe('');
   });
 
   test("Test 'group/ungroup' functions, neume with no fullParents", async () => {
@@ -438,7 +440,6 @@ test('Test chain action', async () => {
     ]
   };
   expect(await neon.edit(editorAction, 0)).toBeTruthy();
-  console.log('Hello');
   let dragAtts = await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', 0);
   let insertAtts = await neon.getElementAttr(JSON.parse(neon.info(0))[1], 0);
   expect(dragAtts.pname).toBe('b');
