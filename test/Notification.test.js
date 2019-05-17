@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import * as Notification from '../src/Notification.js';
+import * as Notification from '../src/utils/Notification.js';
 
 beforeEach(() => {
   document.body.innerHTML =

@@ -118,12 +118,12 @@ describe('Check Controls UI', () => {
     const actions = browser.actions();
     var rect = await opacitySlider.getRect();
     await actions.dragAndDrop(opacitySlider, { x: -1 * parseInt(rect.width), y: 0 }).perform();
-    var meiStyle = await browser.findElement(By.className('definition-scale')).getAttribute('style');
+    var meiStyle = await browser.findElement(By.className('neon-container')).getAttribute('style');
     expect(meiStyle).toContain('opacity: 0;');
 
     var opacityButton = await browser.findElement(By.id('reset-opacity'));
     await actions.click(opacityButton).perform();
-    meiStyle = await browser.findElement(By.className('definition-scale')).getAttribute('style');
+    meiStyle = await browser.findElement(By.className('neon-container')).getAttribute('style');
     expect(meiStyle).toContain('opacity: 1;');
   });
 
@@ -141,7 +141,7 @@ describe('Check Controls UI', () => {
     expect(imgStyle).toContain('opacity: 1;');
   });
 
-  test('Check Text Controls', async () => {
+  /* test('Check Text Controls', async () => {
     var syl = await browser.findElement(By.id('syl_text')).getAttribute('style');
     expect(syl).toContain('display: none;');
     var textCheck = await browser.findElement(By.id('displayText'));
@@ -149,7 +149,7 @@ describe('Check Controls UI', () => {
     await actions.click(textCheck).perform();
     syl = await browser.findElement(By.id('syl_text')).getAttribute('style');
     expect(syl).not.toContain('display: none;');
-  });
+  }); */
 
   /// TEST EDIT MODE ///
   describe('Edit Mode', () => {
@@ -161,7 +161,7 @@ describe('Check Controls UI', () => {
 
     // get rid of imaginary numbers
     test('Test drag selection', async () => {
-      var canvas = await browser.findElement(By.id('svg_output'));
+      var canvas = await browser.findElement(By.id('mei_output'));
       const actions = browser.actions();
       await actions.move({ origin: canvas }).press().move({ x: 200, y: 200 }).perform();
       await browser.findElement(By.id('selectRect'));

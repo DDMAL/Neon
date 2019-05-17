@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: SingleView/SingleView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: SingleView/SingleView.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { updateHighlight, setOpacityFromSlider } from './DisplayControls.js';
+import * as Cursor from '../utils/Cursor.js';
+
+const d3 = require('d3');
+const $ = require('jquery');
+
+/**
+ * A view module for displaying a single page of a manuscript.
+ */
+class SingleView {
+  /**
+   * Constructor for SingleView.
+   * @param {NeonView} neonView - The NeonView parent.
+   * @param {function} DisplayPanel - The constructor for a DisplayPanel.
+   * @param {string} image - The link to the background image for the page.
+   */
+  constructor (neonView, DisplayPanel, image) {
+    this.neonView = neonView;
+    this.container = document.getElementById('container');
+    this.updateCallbacks = new Array(0);
+    // Group will contain the image and the rendered SVG
+    this.group = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    this.group.id = 'svg_group';
+    this.group.setAttribute('height', window.innerHeight);
+    this.group.setAttribute('width', '100%');
+
+    this.bg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    this.bg.id = 'bgimg';
+    this.bg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', image);
+    this.bg.setAttribute('x', 0);
+    this.bg.setAttribute('y', 0);
+
+    this.mei = document.createElementNS('http://www.w3.org/svg', 'svg');
+    this.mei.id = 'mei_output';
+    this.mei.classList.add('active-page');
+
+    this.group.appendChild(this.bg);
+    this.group.appendChild(this.mei);
+    this.container.appendChild(this.group);
+
+    this.displayPanel = new DisplayPanel(this, this.mei.id, this.bg.id, true);
+
+    this.setViewEventHandlers();
+
+    document.getElementById('loading').style.display = 'none';
+  }
+
+  /**
+   * Update the SVG being displayed.
+   * @param {SVGSVGElement} svg - The SVG to update to.
+   */
+  updateSVG (svg/*, pageNo */) {
+    this.group.replaceChild(svg, this.mei);
+    this.mei = svg;
+    this.mei.id = 'mei_output';
+    this.mei.classList.add('active-page');
+    let height = parseInt(this.mei.getAttribute('height'));
+    let width = parseInt(this.mei.getAttribute('width'));
+
+    this.bg.setAttribute('height', height);
+    this.bg.setAttribute('width', width);
+    this.group.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+    updateHighlight();
+    this.resetTransformations();
+    this.updateCallbacks.forEach(callback => callback());
+  }
+
+  /**
+   * Add a callback to the list of those be called when the page updates.
+   * @param {function} cb - The callback function to add to the list.
+   */
+  addUpdateCallback (cb) {
+    this.updateCallbacks.push(cb);
+  }
+
+  /**
+   * Remove a callback from the list of callbacks if it is part of the list.
+   * @param {function} cb - The callback to be removed.
+   */
+  removeUpdateCallback (cb) {
+    let index = this.updateCallbacks.findIndex((elem) => {
+      return elem === cb;
+    });
+    if (index !== -1) {
+      this.updateCallbacks.splice(index, 1);
+    }
+  }
+
+  /**
+   * Reset the transformations that have been applied to the SVG upon update.
+   */
+  resetTransformations () {
+    this.displayPanel.zoomHandler.restoreTransformation();
+    setOpacityFromSlider();
+  }
+
+  /**
+   * Returns the zero-indexed number of the current page. This will always be zero.
+   * @returns {number}
+   */
+  getCurrentPage () {
+    return 0;
+  }
+
+  /**
+   * Set event handlers for the view and display panel.
+   */
+  setViewEventHandlers () {
+    $('body').on('keydown keyup', (evt) => {
+      if (evt.type === 'keydown') {
+        switch (evt.key) {
+          case 'Shift':
+            d3.select('#svg_group').on('.drag', null);
+            d3.select('#svg_group').call(
+              d3.drag().on('start', this.displayPanel.zoomHandler.startDrag)
+                .on('drag', this.displayPanel.zoomHandler.dragging)
+            );
+            Cursor.updateCursorTo('grab');
+            break;
+          case 'h':
+            $('#mei_output').css('visibility', 'hidden');
+            break;
+          default: break;
+        }
+      } else {
+        switch (evt.key) {
+          case 'Shift':
+            d3.select('#svg_group').on('.drag', null);
+            Cursor.updateCursorTo('');
+            if (this.neonView.getUserMode() === 'insert') {
+              Cursor.updateCursor();
+            }
+            break;
+          case 'h':
+            $('#mei_output').css('visibility', 'visible');
+            break;
+          default: break;
+        }
+      }
+    });
+
+    d3.select('#container').on('touchstart', () => {
+      if (d3.event.touches.length === 2) {
+        this.displayPanel.zoomHandler.startDrag();
+        d3.select('#container').on('touchmove', this.displayPanel.zoomHandler.dragging);
+        d3.select('#container').on('touchend', () => {
+          d3.select('#container').on('touchmove', null);
+        });
+      }
+    });
+    d3.select('#container').on('wheel', this.displayPanel.zoomHandler.scrollZoom, false);
+    // Update height of container based on window
+    $(window).on('resize', () => {
+      let newHeight = window.innerHeight;
+      if (newHeight > Number($('#container').attr('height'))) {
+        $('#container').attr('height', newHeight);
+      }
+    });
+  }
+}
+
+export { SingleView as default };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_DisplayControls.html">SingleView/DisplayControls</a></li><li><a href="module-SingleView_DisplayPanel.html">SingleView/DisplayPanel</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.1</a> on Tue May 14 2019 10:56:12 GMT-0400 (GMT-04:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

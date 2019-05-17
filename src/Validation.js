@@ -3,15 +3,39 @@
  const schemaPromise = import('./validation/mei-all.rng');
 
 import Worker from './Worker.js';
-var worker, schema;
-var statusField = document.getElementById('validation_status');
+var worker, schema, statusField;
 
+/**
+ * Add the validation information to the display and create the WebWorker
+ * for validation MEI.
+ */
 export async function init () {
-  worker = new Worker();
-  worker.onmessage = updateUI;
+  let displayContents = document.getElementById('displayContents');
+  if (displayContents !== null) {
+    let panelBlock = document.createElement('div');
+    panelBlock.classList.add('panel-block');
+    let pNotif = document.createElement('p');
+    pNotif.textContent = 'MEI Status: ';
+    let span = document.createElement('span');
+    span.id = 'validation_status';
+    span.textContent = 'unknown';
+    pNotif.appendChild(span);
+    panelBlock.appendChild(pNotif);
+    displayContents.appendChild(panelBlock);
+    statusField = document.getElementById('validation_status');
+    worker = new Worker();
+    worker.onmessage = updateUI;
+  }
 }
 
+/**
+ * Send the contents of an MEI file to the WebWorker for validation.
+ * @param {string} meiData
+ */
 export async function sendForValidation (meiData) {
+  if (statusField === undefined) {
+    return;
+  }
   if (schema === undefined) {
     schema = await schemaPromise;
   }
@@ -23,6 +47,11 @@ export async function sendForValidation (meiData) {
   });
 }
 
+/**
+ * Update the UI with the validation results. Called when the WebWorker finishes validating.
+ * @param {object} message - The message sent by the WebWorker.
+ * @param {object} message.data - The errors object produced by XML.js
+ */
 function updateUI (message) {
   let errors = message.data;
   if (errors === null) {

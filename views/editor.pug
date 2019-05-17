@@ -5,12 +5,14 @@ html
     script(src='/verovio-toolkit.js')
     script(src='//code.jquery.com/jquery-3.4.1.min.js' integrity='sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=' crossorigin='anonymous')
     script(src='//cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.min.js' integrity='sha256-0OcjjB7oKWCwru7gzilCYvXgTE9augkyvMI0WFC1ODg=' crossorigin='anonymous')
+    script(src='/diva-v6.0.1/diva.js')
+    link(rel='stylesheet' href='/diva-v6.0.1/diva.css')
   body
     .overlay#loading
       .loader
     nav.navbar.is-light
       .navbar-brand
-        a.navbar-item(href='../')
+        a.navbar-item(href='/')
           p Neon3
         a.navbar-burger#burgerMenu(role="button" aria-label="menu" aria-expanded="false")
           span(aria-hidden="true")
@@ -19,8 +21,6 @@ html
       .navbar-menu#navMenu
         .navbar-start
           #dropdown_toggle
-            a.navbar-item
-              button.button#edit_mode Edit MEI
         .navbar-end
           .navbar-item.has-dropdown.is-hoverable
             a.navbar-link Help
@@ -31,48 +31,10 @@ html
               a.navbar-item(onclick="hotkeyDialog()") Hotkeys
     .columns
       #notification-content(style={display: "none"})
-      .column#svg_output.is-two-thirds.box(style={height: "getHeight()"})
+      .column#container.is-two-thirds.box(style={height: "getHeight()"})
       .column.is-one-third.is-hidden-mobile#right-column
         .panel
-          p.panel-heading.has-dropdown#displayHeader Display
-            svg.icon.is-pulled-right
-              use(id="toggleDisplay" xlink:href="/img/icons.svg#dropdown-down")
-          #displayContents
-            a.panel-block.has-text-centered
-              button.button#reset-zoom Zoom
-              input.slider.is-fullwidth#zoomSlider(step="5", min="25", max="400", value="100", type="range")
-              output#zoomOutput(for="zoomSlider") 100
-            a.panel-block.has-text-centered
-              button.button#reset-opacity Glyph Opacity
-              input.slider.is-fullwidth#opacitySlider(step="5", min="0", max="100", value="100", type="range")
-              output#opacityOutput(for="opacitySlider") 100
-            a.panel-block.has-text-centered
-              button.button#reset-bg-opacity Image Opacity
-              input.slider.is-fullwidth#bgOpacitySlider(step="5", min="0", max="100", value="100", type="range")
-              output#bgOpacityOutput(for="bgOpacitySlider") 100
-            .panel-block
-              label.checkbox Display Text:&nbsp;
-                input.checkbox#displayText(type="checkbox")
-              label.checkbox Display Info:&nbsp;
-                input.checkbox#displayInfo(type="checkbox" checked="checked")
-              #highlight-dropdown.dropdown
-                .dropdown-trigger
-                  button#highlight-button.button(aria-haspopup='true' aria-controls='highlight-menu')
-                    span Highlight
-                    span#highlight-type &nbsp;- Off
-                    svg.icon
-                      use(id="toggleDisplay" xlink:href="/img/icons.svg#dropdown-down")
-                #highlight-menu.dropdown-menu(role='menu')
-                  .dropdown-content
-                    a#highlight-staff.dropdown-item Staff
-                    a#highlight-syllable.dropdown-item Syllable
-                    a#highlight-neume.dropdown-item Neume
-                    hr.dropdown-divider
-                    a#highlight-none.dropdown-item None
-            .panel-block
-                p
-                    | MEI Status:&nbsp;
-                    span#validation_status unknown
+          #display_controls
           #insert_controls
           #edit_controls
         #neume_info
@@ -80,7 +42,11 @@ html
       script(type='text/javascript').
         var meiFile = "#{meifile}";
         var bgImg = "#{bgimg}";
-        var autosave = ("#{autosave}" == 'true');
+        var manifest = "#{manifest}";
+        let rawMap = "#{meiMap}";
+        if (rawMap !== "") {
+          var meiMap = new Map(JSON.parse(decodeURIComponent(rawMap)));
+        }
 
         function hotkeyDialog() {
           alert(

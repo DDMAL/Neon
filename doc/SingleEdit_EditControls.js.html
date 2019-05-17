@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: SingleEdit/EditControls.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: SingleEdit/EditControls.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module SingleEdit/EditControls */
+
+import * as Contents from './Contents.js';
+import * as Cursor from '../utils/Cursor.js';
+import Icons from '../img/icons.svg';
+import * as Notification from '../utils/Notification.js';
+import { unselect } from './Select.js';
+const $ = require('jquery');
+
+/**
+ * Set listener on EditMode button.
+ * @param {SingleEditMode} editMode - The EditMode object.
+ */
+export function initEditModeControls (editMode) {
+  /* document.getElementById('dropdown_toggle').innerHTML =
+    '&lt;a class="navbar-item">&lt;button class="button" id="edit_mode">' +
+    'Edit MEI&lt;/button>&lt;/a>'; */
+  $('#edit_mode').on('click', function () {
+    $('#dropdown_toggle').empty();
+    $('#dropdown_toggle').append(Contents.navbarDropdownMenu);
+    $('#insert_controls').append(Contents.insertControlsPanel);
+    $('#edit_controls').append(Contents.editControlsPanel);
+
+    editMode.initEditMode();
+  });
+}
+
+/**
+ * Bind listeners to insert tabs.'
+ * @param {InsertHandler} insertHandler - An InsertHandler to run the tasks.
+ */
+export function bindInsertTabs (insertHandler) {
+  var insertTabs = $('.insertTab');
+  var tabIds = $.map(insertTabs, function (tab, i) {
+    return tab.id;
+  });
+
+  $.each(tabIds, function (i, tab) {
+    $('#' + tab).on('click', () => {
+      deactivate('.insertTab');
+      activate(tab, insertHandler);
+      Cursor.resetCursor();
+      $('#insert_data').empty();
+      $('#insert_data').append(Contents.insertTabHtml[tab]);
+      bindElements(insertHandler);
+    });
+  });
+}
+
+/**
+ * Set listener on switching EditMode button to File dropdown in the navbar.
+ * @param {string} filename - The name of the MEI file.
+ * @param {NeonView} neonView
+ */
+export function initNavbar (neonView) {
+  // setup navbar listeners
+  $('#save').on('click', () => {
+    neonView.save().then(() => {
+      Notification.queueNotification('Saved');
+    });
+  });
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 's') {
+      neonView.save().then(() => {
+        Notification.queueNotification('Saved');
+      });
+    }
+  });
+
+  $('#revert').on('click', function () {
+    if (window.confirm('Reverting will cause all changes to be lost. Press OK to continue.')) {
+      neonView.deleteDb().then(() => {
+        window.location.reload();
+      });
+    }
+  });
+  // Download link for MEI
+  // Is an actual file with a valid URI except in local mode where it must be generated.
+  $('#getmei').on('click', () => {
+    neonView.getPageURI().then((uri) => {
+      $('#getmei').attr('href', uri)
+        .attr('download', neonView.name);
+    });
+  });
+}
+
+/**
+ * Initialize Edit and Insert control panels.
+ * @param {NeonView} neonView - The NeonView parent.
+ */
+export function initInsertEditControls (neonView) {
+  $('#toggleInsert').on('click', () => {
+    if ($('#insertContents').is(':hidden')) {
+      $('#insertContents').css('display', '');
+      $('#toggleInsert').attr('xlink:href', Icons + '#dropdown-down');
+    } else {
+      $('#insertContents').css('display', 'none');
+      $('#toggleInsert').attr('xlink:href', Icons + '#dropdown-side');
+    }
+  });
+
+  $('#toggleEdit').on('click', () => {
+    if ($('#editContents').is(':hidden')) {
+      $('#editContents').css('display', '');
+      $('#toggleEdit').attr('xlink:href', Icons + '#dropdown-down');
+    } else {
+      $('#editContents').css('display', 'none');
+      $('#toggleEdit').attr('xlink:href', Icons + '#dropdown-side');
+    }
+  });
+
+  $('#undo').on('click', undoHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'z' &amp;&amp; (evt.ctrlKey || evt.metaKey)) {
+      undoHandler();
+    }
+  });
+
+  $('#redo').on('click', redoHandler);
+  $('body').on('keydown', (evt) => {
+    if ((evt.key === 'Z' || (evt.key === 'z' &amp;&amp; evt.shiftKey)) &amp;&amp; (evt.ctrlKey || evt.metaKey)) {
+      redoHandler();
+    }
+  });
+
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
+  });
+
+  function undoHandler () {
+    if (!neonView.undo(0)) {
+      console.error('Failed to undo action.');
+    } else {
+      neonView.updateForCurrentPage();
+    }
+  }
+
+  function redoHandler () {
+    if (!neonView.redo(0)) {
+      console.error('Failed to redo action');
+    } else {
+      neonView.updateForCurrentPage();
+    }
+  }
+
+  function removeHandler () {
+    let toRemove = [];
+    var selected = Array.from(document.getElementsByClassName('selected'));
+    selected.forEach(elem => {
+      toRemove.push(
+        {
+          'action': 'remove',
+          'param': {
+            'elementId': elem.id
+          }
+        }
+      );
+    });
+    let chainAction = {
+      'action': 'chain',
+      'param': toRemove
+    };
+    neonView.edit(chainAction, 0).then(() => { neonView.updateForCurrentPage(); });
+  }
+}
+
+/**
+ * Activate a certain insert action.
+ * @param {string} id - The ID of the insert action tab.
+ * @param {InsertHandler} insertHandler - An InsertHandler object.
+ */
+function activate (id, insertHandler) {
+  $('#' + id).addClass('is-active');
+  if (document.getElementById(id).classList.contains('insertel')) {
+    insertHandler.insertActive(id);
+  }
+}
+
+/**
+ * Deactivate a certain insert action.
+ * @param {string} type - A JQuery selector for the action tab.
+ */
+function deactivate (type) {
+  var elList = Array.from($(type));
+  elList.forEach((el, i) => {
+    $(elList[i]).removeClass('is-active');
+  });
+}
+
+/**
+ * Bind listeners to insert tab elements.
+ * @param {InsertHandler} insertHandler - An InsertHandler object.
+ */
+function bindElements (insertHandler) {
+  var insertElements = $('.insertel');
+  var elementIds = $.map(insertElements, function (el, i) {
+    return el.id;
+  });
+  $.each(elementIds, function (i, el) {
+    $('#' + el).on('click', function () {
+      deactivate('.insertel');
+      activate(el, insertHandler);
+      Cursor.updateCursor();
+    });
+    document.body.addEventListener('keydown', (evt) => {
+      if (evt.code === 'Digit' + (i + 1) &amp;&amp; evt.shiftKey) {
+        deactivate('.insertel');
+        activate(el, insertHandler);
+        Cursor.updateCursor();
+      }
+    });
+  });
+}
+
+/**
+ * Set listeners on the buttons to change selection modes.
+ */
+export function initSelectionButtons () {
+  $('#selBySyl').on('click', selectBySylHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === '1') {
+      selectBySylHandler();
+    }
+  });
+
+  function selectBySylHandler () {
+    if (!$('#selBySyl').hasClass('is-active')) {
+      unselect();
+      $('#moreEdit').empty();
+      $('#selBySyl').addClass('is-active');
+      $('#selByNeume').removeClass('is-active');
+      $('#selByNc').removeClass('is-active');
+      $('#selByStaff').removeClass('is-active');
+    }
+  }
+
+  $('#selByNeume').on('click', selectByNeumeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === '2') {
+      selectByNeumeHandler();
+    }
+  });
+
+  function selectByNeumeHandler () {
+    if (!$('#selByNeume').hasClass('is-active')) {
+      unselect();
+      $('#moreEdit').empty();
+      $('#selByNeume').addClass('is-active');
+      $('#selByNc').removeClass('is-active');
+      $('#selByStaff').removeClass('is-active');
+      $('#selBySyl').removeClass('is-active');
+    }
+  }
+
+  $('#selByNc').on('click', selectByNcHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === '3') {
+      selectByNcHandler();
+    }
+  });
+
+  function selectByNcHandler () {
+    if (!$('#selByNc').hasClass('is-active')) {
+      unselect();
+      $('#moreEdit').empty();
+      $('#selByNc').addClass('is-active');
+      $('#selByNeume').removeClass('is-active');
+      $('#selByStaff').removeClass('is-active');
+      $('#selBySyl').removeClass('is-active');
+    }
+  }
+
+  $('#selByStaff').on('click', selectByStaffHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === '4') {
+      selectByStaffHandler();
+    }
+  });
+
+  function selectByStaffHandler () {
+    if (!$('#selByStaff').hasClass('is-active')) {
+      unselect();
+      $('#moreEdit').empty();
+      $('#selByStaff').addClass('is-active');
+      $('#selByNc').removeClass('is-active');
+      $('#selByNeume').removeClass('is-active');
+      $('#selBySyl').removeClass('is-active');
+    }
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_DisplayControls.html">SingleView/DisplayControls</a></li><li><a href="module-SingleView_DisplayPanel.html">SingleView/DisplayPanel</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.1</a> on Tue May 14 2019 10:56:12 GMT-0400 (GMT-04:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
