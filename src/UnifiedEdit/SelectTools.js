@@ -66,19 +66,20 @@ export function select (el) {
  * Select an nc.
  * @param {SVGGraphicsElement} el - The nc element to select.
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
+ * @param {NeonView} neonView - The NeonView parent
  */
 export async function selectNcs (el, dragHandler) {
   if (!$(el).parent().hasClass('selected')) {
     var parent = el.parentNode;
     unselect();
     select(parent);
-    if (await isLigature(parent)) {
+    if (await isLigature(parent, neonView)) {
       var prevNc = $(parent).prev()[0];
-      if (await isLigature(prevNc)) {
+      if (await isLigature(prevNc, neonView)) {
         select(prevNc);
       } else {
         var nextNc = $(parent).next()[0];
-        if (await isLigature(nextNc)) {
+        if (await isLigature(nextNc, neonView)) {
           select(nextNc);
         } else {
           console.warn('Error: Neither prev or next nc are ligatures');

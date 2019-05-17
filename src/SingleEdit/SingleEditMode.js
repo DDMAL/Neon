@@ -1,4 +1,4 @@
-import { bindInsertTabs, initEditModeControls, initNavbar, initInsertEditControls } from './EditControls.js';
+import { bindInsertTabs, initEditModeControls, initNavbar, initInsertEditControls } from '../UnifiedEdit/EditControls.js';
 import DragHandler from '../SingleView/DragHandler.js';
 import * as Select from './Select.js';
 import InsertHandler from './InsertHandler.js';

@@ -2,7 +2,7 @@
 
 import * as Color from '../utils/Color.js';
 import { updateHighlight } from '../DisplayPanel/DisplayControls.js';
-import { initSelectionButtons } from './EditControls.js';
+import { initSelectionButtons } from '../UnifiedEdit/EditControls.js';
 import * as Grouping from './Grouping.js';
 import * as SelectOptions from './SelectOptions.js';
 import {
@@ -49,8 +49,8 @@ export function setSelectHelperObjects (dh, nv) {
  * Apply listeners for click selection.
  */
 export function clickSelect () {
-  $('#svg_group, #svg_group use').off('mousedown', clickHandler);
-  $('#svg_group, #svg_group use').on('mousedown', clickHandler);
+  $('#mei_output, #mei_output use').off('mousedown', clickHandler);
+  $('#mei_output, #mei_output use').on('mousedown', clickHandler);
 
   // Click away listeners
   $('body').on('keydown', (evt) => {
@@ -376,8 +376,8 @@ async function selectAll (elements) {
           SelectOptions.triggerNcActions(ncChildren[0]);
         } else if (ncChildren.length === 2) {
           unselect();
-          if (await isLigature(ncChildren[0])) {
-            selectNcs(ncChildren[0], dragHandler);
+          if (await isLigature(ncChildren[0], neonView)) {
+            selectNcs(ncChildren[0], dragHandler, neonView);
             if (sharedSecondLevelParent(Array.from(document.getElementsByClassName('selected')))) {
               Grouping.triggerGrouping('ligature');
             }
@@ -438,7 +438,7 @@ async function selectAll (elements) {
         unselect();
         select(ncChildren[0]);
         SelectOptions.triggerNcActions(ncChildren[0]);
-      } else if (ncChildren.length === 2 && await isLigature(ncChildren[0])) {
+      } else if (ncChildren.length === 2 && await isLigature(ncChildren[0], neonView)) {
         unselect();
         select(ncChildren[0]);
         select(ncChildren[1]);
@@ -450,11 +450,11 @@ async function selectAll (elements) {
   } else if (selectMode === 'selByNc') {
     let noClefOrCustos = selectNn(notNeumes);
     if (ncs.length === 1 && noClefOrCustos) {
-      selectNcs(ncs[0].children[0], dragHandler);
+      selectNcs(ncs[0].children[0], dragHandler, neonView);
       return;
     }
     var prev = $(ncs[0]).prev();
-    if (ncs.length !== 0 && await isLigature(ncs[0]) && prev.length !== 0 && await isLigature($(ncs[0]).prev()[0])) {
+    if (ncs.length !== 0 && await isLigature(ncs[0], neonView) && prev.length !== 0 && await isLigature($(ncs[0]).prev()[0], neonView)) {
       ncs.push($(ncs[0]).prev()[0]);
     }
     ncs.forEach(nc => { select(nc); });
@@ -486,8 +486,8 @@ async function selectAll (elements) {
 
       if (secondY > firstY) {
         if (ncs[0].parentNode.id === ncs[1].parentNode.id) {
-          let isFirstLigature = await isLigature(ncs[0]);
-          let isSecondLigature = await isLigature(ncs[1]);
+          let isFirstLigature = await isLigature(ncs[0], neonView);
+          let isSecondLigature = await isLigature(ncs[1], neonView);
           if ((isFirstLigature && isSecondLigature) || (!isFirstLigature && !isSecondLigature)) {
             Grouping.triggerGrouping('ligature');
           }

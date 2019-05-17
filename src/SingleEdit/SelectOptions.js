@@ -2,7 +2,6 @@
 import * as Contents from '../UnifiedEdit/EditContents.js';
 import * as Grouping from './Grouping.js';
 import * as Notification from '../utils/Notification.js';
-import InfoModule from '../InfoModule.js';
 import { SplitHandler } from '../UnifiedEdit/StaffTools.js';
 const $ = require('jquery');
 
@@ -134,7 +133,7 @@ export function triggerNeumeActions () {
   }
 
   $('.grouping').on('click', (e) => {
-    var contour = InfoModule.getContourByValue(e.target.id);
+    var contour = neonView.info.getContourByValue(e.target.id);
     triggerChangeGroup(contour);
   });
 
