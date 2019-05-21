@@ -51,28 +51,31 @@ describe('Neon3 Basics', () => {
 
 describe('Check Info Box', () => {
   test('Check Info Box Neumes', async () => {
-    let neumeID = 'm-07ad2140-4fa1-45d4-af47-6733add00825';
-    await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new Event('mouseover')); }, neumeID);
+    // let neumeID = 'm-07ad2140-4fa1-45d4-af47-6733add00825';
+    // await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new Event('mouseover')); }, neumeID);
+    await browser.executeScript(() => { document.getElementsByClassName('neume')[0].dispatchEvent(new Event('mouseover')); });
     var message = await browser.findElement(By.className('message-body')).getText();
-    expect(message).toContain('Clivis');
-    expect(message).toContain('A2 G2');
+    expect(message).toContain('Shape:');
+    expect(message).toContain('Pitch(es)');
   });
 
   test('Check Info Box Clef', async () => {
-    let clefId = 'm-45439068-5e0c-4595-a820-4faa16771422';
-    await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new Event('mouseover')); }, clefId);
+    // let clefId = 'm-45439068-5e0c-4595-a820-4faa16771422';
+    // await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new Event('mouseover')); }, clefId);
+    await browser.executeScript(() => { document.getElementsByClassName('clef')[0].dispatchEvent(new Event('mouseover')); });
     var notification = await browser.findElement(By.className('message'));
     await browser.wait(until.elementIsVisible(notification));
     var message = await browser.findElement(By.className('message')).getText();
-    expect(message).toContain('Shape: C');
-    expect(message).toContain('Line: 3');
+    expect(message).toContain('Shape:');
+    expect(message).toContain('Line:');
   });
 
   test('Check Info Box Custos', async () => {
-    let custosId = 'm-9e59174b-ed59-43a5-bba8-08e8eb276509';
-    await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new Event('mouseover')); }, custosId);
+    // let custosId = 'm-9e59174b-ed59-43a5-bba8-08e8eb276509';
+    // await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new Event('mouseover')); }, custosId);
+    await browser.executeScript(() => { document.getElementsByClassName('custos')[0].dispatchEvent(new Event('mouseover')); });
     var message = await browser.findElement(By.className('message-body')).getText();
-    expect(message).toBe('Pitch: G3');
+    expect(message).toContain('Pitch:');
   });
 });
 
