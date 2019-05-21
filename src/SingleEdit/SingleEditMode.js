@@ -1,6 +1,6 @@
 import { bindInsertTabs, initEditModeControls, initNavbar, initInsertEditControls } from '../UnifiedEdit/EditControls.js';
 import DragHandler from '../SingleView/DragHandler.js';
-import * as Select from './Select.js';
+import * as Select from '../UnifiedEdit/Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';
 
@@ -24,12 +24,14 @@ class SingleEditMode {
   initEditMode () {
     this.dragHandler = new DragHandler(this.neonView);
     initNavbar(this.neonView);
-    Select.setSelectHelperObjects(this.dragHandler, this.neonView);
-    Select.clickSelect();
+    Select.setSelectHelperObjects(this.neonView, this.dragHandler);
+    Select.clickSelect('#mei_output, #mei_output use');
+
     this.insertHandler = new InsertHandler(this.neonView);
     bindInsertTabs(this.insertHandler);
     document.getElementById('neumeTab').click();
-    Select.dragSelect();
+    Select.dragSelect('#svg_group');
+
     SelectOptions.initNeonView(this.neonView);
     initInsertEditControls(this.neonView);
     let editMenu = document.getElementById('editMenu');

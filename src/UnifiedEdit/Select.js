@@ -1,10 +1,10 @@
 /** @module SingleEdit/Select */
 
-import { initSelectionButtons } from '../UnifiedEdit/EditControls.js';
+import { initSelectionButtons } from './EditControls.js';
 import {
   unselect, getStaffBBox, selectStaff, selectAll
-} from '../UnifiedEdit/SelectTools.js';
-import { Resize } from '../UnifiedEdit/StaffTools.js';
+} from './SelectTools.js';
+import { Resize } from './StaffTools.js';
 
 const d3 = require('d3');
 const $ = require('jquery');
@@ -26,10 +26,10 @@ function getSelectionType () {
 
 /**
  * Set the objects for this module.
- * @param {DragHandler} dh - The drag handler object
  * @param {NeonView} nv - The NeonView object
+ * @param {DragHandler} dh - The drag handler object
  */
-export function setSelectHelperObjects (dh, nv) {
+export function setSelectHelperObjects (nv, dh) {
   dragHandler = dh;
   neonView = nv;
   info = neonView.info;
@@ -42,10 +42,13 @@ export function setSelectHelperObjects (dh, nv) {
 
 /**
  * Apply listeners for click selection.
+ * @param {string} selector - The CSS selector used to choose where listeners are applied.
  */
-export function clickSelect () {
-  $('#mei_output, #mei_output use').off('mousedown', clickHandler);
-  $('#mei_output, #mei_output use').on('mousedown', clickHandler);
+export function clickSelect (selector) {
+  // $('#mei_output, #mei_output use').off('mousedown', clickHandler);
+  // $('#mei_output, #mei_output use').on('mousedown', clickHandler);
+  $(selector).off('mousedown', clickHandler);
+  $(selector).on('mousedown', clickHandler);
 
   // Click away listeners
   $('body').on('keydown', (evt) => {
@@ -129,13 +132,15 @@ function clickHandler (evt) {
 
 /**
  * Apply listeners for drag selection.
+ * @param {string} selector - The CSS selector used to choose where listeners are applied.
  */
-export function dragSelect () {
+export function dragSelect (selector) {
   var initialX = 0;
   var initialY = 0;
   var panning = false;
   var dragSelecting = false;
-  var canvas = d3.select('#svg_group');
+  // var canvas = d3.select('#svg_group');
+  var canvas = d3.select(selector);
   var dragSelectAction = d3.drag()
     .on('start', selStart)
     .on('drag', selecting)
@@ -205,9 +210,9 @@ export function dragSelect () {
 
       var nc;
       if ($('#selByStaff').hasClass('is-active')) {
-        nc = d3.selectAll('#svg_group use, .staff')._groups[0];
+        nc = d3.selectAll(selector + ' use, .staff')._groups[0];
       } else {
-        nc = d3.selectAll('#svg_group use')._groups[0];
+        nc = d3.selectAll(selector + ' use')._groups[0];
       }
       var els = Array.from(nc);
 
