@@ -11,7 +11,7 @@ const firefox = require('selenium-webdriver/firefox');
 
 var browser = null;
 
-jest.setTimeout('10000');
+jest.setTimeout('15000');
 
 beforeAll(async () => {
   // Link test MEI/png to public/uploads so we can use them
