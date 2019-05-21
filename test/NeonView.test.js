@@ -11,7 +11,7 @@ const firefox = require('selenium-webdriver/firefox');
 
 var browser = null;
 
-jest.setTimeout('10000');
+jest.setTimeout('15000');
 
 beforeAll(async () => {
   // Link test MEI/png to public/uploads so we can use them
@@ -51,35 +51,31 @@ describe('Neon3 Basics', () => {
 
 describe('Check Info Box', () => {
   test('Check Info Box Neumes', async () => {
-    var neumeClivis = await browser.findElement(By.id('m-07ad2140-4fa1-45d4-af47-6733add00825'));
-    const actions = browser.actions();
-    await actions.click(neumeClivis).perform();
+    // let neumeID = 'm-07ad2140-4fa1-45d4-af47-6733add00825';
+    // await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new Event('mouseover')); }, neumeID);
+    await browser.executeScript(() => { document.getElementsByClassName('neume')[0].dispatchEvent(new Event('mouseover')); });
     var message = await browser.findElement(By.className('message-body')).getText();
-    expect(message).toContain('Clivis');
-    expect(message).toContain('A2 G2');
+    expect(message).toContain('Shape:');
+    expect(message).toContain('Pitch(es)');
   });
 
   test('Check Info Box Clef', async () => {
-    var firstClef = await browser.findElement(By.id('m-45439068-5e0c-4595-a820-4faa16771422'));
-    const actions = browser.actions();
-    var rect = await firstClef.getRect();
-    await actions.move({ origin: firstClef, y: parseInt(rect.height / 4) }).perform();
-    await actions.press().release().pause().perform();
+    // let clefId = 'm-45439068-5e0c-4595-a820-4faa16771422';
+    // await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new Event('mouseover')); }, clefId);
+    await browser.executeScript(() => { document.getElementsByClassName('clef')[0].dispatchEvent(new Event('mouseover')); });
     var notification = await browser.findElement(By.className('message'));
     await browser.wait(until.elementIsVisible(notification));
     var message = await browser.findElement(By.className('message')).getText();
-    expect(message).toContain('Shape: C');
-    expect(message).toContain('Line: 3');
+    expect(message).toContain('Shape:');
+    expect(message).toContain('Line:');
   });
 
   test('Check Info Box Custos', async () => {
-    var firstCustos = await browser.findElement(By.id('m-9e59174b-ed59-43a5-bba8-08e8eb276509'));
-    const actions = browser.actions();
-    // Can't click center since actual custos glyph is to the left
-    var rect = await firstCustos.getRect();
-    await actions.move({ origin: firstCustos, x: -1 * parseInt(rect.width / 2) }).click().perform();
+    // let custosId = 'm-9e59174b-ed59-43a5-bba8-08e8eb276509';
+    // await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new Event('mouseover')); }, custosId);
+    await browser.executeScript(() => { document.getElementsByClassName('custos')[0].dispatchEvent(new Event('mouseover')); });
     var message = await browser.findElement(By.className('message-body')).getText();
-    expect(message).toBe('Pitch: G3');
+    expect(message).toContain('Pitch:');
   });
 });
 
@@ -185,7 +181,7 @@ describe('Check Controls UI', () => {
       const actions = browser.actions();
       await actions.click(selBySylButton).perform();
       expect(await selBySylButton.getAttribute('class')).toContain('is-active');
-      var syl = await browser.findElement(By.id('m-ef58ea53-8d3a-4e9b-9b82-b9a057fe3fe4'));
+      var syl = await browser.findElement(By.id('m-9eea945f-9acf-4f85-9dee-ce24fde486f1'));
       var sylNc = await syl.findElement(By.className('nc'));
       // await actions.click(sylNc).perform();
       await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new Event('mousedown')); }, (await sylNc.getAttribute('id')));

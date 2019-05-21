@@ -4,7 +4,6 @@ import * as Contents from '../UnifiedEdit/EditContents.js';
 import * as Warnings from '../Warnings.js';
 import * as Notification from '../utils/Notification.js';
 import { unsetVirgaAction, unsetInclinatumAction } from './SelectOptions.js';
-import InfoModule from '../InfoModule.js';
 const $ = require('jquery');
 
 /**
@@ -138,7 +137,7 @@ function groupingAction (action, groupType, elementIds) {
     if (groupType === 'nc') {
       var neumeParent = $('#' + elementIds[0]).parent();
       var ncs = $(neumeParent).children();
-      var contour = InfoModule.getContour((ncs));
+      var contour = neonView.info.getContour((ncs));
       if (contour === undefined) {
         Warnings.groupingNotRecognized();
       }
