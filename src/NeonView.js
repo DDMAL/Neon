@@ -50,6 +50,8 @@ class NeonView {
 
       this.editor = new params.Edit(this);
     }
+
+    this.textView = new params.TextView(this);
   }
 
   /**

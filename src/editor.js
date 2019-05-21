@@ -4,6 +4,7 @@ import DivaView from './DivaView/DivaView.js';
 import SingleView from './SingleView/SingleView.js';
 import SingleEditMode from './SingleEdit/SingleEditMode.js';
 import InfoModule from './InfoModule.js';
+import TextView from './TextView.js';
 
 const $ = require('jquery');
 
@@ -18,8 +19,9 @@ if (manifest !== '') {
       },
       View: DivaView,
       Display: DisplayPanel,
-      Info: InfoModule
+      Info: InfoModule,
       // Edit: DivaEditMode
+      TextView: TextView
     };
     var view = new NeonView(params);
     view.start();
@@ -38,7 +40,8 @@ if (manifest !== '') {
       View: SingleView,
       Display: DisplayPanel,
       Info: InfoModule,
-      Edit: SingleEditMode
+      Edit: SingleEditMode,
+      TextView: TextView
     };
 
     var view = new NeonView(params);
