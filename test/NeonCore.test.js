@@ -2,13 +2,36 @@
 import NeonCore from '../src/NeonCore.js';
 
 const fs = require('fs');
+const verovio = require('verovio-dev');
 
 const pathToMei = './test/resources/test.mei';
-var mei;
+var mei, DOMParser, parser;
 
 beforeAll(() => {
+  mei = fs.readFileSync(pathToMei).toString();
+  // DOMParser = new jsdom.JSDOM().window.DOMParser;
+  parser = new window.DOMParser();
   mei = new Map();
   mei.set(0, fs.readFileSync(pathToMei).toString());
+});
+
+test("Test 'SetText' function", async () => {
+  let neon = new NeonCore(mei, 'test');
+  await neon.initDb();
+  let svg = await neon.getSVG(0);
+  let syl = svg.getElementById('testsyl').textContent.trim();
+  expect(syl).toBe('Hello');
+  let editorAction = {
+    'action': 'setText',
+    'param': {
+      'elementId': 'm-f715514e-cb0c-48e4-a1f9-a265ec1d5ca1',
+      'text': 'asdf'
+    }
+  };
+  expect(await neon.edit(editorAction, 0)).toBeTruthy();
+  svg = await neon.getSVG(0);
+  syl = svg.getElementById('testsyl').textContent.trim();
+  expect(syl).toBe('asdf');
 });
 
 afterAll(async () => {
@@ -108,10 +131,247 @@ describe('Test insert editor action', () => {
     expect(insertAtts.pname).toBe('g');
     expect(insertAtts.oct).toBe('2');
   });
+  test("Test 'insert' action, nc", async () => {
+    let neon = new NeonCore(mei, 'test');
+    await neon.initDb();
+    await neon.getSVG(0);
+    let editorAction = {
+      'action': 'insert',
+      'param': {
+        'elementType': 'nc',
+        'staffId': 'auto',
+        'ulx': 1337,
+        'uly': 655
+      }
+    };
+    await neon.edit(editorAction, 0);
+    let insertAtts = await neon.getElementAttr(await neon.info(0), 0);
+    expect(insertAtts.pname).toBe('a');
+    expect(insertAtts.oct).toBe('2');
+  });
+});
+
+describe("Test 'group and ungroup' functions", () => {
+  test("Test 'group/ungroup' functions, nc, syllable", async () => {
+    let neon = new NeonCore(mei, 'test');
+    await neon.initDb();
+    await neon.getSVG(0);
+    // group
+    let editorAction = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ['m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5', 'm-4475cbc8-ad26-44ee-999b-d18ce43600ab']
+      }
+    };
+    expect(await neon.edit(editorAction, 0)).toBeTruthy();
+    let editorAction2 = {
+      'action': 'group',
+      'param': {
+        'groupType': 'nc',
+        'elementIds': ['m-ceab54b1-893e-42de-8fca-aeeb13254e19', 'm-2cf5243a-7042-42f9-b0c0-fd65f3ed67e0']
+      }
+    };
+    expect(await neon.edit(editorAction2, 0)).toBeTruthy();
+
+    // ungroup
+    let editorAction3 = {
+      'action': 'ungroup',
+      'param': {
+        'groupType': 'nc',
+        'elementIds': ['m-ceab54b1-893e-42de-8fca-aeeb13254e19', 'm-2cf5243a-7042-42f9-b0c0-fd65f3ed67e0']
+      }
+    };
+    expect(await neon.edit(editorAction3, 0)).toBeTruthy();
+    let editorAction4 = {
+      'action': 'ungroup',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ['m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5', 'm-4475cbc8-ad26-44ee-999b-d18ce43600ab']
+      }
+    };
+    expect(await neon.edit(editorAction4, 0)).toBeTruthy();
+  });
+
+  test("the test", async () => {
+    let neon = new NeonCore(mei, 'test');
+    await neon.initDb();
+    await neon.getSVG(0);
+
+    // group
+    let editorAction = {
+      'action': 'setText',
+      'param': {
+        'elementId': 'm-ef58ea53-8d3a-4e9b-9b82-b9a057fe3fe4',
+        'text': 'world!'
+      }
+    };
+    expect(await neon.edit(editorAction, 0)).toBeTruthy();
+    let svg = await neon.getSVG(0);
+    let syl = svg.getElementById('m-ef58ea53-8d3a-4e9b-9b82-b9a057fe3fe4').textContent.trim();
+    expect(syl).toBe('world!');
+    let editorAction2 = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ['m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5', 'm-4475cbc8-ad26-44ee-999b-d18ce43600ab']
+      }
+    };
+    expect(await neon.edit(editorAction2, 0)).toBeTruthy();
+    let info = await neon.info(0);
+    svg = await neon.getSVG(0);
+    syl = svg.getElementById(info).textContent.trim().replace(/\s/g,'');
+    expect(syl).toBe('Helloworld!');
+
+    // ungroup
+    let editorAction3 = {
+      'action': 'ungroup',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ['m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5', 'm-4475cbc8-ad26-44ee-999b-d18ce43600ab']
+      }
+    };
+    expect(await neon.edit(editorAction3, 0)).toBeTruthy();
+    let info2 = await neon.info(0);
+    svg = await neon.getSVG(0);
+    let array = info2.split(' ');
+    syl = svg.getElementById(array[0]).textContent.trim().replace(/\s/g, '');
+    expect(syl).toBe('Helloworld!');
+    syl = svg.getElementById(array[1]).textContent.trim();
+    expect(syl).toBe('');
+  });
+
+  test("Test 'group/ungroup' functions, neueme with one fullParent", async () => {
+    let neon = new NeonCore(mei, 'test');
+    await neon.initDb();
+    await neon.getSVG(0);
+    let setupGroup = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ['m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5', 'm-4475cbc8-ad26-44ee-999b-d18ce43600ab']
+      }
+    };
+    expect(await neon.edit(setupGroup, 0)).toBeTruthy();
+    let firstGroup = await neon.info(0);
+    let svg = await neon.getSVG(0);
+    let syl = svg.getElementById(firstGroup).textContent.trim();
+    expect(syl).toBe('Hello');
+    let setupSetText = {
+      'action': 'setText',
+      'param': {
+        'elementId': 'm-4450b0db-733d-459c-afad-e050eab0af63',
+        'text': 'world!'
+      }
+    };
+
+    expect(await neon.edit(setupSetText, 0)).toBeTruthy();
+    svg = await neon.getSVG(0);
+    syl = svg.getElementById('m-4450b0db-733d-459c-afad-e050eab0af63').textContent.trim();
+    expect(syl).toBe('world!');
+
+    let editorAction = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ['m-4475cbc8-ad26-44ee-999b-d18ce43600ab', 'm-07ad2140-4fa1-45d4-af47-6733add00825']
+      }
+    };
+    expect(await neon.edit(editorAction, 0)).toBeTruthy();
+    let info = await neon.info(0);
+    svg = await neon.getSVG(0);
+    syl = svg.getElementById(info).textContent.trim().replace(/\s/g, '');
+    expect(syl).toBe('world!');
+    syl = svg.getElementById(firstGroup).textContent.trim().replace(/\s/g, '');
+    expect(syl).toBe('Hello');
+
+    let ungroupAction = {
+      'action': 'ungroup',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ['m-4475cbc8-ad26-44ee-999b-d18ce43600ab', 'm-07ad2140-4fa1-45d4-af47-6733add00825']
+      }
+    };
+    expect(await neon.edit(ungroupAction, 0)).toBeTruthy();
+    let ungroupInfo = await neon.info(0);
+    let array = ungroupInfo.split(' ');
+    svg = await neon.getSVG(0);
+    syl = svg.getElementById(array[0]).textContent.trim().replace(/\s/g, '');
+    expect(syl).toBe('world!');
+    syl = svg.getElementById(array[1]).textContent.trim().replace(/\s/g, '');
+    expect(syl).toBe('');
+  });
+
+  test("Test 'group/ungroup' functions, neume with no fullParents", async () => {
+    let neon = new NeonCore(mei, 'test');
+    await neon.initDb();
+    await neon.getSVG(0);
+    let svg = await neon.getSVG(0);
+    let setupGroup1 = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ['m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5', 'm-4475cbc8-ad26-44ee-999b-d18ce43600ab']
+      }
+    };
+    expect(await neon.edit(setupGroup1, 0)).toBeTruthy();
+    let firstSyl = await neon.info(0);
+    let setupName1 = {
+      'action': 'setText',
+      'param': {
+        'elementId': firstSyl,
+        'text': 'hello1'
+      }
+    };
+    expect(await neon.edit(setupName1, 0)).toBeTruthy();
+    svg = await neon.getSVG(0);
+    let syl = svg.getElementById(firstSyl).textContent.trim();
+    expect(syl).toBe('hello1');
+    let setupGroup2 = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ['m-07ad2140-4fa1-45d4-af47-6733add00825', 'm-2292df83-f3ad-400e-8fc3-4b69b241a30f']
+      }
+    };
+    expect(await neon.edit(setupGroup2, 0)).toBeTruthy();
+    let secondSyl = await neon.info(0);
+    let setupName2 = {
+      'action': 'setText',
+      'param': {
+        'elementId': secondSyl,
+        'text': 'hello2'
+      }
+    };
+    expect(await neon.edit(setupName2, 0)).toBeTruthy();
+    svg = await neon.getSVG(0);
+    syl = svg.getElementById(secondSyl).textContent.trim();
+    expect(syl).toBe('hello2');
+
+    let editorAction = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ['m-4475cbc8-ad26-44ee-999b-d18ce43600ab', 'm-07ad2140-4fa1-45d4-af47-6733add00825']
+      }
+    };
+    expect(await neon.edit(editorAction, 0)).toBeTruthy();
+    let mergedSyl = await neon.info(0);
+    svg = await neon.getSVG(0);
+    syl = svg.getElementById(mergedSyl).textContent.trim();
+    expect(syl).toBe('');
+
+    syl = svg.getElementById(firstSyl).textContent.trim();
+    expect(syl).toBe('hello1');
+
+    syl = svg.getElementById(secondSyl).textContent.trim();
+    expect(syl).toBe('hello2');
+  });
 });
 
 test("Test 'remove' action", async () => {
   let neon = new NeonCore(mei, 'test');
+  await neon.initDb();
   await neon.getSVG(0);
   let editorAction = {
     'action': 'remove',
@@ -180,7 +440,6 @@ test('Test chain action', async () => {
     ]
   };
   expect(await neon.edit(editorAction, 0)).toBeTruthy();
-  console.log('Hello');
   let dragAtts = await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', 0);
   let insertAtts = await neon.getElementAttr(JSON.parse(neon.info(0))[1], 0);
   expect(dragAtts.pname).toBe('b');
@@ -192,7 +451,7 @@ test('Test chain action', async () => {
 test("Test 'set' action", async () => {
   let neon = new NeonCore(mei, 'test');
   await neon.initDb();
-  await await neon.getSVG(0);
+  await neon.getSVG(0);
   expect(await await neon.getElementAttr('m-6831ff33-aa39-4b0d-a383-e44585c6c644', 0)).toEqual({ pname: 'g', oct: '2' });
   let setAction = {
     'action': 'set',
@@ -208,7 +467,7 @@ test("Test 'set' action", async () => {
 
 test("Test 'split' action", async () => {
   let neon = new NeonCore(mei, 'test');
-    await neon.initDb();
+  await neon.initDb();
   await neon.getSVG(0);
   let editorAction = {
     'action': 'split',
