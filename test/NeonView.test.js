@@ -51,20 +51,16 @@ describe('Neon3 Basics', () => {
 
 describe('Check Info Box', () => {
   test('Check Info Box Neumes', async () => {
-    var neumeClivis = await browser.findElement(By.id('m-07ad2140-4fa1-45d4-af47-6733add00825'));
-    const actions = browser.actions();
-    await actions.click(neumeClivis).perform();
+    let neumeID = 'm-07ad2140-4fa1-45d4-af47-6733add00825';
+    await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new Event('mouseover')); }, neumeID);
     var message = await browser.findElement(By.className('message-body')).getText();
     expect(message).toContain('Clivis');
     expect(message).toContain('A2 G2');
   });
 
   test('Check Info Box Clef', async () => {
-    var firstClef = await browser.findElement(By.id('m-45439068-5e0c-4595-a820-4faa16771422'));
-    const actions = browser.actions();
-    var rect = await firstClef.getRect();
-    await actions.move({ origin: firstClef, y: parseInt(rect.height / 4) }).perform();
-    await actions.press().release().pause().perform();
+    let clefId = 'm-45439068-5e0c-4595-a820-4faa16771422';
+    await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new Event('mouseover')); }, clefId);
     var notification = await browser.findElement(By.className('message'));
     await browser.wait(until.elementIsVisible(notification));
     var message = await browser.findElement(By.className('message')).getText();
@@ -73,11 +69,8 @@ describe('Check Info Box', () => {
   });
 
   test('Check Info Box Custos', async () => {
-    var firstCustos = await browser.findElement(By.id('m-9e59174b-ed59-43a5-bba8-08e8eb276509'));
-    const actions = browser.actions();
-    // Can't click center since actual custos glyph is to the left
-    var rect = await firstCustos.getRect();
-    await actions.move({ origin: firstCustos, x: -1 * parseInt(rect.width / 2) }).click().perform();
+    let custosId = 'm-9e59174b-ed59-43a5-bba8-08e8eb276509';
+    await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new Event('mouseover')); }, custosId);
     var message = await browser.findElement(By.className('message-body')).getText();
     expect(message).toBe('Pitch: G3');
   });
