@@ -185,7 +185,7 @@ describe('Check Controls UI', () => {
       const actions = browser.actions();
       await actions.click(selBySylButton).perform();
       expect(await selBySylButton.getAttribute('class')).toContain('is-active');
-      var syl = await browser.findElement(By.id('m-ef58ea53-8d3a-4e9b-9b82-b9a057fe3fe4'));
+      var syl = await browser.findElement(By.id('m-9eea945f-9acf-4f85-9dee-ce24fde486f1'));
       var sylNc = await syl.findElement(By.className('nc'));
       // await actions.click(sylNc).perform();
       await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new Event('mousedown')); }, (await sylNc.getAttribute('id')));
