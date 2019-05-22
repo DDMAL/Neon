@@ -34,7 +34,7 @@ class DivaView {
       this.neonView.getPageSVG(page).then((svg) => {
         this.updateSVG(svg, page);
       }).catch((err) => {
-        if (err.name !== 'not_found') {
+        if (err.name !== 'not_found' && err.name !== 'missing_mei') {
           console.error(err);
         }
       });
