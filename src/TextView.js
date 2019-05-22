@@ -28,62 +28,84 @@ class TextView {
 		label.appendChild(input);
 		block.prepend(label);
 
-		this.neonView.view.addUpdateCallback(this.resetTextListeners.bind(this));
-		setTextViewControls();
-		setTextEdit();
+		$('#edit_mode').on('click', () => {
+			this.setTextEdit();
+		});
+		this.setTextViewControls();
+		this.neonView.view.addUpdateCallback(this.updateTextViewVisibility.bind(this));
 	}
 
 	/**
-	 * All ommitted for now
-	 * set listeners for the textview 
-	 
-	textListeners() {
-		$('.active-page').find('.syllable').on('syl-select', this.updateTextBox.bind(this));
-	}
-
-	
-	 * stop listeners for the textview 
-	 
-	stopListeners() {
-		$('.active-page').find('.syllable').off('syl-select', this.updateTextBox.bind(this));
-	}
-
-	*/
-
-	/**
-	 * restart listeners for the textview 
-	*/ 
-	resetTextListeners() {
-		this.stopListeners();
-		this.textListeners();
+ 	* set listeners on textview visibility checkbox
+ 	*/
+	setTextViewControls () {
+		this.updateTextViewVisibility();
+		$('#displayText').on('click', () => {
+			this.updateTextViewVisibility();
+		});
 	}
 
 	/*
-	 * highlights correct syl in the textbox when it's syllable is selected
-	 * unimplemented for now
-	 
-	async updateTextBox (event) {
-
+ 	 * set text to edit mode
+	 */
+	setTextEdit() {
+		let spans = Array.from($('#syl_text').children('p').children('span'));
+		spans.forEach(span => {
+			$(span).off('click');
+   			$(span).on('click', () => {
+   				this.updateSylText(span);
+   			});
+		});
 	}
-	*/
-}
 
-/*
- * update the text for a single syl element
- */
-function updateSylText (span) {
-	let orig = formatRaw($(span).html());
-	let corrected = window.prompt(''. orig);
-	if (corrected !== null && corrected !== orig) {
-   		let editorAction = {
-    		'action': 'setText',
-      		'param': {
-        		'elementId': $('#' + $(span).attr('class').replace('syl-select', '').trim()).attr('id'),
-        		'text': corrected
+	/*
+ 	* update the text for a single syl element
+ 	*/
+	updateSylText (span) {
+		let orig = formatRaw($(span).html());
+		let corrected = window.prompt('', orig);
+		if (corrected !== null && corrected !== orig) {
+   			let editorAction = {
+    			'action': 'setText',
+      			'param': {
+        			'elementId': $('#' + $(span).attr('class').replace('syl-select', '').trim()).attr('id'),
+        			'text': corrected
+      			}
+    		};
+    		this.neonView.edit(editorAction, this.neonView.view.getCurrentPage()).then((response) => {
+    			if (response) {
+    				this.neonView.updateForCurrentPage();
+    			}
+    		});
+    	}
+	}
+
+	/*
+ 	* update the visibility of the textview box
+ 	* and add the event listeners to make sure the syl highlights when moused over
+ 	*/
+	updateTextViewVisibility () {
+		if ($('#displayText').is(':checked')) {
+			$('#syl_text').css('display', '');
+			$('#syl_text').html('<p>' + getSylText() + '</p>');
+			let spans = Array.from($('#syl_text').children('p').children('span'));
+			spans.forEach(span => {
+      			$(span).on('mouseenter', () => {
+        			let syllable = $('#' + $(span).attr('class'));
+        			syllable.addClass('syl-select');
+        			syllable.attr('fill', '#d00');
+        		});
+        		$(span).on('mouseleave', () => {
+        			$('#' + $(span).attr('class')).removeClass('syl-select').attr('fill', null);
+				});
+      		});
+      		if (this.neonView.getUserMode() !== 'viewer') {
+      			this.setTextEdit();
       		}
-    	};
-    }
-    if (neonView.edit(editorAction)) { neonView.updateForCurrentPage(); }
+		} else {
+			$('#syl_text').css('display', 'none');
+		}
+	}
 }
 
 /**
@@ -93,21 +115,22 @@ function updateSylText (span) {
  function getSylText() {
 	var lyrics = '';
 	let uniToDash = /\ue551/g;
-	let syllables = Array.from($('.syllable'));
+	let syllables = Array.from($('.active-page .syllable'));
+	console.log(syllables.length);
 	syllables.forEach(syllable => {
 		if ($(syllable).has('.syl').length) {
    			let syl = $(syllable).children('.syl')[0];
    			lyrics += "<span class='" + syllable.id + "'>";
    			if (syl.textContent.trim() === '') {
-     				lyrics += '&#x25CA; ';
+     				lyrics += '🐧 ';
      		} else {
        			Array.from(syl.children[0].children[0].children).forEach(text => {
-         			lyrics += text.textContent !== '' ? text.textContent : '&#x25CA; ';
+         			lyrics += text.textContent !== '' ? text.textContent : '🐧 ';
        			});
      		}
      		lyrics += ' </span>';
    		} else {
-   			lyrics += "<span class='" + syllable.id + "'>&#x25CA; </span>";
+   			lyrics += "<span class='" + syllable.id + "'>🐧 </span>";
     	}
   	});
   	if(!TextView.notificationSent) {
@@ -117,50 +140,14 @@ function updateSylText (span) {
   	return lyrics.replace(uniToDash, '-');
 }
 
-/*
- * set text to edit mode
- */
-function setTextEdit() {
-	let spans = Array.from($('#syl_text').children('p').children('span'));
-	spans.forEach(span => {
-		$(span).off('click');
-    	$(span).on('click', update);
-    	function update () {
-      		updateSylText(span);
-		}
-	});
-}
-
 /**
- * set listeners on textview visibility checkbox
+ * Format a string for prompting the user.
+ * @param {string} rawString
+ * @returns {string}
  */
-function setTextViewControls () {
-	updateTextViewVisibility();
-	$('#displayText').click(updateTextViewVisibility);
-}
-
-/*
- * update the visibility of the textview box
- * and add the event listeners to make sure the syl highlights when moused over
- */
-function updateTextViewVisibility () {
-	if ($('#displayText').is(':checked')) {
-		$('#syl_text').css('display', '');
-		$('#syl_text').html('<p>' + getSylText() + '</p>');
-		let spans = Array.from($('#syl_text').children('p').children('span'));
-		spans.forEach(span => {
-      		$(span).on('mouseenter', () => {
-        		let syllable = $('#' + $(span).attr('class'));
-        		syllable.addClass('syl-select');
-        		syllable.attr('fill', '#d00');
-        	});
-        	$(span).on('mouseleave', () => {
-        		$('#' + $(span).attr('class')).removeClass('syl-select').attr('fill', null);
-			});
-      	});
-	} else {
-		$('syl_text').css('display', 'none');
-	}
+function formatRaw (rawString) {
+	let removeSymbol = /\u{25CA}/u;
+	return rawString.replace(removeSymbol, '').trim();
 }
 
 

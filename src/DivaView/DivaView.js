@@ -38,6 +38,7 @@ class DivaView {
           console.error(err);
         }
       });
+    this.updateCallbacks.forEach(callback => callback());
     }
   }
 
@@ -102,7 +103,7 @@ class DivaView {
 
     container.appendChild(svg);
 
-    this.updateCallbacks.forEach(callback => callback());
+    
   }
 
   /**
