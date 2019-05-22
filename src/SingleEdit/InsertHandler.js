@@ -176,7 +176,7 @@ function InsertHandler (neonView) {
      * @param {object} evt - JQuery event object.
      */
   function handler (evt) {
-    var container = document.getElementsByClassName('definition-scale')[0];
+    var container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     var pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
@@ -208,7 +208,7 @@ function InsertHandler (neonView) {
      * @param {object} evt - JQuery event object.
      */
   function staffHandler (evt) {
-    var container = document.getElementsByClassName('definition-scale')[0];
+    var container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     var pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;

@@ -87,7 +87,7 @@ function clickHandler (evt) {
     }
 
     // Check if the point is in a staff.
-    let container = document.getElementsByClassName('definition-scale')[0];
+    let container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     let pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;

@@ -31,9 +31,7 @@ class NeonView {
     }
 
     this.core = new NeonCore(params.options.meiMap, params.options.name);
-
     this.display = this.view.display;
-    this.InfoModule = params.Info;
     this.info = new params.Info(this);
 
     if (params.Edit !== undefined) {
