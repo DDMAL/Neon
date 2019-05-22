@@ -141,7 +141,7 @@ function Resize (staffId, neonView, dragHandler) {
           'lry': lry
         }
       };
-      neonView.edit(editorAction, 0).then((result) => {
+      neonView.edit(editorAction, neonView.view.getCurrentPage()).then((result) => {
         if (result) {
           neonView.updateForCurrentPage();
         }
@@ -235,7 +235,7 @@ function SplitHandler (neonView) {
       }
     };
 
-    neonView.edit(editorAction, 0).then((result) => {
+    neonView.edit(editorAction, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         neonView.updateForCurrentPage();
       }

@@ -64,7 +64,7 @@ export function triggerNcActions (nc) {
   $('#Punctum.dropdown-item').on('click', () => {
     let unsetInclinatum = unsetInclinatumAction(nc.id);
     let unsetVirga = unsetVirgaAction(nc.id);
-    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] }, 0).then((result) => {
+    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] }, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -84,7 +84,7 @@ export function triggerNcActions (nc) {
         'attrValue': 'se'
       }
     };
-    neonView.edit(setInclinatum, 0).then((result) => {
+    neonView.edit(setInclinatum, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -105,7 +105,7 @@ export function triggerNcActions (nc) {
         'attrValue': 'n'
       }
     };
-    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, setVirga ] }, 0).then((result) => {
+    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, setVirga ] }, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -145,7 +145,7 @@ export function triggerNeumeActions () {
         'contour': contour
       }
     };
-    neonView.edit(changeGroupingAction, 0).then((result) => {
+    neonView.edit(changeGroupingAction, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Grouping Changed');
       } else {
@@ -188,7 +188,7 @@ export function triggerClefActions (clef) {
         'shape': 'C'
       }
     };
-    neonView.edit(setCClef, 0).then((result) => {
+    neonView.edit(setCClef, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -206,7 +206,7 @@ export function triggerClefActions (clef) {
         'shape': 'F'
       }
     };
-    neonView.edit(setFClef, 0).then((result) => {
+    neonView.edit(setFClef, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -239,7 +239,7 @@ export function triggerStaffActions () {
         'elementIds': elementIds
       }
     };
-    neonView.edit(editorAction, 0).then((result) => {
+    neonView.edit(editorAction, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Staff Merged');
         endOptionsSelection();

@@ -6,7 +6,7 @@ const $ = require('jquery');
  * @constructor
  * @param {NeonView} neonView - The NeonView parent object.
  */
-function DragHandler (neonView) {
+function DragHandler (neonView, selector) {
   var dragStartCoords;
   var dragEndCoords;
   var resetToAction;
@@ -34,7 +34,7 @@ function DragHandler (neonView) {
     function dragStarted () {
       dragStartCoords = d3.mouse(this);
       if (this.classList.contains('staff')) {
-        d3.select('#svg_group').call(dragBehaviour);
+        d3.select(selector).call(dragBehaviour);
       }
     }
 
@@ -68,7 +68,7 @@ function DragHandler (neonView) {
       var yDiff = Math.abs(dragStartCoords[1] - dragEndCoords[1]);
 
       if (xDiff > 5 || yDiff > 5) {
-        neonView.edit(editorAction, 0).then(() => {
+        neonView.edit(editorAction, neonView.view.getCurrentPage()).then(() => {
           neonView.updateForCurrentPage();
           endOptionsSelection();
           reset();
@@ -87,7 +87,7 @@ function DragHandler (neonView) {
 
   function reset () {
     if (resetToAction !== undefined) {
-      d3.select('#svg_group').call(resetToAction);
+      d3.select(selector).call(resetToAction);
     }
   }
 

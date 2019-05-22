@@ -81,7 +81,7 @@ export function initGroupingListeners () {
           unsetInclinatumAction(elementIds[0]), unsetVirgaAction(elementIds[0]),
           unsetInclinatumAction(elementIds[1]), unsetVirgaAction(elementIds[1])
         ] };
-      await neonView.edit(chainAction, 0);
+      await neonView.edit(chainAction, neonView.view.getCurrentPage());
     }
 
     let editorAction = {
@@ -91,7 +91,7 @@ export function initGroupingListeners () {
         'isLigature': isLigature.toString()
       }
     };
-    neonView.edit(editorAction, 0).then((result) => {
+    neonView.edit(editorAction, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Ligature Toggled');
       } else {
@@ -117,7 +117,7 @@ function groupingAction (action, groupType, elementIds) {
       'elementIds': elementIds
     }
   };
-  neonView.edit(editorAction, 0).then((result) => {
+  neonView.edit(editorAction, neonView.view.getCurrentPage()).then((result) => {
     if (result) {
       if (action === 'group') {
         Notification.queueNotification('Grouping Success');
