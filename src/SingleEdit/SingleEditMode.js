@@ -1,8 +1,8 @@
 import { bindInsertTabs, initEditModeControls, initNavbar, initInsertEditControls } from '../UnifiedEdit/EditControls.js';
 import DragHandler from '../SingleView/DragHandler.js';
 import * as Select from '../UnifiedEdit/Select.js';
-import InsertHandler from './InsertHandler.js';
-import * as SelectOptions from './SelectOptions.js';
+import InsertHandler from '../UnifiedEdit/InsertHandler.js';
+import * as SelectOptions from '../UnifiedEdit/SelectOptions.js';
 
 /**
  * An Edit Module for a single page of a manuscript.

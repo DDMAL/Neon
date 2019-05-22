@@ -2,9 +2,9 @@
 
 import * as Color from '../utils/Color.js';
 import { updateHighlight } from '../DisplayPanel/DisplayControls.js';
-import * as Grouping from '../SingleEdit/Grouping.js';
+import * as Grouping from './Grouping.js';
 import { Resize } from './StaffTools.js';
-import * as SelectOptions from '../SingleEdit/SelectOptions.js';
+import * as SelectOptions from './SelectOptions.js';
 
 const d3 = require('d3');
 const $ = require('jquery');

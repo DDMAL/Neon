@@ -77,7 +77,7 @@ function clickHandler (evt) {
   // Check if the element being clicked on is part of a drag Selection
   if (this.tagName === 'use') {
     if ($(this).parents('.selected').length === 0) {
-      selectAll([this]);
+      selectAll([this], neonView, info, dragHandler);
     }
   } else {
     // Check if the point being clicked on is a staff selection (if applicable)
@@ -230,7 +230,7 @@ export function dragSelect (selector) {
         }
       });
 
-      selectAll(elements);
+      selectAll(elements, neonView, info, dragHandler);
 
       dragHandler.dragInit();
       d3.selectAll('#selectRect').remove();

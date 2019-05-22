@@ -1,8 +1,8 @@
 /** @module SingleEdit/SelectOptions */
-import * as Contents from '../UnifiedEdit/EditContents.js';
+import * as Contents from './EditContents.js';
 import * as Grouping from './Grouping.js';
 import * as Notification from '../utils/Notification.js';
-import { SplitHandler } from '../UnifiedEdit/StaffTools.js';
+import { SplitHandler } from './StaffTools.js';
 const $ = require('jquery');
 
 /**
