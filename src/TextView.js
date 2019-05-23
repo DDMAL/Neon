@@ -87,7 +87,7 @@ class TextView {
 	updateTextViewVisibility () {
 		if ($('#displayText').is(':checked')) {
 			$('#syl_text').css('display', '');
-			$('#syl_text').html('<p>' + getSylText() + '</p>');
+			$('#syl_text').html('<p>' + this.getSylText() + '</p>');
 			let spans = Array.from($('#syl_text').children('p').children('span'));
 			spans.forEach(span => {
       			$(span).on('mouseenter', () => {
@@ -106,39 +106,40 @@ class TextView {
 			$('#syl_text').css('display', 'none');
 		}
 	}
+
+	/**
+ 	* get the syllable text of the loaded file
+ 	* @returns {string}
+ 	*/
+ 	getSylText() {
+		var lyrics = '';
+		let uniToDash = /\ue551/g;
+		let syllables = Array.from($('.active-page .syllable'));
+		syllables.forEach(syllable => {
+			if ($(syllable).has('.syl').length) {
+   				let syl = $(syllable).children('.syl')[0];
+   				lyrics += "<span class='" + syllable.id + "'>";
+   				if (syl.textContent.trim() === '') {
+   	  				lyrics += '&#x25CA;! ';
+   		  		} else {
+       				Array.from(syl.children[0].children[0].children).forEach(text => {
+         				lyrics += text.textContent !== '' ? text.textContent : '&#x25CA;! ';
+       				});
+     			}
+     			lyrics += ' </span>';
+   			} else {
+   				lyrics += "<span class='" + syllable.id + "'>&#x25CA;! </span>";
+    		}
+  		});
+  		if(!TextView.notificationSent) {
+  			Notification.queueNotification('Blank syllables are represented by &#x25CA;!');
+  			TextView.notificationSent = true;
+  		}
+  		return lyrics.replace(uniToDash, '-');
+	}
 }
 
-/**
- * get the syllable text of the loaded file
- * @returns {string}
- */
- function getSylText() {
-	var lyrics = '';
-	let uniToDash = /\ue551/g;
-	let syllables = Array.from($('.active-page .syllable'));
-	console.log(syllables.length);
-	syllables.forEach(syllable => {
-		if ($(syllable).has('.syl').length) {
-   			let syl = $(syllable).children('.syl')[0];
-   			lyrics += "<span class='" + syllable.id + "'>";
-   			if (syl.textContent.trim() === '') {
-     				lyrics += '🐧 ';
-     		} else {
-       			Array.from(syl.children[0].children[0].children).forEach(text => {
-         			lyrics += text.textContent !== '' ? text.textContent : '🐧 ';
-       			});
-     		}
-     		lyrics += ' </span>';
-   		} else {
-   			lyrics += "<span class='" + syllable.id + "'>🐧 </span>";
-    	}
-  	});
-  	if(!TextView.notificationSent) {
-  		Notification.queueNotification('Blank syllables are represented by &#x25CA;!');
-  		TextView.notificationSent = true;
-  	}
-  	return lyrics.replace(uniToDash, '-');
-}
+
 
 /**
  * Format a string for prompting the user.
