@@ -41,10 +41,8 @@ router.route('/')
             } else {
               iiifFiles.push([label, entry.name]);
             }
-            console.log(iiifFiles);
           });
         });
-        console.log(iiifFiles);
         if (meiFiles.length !== 0 || iiifFiles.length !== 0) {
           res.render('index', { 'files': meiFiles, 'iiif': iiifFiles });
         } else {
