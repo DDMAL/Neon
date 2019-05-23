@@ -10,6 +10,7 @@ const d3 = require('d3');
 const $ = require('jquery');
 
 var dragHandler, neonView, info, zoomHandler;
+var strokeWidth = 7;
 
 /**
  * Get the selection mode chosen by the user.
@@ -22,6 +23,10 @@ function getSelectionType () {
   } else {
     return null;
   }
+}
+
+export function setSelectStrokeWidth (width) {
+  strokeWidth = width;
 }
 
 /**
@@ -207,6 +212,16 @@ export function dragSelect (selector) {
       var ry = parseInt($('#selectRect').attr('y'));
       var lx = parseInt($('#selectRect').attr('x')) + parseInt($('#selectRect').attr('width'));
       var ly = parseInt($('#selectRect').attr('y')) + parseInt($('#selectRect').attr('height'));
+      // Transform to the correct coordinate system
+      let ul = canvas.node().createSVGPoint();
+      ul.x = rx;
+      ul.y = ry;
+      let lr = canvas.node().createSVGPoint();
+      lr.x = lx;
+      lr.y = ly;
+      let transform = canvas.node().getScreenCTM().inverse().multiply(canvas.select('.system').node().getScreenCTM()).inverse();
+      ul = ul.matrixTransform(transform);
+      lr = lr.matrixTransform(transform);
 
       var nc;
       if ($('#selByStaff').hasClass('is-active')) {
@@ -223,10 +238,10 @@ export function dragSelect (selector) {
           let uly = box.y;
           let lrx = box.x + box.width;
           let lry = box.y + box.height;
-          return !(((rx < ulx && lx < ulx) || (rx > lrx && lx > lrx)) || ((ry < uly && ly < uly) || (ry > lry && ly > lry)));
+          return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
         } else {
           let box = getStaffBBox(d);
-          return !(((rx < box.ulx && lx < box.ulx) || (rx > box.lrx && lx > box.lrx)) || ((ry < box.uly && ly < box.uly) || (ry > box.lry && ly > box.lry)));
+          return !(((ul.x < box.ulx && lr.x < box.ulx) || (ul.x > box.lrx && lr.x > box.lrx)) || ((ul.y < box.uly && lr.y < box.uly) || (ul.y > box.lry && lr.y > box.lry)));
         }
       });
 
@@ -252,7 +267,7 @@ export function dragSelect (selector) {
       .attr('height', 0)
       .attr('id', 'selectRect')
       .attr('stroke', 'black')
-      .attr('stroke-width', 7)
+      .attr('stroke-width', strokeWidth)
       .attr('fill', 'none');
   }
 

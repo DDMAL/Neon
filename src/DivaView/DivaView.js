@@ -10,7 +10,7 @@ class DivaView {
     this.diva.disableDragScrollable();
     this.displayPanel = new Display(this, 'neon-container', 'diva-viewer-canvas');
     this.initDivaEvents();
-    this.setViewEventHandlers();
+    // this.setViewEventHandlers();
   }
 
   initDivaEvents () {

@@ -26,6 +26,8 @@ class DivaEdit {
     editMenu.style.backgroundColor = '#ffc7c7';
     editMenu.style.fontWeight = 'bold';
 
+    Select.setSelectStrokeWidth(1);
+
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
   }
 
@@ -45,7 +47,7 @@ class DivaEdit {
 
   setSelectListeners () {
     Select.clickSelect('.active-page, .active-page use');
-    Select.dragSelect('.active-page');
+    Select.dragSelect('.active-page svg');
   }
 }
 
