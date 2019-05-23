@@ -27,7 +27,7 @@ class SingleEditMode {
     Select.setSelectHelperObjects(this.neonView, this.dragHandler);
     Select.clickSelect('#mei_output, #mei_output use');
 
-    this.insertHandler = new InsertHandler(this.neonView);
+    this.insertHandler = new InsertHandler(this.neonView, '#svg_group');
     bindInsertTabs(this.insertHandler);
     document.getElementById('neumeTab').click();
     Select.dragSelect('#svg_group');

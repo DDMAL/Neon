@@ -167,11 +167,15 @@ export function dragSelect (selector) {
         }
       } else {
         panning = true;
-        zoomHandler.startDrag();
+        if (zoomHandler !== undefined) {
+          zoomHandler.startDrag();
+        }
       }
     } else if (d3.event.sourceEvent.shiftKey) {
       panning = true;
-      zoomHandler.startDrag();
+      if (zoomHandler !== undefined) {
+        zoomHandler.startDrag();
+      }
     }
   }
 
@@ -202,7 +206,9 @@ export function dragSelect (selector) {
 
       updateRect(newX, newY, width, height);
     } else if (panning) {
-      zoomHandler.dragging();
+      if (zoomHandler !== undefined) {
+        zoomHandler.dragging();
+      }
     }
   }
 

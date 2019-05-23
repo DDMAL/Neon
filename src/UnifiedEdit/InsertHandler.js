@@ -1,5 +1,4 @@
 import * as Cursor from '../utils/Cursor.js';
-import InfoModule from '../InfoModule.js';
 const d3 = require('d3');
 const $ = require('jquery');
 
@@ -7,12 +6,14 @@ const $ = require('jquery');
  * Handle inserting new musical elements and communicate this to Verovio.
  * @constructor
  * @param {NeonView} neonView - The NeonView parent.
+ * @param {string} sel - A CSS selector representing where to put the listeners.
  */
-function InsertHandler (neonView) {
+function InsertHandler (neonView, sel) {
   var type = '';
   var firstClick = true;
   var coord;
   var attributes = null;
+  var selector = sel;
 
   /**
      * Switch to insert mode based on the button pressed.
@@ -34,43 +35,43 @@ function InsertHandler (neonView) {
         'tilt': 'n'
       };
     } else if (buttonId === 'pes') {
-      let contour = InfoModule.getContourByValue('Pes');
+      let contour = neonView.info.getContourByValue('Pes');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'clivis') {
-      let contour = InfoModule.getContourByValue('Clivis');
+      let contour = neonView.info.getContourByValue('Clivis');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'scandicus') {
-      let contour = InfoModule.getContourByValue('Scandicus');
+      let contour = neonView.info.getContourByValue('Scandicus');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'climacus') {
-      let contour = InfoModule.getContourByValue('Climacus');
+      let contour = neonView.info.getContourByValue('Climacus');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'torculus') {
-      let contour = InfoModule.getContourByValue('Torculus');
+      let contour = neonView.info.getContourByValue('Torculus');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'porrectus') {
-      let contour = InfoModule.getContourByValue('Porrectus');
+      let contour = neonView.info.getContourByValue('Porrectus');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'pressus') {
-      let contour = InfoModule.getContourByValue('Pressus');
+      let contour = neonView.info.getContourByValue('Pressus');
       type = 'grouping';
       attributes = {
         'contour': contour
@@ -99,8 +100,8 @@ function InsertHandler (neonView) {
     }
     removeInsertClickHandlers();
     if (type === 'staff') {
-      $('body').on('click', '#svg_group', staffHandler);
-    } else { $('body').on('click', '#svg_group', handler); }
+      $('body').on('click', selector, staffHandler);
+    } else { $('body').on('click', selector, handler); }
 
     // Disable edit mode listeners
     $('body').on('keydown', keydownListener);
@@ -147,7 +148,7 @@ function InsertHandler (neonView) {
   }
 
   function clickawayHandler (evt) {
-    if (evt.target.id !== 'svg_group' && $('#svg_group').find(evt.target).length === 0 && evt.target.tagName !== 'path' &&
+    if (evt.target.id !== selector && $(selector).find(evt.target).length === 0 && evt.target.tagName !== 'path' &&
             !($(evt.target).hasClass('insertel') || $(evt.target).hasClass('image'))) {
       insertDisabled();
       $('body').off('keydown', staffHandler);
@@ -157,7 +158,7 @@ function InsertHandler (neonView) {
 
   function resetInsertHandler (evt) {
     if (evt.key === 'Shift') {
-      $('body').on('click', '#svg_group', type === 'staff' ? staffHandler : handler);
+      $('body').on('click', selector, type === 'staff' ? staffHandler : handler);
     }
   }
 
@@ -176,12 +177,14 @@ function InsertHandler (neonView) {
      * @param {object} evt - JQuery event object.
      */
   function handler (evt) {
+    console.log('Insert');
+    console.log(evt);
     var container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     var pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
     // Transform pt to SVG context
-    var transformMatrix = container.getScreenCTM();
+    var transformMatrix = container.getElementsByClassName('system')[0].getScreenCTM();
     var cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
     let editorAction = {
@@ -253,8 +256,8 @@ function InsertHandler (neonView) {
   }
 
   function removeInsertClickHandlers () {
-    $('body').off('click', '#svg_group', staffHandler);
-    $('body').off('click', '#svg_group', handler);
+    $('body').off('click', staffHandler);
+    $('body').off('click', handler);
   }
 
   /**
