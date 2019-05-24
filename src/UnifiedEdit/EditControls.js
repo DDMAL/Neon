@@ -173,7 +173,6 @@ export function initInsertEditControls (neonView) {
 function activate (id, insertHandler) {
   $('#' + id).addClass('is-active');
   if (document.getElementById(id).classList.contains('insertel')) {
-    console.log('activate');
     insertHandler.insertActive(id);
   }
 }

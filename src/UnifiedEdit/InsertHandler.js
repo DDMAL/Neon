@@ -108,7 +108,7 @@ function InsertHandler (neonView, sel) {
 
     $('body').on('keyup', resetInsertHandler);
 
-    $('body').on('click', clickawayHandler);
+    // $('body').on('click', clickawayHandler);
 
     // Add 'return to edit mode' button
     if (!alreadyInInsertMode) {
@@ -177,8 +177,6 @@ function InsertHandler (neonView, sel) {
      * @param {object} evt - JQuery event object.
      */
   function handler (evt) {
-    console.log('Insert');
-    console.log(evt);
     var container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     var pt = container.createSVGPoint();
     pt.x = evt.clientX;
@@ -215,7 +213,7 @@ function InsertHandler (neonView, sel) {
     var pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
-    var transformMatrix = container.getScreenCTM();
+    var transformMatrix = container.getElementsByClassName('system')[0].getScreenCTM();
     var cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
     if (firstClick) {
