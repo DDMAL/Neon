@@ -23,7 +23,7 @@ class DivaView {
    * Called when the visible page changes in the diva.js viewer.
    * @param {number | number[]} pageIndexes - The zero-index or -indexes of the page(s) visible.
    */
-  changePage (pageIndexes) {
+  async changePage (pageIndexes) {
     if (typeof pageIndexes !== 'object') {
       pageIndexes = [pageIndexes];
     }
@@ -31,14 +31,22 @@ class DivaView {
       elem.classList.remove('active-page');
     });
     for (let page of pageIndexes) {
-      this.neonView.getPageSVG(page).then((svg) => {
+      try {
+        let svg = await this.neonView.getPageSVG(page);
         this.updateSVG(svg, page);
-      }).catch((err) => {
+      } 
+      catch(err) {
         if (err.name !== 'not_found' && err.name !== 'missing_mei') {
           console.error(err);
         }
-      });
+      }
     }
+    let containerId = 'neon-container-' + this.getCurrentPage();
+    let container = document.getElementById(containerId);
+    if (container !== null) {
+      container.classList.add('active-page');
+    }
+    this.updateCallbacks.forEach(callback => callback());
   }
 
   /**
@@ -98,11 +106,9 @@ class DivaView {
     container.style.position = 'absolute';
     container.style.top = `${offset.top}px`;
     container.style.left = `${offset.left - parseInt(marginLeft)}px`;
-    container.classList.add('active-page');
 
     container.appendChild(svg);
-
-    this.updateCallbacks.forEach(callback => callback());
+    
   }
 
   /**
