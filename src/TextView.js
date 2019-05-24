@@ -94,9 +94,11 @@ class TextView {
         			let syllable = $('#' + $(span).attr('class'));
         			syllable.addClass('syl-select');
         			syllable.attr('fill', '#d00');
+        			this.highlightBoundingBox(span);
         		});
         		$(span).on('mouseleave', () => {
         			$('#' + $(span).attr('class')).removeClass('syl-select').attr('fill', null);
+        			//this.removeBoundingBox(span);
 				});
       		});
       		if (this.neonView.getUserMode() !== 'viewer') {
@@ -105,6 +107,33 @@ class TextView {
 		} else {
 			$('#syl_text').css('display', 'none');
 		}
+	}
+
+	async highlightBoundingBox(span) {
+		let syllable = $('#' + $(span).attr('class'));
+		let sylList = syllable.children(".syl");
+		let syl = sylList[0];
+		console.log(syl);
+		let facs = syl.attr("facs");
+		console.log(facs);
+		let zone = await this.neonView.core.getElementAttr(facs, this.neonView.view.getCurrentPage());
+		console.log("" + zone.class);
+		let ulx = zone.ulx;
+		let uly = zone.uly;
+		let lrx = zone.lrx;
+		let lry = zone.lry;
+		let x = ulx + ((lrx - ulx) / 2);
+		let y = uly + ((lry - uly) / 2);
+		let height = lry - uly;
+		let width = lrx - ulx;
+		$(syllable).append('<use xling:href="#E990" x = "' + x + '" y= "' + 
+			y + '" height= "' + height + 'px" width = "' + width + 'px"> </use>');
+
+	}
+
+	removeBoundingBox(span) {
+		let syllable = $('#' + $(span).attr('class'));
+
 	}
 
 	/**
