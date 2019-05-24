@@ -108,7 +108,7 @@ function InsertHandler (neonView, sel) {
 
     $('body').on('keyup', resetInsertHandler);
 
-    // $('body').on('click', clickawayHandler);
+    $('body').on('click', clickawayHandler);
 
     // Add 'return to edit mode' button
     if (!alreadyInInsertMode) {
@@ -148,8 +148,8 @@ function InsertHandler (neonView, sel) {
   }
 
   function clickawayHandler (evt) {
-    if (evt.target.id !== selector && $(selector).find(evt.target).length === 0 && evt.target.tagName !== 'path' &&
-            !($(evt.target).hasClass('insertel') || $(evt.target).hasClass('image'))) {
+    if ($(evt.target).closest('.active-page').length === 0 &&
+      $(evt.target).closest('#insert_controls').length === 0) {
       insertDisabled();
       $('body').off('keydown', staffHandler);
       $('body').off('keydown', handler);
