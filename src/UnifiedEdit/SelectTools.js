@@ -262,7 +262,7 @@ export async function selectAll (elements, neonView, info, dragHandler) {
         //     SelectOptions.triggerNcActions([el]);
         // }
         if ($(el).hasClass('clef')) {
-          SelectOptions.triggerClefActions([el]);
+          SelectOptions.triggerClefActions(el);
         }
       }
     } else if (syls.length > 1) {
@@ -310,7 +310,7 @@ export async function selectAll (elements, neonView, info, dragHandler) {
         //     SelectOptions.triggerNcActions([el]);
         // }
         if ($(el).hasClass('clef')) {
-          SelectOptions.triggerClefActions([el]);
+          SelectOptions.triggerClefActions(el);
         }
       }
     } else if (neumes.length > 1) {
@@ -370,7 +370,7 @@ export async function selectAll (elements, neonView, info, dragHandler) {
         //     SelectOptions.triggerNcActions([el]);
         // }
         if ($(el).hasClass('clef')) {
-          SelectOptions.triggerClefActions([el]);
+          SelectOptions.triggerClefActions(el);
         }
       }
     } else if (ncs.length === 2) {
