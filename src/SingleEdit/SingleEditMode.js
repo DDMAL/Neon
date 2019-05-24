@@ -37,6 +37,8 @@ class SingleEditMode {
     let editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = '#ffc7c7';
     editMenu.style.fontWeight = 'bold';
+
+    this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
   }
 
   /**
@@ -51,6 +53,11 @@ class SingleEditMode {
       return 'edit';
     }
     return 'viewer';
+  }
+
+  setSelectListeners () {
+    Select.clickSelect('#mei_output, #mei_output use');
+    Select.dragSelect('#svg_group');
   }
 }
 

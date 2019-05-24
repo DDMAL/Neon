@@ -131,6 +131,9 @@ class SingleView {
           case 'Shift':
             d3.select('#svg_group').on('.drag', null);
             Cursor.updateCursorTo('');
+            if (this.neonView.getUserMode !== 'viewer') {
+              this.neonView.editor.setSelectListeners();
+            }
             if (this.neonView.getUserMode() === 'insert') {
               Cursor.updateCursor();
             }
