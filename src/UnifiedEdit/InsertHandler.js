@@ -149,7 +149,8 @@ function InsertHandler (neonView, sel) {
 
   function clickawayHandler (evt) {
     if ($(evt.target).closest('.active-page').length === 0 &&
-      $(evt.target).closest('#insert_controls').length === 0) {
+      $(evt.target).closest('#insert_controls').length === 0 &&
+      $(evt.target).closest('#svg_group').length === 0) {
       insertDisabled();
       $('body').off('keydown', staffHandler);
       $('body').off('keydown', handler);

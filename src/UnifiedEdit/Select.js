@@ -94,7 +94,7 @@ function clickHandler (evt) {
     let pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
-    let transformMatrix = container.getScreenCTM();
+    let transformMatrix = container.getElementsByClassName('system')[0].getScreenCTM();
     pt = pt.matrixTransform(transformMatrix.inverse());
 
     let selectedStaves = Array.from($('.staff')).filter((staff) => {
