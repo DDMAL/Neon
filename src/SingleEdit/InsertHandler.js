@@ -1,5 +1,4 @@
 import * as Cursor from '../utils/Cursor.js';
-import InfoModule from '../InfoModule.js';
 const d3 = require('d3');
 const $ = require('jquery');
 
@@ -34,43 +33,43 @@ function InsertHandler (neonView) {
         'tilt': 'n'
       };
     } else if (buttonId === 'pes') {
-      let contour = InfoModule.getContourByValue('Pes');
+      let contour = neonView.info.getContourByValue('Pes');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'clivis') {
-      let contour = InfoModule.getContourByValue('Clivis');
+      let contour = neonView.info.getContourByValue('Clivis');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'scandicus') {
-      let contour = InfoModule.getContourByValue('Scandicus');
+      let contour = neonView.info.getContourByValue('Scandicus');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'climacus') {
-      let contour = InfoModule.getContourByValue('Climacus');
+      let contour = neonView.info.getContourByValue('Climacus');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'torculus') {
-      let contour = InfoModule.getContourByValue('Torculus');
+      let contour = neonView.info.getContourByValue('Torculus');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'porrectus') {
-      let contour = InfoModule.getContourByValue('Porrectus');
+      let contour = neonView.info.getContourByValue('Porrectus');
       type = 'grouping';
       attributes = {
         'contour': contour
       };
     } else if (buttonId === 'pressus') {
-      let contour = InfoModule.getContourByValue('Pressus');
+      let contour = neonView.info.getContourByValue('Pressus');
       type = 'grouping';
       attributes = {
         'contour': contour
