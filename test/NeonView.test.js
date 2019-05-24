@@ -163,6 +163,8 @@ describe('Check Controls UI', () => {
       await browser.findElement(By.id('selectRect'));
       await actions.release().perform();
       await browser.findElement(By.className('selected'));
+      let selected = await browser.findElements(By.className('selected'));
+      expect(selected.length).toBeGreaterThan(0);
     });
 
     test('Test click select .nc', async () => {
