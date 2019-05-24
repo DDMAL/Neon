@@ -41,8 +41,6 @@ export function setSelectHelperObjects (nv, dh) {
   zoomHandler = neonView.view.zoomHandler;
 
   initSelectionButtons();
-  neonView.view.addUpdateCallback(clickSelect);
-  neonView.view.addUpdateCallback(dragSelect);
 }
 
 /**
@@ -145,6 +143,8 @@ export function dragSelect (selector) {
   var panning = false;
   var dragSelecting = false;
   // var canvas = d3.select('#svg_group');
+  d3.selectAll(selector.replace('.active-page', '').trim())
+    .on('.drag', null);
   var canvas = d3.select(selector);
   var dragSelectAction = d3.drag()
     .on('start', selStart)
@@ -231,7 +231,7 @@ export function dragSelect (selector) {
 
       var nc;
       if ($('#selByStaff').hasClass('is-active')) {
-        nc = d3.selectAll(selector + ' use, .staff')._groups[0];
+        nc = d3.selectAll(selector + ' use, ' + selector + ' .staff')._groups[0];
       } else {
         nc = d3.selectAll(selector + ' use')._groups[0];
       }
