@@ -79,7 +79,7 @@ export function initNavbar (neonView) {
   $('#getmei').on('click', () => {
     neonView.getPageURI().then((uri) => {
       $('#getmei').attr('href', uri)
-        .attr('download', neonView.name);
+        .attr('download', neonView.view.getPageName() + '.mei');
     });
   });
 }

@@ -148,6 +148,12 @@ class DivaView {
       }
     });
   }
+
+  getPageName () {
+    let manuscriptName = this.diva.settings.manifest.itemTitle;
+    let pageName = this.diva.settings.manifest.pages[this.getCurrentPage()].l;
+    return manuscriptName + ' \u2014 ' + pageName;
+  }
 }
 
 export { DivaView as default };

@@ -30,6 +30,7 @@ class NeonView {
       this.view = new params.View(this, params.Display, params.options.manifest);
     }
 
+    this.name = params.options.name;
     this.core = new NeonCore(params.options.meiMap, params.options.name);
     this.display = this.view.display;
     this.info = new params.Info(this);

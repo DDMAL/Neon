@@ -161,6 +161,14 @@ class SingleView {
       }
     });
   }
+
+  /**
+   * A human readable name for the page. Used for downloads.
+   * @returns {string}
+   */
+  getPageName () {
+    return this.neonView.name;
+  }
 }
 
 export { SingleView as default };
