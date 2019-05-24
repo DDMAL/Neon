@@ -33,22 +33,21 @@ router.route('/')
         }
         files.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
           let label = entry.name;
-          fs.readdir(__base + 'public/uploads/iiif/' + label, { withFileTypes: true }, (err, revisions) => {
-            revisions.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
-              if (err) {
-                console.error(err);
-                res.status(500).send(err);
-              } else {
-                iiifFiles.push([label, entry.name]);
-              }
-            });
-            if (meiFiles.length !== 0 || iiifFiles.length !== 0) {
-              res.render('index', { 'files': meiFiles, 'iiif': iiifFiles });
+          let revisions = fs.readdirSync(__base + 'public/uploads/iiif/' + label, { withFileTypes: true });
+          revisions.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
+            if (err) {
+              console.error(err);
+              res.status(500).send(err);
             } else {
-              res.render('index', { 'nofiles': 'No files uploaded', 'files': meiFiles, 'iiif': iiifFiles });
+              iiifFiles.push([label, entry.name]);
             }
           });
         });
+        if (meiFiles.length !== 0 || iiifFiles.length !== 0) {
+          res.render('index', { 'files': meiFiles, 'iiif': iiifFiles });
+        } else {
+          res.render('index', { 'nofiles': 'No files uploaded', 'files': meiFiles, 'iiif': iiifFiles });
+        }
       });
     });
   });
