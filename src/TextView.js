@@ -120,15 +120,15 @@ class TextView {
    				let syl = $(syllable).children('.syl')[0];
    				lyrics += "<span class='" + syllable.id + "'>";
    				if (syl.textContent.trim() === '') {
-   	  				lyrics += '&#x25CA;! ';
+   	  				lyrics += '&#x25CA; ';
    		  		} else {
        				Array.from(syl.children[0].children[0].children).forEach(text => {
-         				lyrics += text.textContent !== '' ? text.textContent : '&#x25CA;! ';
+         				lyrics += text.textContent !== '' ? text.textContent : '&#x25CA; ';
        				});
      			}
      			lyrics += ' </span>';
    			} else {
-   				lyrics += "<span class='" + syllable.id + "'>&#x25CA;! </span>";
+   				lyrics += "<span class='" + syllable.id + "'>&#x25CA; </span>";
     		}
   		});
   		if(!TextView.notificationSent) {
