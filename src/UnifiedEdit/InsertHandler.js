@@ -140,7 +140,11 @@ function InsertHandler (neonView, sel) {
     $('.insertel.is-active').removeClass('is-active');
     firstClick = true;
     Cursor.resetCursor();
-    $(document.getElementById('returnToEditMode').parentNode).remove();
+    try {
+      $(document.getElementById('returnToEditMode').parentNode).remove();
+    } catch (e) {
+      console.debug(e);
+    }
     $('#insertMenu').css('backgroundColor', 'whitesmoke');
     $('#insertMenu').css('font-weight', '');
     $('#editMenu').css('backgroundColor', '#ffc7c7');
