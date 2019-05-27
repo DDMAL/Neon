@@ -2,6 +2,7 @@
 var express = require('express');
 var fs = require('fs');
 var multer = require('multer');
+const request = require('request');
 
 var router = express.Router();
 const __base = '';
@@ -160,7 +161,7 @@ router.route('/edit/:filename')
     fs.stat(__base + 'public/uploads/mei/' + mei, (err, stats) => {
       if (err) {
         console.error("File of name '" + mei + "' does not exist.");
-        res.render('404', { 'meifile': mei });
+        res.status(404).render('error', { statusCode: '404 - File Not Found', message: 'The file ' + mei + ' could not be found on the server!' });
         return;
       }
       // Check if a newer autosave exists
@@ -203,5 +204,37 @@ router.route('/edit-iiif/:label/:rev')
       }
     });
   });
+
+router.route('/add-iiif').get(function (req, res) {
+  res.render('add-iiif', {});
+}).post(function (req, res) {
+  console.log(req.body);
+  if (req.body.manifest === undefined || req.body.revision === undefined) {
+    res.render('add-iiif', { messages: 'All fields are required!' });
+  } else {
+    request(req.body.manifest, (error, response, body) => {
+      if (error) {
+        res.render('add-iiif', { messages: error });
+      } else if (!response.statusCode === 200) {
+        res.render('add-iiif', { messages: 'Received status code ' + response.statusCode });
+      } else {
+        let manifest;
+        try {
+          manifest = JSON.parse(body);
+        } catch (e) {
+          res.render('add-iiif', { messages: 'URL was not to a valid JSON object.' });
+        }
+        if (manifest['@context'] !== 'http://iiif.io/api/presentation/2/context.json') {
+          res.render('add-iiif', { messages: 'URL was not to a IIIF Presentation manifest.' });
+        }
+        res.status(501).render('error',
+          {
+            statusCode: '501 - Not Implemented',
+            message: 'Adding a IIIF manifest and MEI files is not fully supported yet. Sorry!'
+          });
+      }
+    });
+  }
+});
 
 module.exports = router;
