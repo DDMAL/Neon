@@ -224,9 +224,29 @@ router.route('/add-iiif').get(function (req, res) {
         } catch (e) {
           res.render('add-iiif', { messages: 'URL was not to a valid JSON object.' });
         }
-        if (manifest['@context'] !== 'http://iiif.io/api/presentation/2/context.json') {
+        if (manifest['@context'] !== 'http://iiif.io/api/presentation/2/context.json' ||
+            manifest['@type'] !== 'sc:Manifest') {
           res.render('add-iiif', { messages: 'URL was not to a IIIF Presentation manifest.' });
         }
+
+        // Check if a revision for this already exists.
+        let label = manifest.label;
+        if (label === undefined) {
+          res.status(400).render('error', {
+            statusCode: '400 - Bad Request',
+            message: 'The provided manifest does not have a label and cannot be processed.'
+          });
+        }
+        let directoryExists = true;
+        try {
+          fs.accessSync(__base + 'public/uploads/iiif/' + label + '/' + req.body.revision);
+        } catch (e) {
+          directoryExists = false;
+        }
+        if (directoryExists) {
+          res.render('add-iiif', { messages: 'The revision specified already exists!' });
+        }
+
         res.status(501).render('error',
           {
             statusCode: '501 - Not Implemented',
