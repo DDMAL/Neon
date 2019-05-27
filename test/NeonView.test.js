@@ -51,31 +51,32 @@ describe('Neon3 Basics', () => {
 
 describe('Check Info Box', () => {
   test('Check Info Box Neumes', async () => {
-    // let neumeID = 'm-07ad2140-4fa1-45d4-af47-6733add00825';
-    // await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new window.Event('mouseover')); }, neumeID);
-    await browser.executeScript(() => { document.getElementsByClassName('neume')[0].dispatchEvent(new window.Event('mouseover')); });
+    let neumeID = 'm-07ad2140-4fa1-45d4-af47-6733add00825';
+    await browser.wait(until.elementLocated(By.id(neumeID)), 2000); // Wait two seconds for elements to appear
+    await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new window.Event('mouseover')); }, neumeID);
     var message = await browser.findElement(By.className('message-body')).getText();
-    expect(message).toContain('Shape:');
-    expect(message).toContain('Pitch(es)');
+
+    expect(message).toContain('Clivis');
+    expect(message).toContain('A2 G2');
   });
 
   test('Check Info Box Clef', async () => {
-    // let clefId = 'm-45439068-5e0c-4595-a820-4faa16771422';
-    // await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new window.Event('mouseover')); }, clefId);
-    await browser.executeScript(() => { document.getElementsByClassName('clef')[0].dispatchEvent(new window.Event('mouseover')); });
+    let clefId = 'm-45439068-5e0c-4595-a820-4faa16771422';
+    await browser.wait(until.elementLocated(By.id(clefId)), 2000);
+    await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new window.Event('mouseover')); }, clefId);
     var notification = await browser.findElement(By.className('message'));
     await browser.wait(until.elementIsVisible(notification));
     var message = await browser.findElement(By.className('message')).getText();
-    expect(message).toContain('Shape:');
-    expect(message).toContain('Line:');
+    expect(message).toContain('Shape: C');
+    expect(message).toContain('Line: 3');
   });
 
   test('Check Info Box Custos', async () => {
-    // let custosId = 'm-9e59174b-ed59-43a5-bba8-08e8eb276509';
-    // await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new window.Event('mouseover')); }, custosId);
-    await browser.executeScript(() => { document.getElementsByClassName('custos')[0].dispatchEvent(new window.Event('mouseover')); });
+    let custosId = 'm-9e59174b-ed59-43a5-bba8-08e8eb276509';
+    await browser.wait(until.elementLocated(By.id(custosId)), 2000);
+    await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new window.Event('mouseover')); }, custosId);
     var message = await browser.findElement(By.className('message-body')).getText();
-    expect(message).toContain('Pitch:');
+    expect(message).toContain('Pitch: G3');
   });
 });
 
