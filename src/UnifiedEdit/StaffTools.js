@@ -141,9 +141,9 @@ function Resize (staffId, neonView, dragHandler) {
           'lry': lry
         }
       };
-      neonView.edit(editorAction, neonView.view.getCurrentPage()).then((result) => {
+      neonView.edit(editorAction, neonView.view.getCurrentPage()).then(async (result) => {
         if (result) {
-          neonView.updateForCurrentPage();
+          await neonView.updateForCurrentPagePromise();
         }
         staff = document.getElementById(staffId);
         ulx = undefined;
@@ -237,9 +237,9 @@ function SplitHandler (neonView, selector) {
       }
     };
 
-    neonView.edit(editorAction, neonView.view.getCurrentPage()).then((result) => {
+    neonView.edit(editorAction, neonView.view.getCurrentPage()).then(async (result) => {
       if (result) {
-        neonView.updateForCurrentPage();
+        await neonView.updateForCurrentPagePromise();
       }
       splitDisable();
     });

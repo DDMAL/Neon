@@ -79,6 +79,17 @@ class NeonView {
   }
 
   /**
+   * Same as updateForCurrentPage but returns a promise.
+   * @see NeonView.updateForCurrentPage
+   */
+  updateForCurrentPagePromise () {
+    let pageNo = this.view.getCurrentPage();
+    return Promise.resolve(this.core.getSVG(pageNo).then((svg) => {
+      this.view.updateSVG(svg, pageNo);
+    }));
+  }
+
+  /**
    * Redo an action performed on the current page (if any)
    */
   redo () {
