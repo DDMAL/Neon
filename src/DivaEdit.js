@@ -15,7 +15,7 @@ class DivaEdit {
     initNavbar(this.neonView);
     Select.setSelectHelperObjects(this.neonView, this.dragHandler);
 
-    this.insertHandler = new InsertHandler(this.neonView, '.active-page svg');
+    this.insertHandler = new InsertHandler(this.neonView, '.active-page > svg');
     bindInsertTabs(this.insertHandler);
     document.getElementById('neumeTab').click();
     this.setSelectListeners();
