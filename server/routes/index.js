@@ -68,6 +68,11 @@ var upload = multer({
   limits: { filesize: 1000000, files: 2 }
 }).array('resource', 2);
 
+var genericUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { filesize: 100000 }
+});
+
 router.route('/upload_file')
   .post(function (req, res) {
     upload(req, res, function (err) {
@@ -208,7 +213,6 @@ router.route('/edit-iiif/:label/:rev')
 router.route('/add-iiif').get(function (req, res) {
   res.render('add-iiif', {});
 }).post(function (req, res) {
-  console.log(req.body);
   if (req.body.manifest === undefined || req.body.revision === undefined) {
     res.render('add-iiif', { messages: 'All fields are required!' });
   } else {
@@ -245,15 +249,31 @@ router.route('/add-iiif').get(function (req, res) {
         }
         if (directoryExists) {
           res.render('add-iiif', { messages: 'The revision specified already exists!' });
+          return;
         }
 
-        res.render('add-mei-iiif', { label: label });
+        // Create appropriate directory
+        fs.mkdir(__base + 'public/uploads/iiif/' + label + '/' + req.body.revision, (err) => {
+          if (err) {
+            console.error(err);
+            res.status(500).send(err.message);
+          }
+          fs.writeFile(__base + 'public/uploads/iiif/' + label + '/' + req.body.revision + '/metadata.json',
+            JSON.stringify({ manifest: req.body.manifest, pages: [] }),
+            (err) => {
+              if (err) {
+                console.error(err);
+                res.status(500).send(err.message);
+              }
+              res.render('add-mei-iiif', { label: label, rev: req.body.revision });
+            });
+        });
       }
     });
   }
 });
 
-router.route('/add-mei-iiif').post(function (req, res) {
+router.route('/add-mei-iiif/:label/:rev').post(genericUpload.single('mei'), function (req, res) {
   res.status(501).render('error', {
     statusCode: '501 - Not Implemented',
     message: 'Adding a IIIF manifest and MEI files is not fully supported yet. Sorry!'

@@ -13,7 +13,11 @@ html
           h2.subtitle= label
       section.section.level 
         .level-item
-          form(action='/add-mei-iiif', enctype='multipart/form-data' method='post')
+          form(id='form', enctype='multipart/form-data' method='post')
+            .field
+              .control
+                label.label Manifest
+                input(type='hidden', id='manifest')
             .field
               .control
                 label.label MEI File
@@ -25,3 +29,5 @@ html
         .level-item
           h3.has-text-danger= message
           
+    script.
+      document.getElementById('form').action = '/add-mei-iiif/' + '#{label}' + '/' + '#{rev}';
