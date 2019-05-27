@@ -54,7 +54,6 @@ class NeonView {
     if (params.TextView !== undefined) {
       this.textView = new params.TextView(this);
     }
-    
   }
 
   /**
