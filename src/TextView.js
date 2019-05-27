@@ -12,9 +12,9 @@ class TextView {
 	 * A constructor for a TextView.
 	 * @param {NeonView} neonView = The NeonView parent.
 	 */
-	constructor(neonView) {
+	constructor (neonView) {
 		this.neonView = neonView;
-		let notificationSent = false;
+		let this.notificationSent = false;
 		// add checkbox to enable/disable the view
 		let block = document.getElementById('extensible-block');
 		let label = document.createElement('label');
@@ -45,10 +45,10 @@ class TextView {
 		});
 	}
 
-	/*
+	/**
  	 * set text to edit mode
 	 */
-	setTextEdit() {
+	setTextEdit () {
 		let spans = Array.from($('#syl_text').children('p').children('span'));
 		spans.forEach(span => {
 			$(span).off('click');
@@ -58,8 +58,9 @@ class TextView {
 		});
 	}
 
-	/*
+	/**
  	* update the text for a single syl element
+ 	* @param {HTMLElement} span
  	*/
 	updateSylText (span) {
 		let orig = formatRaw($(span).html());
@@ -80,7 +81,7 @@ class TextView {
     	}
 	}
 
-	/*
+	/**
  	* update the visibility of the textview box
  	* and add the event listeners to make sure the syl highlights when moused over
  	*/
@@ -111,7 +112,7 @@ class TextView {
  	* get the syllable text of the loaded file
  	* @returns {string}
  	*/
- 	getSylText() {
+ 	getSylText () {
 		var lyrics = '';
 		let uniToDash = /\ue551/g;
 		let syllables = Array.from($('.active-page .syllable'));
