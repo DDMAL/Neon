@@ -14,7 +14,7 @@ class TextView {
 	 */
 	constructor (neonView) {
 		this.neonView = neonView;
-		let this.notificationSent = false;
+		this.notificationSent = false;
 		// add checkbox to enable/disable the view
 		let block = document.getElementById('extensible-block');
 		let label = document.createElement('label');
