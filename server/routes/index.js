@@ -247,14 +247,17 @@ router.route('/add-iiif').get(function (req, res) {
           res.render('add-iiif', { messages: 'The revision specified already exists!' });
         }
 
-        res.status(501).render('error',
-          {
-            statusCode: '501 - Not Implemented',
-            message: 'Adding a IIIF manifest and MEI files is not fully supported yet. Sorry!'
-          });
+        res.render('add-mei-iiif', { label: label });
       }
     });
   }
+});
+
+router.route('/add-mei-iiif').post(function (req, res) {
+  res.status(501).render('error', {
+    statusCode: '501 - Not Implemented',
+    message: 'Adding a IIIF manifest and MEI files is not fully supported yet. Sorry!'
+  });
 });
 
 module.exports = router;

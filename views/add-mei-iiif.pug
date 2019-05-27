@@ -1,0 +1,27 @@
+html
+  block head
+    title Add MEI for Manifest
+    block scripts
+      link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css')
+  block body
+    section.section
+      .container.level
+        .level-item
+          h1.title Add MEI to Manifest
+      .container.level
+        .level-item
+          h2.subtitle= label
+      section.section.level 
+        .level-item
+          form(action='/add-mei-iiif', enctype='multipart/form-data' method='post')
+            .field
+              .control
+                label.label MEI File
+                input(type='file', name='mei', required='true')
+            .field
+              .control
+                input.button.is-link(type='submit', value='Submit MEI File')
+      section.section.level
+        .level-item
+          h3.has-text-danger= message
+          
