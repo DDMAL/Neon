@@ -90,14 +90,36 @@ class TextView {
 			$('#syl_text').html('<p>' + this.getSylText() + '</p>');
 			let spans = Array.from($('#syl_text').children('p').children('span'));
 			spans.forEach(span => {
+				let syllable = $('#' + $(span).attr('class'));
+				let syl = syllable.children('.syl');
+				let text = syl.children('text');
+				let int_text = text.children('.text');
+				let real_text = text.children('.text').children('.text');
+				if(text.attr('class') == null) {
+					text.addClass('text');
+				}
       			$(span).on('mouseenter', () => {
-        			let syllable = $('#' + $(span).attr('class'));
         			syllable.addClass('syl-select');
         			syllable.attr('fill', '#d00');
-        			this.highlightBoundingBox(span);
+        			text.removeClass('text');
+        			int_text.removeClass('text');
+        			real_text.removeClass('text');  			
+        			text.addClass('text-select');
+        			int_text.addClass('text-select');
+        			real_text.addClass('text-select');
+        			//syl.attr('fill', '#ffc7c7');
+        			//this.highlightBoundingBox(span);
         		});
         		$(span).on('mouseleave', () => {
-        			$('#' + $(span).attr('class')).removeClass('syl-select').attr('fill', null);
+        			syllable.removeClass('syl-select');
+        			syllable.attr('fill', null);
+        			text.removeClass('text-select');
+        			int_text.removeClass('text-select');
+        			real_text.removeClass('text-select');
+        			text.addClass('text');
+        			int_text.addClass('text');
+        			real_text.addClass('text');
+        			//syl.attr('fill', null);
         			//this.removeBoundingBox(span);
 				});
       		});
@@ -107,33 +129,6 @@ class TextView {
 		} else {
 			$('#syl_text').css('display', 'none');
 		}
-	}
-
-	async highlightBoundingBox(span) {
-		let syllable = $('#' + $(span).attr('class'));
-		let sylList = syllable.children(".syl");
-		let syl = sylList[0];
-		console.log(syl);
-		let facs = syl.attr("facs");
-		console.log(facs);
-		let zone = await this.neonView.core.getElementAttr(facs, this.neonView.view.getCurrentPage());
-		console.log("" + zone.class);
-		let ulx = zone.ulx;
-		let uly = zone.uly;
-		let lrx = zone.lrx;
-		let lry = zone.lry;
-		let x = ulx + ((lrx - ulx) / 2);
-		let y = uly + ((lry - uly) / 2);
-		let height = lry - uly;
-		let width = lrx - ulx;
-		$(syllable).append('<use xling:href="#E990" x = "' + x + '" y= "' + 
-			y + '" height= "' + height + 'px" width = "' + width + 'px"> </use>');
-
-	}
-
-	removeBoundingBox(span) {
-		let syllable = $('#' + $(span).attr('class'));
-
 	}
 
 	/**
