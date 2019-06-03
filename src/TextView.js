@@ -95,30 +95,23 @@ class TextView {
 				let text = syl.children('text');
 				let int_text = text.children('.text');
 				let real_text = text.children('.text').children('.text');
+				let rect = syl.children('rect');
 				if(text.attr('class') == null) {
 					text.addClass('text');
 				}
       			$(span).on('mouseenter', () => {
         			syllable.addClass('syl-select');
         			syllable.attr('fill', '#d00');
-        			text.removeClass('text');
-        			int_text.removeClass('text');
-        			real_text.removeClass('text');  			
-        			text.addClass('text-select');
-        			int_text.addClass('text-select');
-        			real_text.addClass('text-select');
+        			rect.removeClass('rect');  			
+        			rect.addClass('rect-select');
         			//syl.attr('fill', '#ffc7c7');
         			//this.highlightBoundingBox(span);
         		});
         		$(span).on('mouseleave', () => {
         			syllable.removeClass('syl-select');
         			syllable.attr('fill', null);
-        			text.removeClass('text-select');
-        			int_text.removeClass('text-select');
-        			real_text.removeClass('text-select');
-        			text.addClass('text');
-        			int_text.addClass('text');
-        			real_text.addClass('text');
+        			rect.removeClass('rect-select');
+        			rect.addClass('rect');
         			//syl.attr('fill', null);
         			//this.removeBoundingBox(span);
 				});
