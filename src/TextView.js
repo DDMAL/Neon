@@ -102,16 +102,16 @@ class TextView {
       			$(span).on('mouseenter', () => {
         			syllable.addClass('syl-select');
         			syllable.attr('fill', '#d00');
-        			rect.removeClass('rect');  			
-        			rect.addClass('rect-select');
+        			rect.removeClass('sylTextRect');  			
+        			rect.addClass('sylTextRect-select');
         			//syl.attr('fill', '#ffc7c7');
         			//this.highlightBoundingBox(span);
         		});
         		$(span).on('mouseleave', () => {
         			syllable.removeClass('syl-select');
         			syllable.attr('fill', null);
-        			rect.removeClass('rect-select');
-        			rect.addClass('rect');
+        			rect.removeClass('sylTextRect-select');
+        			rect.addClass('sylTextRect');
         			//syl.attr('fill', null);
         			//this.removeBoundingBox(span);
 				});
