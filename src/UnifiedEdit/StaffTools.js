@@ -1,10 +1,7 @@
-/**
- * Support for resizing the staff by creating a resizable box around it.
- * @module SingleEdit/ResizeStaff
- */
+import * as Notification from '../utils/Notification.js';
+import { selectStaff } from './SelectTools.js';
 
-import { selectStaff } from './Select.js';
-
+const $ = require('jquery');
 const d3 = require('d3');
 
 /**
@@ -144,9 +141,9 @@ function Resize (staffId, neonView, dragHandler) {
           'lry': lry
         }
       };
-      neonView.edit(editorAction, 0).then((result) => {
+      neonView.edit(editorAction, neonView.view.getCurrentPage()).then(async (result) => {
         if (result) {
-          neonView.updateForCurrentPage();
+          await neonView.updateForCurrentPagePromise();
         }
         staff = document.getElementById(staffId);
         ulx = undefined;
@@ -173,4 +170,90 @@ function Resize (staffId, neonView, dragHandler) {
   Resize.prototype.constructor = Resize;
   Resize.prototype.drawInitialRect = drawInitialRect;
 }
-export { Resize as default };
+
+/**
+ * Handler splitting a staff into two staves through Verovio.
+ * @constructor
+ * @param {NeonView} neonView - The NeonView parent.
+ */
+function SplitHandler (neonView, selector) {
+  function startSplit () {
+    splitDisable();
+
+    $('body').on('click', selector, handler);
+
+    // Handle keypresses
+    $('body').on('keydown', keydownListener);
+    $('body').on('keyup', resetHandler);
+    $('body').on('click', clickawayHandler);
+
+    Notification.queueNotification('Click Where to Split');
+  }
+
+  function keydownListener (evt) {
+    if (evt.key === 'Escape') {
+      splitDisable();
+    } else if (evt.key === 'Shift') {
+      $('body').off('click', selector, handler);
+    }
+  }
+
+  function clickawayHandler (evt) {
+    console.log(evt);
+    if ($(evt.target).closest('.active-page').length === 0) {
+      splitDisable();
+      $('body').off('click', selector, handler);
+    }
+  }
+
+  function resetHandler (evt) {
+    if (evt.key === 'Shift') {
+      $('body').on('click', selector, handler);
+    }
+  }
+
+  function handler (evt) {
+    let id = $('.selected')[0].id;
+
+    var container = document.getElementsByClassName('active-page')[0]
+      .getElementsByClassName('definition-scale')[0];
+    var pt = container.createSVGPoint();
+    pt.x = evt.clientX;
+    pt.y = evt.clientY;
+
+    // Transform to SVG coordinate system.
+    var transformMatrix = container.getElementsByClassName('system')[0]
+      .getScreenCTM().inverse();
+    var cursorPt = pt.matrixTransform(transformMatrix);
+    console.log(cursorPt.x);
+    // Find staff point corresponds to if one exists
+    // TODO
+
+    let editorAction = {
+      'action': 'split',
+      'param': {
+        'elementId': id,
+        'x': parseInt(cursorPt.x)
+      }
+    };
+
+    neonView.edit(editorAction, neonView.view.getCurrentPage()).then(async (result) => {
+      if (result) {
+        await neonView.updateForCurrentPagePromise();
+      }
+      splitDisable();
+    });
+  }
+
+  function splitDisable () {
+    $('body').off('keydown', keydownListener);
+    $('body').off('keyup', resetHandler);
+    $('body').off('click', clickawayHandler);
+    $('body').off('click', handler);
+  }
+
+  SplitHandler.prototype.constructor = SplitHandler;
+  SplitHandler.prototype.startSplit = startSplit;
+}
+
+export { Resize, SplitHandler };

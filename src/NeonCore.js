@@ -52,7 +52,7 @@ class NeonCore {
      */
     this.neonCache = new Map();
 
-    this.parser = new DOMParser();
+    this.parser = new window.DOMParser();
 
     this.db = new PouchDb(title);
 
@@ -232,7 +232,7 @@ class NeonCore {
     if (this.undoStacks.has(pageNo)) {
       let state = this.undoStacks.get(pageNo).pop();
       if (state !== undefined) {
-        this.getMEI(0).then((mei) => {
+        this.getMEI(pageNo).then((mei) => {
           this.redoStacks.get(pageNo).push(mei);
         });
         this.loadData(pageNo, state, true);
@@ -251,7 +251,7 @@ class NeonCore {
     if (this.redoStacks.has(pageNo)) {
       let state = this.redoStacks.get(pageNo).pop();
       if (state !== undefined) {
-        this.getMEI(0).then((mei) => {
+        this.getMEI(pageNo).then((mei) => {
           this.undoStacks.get(pageNo).push(mei);
         });
         this.loadData(pageNo, state, true);

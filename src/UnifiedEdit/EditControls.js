@@ -1,10 +1,10 @@
-/** @module SingleEdit/EditControls */
+/** @module UnifiedEdit/EditControls */
 
-import * as Contents from './Contents.js';
+import * as Contents from './EditContents.js';
 import * as Cursor from '../utils/Cursor.js';
 import Icons from '../img/icons.svg';
 import * as Notification from '../utils/Notification.js';
-import { unselect } from './Select.js';
+import { unselect } from './SelectTools.js';
 const $ = require('jquery');
 
 /**
@@ -79,7 +79,7 @@ export function initNavbar (neonView) {
   $('#getmei').on('click', () => {
     neonView.getPageURI().then((uri) => {
       $('#getmei').attr('href', uri)
-        .attr('download', neonView.name);
+        .attr('download', neonView.view.getPageName() + '.mei');
     });
   });
 }
@@ -129,7 +129,7 @@ export function initInsertEditControls (neonView) {
   });
 
   function undoHandler () {
-    if (!neonView.undo(0)) {
+    if (!neonView.undo(neonView.view.getCurrentPage())) {
       console.error('Failed to undo action.');
     } else {
       neonView.updateForCurrentPage();
@@ -137,7 +137,7 @@ export function initInsertEditControls (neonView) {
   }
 
   function redoHandler () {
-    if (!neonView.redo(0)) {
+    if (!neonView.redo(neonView.view.getCurrentPage())) {
       console.error('Failed to redo action');
     } else {
       neonView.updateForCurrentPage();
@@ -161,7 +161,7 @@ export function initInsertEditControls (neonView) {
       'action': 'chain',
       'param': toRemove
     };
-    neonView.edit(chainAction, 0).then(() => { neonView.updateForCurrentPage(); });
+    neonView.edit(chainAction, neonView.view.getCurrentPage()).then(() => { neonView.updateForCurrentPage(); });
   }
 }
 

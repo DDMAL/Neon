@@ -1,42 +1,32 @@
-import { bindInsertTabs, initEditModeControls, initNavbar, initInsertEditControls } from '../UnifiedEdit/EditControls.js';
-import DragHandler from './DragHandler.js';
-import * as Select from '../UnifiedEdit/Select.js';
-import InsertHandler from '../UnifiedEdit/InsertHandler.js';
-import * as SelectOptions from '../UnifiedEdit/SelectOptions.js';
+import { bindInsertTabs, initEditModeControls, initNavbar, initInsertEditControls } from './UnifiedEdit/EditControls.js';
+import DragHandler from './SingleEdit/DragHandler.js';
+import * as Select from './UnifiedEdit/Select.js';
+import InsertHandler from './UnifiedEdit/InsertHandler.js';
+import * as SelectOptions from './UnifiedEdit/SelectOptions.js';
 
-/**
- * An Edit Module for a single page of a manuscript.
- * Works with the SingleView module.
- */
-class SingleEditMode {
-  /**
-   * Constructor for an EditMode object.
-   * @param {NeonView} neonView - The NeonView parent.
-   */
+class DivaEdit {
   constructor (neonView) {
     this.neonView = neonView;
     initEditModeControls(this);
   }
 
-  /**
-   * Initialize the start of edit mode when first leaving viewer mode.
-   */
   initEditMode () {
     this.dragHandler = new DragHandler(this.neonView, '#svg_group');
     initNavbar(this.neonView);
     Select.setSelectHelperObjects(this.neonView, this.dragHandler);
-    Select.clickSelect('#mei_output, #mei_output use');
 
-    this.insertHandler = new InsertHandler(this.neonView, '#svg_group');
+    this.insertHandler = new InsertHandler(this.neonView, '.active-page > svg');
     bindInsertTabs(this.insertHandler);
     document.getElementById('neumeTab').click();
-    Select.dragSelect('#svg_group');
+    this.setSelectListeners();
 
     SelectOptions.initNeonView(this.neonView);
     initInsertEditControls(this.neonView);
     let editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = '#ffc7c7';
     editMenu.style.fontWeight = 'bold';
+
+    Select.setSelectStrokeWidth(1);
 
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
   }
@@ -56,9 +46,9 @@ class SingleEditMode {
   }
 
   setSelectListeners () {
-    Select.clickSelect('#mei_output, #mei_output use');
-    Select.dragSelect('#svg_group');
+    Select.clickSelect('.active-page, .active-page use');
+    Select.dragSelect('.active-page svg');
   }
 }
 
-export { SingleEditMode as default };
+export { DivaEdit as default };

@@ -1,6 +1,7 @@
 import NeonView from './NeonView.js';
 import DisplayPanel from './DisplayPanel/DisplayPanel.js';
 import DivaView from './DivaView/DivaView.js';
+import DivaEdit from './DivaEdit.js';
 import SingleView from './SingleView/SingleView.js';
 import SingleEditMode from './SingleEdit/SingleEditMode.js';
 import InfoModule from './InfoModule.js';
@@ -20,7 +21,7 @@ if (manifest !== '') {
       View: DivaView,
       Display: DisplayPanel,
       Info: InfoModule,
-      // Edit: DivaEditMode
+      Edit: DivaEdit,
       TextView: TextView
     };
     var view = new NeonView(params);

@@ -1,9 +1,8 @@
 /** @module SingleEdit/SelectOptions */
-import * as Contents from './Contents.js';
+import * as Contents from './EditContents.js';
 import * as Grouping from './Grouping.js';
 import * as Notification from '../utils/Notification.js';
-import InfoModule from '../InfoModule.js';
-import SplitHandler from './SplitHandler.js';
+import { SplitHandler } from './StaffTools.js';
 const $ = require('jquery');
 
 /**
@@ -53,7 +52,6 @@ export function unsetVirgaAction (id) {
   };
 }
 
-// TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
 /**
  * Trigger the extra nc action menu.
  * @param {SVGGraphicsElement} nc - The last selected elements.
@@ -66,7 +64,7 @@ export function triggerNcActions (nc) {
   $('#Punctum.dropdown-item').on('click', () => {
     let unsetInclinatum = unsetInclinatumAction(nc.id);
     let unsetVirga = unsetVirgaAction(nc.id);
-    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] }, 0).then((result) => {
+    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] }, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -86,7 +84,7 @@ export function triggerNcActions (nc) {
         'attrValue': 'se'
       }
     };
-    neonView.edit(setInclinatum, 0).then((result) => {
+    neonView.edit(setInclinatum, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -107,7 +105,7 @@ export function triggerNcActions (nc) {
         'attrValue': 'n'
       }
     };
-    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, setVirga ] }, 0).then((result) => {
+    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, setVirga ] }, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -135,7 +133,7 @@ export function triggerNeumeActions () {
   }
 
   $('.grouping').on('click', (e) => {
-    var contour = InfoModule.getContourByValue(e.target.id);
+    var contour = neonView.info.getContourByValue(e.target.id);
     triggerChangeGroup(contour);
   });
 
@@ -147,7 +145,7 @@ export function triggerNeumeActions () {
         'contour': contour
       }
     };
-    neonView.edit(changeGroupingAction, 0).then((result) => {
+    neonView.edit(changeGroupingAction, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Grouping Changed');
       } else {
@@ -190,7 +188,7 @@ export function triggerClefActions (clef) {
         'shape': 'C'
       }
     };
-    neonView.edit(setCClef, 0).then((result) => {
+    neonView.edit(setCClef, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -208,7 +206,7 @@ export function triggerClefActions (clef) {
         'shape': 'F'
       }
     };
-    neonView.edit(setFClef, 0).then((result) => {
+    neonView.edit(setFClef, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -241,7 +239,7 @@ export function triggerStaffActions () {
         'elementIds': elementIds
       }
     };
-    neonView.edit(editorAction, 0).then((result) => {
+    neonView.edit(editorAction, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Staff Merged');
         endOptionsSelection();

@@ -1,4 +1,4 @@
-/** @module SingleEdit/Contents */
+/** @module UnifiedEdit/EditContents */
 
 import PunctumIcon from '../img/punctum.png';
 import VirgaIcon from '../img/virga.png';
