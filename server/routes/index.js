@@ -218,7 +218,7 @@ router.route('/add-iiif').get(function (req, res) {
   }
 });
 
-router.route('/add-mei-iiif/:label/:rev').post(upload.single('mei'), function (req, res) {
+router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (req, res) {
   res.status(501).render('error', {
     statusCode: '501 - Not Implemented',
     message: 'Adding a IIIF manifest and MEI files is not fully supported yet. Sorry!'
