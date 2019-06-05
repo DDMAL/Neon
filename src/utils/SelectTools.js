@@ -184,8 +184,16 @@ export function selectStaff (el, dragHandler) {
  */
  export function selectBBox (el, dragHandler) {
 
-  //TODO
+  //-------this method is preliminary and will need to be fixed later---------------------
 
+  let bbox = $(el);
+  if (!bbox.hasClass('sylTextRect-select')) {
+    unselect();
+    bbox.removeClass('sylTextRect');
+    bbox.addClass('sylTextRect-select');
+    updateHighlight();
+    dragHandler.dragInit();
+  }
  } 
 
 /**
