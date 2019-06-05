@@ -104,6 +104,25 @@ button:focus {
     animation: spin 2s linear infinite;
 }
 
+.text {
+    display: none;
+}
+
+.syl-select {
+    background-color: solid red;
+}
+
+.sylTextRect {
+    display: none;
+}
+
+.sylTextRect-select {
+    fill: red;
+    opacity: 0.2;
+}
+
+
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
