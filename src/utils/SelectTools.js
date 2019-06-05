@@ -178,6 +178,17 @@ export function selectStaff (el, dragHandler) {
 }
 
 /**
+ * select a boundingbox element
+ * @param {SVGGElement} el - the bbox (sylTextRect) element in the DOM
+ * @param {DragHandler} dragHandler - the drag handler in use
+ */
+ export function selectBBox (el, dragHandler) {
+
+  //TODO
+
+ } 
+
+/**
  * Handle selecting an array of elements based on the selection type.
  * @param {SVGGraphicsElement[]} elements - The elements to select. Either <g> or <use>.
  */
