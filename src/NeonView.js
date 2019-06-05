@@ -49,11 +49,9 @@ class NeonView {
 
       this.editor = new params.Edit(this);
     }
-
     if (params.TextView !== undefined) {
       this.textView = new params.TextView(this);
     }
-    
   }
 
   /**
