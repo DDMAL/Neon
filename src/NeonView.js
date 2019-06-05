@@ -16,6 +16,7 @@ class NeonView {
    * @param {object} params.Info - Constructor for InfoModule module
    * @param {object} [params.Edit] - Constructor for EditMode module
    * @param {object} [params.TextView] - Constructor for TextView module
+   * @param {object} [params.TextEdit] - Constructor for TextEdit module
    */
   constructor (params) {
     if (params.mode === 'single' || params.mode === 'iiif') {
@@ -46,11 +47,13 @@ class NeonView {
       editButton.textContent = 'Edit MEI';
       editItem.appendChild(editButton);
       parent.appendChild(editItem);
-
       this.editor = new params.Edit(this);
     }
     if (params.TextView !== undefined) {
       this.textView = new params.TextView(this);
+    }
+    if (params.TextEdit !== undefined) {
+      this.textEdit = new params.TextEdit(this);
     }
   }
 
