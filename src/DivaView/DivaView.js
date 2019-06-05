@@ -14,7 +14,7 @@ class DivaView {
   }
 
   initDivaEvents () {
-    Diva.Events.subscribe('ObjectDidLoad', this.didLoad.bind(this), this.diva.settings.ID)
+    Diva.Events.subscribe('ObjectDidLoad', this.didLoad.bind(this), this.diva.settings.ID);
     Diva.Events.subscribe('VisiblePageDidChange', this.changePage.bind(this), this.diva.settings.ID);
     Diva.Events.subscribe('ZoomLevelDidChange', this.adjustZoom.bind(this), this.diva.settings.ID);
   }
@@ -34,8 +34,7 @@ class DivaView {
       try {
         let svg = await this.neonView.getPageSVG(page);
         this.updateSVG(svg, page);
-      } 
-      catch(err) {
+      } catch (err) {
         if (err.name !== 'not_found' && err.name !== 'missing_mei') {
           console.error(err);
         }
@@ -108,7 +107,6 @@ class DivaView {
     container.style.left = `${offset.left - parseInt(marginLeft)}px`;
 
     container.appendChild(svg);
-    
   }
 
   /**

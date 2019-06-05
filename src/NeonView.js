@@ -49,11 +49,9 @@ class NeonView {
 
       this.editor = new params.Edit(this);
     }
-
     if (params.TextView !== undefined) {
       this.textView = new params.TextView(this);
     }
-    
   }
 
   /**
@@ -80,6 +78,7 @@ class NeonView {
     // load pages
     this.core.getSVG(pageNo).then((svg) => {
       this.view.updateSVG(svg, pageNo);
+      this.view.updateCallbacks.forEach(callback => callback());
     });
   }
 
