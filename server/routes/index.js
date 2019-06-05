@@ -53,87 +53,32 @@ router.route('/')
     });
   });
 
-// File upload using Multer
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, __dirname + '../../../public/uploads');
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  }
-});
-
 var upload = multer({
-  storage: storage,
-  limits: { filesize: 1000000, files: 2 }
-}).array('resource', 2);
-
-var genericUpload = multer({
   storage: multer.memoryStorage(),
   limits: { filesize: 100000 }
 });
 
 router.route('/upload_file')
-  .post(function (req, res) {
-    upload(req, res, function (err) {
+  .post(upload.array('resource', 2), function (req, res) {
+    if (req.files[1].mimetype !== 'image/png') {
+      res.status(400).send('PNG file expected');
+    }
+    let files = [req.files[0].originalname, req.files[1].originalname];
+    let meiSplit = files[0].split(/\.mei/, 2);
+    let filename = meiSplit[0];
+    let newImageName = filename + '.png';
+    fs.writeFile(__base + 'public/uploads/mei/' + files[0], req.files[0].buffer, (err) => {
       if (err) {
-        return console.error(err);
+        console.error(err);
+        throw err;
       }
-      // Check if two files were uploaded
-      if (req.files.length !== 2) {
-        for (let i = 0; i < req.files.length; i++) {
-          fs.unlink(__base + 'public/uploads/' + req.files[i].originalname, function (err) {
-            if (err) {
-              return console.log('Failed to delete file' + err);
-            }
-          });
+      fs.writeFile(__base + 'public/uploads/png/' + newImageName, req.files[1].buffer, (err) => {
+        if (err) {
+          console.error(err);
+          throw err;
         }
-        fs.readdir(__base + 'public/uploads/mei', function (err, files) {
-          if (err) {
-            return console.error(err);
-          }
-          res.render('index', { 'files': files, 'err': 'Error: must upload two files' });
-        });
-        return;
-      }
-      // rename img file to have same name as MEI
-      var files = [req.files[0].originalname, req.files[1].originalname];
-      var meiSplit = files[0].split('.', 2);
-      var filename = meiSplit[0];
-      var meiext = meiSplit[1];
-      var imgext = files[1].split('.', 2)[1];
-      var newImg = filename + '.' + imgext;
-
-      // Check if valid filetypes
-      if (meiext !== 'mei' || imgext !== 'png') {
-        for (let i = 0; i < files.length; i++) {
-          fs.unlink(__base + 'public/uploads/' + files[i], function (err) {
-            if (err) {
-              return console.log('Failed to delete file');
-            }
-          });
-        }
-        fs.readdir(__base + 'public/uploads/mei', function (err, files) {
-          res.render('index', { 'files': files, 'err': 'Error: Invalid file type' });
-        });
-        return;
-      } else {
-        // Move files into their respective folders
-        // Move MEI file
-        fs.rename(__base + 'public/uploads/' + files[0], __base + 'public/uploads/mei/' + files[0], function (err) {
-          if (err) {
-            return console.log('Failed to rename file');
-          }
-        });
-        // Move PNG file
-        fs.rename(__base + 'public/uploads/' + files[1], __base + 'public/uploads/png/' + newImg, function (err) {
-          if (err) {
-            return console.log('Failed to rename file');
-          }
-        });
-      }
-      // Reload page
-      res.redirect('/');
+        res.redirect('/');
+      });
     });
   });
 
@@ -273,7 +218,7 @@ router.route('/add-iiif').get(function (req, res) {
   }
 });
 
-router.route('/add-mei-iiif/:label/:rev').post(genericUpload.single('mei'), function (req, res) {
+router.route('/add-mei-iiif/:label/:rev').post(upload.single('mei'), function (req, res) {
   res.status(501).render('error', {
     statusCode: '501 - Not Implemented',
     message: 'Adding a IIIF manifest and MEI files is not fully supported yet. Sorry!'
