@@ -1,5 +1,5 @@
 import * as Notification from '../utils/Notification.js';
-import { selectStaff } from './SelectTools.js';
+import { selectStaff } from '../utils/SelectTools.js';
 
 const $ = require('jquery');
 const d3 = require('d3');
