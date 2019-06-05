@@ -78,6 +78,7 @@ class NeonView {
     // load pages
     this.core.getSVG(pageNo).then((svg) => {
       this.view.updateSVG(svg, pageNo);
+      this.view.updateCallbacks.forEach(callback => callback());
     });
   }
 
