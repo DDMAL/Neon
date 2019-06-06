@@ -1,10 +1,10 @@
 /** @module SingleEdit/Select */
 
-import { initSelectionButtons } from './EditControls.js';
+import { initSelectionButtons } from '../SquareEdit/Controls.js';
 import {
   unselect, getStaffBBox, selectStaff, selectAll
 } from './SelectTools.js';
-import { Resize } from './StaffTools.js';
+import Resize from './Resize.js';
 
 const d3 = require('d3');
 const $ = require('jquery');

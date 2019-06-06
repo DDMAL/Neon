@@ -1,6 +1,7 @@
 /** @module UnifiedEdit/EditControls */
 
-import * as Contents from './EditContents.js';
+import * as Contents from './Contents.js';
+import * as EditContents from '../utils/EditContents';
 import * as Cursor from './Cursor.js';
 import Icons from '../img/icons.svg';
 import * as Notification from './Notification.js';
@@ -17,7 +18,7 @@ export function initEditModeControls (editMode) {
     'Edit MEI</button></a>'; */
   $('#edit_mode').on('click', function () {
     $('#dropdown_toggle').empty();
-    $('#dropdown_toggle').append(Contents.navbarDropdownMenu);
+    $('#dropdown_toggle').append(EditContents.navbarDropdownMenu);
     $('#insert_controls').append(Contents.insertControlsPanel);
     $('#edit_controls').append(Contents.editControlsPanel);
 

@@ -1,5 +1,5 @@
 /** @module SingleEdit/SelectOptions */
-import * as Contents from '../SquareEdit/EditContents.js';
+import * as Contents from '../SquareEdit/Contents.js';
 import * as Grouping from '../SquareEdit/Grouping.js';
 import * as Notification from './Notification.js';
 import { SplitHandler } from '../SquareEdit/StaffTools.js';
