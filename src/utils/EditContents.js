@@ -15,3 +15,14 @@ export const navbarDropdownMenu =
  */
 export const navbarFinalize =
     "<a id='finalize' class='navbar-item'> Finalize MEI </a>";
+
+/**
+ * Contents of the undo/redo panel with buttons
+ * @type {string} 
+ */
+export const undoRedoPanel = 
+    "<a class='panel-block'>" +
+    "<div class='field has-addons buttons' style='overflow-x: auto;'>" + 
+    "<p class='control'>" + 
+    "<button class='button' id='undo'>Undo</button>" + 
+    "<button class='button' id='redo'>Redo</button></p></div></a>";

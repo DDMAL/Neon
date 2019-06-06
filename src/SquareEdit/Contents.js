@@ -109,24 +109,9 @@ export const editControlsPanel =
     "<a class='panel-block'>" +
     "<div class='field is-grouped buttons'>" +
     "<p class='control'>" +
-    "<button class='button' id='undo'>Undo</button></p>" +
-    "<p class='control'>" +
-    "<button class='button' id='redo'>Redo</button></p>" +
-    "<p class='control'>" +
     "<a id='moreEdit' class='panel-block is-invisible'>" +
     "<a id='neumeEdit' class='panel-block is-invisible'></div>";
 
-
-/**
- * Contents of the undo/redo panel with buttons
- * @type {string} 
- */
-export const undoRedoPanel = 
-    "<a class='panel-block'>" +
-    "<div class='field has-addons buttons' style='overflow-x: auto;'>" + 
-    "<p class='control'>" + 
-    "<button class='button' id='undo'>Undo</button>" + 
-    "<button class='button' id='redo'>Redo</button></p></div></a>";
 
 /**
  * Contents of extra nc action menu.
