@@ -1,5 +1,5 @@
 import { bindInsertTabs, initInsertEditControls } from './Controls.js';
-import { initEditModeControls, initNavBar } from '../utils/EditControls';
+import { initEditModeControls, initNavbar, initUndoRedoPanel } from '../utils/EditControls.js';
 import DragHandler from '../utils/DragHandler.js';
 import * as Select from '../utils/Select.js';
 import InsertHandler from './InsertHandler.js';
@@ -25,6 +25,7 @@ class SingleEditMode {
   initEditMode () {
     this.dragHandler = new DragHandler(this.neonView, '#svg_group');
     initNavbar(this.neonView);
+    initUndoRedoPanel(this.neonView);
     Select.setSelectHelperObjects(this.neonView, this.dragHandler);
     Select.clickSelect('#mei_output, #mei_output use');
 

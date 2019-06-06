@@ -21,6 +21,7 @@ export function initEditModeControls (editMode) {
     $('#dropdown_toggle').append(EditContents.navbarDropdownMenu);
     $('#insert_controls').append(Contents.insertControlsPanel);
     $('#edit_controls').append(Contents.editControlsPanel);
+    $('#right_column').append(EditContents.undoRedoPanel);
 
     editMode.initEditMode();
   });
