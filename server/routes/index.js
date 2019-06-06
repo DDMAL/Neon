@@ -6,6 +6,13 @@ var multer = require('multer');
 var router = express.Router();
 const __base = '';
 
+const allowedPattern = /^[-\.,\d\w ]+$/;
+const consequtivePeriods = /\.{2,}/;
+
+function isUserInputValid (input) {
+  return (input.match(allowedPattern) && !input.match(consequtivePeriods));
+}
+
 //////////////////
 // Index routes //
 //////////////////
@@ -66,6 +73,9 @@ router.route('/upload_file')
     let meiSplit = files[0].split(/\.mei/, 2);
     let filename = meiSplit[0];
     let newImageName = filename + '.png';
+    if (!isUserInputValid(files[0]) || !isUserInputValid(newImageName)) {
+      res.status(403).send('Forbidden');
+    }
     fs.writeFile(__base + 'public/uploads/mei/' + files[0], req.files[0].buffer, (err) => {
       if (err) {
         console.error(err);
@@ -84,6 +94,9 @@ router.route('/upload_file')
 // Delete file TODO: Optimize function with regex
 router.route('/delete/:filename')
   .get(function (req, res) {
+    if (!isUserInputValid(req.params.filename)) {
+      res.status(403).send('Forbidden');
+    }
     var meifile = req.params.filename;
     var pngfile = meifile.split('.')[0] + '.png';
     // delete file from all folders
@@ -103,6 +116,9 @@ router.route('/delete/:filename')
 // redirect to editor
 router.route('/edit/:filename')
   .get(function (req, res) {
+    if (!isUserInputValid(req.params.filename)) {
+      res.status(403).send('Forbidden');
+    }
     var mei = req.params.filename;
     var bgimg = mei.split('.', 2)[0] + '.png';
     var autosave = false;
@@ -129,6 +145,9 @@ router.route('/edit/:filename')
 // redirect to salzinnes editor
 router.route('/edit-iiif/:label/:rev')
   .get(function (req, res) {
+    if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
+      res.status(403).send('Forbidden');
+    }
     let label = req.params.label + '/' + req.params.rev;
     fs.readFile(__base + 'public/uploads/iiif/' + label + '/manifest.link', (err, data) => {
       if (err) {
