@@ -36,7 +36,7 @@ section.container
 
 section.container
   h3.subtitle
-  | Score Upload:
+  | Single Upload:
   form(action='/upload_file', enctype='multipart/form-data', method='post')
       | select an MEI file to upload:
       input(type='file', name='resource')
@@ -45,6 +45,13 @@ section.container
       input(type='file', accept='image/png', name='resource')
       br
       input(type='submit', value='Upload')
+
+section.container
+  h3.subtitle
+  | IIIF Upload: 
+  button
+    a(href='/add-iiif')
+      | Add IIIF File
 
 section.container
   p.has-text-danger #{err}
