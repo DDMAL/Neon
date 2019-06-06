@@ -1,7 +1,7 @@
 /** @module UnifiedEdit/EditControls */
 
-import * as Contents from './Contents.js';
-import * as EditContents from '../utils/EditContents';
+import * as Contents from '../SquareEdit/Contents.js';
+import * as EditContents from './EditContents';
 import * as Cursor from './Cursor.js';
 import Icons from '../img/icons.svg';
 import * as Notification from './Notification.js';

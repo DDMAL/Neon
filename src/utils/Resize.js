@@ -178,3 +178,5 @@ function Resize (elementId, neonView, dragHandler) {
   Resize.prototype.constructor = Resize;
   Resize.prototype.drawInitialRect = drawInitialRect;
 }
+
+export { Resize };

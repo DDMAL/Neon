@@ -1,5 +1,6 @@
 import * as Notification from '../utils/Notification.js';
 import { selectStaff } from '../utils/SelectTools.js';
+import { Resize } from '../utils/Resize.js';
 
 const $ = require('jquery');
 const d3 = require('d3');
@@ -89,4 +90,4 @@ function SplitHandler (neonView, selector) {
   SplitHandler.prototype.startSplit = startSplit;
 }
 
-export { Resize, SplitHandler };
+export { SplitHandler };
