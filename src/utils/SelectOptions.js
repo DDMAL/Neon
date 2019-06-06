@@ -116,6 +116,11 @@ export function triggerNcActions (nc) {
     });
   });
 
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
+  });
+
   initOptionsListeners();
 }
 
@@ -155,6 +160,12 @@ export function triggerNeumeActions () {
       neonView.updateForCurrentPage();
     });
   }
+
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
+  });
+
   initOptionsListeners();
   Grouping.initGroupingListeners();
 }
@@ -169,6 +180,12 @@ export function triggerSylActions () {
     "<div><p class='control'>" +
         "<button class='button' id='ungroupNeumes'>Ungroup</button></p></div>"
   );
+
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
+  });
+
   Grouping.initGroupingListeners();
 }
 
@@ -216,6 +233,12 @@ export function triggerClefActions (clef) {
       neonView.updateForCurrentPage();
     });
   });
+
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
+  });
+
   initOptionsListeners();
 }
 
@@ -249,6 +272,12 @@ export function triggerStaffActions () {
       }
     });
   });
+
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
+  });
+
 }
 
 /**
@@ -264,6 +293,11 @@ export function triggerSplitActions () {
     var split = new SplitHandler(neonView);
     split.startSplit();
     endOptionsSelection();
+  });
+
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
   });
 }
 

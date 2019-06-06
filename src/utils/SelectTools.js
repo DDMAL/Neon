@@ -152,6 +152,25 @@ export function getStaffBBox (staff) {
 }
 
 /**
+ * select a boundingbox element
+ * @param {SVGGElement} el - the bbox (sylTextRect) element in the DOM
+ * @param {DragHandler} dragHandler - the drag handler in use
+ */
+ export function selectBBox (el, dragHandler) {
+
+  //-------this method is preliminary and will need to be fixed later---------------------
+
+  let bbox = $(el);
+  if (!bbox.hasClass('sylTextRect-select')) {
+    unselect();
+    bbox.removeClass('sylTextRect');
+    bbox.addClass('sylTextRect-select');
+    updateHighlight();
+    dragHandler.dragInit();
+  }
+ } 
+
+/**
  * Select not neume elements.
  * @param {SVGGraphicsElement[]} notNeumes - An array of not neumes elements.
  */
@@ -179,25 +198,6 @@ export function selectStaff (el, dragHandler) {
     dragHandler.dragInit();
   }
 }
-
-/**
- * select a boundingbox element
- * @param {SVGGElement} el - the bbox (sylTextRect) element in the DOM
- * @param {DragHandler} dragHandler - the drag handler in use
- */
- export function selectBBox (el, dragHandler) {
-
-  //-------this method is preliminary and will need to be fixed later---------------------
-
-  let bbox = $(el);
-  if (!bbox.hasClass('sylTextRect-select')) {
-    unselect();
-    bbox.removeClass('sylTextRect');
-    bbox.addClass('sylTextRect-select');
-    updateHighlight();
-    dragHandler.dragInit();
-  }
- } 
 
 /**
  * Handle selecting an array of elements based on the selection type.
