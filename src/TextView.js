@@ -106,7 +106,6 @@ class TextView {
 					text.addClass('text');
 				}
       			$(span).on('mouseenter', () => {
-        			syllable.addClass('syl-select');
         			syllable.attr('fill', '#d00');
         			rect.removeClass('sylTextRect');  			
         			rect.addClass('sylTextRect-select');
@@ -114,7 +113,6 @@ class TextView {
         			//this.highlightBoundingBox(span);
         		});
         		$(span).on('mouseleave', () => {
-        			syllable.removeClass('syl-select');
         			syllable.attr('fill', null);
         			rect.removeClass('sylTextRect-select');
         			rect.addClass('sylTextRect');

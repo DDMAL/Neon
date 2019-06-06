@@ -27,6 +27,9 @@ export function unselect () {
   $('.syl-select').css('font-weight', '');
   $('.syl-select').removeClass('syl-select');
 
+  $('.sylTextRect-select').addClass('sylTextRect');
+  $('.sylTextRect-select').removeClass('sylTextRect-select');
+
   d3.select('#resizeRect').remove();
 
   if (!$('#selByStaff').hasClass('is-active')) {

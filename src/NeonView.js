@@ -14,7 +14,7 @@ class NeonView {
    * @param {object} params.View - Constructor for a View module
    * @param {object} params.Display - Constructor for DisplayPanel module
    * @param {object} params.Info - Constructor for InfoModule module
-   * @param {object} [params.Edit] - Constructor for EditMode module
+   * @param {object} [params.SquareEdit] - Constructor for SquareEdit module
    * @param {object} [params.TextView] - Constructor for TextView module
    * @param {object} [params.TextEdit] - Constructor for TextEdit module
    */
@@ -36,7 +36,7 @@ class NeonView {
     this.display = this.view.display;
     this.info = new params.Info(this);
 
-    if (params.Edit !== undefined) {
+    if (params.SquareEdit !== undefined) {
       // Set up display for edit button
       let parent = document.getElementById('dropdown_toggle');
       let editItem = document.createElement('a');
@@ -47,7 +47,7 @@ class NeonView {
       editButton.textContent = 'Edit MEI';
       editItem.appendChild(editButton);
       parent.appendChild(editItem);
-      this.editor = new params.Edit(this);
+      this.SquareEdit = new params.SquareEdit(this);
     }
     if (params.TextView !== undefined) {
       this.textView = new params.TextView(this);
