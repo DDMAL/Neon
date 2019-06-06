@@ -106,7 +106,6 @@ export const editControlsPanel =
     "<button class='button sel-by' id='selByNc'>Neume Component</button></p>" +
     "<p class='control'>" +
     "<button class='button sel-by' id='selByStaff'>Staff</button></p></div></a>" +
-    "<a class='panel-block'>" +
     "<div class='field is-grouped buttons'>" +
     "<p class='control'>" +
     "<a id='moreEdit' class='panel-block is-invisible'>" +
