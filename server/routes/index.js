@@ -1,6 +1,6 @@
 /* eslint spaced-comment: ["error", "always", { "exceptions": ["/"] }] */
 var express = require('express');
-var fs = require('fs');
+var fs = require('fs-extra');
 var multer = require('multer');
 const request = require('request');
 
@@ -105,7 +105,7 @@ router.route('/delete/:filename')
 // Delete IIIF files
 router.route('/delete/:label/:rev').get((req, res) => {
   let path = __base + 'public/uploads/iiif/' + req.params.label + '/' + req.params.rev;
-  fs.rmdir(path, (err) => {
+  fs.remove(path, (err) => {
     if (err) {
       console.error(err);
     }
