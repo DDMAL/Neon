@@ -21,8 +21,8 @@ export const navbarFinalize =
  * @type {string} 
  */
 export const undoRedoPanel = 
-    "<a class='panel-block'>" +
-    "<div class='field has-addons buttons' style='overflow-x: auto;'>" + 
+    "<div class='field has-addons buttons' style='overflow-x: auto;'>" +
+    "<a class='panel-block'>" + 
     "<p class='control'>" + 
     "<button class='button' id='undo'>Undo</button>" + 
-    "<button class='button' id='redo'>Redo</button></p></div></a>";
+    "<button class='button' id='redo'>Redo</button></p></a></div>";
