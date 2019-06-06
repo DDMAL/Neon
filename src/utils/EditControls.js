@@ -26,28 +26,6 @@ export function initEditModeControls (editMode) {
 }
 
 /**
- * Bind listeners to insert tabs.'
- * @param {InsertHandler} insertHandler - An InsertHandler to run the tasks.
- */
-export function bindInsertTabs (insertHandler) {
-  var insertTabs = $('.insertTab');
-  var tabIds = $.map(insertTabs, function (tab, i) {
-    return tab.id;
-  });
-
-  $.each(tabIds, function (i, tab) {
-    $('#' + tab).on('click', () => {
-      deactivate('.insertTab');
-      activate(tab, insertHandler);
-      Cursor.resetCursor();
-      $('#insert_data').empty();
-      $('#insert_data').append(Contents.insertTabHtml[tab]);
-      bindElements(insertHandler);
-    });
-  });
-}
-
-/**
  * Set listener on switching EditMode button to File dropdown in the navbar.
  * @param {string} filename - The name of the MEI file.
  * @param {NeonView} neonView

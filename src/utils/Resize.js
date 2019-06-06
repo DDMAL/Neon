@@ -2,6 +2,8 @@
  * current use cases: bounding boxes and staves
  */
 
+ import { getStaffBBox } from './SelectTools.js'
+
 const $ = require('jquery');
 const d3 = require('d3');
 
@@ -61,24 +63,12 @@ function Resize (elementId, neonView, dragHandler) {
     }
 
     //if it's a staff use the paths to get it's boundingbox
-    else {
-      let paths = Array.from(element.getElementsByTagName('path'));
-
-      paths.forEach(path => {
-        let box = path.getBBox();
-        if (ulx === undefined || ulx > box.x) {
-          ulx = box.x;
-        }
-        if (uly === undefined || uly > box.y) {
-          uly = box.y;
-        }
-        if (lrx === undefined || lrx < box.x + box.width) {
-          lrx = box.x + box.width;
-        }
-        if (lry === undefined || lry < box.y + box.height) {
-          lry = box.y + box.height;
-        }
-      });
+    if (element.classList.contains('staff')) {
+      bbox = getStaffBBox(element);
+      ulx = bbox.get('ulx');
+      uly = bbox.get('uly');
+      lrx = bbox.get('lrx');
+      lry = bbox.get('lry');
     }
 
     d3.select('#' + element.id).append('rect')
