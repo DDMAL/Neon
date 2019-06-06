@@ -1,6 +1,6 @@
 /** @module UnifiedEdit/SelectTools */
 
-import * as Color from '../utils/Color.js';
+import * as Color from './Color.js';
 import { updateHighlight } from '../DisplayPanel/DisplayControls.js';
 import * as Grouping from '../SquareEdit/Grouping.js';
 import { Resize } from '../SquareEdit/StaffTools.js';

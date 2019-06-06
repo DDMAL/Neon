@@ -1,8 +1,8 @@
-import * as Contents from './EditContents.js';
+import * as Contents from './Contents.js';
 import * as Cursor from '../utils/Cursor.js';
 import Icons from '../img/icons.svg';
 import * as Notification from '../utils/Notification.js';
-import { unselect } from './SelectTools.js';
+import { unselect } from '../utils/SelectTools.js';
 const $ = require('jquery');
 
 /**
