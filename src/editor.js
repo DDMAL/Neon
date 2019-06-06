@@ -10,7 +10,6 @@ const $ = require('jquery');
 
 if (manifest !== '') {
   $.get(manifest).then((data) => {
-    console.log(meiMap);
     let params = {
       mode: 'iiif',
       options: {

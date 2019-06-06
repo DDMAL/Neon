@@ -155,7 +155,6 @@ router.route('/edit-iiif/:label/:rev').get((req, res) => {
         res.status(500).render('error', { statusCode: '500 - Internal Server Error', message: 'Could not parse entry metadata' });
       }
       let map = new Map();
-      console.log(metadata.pages[0]);
       for (let page of metadata.pages) {
         let data;
         try {
@@ -166,7 +165,6 @@ router.route('/edit-iiif/:label/:rev').get((req, res) => {
         }
         map.set(page.index, data.toString());
       }
-      console.log(map);
       res.render('editor', { 'manifest': metadata.manifest, 'meiMap': encodeURIComponent(JSON.stringify([...map])) });
     }
   });
@@ -296,7 +294,6 @@ router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (re
 });
 
 router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
-  console.log(req.body);
   // Load metadata file
   let metadata;
   try {
@@ -308,7 +305,6 @@ router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
 
   // Update metadata
   metadata.pages = [];
-  console.log(req.body.select);
   for (let entry of req.body.select) {
     metadata.pages.push(JSON.parse(entry));
   }
