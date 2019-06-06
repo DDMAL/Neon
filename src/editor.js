@@ -21,7 +21,7 @@ if (manifest !== '') {
       View: DivaView,
       Display: DisplayPanel,
       Info: InfoModule,
-      Edit: DivaEdit,
+      SquareEdit: DivaEdit,
       TextView: TextView
     };
     var view = new NeonView(params);
@@ -41,7 +41,7 @@ if (manifest !== '') {
       View: SingleView,
       Display: DisplayPanel,
       Info: InfoModule,
-      Edit: SingleEditMode,
+      SquareEdit: SingleEditMode,
       TextView: TextView
     };
 
