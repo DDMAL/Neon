@@ -196,8 +196,8 @@ export const clefActionContents =
     "<div class='dropdown-menu' id='dropdown-menu' role='menu'>" +
     "<div class='dropdown-content'>" +
     "<a id='CClef' class='dropdown-item'>C Clef</a>" +
-    "<a id='FClef' class='dropdown-item'>F Clef</a></div>" + 
-    "<button class='button' id='delete'>Delete</botton></div></div>";
+    "<a id='FClef' class='dropdown-item'>F Clef</a></div></div>" + 
+    "<button class='button' id='delete'>Delete</botton></div>";
 
 /**
  * HTML for grouping selection menu.
