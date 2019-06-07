@@ -1,8 +1,8 @@
-# Contributing to Neon2
+# Contributing to Neon
 
 ## Bugs
 
-For reporting bugs to Neon2, please follow the process outlined on the
+For reporting bugs to Neon, please follow the process outlined on the
 [issues wiki page](https://github.com/DDMAL/Neon2/wiki/Issues).
 
 ## Branches and Naming
@@ -11,7 +11,7 @@ When developing a feature or fixing a bug or doing anything more substantial tha
 create a *feature* or *fix* branch addressing it and create a pull request rather than committing directly to
 `develop` or `master`.
 
-Feature branches introduce new features to Neon2. Fix branches fix something not working. If an issue exists
+Feature branches introduce new features to Neon. Fix branches fix something not working. If an issue exists
 for the feature or branch, it is recommended to name the branch after the branch type followed by a forward slash
 and the issue number. (e.g. if a branch is to introduce a feature described in issue number 20, the branch should
 be named `feature/20`.)

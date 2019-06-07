@@ -30,18 +30,28 @@ section.container
     each entry in iiif
       li
         a(href='/edit-iiif/' + entry[0] + '/' + entry[1])= entry[0] + ' (' + entry[1] + ')'
+        a(href='/delete/' + entry[0] + '/' + entry[1])
+          span.icon
+            i.fas.fa-times
 
 section.container
   h3.subtitle
-  | Score Upload:
+  | Single Upload:
   form(action='/upload_file', enctype='multipart/form-data', method='post')
       | select an MEI file to upload:
       input(type='file', name='resource')
       br
       | select a PNG file to upload:
-      input(type='file', name='resource')
+      input(type='file', accept='image/png', name='resource')
       br
       input(type='submit', value='Upload')
+
+section.container
+  h3.subtitle
+  | IIIF Upload: 
+  button
+    a(href='/add-iiif')
+      | Add IIIF File
 
 section.container
   p.has-text-danger #{err}
