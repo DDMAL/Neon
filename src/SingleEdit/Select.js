@@ -114,7 +114,7 @@ function clickHandler (evt) {
       this.dragHandler.dragInit();
     }
     // Trigger mousedown event on the staff
-    staff.dispatchEvent(new MouseEvent('mousedown', {
+    staff.dispatchEvent(new window.MouseEvent('mousedown', {
       screenX: evt.screenX,
       screenY: evt.screenY,
       clientX: evt.clientX,
