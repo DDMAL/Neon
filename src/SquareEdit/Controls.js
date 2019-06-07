@@ -53,26 +53,6 @@ export function initInsertEditControls (neonView) {
   });
 }
 
-export function removeHandler () {
-  let toRemove = [];
-  var selected = Array.from(document.getElementsByClassName('selected'));
-  selected.forEach(elem => {
-    toRemove.push(
-      {
-        'action': 'remove',
-        'param': {
-          'elementId': elem.id
-        }
-      }
-    );
-  });
-  let chainAction = {
-    'action': 'chain',
-    'param': toRemove
-  };
-  neonView.edit(chainAction, neonView.view.getCurrentPage()).then(() => { neonView.updateForCurrentPage(); });
-}
-
 /**
  * Activate a certain insert action.
  * @param {string} id - The ID of the insert action tab.

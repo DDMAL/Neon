@@ -64,11 +64,11 @@ function Resize (elementId, neonView, dragHandler) {
 
     //if it's a staff use the paths to get it's boundingbox
     if (element.classList.contains('staff')) {
-      bbox = getStaffBBox(element);
-      ulx = bbox.get('ulx');
-      uly = bbox.get('uly');
-      lrx = bbox.get('lrx');
-      lry = bbox.get('lry');
+      var bbox = getStaffBBox(element);
+      ulx = bbox.ulx;
+      uly = bbox.uly;
+      lrx = bbox.lrx;
+      lry = bbox.lry;
     }
 
     d3.select('#' + element.id).append('rect')

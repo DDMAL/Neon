@@ -3,7 +3,6 @@ import * as Contents from './Contents.js';
 import * as Grouping from './Grouping.js';
 import * as Notification from '../utils/Notification.js';
 import { SplitHandler } from './StaffTools.js';
-import { removeHandler } from './Controls.js'
 const $ = require('jquery');
 
 /**
@@ -51,6 +50,30 @@ export function unsetVirgaAction (id) {
       'attrValue': ''
     }
   };
+}
+
+/**
+ * function to handle removing elements
+ * @param { NeonView } neonView - a neonView object
+ */
+export function removeHandler () {
+  let toRemove = [];
+  var selected = Array.from(document.getElementsByClassName('selected'));
+  selected.forEach(elem => {
+    toRemove.push(
+      {
+        'action': 'remove',
+        'param': {
+          'elementId': elem.id
+        }
+      }
+    );
+  });
+  let chainAction = {
+    'action': 'chain',
+    'param': toRemove
+  };
+  neonView.edit(chainAction, neonView.view.getCurrentPage()).then(() => { neonView.updateForCurrentPage(); });
 }
 
 /**
@@ -116,6 +139,7 @@ export function triggerNcActions (nc) {
       neonView.updateForCurrentPage();
     });
   });
+  console.log(neonView.view.constructor.name);
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', (evt) => {
     if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
@@ -160,7 +184,6 @@ export function triggerNeumeActions () {
       neonView.updateForCurrentPage();
     });
   }
-
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', (evt) => {
     if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
