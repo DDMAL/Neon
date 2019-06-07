@@ -181,6 +181,10 @@ export function triggerSylActions () {
     "<div><p class='control'>" +
         "<button class='button' id='ungroupNeumes'>Ungroup</button></p></div>"
   );
+  $('#moreEdit').append(
+    "<div><p class='control'>" + 
+        "<button class='button' id='delete'>Delete</button></p></div>"
+  );
 
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', (evt) => {
