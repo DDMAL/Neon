@@ -1,7 +1,8 @@
 /* eslint spaced-comment: ["error", "always", { "exceptions": ["/"] }] */
 var express = require('express');
-var fs = require('fs');
+var fs = require('fs-extra');
 var multer = require('multer');
+const request = require('request');
 
 var router = express.Router();
 const __base = '';
@@ -113,6 +114,20 @@ router.route('/delete/:filename')
     res.redirect('/');
   });
 
+// Delete IIIF files
+router.route('/delete/:label/:rev').get((req, res) => {
+  if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
+    res.status(403).send('Forbidden');
+  }
+  let path = __base + 'public/uploads/iiif/' + req.params.label + '/' + req.params.rev;
+  fs.remove(path, (err) => {
+    if (err) {
+      console.error(err);
+    }
+    res.redirect('/');
+  });
+});
+
 // redirect to editor
 router.route('/edit/:filename')
   .get(function (req, res) {
@@ -126,7 +141,7 @@ router.route('/edit/:filename')
     fs.stat(__base + 'public/uploads/mei/' + mei, (err, stats) => {
       if (err) {
         console.error("File of name '" + mei + "' does not exist.");
-        res.render('404', { 'meifile': mei });
+        res.status(404).render('error', { statusCode: '404 - File Not Found', message: 'The file ' + mei + ' could not be found on the server!' });
         return;
       }
       // Check if a newer autosave exists
@@ -143,34 +158,194 @@ router.route('/edit/:filename')
   });
 
 // redirect to salzinnes editor
-router.route('/edit-iiif/:label/:rev')
-  .get(function (req, res) {
-    if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
-      res.status(403).send('Forbidden');
+router.route('/edit-iiif/:label/:rev').get((req, res) => {
+  if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
+    res.status(403).send('Forbidden');
+  }
+  let path = req.params.label + '/' + req.params.rev;
+  fs.readFile(__base + 'public/uploads/iiif/' + path + '/metadata.json', (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).render('error', { statusCode: '500 - Internal Server Error', message: 'Could not find the manifest for IIIF entry ' + path });
+    } else {
+      let metadata;
+      try {
+        metadata = JSON.parse(data.toString());
+      } catch (e) {
+        console.error(e);
+        res.status(500).render('error', { statusCode: '500 - Internal Server Error', message: 'Could not parse entry metadata' });
+      }
+      let map = new Map();
+      for (let page of metadata.pages) {
+        let data;
+        try {
+          data = fs.readFileSync(__base + 'public/uploads/iiif/' + path + '/' + page.file);
+        } catch (e) {
+          console.error(e);
+          continue;
+        }
+        map.set(page.index, data.toString());
+      }
+      res.render('editor', { 'manifest': metadata.manifest, 'meiMap': encodeURIComponent(JSON.stringify([...map])) });
     }
-    let label = req.params.label + '/' + req.params.rev;
-    fs.readFile(__base + 'public/uploads/iiif/' + label + '/manifest.link', (err, data) => {
-      if (err) {
-        console.error('Could not find manifest for IIIF entry with label ' + label);
-        console.error(err);
+  });
+});
+
+router.route('/add-iiif').get(function (req, res) {
+  res.render('add-iiif', {});
+}).post(function (req, res) {
+  if (req.body.manifest === undefined || req.body.revision === undefined) {
+    res.render('add-iiif', { messages: 'All fields are required!' });
+  } else {
+    request(req.body.manifest, (error, response, body) => {
+      if (error) {
+        res.render('add-iiif', { messages: error });
+      } else if (!response.statusCode === 200) {
+        res.render('add-iiif', { messages: 'Received status code ' + response.statusCode });
       } else {
-        var manifest = data.toString().trim();
-        let map = new Map();
-        let regex = /page-(\d+)\.mei/;
-        fs.readdir(__base + 'public/uploads/iiif/' + label, (err, files) => {
+        let manifest;
+        try {
+          manifest = JSON.parse(body);
+        } catch (e) {
+          res.render('add-iiif', { messages: 'URL was not to a valid JSON object.' });
+        }
+        if (manifest['@context'] !== 'http://iiif.io/api/presentation/2/context.json' ||
+            manifest['@type'] !== 'sc:Manifest') {
+          res.render('add-iiif', { messages: 'URL was not to a IIIF Presentation manifest.' });
+        }
+
+        // Check if a revision for this already exists.
+        let label = manifest.label;
+        if (label === undefined) {
+          res.status(400).render('error', {
+            statusCode: '400 - Bad Request',
+            message: 'The provided manifest does not have a label and cannot be processed.'
+          });
+        }
+        if (!isUserInputValid(label) || !isUserInputValid(req.body.revision)) {
+          res.status(403).send('Forbidden');
+        }
+        let directoryExists = true;
+        try {
+          fs.accessSync(__base + 'public/uploads/iiif/' + label + '/' + req.body.revision);
+        } catch (e) {
+          directoryExists = false;
+        }
+        if (directoryExists) {
+          res.render('add-iiif', { messages: 'The revision specified already exists!' });
+          return;
+        }
+
+        // Create appropriate directory
+        fs.mkdir(__base + 'public/uploads/iiif/' + label + '/' + req.body.revision, (err) => {
           if (err) {
             console.error(err);
-          } else {
-            files.filter(file => { return regex.test(file); }).forEach(mei => {
-              let num = parseInt(regex.exec(mei)[1]);
-              let contents = fs.readFileSync(__base + 'public/uploads/iiif/' + label + '/' + mei).toString();
-              map.set(num, contents);
-            });
-            res.render('editor', { 'manifest': manifest, 'meiMap': encodeURIComponent(JSON.stringify([...map])) });
+            res.status(500).send(err.message);
           }
+          fs.writeFile(__base + 'public/uploads/iiif/' + label + '/' + req.body.revision + '/metadata.json',
+            JSON.stringify({ manifest: req.body.manifest, pages: [] }),
+            (err) => {
+              if (err) {
+                console.error(err);
+                res.status(500).send(err.message);
+              }
+              res.render('add-mei-iiif', { label: label, rev: req.body.revision });
+            });
         });
       }
     });
+  }
+});
+
+router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (req, res) {
+  if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
+    res.status(403).send('Forbidden');
+  }
+  // Get metadata
+  let metadata;
+  try {
+    metadata = JSON.parse(fs.readFileSync(__base + 'public/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/metadata.json'));
+  } catch (e) {
+    console.error(e);
+    res.status(500).send(e);
+  }
+
+  // Get manifest
+  request(metadata.manifest, (error, response, body) => {
+    if (error) {
+      res.send(error);
+    } else if (!response.statusCode === 200) {
+      res.status(response.statusCode).send(response.statusMessage);
+    } else {
+      let manifest;
+      try {
+        manifest = JSON.parse(body);
+      } catch (e) {
+        res.status(500).send('Could not parse the JSON object');
+      }
+      let labels = [];
+      for (let sequence of manifest['sequences']) {
+        for (let canvas of sequence['canvases']) {
+          labels.push(canvas['label']);
+        }
+      }
+
+      // Check file names for conflicts
+      for (let i = 0; i < req.files.length; i++) {
+        for (let j = i + 1; j < req.files.length; j++) {
+          if (req.files[i].originalname === req.files[j].originalname) {
+            res.render('add-mei-iiif', { label: req.params.label, rev: req.params.rev, message: 'Two files with the name ' + req.files[i].originalname + ' were selected.' });
+          }
+        }
+      }
+
+      // Store files and create array of file names
+      let filenames = [];
+      for (let file of req.files) {
+        fs.writeFileSync(__base + 'public/uploads/iiif/' + req.params.label + '/' +
+          req.params.rev + '/' + file.originalname, file.buffer);
+        filenames.push(file.originalname);
+      }
+
+      // res.status(501).render('error', { statusCode: '501 - Not Implemented', message: 'Adding a IIIF manifest and MEI files is not fully supported yet. Sorry!' });
+      res.render('associate-mei-iiif',
+        {
+          label: req.params.label,
+          rev: req.params.rev,
+          files: filenames,
+          labels: labels
+        }
+      );
+    }
   });
+});
+
+router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
+  if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
+    res.status(403).send('Forbidden');
+  }
+  // Load metadata file
+  let metadata;
+  try {
+    metadata = JSON.parse(fs.readFileSync(__base + 'public/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/metadata.json'));
+  } catch (e) {
+    console.error(e);
+    res.status(500).send(e);
+  }
+
+  // Update metadata
+  metadata.pages = [];
+  for (let entry of req.body.select) {
+    metadata.pages.push(JSON.parse(entry));
+  }
+
+  fs.writeFile(__base + 'public/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/metadata.json', JSON.stringify(metadata), (err) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+    res.redirect('/');
+  });
+});
 
 module.exports = router;
