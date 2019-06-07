@@ -42,10 +42,10 @@ afterAll(() => {
   }
 });
 
-describe('Neon3 Basics', () => {
+describe('Neon Basics', () => {
   test('Render Page', async () => {
     const title = await browser.getTitle();
-    expect(title).toBe('Neon3');
+    expect(title).toBe('Neon');
   });
 });
 
