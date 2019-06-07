@@ -51,26 +51,26 @@ export function initInsertEditControls (neonView) {
       $('#toggleEdit').attr('xlink:href', Icons + '#dropdown-side');
     }
   });
+}
 
-  function removeHandler () {
-    let toRemove = [];
-    var selected = Array.from(document.getElementsByClassName('selected'));
-    selected.forEach(elem => {
-      toRemove.push(
-        {
-          'action': 'remove',
-          'param': {
-            'elementId': elem.id
-          }
+export function removeHandler () {
+  let toRemove = [];
+  var selected = Array.from(document.getElementsByClassName('selected'));
+  selected.forEach(elem => {
+    toRemove.push(
+      {
+        'action': 'remove',
+        'param': {
+          'elementId': elem.id
         }
-      );
-    });
-    let chainAction = {
-      'action': 'chain',
-      'param': toRemove
-    };
-    neonView.edit(chainAction, neonView.view.getCurrentPage()).then(() => { neonView.updateForCurrentPage(); });
-  }
+      }
+    );
+  });
+  let chainAction = {
+    'action': 'chain',
+    'param': toRemove
+  };
+  neonView.edit(chainAction, neonView.view.getCurrentPage()).then(() => { neonView.updateForCurrentPage(); });
 }
 
 /**

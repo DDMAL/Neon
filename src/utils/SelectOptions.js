@@ -1,9 +1,9 @@
 /** @module SingleEdit/SelectOptions */
-import * as Contents from '../SquareEdit/Contents.js';
-import * as Grouping from '../SquareEdit/Grouping.js';
-import * as Notification from './Notification.js';
-import { SplitHandler } from '../SquareEdit/StaffTools.js';
-import { removeHandler } from '../SquareEdit/Controls.js'
+import * as Contents from './Contents.js';
+import * as Grouping from './Grouping.js';
+import * as Notification from '../utils/Notification.js';
+import { SplitHandler } from './StaffTools.js';
+import { removeHandler } from './Controls.js'
 const $ = require('jquery');
 
 /**

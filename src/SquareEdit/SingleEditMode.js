@@ -3,7 +3,7 @@ import { initEditModeControls, initNavbar, initUndoRedoPanel } from '../utils/Ed
 import DragHandler from '../utils/DragHandler.js';
 import * as Select from '../utils/Select.js';
 import InsertHandler from './InsertHandler.js';
-import * as SelectOptions from '../utils/SelectOptions.js';
+import * as SelectOptions from './SelectOptions.js';
 
 /**
  * An Edit Module for a single page of a manuscript.

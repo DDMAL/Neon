@@ -4,7 +4,7 @@ import * as Color from './Color.js';
 import { updateHighlight } from '../DisplayPanel/DisplayControls.js';
 import * as Grouping from '../SquareEdit/Grouping.js';
 import { Resize } from './Resize.js';
-import * as SelectOptions from './SelectOptions.js';
+import * as SelectOptions from '../utils/SelectOptions.js';
 
 const d3 = require('d3');
 const $ = require('jquery');
