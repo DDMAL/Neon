@@ -132,7 +132,7 @@ class SingleView {
             d3.select('#svg_group').on('.drag', null);
             Cursor.updateCursorTo('');
             if (this.neonView.getUserMode !== 'viewer') {
-              this.neonView.editor.setSelectListeners();
+              this.neonView.SquareEdit.setSelectListeners();
             }
             if (this.neonView.getUserMode() === 'insert') {
               Cursor.updateCursor();

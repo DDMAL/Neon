@@ -127,8 +127,9 @@ export const ncActionContents =
         "<div class='dropdown-content'>" +
         "<a id='Punctum' class='dropdown-item'>Punctum</a>" +
         "<a id='Virga' class='dropdown-item'>Virga</a>" +
-        "<a id='Inclinatum' class='dropdown-item'>Inclinatum</a></div></div>" + 
-        "<button class='button' id='Delete'>Delete</botton></div>";
+        "<a id='Inclinatum' class='dropdown-item'>Inclinatum</a></div></div></div>" + 
+        "<p class='control'>" + 
+        "<button class='button' id='delete'>Delete</botton></p></div>";
 
 /**
  * Contents of extra neume action menu.
