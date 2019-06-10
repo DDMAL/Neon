@@ -14,7 +14,7 @@ addons:
 before_install:
   - >
     CACHE_COMMIT=$(cat $HOME/verovio_cache/commit.txt 2> /dev/null);
-    pushd verovio && REPO_COMMIT=$(git describe --abrev=7 --always) && popd;
+    pushd verovio && REPO_COMMIT=$(git describe --abbrev=7 --always) && popd;
     if [ "$CACHE_COMMIT" != "$REPO_COMMIT" ]; then
       wget https://github.com/emscripten-core/emsdk/archive/master.zip
       unzip master.zip
