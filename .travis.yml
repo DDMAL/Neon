@@ -6,13 +6,15 @@ env:
 if: (branch = master OR branch = develop)
 addons:
   firefox: latest
+services:
+    - docker
 before_install:
   - brew install geckodriver
-  - brew install emscripten
+  - docker run -dit --name emscripten -v $(pwd):/src tzreci/emscripten:sdk-incoming-64bit bash
   - git submodule init
   - git submodule update
-  - ./build-verovio
 install:
+  - docker exec -it emscripten ./build-verovio
   - yarn install
 script:
   - yarn build
