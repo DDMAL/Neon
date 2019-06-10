@@ -7,7 +7,7 @@ const request = require('request');
 var router = express.Router();
 const __base = '';
 
-const allowedPattern = /^[-\.,\d\w ]+$/;
+const allowedPattern = /^[-_\.,\d\w ]+$/;
 const consequtivePeriods = /\.{2,}/;
 
 function isUserInputValid (input) {
