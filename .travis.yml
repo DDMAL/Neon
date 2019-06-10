@@ -13,9 +13,8 @@ before_install:
   - git submodule update
   - wget https://github.com/emscripten-core/emsdk/archive/master.zip
   - unzip master.zip
-  - pushd emsdk-master && ./emsdk install latest && ./emsdk activate latest && source ./emsdk_env.sh && popd
+  - (pushd emsdk-master && ./emsdk install latest && ./emsdk activate latest && source ./emsdk_env.sh && popd && ./build-verovio)
 install:
-  - ./build-verovio
   - yarn install
 script:
   - yarn build
