@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utils/Notification.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utils/Notification.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module Notification */
+
+const uuid = require('uuid/v4');
+const $ = require('jquery');
+
+/** @type {Array.&lt;module:Notification~Notification>} */
+var notifications = new Array(0);
+/** @type {module:Notification~Notification} */
+var currentModeMessage = null;
+var notifying = false;
+
+/**
+ * Number of notifications to display at a time.
+ * @type {number}
+ */
+const NUMBER_TO_DISPLAY = 3;
+
+/**
+ * Add a notification to the queue.
+ * @param {string} notification
+ */
+export function queueNotification (notification) {
+  let notif = new Notification(notification);
+  notifications.push(notif);
+  if (!notifying || $('#notification-content').children('.neon-notification').length &lt; NUMBER_TO_DISPLAY) {
+    startNotification();
+  }
+}
+
+/**
+ * Start displaying notifications. Called automatically.
+ */
+function startNotification () {
+  if (notifications.length > 0) {
+    notifying = true;
+    let currentNotification = notifications.pop();
+    displayNotification(currentNotification);
+    currentNotification.setTimeoutId(window.setTimeout(clearOrShowNextNotification, 5000, currentNotification.getId()));
+    $('#' + currentNotification.getId()).on('click', () => {
+      window.clearTimeout(currentNotification.timeoutID);
+      clearOrShowNextNotification(currentNotification.getId());
+    });
+  }
+}
+
+/**
+ * Display a notification.
+ * @param {module:Notification~Notification} notification
+ */
+function displayNotification (notification) {
+  if (notification.isModeMessage) {
+    if (currentModeMessage === null) {
+      currentModeMessage = notification;
+    } else {
+      window.clearTimeout(currentModeMessage.timeoutID);
+      notifications.push(notification);
+      clearOrShowNextNotification(currentModeMessage.getId());
+      return;
+    }
+  }
+  $('#notification-content').append("&lt;div class='neon-notification' id='" + notification.getId() + "'>" + notification.message + '&lt;/div> ');
+  $('#notification-content').css('display', '');
+  notification.display();
+}
+
+/**
+ * Clear the notifications if no more exist or display another from the queue.
+ * @param {string} currentId - The ID of the notification to be cleared.
+ */
+function clearOrShowNextNotification (currentId) {
+  // clear notification currently displayed
+  $('#' + currentId).off('click');
+  $('.neon-notification').remove('#' + currentId);
+  if (currentModeMessage !== null &amp;&amp; currentModeMessage.getId() === currentId) {
+    currentModeMessage = null;
+  }
+  if (notifications.length > 0) {
+    startNotification();
+  } else if ($('.neon-notification').length === 0) {
+    $('#notification-content').css('display', 'none');
+    notifying = false;
+  }
+}
+
+/**
+ * A class to manage Neon notifications.
+ */
+class Notification {
+  /**
+     * Create a new notification
+     * @param {string} message
+     */
+  constructor (message) {
+    this.message = message;
+    this.displayed = false;
+    this.id = uuid();
+    this.isModeMessage = message.search('Mode') !== -1;
+    this.timeoutID = -1;
+  }
+
+  setTimeoutId (id) {
+    this.timeoutID = Math.max(id, -1);
+  }
+
+  display () {
+    this.displayed = true;
+  }
+
+  /**
+     * Get the UUID for this notification
+     * @returns {string}
+     */
+  getId () {
+    return this.id;
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_DisplayControls.html">SingleView/DisplayControls</a></li><li><a href="module-SingleView_DisplayPanel.html">SingleView/DisplayPanel</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.1</a> on Tue May 14 2019 10:56:12 GMT-0400 (GMT-04:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

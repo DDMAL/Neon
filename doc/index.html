@@ -43,35 +43,52 @@
 
 
     <section>
-        <article><h1>Neon3</h1><p><a href="https://travis-ci.org/DDMAL/Neon2"><img src="https://travis-ci.org/DDMAL/Neon2.svg?branch=develop" alt="Build_Status"></a>
+        <article><h1>Neon3</h1>
+<p><a href="https://travis-ci.org/DDMAL/Neon2"><img src="https://travis-ci.org/DDMAL/Neon2.svg?branch=master" alt="Build_Status"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
 <a href="https://github.com/Flet/semistandard"><img src="https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square" alt="js-semistandard-style"></a></p>
 <p><strong>N</strong>eume <strong>E</strong>ditor <strong>ON</strong>line.</p>
 <p>Neon3 is a browser-based music notation editor written in JavaScript using the Verovio music engraving library. The editor can be used to manipulate digitally encoded early musical scores in square-note notation.</p>
 <p>Neon2 is a re-write of <a href="https://github.com/DDMAL/Neon.js">Neon.JS</a> using a modified version of <a href="https://github.com/DDMAL/verovio">Verovio</a> to render MEI-Neume files according to the MEI 4.0 specifications.</p>
-<h2>Requirements</h2><ul>
-<li><a href="https://yarnpkg.com/en/docs/install">yarn</a>:<ul>
+<h2>Requirements</h2>
+<ul>
+<li><a href="https://yarnpkg.com/en/docs/install">yarn</a>:
+<ul>
 <li><code>brew install yarn</code> on Mac</li>
 </ul>
 </li>
 </ul>
-<h2>Setup</h2><ol>
-<li><p>Install the dependencies using yarn:</p>
-<pre class="prettyprint source"><code>yarn install</code></pre></li>
-<li><p>Build webpack:</p>
-<pre class="prettyprint source"><code>yarn build</code></pre></li>
-<li><p>Start the server:</p>
-<pre class="prettyprint source"><code>yarn start</code></pre></li>
-<li><p>Access the page at: <a href="http://localhost:8080">http://localhost:8080</a>.</p>
-</li>
+<h2>Setup</h2>
+<ol>
+<li>Install the dependencies using yarn:</li>
 </ol>
-<h2>Instructions</h2><p>Neon.js has two main modes: viewer and editor. To learn how to use both, <a href="https://github.com/DDMAL/Neon2/wiki/Instructions">read the instructions on our wiki.</a></p>
-<h2>Test</h2><p>Follow the instructions from above first. The tests for Neon2 use <a href="https://docs.seleniumhq.org/">Selenium</a> and so require a web browser (<a href="https://mozilla.org/firefox">Firefox</a>) and its driver (<a href="https://github.com/mozilla/geckodriver">geckodriver</a>).
+<pre class="prettyprint source"><code>yarn install
+</code></pre>
+<ol start="2">
+<li>Build webpack:</li>
+</ol>
+<pre class="prettyprint source"><code>yarn build
+</code></pre>
+<ol start="3">
+<li>Start the server:</li>
+</ol>
+<pre class="prettyprint source"><code>yarn start
+</code></pre>
+<ol start="4">
+<li>Access the page at: <a href="http:%5C/%5C/localhost:8080">http://localhost:8080</a>.</li>
+</ol>
+<h2>Instructions</h2>
+<p>Neon.js has two main modes: viewer and editor. To learn how to use both, <a href="https://github.com/DDMAL/Neon2/wiki/Instructions">read the instructions on our wiki.</a></p>
+<h2>Test</h2>
+<p>Follow the instructions from above first. The tests for Neon2 use <a href="https://docs.seleniumhq.org/">Selenium</a> and so require a web browser (<a href="https://mozilla.org/firefox">Firefox</a>) and its driver (<a href="https://github.com/mozilla/geckodriver">geckodriver</a>).
 On Mac install these with Homebrew:</p>
 <pre class="prettyprint source"><code>brew cask install firefox
-brew install geckodriver</code></pre><p>Then you can run the tests locally using <code>yarn test</code>. We use <a href="https://facebook.github.io/jest/">jest</a> to script our tests.</p>
+brew install geckodriver
+</code></pre>
+<p>Then you can run the tests locally using <code>yarn test</code>. We use <a href="https://facebook.github.io/jest/">jest</a> to script our tests.</p>
 <p><em>These tests require the server to be running on <code>localhost:8080</code></em></p>
-<h2>Verovio</h2><p>Verovio is present as an npm package under <code>src/verovio-dev</code> with the name <code>verovio-dev</code>. Its contents come from the <code>emscripten/npm-dev</code> folder in a Verovio project folder.</p></article>
+<h2>Verovio</h2>
+<p>Verovio is present as an npm package under <code>src/verovio-dev</code> with the name <code>verovio-dev</code>. Its contents come from the <code>emscripten/npm-dev</code> folder in a Verovio project folder.</p></article>
     </section>
 
 
@@ -82,13 +99,13 @@ brew install geckodriver</code></pre><p>Then you can run the tests locally using
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Color.html">Color</a></li><li><a href="module-Compatibility.html">Compatibility</a></li><li><a href="module-Contents.html">Contents</a></li><li><a href="module-Controls.html">Controls</a></li><li><a href="module-Cursor.html">Cursor</a></li><li><a href="module-Grouping.html">Grouping</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-ResizeStaff.html">ResizeStaff</a></li><li><a href="module-Select.html">Select</a></li><li><a href="module-SelectOptions.html">SelectOptions</a></li><li><a href="module-Text.html">Text</a></li><li><a href="module-Warnings.html">Warnings</a></li><li><a href="module-Zoom.html">Zoom</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="EditMode.html">EditMode</a></li><li><a href="InfoBox.html">InfoBox</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-ResizeStaff-Resize.html">Resize</a></li><li><a href="module-Select.ClickSelect.html">ClickSelect</a></li><li><a href="module-Select.DragSelect.html">DragSelect</a></li><li><a href="module-Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_DisplayControls.html">SingleView/DisplayControls</a></li><li><a href="module-SingleView_DisplayPanel.html">SingleView/DisplayPanel</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Apr 25 2019 17:27:40 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.1</a> on Tue May 14 2019 10:56:12 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>
