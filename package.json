@@ -32,7 +32,7 @@
     },
     "scripts": {
         "start": "nodemon server.js",
-        "build": "./setup-verovio && webpack --config webpack.config.js",
+        "build": "webpack --config webpack.config.js",
         "test": "jest --silent",
         "doc": "jsdoc -d ./doc/ ./src/ ./src/SingleEdit/ ./src/SingleView/ ./src/utils/ -R ./README.md",
         "pages": "./setup-verovio && webpack --config webpack.pages-config.js && cp public/verovio-toolkit.js dist/verovio-toolkit.js"
@@ -54,8 +54,7 @@
         "multer": "^1.3.0",
         "nodemon": "^1.17.5",
         "pug": "^2.0.3",
-        "request": "^2.88.0",
-        "verovio-dev": "file:src/verovio-dev"
+        "request": "^2.88.0"
     },
     "devDependencies": {
         "babel-preset-env": "^1.7.0",
@@ -74,7 +73,7 @@
         "semistandard": "^13.0.1",
         "style-loader": "^0.21.0",
         "uuid": "^3.3.2",
-        "verovio-dev": "file:src/verovio-dev",
+        "verovio-dev": "file:verovio/emscripten/npm-dev",
         "webpack": "^4.12.0",
         "webpack-command": "^0.2.1",
         "worker-loader": "^2.0.0"

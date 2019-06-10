@@ -8,6 +8,10 @@ addons:
   firefox: latest
 before_install:
   - brew install geckodriver
+  - brew install emscripten
+  - git submodule init
+  - git submodule update
+  - ./build-verovio
 install:
   - yarn install
 script:
