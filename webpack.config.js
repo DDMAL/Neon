@@ -3,13 +3,15 @@ const path = require('path');
 module.exports = {
   mode: 'production',
   entry: {
-    editor: './src/editor.js',
+    Neon: './src/Neon.js',
     pretty: './src/pretty.js'
   },
   output: {
-    path: path.resolve(__dirname, 'public'),
-    publicPath: '/',
-    filename: '[name].js'
+    path: path.resolve(__dirname, 'public', 'Neon'),
+    filename: '[name].js',
+    publicPath: '/Neon/',
+    library: 'Neon',
+    libraryTarget: 'var'
   },
   node: {
     fs: 'empty'

@@ -1,11 +1,12 @@
 html
   head
     title Neon
-    script(src='/pretty.js')
+    script(src='/Neon/pretty.js')
+    script(src='/diva-v6.0.1/diva.js')
     script(src='/verovio-toolkit.js')
     script(src='//code.jquery.com/jquery-3.4.1.min.js' integrity='sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=' crossorigin='anonymous')
     script(src='//cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.min.js' integrity='sha256-0OcjjB7oKWCwru7gzilCYvXgTE9augkyvMI0WFC1ODg=' crossorigin='anonymous')
-    script(src='/diva-v6.0.1/diva.js')
+    script(src='/Neon/Neon.js')
     link(rel='stylesheet' href='/diva-v6.0.1/diva.css')
   body
     .overlay#loading
@@ -59,4 +60,44 @@ html
         function getHeight() {
           alert(window.innerHeight);
         }
-      script(src='/editor.js')
+        
+        if (manifest !== '') {
+          $.get(manifest).then((data) => {
+            let params = {
+              mode: 'iiif',
+              options: {
+                manifest: manifest,
+                meiMap: meiMap,
+                name: data.label
+              },
+              View: Neon.DivaView,
+              Display: Neon.DisplayPanel,
+              Info: Neon.InfoModule,
+              // Edit: DivaEditMode
+              TextView: Neon.TextView
+            };
+            var view = new Neon.NeonView(params);
+            view.start();
+          });
+        } else {
+          $.get(meiFile, (data) => {
+            let map = new Map();
+            map.set(0, data);
+            let params = {
+              mode: 'single',
+              options: {
+                image: bgImg,
+                meiMap: map,
+                name: 'test'
+              },
+              View: Neon.SingleView,
+              Display: Neon.DisplayPanel,
+              Info: Neon.InfoModule,
+              Edit: Neon.SingleEditMode,
+              TextView: Neon.TextView
+            };
+
+            var view = new Neon.NeonView(params);
+            view.start();
+          });
+        }
