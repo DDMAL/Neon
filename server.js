@@ -16,7 +16,6 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
 // Route import & setup
 //=====================
 app.use('/', routes);
-app.use((req, res) => { res.status(404).send(404); });
 
 //=====================
 // Templating Engine
