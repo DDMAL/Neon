@@ -3,9 +3,14 @@ var express = require('express');
 var fs = require('fs-extra');
 var multer = require('multer');
 const request = require('request');
+const path = require('path');
 
 var router = express.Router();
 const __base = '';
+
+const meiUpload = path.join(__base, 'public', 'uploads', 'mei');
+const pngUpload = path.join(__base, 'public', 'uploads', 'png');
+const iiifUpload = path.join(__base, 'public', 'uploads', 'iiif');
 
 const allowedPattern = /^[-_\.,\d\w ]+$/;
 const consequtivePeriods = /\.{2,}/;
@@ -23,7 +28,7 @@ router.route('/')
   .get(function (req, res) {
     var meiFiles = [];
     var iiifFiles = [];
-    fs.readdir(__base + 'public/uploads/mei', function (err, files) {
+    fs.readdir(meiUpload, function (err, files) {
       if (err) {
         res.status(500).send(err);
         return;
@@ -34,14 +39,14 @@ router.route('/')
         meiFiles = files;
       }
 
-      fs.readdir(__base + 'public/uploads/iiif', { withFileTypes: true }, function (err, files) {
+      fs.readdir(iiifUpload, { withFileTypes: true }, function (err, files) {
         if (err) {
           res.status(500).send(err);
           return;
         }
         files.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
           let label = entry.name;
-          let revisions = fs.readdirSync(__base + 'public/uploads/iiif/' + label, { withFileTypes: true });
+          let revisions = fs.readdirSync(path.join(iiifUpload, label), { withFileTypes: true });
           revisions.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
             if (err) {
               console.error(err);
@@ -77,12 +82,12 @@ router.route('/upload_file')
     if (!isUserInputValid(files[0]) || !isUserInputValid(newImageName)) {
       res.status(403).send('Forbidden');
     }
-    fs.writeFile(__base + 'public/uploads/mei/' + files[0], req.files[0].buffer, (err) => {
+    fs.writeFile(path.join(meiUpload, files[0]), req.files[0].buffer, (err) => {
       if (err) {
         console.error(err);
         throw err;
       }
-      fs.writeFile(__base + 'public/uploads/png/' + newImageName, req.files[1].buffer, (err) => {
+      fs.writeFile(path.join(pngUpload, newImageName), req.files[1].buffer, (err) => {
         if (err) {
           console.error(err);
           throw err;
@@ -101,12 +106,12 @@ router.route('/delete/:filename')
     var meifile = req.params.filename;
     var pngfile = meifile.split('.')[0] + '.png';
     // delete file from all folders
-    fs.unlink(__base + 'public/uploads/mei/' + meifile, function (err) {
+    fs.unlink(path.join(meiUpload), function (err) {
       if (err) {
         return console.log('failed to delete mei file');
       }
     });
-    fs.unlink(__base + 'public/uploads/png/' + pngfile, function (err) {
+    fs.unlink(path.join(pngUpload, pngfile), function (err) {
       if (err) {
         return console.log('failed to delete png file');
       }
@@ -119,7 +124,7 @@ router.route('/delete/:label/:rev').get((req, res) => {
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
     res.status(403).send('Forbidden');
   }
-  let path = __base + 'public/uploads/iiif/' + req.params.label + '/' + req.params.rev;
+  let path = path.join(iiifUpload, req.params.label, req.params.rev);
   fs.remove(path, (err) => {
     if (err) {
       console.error(err);
@@ -138,22 +143,13 @@ router.route('/edit/:filename')
     var bgimg = mei.split('.', 2)[0] + '.png';
     var autosave = false;
     // Check that the MEI exists
-    fs.stat(__base + 'public/uploads/mei/' + mei, (err, stats) => {
+    fs.stat(path.join(meiUpload, mei), (err, stats) => {
       if (err) {
         console.error("File of name '" + mei + "' does not exist.");
         res.status(404).render('error', { statusCode: '404 - File Not Found', message: 'The file ' + mei + ' could not be found on the server!' });
         return;
       }
-      // Check if a newer autosave exists
-      fs.stat(__base + 'public/uploads/mei-auto/' + mei, (autoErr, autoStats) => {
-        if (!autoErr) {
-          // Check if the autosave is newer
-          if (autoStats.mtimeMs > stats.mtimeMs) { // compares time of last modification in terms of ms since posix epoch (January 1 1970, 00:00 UTC)
-            autosave = true;
-          }
-        }
-        res.render('editor', { 'meifile': '/uploads/mei/' + mei, 'bgimg': '/uploads/png/' + bgimg, 'autosave': autosave });
-      });
+      res.render('editor', { 'meifile': '/uploads/mei/' + mei, 'bgimg': '/uploads/png/' + bgimg, 'autosave': autosave });
     });
   });
 
@@ -162,11 +158,11 @@ router.route('/edit-iiif/:label/:rev').get((req, res) => {
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
     res.status(403).send('Forbidden');
   }
-  let path = req.params.label + '/' + req.params.rev;
-  fs.readFile(__base + 'public/uploads/iiif/' + path + '/metadata.json', (err, data) => {
+  let pathName = path.join(req.params.label, req.params.rev);
+  fs.readFile(path.join(iiifUpload, pathName, 'metadata.json'), (err, data) => {
     if (err) {
       console.error(err);
-      res.status(500).render('error', { statusCode: '500 - Internal Server Error', message: 'Could not find the manifest for IIIF entry ' + path });
+      res.status(500).render('error', { statusCode: '500 - Internal Server Error', message: 'Could not find the manifest for IIIF entry ' + pathName });
     } else {
       let metadata;
       try {
@@ -179,7 +175,7 @@ router.route('/edit-iiif/:label/:rev').get((req, res) => {
       for (let page of metadata.pages) {
         let data;
         try {
-          data = fs.readFileSync(__base + 'public/uploads/iiif/' + path + '/' + page.file);
+          data = fs.readFileSync(path.join(iiifUpload, pathName, page.file));
         } catch (e) {
           console.error(e);
           continue;
@@ -227,7 +223,7 @@ router.route('/add-iiif').get(function (req, res) {
         }
         let directoryExists = true;
         try {
-          fs.accessSync(__base + 'public/uploads/iiif/' + label + '/' + req.body.revision);
+          fs.accessSync(path.join(iiifUpload, label, req.body.revision));
         } catch (e) {
           directoryExists = false;
         }
@@ -237,12 +233,12 @@ router.route('/add-iiif').get(function (req, res) {
         }
 
         // Create appropriate directory
-        fs.mkdir(__base + 'public/uploads/iiif/' + label + '/' + req.body.revision, (err) => {
+        fs.mkdir(path.join(iiifUpload, label, req.body.revision), (err) => {
           if (err) {
             console.error(err);
             res.status(500).send(err.message);
           }
-          fs.writeFile(__base + 'public/uploads/iiif/' + label + '/' + req.body.revision + '/metadata.json',
+          fs.writeFile(path.join(iiifUpload, label, req.body.revision, 'metadata.json'),
             JSON.stringify({ manifest: req.body.manifest, pages: [] }),
             (err) => {
               if (err) {
@@ -264,7 +260,7 @@ router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (re
   // Get metadata
   let metadata;
   try {
-    metadata = JSON.parse(fs.readFileSync(__base + 'public/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/metadata.json'));
+    metadata = JSON.parse(fs.readFileSync(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json')));
   } catch (e) {
     console.error(e);
     res.status(500).send(e);
@@ -302,8 +298,8 @@ router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (re
       // Store files and create array of file names
       let filenames = [];
       for (let file of req.files) {
-        fs.writeFileSync(__base + 'public/uploads/iiif/' + req.params.label + '/' +
-          req.params.rev + '/' + file.originalname, file.buffer);
+        fs.writeFileSync(path.join(iiifUpload, req.params.label,
+          req.params.rev, file.originalname), file.buffer);
         filenames.push(file.originalname);
       }
 
@@ -327,7 +323,7 @@ router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
   // Load metadata file
   let metadata;
   try {
-    metadata = JSON.parse(fs.readFileSync(__base + 'public/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/metadata.json'));
+    metadata = JSON.parse(fs.readFileSync(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json')));
   } catch (e) {
     console.error(e);
     res.status(500).send(e);
@@ -339,7 +335,7 @@ router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
     metadata.pages.push(JSON.parse(entry));
   }
 
-  fs.writeFile(__base + 'public/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/metadata.json', JSON.stringify(metadata), (err) => {
+  fs.writeFile(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json'), JSON.stringify(metadata), (err) => {
     if (err) {
       console.error(err);
       res.status(500).send(err);
