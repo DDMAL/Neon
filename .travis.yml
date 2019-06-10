@@ -12,7 +12,7 @@ before_install:
   - git submodule init
   - git submodule update
   - wget https://github.com/emscripten-core/emsdk/archive/master.zip
-  - unzip master.
+  - unzip master.zip
   - pushd emsdk-master && ./emsdk install latest && ./emsdk activate latest && source ./emsdk_env.sh && popd
 install:
   - ./build-verovio
