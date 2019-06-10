@@ -30,7 +30,8 @@ router.route('/')
     var iiifFiles = [];
     fs.readdir(meiUpload, function (err, files) {
       if (err) {
-        res.status(500).send(err);
+        console.error(err);
+        res.sendStatus(500);
         return;
       }
       if (files.length !== 0) {
@@ -41,7 +42,8 @@ router.route('/')
 
       fs.readdir(iiifUpload, { withFileTypes: true }, function (err, files) {
         if (err) {
-          res.status(500).send(err);
+          console.error(err);
+          res.sendStatus(500);
           return;
         }
         files.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
@@ -50,7 +52,7 @@ router.route('/')
           revisions.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
             if (err) {
               console.error(err);
-              res.status(500).send(err);
+              res.sendStatus(500);
             } else {
               iiifFiles.push([label, entry.name]);
             }
@@ -73,7 +75,7 @@ var upload = multer({
 router.route('/upload_file')
   .post(upload.array('resource', 2), function (req, res) {
     if (req.files[1].mimetype !== 'image/png') {
-      res.status(400).send('PNG file expected');
+      res.sendStatus(400);
     }
     let files = [req.files[0].originalname, req.files[1].originalname];
     let meiSplit = files[0].split(/\.mei/, 2);
@@ -124,8 +126,8 @@ router.route('/delete/:label/:rev').get((req, res) => {
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
     res.sendStatus(403);
   }
-  let path = path.join(iiifUpload, req.params.label, req.params.rev);
-  fs.remove(path, (err) => {
+  let somePath = path.join(iiifUpload, req.params.label, req.params.rev);
+  fs.remove(somePath, (err) => {
     if (err) {
       console.error(err);
     }
@@ -236,14 +238,14 @@ router.route('/add-iiif').get(function (req, res) {
         fs.mkdir(path.join(iiifUpload, label, req.body.revision), (err) => {
           if (err) {
             console.error(err);
-            res.status(500).send(err.message);
+            res.sendStatus(500);
           }
           fs.writeFile(path.join(iiifUpload, label, req.body.revision, 'metadata.json'),
             JSON.stringify({ manifest: req.body.manifest, pages: [] }),
             (err) => {
               if (err) {
                 console.error(err);
-                res.status(500).send(err.message);
+                res.sendStatus(500);
               }
               res.render('add-mei-iiif', { label: label, rev: req.body.revision });
             });
@@ -263,7 +265,7 @@ router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (re
     metadata = JSON.parse(fs.readFileSync(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json')));
   } catch (e) {
     console.error(e);
-    res.status(500).send(e);
+    res.sendStatus(500);
   }
 
   // Get manifest
@@ -326,7 +328,7 @@ router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
     metadata = JSON.parse(fs.readFileSync(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json')));
   } catch (e) {
     console.error(e);
-    res.status(500).send(e);
+    res.sendStatus(500);
   }
 
   // Update metadata
@@ -338,7 +340,7 @@ router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
   fs.writeFile(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json'), JSON.stringify(metadata), (err) => {
     if (err) {
       console.error(err);
-      res.status(500).send(err);
+      res.sendStatus(500);
     }
     res.redirect('/');
   });
