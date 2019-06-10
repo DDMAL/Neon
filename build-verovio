@@ -1,20 +1,10 @@
 #!/bin/bash
 # Helper script to build verovio toolkit before building Neon
 
-cd verovio/emscripten
+pushd verovio/emscripten
 sed -i '' 's/-O3/-Os/' buildToolkit
 ./buildToolkit -x "Gootville,Leipzig,Petaluma" -DHPX
-BUILD_1=$?
 ./buildToolkit -x "Gootville,Leipzig,Petaluma" -DHPX -w
-BUILD_2=$?
 sed -i '' 's/-Os/-O3/' buildToolkit
-if [[ 0 -ne $BUILD_1 ]]; then
-    echo >&2 "Failed to build Verovio";
-    exit 127;
-fi
-if [[ 0 -ne $BUILD_2 ]]; then
-    echo >&2 "Failed to build Verovio";
-    exit 127;
-fi
 cp build/verovio-toolkit-wasm.js build/verovio.wasm ../../public/
-cd ../..
+popd

@@ -2,6 +2,9 @@ language: node_js
 node_js: 10
 os: osx
 if: (branch = master OR branch = develop)
+cache:
+  directories:
+    - $HOME/verovio_cache
 addons:
   firefox: latest
   homebrew:
@@ -9,11 +12,21 @@ addons:
           - geckodriver
           - wget
 before_install:
-  - git submodule init
-  - git submodule update
-  - wget https://github.com/emscripten-core/emsdk/archive/master.zip
-  - unzip master.zip
-  - (pushd emsdk-master && ./emsdk install latest && ./emsdk activate latest && source ./emsdk_env.sh && popd && ./build-verovio)
+  - >
+    CACHE_COMMIT=$(cat $HOME/verovio_cache/commit.txt 2> /dev/null);
+    pushd verovio && REPO_COMMIT=$(git describe --abrev=7 --always) && popd;
+    if [ "$CACHE_COMMIT" != "$REPO_COMMIT" ]; then
+      wget https://github.com/emscripten-core/emsdk/archive/master.zip
+      unzip master.zip
+      (pushd emsdk-master && ./emsdk install latest && ./emsdk activate latest && source ./emsdk_env.sh && popd && ./build-verovio)
+      pushd verovio/toolkit
+      mkdir -p $HOME/verovio_cache
+      cp -R build/verovio-toolkit-wasm.js build/verovio.wasm npm-dev ../../verovio_cache
+      popd
+    else
+      cp $HOME/verovio_cache/verovio-toolkit-wasm.js $HOME/verovio_cache/verovio.wasm public/
+      cp -R $HOME/verovio_cache/npm-dev verovio/emscripten/npm-dev
+    fi
 install:
   - yarn install
 script:

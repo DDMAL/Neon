@@ -42,6 +42,7 @@
             "<rootDir>/node_modules/",
             "<rootDir>/src/validation/xml.js/"
         ],
+        "testRegex": "test/*.js",
         "moduleNameMapper": {
             "Validation": "<rootDir>/test/SubstituteValidation.js"
         }
