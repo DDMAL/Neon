@@ -80,7 +80,7 @@ router.route('/upload_file')
     let filename = meiSplit[0];
     let newImageName = filename + '.png';
     if (!isUserInputValid(files[0]) || !isUserInputValid(newImageName)) {
-      res.status(403).send('Forbidden');
+      res.sendStatus(403);
     }
     fs.writeFile(path.join(meiUpload, files[0]), req.files[0].buffer, (err) => {
       if (err) {
@@ -101,7 +101,7 @@ router.route('/upload_file')
 router.route('/delete/:filename')
   .get(function (req, res) {
     if (!isUserInputValid(req.params.filename)) {
-      res.status(403).send('Forbidden');
+      res.sendStatus(403);
     }
     var meifile = req.params.filename;
     var pngfile = meifile.split('.')[0] + '.png';
@@ -122,7 +122,7 @@ router.route('/delete/:filename')
 // Delete IIIF files
 router.route('/delete/:label/:rev').get((req, res) => {
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
-    res.status(403).send('Forbidden');
+    res.sendStatus(403);
   }
   let path = path.join(iiifUpload, req.params.label, req.params.rev);
   fs.remove(path, (err) => {
@@ -137,7 +137,7 @@ router.route('/delete/:label/:rev').get((req, res) => {
 router.route('/edit/:filename')
   .get(function (req, res) {
     if (!isUserInputValid(req.params.filename)) {
-      res.status(403).send('Forbidden');
+      res.sendStatus(403);
     }
     var mei = req.params.filename;
     var bgimg = mei.split('.', 2)[0] + '.png';
@@ -156,7 +156,7 @@ router.route('/edit/:filename')
 // redirect to salzinnes editor
 router.route('/edit-iiif/:label/:rev').get((req, res) => {
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
-    res.status(403).send('Forbidden');
+    res.sendStatus(403);
   }
   let pathName = path.join(req.params.label, req.params.rev);
   fs.readFile(path.join(iiifUpload, pathName, 'metadata.json'), (err, data) => {
@@ -219,7 +219,7 @@ router.route('/add-iiif').get(function (req, res) {
           });
         }
         if (!isUserInputValid(label) || !isUserInputValid(req.body.revision)) {
-          res.status(403).send('Forbidden');
+          res.sendStatus(403);
         }
         let directoryExists = true;
         try {
@@ -255,7 +255,7 @@ router.route('/add-iiif').get(function (req, res) {
 
 router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (req, res) {
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
-    res.status(403).send('Forbidden');
+    res.sendStatus(403);
   }
   // Get metadata
   let metadata;
@@ -318,7 +318,7 @@ router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (re
 
 router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
-    res.status(403).send('Forbidden');
+    res.sendStatus(403);
   }
   // Load metadata file
   let metadata;
