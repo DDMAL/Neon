@@ -24,5 +24,5 @@ export const undoRedoPanel =
     "<div class='field has-addons buttons' style='overflow-x: auto;'>" +
     "<a class='panel-block'>" +
     "<p class='control'>" +
-    "<button class='button' id='undo'>Undo (Ctrl-z or ⌘-z)</button>" +
-    "<button class='button' id='redo'>Redo (Ctrl-Z or ⌘-Z)</button></p></a></div>";
+    "<button class='button' id='undo'>Undo</button>" +
+    "<button class='button' id='redo'>Redo</button></p></a></div>";
