@@ -2,7 +2,7 @@
  * current use cases: bounding boxes and staves
  */
 
- import { getStaffBBox } from './SelectTools.js'
+import { getStaffBBox } from './SelectTools.js'
 
 const $ = require('jquery');
 const d3 = require('d3');
@@ -54,7 +54,7 @@ function Resize (elementId, neonView, dragHandler) {
   function drawInitialRect () {
     if (element === null) return;
 
-    //if it's a boundingbox just get the coordinates
+    // if it's a boundingbox just get the coordinates
     if (element.classList.contains('sylTextRect')) {
       ulx = element.attr('x');
       uly = element.attr('y');
@@ -62,7 +62,7 @@ function Resize (elementId, neonView, dragHandler) {
       lry = uly + element.attr('height');
     }
 
-    //if it's a staff use the paths to get it's boundingbox
+    // if it's a staff use the paths to get it's boundingbox
     if (element.classList.contains('staff')) {
       var bbox = getStaffBBox(element);
       ulx = bbox.ulx;
@@ -155,8 +155,7 @@ function Resize (elementId, neonView, dragHandler) {
         lry = undefined;
         if (element.classList.contains('sylTextRect')) {
           selectBBox(element, dragHandler);
-        }
-        else {
+        } else {
           selectStaff(element, dragHandler);
         }
         drawInitialRect();

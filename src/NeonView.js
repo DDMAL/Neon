@@ -36,7 +36,7 @@ class NeonView {
     this.display = this.view.display;
     this.info = new params.Info(this);
 
-    if (params.NeumeEdit !== undefined) {
+    if(params.NeumeEdit !== undefined || params.TextView !== undefined) {
       // Set up display for edit button
       let parent = document.getElementById('dropdown_toggle');
       let editItem = document.createElement('a');
@@ -47,13 +47,16 @@ class NeonView {
       editButton.textContent = 'Edit MEI';
       editItem.appendChild(editButton);
       parent.appendChild(editItem);
+    }
+
+    if (params.NeumeEdit !== undefined) {
       this.NeumeEdit = new params.NeumeEdit(this);
     }
     if (params.TextView !== undefined) {
       this.textView = new params.TextView(this);
-    }
-    if (params.TextEdit !== undefined) {
-      this.textEdit = new params.TextEdit(this);
+      if (params.TextEdit !== undefined) {
+        this.textEdit = new params.TextEdit(this);
+      }
     }
   }
 
