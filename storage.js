@@ -6,7 +6,7 @@ var fileInfo = {
     png: ""
 };
 
-var db = new PouchDB("Neon2");
+var db = new PouchDB("neon-temporary");
 
 document.getElementById("mei-file").onchange = (e) => {
     let reader = new FileReader();
@@ -83,12 +83,13 @@ document.getElementById("submit-storage").onclick = async (e) => {
             return db.put(doc);
         }).catch((err) => { console.log(err); didError = true; });
         if (!didError) {
-            let editor = document.createElement("a");
+            document.getElementById("user-form").submit();
+            /*let editor = document.createElement("a");
             editor.setAttribute("href", "editor.html");
             editor.style.display = "none";
             document.body.append(editor);
             editor.click();
-            document.body.removeChild(editor);
+            document.body.removeChild(editor);*/
         }
     }
     else {

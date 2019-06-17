@@ -7,6 +7,9 @@
   </head>
   <body>
     <form action="./editor.html" id="page-form" method="get" style="margin:15% auto 0;width: 15em;">
+      <div class="field" style="visibility: none">
+        <input type="hidden" required name="mode" value="demo-page"/>
+      </div>
       <div class="field">
         <label class="label">Select a Page:&nbsp;</label>
         <div class="select">
@@ -18,19 +21,43 @@
         <button type="submit" class="button">Submit</button>
       </div>
     </form>
-    <div class="field" style="margin:5% auto 0;width:15em;">
-      <label class="label">Upload MEI:&nbsp;</label>
-      <div class="select">
-        <input type="file" accept="application/mei+xml" id="mei-file">
+
+    <form action="./editor.html" id="manifest-form" method="get" style="margin: 5% auto 0; width: 15em;">
+      <div class="field" style="display: none">
+        <input type="hidden" required name="mode" value="demo-iiif"/>
       </div>
-      <label class="label">Upload PNG:&nbsp;</label>
-      <div class="select">
-        <input type="file" accept="image/png" id="png-file">
+      <div class="field">
+        <label class="label">Select a Manuscript:&nbsp;</label>
+        <div class="select">
+          <select name="page" id="manifest-selector" form="manifest-form">
+            <option value="Salzinnes">Salzinnes Antiphonal</option>
+          </select>
+        </div>
       </div>
-    </div>
-    <div class="control" style="margin:0 auto 0; width:15em;">
-      <button type="button" class="button" id="submit-storage">Submit</button>
-    </div>
+      <div class="control">
+        <button type="submit" class="button">Submit</button>
+      </div>
+    </form>
+
+    <form action="./editor.html" id="user-form" method="get" style="margin: 5% auto 0; width: 15em;">
+      <div class="field" style="display: none">
+        <input type="hidden" required name="mode" value="user-page"/>
+      </div>
+      <div class="field">
+        <label class="label">Upload MEI:&nbsp;</label>
+        <div class="select">
+          <input type="file" required accept="application/mei+xml" id="mei-file">
+        </div>
+        <label class="label">Upload PNG:&nbsp;</label>
+        <div class="select">
+          <input type="file" required accept="image/png" id="png-file">
+        </div>
+      </div>
+      <div class="field">
+        <button type="button" class="button" id="submit-storage">Submit</button>
+      </div>
+    </form>
+
     <script src="./index.js"></script>
     <script src="./storage.js"></script>
   </body>
