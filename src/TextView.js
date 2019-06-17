@@ -12,9 +12,11 @@ class TextView {
 	 * A constructor for a TextView.
 	 * @param {NeonView} neonView = The NeonView parent.
 	 */
+  
 	constructor (neonView) {
 		this.neonView = neonView;
 		this.notificationSent = false;
+
 		// add checkbox to enable/disable the view
 		let block = document.getElementById('extensible-block');
 		let label = document.createElement('label');
@@ -45,6 +47,7 @@ class TextView {
 		});
 	}
 
+
 	/**
  	 * set text to edit mode
 	 */
@@ -57,6 +60,7 @@ class TextView {
    			});
 		});
 	}
+
 
 	/**
  	* update the text for a single syl element
@@ -81,6 +85,7 @@ class TextView {
     	}
 	}
 
+
 	/**
  	* update the visibility of the textview box
  	* and add the event listeners to make sure the syl highlights when moused over
@@ -91,13 +96,28 @@ class TextView {
 			$('#syl_text').html('<p>' + this.getSylText() + '</p>');
 			let spans = Array.from($('#syl_text').children('p').children('span'));
 			spans.forEach(span => {
+				let syllable = $('#' + $(span).attr('class'));
+				let syl = syllable.children('.syl');
+				let text = syl.children('text');
+				let int_text = text.children('.text');
+				let real_text = text.children('.text').children('.text');
+				let rect = syl.children('rect');
+				if(text.attr('class') == null) {
+					text.addClass('text');
+				}
       			$(span).on('mouseenter', () => {
-        			let syllable = $('#' + $(span).attr('class'));
-        			syllable.addClass('syl-select');
         			syllable.attr('fill', '#d00');
+        			rect.removeClass('sylTextRect');  			
+        			rect.addClass('sylTextRect-select');
+        			//syl.attr('fill', '#ffc7c7');
+        			//this.highlightBoundingBox(span);
         		});
         		$(span).on('mouseleave', () => {
-        			$('#' + $(span).attr('class')).removeClass('syl-select').attr('fill', null);
+        			syllable.attr('fill', null);
+        			rect.removeClass('sylTextRect-select');
+        			rect.addClass('sylTextRect');
+        			//syl.attr('fill', null);
+        			//this.removeBoundingBox(span);
 				});
       		});
       		if (this.neonView.getUserMode() !== 'viewer') {

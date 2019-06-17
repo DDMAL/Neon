@@ -1,9 +1,9 @@
 import NeonView from './NeonView.js';
 import DisplayPanel from './DisplayPanel/DisplayPanel.js';
-import DivaView from './DivaView/DivaView.js';
-import DivaEdit from './DivaEdit.js';
+import DivaView from './DivaView.js';
+import DivaEdit from './SquareEdit/DivaEditMode.js';
 import SingleView from './SingleView/SingleView.js';
-import SingleEditMode from './SingleEdit/SingleEditMode.js';
+import SingleEditMode from './SquareEdit/SingleEditMode.js';
 import InfoModule from './InfoModule.js';
 import TextView from './TextView.js';
 
@@ -21,7 +21,7 @@ if (manifest !== '') {
       View: DivaView,
       Display: DisplayPanel,
       Info: InfoModule,
-      Edit: DivaEdit,
+      NeumeEdit: DivaEdit,
       TextView: TextView
     };
     var view = new NeonView(params);
@@ -41,7 +41,7 @@ if (manifest !== '') {
       View: SingleView,
       Display: DisplayPanel,
       Info: InfoModule,
-      Edit: SingleEditMode,
+      NeumeEdit: SingleEditMode,
       TextView: TextView
     };
 
