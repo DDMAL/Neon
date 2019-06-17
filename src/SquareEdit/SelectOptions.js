@@ -204,7 +204,7 @@ export function triggerSylActions () {
         "<button class='button' id='ungroupNeumes'>Ungroup</button></p></div>"
   );
   $('#moreEdit').append(
-    "<div><p class='control'>" + 
+    "<div><p class='control'>" +
         "<button class='button' id='delete'>Delete</button></p></div>"
   );
 
@@ -304,7 +304,6 @@ export function triggerStaffActions () {
   $('body').on('keydown', (evt) => {
     if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
   });
-
 }
 
 /**

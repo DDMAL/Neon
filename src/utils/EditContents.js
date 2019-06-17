@@ -18,11 +18,11 @@ export const navbarFinalize =
 
 /**
  * Contents of the undo/redo panel with buttons
- * @type {string} 
+ * @type {string}
  */
-export const undoRedoPanel = 
+export const undoRedoPanel =
     "<div class='field has-addons buttons' style='overflow-x: auto;'>" +
-    "<a class='panel-block'>" + 
-    "<p class='control'>" + 
-    "<button class='button' id='undo'>Undo (Ctrl-z or ⌘-z)</button>" + 
+    "<a class='panel-block'>" +
+    "<p class='control'>" +
+    "<button class='button' id='undo'>Undo (Ctrl-z or ⌘-z)</button>" +
     "<button class='button' id='redo'>Redo (Ctrl-Z or ⌘-Z)</button></p></a></div>";

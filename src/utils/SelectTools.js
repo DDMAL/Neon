@@ -156,9 +156,8 @@ export function getStaffBBox (staff) {
  * @param {SVGGElement} el - the bbox (sylTextRect) element in the DOM
  * @param {DragHandler} dragHandler - the drag handler in use
  */
- export function selectBBox (el, dragHandler) {
-
-  //-------this method is preliminary and will need to be fixed later---------------------
+export function selectBBox (el, dragHandler) {
+  // -------this method is preliminary and will need to be fixed later---------------------
 
   let bbox = $(el);
   if (!bbox.hasClass('sylTextRect-select')) {
@@ -168,7 +167,7 @@ export function getStaffBBox (staff) {
     updateHighlight();
     dragHandler.dragInit();
   }
- } 
+}
 
 /**
  * Select not neume elements.

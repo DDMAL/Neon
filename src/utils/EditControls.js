@@ -2,10 +2,7 @@
 
 import * as Contents from '../SquareEdit/Contents.js';
 import * as EditContents from './EditContents';
-import * as Cursor from './Cursor.js';
-import Icons from '../img/icons.svg';
 import * as Notification from './Notification.js';
-import { unselect } from './SelectTools.js';
 const $ = require('jquery');
 
 /**

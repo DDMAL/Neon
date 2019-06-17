@@ -119,7 +119,7 @@ function InsertHandler (neonView, sel) {
       editModeButton.classList.add('button');
       editModeButton.innerHTML = 'Return to Edit Mode';
       editModeContainer.appendChild(editModeButton);
-      document.getElementById('delete').parentNode.parentNode.appendChild(editModeContainer);
+      document.getElementById('redo').parentNode.appendChild(editModeContainer);
       editModeButton.addEventListener('click', insertDisabled);
     }
     $('#editMenu').css('backgroundColor', 'whitesmoke');
