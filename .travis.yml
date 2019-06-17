@@ -12,7 +12,12 @@ addons:
           - geckodriver
           - wget
 before_install:
-  - CACHE_COMMIT=$(cat $HOME/verovio_cache/commit.txt 2> /dev/null);
+  - >
+    if [ -f $HOME/verovio_cache/commit.txt ]; then
+      CACHE_COMMIT=$(cat $HOME/verovio_cache/commit.txt 2> /dev/null);
+    else
+      CACHE_COMMIT=""
+    fi
   - pushd verovio && REPO_COMMIT=$(git describe --abbrev=7 --always) && popd;
   - >
     if [ "$CACHE_COMMIT" != "$REPO_COMMIT" ]; then
