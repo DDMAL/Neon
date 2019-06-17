@@ -12,14 +12,14 @@ addons:
           - geckodriver
           - wget
 before_install:
+  - CACHE_COMMIT=$(cat $HOME/verovio_cache/commit.txt 2> /dev/null);
+  - pushd verovio && REPO_COMMIT=$(git describe --abbrev=7 --always) && popd;
   - >
-    CACHE_COMMIT=$(cat $HOME/verovio_cache/commit.txt 2> /dev/null);
-    pushd verovio && REPO_COMMIT=$(git describe --abbrev=7 --always) && popd;
     if [ "$CACHE_COMMIT" != "$REPO_COMMIT" ]; then
       wget https://github.com/emscripten-core/emsdk/archive/master.zip
       unzip master.zip
       (pushd emsdk-master && ./emsdk install latest && ./emsdk activate latest && source ./emsdk_env.sh && popd && ./build-verovio)
-      pushd verovio/toolkit
+      pushd verovio/emscripten
       mkdir -p $HOME/verovio_cache
       cp -R build/verovio-toolkit-wasm.js build/verovio.wasm npm-dev ../../verovio_cache
       popd
