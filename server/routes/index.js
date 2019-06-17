@@ -309,6 +309,7 @@ router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
     metadata.pages.push(JSON.parse(entry));
   }
 
+  // Write metadata
   fs.writeFile(__base + 'public/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/metadata.json', JSON.stringify(metadata), (err) => {
     if (err) {
       console.error(err);
