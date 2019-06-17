@@ -39,6 +39,7 @@
     },
     "jest": {
         "testPathIgnorePatterns": [
+            "<rootDir>/emsdk-master",
             "<rootDir>/node_modules/",
             "<rootDir>/src/validation/xml.js/"
         ],
