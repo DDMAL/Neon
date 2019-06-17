@@ -26,7 +26,8 @@ before_install:
       (pushd emsdk-master && ./emsdk install latest && ./emsdk activate latest && source ./emsdk_env.sh && popd && ./build-verovio)
       pushd verovio/emscripten
       mkdir -p $HOME/verovio_cache
-      cp -R build/verovio-toolkit-wasm.js build/verovio.wasm npm-dev ../../verovio_cache
+      cp -R build/verovio-toolkit-wasm.js build/verovio.wasm npm-dev $HOME/verovio_cache
+      cp build/verovio-toolkit-wasm.js build/verovio.wasm ../../public/
       popd
     else
       cp $HOME/verovio_cache/verovio-toolkit-wasm.js $HOME/verovio_cache/verovio.wasm public/
