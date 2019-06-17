@@ -57,8 +57,6 @@ export function select (el) {
     }
     if (sylId !== undefined) {
       if ($('span').filter('.' + sylId).length) {
-        $('span').filter('.' + sylId).css('color', '#d00');
-        $('span').filter('.' + sylId).css('font-weight', 'bold');
         $('span').filter('.' + sylId).addClass('syl-select');
       }
     }
@@ -93,7 +91,7 @@ export async function selectNcs (el, neonView, dragHandler) {
     } else if ($(parent).hasClass('nc')) {
       SelectOptions.triggerNcActions(parent);
     } else {
-      console.warn('No action triggered!');
+      SelectOptions.triggerDeleteActions();
     }
     dragHandler.dragInit();
   }

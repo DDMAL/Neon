@@ -327,6 +327,12 @@ export function triggerSplitActions () {
   });
 }
 
+export function triggerDeleteActions () {
+  $('moreEdit').removeClass('is-invisible');
+  $('moreEdit').append(Contents.deleteMenu);
+  $('#delete').on('click', removeHandler);
+}
+
 /**
  * End the extra options menu.
  */
