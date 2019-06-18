@@ -1,7 +1,8 @@
 import NeonCore from './NeonCore.js';
-import { initNavbar, initUndoRedoPanel, initEditModeControls } from './utils/EditControls';
+import { initNavbar, initUndoRedoPanel } from './utils/EditControls';
 import DragHandler from './utils/DragHandler';
 import { clickSelect, dragSelect, setSelectHelperObjects } from './utils/Select';
+import { navbarDropdownMenu, undoRedoPanel } from './utils/EditContents';
 
 const $ = require('jquery');
 
@@ -49,14 +50,14 @@ class NeonView {
       editButton.classList.add('button');
       editButton.id = 'edit_mode';
       editButton.textContent = 'Edit MEI';
-      initEditModeControls();
-      $('#edit_mode').on('click', () => {
-        this.initEditMode();
-      });
       this.dragHandler = new DragHandler(this.neonView, '#svg_group');
       setSelectHelperObjects(this, this.dragHandler);
       editItem.appendChild(editButton);
       parent.appendChild(editItem);
+
+      editButton.addEventListener('click', () => {
+        this.initEditMode();
+      });
     }
 
     if (params.NeumeEdit !== undefined) {
@@ -79,6 +80,9 @@ class NeonView {
     initUndoRedoPanel(this);
     clickSelect('#mei_output, #mei_output use');
     dragSelect('#svg_group');
+    $('#dropdown_toggle').empty();
+    $('#dropdown_toggle').append(navbarDropdownMenu);
+    $('#undoRedo_controls').append(undoRedoPanel);
   }
 
   /**

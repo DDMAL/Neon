@@ -10,7 +10,7 @@ export default class TextEditMode {
 
   constructor (neonView) {
     this.neonView = neonView;
-    $('#edit_mode').on('click', () => {
+    document.getElementById('edit_mode').addEventListener('click', () => {
       this.setTextEdit();
     });
   }

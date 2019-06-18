@@ -1,23 +1,7 @@
 /** @module UnifiedEdit/EditControls */
 
-import * as EditContents from './EditContents';
 import * as Notification from './Notification.js';
 const $ = require('jquery');
-
-/**
- * Set listener on EditMode button.
- * @param {EditMode} editMode - The EditMode object.
- */
-export function initEditModeControls () {
-  /* document.getElementById('dropdown_toggle').innerHTML =
-    '<a class="navbar-item"><button class="button" id="edit_mode">' +
-    'Edit MEI</button></a>'; */
-  $('#edit_mode').on('click', function () {
-    $('#dropdown_toggle').empty();
-    $('#dropdown_toggle').append(EditContents.navbarDropdownMenu);
-    $('#undoRedo_controls').append(EditContents.undoRedoPanel);
-  });
-}
 
 /**
  * Set listener on switching EditMode button to File dropdown in the navbar.
