@@ -328,6 +328,20 @@ export function triggerSplitActions () {
 }
 
 /**
+ * Trigger default selection option.
+ */
+export function triggerDefaultActions () {
+  endOptionsSelection();
+  $('#moreEdit').removeClass('is-invisible');
+  $('#moreEdit').append(Contents.defaultActionContents);
+
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
+  });
+}
+
+/**
  * End the extra options menu.
  */
 export function endOptionsSelection () {
