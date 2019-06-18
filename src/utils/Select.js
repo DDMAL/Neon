@@ -35,6 +35,7 @@ export function setSelectStrokeWidth (width) {
  * @param {DragHandler} dh - The drag handler object
  */
 export function setSelectHelperObjects (nv, dh) {
+  console.log('setting dh');
   dragHandler = dh;
   neonView = nv;
   info = neonView.info;

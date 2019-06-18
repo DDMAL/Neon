@@ -1,26 +1,21 @@
 /** @module UnifiedEdit/EditControls */
 
-import * as Contents from '../SquareEdit/Contents.js';
 import * as EditContents from './EditContents';
 import * as Notification from './Notification.js';
 const $ = require('jquery');
 
 /**
  * Set listener on EditMode button.
- * @param {SingleEditMode} editMode - The EditMode object.
+ * @param {EditMode} editMode - The EditMode object.
  */
-export function initEditModeControls (editMode) {
+export function initEditModeControls () {
   /* document.getElementById('dropdown_toggle').innerHTML =
     '<a class="navbar-item"><button class="button" id="edit_mode">' +
     'Edit MEI</button></a>'; */
   $('#edit_mode').on('click', function () {
     $('#dropdown_toggle').empty();
     $('#dropdown_toggle').append(EditContents.navbarDropdownMenu);
-    $('#insert_controls').append(Contents.insertControlsPanel);
-    $('#edit_controls').append(Contents.editControlsPanel);
     $('#undoRedo_controls').append(EditContents.undoRedoPanel);
-
-    editMode.initEditMode();
   });
 }
 

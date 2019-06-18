@@ -1,5 +1,4 @@
-import { bindInsertTabs, initInsertEditControls } from './Controls.js';
-import { initEditModeControls } from '../utils/EditControls.js';
+import { bindInsertTabs, initInsertEditControls, initEditModeControls } from './Controls.js';
 import * as Select from '../utils/Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';

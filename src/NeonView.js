@@ -49,6 +49,7 @@ class NeonView {
       editButton.classList.add('button');
       editButton.id = 'edit_mode';
       editButton.textContent = 'Edit MEI';
+      EditControls.initEditModeControls();
       $('#edit_mode').on('click', () => {
         this.initEditMode();
       });
