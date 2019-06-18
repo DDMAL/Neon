@@ -2,9 +2,8 @@
  * current use cases: bounding boxes and staves
  */
 
-import { getStaffBBox } from './SelectTools.js'
+import { getStaffBBox, selectBBox, selectStaff } from './SelectTools.js';
 
-const $ = require('jquery');
 const d3 = require('d3');
 
 /**

@@ -112,14 +112,11 @@ function InsertHandler (neonView, sel) {
 
     // Add 'return to edit mode' button
     if (!alreadyInInsertMode) {
-      let editModeContainer = document.createElement('p');
-      editModeContainer.classList.add('control');
       let editModeButton = document.createElement('button');
       editModeButton.id = 'returnToEditMode';
       editModeButton.classList.add('button');
       editModeButton.innerHTML = 'Return to Edit Mode';
-      editModeContainer.appendChild(editModeButton);
-      document.getElementById('delete').parentNode.parentNode.appendChild(editModeContainer);
+      document.getElementById('redo').parentNode.appendChild(editModeButton);
       editModeButton.addEventListener('click', insertDisabled);
     }
     $('#editMenu').css('backgroundColor', 'whitesmoke');
@@ -141,7 +138,7 @@ function InsertHandler (neonView, sel) {
     firstClick = true;
     Cursor.resetCursor();
     try {
-      $(document.getElementById('returnToEditMode').parentNode).remove();
+      $(document.getElementById('returnToEditMode')).remove();
     } catch (e) {
       console.debug(e);
     }

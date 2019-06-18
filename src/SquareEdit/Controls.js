@@ -1,7 +1,6 @@
 import * as Contents from './Contents.js';
 import * as Cursor from '../utils/Cursor.js';
 import Icons from '../img/icons.svg';
-import * as Notification from '../utils/Notification.js';
 import { unselect } from '../utils/SelectTools.js';
 const $ = require('jquery');
 
@@ -24,7 +23,7 @@ export function bindInsertTabs (insertHandler) {
       $('#insert_data').append(Contents.insertTabHtml[tab]);
       bindElements(insertHandler);
     });
-  }); 
+  });
 }
 
 /**

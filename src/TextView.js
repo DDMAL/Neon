@@ -96,8 +96,6 @@ class TextView {
         let syllable = $('#' + $(span).attr('class'));
         let syl = syllable.children('.syl');
         let text = syl.children('text');
-        let int_text = text.children('.text');
-        let real_text = text.children('.text').children('.text');
         let rect = syl.children('rect');
         if (text.attr('class') == null) {
           text.addClass('text');

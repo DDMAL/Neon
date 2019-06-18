@@ -204,7 +204,7 @@ export function triggerSylActions () {
         "<button class='button' id='ungroupNeumes'>Ungroup</button></p></div>"
   );
   $('#moreEdit').append(
-    "<div><p class='control'>" + 
+    "<div><p class='control'>" +
         "<button class='button' id='delete'>Delete</button></p></div>"
   );
 
@@ -304,7 +304,6 @@ export function triggerStaffActions () {
   $('body').on('keydown', (evt) => {
     if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
   });
-
 }
 
 /**
@@ -326,6 +325,17 @@ export function triggerSplitActions () {
   $('body').on('keydown', (evt) => {
     if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
   });
+}
+
+/**
+ * trigger options with delete button only
+ * for when other options aren't available because of mixed element types/across staves
+ */
+export function triggerDeleteActions () {
+  console.log('triggerDeleteActions');
+  $('moreEdit').removeClass('is-invisible');
+  $('moreEdit').append(Contents.deleteMenu);
+  $('#delete').on('click', removeHandler);
 }
 
 /**

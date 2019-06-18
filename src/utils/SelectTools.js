@@ -56,9 +56,8 @@ export function select (el) {
       sylId = $(el).parents('.syllable').attr('id');
     }
     if (sylId !== undefined) {
+      // this needs to be fixed, should be sylId in id not class
       if ($('span').filter('.' + sylId).length) {
-        $('span').filter('.' + sylId).css('color', '#d00');
-        $('span').filter('.' + sylId).css('font-weight', 'bold');
         $('span').filter('.' + sylId).addClass('syl-select');
       }
     }
@@ -93,7 +92,8 @@ export async function selectNcs (el, neonView, dragHandler) {
     } else if ($(parent).hasClass('nc')) {
       SelectOptions.triggerNcActions(parent);
     } else {
-      console.warn('No action triggered!');
+      console.log('selectNcs else triggerDeleteActions');
+      SelectOptions.triggerDeleteActions();
     }
     dragHandler.dragInit();
   }
@@ -156,9 +156,8 @@ export function getStaffBBox (staff) {
  * @param {SVGGElement} el - the bbox (sylTextRect) element in the DOM
  * @param {DragHandler} dragHandler - the drag handler in use
  */
- export function selectBBox (el, dragHandler) {
-
-  //-------this method is preliminary and will need to be fixed later---------------------
+export function selectBBox (el, dragHandler) {
+  // -------this method is preliminary and will need to be fixed later------------ //
 
   let bbox = $(el);
   if (!bbox.hasClass('sylTextRect-select')) {
@@ -168,7 +167,7 @@ export function getStaffBBox (staff) {
     updateHighlight();
     dragHandler.dragInit();
   }
- } 
+}
 
 /**
  * Select not neume elements.
@@ -177,6 +176,8 @@ export function getStaffBBox (staff) {
 export function selectNn (notNeumes) {
   if (notNeumes.length > 0) {
     notNeumes.forEach(nn => { select(nn); });
+    console.log('selectNn triggerDeleteActions');
+    SelectOptions.triggerDeleteActions();
     return false;
   } else {
     return true;
@@ -460,6 +461,8 @@ export async function selectAll (elements, neonView, info, dragHandler) {
       }
     } else if (ncs.length === 1) {
       SelectOptions.triggerNcActions(ncs[0]);
+    } else {
+      SelectOptions.triggerDeleteActions();
     }
   }
   if ($('.selected').length > 0) {
