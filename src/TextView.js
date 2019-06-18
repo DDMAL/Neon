@@ -20,14 +20,24 @@ class TextView {
     // add checkbox to enable/disable the view
     let block = document.getElementById('extensible-block');
     let label = document.createElement('label');
+    let label2 = document.createElement('label');
     let input = document.createElement('input');
+    let input2 = document.createElement('input');
     label.classList.add('checkbox');
+    label2.classList.add('checkbox');
     label.textContent = 'Display Text: ';
+    label2.textContent = 'Display Text BBoxes: ';
     input.classList.add('checkbox');
+    input2.classList.add('checkbox');
     input.id = 'displayText';
     input.type = 'checkbox';
+    input2.id = 'displayBBox';
+    input2.type = 'checkbox';
     input.checked = false;
+    input2.checked = false;
     label.appendChild(input);
+    label2.appendChild(input2);
+    block.prepend(label2);
     block.prepend(label);
 
     this.setTextViewControls();
@@ -39,9 +49,26 @@ class TextView {
   */
   setTextViewControls () {
     this.updateTextViewVisibility();
+    this.updateBboxViewVisibility();
     $('#displayText').on('click', () => {
       this.updateTextViewVisibility();
     });
+    $('#displayBBox').on('click', () => {
+      this.updateBboxViewVisibility();
+    });
+  }
+
+  /**
+   * update visibility of text boundinb boxes
+   */
+  updateBboxViewVisibility () {
+    if ($('#displayBBox').is(':checked')) {
+      $('.sylTextRect').addClass('sylTextRect-display');
+      $('.sylTextRect').removeClass('sylTextRect');
+    } else {
+      $('.sylTextRect-display').addClass('sylTextRect');
+      $('.sylTextRect-display').removeClass('sylTextRect-display');
+    }
   }
 
   /**
@@ -64,7 +91,7 @@ class TextView {
         $(span).on('mouseenter', () => {
           syllable.addClass('syl-select');
           syllable.attr('fill', '#d00');
-          rect.removeClass('sylTextRect');
+          rect.removeClass('sylTextRect-display');
           rect.addClass('sylTextRect-select');
           // syl.attr('fill', '#ffc7c7');
           // this.highlightBoundingBox(span);
@@ -73,7 +100,7 @@ class TextView {
           syllable.removeClass('syl-select');
           syllable.attr('fill', null);
           rect.removeClass('sylTextRect-select');
-          rect.addClass('sylTextRect');
+          rect.addClass('sylTextRect-display');
           // syl.attr('fill', null);
           // this.removeBoundingBox(span);
         });
