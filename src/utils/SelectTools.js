@@ -44,6 +44,7 @@ export function unselect () {
  */
 export function select (el) {
   if (!$(el).hasClass('selected')) {
+    $(el).addClass('selected');
     var sylId;
     if ($(el).hasClass('syllable')) {
       sylId = el.id;
@@ -51,11 +52,14 @@ export function select (el) {
       sylId = $(el).parents('.syllable').attr('id');
     }
     if (sylId !== undefined) {
-      console.log('hi');
-      if ($('#' + sylId).length) {
-        console.log('hi2');
-        $('#' + sylId).addClass('syl-select');
-      }
+      $('#' + sylId).addClass('syl-select');
+    }
+    if ($(el).hasClass('sylTextRect-display')) {
+      $(el).addClass('sylTextRect-select');
+      $(el).removeClass('sylTextRect-display');
+    } else if ($(el).find('.sylTextRect-display').length) {
+      $(el).find('.sylTextRect-display').addClass('sylTextRect-select');
+      $(el).find('.sylTextRect-display').removeClass('sylTextRect-display');
     }
   }
   updateHighlight();
