@@ -90,7 +90,6 @@ class TextView {
         }
         $(span).on('mouseenter', () => {
           syllable.addClass('syl-select');
-          syllable.attr('fill', '#d00');
           rect.removeClass('sylTextRect-display');
           rect.addClass('sylTextRect-select');
           // syl.attr('fill', '#ffc7c7');
@@ -98,7 +97,6 @@ class TextView {
         });
         $(span).on('mouseleave', () => {
           syllable.removeClass('syl-select');
-          syllable.attr('fill', null);
           rect.removeClass('sylTextRect-select');
           rect.addClass('sylTextRect-display');
           // syl.attr('fill', null);

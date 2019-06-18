@@ -23,11 +23,9 @@ export function unselect () {
       $(selected[i]).removeClass('selected').attr('fill', null);
     }
   }
-  $('.syl-select').css('color', '');
-  $('.syl-select').css('font-weight', '');
   $('.syl-select').removeClass('syl-select');
 
-  $('.sylTextRect-select').addClass('sylTextRect');
+  $('.sylTextRect-select').addClass('sylTextRect-display');
   $('.sylTextRect-select').removeClass('sylTextRect-select');
 
   d3.select('#resizeRect').remove();
@@ -46,9 +44,6 @@ export function unselect () {
  */
 export function select (el) {
   if (!$(el).hasClass('selected')) {
-    $(el).attr('fill', '#d00');
-    $(el).addClass('selected');
-
     var sylId;
     if ($(el).hasClass('syllable')) {
       sylId = el.id;
@@ -56,9 +51,10 @@ export function select (el) {
       sylId = $(el).parents('.syllable').attr('id');
     }
     if (sylId !== undefined) {
-      // this needs to be fixed, should be sylId in id not class
-      if ($('span').filter('.' + sylId).length) {
-        $('span').filter('.' + sylId).addClass('syl-select');
+      console.log('hi');
+      if ($('#' + sylId).length) {
+        console.log('hi2');
+        $('#' + sylId).addClass('syl-select');
       }
     }
   }
