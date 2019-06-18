@@ -327,7 +327,12 @@ export function triggerSplitActions () {
   });
 }
 
+/**
+ * trigger options with delete button only
+ * for when other options aren't available because of mixed element types/across staves
+ */
 export function triggerDeleteActions () {
+  console.log('triggerDeleteActions');
   $('moreEdit').removeClass('is-invisible');
   $('moreEdit').append(Contents.deleteMenu);
   $('#delete').on('click', removeHandler);
