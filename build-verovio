@@ -6,5 +6,6 @@ sed -i '' 's/-O3/-Os/' buildToolkit
 ./buildToolkit -x "Gootville,Leipzig,Petaluma" -DHPX
 ./buildToolkit -x "Gootville,Leipzig,Petaluma" -DHPX -w
 sed -i '' 's/-Os/-O3/' buildToolkit
+echo "if (Module.onVerovioReady) { Module.onVerovioReady(); }" >> build/verovio-toolkit-wasm.js;
 cp build/verovio-toolkit-wasm.js build/verovio.wasm ../../public/
 popd
