@@ -117,10 +117,12 @@ class NeonView {
    * Get the mode Neon is in: viewer, insert, or edit.
    */
   getUserMode () {
-    if (this.editor === undefined) {
-      return 'viewer';
+    if (this.NeumeEdit !== undefined) {
+      return this.NeumeEdit.getUserMode();
+    } else if (this.TextEdit !== undefined) {
+      return 'edit';
     } else {
-      return this.editor.getUserMode();
+      return 'viewer';
     }
   }
 
