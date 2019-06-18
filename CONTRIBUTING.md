@@ -3,7 +3,7 @@
 ## Bugs
 
 For reporting bugs to Neon, please follow the process outlined on the
-[issues wiki page](https://github.com/DDMAL/Neon2/wiki/Issues).
+[issues wiki page](https://github.com/DDMAL/Neon/wiki/Issues).
 
 ## Branches and Naming
 

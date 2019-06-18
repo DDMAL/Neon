@@ -1,6 +1,6 @@
 {
     "name": "Neon",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "description": "A web-based editor for correcting MEI-Neume files",
     "main": "server.js",
     "license": "MIT",
@@ -22,13 +22,13 @@
             "url": "https://github.com/ATranimal"
         }
     ],
-    "homepage": "https://github.com/DDMAL/Neon2",
+    "homepage": "https://github.com/DDMAL/Neon",
     "repository": {
         "type": "git",
-        "url": "https://github.com/DDMAL/Neon2.git"
+        "url": "https://github.com/DDMAL/Neon.git"
     },
     "bugs": {
-        "url": "https://github.com/DDMAL/Neon2/issues"
+        "url": "https://github.com/DDMAL/Neon/issues"
     },
     "scripts": {
         "start": "nodemon server.js",
