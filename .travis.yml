@@ -9,8 +9,9 @@ addons:
   firefox: latest
   homebrew:
       packages:
-          - geckodriver
-          - wget
+        - geckodriver
+        - wget
+      update: true
 before_install:
   - >
     if [ -f $HOME/verovio_cache/commit.txt ]; then
