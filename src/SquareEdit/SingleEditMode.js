@@ -1,6 +1,5 @@
 import { bindInsertTabs, initInsertEditControls } from './Controls.js';
-import { initEditModeControls, initNavbar, initUndoRedoPanel } from '../utils/EditControls.js';
-import DragHandler from '../utils/DragHandler.js';
+import { initEditModeControls } from '../utils/EditControls.js';
 import * as Select from '../utils/Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';
@@ -23,16 +22,10 @@ class SingleEditMode {
    * Initialize the start of edit mode when first leaving viewer mode.
    */
   initEditMode () {
-    this.dragHandler = new DragHandler(this.neonView, '#svg_group');
-    initNavbar(this.neonView);
-    initUndoRedoPanel(this.neonView);
-    Select.setSelectHelperObjects(this.neonView, this.dragHandler);
-    Select.clickSelect('#mei_output, #mei_output use');
-
     this.insertHandler = new InsertHandler(this.neonView, '#svg_group');
     bindInsertTabs(this.insertHandler);
     document.getElementById('neumeTab').click();
-    Select.dragSelect('#svg_group');
+    this.setSelectListeners();
 
     SelectOptions.initNeonView(this.neonView);
     initInsertEditControls(this.neonView);

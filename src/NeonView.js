@@ -1,4 +1,9 @@
 import NeonCore from './NeonCore.js';
+import EditControls from './utils/EditControls';
+import DragHandler from './utils/DragHandler';
+import Select from './utils/Select';
+
+const $ = require('jquery');
 
 /**
  * NeonView class. Manages the other modules of Neon and communicates with
@@ -44,6 +49,9 @@ class NeonView {
       editButton.classList.add('button');
       editButton.id = 'edit_mode';
       editButton.textContent = 'Edit MEI';
+      $('#edit_mode').on('click', () => {
+        this.initEditMode();
+      });
       editItem.appendChild(editButton);
       parent.appendChild(editItem);
     }
@@ -57,6 +65,19 @@ class NeonView {
         this.textEdit = new params.TextEdit(this);
       }
     }
+  }
+
+  /**
+   * initialize basic edit mode features
+   * called when the edit MEI button is clicked
+   */
+  initEditMode () {
+    EditControls.initNavbar(this);
+    EditControls.initUndoRedoPanel(this);
+    this.dragHandler = new DragHandler(this.neonView, '#svg_group');
+    Select.setSelectHelperObjects(this, this.dragHandler);
+    Select.clickSelect('#mei_output, #mei_output use');
+    Select.dragSelect('#svg_group');
   }
 
   /**

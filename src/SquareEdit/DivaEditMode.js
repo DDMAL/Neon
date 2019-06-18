@@ -1,6 +1,5 @@
 import { bindInsertTabs, initInsertEditControls } from './Controls.js';
-import { initEditModeControls, initNavbar, initUndoRedoPanel } from '../utils/EditControls.js';
-import DragHandler from '../utils/DragHandler.js';
+import { initEditModeControls } from '../utils/EditControls.js';
 import * as Select from '../utils/Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';
@@ -12,11 +11,6 @@ class DivaEdit {
   }
 
   initEditMode () {
-    this.dragHandler = new DragHandler(this.neonView, '#svg_group');
-    initNavbar(this.neonView);
-    initUndoRedoPanel(this.neonView);
-    Select.setSelectHelperObjects(this.neonView, this.dragHandler);
-
     this.insertHandler = new InsertHandler(this.neonView, '.active-page > svg');
     bindInsertTabs(this.insertHandler);
     document.getElementById('neumeTab').click();

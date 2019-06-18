@@ -1,4 +1,4 @@
-/** @module SingleEdit/Select */
+/** @module Select */
 
 import { initSelectionButtons } from '../SquareEdit/Controls.js';
 import {
