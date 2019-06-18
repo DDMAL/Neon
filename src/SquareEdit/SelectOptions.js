@@ -2,8 +2,7 @@
 import * as Contents from './Contents.js';
 import * as Grouping from './Grouping.js';
 import * as Notification from '../utils/Notification.js';
-import InfoModule from '../InfoModule.js';
-import SplitHandler from './SplitHandler.js';
+import { SplitHandler } from './StaffTools.js';
 const $ = require('jquery');
 
 /**
@@ -53,7 +52,30 @@ export function unsetVirgaAction (id) {
   };
 }
 
-// TODO: CHANGE NAVABAR-LINK TO PROPER ICON//
+/**
+ * function to handle removing elements
+ * @param { NeonView } neonView - a neonView object
+ */
+export function removeHandler () {
+  let toRemove = [];
+  var selected = Array.from(document.getElementsByClassName('selected'));
+  selected.forEach(elem => {
+    toRemove.push(
+      {
+        'action': 'remove',
+        'param': {
+          'elementId': elem.id
+        }
+      }
+    );
+  });
+  let chainAction = {
+    'action': 'chain',
+    'param': toRemove
+  };
+  neonView.edit(chainAction, neonView.view.getCurrentPage()).then(() => { neonView.updateForCurrentPage(); });
+}
+
 /**
  * Trigger the extra nc action menu.
  * @param {SVGGraphicsElement} nc - The last selected elements.
@@ -66,7 +88,7 @@ export function triggerNcActions (nc) {
   $('#Punctum.dropdown-item').on('click', () => {
     let unsetInclinatum = unsetInclinatumAction(nc.id);
     let unsetVirga = unsetVirgaAction(nc.id);
-    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] }, 0).then((result) => {
+    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] }, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -86,7 +108,7 @@ export function triggerNcActions (nc) {
         'attrValue': 'se'
       }
     };
-    neonView.edit(setInclinatum, 0).then((result) => {
+    neonView.edit(setInclinatum, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -107,7 +129,7 @@ export function triggerNcActions (nc) {
         'attrValue': 'n'
       }
     };
-    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, setVirga ] }, 0).then((result) => {
+    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, setVirga ] }, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -116,6 +138,11 @@ export function triggerNcActions (nc) {
       endOptionsSelection();
       neonView.updateForCurrentPage();
     });
+  });
+  console.log(neonView.view.constructor.name);
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
   });
 
   initOptionsListeners();
@@ -135,7 +162,7 @@ export function triggerNeumeActions () {
   }
 
   $('.grouping').on('click', (e) => {
-    var contour = InfoModule.getContourByValue(e.target.id);
+    var contour = neonView.info.getContourByValue(e.target.id);
     triggerChangeGroup(contour);
   });
 
@@ -147,7 +174,7 @@ export function triggerNeumeActions () {
         'contour': contour
       }
     };
-    neonView.edit(changeGroupingAction, 0).then((result) => {
+    neonView.edit(changeGroupingAction, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Grouping Changed');
       } else {
@@ -157,6 +184,11 @@ export function triggerNeumeActions () {
       neonView.updateForCurrentPage();
     });
   }
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
+  });
+
   initOptionsListeners();
   Grouping.initGroupingListeners();
 }
@@ -171,6 +203,16 @@ export function triggerSylActions () {
     "<div><p class='control'>" +
         "<button class='button' id='ungroupNeumes'>Ungroup</button></p></div>"
   );
+  $('#moreEdit').append(
+    "<div><p class='control'>" +
+        "<button class='button' id='delete'>Delete</button></p></div>"
+  );
+
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
+  });
+
   Grouping.initGroupingListeners();
 }
 
@@ -190,7 +232,7 @@ export function triggerClefActions (clef) {
         'shape': 'C'
       }
     };
-    neonView.edit(setCClef, 0).then((result) => {
+    neonView.edit(setCClef, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -208,7 +250,7 @@ export function triggerClefActions (clef) {
         'shape': 'F'
       }
     };
-    neonView.edit(setFClef, 0).then((result) => {
+    neonView.edit(setFClef, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Shape Changed');
       } else {
@@ -218,6 +260,12 @@ export function triggerClefActions (clef) {
       neonView.updateForCurrentPage();
     });
   });
+
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
+  });
+
   initOptionsListeners();
 }
 
@@ -241,7 +289,7 @@ export function triggerStaffActions () {
         'elementIds': elementIds
       }
     };
-    neonView.edit(editorAction, 0).then((result) => {
+    neonView.edit(editorAction, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
         Notification.queueNotification('Staff Merged');
         endOptionsSelection();
@@ -250,6 +298,11 @@ export function triggerStaffActions () {
         Notification.queueNotification('Merge Failed');
       }
     });
+  });
+
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
   });
 }
 
@@ -266,6 +319,25 @@ export function triggerSplitActions () {
     var split = new SplitHandler(neonView);
     split.startSplit();
     endOptionsSelection();
+  });
+
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
+  });
+}
+
+/**
+ * Trigger default selection option.
+ */
+export function triggerDefaultActions () {
+  endOptionsSelection();
+  $('#moreEdit').removeClass('is-invisible');
+  $('#moreEdit').append(Contents.defaultActionContents);
+
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
   });
 }
 

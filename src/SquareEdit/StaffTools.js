@@ -1,4 +1,5 @@
 import * as Notification from '../utils/Notification.js';
+
 const $ = require('jquery');
 
 /**
@@ -6,11 +7,11 @@ const $ = require('jquery');
  * @constructor
  * @param {NeonView} neonView - The NeonView parent.
  */
-function SplitHandler (neonView) {
+function SplitHandler (neonView, selector) {
   function startSplit () {
     splitDisable();
 
-    $('body').on('click', '#svg_output', handler);
+    $('body').on('click', selector, handler);
 
     // Handle keypresses
     $('body').on('keydown', keydownListener);
@@ -24,34 +25,36 @@ function SplitHandler (neonView) {
     if (evt.key === 'Escape') {
       splitDisable();
     } else if (evt.key === 'Shift') {
-      $('body').off('click', '#svg_output', handler);
+      $('body').off('click', selector, handler);
     }
   }
 
   function clickawayHandler (evt) {
-    if (evt.target.id !== 'svg_group' && $('#svg_group').find(evt.target).length === 0 && evt.target.tagName !== 'path' &&
-            evt.target.id !== 'split-system') {
+    console.log(evt);
+    if ($(evt.target).closest('.active-page').length === 0) {
       splitDisable();
-      $('body').off('click', '#svg_output', handler);
+      $('body').off('click', selector, handler);
     }
   }
 
   function resetHandler (evt) {
     if (evt.key === 'Shift') {
-      $('body').on('click', '#svg_output', handler);
+      $('body').on('click', selector, handler);
     }
   }
 
   function handler (evt) {
     let id = $('.selected')[0].id;
 
-    var container = document.getElementsByClassName('definition-scale')[0];
+    var container = document.getElementsByClassName('active-page')[0]
+      .getElementsByClassName('definition-scale')[0];
     var pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
 
     // Transform to SVG coordinate system.
-    var transformMatrix = container.getScreenCTM().inverse();
+    var transformMatrix = container.getElementsByClassName('system')[0]
+      .getScreenCTM().inverse();
     var cursorPt = pt.matrixTransform(transformMatrix);
     console.log(cursorPt.x);
     // Find staff point corresponds to if one exists
@@ -65,9 +68,9 @@ function SplitHandler (neonView) {
       }
     };
 
-    neonView.edit(editorAction, 0).then((result) => {
+    neonView.edit(editorAction, neonView.view.getCurrentPage()).then(async (result) => {
       if (result) {
-        neonView.updateForCurrentPage();
+        await neonView.updateForCurrentPagePromise();
       }
       splitDisable();
     });
@@ -83,4 +86,5 @@ function SplitHandler (neonView) {
   SplitHandler.prototype.constructor = SplitHandler;
   SplitHandler.prototype.startSplit = startSplit;
 }
-export { SplitHandler as default };
+
+export { SplitHandler };

@@ -6,12 +6,14 @@ const $ = require('jquery');
  * Handle inserting new musical elements and communicate this to Verovio.
  * @constructor
  * @param {NeonView} neonView - The NeonView parent.
+ * @param {string} sel - A CSS selector representing where to put the listeners.
  */
-function InsertHandler (neonView) {
+function InsertHandler (neonView, sel) {
   var type = '';
   var firstClick = true;
   var coord;
   var attributes = null;
+  var selector = sel;
 
   /**
      * Switch to insert mode based on the button pressed.
@@ -98,8 +100,8 @@ function InsertHandler (neonView) {
     }
     removeInsertClickHandlers();
     if (type === 'staff') {
-      $('body').on('click', '#svg_group', staffHandler);
-    } else { $('body').on('click', '#svg_group', handler); }
+      $('body').on('click', selector, staffHandler);
+    } else { $('body').on('click', selector, handler); }
 
     // Disable edit mode listeners
     $('body').on('keydown', keydownListener);
@@ -110,14 +112,11 @@ function InsertHandler (neonView) {
 
     // Add 'return to edit mode' button
     if (!alreadyInInsertMode) {
-      let editModeContainer = document.createElement('p');
-      editModeContainer.classList.add('control');
       let editModeButton = document.createElement('button');
       editModeButton.id = 'returnToEditMode';
       editModeButton.classList.add('button');
       editModeButton.innerHTML = 'Return to Edit Mode';
-      editModeContainer.appendChild(editModeButton);
-      document.getElementById('delete').parentNode.parentNode.appendChild(editModeContainer);
+      document.getElementById('redo').parentNode.appendChild(editModeButton);
       editModeButton.addEventListener('click', insertDisabled);
     }
     $('#editMenu').css('backgroundColor', 'whitesmoke');
@@ -138,7 +137,11 @@ function InsertHandler (neonView) {
     $('.insertel.is-active').removeClass('is-active');
     firstClick = true;
     Cursor.resetCursor();
-    $(document.getElementById('returnToEditMode').parentNode).remove();
+    try {
+      $(document.getElementById('returnToEditMode')).remove();
+    } catch (e) {
+      console.debug(e);
+    }
     $('#insertMenu').css('backgroundColor', 'whitesmoke');
     $('#insertMenu').css('font-weight', '');
     $('#editMenu').css('backgroundColor', '#ffc7c7');
@@ -146,8 +149,9 @@ function InsertHandler (neonView) {
   }
 
   function clickawayHandler (evt) {
-    if (evt.target.id !== 'svg_group' && $('#svg_group').find(evt.target).length === 0 && evt.target.tagName !== 'path' &&
-            !($(evt.target).hasClass('insertel') || $(evt.target).hasClass('image'))) {
+    if ($(evt.target).closest('.active-page').length === 0 &&
+      $(evt.target).closest('#insert_controls').length === 0 &&
+      $(evt.target).closest('#svg_group').length === 0) {
       insertDisabled();
       $('body').off('keydown', staffHandler);
       $('body').off('keydown', handler);
@@ -156,7 +160,7 @@ function InsertHandler (neonView) {
 
   function resetInsertHandler (evt) {
     if (evt.key === 'Shift') {
-      $('body').on('click', '#svg_group', type === 'staff' ? staffHandler : handler);
+      $('body').on('click', selector, type === 'staff' ? staffHandler : handler);
     }
   }
 
@@ -175,12 +179,12 @@ function InsertHandler (neonView) {
      * @param {object} evt - JQuery event object.
      */
   function handler (evt) {
-    var container = document.getElementsByClassName('definition-scale')[0];
+    var container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     var pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
     // Transform pt to SVG context
-    var transformMatrix = container.getScreenCTM();
+    var transformMatrix = container.getElementsByClassName('system')[0].getScreenCTM();
     var cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
     let editorAction = {
@@ -197,7 +201,7 @@ function InsertHandler (neonView) {
       editorAction['param']['attributes'] = attributes;
     }
 
-    neonView.edit(editorAction, 0).then(() => {
+    neonView.edit(editorAction, neonView.view.getCurrentPage()).then(() => {
       neonView.updateForCurrentPage();
     });
   }
@@ -207,11 +211,11 @@ function InsertHandler (neonView) {
      * @param {object} evt - JQuery event object.
      */
   function staffHandler (evt) {
-    var container = document.getElementsByClassName('definition-scale')[0];
+    var container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     var pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
-    var transformMatrix = container.getScreenCTM();
+    var transformMatrix = container.getElementsByClassName('system')[0].getScreenCTM();
     var cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
     if (firstClick) {
@@ -244,7 +248,7 @@ function InsertHandler (neonView) {
         }
       };
 
-      neonView.edit(action, 0).then(() => {
+      neonView.edit(action, neonView.view.getCurrentPage()).then(() => {
         neonView.updateForCurrentPage();
         insertDisabled();
       });
@@ -252,8 +256,8 @@ function InsertHandler (neonView) {
   }
 
   function removeInsertClickHandlers () {
-    $('body').off('click', '#svg_group', staffHandler);
-    $('body').off('click', '#svg_group', handler);
+    $('body').off('click', staffHandler);
+    $('body').off('click', handler);
   }
 
   /**

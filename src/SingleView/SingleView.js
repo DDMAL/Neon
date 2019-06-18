@@ -131,6 +131,9 @@ class SingleView {
           case 'Shift':
             d3.select('#svg_group').on('.drag', null);
             Cursor.updateCursorTo('');
+            if (this.neonView.getUserMode !== 'viewer') {
+              this.neonView.NeumeEdit.setSelectListeners();
+            }
             if (this.neonView.getUserMode() === 'insert') {
               Cursor.updateCursor();
             }
@@ -160,6 +163,14 @@ class SingleView {
         $('#container').attr('height', newHeight);
       }
     });
+  }
+
+  /**
+   * A human readable name for the page. Used for downloads.
+   * @returns {string}
+   */
+  getPageName () {
+    return this.neonView.name;
   }
 }
 
