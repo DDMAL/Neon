@@ -2,7 +2,7 @@
 
 import { initSelectionButtons } from '../SquareEdit/Controls.js';
 import {
-  unselect, getStaffBBox, selectStaff, selectAll
+  unselect, getStaffBBox, selectStaff, selectAll, getSelectionType
 } from './SelectTools.js';
 import { Resize } from './Resize.js';
 
@@ -11,19 +11,6 @@ const $ = require('jquery');
 
 var dragHandler, neonView, info, zoomHandler;
 var strokeWidth = 7;
-
-/**
- * Get the selection mode chosen by the user.
- * @returns {string|null}
- */
-function getSelectionType () {
-  let element = document.getElementsByClassName('sel-by is-active');
-  if (element.length !== 0) {
-    return element[0].id;
-  } else {
-    return null;
-  }
-}
 
 export function setSelectStrokeWidth (width) {
   strokeWidth = width;
@@ -63,6 +50,8 @@ export function clickSelect (selector) {
     }
   });
 
+  $('#container').on('contextmenu', (evt) => { evt.preventDefault(); });
+
   $('use').on('click', (e) => { e.stopPropagation(); });
   $('#moreEdit').on('click', (e) => { e.stopPropagation(); });
 }
@@ -80,7 +69,11 @@ function clickHandler (evt) {
   // Check if the element being clicked on is part of a drag Selection
   if (this.tagName === 'use') {
     if ($(this).parents('.selected').length === 0) {
-      selectAll([this], neonView, info, dragHandler);
+      let selection = [this];
+      if (evt.ctrlKey) {
+        selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
+      }
+      selectAll(selection, neonView, info, dragHandler);
     }
   } else {
     // Check if the point being clicked on is a staff selection (if applicable)
