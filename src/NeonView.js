@@ -65,7 +65,7 @@ class NeonView {
     if (params.TextView !== undefined) {
       this.textView = new params.TextView(this);
       if (params.TextEdit !== undefined) {
-        this.textEdit = new params.TextEdit(this);
+        this.TextEdit = new params.TextEdit(this);
       }
     }
   }

@@ -78,8 +78,8 @@ class TextView {
           // this.removeBoundingBox(span);
         });
       });
-      if (this.neonView.getUserMode() !== 'viewer') {
-        this.setTextEdit();
+      if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
+        this.neonView.TextEdit.setTextEdit();
       }
     } else {
       $('#syl_text').css('display', 'none');
