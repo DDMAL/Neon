@@ -12,6 +12,7 @@ addons:
           - geckodriver
           - wget
 before_install:
+  - ls $HOME/verovio_cache
   - >
     if [ -f $HOME/verovio_cache/commit.txt ]; then
       CACHE_COMMIT=$(cat $HOME/verovio_cache/commit.txt 2> /dev/null);
