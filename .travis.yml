@@ -19,6 +19,7 @@ before_install:
       CACHE_COMMIT=""
     fi
   - pushd verovio && REPO_COMMIT=$(git describe --abbrev=7 --always) && popd;
+  - echo "Got commit \"$CACHE_COMMIT\" from cache and commit \"$REPO_COMMIT\" from repository."
   - >
     if [ "$CACHE_COMMIT" != "$REPO_COMMIT" ]; then
       wget https://github.com/emscripten-core/emsdk/archive/master.zip
