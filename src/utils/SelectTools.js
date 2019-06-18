@@ -298,9 +298,12 @@ export async function selectAll (elements, neonView, info, dragHandler) {
           let avgStaffHeight = (bb1.lry - bb1.uly + bb2.lry - bb2.uly) / 2;
           if (Math.abs(bb1.uly - bb2.uly) < avgStaffHeight) {
             SelectOptions.triggerStaffActions();
+          } else {
+            SelectOptions.triggerDefaultActions();
           }
           break;
         default:
+          SelectOptions.triggerDefaultActions();
       }
       break;
 
@@ -313,6 +316,8 @@ export async function selectAll (elements, neonView, info, dragHandler) {
         default:
           if (sharedSecondLevelParent(groups)) {
             Grouping.triggerGrouping('syl');
+          } else {
+            SelectOptions.triggerDefaultActions();
           }
       }
       break;
@@ -326,6 +331,8 @@ export async function selectAll (elements, neonView, info, dragHandler) {
         default:
           if (sharedSecondLevelParent(groups)) {
             Grouping.triggerGrouping('neume');
+          } else {
+            SelectOptions.triggerDefaultActions();
           }
       }
       break;
@@ -368,11 +375,15 @@ export async function selectAll (elements, neonView, info, dragHandler) {
               }
             }
             Grouping.triggerGrouping('nc');
+          } else {
+            SelectOptions.triggerDefaultActions();
           }
           break;
         default:
           if (sharedSecondLevelParent(groups)) {
             Grouping.triggerGrouping('nc');
+          } else {
+            SelectOptions.triggerDefaultActions();
           }
       }
       break;
