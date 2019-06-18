@@ -10,7 +10,7 @@ class DivaView {
     this.diva.disableDragScrollable();
     this.displayPanel = new Display(this, 'neon-container', 'diva-viewer-canvas');
     this.initDivaEvents();
-    this.setViewEventHandlers();
+    // this.setViewEventHandlers();
   }
 
   initDivaEvents () {
@@ -151,6 +151,12 @@ class DivaView {
           break;
       }
     });
+  }
+
+  getPageName () {
+    let manuscriptName = this.diva.settings.manifest.itemTitle;
+    let pageName = this.diva.settings.manifest.pages[this.getCurrentPage()].l;
+    return manuscriptName + ' \u2014 ' + pageName;
   }
 }
 

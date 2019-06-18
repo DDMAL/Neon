@@ -1,6 +1,7 @@
-import { bindInsertTabs, initEditModeControls, initNavbar, initInsertEditControls } from './EditControls.js';
-import DragHandler from '../SingleView/DragHandler.js';
-import * as Select from './Select.js';
+import { bindInsertTabs, initInsertEditControls } from './Controls.js';
+import { initEditModeControls, initNavbar, initUndoRedoPanel } from '../utils/EditControls.js';
+import DragHandler from '../utils/DragHandler.js';
+import * as Select from '../utils/Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';
 
@@ -22,19 +23,24 @@ class SingleEditMode {
    * Initialize the start of edit mode when first leaving viewer mode.
    */
   initEditMode () {
-    this.dragHandler = new DragHandler(this.neonView);
+    this.dragHandler = new DragHandler(this.neonView, '#svg_group');
     initNavbar(this.neonView);
-    Select.setSelectHelperObjects(this.dragHandler, this.neonView);
-    Select.clickSelect();
-    this.insertHandler = new InsertHandler(this.neonView);
+    initUndoRedoPanel(this.neonView);
+    Select.setSelectHelperObjects(this.neonView, this.dragHandler);
+    Select.clickSelect('#mei_output, #mei_output use');
+
+    this.insertHandler = new InsertHandler(this.neonView, '#svg_group');
     bindInsertTabs(this.insertHandler);
     document.getElementById('neumeTab').click();
-    Select.dragSelect();
+    Select.dragSelect('#svg_group');
+
     SelectOptions.initNeonView(this.neonView);
     initInsertEditControls(this.neonView);
     let editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = '#ffc7c7';
     editMenu.style.fontWeight = 'bold';
+
+    this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
   }
 
   /**
@@ -49,6 +55,11 @@ class SingleEditMode {
       return 'edit';
     }
     return 'viewer';
+  }
+
+  setSelectListeners () {
+    Select.clickSelect('#mei_output, #mei_output use');
+    Select.dragSelect('#svg_group');
   }
 }
 

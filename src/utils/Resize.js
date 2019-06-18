@@ -1,9 +1,8 @@
-/**
- * Support for resizing the staff by creating a resizable box around it.
- * @module SingleEdit/ResizeStaff
+/** @module for resizing objects
+ * current use cases: bounding boxes and staves
  */
 
-import { selectStaff } from './Select.js';
+import { getStaffBBox, selectBBox, selectStaff } from './SelectTools.js';
 
 const d3 = require('d3');
 
@@ -18,60 +17,60 @@ const Side = {
 };
 
 /**
- * Handle the resizing of the selected staff.
+ * Handle the resizing of the selected object.
  * @constructor
- * @param {string} staffId - The ID of the staff to resize.
+ * @param {string} elementId - The ID of the element to resize.
  * @param {NeonView} neonView - The NeonView parent for editing and refreshing.
  * @param {DragHandler} dragHandler - A drag handler object.
  */
-function Resize (staffId, neonView, dragHandler) {
-  var staff = document.getElementById(staffId);
+function Resize (elementId, neonView, dragHandler) {
+  var element = document.getElementById(elementId);
   /**
-     * The upper-left x-coordinate of the staff.
+     * The upper-left x-coordinate of the element.
      * @type {number}
      */
   var ulx;
   /**
-     * The upper-left y-coordinate of the staff.
+     * The upper-left y-coordinate of the element.
      * @type {number}
      */
   var uly;
   /**
-     * The lower-right x-coordinate of the staff.
+     * The lower-right x-coordinate of the element.
      * @type {number}
      */
   var lrx;
   /**
-     * The lower-right y-coordinate of the staff.
+     * The lower-right y-coordinate of the element.
      * @type {number}
      */
   var lry;
 
   /**
-     * Draw the initial rectangle around the staff
+     * Draw the initial rectangle around the element
      * and add the listeners to support dragging to resize.
      */
   function drawInitialRect () {
-    if (staff === null) return;
-    let paths = Array.from(staff.getElementsByTagName('path'));
+    if (element === null) return;
 
-    paths.forEach(path => {
-      let box = path.getBBox();
-      if (ulx === undefined || ulx > box.x) {
-        ulx = box.x;
-      }
-      if (uly === undefined || uly > box.y) {
-        uly = box.y;
-      }
-      if (lrx === undefined || lrx < box.x + box.width) {
-        lrx = box.x + box.width;
-      }
-      if (lry === undefined || lry < box.y + box.height) {
-        lry = box.y + box.height;
-      }
-    });
+    // if it's a boundingbox just get the coordinates
+    if (element.classList.contains('sylTextRect')) {
+      ulx = element.attr('x');
+      uly = element.attr('y');
+      lrx = ulx + element.attr('width');
+      lry = uly + element.attr('height');
+    }
 
-    d3.select('#' + staff.id).append('rect')
+    // if it's a staff use the paths to get it's boundingbox
+    if (element.classList.contains('staff')) {
+      var bbox = getStaffBBox(element);
+      ulx = bbox.ulx;
+      uly = bbox.uly;
+      lrx = bbox.lrx;
+      lry = bbox.lry;
+    }
+
+    d3.select('#' + element.id).append('rect')
       .attr('x', ulx)
       .attr('y', uly)
       .attr('width', lrx - ulx)
@@ -137,23 +136,27 @@ function Resize (staffId, neonView, dragHandler) {
       let editorAction = {
         'action': 'resize',
         'param': {
-          'elementId': staff.id,
+          'elementId': element.id,
           'ulx': ulx,
           'uly': uly,
           'lrx': lrx,
           'lry': lry
         }
       };
-      neonView.edit(editorAction, 0).then((result) => {
+      neonView.edit(editorAction, neonView.view.getCurrentPage()).then(async (result) => {
         if (result) {
-          neonView.updateForCurrentPage();
+          await neonView.updateForCurrentPagePromise();
         }
-        staff = document.getElementById(staffId);
+        element = document.getElementById(elementId);
         ulx = undefined;
         uly = undefined;
         lrx = undefined;
         lry = undefined;
-        selectStaff(staff, dragHandler);
+        if (element.classList.contains('sylTextRect')) {
+          selectBBox(element, dragHandler);
+        } else {
+          selectStaff(element, dragHandler);
+        }
         drawInitialRect();
       });
     }
@@ -173,4 +176,5 @@ function Resize (staffId, neonView, dragHandler) {
   Resize.prototype.constructor = Resize;
   Resize.prototype.drawInitialRect = drawInitialRect;
 }
-export { Resize as default };
+
+export { Resize };

@@ -39,19 +39,19 @@ class NeonCore {
   /**
    * Constructor for NeonCore
    * @param {Map&lt;number, string>} meiMap - Map of zero-indexed page no to MEI.
-   * @param {string} title - The title of the page or manuscript.
+   * @param {Promise} title - The title of the page or manuscript.
    * @returns {object} A NeonCore object.
    */
   constructor (meiMap, title) {
-    this.vrvToolkit = new verovio.toolkit();
-    this.vrvToolkit.setOptions({
+    this.verovioOptions = {
       inputFormat: 'mei',
       noFooter: 1,
       noHeader: 1,
       pageMarginLeft: 0,
       pageMarginTop: 0,
-      font: 'Bravura'
-    });
+      font: 'Bravura',
+      useFacsimile: true
+    };
 
     Validation.init();
 
@@ -84,6 +84,16 @@ class NeonCore {
     this.parser = new DOMParser();
 
     this.db = new PouchDb(title);
+
+    /**
+     * A map associating page numbers with their respective Verovio toolkit
+     * instances. This is used to decrease latency in loading files.
+     * @type {Map.&lt;number, object>}
+     */
+    this.toolkits = new Map();
+
+    this.blankPages = [];
+
     // Add each MEI to the database
     this.meiMap = meiMap;
   }
@@ -123,20 +133,22 @@ class NeonCore {
    */
   loadPage (pageNo) {
     return new Promise((resolve, reject) => {
-      if (this.currentPage !== pageNo) {
-        if (this.neonCache.has(pageNo)) {
-          this.loadData(pageNo, this.neonCache.get(pageNo).mei);
-          resolve(this.neonCache.get(pageNo));
-        } else {
-          this.db.get(pageNo.toString()).then((doc) => {
-            this.loadData(pageNo, doc.data);
-            resolve(this.neonCache.get(pageNo));
-          }).catch((err) => {
-            reject(err);
-          });
-        }
-      } else {
+      if (this.neonCache.has(pageNo)) {
         resolve(this.neonCache.get(pageNo));
+      } else if (this.blankPages.includes(pageNo)) {
+        let e = new Error('No MEI file for page ' + pageNo);
+        e.name = 'missing_mei';
+        reject(e);
+      } else {
+        this.db.get(pageNo.toString()).then((doc) => {
+          this.loadData(pageNo, doc.data);
+          resolve(this.neonCache.get(pageNo));
+        }).catch((err) => {
+          if (err.name === 'not_found') {
+            this.blankPages.push(pageNo);
+          }
+          reject(err);
+        });
       }
     });
   }
@@ -150,7 +162,7 @@ class NeonCore {
   loadData (pageNo, data, dirty = false) {
     Validation.sendForValidation(data);
     let svg = this.parser.parseFromString(
-      this.vrvToolkit.renderData(data, {}),
+      this.getToolkit(pageNo).renderData(data, {}),
       'image/svg+xml'
     ).documentElement;
     this.neonCache.set(pageNo, {
@@ -158,7 +170,6 @@ class NeonCore {
       mei: data,
       dirty: dirty
     });
-    this.currentPage = pageNo;
   }
 
   /**
@@ -196,7 +207,7 @@ class NeonCore {
   getElementAttr (elementId, pageNo) {
     return new Promise((resolve) => {
       this.loadPage(pageNo).then(() => {
-        resolve(this.vrvToolkit.getElementAttr(elementId));
+        resolve(this.getToolkit(pageNo).getElementAttr(elementId));
       });
     });
   }
@@ -214,7 +225,7 @@ class NeonCore {
       await this.loadPage(pageNo);
     }
     let currentMEI = this.getMEI(pageNo);
-    let result = this.vrvToolkit.edit(editorAction);
+    let result = this.getToolkit(pageNo).edit(editorAction);
     if (result) {
       if (!this.undoStacks.has(pageNo)) {
         this.undoStacks.set(pageNo, []);
@@ -224,8 +235,8 @@ class NeonCore {
 
       // Update cache
       this.neonCache.set(pageNo, {
-        mei: this.vrvToolkit.getMEI(0, true),
-        svg: this.parser.parseFromString(this.vrvToolkit.renderToSVG(1),
+        mei: this.getToolkit(pageNo).getMEI(0, true),
+        svg: this.parser.parseFromString(this.getToolkit(pageNo).renderToSVG(1),
           'image/svg+xml').documentElement,
         dirty: true
       });
@@ -237,8 +248,8 @@ class NeonCore {
    * Get the edit info string from the verovio toolkit.
    * @returns {string}
    */
-  info () {
-    return this.vrvToolkit.editInfo();
+  info (pageNo) {
+    return this.getToolkit(pageNo).editInfo();
   }
 
   /**
@@ -301,6 +312,14 @@ class NeonCore {
       }
     }
   }
+
+  getToolkit (pageNo) {
+    if (!this.toolkits.has(pageNo)) {
+      this.toolkits.set(pageNo, new verovio.toolkit());
+      this.toolkits.get(pageNo).setOptions(this.verovioOptions);
+    }
+    return this.toolkits.get(pageNo);
+  }
 }
 
 export { NeonCore as default };
@@ -314,13 +333,13 @@ export { NeonCore as default };
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_DisplayControls.html">SingleView/DisplayControls</a></li><li><a href="module-SingleView_DisplayPanel.html">SingleView/DisplayPanel</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.1</a> on Tue May 14 2019 10:56:12 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 18 2019 11:17:42 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -14,8 +14,9 @@ class NeonView {
    * @param {object} params.View - Constructor for a View module
    * @param {object} params.Display - Constructor for DisplayPanel module
    * @param {object} params.Info - Constructor for InfoModule module
-   * @param {object} [params.Edit] - Constructor for EditMode module
+   * @param {object} [params.NeumeEdit] - Constructor for NeumeEdit module
    * @param {object} [params.TextView] - Constructor for TextView module
+   * @param {object} [params.TextEdit] - Constructor for TextEdit module
    */
   constructor (params) {
     if (params.mode === 'single' || params.mode === 'iiif') {
@@ -30,13 +31,12 @@ class NeonView {
       this.view = new params.View(this, params.Display, params.options.manifest);
     }
 
+    this.name = params.options.name;
     this.core = new NeonCore(params.options.meiMap, params.options.name);
-
     this.display = this.view.display;
-    this.InfoModule = params.Info;
     this.info = new params.Info(this);
 
-    if (params.Edit !== undefined) {
+    if (params.NeumeEdit !== undefined) {
       // Set up display for edit button
       let parent = document.getElementById('dropdown_toggle');
       let editItem = document.createElement('a');
@@ -47,11 +47,13 @@ class NeonView {
       editButton.textContent = 'Edit MEI';
       editItem.appendChild(editButton);
       parent.appendChild(editItem);
-
-      this.editor = new params.Edit(this);
+      this.NeumeEdit = new params.NeumeEdit(this);
     }
     if (params.TextView !== undefined) {
       this.textView = new params.TextView(this);
+    }
+    if (params.TextEdit !== undefined) {
+      this.textEdit = new params.TextEdit(this);
     }
   }
 
@@ -79,7 +81,19 @@ class NeonView {
     // load pages
     this.core.getSVG(pageNo).then((svg) => {
       this.view.updateSVG(svg, pageNo);
+      this.view.updateCallbacks.forEach(callback => callback());
     });
+  }
+
+  /**
+   * Same as updateForCurrentPage but returns a promise.
+   * @see NeonView.updateForCurrentPage
+   */
+  updateForCurrentPagePromise () {
+    let pageNo = this.view.getCurrentPage();
+    return Promise.resolve(this.core.getSVG(pageNo).then((svg) => {
+      this.view.updateSVG(svg, pageNo);
+    }));
   }
 
   /**
