@@ -12,7 +12,6 @@ addons:
           - geckodriver
           - wget
 before_install:
-  - ls $HOME/verovio_cache
   - >
     if [ -f $HOME/verovio_cache/commit.txt ]; then
       CACHE_COMMIT=$(cat $HOME/verovio_cache/commit.txt 2> /dev/null);
@@ -34,6 +33,7 @@ before_install:
     else
       cp $HOME/verovio_cache/verovio-toolkit-wasm.js $HOME/verovio_cache/verovio.wasm public/
       cp -R $HOME/verovio_cache/npm-dev verovio/emscripten/npm-dev
+      echo $REPO_COMMIT > $HOME/verovio_cache/commit.txt
     fi
 install:
   - yarn install
