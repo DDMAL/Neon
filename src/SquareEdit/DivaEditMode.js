@@ -1,4 +1,4 @@
-import { bindInsertTabs, initInsertEditControls, initEditModeControls } from './Controls.js';
+import { bindInsertTabs, initInsertEditControls, initEditModeControls, initSelectionButtons } from './Controls.js';
 import * as Select from '../utils/Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';
@@ -20,6 +20,7 @@ class DivaEdit {
     let editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = '#ffc7c7';
     editMenu.style.fontWeight = 'bold';
+    
 
     Select.setSelectStrokeWidth(1);
 
@@ -43,6 +44,7 @@ class DivaEdit {
   setSelectListeners () {
     Select.clickSelect('.active-page, .active-page use');
     Select.dragSelect('.active-page svg');
+    initSelectionButtons();
   }
 }
 

@@ -1,4 +1,4 @@
-import { bindInsertTabs, initInsertEditControls, initEditModeControls } from './Controls.js';
+import { bindInsertTabs, initInsertEditControls, initEditModeControls, initSelectionButtons } from './Controls.js';
 import * as Select from '../utils/Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';
@@ -30,7 +30,7 @@ class SingleEditMode {
     initInsertEditControls(this.neonView);
     let editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = '#ffc7c7';
-    editMenu.style.fontWeight = 'bold';
+    editMenu.style.fontWeight = 'bold';  
 
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
   }
@@ -52,6 +52,7 @@ class SingleEditMode {
   setSelectListeners () {
     Select.clickSelect('#mei_output, #mei_output use');
     Select.dragSelect('#svg_group');
+    initSelectionButtons();
   }
 }
 
