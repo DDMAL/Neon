@@ -1,7 +1,7 @@
 import NeonCore from './NeonCore.js';
-import EditControls from './utils/EditControls';
+import { initNavbar, initUndoRedoPanel, initEditModeControls } from './utils/EditControls';
 import DragHandler from './utils/DragHandler';
-import Select from './utils/Select';
+import { clickSelect, dragSelect, setSelectHelperObjects } from './utils/Select';
 
 const $ = require('jquery');
 
@@ -49,10 +49,12 @@ class NeonView {
       editButton.classList.add('button');
       editButton.id = 'edit_mode';
       editButton.textContent = 'Edit MEI';
-      EditControls.initEditModeControls();
+      initEditModeControls();
       $('#edit_mode').on('click', () => {
         this.initEditMode();
       });
+      this.dragHandler = new DragHandler(this.neonView, '#svg_group');
+      setSelectHelperObjects(this, this.dragHandler);
       editItem.appendChild(editButton);
       parent.appendChild(editItem);
     }
@@ -73,12 +75,10 @@ class NeonView {
    * called when the edit MEI button is clicked
    */
   initEditMode () {
-    EditControls.initNavbar(this);
-    EditControls.initUndoRedoPanel(this);
-    this.dragHandler = new DragHandler(this.neonView, '#svg_group');
-    Select.setSelectHelperObjects(this, this.dragHandler);
-    Select.clickSelect('#mei_output, #mei_output use');
-    Select.dragSelect('#svg_group');
+    initNavbar(this);
+    initUndoRedoPanel(this);
+    clickSelect('#mei_output, #mei_output use');
+    dragSelect('#svg_group');
   }
 
   /**

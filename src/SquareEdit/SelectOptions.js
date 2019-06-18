@@ -139,7 +139,6 @@ export function triggerNcActions (nc) {
       neonView.updateForCurrentPage();
     });
   });
-  console.log(neonView.view.constructor.name);
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', (evt) => {
     if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
