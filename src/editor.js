@@ -6,6 +6,7 @@ import SingleView from './SingleView/SingleView.js';
 import SingleEditMode from './SquareEdit/SingleEditMode.js';
 import InfoModule from './InfoModule.js';
 import TextView from './TextView.js';
+import TextEditMode from './TextEdit/TextEditMode.js';
 
 const $ = require('jquery');
 
@@ -22,7 +23,8 @@ if (manifest !== '') {
       Display: DisplayPanel,
       Info: InfoModule,
       NeumeEdit: DivaEdit,
-      TextView: TextView
+      TextView: TextView,
+      TextEdit: TextEditMode
     };
     var view = new NeonView(params);
     view.start();
@@ -42,7 +44,8 @@ if (manifest !== '') {
       Display: DisplayPanel,
       Info: InfoModule,
       NeumeEdit: SingleEditMode,
-      TextView: TextView
+      TextView: TextView,
+      TextEdit: TextEditMode
     };
 
     var view = new NeonView(params);

@@ -20,7 +20,6 @@ class DivaEdit {
     let editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = '#ffc7c7';
     editMenu.style.fontWeight = 'bold';
-    
 
     Select.setSelectStrokeWidth(1);
 

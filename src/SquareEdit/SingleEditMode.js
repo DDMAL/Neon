@@ -30,7 +30,7 @@ class SingleEditMode {
     initInsertEditControls(this.neonView);
     let editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = '#ffc7c7';
-    editMenu.style.fontWeight = 'bold';  
+    editMenu.style.fontWeight = 'bold';
 
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
   }
