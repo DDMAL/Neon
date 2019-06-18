@@ -128,7 +128,7 @@ export const ncActionContents =
         "<a id='Virga' class='dropdown-item'>Virga</a>" +
         "<a id='Inclinatum' class='dropdown-item'>Inclinatum</a></div></div></div>" +
         "<p class='control'>" +
-        "<button class='button' id='delete'>Delete</botton></p></div>";
+        "<button class='button' id='delete'>Delete</button></p></div>";
 
 /**
  * Contents of extra neume action menu.
@@ -160,7 +160,7 @@ export const neumeActionContents =
         '</div></div></div>' +
         "<div><p class='control'>" +
         "<button class='button' id='ungroupNcs'>Ungroup</button>" +
-        "<button class='button' id='delete'>Delete</botton></p></div>";
+        "<button class='button' id='delete'>Delete</button></p></div>";
 
 /**
  * Contents of extra staff action menu.
@@ -170,7 +170,15 @@ export const staffActionContents =
     '<label>Merge Systems:&nbsp;</label>' +
     "<div><p class='control'>" +
     "<button id='merge-systems' class='button'>Merge</button>" +
-    "<button class='button' id='delete'>Delete</botton></p></div>";
+    "<button class='button' id='delete'>Delete</button></p></div>";
+
+/**
+ * Contents of default action menu.
+ * @type {string}
+ */
+export const defaultActionContents =
+    "<div><p class='control'>" +
+    "<button class='button' id='delete'>Delete</button></p></div>";
 
 /**
  * Contents of split action menu.
@@ -180,7 +188,7 @@ export const splitActionContents =
     '<label>Split System:&nbsp;</label>' +
     "<div><p class='control'>" +
     "<button id='split-system' class='button'>Split</button>" +
-    "<button class='button' id='delete'>Delete</botton></p></div>";
+    "<button class='button' id='delete'>Delete</button></p></div>";
 
 /**
  * Contents of extra clef action menu.
@@ -197,7 +205,7 @@ export const clefActionContents =
     "<div class='dropdown-content'>" +
     "<a id='CClef' class='dropdown-item'>C Clef</a>" +
     "<a id='FClef' class='dropdown-item'>F Clef</a></div></div>" +
-    "<button class='button' id='delete'>Delete</botton></div>";
+    "<button class='button' id='delete'>Delete</button></div>";
 
 /**
  * HTML for grouping selection menu.
@@ -207,23 +215,23 @@ export const groupingMenu = {
   'nc': "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
         "<button class='button' id='groupNcs'>Group Neume Components</button>" +
-        "<button class='button' id='delete'>Delete</botton></p></div>",
+        "<button class='button' id='delete'>Delete</button></p></div>",
   'neume': "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
         "<button class='button' id='groupNeumes'>Group Neumes</button>" +
-        "<button class='button' id='delete'>Delete</botton></p></div>",
+        "<button class='button' id='delete'>Delete</button></p></div>",
   'syl': "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
         "<button class='button' id='mergeSyls'>Merge Syllables</button>" +
-        "<button class='button' id='delete'>Delete</botton></p></div>",
+        "<button class='button' id='delete'>Delete</button></p></div>",
   'ligatureNc': "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
         "<button class='button' id='groupNcs'>Group Neume Components</button></p></div>" +
         "<div><p class='control'>" +
         "<button class='button' id='toggle-ligature'>Toggle Ligature</button>" +
-        "<button class='button' id='delete'>Delete</botton></p></div></div>",
+        "<button class='button' id='delete'>Delete</button></p></div></div>",
   'ligature': "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
         "<button class='button' id='toggle-ligature'>Toggle Ligature</button>" +
-        "<button class='button' id='delete'>Delete</botton></p></div></div>"
+        "<button class='button' id='delete'>Delete</button></p></div></div>"
 };
