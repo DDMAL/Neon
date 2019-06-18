@@ -1,5 +1,4 @@
 import NeonCore from './NeonCore.js';
-import * as Notification from './utils/Notification.js';
 
 /**
  * NeonView class. Manages the other modules of Neon and communicates with
@@ -36,7 +35,7 @@ class NeonView {
     this.display = this.view.display;
     this.info = new params.Info(this);
 
-    if(params.NeumeEdit !== undefined || params.TextView !== undefined) {
+    if (params.NeumeEdit !== undefined || params.TextView !== undefined) {
       // Set up display for edit button
       let parent = document.getElementById('dropdown_toggle');
       let editItem = document.createElement('a');
