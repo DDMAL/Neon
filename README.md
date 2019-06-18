@@ -1,6 +1,6 @@
-Neon v3.0.0
+Neon (develop)
 =====
-[![Build_Status](https://travis-ci.org/DDMAL/Neon2.svg?branch=develop)](https://travis-ci.org/DDMAL/Neon2)
+[![Build_Status](https://travis-ci.org/DDMAL/Neon.svg?branch=develop)](https://travis-ci.org/DDMAL/Neon)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
 
@@ -41,7 +41,7 @@ yarn start
 Instructions
 -----------
 
-Neon has two main modes: viewer and editor. To learn how to use both, [read the instructions on our wiki.](https://github.com/DDMAL/Neon2/wiki/Instructions)
+Neon has two main modes: viewer and editor. To learn how to use both, [read the instructions on our wiki.](https://github.com/DDMAL/Neon/wiki/Instructions)
 
 Test
 ----
