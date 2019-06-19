@@ -31,9 +31,11 @@ export function unselect () {
   for (var i = 0; i < selected.length; i++) {
     if ($(selected[i]).hasClass('staff')) {
       $(selected[i]).removeClass('selected');
+      selected[i].removeAttribute('style');
       Color.unhighlight(selected[i]);
     } else {
       $(selected[i]).removeClass('selected');
+      selected[i].removeAttribute('style');
     }
   }
   $('.sylTextRect-select').css('fill', 'blue');
@@ -58,6 +60,7 @@ export function unselect () {
 export function select (el, dragHandler) {
   if (!$(el).hasClass('selected')) {
     $(el).addClass('selected');
+    $(el).css('fill', '#d00');
     if ($(el).hasClass('sylTextRect-display')) {
       $(el).addClass('sylTextRect-select');
       $(el).removeClass('sylTextRect-display');

@@ -90,14 +90,20 @@ class TextView {
           text.addClass('text');
         }
         $(span).on('mouseenter', () => {
-          syllable.addClass('syl-select');
+          syllable.addClass('selected');
+          rect.css('fill', '#d00');
           rect.removeClass('sylTextRect-display');
           rect.addClass('sylTextRect-select');
           // syl.attr('fill', '#ffc7c7');
           // this.highlightBoundingBox(span);
         });
         $(span).on('mouseleave', () => {
-          syllable.removeClass('syl-select');
+          syllable.removeClass('selected');
+          if (syllable.css('fill') !== 'rgb(0, 0, 0)') {
+            rect.css('fill', syllable.css('fill'));
+          } else {
+            rect.css('fill', 'blue');
+          }
           rect.removeClass('sylTextRect-select');
           rect.addClass('sylTextRect-display');
           // syl.attr('fill', null);

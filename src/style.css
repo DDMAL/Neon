@@ -104,10 +104,6 @@ button:focus {
     animation: spin 2s linear infinite;
 }
 
-.selected {
-    fill: #d00;
-}
-
 .text {
     display: none;
 }
@@ -124,6 +120,10 @@ button:focus {
 .sylTextRect-select {
     fill: red;
     opacity: 0.2;
+}
+
+.selected {
+    fill: #d00;
 }
 
 
