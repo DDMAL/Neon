@@ -193,6 +193,22 @@ describe('Check Controls UI', () => {
         await actions.click().perform();
       });
 
+      test('Click select split syllable', async () => {
+        var selBySylButton = await browser.findElement(By.id('selBySyl'));
+        const actions = browser.actions();
+        await actions.click(selBySylButton).perform();
+        expect(await selBySylButton.getAttribute('class')).toContain('is-active');
+        var firstHalf = await browser.findElement(By.id('m-eefa04b9-e43e-41a9-8d63-d5b093834442'));
+        var secondHalf = await browser.findElement(By.id('m-23a8ef14-9b60-47dd-b072-fa2b6bc2e8bd'));
+        var firstHalfNc = await firstHalf.findElement(By.className('nc'));
+        await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new window.Event('mousedown')); }, (await firstHalfNc.getAttribute('id')));
+        let firstHalfClass = await firstHalf.getAttribute('class');
+        let secondHalfClass = await secondHalf.getAttribute('class');
+        expect(firstHalfClass).toBe('syllable selected');
+        expect(secondHalfClass).toBe('syllable selected');
+        await actions.click().perform();
+      });
+
       test('Click select neume', async () => {
         var selByNeumeButton = await browser.findElement(By.id('selByNeume'));
         const actions = browser.actions();
