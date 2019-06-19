@@ -76,13 +76,13 @@ class NeonView {
    * called when the edit MEI button is clicked
    */
   initEditMode () {
-    initNavbar(this);
-    initUndoRedoPanel(this);
     clickSelect('#mei_output, #mei_output use');
     dragSelect('#svg_group');
     $('#dropdown_toggle').empty();
     $('#dropdown_toggle').append(navbarDropdownMenu);
     $('#undoRedo_controls').append(undoRedoPanel);
+    initNavbar(this);
+    initUndoRedoPanel(this);
   }
 
   /**
