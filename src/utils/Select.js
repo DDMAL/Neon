@@ -67,10 +67,11 @@ function clickHandler (evt) {
   if (this.tagName === 'use') {
     if ($(this).parents('.selected').length === 0) {
       let selection = [this];
-      if (evt.ctrlKey) {
+      if (window.navigator.oscpu.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
         selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
       }
       selectAll(selection, neonView, info, dragHandler);
+      dragHandler.dragInit();
     }
   } else {
     // Check if the point being clicked on is a staff selection (if applicable)
