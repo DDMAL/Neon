@@ -37,7 +37,7 @@ export function unselect () {
     }
   }
   $('.syl-select').removeClass('syl-select');
-
+  $('.sylTextRect-select').css('fill', 'blue');
   $('.sylTextRect-select').addClass('sylTextRect-display');
   $('.sylTextRect-select').removeClass('sylTextRect-select');
 
@@ -69,12 +69,14 @@ export function select (el, dragHandler) {
       $('#' + sylId).addClass('syl-select');
     }
     if ($(el).hasClass('sylTextRect-display')) {
+      $(el).css('fill', 'red');
       $(el).addClass('sylTextRect-select');
       $(el).removeClass('sylTextRect-display');
     } else if ($(el).find('.sylTextRect-display').length) {
+      $(el).find('.sylTextRect-display').css('fill', 'red');
       $(el).find('.sylTextRect-display').addClass('sylTextRect-select');
       $(el).find('.sylTextRect-display').removeClass('sylTextRect-display');
-    }
+    } 
   }
   updateHighlight();
 }

@@ -18,7 +18,12 @@ export function setGroupingHighlight (grouping) {
     let groupColor = ColorPalette[i % ColorPalette.length];
     if (!$(groups[i]).parents('.selected').length && !$(groups[i]).hasClass('selected')) {
       groups[i].setAttribute('fill', groupColor);
+      let rects = Array.from($(groups[i]).find('.sylTextRect-display'));
+      rects.forEach(function (rect) {
+        $(rect).css('fill', groupColor);
+      });
       $(groups[i]).addClass('highlighted');
+      $(groups[i]).find('.sylTextRect-display').addClass('highlighted');
     } else {
       if (!$(groups[i]).hasClass('selected')) {
         groups[i].setAttribute('fill', null);
@@ -38,7 +43,18 @@ export function unsetGroupingHighlight () {
   let highlighted = Array.from($('.highlighted').filter((index, elem) => { return !$(elem.parentElement).hasClass('selected'); }));
   highlighted.forEach(elem => {
     elem.setAttribute('fill', null);
+    let rects = Array.from($(elem).find('.sylTextRect-display'));
+    if (!rects.length) {
+      if (Array.from($(elem).parents('syllable')).length) {
+        rects = Array.from($(elem).parents('syllable').find('.sylTextRect-display'));
+      }
+    }
+    rects.forEach(function (rect) {
+      $(rect).css('fill', 'blue');
+      $(rect).removeClass('highlighted');
+    });
     $(elem).removeClass('highlighted');
+    $(elem).find('sylTextRect-display').removeClass('highlighted');
   });
 }
 
@@ -72,6 +88,12 @@ export function highlight (staff, color) {
       child.setAttribute('stroke', color);
     } else {
       child.setAttribute('fill', color);
+      let rects = Array.from($(child).find('.sylTextRect-display'));
+      if (!rects.length) { rects = Array.from($(child).parents('syllable').find('.sylTextRect-display')); }
+      rects.forEach(function (rect) { 
+        $(rect).css('fill', color);
+        $(rect).addClass('highlighted');
+      });
     }
     $(child).addClass('highlighted');
   });
@@ -88,6 +110,12 @@ export function unhighlight (staff) {
       elem.setAttribute('stroke', '#000000');
     } else {
       elem.removeAttribute('fill');
+      let rects = Array.from($(elem).find('.sylTextRect-display'));
+      if (!rects.length) { rects = Array.from($(elem).parents('syllable').find('.sylTextRect-display')); }
+      rects.forEach(function (rect) {
+        $(rect).css('fill', 'blue');
+        $(rect).removeClass('highlighted');
+      });
     }
   });
   $(staff).filter(':not(.selected)').children('.highlighted').removeClass('highlighted');
