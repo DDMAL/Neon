@@ -327,14 +327,17 @@ export function triggerSplitActions () {
 }
 
 /**
- * trigger options with delete button only
- * for when other options aren't available because of mixed element types/across staves
+ * Trigger default selection option.
  */
-export function triggerDeleteActions () {
-  console.log('triggerDeleteActions');
-  $('moreEdit').removeClass('is-invisible');
-  $('moreEdit').append(Contents.deleteMenu);
+export function triggerDefaultActions () {
+  endOptionsSelection();
+  $('#moreEdit').removeClass('is-invisible');
+  $('#moreEdit').append(Contents.defaultActionContents);
+
   $('#delete').on('click', removeHandler);
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
+  });
 }
 
 /**

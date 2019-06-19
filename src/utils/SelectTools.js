@@ -10,6 +10,19 @@ const d3 = require('d3');
 const $ = require('jquery');
 
 /**
+ * Get the selection mode chosen by the user.
+ * @returns {string|null}
+ */
+export function getSelectionType () {
+  let element = document.getElementsByClassName('sel-by is-active');
+  if (element.length !== 0) {
+    return element[0].id;
+  } else {
+    return null;
+  }
+}
+
+/**
  * Unselect all selected elements and run undo any extra
  * actions.
  */
@@ -41,8 +54,9 @@ export function unselect () {
 /**
  * Generic select function.
  * @param {SVGGraphicsElement} el
+ * @param {DragHandler} [dragHandler]
  */
-export function select (el) {
+export function select (el, dragHandler) {
   if (!$(el).hasClass('selected')) {
     $(el).addClass('selected');
     var sylId;
@@ -92,8 +106,7 @@ export async function selectNcs (el, neonView, dragHandler) {
     } else if ($(parent).hasClass('nc')) {
       SelectOptions.triggerNcActions(parent);
     } else {
-      console.log('selectNcs else triggerDeleteActions');
-      SelectOptions.triggerDeleteActions();
+      console.warn('No action triggered!');
     }
     dragHandler.dragInit();
   }
@@ -115,9 +128,10 @@ export async function isLigature (nc, neonView) {
  * @returns {boolean} - If the elements share the same second level parent.
  */
 export function sharedSecondLevelParent (elements) {
-  let firstElement = elements.pop();
+  let tempElements = Array.from(elements);
+  let firstElement = tempElements.pop();
   let secondParent = firstElement.parentElement.parentElement;
-  for (let element of elements) {
+  for (let element of tempElements) {
     let secPar = element.parentElement.parentElement;
     if (secPar.id !== secondParent.id) {
       return false;
@@ -176,8 +190,6 @@ export function selectBBox (el, dragHandler) {
 export function selectNn (notNeumes) {
   if (notNeumes.length > 0) {
     notNeumes.forEach(nn => { select(nn); });
-    console.log('selectNn triggerDeleteActions');
-    SelectOptions.triggerDeleteActions();
     return false;
   } else {
     return true;
@@ -192,7 +204,6 @@ export function selectNn (notNeumes) {
 export function selectStaff (el, dragHandler) {
   let staff = $(el);
   if (!staff.hasClass('selected')) {
-    unselect();
     staff.addClass('selected');
     updateHighlight();
     Color.highlight(el, '#d00');
@@ -203,272 +214,175 @@ export function selectStaff (el, dragHandler) {
 /**
  * Handle selecting an array of elements based on the selection type.
  * @param {SVGGraphicsElement[]} elements - The elements to select. Either <g> or <use>.
+ * @param {NeonView} neonView
+ * @param {InfoModule} info
+ * @param {DragHandler} dragHandler
  */
 export async function selectAll (elements, neonView, info, dragHandler) {
-  var syls = [];
+  let selectionType = getSelectionType();
+  unselect();
+  if (elements.length === 0) {
+    return;
+  }
 
-  var neumes = [];
+  let neumeSelectionClass;
+  let containsClefOrCustos = false;
 
-  var ncs = [];
-
-  var notNeumes = [];
-
-  elements.forEach(el => {
-    var firstParent = el.parentNode;
-
-    if ($(firstParent).hasClass('nc')) {
-      ncs.push(firstParent);
-
-      let neume = firstParent.parentNode;
-      if (!neumes.includes(neume)) {
-        neumes.push(neume);
-      }
-
-      var syl = neume.parentNode;
-      if (!syls.includes(syl)) {
-        syls.push(syl);
-      }
-    } else {
-      notNeumes.push(firstParent);
-    }
-  });
-
-  // Determine selection mode
-  var selectMode = null;
-  Array.from($('.sel-by')).forEach(tab => {
-    if ($(tab).hasClass('is-active')) {
-      selectMode = $(tab)[0].id;
-    }
-  });
-
-  if (selectMode === 'selByStaff') {
-    let toSelect = [];
-    elements.forEach(el => {
-      if (el.tagName === 'use') {
-        let staff = $(el).parents('.staff')[0];
-        if (!toSelect.includes(staff)) {
-          toSelect.push(staff);
-        }
-      } else {
-        if (!toSelect.includes(el)) {
-          toSelect.push(el);
-        }
-      }
-    });
-    toSelect.forEach(elem => {
-      $(elem).addClass('selected');
-    });
-
-    updateHighlight();
-    toSelect.forEach(elem => {
-      Color.highlight(elem, '#d00');
-    });
-    if (toSelect.length === 1) {
-      SelectOptions.triggerSplitActions();
-      let resize = new Resize(toSelect[0].id, neonView, dragHandler);
-      resize.drawInitialRect();
-    } else if (toSelect.length === 2) {
-      let bb1 = getStaffBBox(toSelect[0]);
-      let bb2 = getStaffBBox(toSelect[1]);
-      var avgHeight = (bb1.lry - bb1.uly + bb2.lry - bb2.uly) / 2;
-      if (Math.abs(bb1.uly - bb2.uly) < avgHeight) {
-        SelectOptions.triggerStaffActions();
-      }
-    }
-  } else if (selectMode === 'selBySyl') {
-    let noClefOrCustos = selectNn(notNeumes);
-    syls.forEach(s => { select(s); });
-    if (!noClefOrCustos) {
-      if (notNeumes.length === 1 && ncs.length === 0) {
-        let el = notNeumes[0];
-        // if ($(el).hasClass("custos")){
-        //     SelectOptions.triggerNcActions([el]);
-        // }
-        if ($(el).hasClass('clef')) {
-          SelectOptions.triggerClefActions(el);
-        }
-      }
-    } else if (syls.length > 1) {
-      if (sharedSecondLevelParent(syls)) {
-        Grouping.triggerGrouping('syl');
-      }
-    } else if (syls.length === 1) {
-      var syl = syls[0];
-      var nmChildren = $(syl).children('.neume');
-      if (nmChildren.length === 1) {
-        let neume = nmChildren[0];
-        let ncChildren = neume.children;
-        if (ncChildren.length === 1) {
-          unselect();
-          select(ncChildren[0]);
-          SelectOptions.triggerNcActions(ncChildren[0]);
-        } else if (ncChildren.length === 2) {
-          unselect();
-          if (await isLigature(ncChildren[0], neonView)) {
-            selectNcs(ncChildren[0], neonView, dragHandler);
-            if (sharedSecondLevelParent(Array.from(document.getElementsByClassName('selected')))) {
-              Grouping.triggerGrouping('ligature');
-            }
-          } else {
-            select(neume);
-            SelectOptions.triggerNeumeActions();
-          }
-        } else {
-          unselect();
-          select(neume);
-          SelectOptions.triggerNeumeActions();
-        }
-      } else {
-        SelectOptions.triggerSylActions();
-      }
-    }
-  } else if (selectMode === 'selByNeume') {
-    unselect();
-    let noClefOrCustos = selectNn(notNeumes);
-    neumes.forEach(n => { select(n); });
-    if (!noClefOrCustos) {
-      if (notNeumes.length === 1 && ncs.length === 0) {
-        let el = notNeumes[0];
-        // if ($(el).hasClass("custos")){
-        //     SelectOptions.triggerNcActions([el]);
-        // }
-        if ($(el).hasClass('clef')) {
-          SelectOptions.triggerClefActions(el);
-        }
-      }
-    } else if (neumes.length > 1) {
-      let syllable = neumes[0].parentElement;
-      let group = false;
-      for (var i = 1; i < neumes.length; i++) {
-        if (syllable !== neumes[i].parentElement) {
-          group = true;
-          break;
-        }
-      }
-      if (group) {
-        if (sharedSecondLevelParent(neumes)) {
-          Grouping.triggerGrouping('neume');
-        }
-      } else {
-        let sylNeumes = Array.from(syllable.children).filter(child => $(child).hasClass('neume'));
-        let result = true;
-        sylNeumes.forEach(neume => { result = result && neumes.includes(neume); });
-        if (result) {
-          unselect();
-          select(syllable);
-          SelectOptions.triggerSylActions();
-        }
-      }
-    } else if (neumes.length === 1) {
-      let neume = neumes[0];
-      let ncChildren = neume.children;
-      if (ncChildren.length === 1) {
-        unselect();
-        select(ncChildren[0]);
-        SelectOptions.triggerNcActions(ncChildren[0]);
-      } else if (ncChildren.length === 2 && await isLigature(ncChildren[0], neonView)) {
-        unselect();
-        select(ncChildren[0]);
-        select(ncChildren[1]);
-        Grouping.triggerGrouping('ligature');
-      } else {
-        SelectOptions.triggerNeumeActions();
-      }
-    }
-  } else if (selectMode === 'selByNc') {
-    let noClefOrCustos = selectNn(notNeumes);
-    if (ncs.length === 1 && noClefOrCustos) {
-      selectNcs(ncs[0].children[0], neonView, dragHandler);
+  switch (selectionType) {
+    case 'selBySyl':
+      neumeSelectionClass = '.syllable';
+      break;
+    case 'selByNeume':
+      neumeSelectionClass = '.neume';
+      break;
+    case 'selByNc':
+      neumeSelectionClass = '.nc';
+      break;
+    case 'selByStaff':
+      neumeSelectionClass = '.staff';
+      break;
+    default:
+      console.error('Unknown selection type ' + selectionType);
       return;
-    }
-    var prev = $(ncs[0]).prev();
-    if (ncs.length !== 0 && await isLigature(ncs[0], neonView) && prev.length !== 0 && await isLigature($(ncs[0]).prev()[0], neonView)) {
-      ncs.push($(ncs[0]).prev()[0]);
-    }
-    ncs.forEach(nc => { select(nc); });
-    if (!noClefOrCustos) {
-      if (notNeumes.length === 1 && ncs.length === 0) {
-        var el = notNeumes[0];
-        // if ($(el).hasClass("custos")){
-        //     SelectOptions.triggerNcActions([el]);
-        // }
-        if ($(el).hasClass('clef')) {
-          SelectOptions.triggerClefActions(el);
-        }
-      }
-    } else if (ncs.length === 2) {
-      let firstChild = ncs[0].children[0];
-      let secondChild = ncs[1].children[0];
-      var firstX = firstChild.x.baseVal.value; // $(ncs[0]).children()[0].x.baseVal.value;
-      var secondX = secondChild.x.baseVal.value; // $(ncs[1]).children()[0].x.baseVal.value;
-      var firstY = 0;
-      var secondY = 0;
+  }
 
-      if (firstX === secondX) {
-        firstY = secondChild.y.baseVal.value;
-        secondY = firstChild.y.baseVal.value;
-      } else {
-        firstY = firstChild.y.baseVal.value;
-        secondY = secondChild.y.baseVal.value;
+  // Get the groupings specified by neumeSelectionClass
+  // that contain the provided elements to select.
+  let groupsToSelect = new Set();
+  for (let element of elements) {
+    let grouping = element.closest(neumeSelectionClass);
+    if (grouping === null) {
+      // Check if we click-selected a clef or a custos
+      grouping = element.closest('.clef, .custos');
+      if (grouping === null) {
+        console.warning('Element ' + element.id + ' is not part of specified group and is not a clef or custos.');
+        continue;
       }
+      containsClefOrCustos |= true;
+    }
+    groupsToSelect.add(grouping);
+  }
 
-      if (secondY > firstY) {
-        if (ncs[0].parentNode.id === ncs[1].parentNode.id) {
-          let isFirstLigature = await isLigature(ncs[0], neonView);
-          let isSecondLigature = await isLigature(ncs[1], neonView);
-          if ((isFirstLigature && isSecondLigature) || (!isFirstLigature && !isSecondLigature)) {
-            Grouping.triggerGrouping('ligature');
-          }
-          /* else{
-                        Grouping.triggerGrouping("ligatureNc");
-                    } */
-        } else {
-          if (ncs[0].parentElement !== ncs[1].parentElement) {
-            if (sharedSecondLevelParent(ncs)) {
-              Grouping.triggerGrouping('nc');
-            }
-          }
-        }
-      } else {
-        if (ncs[0].parentElement !== ncs[1].parentElement) {
-          if (sharedSecondLevelParent(ncs)) {
-            Grouping.triggerGrouping('nc');
-          }
-        }
-      }
-    } else if (ncs.length > 1 && noClefOrCustos) {
-      let neume = ncs[0].parentElement;
-      let group = false;
-      for (i = 1; i < ncs.length; i++) {
-        if (ncs[i].parentElement !== neume) {
-          group = true;
+  // Select the elements
+  groupsToSelect.forEach(group => { select(group, dragHandler); });
+
+  /* Determine the context menu to display (if any) */
+
+  let groups = Array.from(groupsToSelect.values());
+
+  // Handle occurance of clef or custos
+  if (containsClefOrCustos) {
+    // A context menu will only be displayed if there is a single clef
+    if (groupsToSelect.size === 1 && groups[0].classList.contains('clef')) {
+      SelectOptions.triggerClefActions(groupsToSelect[0]);
+    }
+    return;
+  }
+
+  switch (selectionType) {
+    case 'selByStaff':
+      switch (groups.length) {
+        case 1:
+          SelectOptions.triggerSplitActions();
+          let resize = new Resize(groups[0].id, neonView, dragHandler);
+          resize.drawInitialRect();
           break;
-        }
+        case 2:
+          let bb1 = getStaffBBox(groups[0]);
+          let bb2 = getStaffBBox(groups[1]);
+          let avgStaffHeight = (bb1.lry - bb1.uly + bb2.lry - bb2.uly) / 2;
+          if (Math.abs(bb1.uly - bb2.uly) < avgStaffHeight) {
+            SelectOptions.triggerStaffActions();
+          } else {
+            SelectOptions.triggerDefaultActions();
+          }
+          break;
+        default:
+          SelectOptions.triggerDefaultActions();
       }
-      if (group) {
-        if (sharedSecondLevelParent(ncs)) {
-          Grouping.triggerGrouping('nc');
-        }
-      } else {
-        let neumeNcs = Array.from(neume.children).filter(nc => $(nc).hasClass('nc'));
-        let result = true;
-        neumeNcs.forEach(nc => { result = result && ncs.includes(nc); });
-        if (result) {
-          unselect();
-          select(neume);
+      break;
+
+    case 'selBySyl':
+      switch (groups.length) {
+        case 1:
+          // TODO change context if it is only a neume/nc.
+          SelectOptions.triggerSylActions();
+          break;
+        default:
+          if (sharedSecondLevelParent(groups)) {
+            Grouping.triggerGrouping('syl');
+          } else {
+            SelectOptions.triggerDefaultActions();
+          }
+      }
+      break;
+
+    case 'selByNeume':
+      switch (groups.length) {
+        case 1:
+          // TODO change context if it is only a nc.
           SelectOptions.triggerNeumeActions();
-        }
+          break;
+        default:
+          if (sharedSecondLevelParent(groups)) {
+            Grouping.triggerGrouping('neume');
+          } else {
+            SelectOptions.triggerDefaultActions();
+          }
       }
-    } else if (ncs.length === 1) {
-      SelectOptions.triggerNcActions(ncs[0]);
-    } else {
-      SelectOptions.triggerDeleteActions();
-    }
-  }
-  if ($('.selected').length > 0) {
-    info.stopListeners();
-  }
-  if (dragHandler !== undefined) {
-    dragHandler.dragInit();
+      break;
+
+    case 'selByNc':
+      switch (groups.length) {
+        case 1:
+          SelectOptions.triggerNcActions(groups[0]);
+          break;
+        case 2:
+          if (sharedSecondLevelParent(groups)) {
+            // Check if this selection is a ligature or can be a ligature
+            // Check if these neume components are part of the same neume
+            if (groups[0].parentNode === groups[1].parentNode) {
+              let children = Array.from(groups[0].parentNode.children);
+              // Check that neume components are adjacent
+              if (Math.abs(children.indexOf(groups[0]) - children.indexOf(groups[1])) === 1) {
+                // Check that second neume component is lower than first.
+                // Note that the order in the list may not be the same as the
+                // order by x-position.
+                let orderFirstX = groups[0].children[0].x.baseVal.value;
+                let orderSecondX = groups[1].children[0].x.baseVal.value;
+                let posFirstY, posSecondY;
+
+                if (orderFirstX < orderSecondX) {
+                  posFirstY = groups[0].children[0].y.baseVal.value;
+                  posSecondY = groups[1].children[0].y.baseVal.value;
+                } else {
+                  posFirstY = groups[1].children[0].y.baseVal.value;
+                  posSecondY = groups[0].children[0].y.baseVal.value;
+                }
+
+                // Also ensure both components are marked or not marked as ligatures.
+                let isFirstLigature = await isLigature(groups[0], neonView);
+                let isSecondLigature = await isLigature(groups[1], neonView);
+                if ((posSecondY > posFirstY) && !(isFirstLigature ^ isSecondLigature)) {
+                  Grouping.triggerGrouping('ligature');
+                  break;
+                }
+              }
+            }
+            Grouping.triggerGrouping('nc');
+          } else {
+            SelectOptions.triggerDefaultActions();
+          }
+          break;
+        default:
+          if (sharedSecondLevelParent(groups)) {
+            Grouping.triggerGrouping('nc');
+          } else {
+            SelectOptions.triggerDefaultActions();
+          }
+      }
+      break;
+    default:
+      console.error('Unknown selection type. This should not have occurred.');
   }
 }

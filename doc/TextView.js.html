@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: TextView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: TextView.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import * as Notification from './utils/Notification.js';
+
+/** @module TextView */
+
+const $ = require('jquery');
+
+/*
+ * Class that manages getting the text for syllables in Neon from the mei file
+ */
+class TextView {
+  /**
+   * A constructor for a TextView.
+   * @param {NeonView} neonView = The NeonView parent.
+   */
+
+  constructor (neonView) {
+    this.neonView = neonView;
+    this.notificationSent = false;
+
+    // add checkbox to enable/disable the view
+    let block = document.getElementById('extensible-block');
+    let label = document.createElement('label');
+    let input = document.createElement('input');
+    label.classList.add('checkbox');
+    label.textContent = 'Display Text: ';
+    input.classList.add('checkbox');
+    input.id = 'displayText';
+    input.type = 'checkbox';
+    input.checked = false;
+    label.appendChild(input);
+    block.prepend(label);
+
+    $('#edit_mode').on('click', () => {
+      this.setTextEdit();
+    });
+    this.setTextViewControls();
+    this.neonView.view.addUpdateCallback(this.updateTextViewVisibility.bind(this));
+  }
+
+  /**
+  * set listeners on textview visibility checkbox
+  */
+  setTextViewControls () {
+    this.updateTextViewVisibility();
+    $('#displayText').on('click', () => {
+      this.updateTextViewVisibility();
+    });
+  }
+
+  /**
+  * set text to edit mode
+  */
+  setTextEdit () {
+    let spans = Array.from($('#syl_text').children('p').children('span'));
+    spans.forEach(span => {
+      $(span).off('click');
+      $(span).on('click', () => {
+        this.updateSylText(span);
+      });
+    });
+  }
+
+  /**
+  * Update the text for a single syl element
+  * @param {HTMLElement} span
+  */
+  updateSylText (span) {
+    let orig = formatRaw($(span).html());
+    let corrected = window.prompt('', orig);
+    if (corrected !== null &amp;&amp; corrected !== orig) {
+      let editorAction = {
+        'action': 'setText',
+        'param': {
+          'elementId': $('#' + $(span).attr('class').replace('syl-select', '').trim()).attr('id'),
+          'text': corrected
+        }
+      };
+      this.neonView.edit(editorAction, this.neonView.view.getCurrentPage()).then((response) => {
+        if (response) {
+          this.neonView.updateForCurrentPage();
+        }
+      });
+    }
+  }
+
+  /**
+  * update the visibility of the textview box
+  * and add the event listeners to make sure the syl highlights when moused over
+  */
+  updateTextViewVisibility () {
+    if ($('#displayText').is(':checked')) {
+      $('#syl_text').css('display', '');
+      $('#syl_text').html('&lt;p>' + this.getSylText() + '&lt;/p>');
+      let spans = Array.from($('#syl_text').children('p').children('span'));
+      spans.forEach(span => {
+        let syllable = $('#' + $(span).attr('class'));
+        let syl = syllable.children('.syl');
+        let text = syl.children('text');
+        let int_text = text.children('.text');
+        let real_text = text.children('.text').children('.text');
+        let rect = syl.children('rect');
+        if (text.attr('class') == null) {
+          text.addClass('text');
+        }
+        $(span).on('mouseenter', () => {
+          syllable.addClass('syl-select');
+          syllable.attr('fill', '#d00');
+          rect.removeClass('sylTextRect');
+          rect.addClass('sylTextRect-select');
+          // syl.attr('fill', '#ffc7c7');
+          // this.highlightBoundingBox(span);
+        });
+        $(span).on('mouseleave', () => {
+          syllable.removeClass('syl-select');
+          syllable.attr('fill', null);
+          rect.removeClass('sylTextRect-select');
+          rect.addClass('sylTextRect');
+          // syl.attr('fill', null);
+          // this.removeBoundingBox(span);
+        });
+      });
+      if (this.neonView.getUserMode() !== 'viewer') {
+        this.setTextEdit();
+      }
+    } else {
+      $('#syl_text').css('display', 'none');
+    }
+  }
+
+  /**
+   * Get the syllable text of the loaded file
+   * @returns {string}
+   */
+  getSylText () {
+    var lyrics = '';
+    let uniToDash = /\ue551/g;
+    let syllables = Array.from($('.active-page .syllable'));
+    syllables.forEach(syllable => {
+      if ($(syllable).has('.syl').length) {
+        let syl = $(syllable).children('.syl')[0];
+        lyrics += "&lt;span class='" + syllable.id + "'>";
+        if (syl.textContent.trim() === '') {
+          lyrics += '&amp;#x25CA; ';
+        } else {
+          Array.from(syl.children[0].children[0].children).forEach(text => {
+            lyrics += text.textContent !== '' ? text.textContent : '&amp;#x25CA; ';
+          });
+        }
+        lyrics += ' &lt;/span>';
+      } else {
+        lyrics += "&lt;span class='" + syllable.id + "'>&amp;#x25CA; &lt;/span>";
+      }
+    });
+    if (!TextView.notificationSent) {
+      Notification.queueNotification('Blank syllables are represented by &amp;#x25CA;!');
+      TextView.notificationSent = true;
+    }
+    return lyrics.replace(uniToDash, '-');
+  }
+}
+
+/**
+ * Format a string for prompting the user.
+ * @param {string} rawString
+ * @returns {string}
+ */
+function formatRaw (rawString) {
+  let removeSymbol = /\u{25CA}/u;
+  return rawString.replace(removeSymbol, '').trim();
+}
+
+export { TextView as default };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 18 2019 11:17:42 GMT-0400 (GMT-04:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

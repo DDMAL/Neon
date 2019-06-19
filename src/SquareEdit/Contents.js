@@ -173,6 +173,14 @@ export const staffActionContents =
     "<button class='button' id='delete'>Delete</button></p></div>";
 
 /**
+ * Contents of default action menu.
+ * @type {string}
+ */
+export const defaultActionContents =
+    "<div><p class='control'>" +
+    "<button class='button' id='delete'>Delete</button></p></div>";
+
+/**
  * Contents of split action menu.
  * @type {string}
  */
@@ -227,11 +235,3 @@ export const groupingMenu = {
         "<button class='button' id='toggle-ligature'>Toggle Ligature</button>" +
         "<button class='button' id='delete'>Delete</button></p></div></div>"
 };
-
-/**
- * HTML for delete only menu.
- * for when elements which have no other other actions are selected
- * @type {object}
- */
-export const deleteMenu =
-    "<div><button class'button' id='delete'>Delete</button></div>";
