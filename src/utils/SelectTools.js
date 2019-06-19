@@ -33,10 +33,9 @@ export function unselect () {
       $(selected[i]).removeClass('selected');
       Color.unhighlight(selected[i]);
     } else {
-      $(selected[i]).removeClass('selected').attr('fill', null);
+      $(selected[i]).removeClass('selected');
     }
   }
-  $('.syl-select').removeClass('syl-select');
   $('.sylTextRect-select').css('fill', 'blue');
   $('.sylTextRect-select').addClass('sylTextRect-display');
   $('.sylTextRect-select').removeClass('sylTextRect-select');
@@ -59,24 +58,14 @@ export function unselect () {
 export function select (el, dragHandler) {
   if (!$(el).hasClass('selected')) {
     $(el).addClass('selected');
-    var sylId;
-    if ($(el).hasClass('syllable')) {
-      sylId = el.id;
-    } else if ($(el).parents('.syllable').length) {
-      sylId = $(el).parents('.syllable').attr('id');
-    }
-    if (sylId !== undefined) {
-      $('#' + sylId).addClass('syl-select');
-    }
     if ($(el).hasClass('sylTextRect-display')) {
-      $(el).css('fill', 'red');
       $(el).addClass('sylTextRect-select');
       $(el).removeClass('sylTextRect-display');
     } else if ($(el).find('.sylTextRect-display').length) {
       $(el).find('.sylTextRect-display').css('fill', 'red');
       $(el).find('.sylTextRect-display').addClass('sylTextRect-select');
       $(el).find('.sylTextRect-display').removeClass('sylTextRect-display');
-    } 
+    }
   }
   updateHighlight();
 }
