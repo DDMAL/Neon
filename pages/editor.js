@@ -1,8 +1,8 @@
 import NeonView from '../src/NeonView.js';
 import DisplayPanel from '../src/DisplayPanel/DisplayPanel.js';
-import DivaView from '../src/DivaView/DivaView.js';
+import DivaView from '../src/DivaView.js';
 import SingleView from '../src/SingleView/SingleView.js';
-import SingleEditMode from '../src/SingleEdit/SingleEditMode.js';
+import SingleEditMode from '../src/SquareEdit/SingleEditMode.js';
 import InfoModule from '../src/InfoModule.js';
 import TextView from '../src/TextView.js';
 
@@ -28,7 +28,7 @@ if (mode === 'demo-page') {
       View: SingleView,
       Display: DisplayPanel,
       Info: InfoModule,
-      Edit: SingleEditMode,
+      NeumeEdit: SingleEditMode,
       TextView: TextView
     };
 
