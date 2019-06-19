@@ -266,6 +266,16 @@ export async function selectAll (elements, neonView, info, dragHandler) {
       containsClefOrCustos |= true;
     }
     groupsToSelect.add(grouping);
+
+    // Check for precedes/follows
+    let follows = grouping.getAttribute('mei:follows');
+    if (follows) {
+      groupsToSelect.add(document.getElementById(follows));
+    }
+    let precedes = grouping.getAttribute('mei:precedes');
+    if (precedes) {
+      groupsToSelect.add(document.getElementById(precedes));
+    }
   }
 
   // Select the elements
