@@ -74,6 +74,7 @@ function clickHandler (evt) {
         selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
       }
       selectAll(selection, neonView, info, dragHandler);
+      dragHandler.dragInit();
     }
   } else {
     // Check if the point being clicked on is a staff selection (if applicable)
