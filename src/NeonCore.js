@@ -22,7 +22,8 @@ class NeonCore {
       pageMarginLeft: 0,
       pageMarginTop: 0,
       font: 'Bravura',
-      useFacsimile: true
+      useFacsimile: true,
+      useSylBBox: true
     };
 
     Validation.init();
