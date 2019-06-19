@@ -323,6 +323,42 @@ export async function selectAll (elements, neonView, info, dragHandler) {
           // TODO change context if it is only a neume/nc.
           SelectOptions.triggerSylActions();
           break;
+        case 2:
+          // Check if this is a linked syllable split by a staff break
+          if ((groups[0].getAttribute('mei:follows') === groups[1].id) || (groups[0].getAttribute('mei:precedes') === groups[1].id)) {
+            Grouping.triggerGrouping('splitSyllable');
+          } else if (sharedSecondLevelParent(groups)) {
+            Grouping.triggerGrouping('syl');
+          } else {
+            // Check if this *could* be a selection with a single logical syllable split by a staff break.
+            let staff0 = groups[0].closest('.staff');
+            let staff1 = groups[1].closest('.staff');
+            let staffChildren = Array.from(staff0.parentNode.children);
+            // Check if these are adjacent staves (logically)
+            if (Math.abs(staffChildren.indexOf(staff0) - staffChildren.indexOf(staff1)) === 1) {
+              // Check if one syllable is the last in the first staff and the other is the first in the second.
+              // Determine which staff is first.
+              let firstStaff = (staffChildren.indexOf(staff0) < staffChildren.indexOf(staff1)) ? staff0 : staff1;
+              let secondStaff = (firstStaff.id === staff0.id) ? staff1 : staff0;
+              let firstLayer = firstStaff.querySelector('.layer');
+              let secondLayer = secondStaff.querySelector('.layer');
+
+              // Check that the first staff has either syllable as the last syllable
+              let firstSyllableChildren = Array.from(firstLayer.children).filter(elem => elem.classList.contains('syllable'));
+              let secondSyllableChildren = Array.from(secondLayer.children).filter(elem => elem.classList.contains('syllable'));
+              let lastSyllable = firstSyllableChildren[firstSyllableChildren.length - 1];
+              let firstSyllable = secondSyllableChildren[0];
+              if (lastSyllable.id === groups[0].id && firstSyllable.id === groups[1].id) {
+                Grouping.triggerGrouping('splitSyllable');
+                break;
+              } else if (lastSyllable.id === groups[1].id && firstSyllable.id === groups[0].id) {
+                Grouping.triggerGrouping('splitSyllable');
+                break;
+              }
+            }
+            SelectOptions.triggerDefaultActions();
+          }
+          break;
         default:
           if (sharedSecondLevelParent(groups)) {
             Grouping.triggerGrouping('syl');
