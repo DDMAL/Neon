@@ -50,7 +50,7 @@ class NeonView {
       editButton.classList.add('button');
       editButton.id = 'edit_mode';
       editButton.textContent = 'Edit MEI';
-      this.dragHandler = new DragHandler(this.neonView, '#svg_group');
+      this.dragHandler = new DragHandler(this, '#svg_group');
       setSelectHelperObjects(this, this.dragHandler);
       editItem.appendChild(editButton);
       parent.appendChild(editItem);
