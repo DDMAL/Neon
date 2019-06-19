@@ -101,6 +101,59 @@ export function initGroupingListeners () {
       neonView.updateForCurrentPage();
     });
   });
+  $('#toggle-link').on('click', function (evt) {
+    let elementIds = getIds();
+    let chainAction = {
+      'action': 'chain',
+      'param': []
+    };
+    if (document.getElementById(elementIds[0]).getAttribute('mei:precedes')) {
+      chainAction.param.push({
+        'action': 'set',
+        'param': {
+          'elementId': elementIds[0],
+          'attrType': 'precedes',
+          'attrValue': ''
+        }
+      });
+      chainAction.param.push({
+        'action': 'set',
+        'param': {
+          'elementId': elementIds[1],
+          'attrType': 'follows',
+          'attrValue': ''
+        }
+      });
+    } else if (document.getElementById(elementIds[0]).getAttribute('mei:follows')) {
+      chainAction.param.push({
+        'action': 'set',
+        'param': {
+          'elementId': elementIds[0],
+          'attrType': 'follows',
+          'attrValue': ''
+        }
+      });
+      chainAction.param.push({
+        'action': 'set',
+        'param': {
+          'elementId': elementIds[1],
+          'attrType': 'precedes',
+          'attrValue': ''
+        }
+      });
+    } else {
+      return;
+    }
+    neonView.edit(chainAction, neonView.view.getCurrentPage()).then((result) => {
+      if (result) {
+        Notification.queueNotification('Toggled Syllable Link');
+      } else {
+        Notification.queueNotification('Failed to Toggle Syllable Link');
+      }
+      endGroupingSelection();
+      neonView.updateForCurrentPage();
+    });
+  });
 }
 
 /**
