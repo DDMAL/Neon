@@ -142,7 +142,39 @@ export function initGroupingListeners () {
         }
       });
     } else {
-      return;
+      // Associate syllables. Will need to find which is first. Use staves.
+      let syllable0 = document.getElementById(elementIds[0]);
+      let syllable1 = document.getElementById(elementIds[1]);
+      let staff0 = syllable0.closest('.staff');
+      let staff1 = syllable1.closest('.staff');
+      let staffChildren = Array.from(staff0.parentNode.children).filter(elem => elem.classList.contains('staff'));
+
+      let firstSyllable, secondSyllable;
+      // Determine first syllable comes first by staff
+      if (staffChildren.indexOf(staff0) < staffChildren.indexOf(staff1)) {
+        firstSyllable = syllable0;
+        secondSyllable = syllable1;
+      } else {
+        firstSyllable = syllable1;
+        secondSyllable = syllable0;
+      }
+
+      chainAction.param.push({
+        'action': 'set',
+        'param': {
+          'elementId': firstSyllable.id,
+          'attrType': 'precedes',
+          'attrValue': secondSyllable.id
+        }
+      });
+      chainAction.param.push({
+        'action': 'set',
+        'param': {
+          'elementId': secondSyllable.id,
+          'attrType': 'follows',
+          'attrValue': firstSyllable.id
+        }
+      });
     }
     neonView.edit(chainAction, neonView.view.getCurrentPage()).then((result) => {
       if (result) {
