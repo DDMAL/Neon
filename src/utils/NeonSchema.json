@@ -1,0 +1,50 @@
+{
+  "type": "object",
+  "required": [
+    "title",
+    "timestamp",
+    "image",
+    "mei_annotations"
+  ],
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "number"
+    },
+    "image": {
+      "type": "string"
+    },
+    "mei_annotations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "@context",
+          "id",
+          "type",
+          "body",
+          "target"
+        ],
+        "properties": {
+          "@context": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
