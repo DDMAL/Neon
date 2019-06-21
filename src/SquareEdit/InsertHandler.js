@@ -201,7 +201,7 @@ function InsertHandler (neonView, sel) {
       editorAction['param']['attributes'] = attributes;
     }
 
-    neonView.edit(editorAction, neonView.view.getCurrentPage()).then(() => {
+    neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(() => {
       neonView.updateForCurrentPage();
     });
   }
@@ -248,7 +248,7 @@ function InsertHandler (neonView, sel) {
         }
       };
 
-      neonView.edit(action, neonView.view.getCurrentPage()).then(() => {
+      neonView.edit(action, neonView.view.getCurrentPageURI()).then(() => {
         neonView.updateForCurrentPage();
         insertDisabled();
       });

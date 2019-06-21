@@ -68,7 +68,7 @@ function SplitHandler (neonView, selector) {
       }
     };
 
-    neonView.edit(editorAction, neonView.view.getCurrentPage()).then(async (result) => {
+    neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
       if (result) {
         await neonView.updateForCurrentPagePromise();
       }

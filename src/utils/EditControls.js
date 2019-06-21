@@ -81,7 +81,7 @@ export function initUndoRedoPanel (neonView) {
   });
 
   function undoHandler () {
-    if (!neonView.undo(neonView.view.getCurrentPage())) {
+    if (!neonView.undo(neonView.view.getCurrentPageURI())) {
       console.error('Failed to undo action.');
     } else {
       neonView.updateForCurrentPage();
@@ -89,7 +89,7 @@ export function initUndoRedoPanel (neonView) {
   }
 
   function redoHandler () {
-    if (!neonView.redo(neonView.view.getCurrentPage())) {
+    if (!neonView.redo(neonView.view.getCurrentPageURI())) {
       console.error('Failed to redo action');
     } else {
       neonView.updateForCurrentPage();

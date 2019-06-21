@@ -123,7 +123,7 @@ export async function selectNcs (el, neonView, dragHandler) {
  * @returns {boolean}
  */
 export async function isLigature (nc, neonView) {
-  var attributes = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPage());
+  var attributes = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPageURI());
   return (attributes.ligated === 'true');
 }
 
