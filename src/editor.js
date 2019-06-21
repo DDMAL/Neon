@@ -12,7 +12,6 @@ const $ = require('jquery');
 if (manifest !== '') {
   $.get(manifest).then((data) => {
     let params = {
-      mode: 'iiif',
       options: {
         manifest: manifest,
         meiMap: meiMap,
@@ -32,11 +31,19 @@ if (manifest !== '') {
     let map = new Map();
     map.set(0, data);
     let params = {
-      mode: 'single',
-      options: {
+      manifest: {
+        title: 'test',
+        timestamp: Date.now(),
         image: bgImg,
-        meiMap: map,
-        name: 'test'
+        mei_annotations: [
+          {
+            '@context': 'http://www.w3.org/ns/anno.jsonld',
+            id: '#test-id',
+            type: 'Annotation',
+            body: bgImg,
+            target: meiFile
+          }
+        ]
       },
       View: SingleView,
       Display: DisplayPanel,

@@ -7,6 +7,7 @@ class DivaView {
       objectData: manifest
     });
     document.getElementById('container').style.minHeight = '100%';
+    this.indexMap = new Map();
     this.diva.disableDragScrollable();
     this.displayPanel = new Display(this, 'neon-container', 'diva-viewer-canvas');
     this.initDivaEvents();
@@ -14,6 +15,7 @@ class DivaView {
   }
 
   initDivaEvents () {
+    Diva.Events.subscribe('ManifestDidLoad', this.parseManifest.bind(this), this.diva.settings.ID);
     Diva.Events.subscribe('ObjectDidLoad', this.didLoad.bind(this), this.diva.settings.ID);
     Diva.Events.subscribe('VisiblePageDidChange', this.changePage.bind(this), this.diva.settings.ID);
     Diva.Events.subscribe('ZoomLevelDidChange', this.adjustZoom.bind(this), this.diva.settings.ID);
@@ -32,7 +34,8 @@ class DivaView {
     });
     for (let page of pageIndexes) {
       try {
-        let svg = await this.neonView.getPageSVG(page);
+        let pageURI = this.indexMap.get(page);
+        let svg = await this.neonView.getPageSVG(pageURI);
         this.updateSVG(svg, page);
       } catch (err) {
         if (err.name !== 'not_found' && err.name !== 'missing_mei') {
@@ -54,6 +57,14 @@ class DivaView {
    */
   getCurrentPage () {
     return this.diva.getActivePageIndex();
+  }
+
+  /**
+   * Get the active page URI in the diva.js viewer.
+   * @returns {string}
+   */
+  getCurrentPageURI () {
+    return this.indexMap.get(this.getCurrentPage());
   }
 
   /**
@@ -151,6 +162,15 @@ class DivaView {
           break;
       }
     });
+  }
+
+  parseManifest (manifest) {
+    this.indexMap.clear();
+    for (let sequence of manifest.sequences) {
+      for (let canvas of sequence.canvases) {
+        this.indexMap.set(sequence.indexOf(canvas), canvas['@id']);
+      }
+    }
   }
 
   getPageName () {

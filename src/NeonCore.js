@@ -10,11 +10,11 @@ const verovio = require('verovio-dev');
 class NeonCore {
   /**
    * Constructor for NeonCore
-   * @param {Map<number, string>} meiMap - Map of zero-indexed page no to MEI.
+   * @param {Array} annotations - An array of data annotations relating pages to MEI files.
    * @param {Promise} title - The title of the page or manuscript.
    * @returns {object} A NeonCore object.
    */
-  constructor (meiMap, title) {
+  constructor (annotations, title) {
     this.verovioOptions = {
       format: 'mei',
       noFooter: 1,
@@ -29,13 +29,13 @@ class NeonCore {
 
     /**
      * Stacks of previous MEI files representing actions that can be undone for each page.
-     * @type {Map.<number, Array.<string>>}
+     * @type {Map.<string, Array.<string>>}
      */
     this.undoStacks = new Map();
 
     /**
      * Stacks of previous MEI files representing actions that can be redone for each page.
-     * @type {Map.<number, Array.<string>>}
+     * @type {Map.<string, Array.<string>>}
      */
     this.redoStacks = new Map();
 
@@ -48,8 +48,8 @@ class NeonCore {
      */
 
     /**
-     * A cache mapping a page number to a {@link CacheEntry}.
-     * @type {Map.<number, CacheEntry>}
+     * A cache mapping a page URI to a {@link CacheEntry}.
+     * @type {Map.<string, CacheEntry>}
      */
     this.neonCache = new Map();
 
@@ -58,16 +58,16 @@ class NeonCore {
     this.db = new PouchDb(title);
 
     /**
-     * A map associating page numbers with their respective Verovio toolkit
+     * A map associating page URIs with their respective Verovio toolkit
      * instances. This is used to decrease latency in loading files.
-     * @type {Map.<number, object>}
+     * @type {Map.<string, object>}
      */
     this.toolkits = new Map();
 
     this.blankPages = [];
 
     // Add each MEI to the database
-    this.meiMap = meiMap;
+    this.annotations = annotations;
   }
 
   /**
@@ -75,14 +75,14 @@ class NeonCore {
    * This should only be run if previous data does not exist.
    */
   async initDb () {
-    for (let pair of this.meiMap) {
-      let key = pair[0];
-      let value = pair[1];
-      await this.db.get(key.toString()).catch((err) => {
+    for (let annotation of this.annotations) {
+      let key = annotation.body;
+      let value = annotation.target;
+      await this.db.get(key).catch((err) => {
         if (err.name === 'not_found') {
           // Create new document
           return {
-            _id: key.toString(),
+            _id: key,
             data: ''
           };
         } else {
@@ -100,24 +100,32 @@ class NeonCore {
   /**
    * Load a page into the verovio toolkit. This will fetch the
    * page from the cache or from the database.
-   * @param {number} pageNo - The zero-indexed page number to load.
+   * @param {string} pageURI - The URI of the selected page.
    * @returns {Promise} A promise that resolves to the cache entry.
    */
-  loadPage (pageNo) {
+  loadPage (pageURI) {
     return new Promise((resolve, reject) => {
-      if (this.neonCache.has(pageNo)) {
-        resolve(this.neonCache.get(pageNo));
-      } else if (this.blankPages.includes(pageNo)) {
-        let e = new Error('No MEI file for page ' + pageNo);
+      if (this.neonCache.has(pageURI)) {
+        resolve(this.neonCache.get(pageURI));
+      } else if (this.blankPages.includes(pageURI)) {
+        let e = new Error('No MEI file for page ' + pageURI);
         e.name = 'missing_mei';
         reject(e);
       } else {
-        this.db.get(pageNo.toString()).then((doc) => {
-          this.loadData(pageNo, doc.data);
-          resolve(this.neonCache.get(pageNo));
-        }).catch((err) => {
+        this.db.get(pageURI).then(doc => {
+          return window.fetch(doc.data);
+        }).then(response => {
+          if (response.ok) {
+            return response.text();
+          } else {
+            throw new Error(response.statusText);
+          }
+        }).then(data => {
+          this.loadData(pageURI, data);
+          resolve(this.neonCache.get(pageURI));
+        }).catch(err => {
           if (err.name === 'not_found') {
-            this.blankPages.push(pageNo);
+            this.blankPages.push(pageURI);
           }
           reject(err);
         });
@@ -127,17 +135,17 @@ class NeonCore {
 
   /**
    * Load data into the verovio toolkit and update the cache.
-   * @param {number} pageNo - The zero-indexed page number.
+   * @param {string} pageURI - The URI of the selected page.
    * @param {string} data - The MEI of the page as a string.
    * @param {boolean} [dirty] - If the cache entry should be marked as dirty. Defaults to false.
    */
-  loadData (pageNo, data, dirty = false) {
+  loadData (pageURI, data, dirty = false) {
     Validation.sendForValidation(data);
     let svg = this.parser.parseFromString(
-      this.getToolkit(pageNo).renderData(data, {}),
+      this.getToolkit(pageURI).renderData(data, {}),
       'image/svg+xml'
     ).documentElement;
-    this.neonCache.set(pageNo, {
+    this.neonCache.set(pageURI, {
       svg: svg,
       mei: data,
       dirty: dirty
@@ -146,12 +154,12 @@ class NeonCore {
 
   /**
    * Get the SVG for a specific page number.
-   * @param {number} pageNo - The zero-indexed page number.
+   * @param {string} pageURI - The URI of the selected page.
    * @returns {Promise} A promise that resolves to the SVG.
    */
-  getSVG (pageNo) {
+  getSVG (pageURI) {
     return new Promise((resolve, reject) => {
-      this.loadPage(pageNo).then((entry) => {
+      this.loadPage(pageURI).then((entry) => {
         resolve(entry.svg);
       }).catch((err) => { reject(err); });
     });
@@ -159,12 +167,12 @@ class NeonCore {
 
   /**
    * Get the MEI for a specific page number.
-   * @param {number} pageNo - The zero-indexed page number.
+   * @param {string} pageURI - The URI of the selected page.
    * @returns {Promise} A promise that resolves to the MEI as a string.
    */
-  getMEI (pageNo) {
+  getMEI (pageURI) {
     return new Promise((resolve, reject) => {
-      this.loadPage(pageNo).then((entry) => {
+      this.loadPage(pageURI).then((entry) => {
         resolve(entry.mei);
       }).catch((err) => { reject(err); });
     });
@@ -173,13 +181,13 @@ class NeonCore {
   /**
    * Get musical element attributes from the verovio toolkit.
    * @param {string} elementId - The unique ID of the musical element.
-   * @param {number} pageNo - The zero-indexed page number the element is on.
+   * @param {string} pageURI - The URI of the selected page.
    * @returns {Promise} A promise that resolves to the attributes in an object.
    */
-  getElementAttr (elementId, pageNo) {
+  getElementAttr (elementId, pageURI) {
     return new Promise((resolve) => {
-      this.loadPage(pageNo).then(() => {
-        resolve(this.getToolkit(pageNo).getElementAttr(elementId));
+      this.loadPage(pageURI).then(() => {
+        resolve(this.getToolkit(pageURI).getElementAttr(elementId));
       });
     });
   }
@@ -189,26 +197,26 @@ class NeonCore {
    * @param {object} action - The editor toolkit action object.
    * @param {string} action.action - The name of the action to perform.
    * @param {object|array} action.param - The parameters of the action(s)
-   * @param {number} pageNo - The zero-indexed page number to perform the action on.
+   * @param {string} pageURI - The URI of the selected page.
    * @returns {boolean} If the action succeeded or not.
    */
-  async edit (editorAction, pageNo) {
-    if (this.currentPage !== pageNo) {
-      await this.loadPage(pageNo);
+  async edit (editorAction, pageURI) {
+    if (this.currentPage !== pageURI) {
+      await this.loadPage(pageURI);
     }
-    let currentMEI = this.getMEI(pageNo);
-    let result = this.getToolkit(pageNo).edit(editorAction);
+    let currentMEI = this.getMEI(pageURI);
+    let result = this.getToolkit(pageURI).edit(editorAction);
     if (result) {
-      if (!this.undoStacks.has(pageNo)) {
-        this.undoStacks.set(pageNo, []);
+      if (!this.undoStacks.has(pageURI)) {
+        this.undoStacks.set(pageURI, []);
       }
-      this.undoStacks.get(pageNo).push(await currentMEI);
-      this.redoStacks.set(pageNo, []);
+      this.undoStacks.get(pageURI).push(await currentMEI);
+      this.redoStacks.set(pageURI, []);
 
       // Update cache
-      this.neonCache.set(pageNo, {
-        mei: this.getToolkit(pageNo).getMEI(0, true),
-        svg: this.parser.parseFromString(this.getToolkit(pageNo).renderToSVG(1),
+      this.neonCache.set(pageURI, {
+        mei: this.getToolkit(pageURI).getMEI(0, true),
+        svg: this.parser.parseFromString(this.getToolkit(pageURI).renderToSVG(1),
           'image/svg+xml').documentElement,
         dirty: true
       });
@@ -220,23 +228,23 @@ class NeonCore {
    * Get the edit info string from the verovio toolkit.
    * @returns {string}
    */
-  info (pageNo) {
-    return this.getToolkit(pageNo).editInfo();
+  info (pageURI) {
+    return this.getToolkit(pageURI).editInfo();
   }
 
   /**
    * Undo the last action performed on a specific page.
-   * @param {number} pageNo - The zero-indexed page number.
+   * @param {string} pageURI - The URI of the selected page.
    * @returns {boolean} If an action undone.
    */
-  undo (pageNo) {
-    if (this.undoStacks.has(pageNo)) {
-      let state = this.undoStacks.get(pageNo).pop();
+  undo (pageURI) {
+    if (this.undoStacks.has(pageURI)) {
+      let state = this.undoStacks.get(pageURI).pop();
       if (state !== undefined) {
-        this.getMEI(pageNo).then((mei) => {
-          this.redoStacks.get(pageNo).push(mei);
+        this.getMEI(pageURI).then((mei) => {
+          this.redoStacks.get(pageURI).push(mei);
         });
-        this.loadData(pageNo, state, true);
+        this.loadData(pageURI, state, true);
         return true;
       }
     }
@@ -245,30 +253,31 @@ class NeonCore {
 
   /**
    * Redo the last action performed on a page.
-   * @param {number} pageNo - The zero-indexed page number.
+   * @param {string} pageURI - The zero-indexed page number.
    * @returns {boolean} If an action was redone or not.
    */
-  redo (pageNo) {
-    if (this.redoStacks.has(pageNo)) {
-      let state = this.redoStacks.get(pageNo).pop();
+  redo (pageURI) {
+    if (this.redoStacks.has(pageURI)) {
+      let state = this.redoStacks.get(pageURI).pop();
       if (state !== undefined) {
-        this.getMEI(pageNo).then((mei) => {
-          this.undoStacks.get(pageNo).push(mei);
+        this.getMEI(pageURI).then((mei) => {
+          this.undoStacks.get(pageURI).push(mei);
         });
-        this.loadData(pageNo, state, true);
+        this.loadData(pageURI, state, true);
         return true;
       }
     }
     return false;
   }
 
+  // TODO fix updateDatabase
   /**
    * Update the PouchDb database stored in the browser.
    * This is based on the data stored in the cache. To save time,
    * only entries marked as dirty will be updated.
    */
   async updateDatabase () {
-    for (let pair of this.neonCache) {
+    /* for (let pair of this.neonCache) {
       let key = pair[0];
       let value = pair[1];
       if (value.dirty) {
@@ -282,15 +291,15 @@ class NeonCore {
           console.error(err);
         });
       }
-    }
+    } */
   }
 
-  getToolkit (pageNo) {
-    if (!this.toolkits.has(pageNo)) {
-      this.toolkits.set(pageNo, new verovio.toolkit());
-      this.toolkits.get(pageNo).setOptions(this.verovioOptions);
+  getToolkit (pageURI) {
+    if (!this.toolkits.has(pageURI)) {
+      this.toolkits.set(pageURI, new verovio.toolkit());
+      this.toolkits.get(pageURI).setOptions(this.verovioOptions);
     }
-    return this.toolkits.get(pageNo);
+    return this.toolkits.get(pageURI);
   }
 }
 
