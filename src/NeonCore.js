@@ -16,7 +16,7 @@ class NeonCore {
    */
   constructor (meiMap, title) {
     this.verovioOptions = {
-      inputFormat: 'mei',
+      format: 'mei',
       noFooter: 1,
       noHeader: 1,
       pageMarginLeft: 0,
