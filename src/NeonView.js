@@ -157,7 +157,12 @@ class NeonView {
       this.core.updateDatabase().then(() => {
         this.manifest.mei_annotations = this.core.annotations;
         this.manifest.timestamp = (new Date()).toISOString();
-        resolve('data:application/ld+json;base64,' + window.btoa(JSON.stringify(this.manifest)));
+        let data = new window.Blob([JSON.stringify(this.manifest, null, 2)], { type: 'application/ld+json' });
+        let reader = new window.FileReader();
+        reader.addEventListener('load', () => {
+          resolve(reader.result);
+        });
+        reader.readAsDataURL(data);
       }).catch(err => { reject(err); });
     }));
   }
