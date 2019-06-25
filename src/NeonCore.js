@@ -297,9 +297,12 @@ class NeonCore {
       let value = pair[1];
       if (value.dirty) {
         updateTimestamp ^= true;
+        let index = this.annotations.findIndex(elem => { return elem.target === key; });
+        let uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
+        this.annotations[index].body = uri;
         await this.db.get(key).then(doc => {
           // Encode MEI as data URI
-          doc.data = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
+          doc.data = uri;
           return this.db.put(doc);
         }).then(() => {
           value.dirty = false;

@@ -44,6 +44,18 @@ export function initNavbar (neonView) {
     }
   });
 
+  $('#export').on('click', (evt) => {
+    neonView.export().then(manifest => {
+      let link = document.createElement('a');
+      link.href = manifest;
+      link.download = neonView.name + '.jsonld';
+      $('body').append(link);
+      link.click();
+      link.remove();
+      Notification.queueNotification('Saved');
+    });
+  });
+
   $('#revert').on('click', function () {
     if (window.confirm('Reverting will cause all changes to be lost. Press OK to continue.')) {
       neonView.deleteDb().then(() => {

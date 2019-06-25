@@ -22,6 +22,7 @@ class NeonView {
     if (!parseManifest(params.manifest)) {
       console.error('Unable to parse the manifest');
     }
+    this.manifest = params.manifest;
 
     this.view = new params.View(this, params.Display, params.manifest.image);
     this.name = params.manifest.title;
@@ -147,19 +148,26 @@ class NeonView {
   }
 
   /**
-   * Save the current state of the MEI file(s) to the browser database.
+   * Updates browser database and creates JSON-LD save file.
    * @returns {Promise} A promise that resolves when the save action is finished.
    */
-  save () {
-    return this.core.updateDatabase();
+  export () {
+    // return this.core.updateDatabase();
+    return (new Promise((resolve, reject) => {
+      this.core.updateDatabase().then(() => {
+        this.manifest.mei_annotations = this.core.annotations;
+        this.manifest.timestamp = (new Date()).toISOString();
+        resolve('data:application/ld+json;base64,' + window.btoa(JSON.stringify(this.manifest)));
+      }).catch(err => { reject(err); });
+    }));
   }
 
   /**
-   * Save the current state to the browser database for autosaving/restoring.
-   * @returns {Promise} A promise that resolves when the autosave action is finished.
+   * Save the current state to the browser database.
+   * @returns {Promise} A promise that resolves when the action is finished.
    */
-  autosave () {
-    return this.core.autosave();
+  save () {
+    return this.core.updateDatabase();
   }
 
   /**
