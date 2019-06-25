@@ -11,7 +11,7 @@ class NeonCore {
   /**
    * Constructor for NeonCore
    * @param {Array} annotations - An array of data annotations relating pages to MEI files.
-   * @param {Promise} title - The title of the page or manuscript.
+   * @param {string} title - The title of the page or manuscript.
    * @returns {object} A NeonCore object.
    */
   constructor (annotations, title) {
@@ -95,6 +95,21 @@ class NeonCore {
         console.error(err);
       });
     }
+    await this.db.get('timestamp').catch(err => {
+      if (err.name === 'not_found') {
+        return {
+          _id: 'timestamp',
+          data: ''
+        };
+      } else {
+        throw err;
+      }
+    }).then(doc => {
+      doc.data = (new Date()).toISOString();
+      return this.db.put(doc);
+    }).catch(err => {
+      console.error(err);
+    });
   }
 
   /**
@@ -270,28 +285,36 @@ class NeonCore {
     return false;
   }
 
-  // TODO fix updateDatabase
   /**
    * Update the PouchDb database stored in the browser.
    * This is based on the data stored in the cache. To save time,
    * only entries marked as dirty will be updated.
    */
   async updateDatabase () {
-    /* for (let pair of this.neonCache) {
+    let updateTimestamp = false;
+    for (let pair of this.neonCache) {
       let key = pair[0];
       let value = pair[1];
       if (value.dirty) {
-        await this.db.get(key.toString()).then((doc) => {
-          doc.data = value.mei;
+        updateTimestamp ^= true;
+        await this.db.get(key).then(doc => {
+          // Encode MEI as data URI
+          doc.data = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
           return this.db.put(doc);
         }).then(() => {
-          console.log('done');
           value.dirty = false;
-        }).catch((err) => {
+        }).catch(err => {
           console.error(err);
         });
       }
-    } */
+    }
+
+    if (updateTimestamp) {
+      await this.db.get('timestamp').then(doc => {
+        doc.data = (new Date()).toISOString();
+        return this.db.put(doc);
+      });
+    }
   }
 
   getToolkit (pageURI) {

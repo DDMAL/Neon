@@ -155,6 +155,14 @@ class NeonView {
   }
 
   /**
+   * Save the current state to the browser database for autosaving/restoring.
+   * @returns {Promise} A promise that resolves when the autosave action is finished.
+   */
+  autosave () {
+    return this.core.autosave();
+  }
+
+  /**
    * Deletes the local database of the loaded MEI file(s).
    * @returns {Promise} A promise that resolves when the database is deleted.
    */
