@@ -7,6 +7,8 @@ import SingleEditMode from './SquareEdit/SingleEditMode.js';
 import InfoModule from './InfoModule.js';
 import TextView from './TextView.js';
 
+import NeonContext from './utils/manifest/context.json';
+
 const $ = require('jquery');
 
 if (manifest !== '') {
@@ -28,16 +30,17 @@ if (manifest !== '') {
   });
 } else {
   $.get(meiFile, (data) => {
+    let title = meiFile.match(/\/([-_.\d\w,]+)\.mei$/)[1];
     let map = new Map();
     map.set(0, data);
     let params = {
       manifest: {
-        title: 'test',
-        timestamp: Date.now(),
+        '@context': NeonContext,
+        title: title,
+        timestamp: (new Date()).toISOString(),
         image: bgImg,
         mei_annotations: [
           {
-            '@context': 'http://www.w3.org/ns/anno.jsonld',
             id: '#test-id',
             type: 'Annotation',
             body: meiFile,

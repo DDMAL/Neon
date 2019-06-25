@@ -1,17 +1,21 @@
 {
   "type": "object",
   "required": [
+    "@context",
     "title",
     "timestamp",
     "image",
     "mei_annotations"
   ],
   "properties": {
+    "@context": {
+      "type": "array"
+    },
     "title": {
       "type": "string"
     },
     "timestamp": {
-      "type": "number"
+      "type": "string"
     },
     "image": {
       "type": "string"
@@ -21,16 +25,12 @@
       "items": {
         "type": "object",
         "required": [
-          "@context",
           "id",
           "type",
           "body",
           "target"
         ],
         "properties": {
-          "@context": {
-            "type": "string"
-          },
           "id": {
             "type": "string"
           },
