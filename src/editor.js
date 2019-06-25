@@ -40,8 +40,8 @@ if (manifest !== '') {
             '@context': 'http://www.w3.org/ns/anno.jsonld',
             id: '#test-id',
             type: 'Annotation',
-            body: bgImg,
-            target: meiFile
+            body: meiFile,
+            target: bgImg
           }
         ]
       },

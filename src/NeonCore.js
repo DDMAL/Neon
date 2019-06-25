@@ -76,8 +76,8 @@ class NeonCore {
    */
   async initDb () {
     for (let annotation of this.annotations) {
-      let key = annotation.body;
-      let value = annotation.target;
+      let value = annotation.body;
+      let key = annotation.target;
       await this.db.get(key).catch((err) => {
         if (err.name === 'not_found') {
           // Create new document
