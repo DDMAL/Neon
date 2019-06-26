@@ -384,21 +384,49 @@ router.route('/uploads/mei/:file').put(function (req, res) {
   }
 
   // Check if file file exists. If it does, write. Otherwise return 404
-  fs.writeFile(path.join(meiUpload, req.params.file), req.body.mei, { flag: 'r+' }, (err) => {
+  let filePath = path.join(meiUpload, req.params.file);
+  fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
-      if (err.code !== 'ENOENT') {
-        console.error(err);
-        res.sendStatus(500);
-      }
       res.sendStatus(404);
     } else {
-      res.sendStatus(200);
+      fs.writeFile(filePath, req.body.mei, (err) => {
+        if (err) {
+          console.error(err);
+          res.sendStatus(500);
+        } else {
+          res.sendStatus(200);
+        }
+      });
     }
   });
 });
 
 router.route('/uploads/iiif/:label/:rev/:file').put(function (req, res) {
+  if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev) || !isUserInputValid(req.params.file)) {
+    res.sendStatus(403);
+    return;
+  }
+  if (typeof req.body.mei === 'undefined') {
+    res.sendStatus(400);
+    return;
+  }
 
+  // Check if file exists. If it does, write. Otherwise 404.
+  let filePath = path.join(iiifUpload, req.params.label, req.params.rev, req.params.file);
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      res.sendStatus(404);
+    } else {
+      fs.writeFile(filePath, req.body.mei, (err) => {
+        if (err) {
+          console.error(err);
+          res.sendStatus(500);
+        } else {
+          res.sendStatus(200);
+        }
+      });
+    }
+  });
 });
 
 module.exports = router;
