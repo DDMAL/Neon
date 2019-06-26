@@ -7,6 +7,7 @@ const $ = require('jquery');
  * @param {NeonView} neonView - The NeonView parent object.
  */
 function DragHandler (neonView, selector) {
+  console.log(neonView);
   var dragStartCoords;
   var dragEndCoords;
   var resetToAction;

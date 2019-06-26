@@ -1,3 +1,6 @@
+import { unselect, selectBBox } from './utils/SelectTools.js';
+import DragHandler from './utils/DragHandler.js';
+
 const $ = require('jquery');
 
 /**
@@ -12,6 +15,9 @@ export default class TextEditMode {
     this.neonView = neonView;
     document.getElementById('edit_mode').addEventListener('click', () => {
       this.setTextEdit();
+      if ($('#displayBBox').is(':checked')) {
+        this.initSelectByBBoxButton();
+      }
     });
   }
 
@@ -26,6 +32,57 @@ export default class TextEditMode {
         this.updateSylText(span);
       });
     });
+  }
+
+  /**
+  * add the selectByRect button
+  * if neumeedit mode is there, add it to the bar with the other select by buttons
+  * otherwise add an invisible button
+  * since the only edit mode is selectByRect in that case
+  */
+  initSelectByBBoxButton () {
+    if (this.neonView.NeumeEdit !== undefined) {
+      if ($('#selByBBox').length) {
+        $('#selByBBox').css('display', '');
+        return;
+      }
+      let block = $('#selBySyl').parent('.control').parent('.field');
+      block.append("<p class='control'><button class='button sel-by' id='selByBBox'>BBox</button></p>");
+      let button = $('#selByBBox');
+      button.on('click', this.selectByBBoxHandler);
+    } else {
+      let block = $('#undo').parent('.control');
+      block.append("<p class='control'><button class='button sel-by' id='selByBBox'>BBox</button></p>");
+      let button = $('#selByBBox');
+      button.addClass('is-active');
+      button.css('display', 'none');
+    }
+  }
+
+  /**
+   * initialize select by bbox mode
+   */
+  selectByBBoxHandler () {
+    if (!$('#selByBBox').hasClass('is-active')) {
+      unselect();
+      $('#moreEdit').empty();
+      $('#selByBBox').addClass('is-active');
+      $('#selByNc').removeClass('is-active');
+      $('#selByNc').removeClass('is-active');
+      $('#selByStaff').removeClass('is-active');
+      $('#selBySyl').removeClass('is-active');
+
+      let rects = Array.from($('.sylTextRect-display'));
+      rects.forEach(rect => {
+        $(rect).off('click');
+        $(rect).on('click', () => {
+          if ($('#selByBBox').hasClass('is-active')) {
+            console.log(this.neonView);
+            selectBBox(rect, new DragHandler(this.neonView, '.sylTextRect-display'));
+          }
+        });
+      });
+    }
   }
 
   /**

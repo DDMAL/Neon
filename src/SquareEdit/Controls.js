@@ -131,6 +131,7 @@ export function initSelectionButtons () {
       unselect();
       $('#moreEdit').empty();
       $('#selBySyl').addClass('is-active');
+      $('#selByBBox').removeClass('is-active');
       $('#selByNeume').removeClass('is-active');
       $('#selByNc').removeClass('is-active');
       $('#selByStaff').removeClass('is-active');
@@ -149,6 +150,7 @@ export function initSelectionButtons () {
       unselect();
       $('#moreEdit').empty();
       $('#selByNeume').addClass('is-active');
+      $('#selByBBox').removeClass('is-active');
       $('#selByNc').removeClass('is-active');
       $('#selByStaff').removeClass('is-active');
       $('#selBySyl').removeClass('is-active');
@@ -167,6 +169,7 @@ export function initSelectionButtons () {
       unselect();
       $('#moreEdit').empty();
       $('#selByNc').addClass('is-active');
+      $('#selByBBox').removeClass('is-active');
       $('#selByNeume').removeClass('is-active');
       $('#selByStaff').removeClass('is-active');
       $('#selBySyl').removeClass('is-active');
@@ -185,6 +188,7 @@ export function initSelectionButtons () {
       unselect();
       $('#moreEdit').empty();
       $('#selByStaff').addClass('is-active');
+      $('#selByBBox').removeClass('is-active');
       $('#selByNc').removeClass('is-active');
       $('#selByNeume').removeClass('is-active');
       $('#selBySyl').removeClass('is-active');

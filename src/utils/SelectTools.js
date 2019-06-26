@@ -33,6 +33,10 @@ export function unselect () {
       $(selected[i]).removeClass('selected');
       selected[i].removeAttribute('style');
       Color.unhighlight(selected[i]);
+    } else if ($(selected[i]).hasClass('sylTextRect-select')) {
+      $(selected[i]).removeClass('selected');
+      $(selected[i]).removeClass('sylTextRect-select');
+      $(selected[i]).addClass('sylTextRect-display');
     } else {
       $(selected[i]).removeClass('selected');
       selected[i].removeAttribute('style');
@@ -165,13 +169,13 @@ export function getStaffBBox (staff) {
  * @param {DragHandler} dragHandler - the drag handler in use
  */
 export function selectBBox (el, dragHandler) {
-  // -------this method is preliminary and will need to be fixed later------------ //
-
   let bbox = $(el);
   if (!bbox.hasClass('sylTextRect-select')) {
     unselect();
     bbox.removeClass('sylTextRect');
+    bbox.removeClass('sylTextRect-display');
     bbox.addClass('sylTextRect-select');
+    bbox.addClass('selected');
     updateHighlight();
     dragHandler.dragInit();
   }
@@ -219,37 +223,40 @@ export async function selectAll (elements, neonView, info, dragHandler) {
     return;
   }
 
-  let neumeSelectionClass;
+  let selectionClass;
   let containsClefOrCustos = false;
 
   switch (selectionType) {
     case 'selBySyl':
-      neumeSelectionClass = '.syllable';
+      selectionClass = '.syllable';
       break;
     case 'selByNeume':
-      neumeSelectionClass = '.neume';
+      selectionClass = '.neume';
       break;
     case 'selByNc':
-      neumeSelectionClass = '.nc';
+      selectionClass = '.nc';
       break;
     case 'selByStaff':
-      neumeSelectionClass = '.staff';
+      selectionClass = '.staff';
+      break;
+    case 'selByBBox':
+      selectionClass = '.sylTextRect-display';
       break;
     default:
       console.error('Unknown selection type ' + selectionType);
       return;
   }
 
-  // Get the groupings specified by neumeSelectionClass
+  // Get the groupings specified by selectionClass
   // that contain the provided elements to select.
   let groupsToSelect = new Set();
   for (let element of elements) {
-    let grouping = element.closest(neumeSelectionClass);
+    let grouping = element.closest(selectionClass);
     if (grouping === null) {
       // Check if we click-selected a clef or a custos
       grouping = element.closest('.clef, .custos');
       if (grouping === null) {
-        console.warning('Element ' + element.id + ' is not part of specified group and is not a clef or custos.');
+        console.warn('Element ' + element.id + ' is not part of specified group and is not a clef or custos.');
         continue;
       }
       containsClefOrCustos |= true;
@@ -374,6 +381,18 @@ export async function selectAll (elements, neonView, info, dragHandler) {
           } else {
             SelectOptions.triggerDefaultActions();
           }
+      }
+      break;
+    case 'selByBBox':
+      switch (groups.length) {
+        case 1:
+          let resize = new Resize(groups[0].id, neonView, dragHandler);
+          resize.drawInitialRect();
+          SelectOptions.triggerDefaultActions();
+          break;
+        default:
+          SelectOptions.triggerDefaultActions();
+          break;
       }
       break;
     default:

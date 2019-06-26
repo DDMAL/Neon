@@ -66,9 +66,15 @@ class TextView {
     if ($('#displayBBox').is(':checked')) {
       $('.sylTextRect').addClass('sylTextRect-display');
       $('.sylTextRect').removeClass('sylTextRect');
+      if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
+        this.neonView.TextEdit.initSelectByBBoxButton();
+      }
     } else {
       $('.sylTextRect-display').addClass('sylTextRect');
       $('.sylTextRect-display').removeClass('sylTextRect-display');
+      $('#selByBBox').css('display', 'none');
+      $('#selByBBox').removeClass('is-active');
+      $('#selBySyl').addClass('is-active');
     }
   }
 
