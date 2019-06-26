@@ -7,11 +7,11 @@ import SingleEditMode from '../src/SquareEdit/SingleEditMode.js';
 import InfoModule from '../src/InfoModule.js';
 import TextView from '../src/TextView.js';
 
-// import PouchDb from 'pouchdb';
+import PouchDb from 'pouchdb';
 
 let name = getGetParam('manifest');
 let manifestLocation = 'manifests/' + name + '.jsonld';
-console.log(manifestLocation);
+let storage = getGetParam('storage');
 
 if (name) {
   window.fetch(manifestLocation).then(response => {
@@ -48,7 +48,35 @@ if (name) {
     view.start();
   });
 } else {
-  console.error('TODO: Implement getting manifest from pouchDB or elsewhere.');
+  let db = new PouchDb('Neon-User-Storage');
+  db.get(storage).then(async doc => {
+    console.log(doc);
+    let manifest = JSON.parse(doc.content);
+    let params = {
+      manifest: manifest,
+      Display: DisplayPanel,
+      Info: InfoModule,
+      TextView: TextView
+    };
+
+    let mediaType = await new Promise((resolve, reject) => {
+      window.fetch(manifest.image).then(response => {
+        resolve(response.headers.get('Content-Type'));
+      }).catch(err => {
+        reject(err);
+      });
+    });
+    if (mediaType.match(/image\/*/)) {
+      params.View = SingleView;
+      params.NeumeEdit = SingleEditMode;
+    } else {
+      params.View = DivaView;
+      params.NeumeEdit = DivaEdit;
+    }
+
+    var view = new NeonView(params);
+    view.start();
+  });
 }
 
 function getGetParam (paramName) {

@@ -1,99 +1,71 @@
-var meiReady = false,
-    pngReady = false;
+var db = new PouchDB('Neon-User-Storage');
 
-var fileInfo = {
-    mei: "",
-    png: ""
+getAllDocuments().then(response => {
+  let storage = document.getElementById('storage-selector');
+  for (let doc of response.rows) {
+    let option = document.createElement('option');
+    option.setAttribute('value', doc.id);
+    option.textContent = doc.id;
+    storage.appendChild(option);
+  }
+}).catch(err => {
+  console.error(err);
+});
+
+document.getElementById('add-storage-form').onsubmit = (evt) => {
+  evt.preventDefault();
+  if (evt.target.checkValidity()) {
+    let file = document.getElementById('upload-manifest').files[0];
+    console.log(file);
+    addEntry(file.name, file).then(response => {
+      window.location.reload();
+    }).catch(err => {
+      console.error(err);
+    });
+  }
 };
 
-var db = new PouchDB("neon-temporary");
+function getAllDocuments () {
+  return new Promise((resolve, reject) => {
+    db.allDocs().then(result => { resolve(result); })
+      .catch(err => { reject(err); });
+  });
+}
 
-document.getElementById("mei-file").onchange = (e) => {
-    let reader = new FileReader();
-    meiReady = false;
-    reader.onload = (res) => {
-        fileInfo.mei = res.target.result;
-        meiReady = true;
-    }
-    let file = e.target.files[0];
-    if (file) {
-        reader.readAsText(file);
-    }
-};
-document.getElementById("png-file").onchange = (e) => {
-    let reader = new FileReader();
-    pngReady = false;
-    reader.onload = (res) => {
-        fileInfo.png = res.target.result;
-        pngReady = true;
-    }
-    let file = e.target.files[0];
-    if (file) {
-        reader.readAsDataURL(file);
-    }
-};
-document.getElementById("submit-storage").onclick = async (e) => {
-    if (meiReady && pngReady) {
-        const data = [
-            { _id: "mei.original", data: fileInfo.mei },
-            { _id: "mei", data: fileInfo.mei },
-            { _id: "img", data: fileInfo.png }
-        ];
+/**
+ * @param {string} title
+ * @param {Blob} content
+ * @returns {Promise}
+ */
+function addEntry (title, content) {
+  return new Promise((resolve, reject) => {
+    (new window.Response(content)).text().then(data => {
+      db.put({
+        _id: title,
+        content: data
+      }).then(response => {
+        resolve(true);
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  });
+}
 
-        // Update with new documents
-        let didError = false;
-        await db.get("mei.original").catch((err) => {
-            if (err.name === "not_found") {
-                return {
-                    _id: "mei.original",
-                    data: ""
-                };
-            } else {
-                throw err;
-            }
-        }).then((doc) => {
-            doc.data = fileInfo.mei;
-            return db.put(doc);
-        }).catch((err) => { console.log(err); didError = true; });
-        await db.get("mei").catch((err) => {
-            if (err.name === "not_found") {
-                return {
-                    _id: "mei",
-                    data: ""
-                };
-            } else {
-                throw err;
-            }
-        }).then((doc) => {
-            doc.data = fileInfo.mei;
-            return db.put(doc);
-        }).catch((err) => { console.log(err); didError = true; });
-        await db.get("img").catch((err) => {
-            if (err.name === "not_found") {
-                return {
-                    _id: "img",
-                    data: ""
-                };
-            }
-            else {
-                throw err;
-            }
-        }).then((doc) => {
-            doc.data = fileInfo.png;
-            return db.put(doc);
-        }).catch((err) => { console.log(err); didError = true; });
-        if (!didError) {
-            document.getElementById("user-form").submit();
-            /*let editor = document.createElement("a");
-            editor.setAttribute("href", "editor.html");
-            editor.style.display = "none";
-            document.body.append(editor);
-            editor.click();
-            document.body.removeChild(editor);*/
-        }
-    }
-    else {
-        // give alert
-        console.warn("Missing either MEI or PNG file");
-    }
-};
+/**
+ * @param {string} id
+ * @returns {Promise}
+ */
+function deleteEntry (id) {
+  return new Promise((resolve, reject) => {
+    db.get(id).then(doc => {
+      db.remove(doc).then(response => {
+        resolve(true);
+      }).catch(err => {
+        reject(err);
+      });
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
