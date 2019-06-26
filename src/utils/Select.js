@@ -61,6 +61,7 @@ export function clickSelect (selector) {
  * @param {object} evt
  */
 function clickHandler (evt) {
+  if (!neonView) return;
   let mode = neonView.getUserMode();
 
   // If in insert mode or panning is active from shift key
@@ -74,7 +75,9 @@ function clickHandler (evt) {
         selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
       }
       selectAll(selection, neonView, info, dragHandler);
-      dragHandler.dragInit();
+      if (dragHandler) {
+        dragHandler.dragInit();
+      }
     }
   } else {
     // Check if the point being clicked on is a staff selection (if applicable)
@@ -110,7 +113,9 @@ function clickHandler (evt) {
       selectStaff(staff, dragHandler);
       let resize = new Resize(staff.id, neonView, dragHandler);
       resize.drawInitialRect();
-      dragHandler.dragInit();
+      if (dragHandler) {
+        dragHandler.dragInit();
+      }
     }
     // Trigger mousedown event on the staff
     staff.dispatchEvent(new window.MouseEvent('mousedown', {
@@ -145,9 +150,12 @@ export function dragSelect (selector) {
     .on('drag', selecting)
     .on('end', selEnd);
   canvas.call(dragSelectAction);
-  dragHandler.resetTo(dragSelectAction);
+  if (dragHandler) {
+    dragHandler.resetTo(dragSelectAction);
+  }
 
   function selStart () {
+    if (!neonView) return;
     let userMode = neonView.getUserMode();
     if (d3.event.sourceEvent.target.nodeName !== 'use' && userMode !== 'insert') {
       if (!d3.event.sourceEvent.shiftKey) { // If not holding down shift key to pan
@@ -247,7 +255,9 @@ export function dragSelect (selector) {
 
       selectAll(elements, neonView, info, dragHandler);
 
-      dragHandler.dragInit();
+      if (dragHandler) {
+        dragHandler.dragInit();
+      }
       d3.selectAll('#selectRect').remove();
       dragSelecting = false;
     }
