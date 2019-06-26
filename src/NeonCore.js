@@ -298,10 +298,33 @@ class NeonCore {
       if (value.dirty) {
         updateTimestamp ^= true;
         let index = this.annotations.findIndex(elem => { return elem.target === key; });
-        let uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
+        // try to update server with PUT (if applicable
+        // only attempt if not a data URI
+        let uri;
+        if (!this.annotations[index].body.match(/^data:/)) {
+          await window.fetch(this.annotations[index].body,
+            {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/mei+xml' },
+              body: value.mei
+            }
+          ).then(response => {
+            if (response.ok) {
+              uri = this.annotations[index].body;
+            } else {
+              uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
+            }
+          }).catch(err => {
+            console.error(err);
+            console.warn('Falling back to data URI');
+            uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
+          });
+        } else {
+          uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
+        }
+        // Update URI in annotations, database
         this.annotations[index].body = uri;
         await this.db.get(key).then(doc => {
-          // Encode MEI as data URI
           doc.data = uri;
           return this.db.put(doc);
         }).then(() => {
