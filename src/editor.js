@@ -12,19 +12,17 @@ import NeonContext from './utils/manifest/context.json';
 const $ = require('jquery');
 
 if (manifest !== '') {
-  $.get(manifest).then((data) => {
+  $.get(iiif).then((data) => {
     let params = {
-      options: {
-        manifest: manifest,
-        meiMap: meiMap,
-        name: data.label
-      },
+      manifest: manifest,
       View: DivaView,
       Display: DisplayPanel,
       Info: InfoModule,
       NeumeEdit: DivaEdit,
       TextView: TextView
     };
+    params.manifest.timestamp = (new Date()).toISOString();
+    params.manifest.title = data.label;
     var view = new NeonView(params);
     view.start();
   });

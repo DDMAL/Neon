@@ -43,11 +43,11 @@ html
       script(type='text/javascript').
         var meiFile = "#{meifile}";
         var bgImg = "#{bgimg}";
-        var manifest = "#{manifest}";
-        let rawMap = "#{meiMap}";
-        if (rawMap !== "") {
-          var meiMap = new Map(JSON.parse(decodeURIComponent(rawMap)));
-        }
+        var manifest = "";
+        try {
+          manifest = JSON.parse(decodeURIComponent("#{manifest}"));
+        } catch (e) {}
+        var iiif = "#{iiif}";
 
         function hotkeyDialog() {
           alert(

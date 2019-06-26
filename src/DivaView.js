@@ -168,7 +168,7 @@ class DivaView {
     this.indexMap.clear();
     for (let sequence of manifest.sequences) {
       for (let canvas of sequence.canvases) {
-        this.indexMap.set(sequence.indexOf(canvas), canvas['@id']);
+        this.indexMap.set(sequence.canvases.indexOf(canvas), canvas['@id']);
       }
     }
   }

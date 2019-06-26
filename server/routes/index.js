@@ -11,6 +11,7 @@ const __base = '';
 const meiUpload = path.join(__base, 'public', 'uploads', 'mei');
 const pngUpload = path.join(__base, 'public', 'uploads', 'png');
 const iiifUpload = path.join(__base, 'public', 'uploads', 'iiif');
+const iiifPublicPath = path.join('/', 'uploads', 'iiif');
 
 const allowedPattern = /^[-_\.,\d\w ]+$/;
 const consequtivePeriods = /\.{2,}/;
@@ -173,18 +174,37 @@ router.route('/edit-iiif/:label/:rev').get((req, res) => {
         console.error(e);
         res.status(500).render('error', { statusCode: '500 - Internal Server Error', message: 'Could not parse entry metadata' });
       }
-      let map = new Map();
+      let manifest = {
+        '@context': [
+          'http://www.w3.org/ns/anno.jsonld',
+          {
+            'schema': 'http://schema.org/',
+            'title': 'schema:name',
+            'timestamp': 'schema:dateModified',
+            'image': {
+              '@id': 'schema:image',
+              '@type': '@id'
+            },
+            'mei_annotations': {
+              '@id': 'Annotation',
+              '@type': '@id',
+              '@container': '@list'
+            }
+          }
+        ],
+        'image': metadata.manifest,
+        'mei_annotations': []
+      };
       for (let page of metadata.pages) {
-        let data;
-        try {
-          data = fs.readFileSync(path.join(iiifUpload, pathName, page.file));
-        } catch (e) {
-          console.error(e);
-          continue;
-        }
-        map.set(page.index, data.toString());
+        let annotation = {
+          'id': '#' + page.index,
+          'type': 'Annotation',
+          'body': path.join(iiifPublicPath, pathName, page.file),
+          'target': page.id
+        };
+        manifest.mei_annotations.push(annotation);
       }
-      res.render('editor', { 'manifest': metadata.manifest, 'meiMap': encodeURIComponent(JSON.stringify([...map])) });
+      res.render('editor', { 'iiif': metadata.manifest, 'manifest': encodeURIComponent(JSON.stringify(manifest)) });
     }
   });
 });
@@ -282,9 +302,11 @@ router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (re
         res.status(500).send('Could not parse the JSON object');
       }
       let labels = [];
+      let ids = [];
       for (let sequence of manifest['sequences']) {
         for (let canvas of sequence['canvases']) {
           labels.push(canvas['label']);
+          ids.push(canvas['@id']);
         }
       }
 
@@ -311,7 +333,8 @@ router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (re
           label: req.params.label,
           rev: req.params.rev,
           files: filenames,
-          labels: labels
+          labels: labels,
+          ids: ids
         }
       );
     }
@@ -333,11 +356,15 @@ router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
 
   // Update metadata
   metadata.pages = [];
-  for (let entry of req.body.select) {
-    metadata.pages.push(JSON.parse(entry));
+  if (typeof req.body.select !== 'string') {
+    for (let entry of req.body.select) {
+      metadata.pages.push(JSON.parse(entry));
+    }
+  } else {
+    metadata.pages.push(JSON.parse(req.body.select));
   }
 
-  fs.writeFile(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json'), JSON.stringify(metadata), (err) => {
+  fs.writeFile(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json'), JSON.stringify(metadata, null, 2), (err) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
