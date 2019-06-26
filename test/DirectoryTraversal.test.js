@@ -110,3 +110,37 @@ describe('Check /delete/:filename', () => {
     });
   });
 });
+
+describe('Check /upload/mei/:file', () => {
+  const testUrl = url + 'upload/mei/';
+
+  test('Encode URI', done => {
+    request({ method: 'PUT', uri: testUrl + encodeURIComponent(toTest), body: 'test' }, (error, response, body) => {
+      if (error) {
+        throw error;
+      }
+      expect(response.statusCode).not.toBe(200);
+      done();
+    });
+  });
+
+  test('2e and 2f', done => {
+    let replace = toTest.replace(/\./g, '%2e').replace(/\//g, '%2f');
+    request({ method: 'PUT', uri: testUrl + replace, body: 'test' }, (error, response, body) => {
+      if (error) {
+        throw error;
+      }
+      expect(response.statusCode).not.toBe(200);
+      done();
+    });
+  });
+
+  test('UTF-8 encoding', done => {
+    let replace = toTest.replace(/\//g, '%c0%af');
+    request({ method: 'PUT', uri: testUrl + replace, body: 'test' }, (error, response, body) => {
+      if (error) throw error;
+      expect(response.statusCode).not.toBe(200);
+      done();
+    });
+  });
+});
