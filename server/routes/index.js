@@ -373,4 +373,32 @@ router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
   });
 });
 
+router.route('/uploads/mei/:file').put(function (req, res) {
+  if (!isUserInputValid(req.params.file)) {
+    res.sendStatus(403);
+    return;
+  }
+  if (typeof req.body.mei === 'undefined') {
+    res.sendStatus(400);
+    return;
+  }
+
+  // Check if file file exists. If it does, write. Otherwise return 404
+  fs.writeFile(path.join(meiUpload, req.params.file), req.body.mei, { flag: 'r+' }, (err) => {
+    if (err) {
+      if (err.code !== 'ENOENT') {
+        console.error(err);
+        res.sendStatus(500);
+      }
+      res.sendStatus(404);
+    } else {
+      res.sendStatus(200);
+    }
+  });
+});
+
+router.route('/uploads/iiif/:label/:rev/:file').put(function (req, res) {
+
+});
+
 module.exports = router;
