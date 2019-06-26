@@ -1,19 +1,23 @@
 #!/bin/bash
+context="[\"http://www.w3.org/ns/anno.jsonld\",{\"schema\":\"http://schema.org/\",\"title\":\"schema:name\",\"timestamp\":\"schema:dateModified\",\"image\":{\"@id\":\"schema:image\",\"@type\":\"@id\"},\"mei_annotations\":{\"@id\":\"Annotation\",\"@type\":\"@id\",\"@container\":\"@list\"}}]"
 imports=""
 json=""
 doc="/**\n * Pages that can be loaded.\n * @type {{name: string, mei: string, img: string}[]}\n */"
+mkdir -p manifests
 for file in *.mei; do
     filename=`basename "$file" .mei`
     base=`echo $filename | tr - _`
     mei="${base}_MEI"
     background="${base}_PNG"
+    background_file="${filename}.png"
     imports="${imports}import $mei from \"./$file\";\nimport $background from \"./${filename}.png\";\n"
-    json="${json}    \"$filename\",\n"
+    json="${json}\n    \"$filename\","
+    echo "{\"@context\":$context,\"title\":\"$base\",\"image\":\"img/$background_file\",\"timestamp\":\"`date +%Y-%m-%dT%H:%M:%S%z`\",\"mei_annotations\":[{\"id\":\"#$base\",\"type\":\"Annotation\",\"body\":\"mei/$file\",\"target\":\"img/$background_file\"}]}" > manifests/$filename.jsonld
 done
 
 printf "${imports}\n" > index.js
 printf "${doc}\n" >> index.js
-printf "const selectionOptions = [\n" >> index.js
+printf "const selectionOptions = [" >> index.js
 printf "${json}" >> index.js
 printf "];\n" >> index.js
 cat index-end.js >> index.js

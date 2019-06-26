@@ -35,7 +35,7 @@
         "build": "./setup-verovio && webpack --config webpack.config.js",
         "test": "jest --silent",
         "doc": "jsdoc -d ./doc/ ./src/ ./src/SingleEdit/ ./src/SingleView/ ./src/utils/ -R ./README.md",
-        "pages": "./setup-verovio && webpack --config webpack.pages-config.js && cp -R public/verovio-toolkit.js public/diva-v6.0.1 dist/ && cp pages/static/* dist/"
+        "pages": "./setup-verovio && webpack --config webpack.pages-config.js && cp -R public/verovio-toolkit.js public/diva-v6.0.1 pages/manifests dist/ && cp pages/static/* dist/"
     },
     "jest": {
         "testPathIgnorePatterns": [
