@@ -131,20 +131,25 @@ router.route('/delete/:filename')
     if (!isUserInputValid(req.params.filename)) {
       res.sendStatus(403);
     }
-    var meifile = req.params.filename;
-    var pngfile = meifile.split('.')[0] + '.png';
-    // delete file from all folders
-    fs.unlink(path.join(meiUpload), function (err) {
+    fs.readFile(path.join(manifestUpload, req.params.filename), (err, data) => {
       if (err) {
-        return console.log('failed to delete mei file');
+        console.error(err);
+        res.sendStatus(404);
+      } else {
+        let manifest = JSON.parse(data);
+        let imagePath = manifest.image.split('/');
+        let meiPath = manifest.mei_annotations[0].body.split('/');
+        try {
+          fs.unlinkSync(path.join(manifestUpload, req.params.filename));
+          fs.unlinkSync(path.join('public', ...imagePath));
+          fs.unlinkSync(path.join('public', ...meiPath));
+        } catch (e) {
+          console.error(e);
+          return res.sendStatus(500);
+        }
+        res.redirect('/');
       }
     });
-    fs.unlink(path.join(imgUpload, pngfile), function (err) {
-      if (err) {
-        return console.log('failed to delete png file');
-      }
-    });
-    res.redirect('/');
   });
 
 // Delete IIIF files
