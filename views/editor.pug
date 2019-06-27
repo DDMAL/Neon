@@ -41,14 +41,7 @@ html
         #neume_info
         #syl_text.box(style={"display": "none"})
       script(type='text/javascript').
-        var meiFile = "#{meifile}";
-        var bgImg = "#{bgimg}";
-        var uuid = "urn:uuid:#{uuid}";
-        var manifest = "";
-        try {
-          manifest = JSON.parse(decodeURIComponent("#{manifest}"));
-        } catch (e) {}
-        var iiif = "#{iiif}";
+        var manifestText = decodeURIComponent("#{manifest}");
 
         function hotkeyDialog() {
           alert(

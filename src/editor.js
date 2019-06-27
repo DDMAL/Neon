@@ -7,54 +7,31 @@ import SingleEditMode from './SquareEdit/SingleEditMode.js';
 import InfoModule from './InfoModule.js';
 import TextView from './TextView.js';
 
-import NeonContext from './utils/manifest/context.json';
+var view;
+init();
 
-const $ = require('jquery');
-
-if (manifest !== '') {
-  $.get(iiif).then((data) => {
+async function init () {
+  if (manifestText !== '') {
+    let manifest = JSON.parse(manifestText);
     let params = {
       manifest: manifest,
-      View: DivaView,
       Display: DisplayPanel,
       Info: InfoModule,
-      NeumeEdit: DivaEdit,
       TextView: TextView
     };
-    params.manifest.timestamp = (new Date()).toISOString();
-    params.manifest.title = data.label;
-    var view = new NeonView(params);
-    view.start();
-  });
-} else {
-  $.get(meiFile, (data) => {
-    let title = meiFile.match(/\/([-_.\d\w,]+)\.mei$/)[1];
-    let map = new Map();
-    map.set(0, data);
-    let params = {
-      manifest: {
-        '@context': NeonContext,
-        '@id': uuid,
-        title: title,
-        timestamp: (new Date()).toISOString(),
-        image: bgImg,
-        mei_annotations: [
-          {
-            id: '#test-id',
-            type: 'Annotation',
-            body: meiFile,
-            target: bgImg
-          }
-        ]
-      },
-      View: SingleView,
-      Display: DisplayPanel,
-      Info: InfoModule,
-      NeumeEdit: SingleEditMode,
-      TextView: TextView
-    };
+    let mediaType = await window.fetch(manifest.image).then(response => {
+      if (response.ok) {
+        return response.headers.get('Content-Type');
+      } else {
+        throw new Error(response.statusText);
+      }
+    });
 
-    var view = new NeonView(params);
+    let singlePage = mediaType.match(/^image\/*/);
+    params.View = singlePage ? SingleView : DivaView;
+    params.NeumeEdit = singlePage ? SingleEditMode : DivaEdit;
+
+    view = new NeonView(params);
     view.start();
-  });
+  }
 }
