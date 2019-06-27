@@ -26,9 +26,8 @@ class NeonView {
 
     this.view = new params.View(this, params.Display, params.manifest.image);
     this.name = params.manifest.title;
-    // TODO NeonCore setup
-    // this.core = new NeonCore(params.options.meiMap, params.options.name);
-    this.core = new NeonCore(params.manifest.mei_annotations, this.name);
+
+    this.core = new NeonCore(params.manifest);
     this.display = this.view.display;
     this.info = new params.Info(this);
 

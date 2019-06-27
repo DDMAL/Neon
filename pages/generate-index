@@ -12,7 +12,8 @@ for file in *.mei; do
     background_file="${filename}.png"
     imports="${imports}import $mei from \"./$file\";\nimport $background from \"./${filename}.png\";\n"
     json="${json}\n    \"$filename\","
-    echo "{\"@context\":$context,\"title\":\"$base\",\"image\":\"img/$background_file\",\"timestamp\":\"`date +%Y-%m-%dT%H:%M:%S%z`\",\"mei_annotations\":[{\"id\":\"#$base\",\"type\":\"Annotation\",\"body\":\"mei/$file\",\"target\":\"img/$background_file\"}]}" > manifests/$filename.jsonld
+    id="https://ddmal.github.io/Neon/manifests/${filename}.jsonld"
+    echo "{\"@context\":$context,\"@id\":\"$id\",\"title\":\"$base\",\"image\":\"img/$background_file\",\"timestamp\":\"`date +%Y-%m-%dT%H:%M:%S%z`\",\"mei_annotations\":[{\"id\":\"`uuidgen`\",\"type\":\"Annotation\",\"body\":\"mei/$file\",\"target\":\"img/$background_file\"}]}" > manifests/$filename.jsonld
 done
 
 printf "${imports}\n" > index.js

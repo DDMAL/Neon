@@ -10,11 +10,10 @@ const verovio = require('verovio-dev');
 class NeonCore {
   /**
    * Constructor for NeonCore
-   * @param {Array} annotations - An array of data annotations relating pages to MEI files.
-   * @param {string} title - The title of the page or manuscript.
+   * @param {object} manifest - The manifest to load.
    * @returns {object} A NeonCore object.
    */
-  constructor (annotations, title) {
+  constructor (manifest) {
     this.verovioOptions = {
       format: 'mei',
       noFooter: 1,
@@ -55,7 +54,7 @@ class NeonCore {
 
     this.parser = new window.DOMParser();
 
-    this.db = new PouchDb(title);
+    this.db = new PouchDb('Neon');
 
     /**
      * A map associating page URIs with their respective Verovio toolkit
@@ -67,49 +66,91 @@ class NeonCore {
     this.blankPages = [];
 
     // Add each MEI to the database
-    this.annotations = annotations;
+    this.manifest = manifest;
+    this.annotations = manifest.mei_annotations;
   }
 
   /**
-   * Initialize the PouchDb database based on the provided MEI.
-   * This should only be run if previous data does not exist.
+   * Initialize the PouchDb database based on the provided manifest.
+   * If a newer version already exists in the database, this will
+   * not update the database unless forced.
+   * @param {boolean} force - If a database update should be forced.
+   * @returns {boolean}
    */
-  async initDb () {
-    for (let annotation of this.annotations) {
-      let value = annotation.body;
-      let key = annotation.target;
-      await this.db.get(key).catch((err) => {
+  async initDb (force = false) {
+    // Check for existing manifest
+    let response = await new Promise((resolve, reject) => {
+      this.db.get(this.manifest['@id']).catch(err => {
         if (err.name === 'not_found') {
-          // Create new document
-          return {
-            _id: key,
-            data: ''
+          // This is a new document.
+          let doc = {
+            _id: this.manifest['@id'],
+            timestamp: this.manifest.timestamp,
+            image: this.manifest.image,
+            title: this.manifest.title,
+            annotations: []
           };
+          this.annotations.forEach(annotation => {
+            doc.annotations.push(annotation.id);
+          });
+          return doc;
         } else {
-          throw err;
+          console.error(err);
+          return reject(err);
         }
-      }).then((doc) => {
-        doc.data = value;
+      }).then(async doc => {
+        // Check if doc timestamp is newer than manifest
+        let docTime = (new Date(doc.timestamp)).getTime();
+        let manTime = (new Date(this.manifest.timestamp)).getTime();
+        if (docTime > manTime) {
+          if (!force) {
+            // Fill annotations list with db annotations
+            this.annotations = [];
+            doc.annotations.forEach(async id => {
+              await this.db.get(id).then(annotation => {
+                this.annotations.push({
+                  id: annotation._id,
+                  type: 'Annotation',
+                  body: annotation.body,
+                  target: annotation.target
+                });
+              }).catch(err => {
+                console.error(err);
+              });
+            });
+            return resolve(false);
+          }
+        }
+        for (let annotation of this.annotations) {
+          // Add annotations to database
+          await this.db.get(annotation.id).catch(err => {
+            if (err.name === 'not_found') {
+              return {
+                _id: annotation.id
+              };
+            } else {
+              console.error(err);
+              return reject(err);
+            }
+          }).then(newAnnotation => {
+            newAnnotation.body = annotation.body;
+            newAnnotation.target = annotation.target;
+            return this.db.put(newAnnotation);
+          }).catch(err => {
+            reject(err);
+            console.error(err);
+          });
+        }
         return this.db.put(doc);
-      }).catch((err) => {
+      }).then(() => {
+        return resolve(true);
+      }).catch(err => {
+        reject(err);
         console.error(err);
       });
-    }
-    await this.db.get('timestamp').catch(err => {
-      if (err.name === 'not_found') {
-        return {
-          _id: 'timestamp',
-          data: ''
-        };
-      } else {
-        throw err;
-      }
-    }).then(doc => {
-      doc.data = (new Date()).toISOString();
-      return this.db.put(doc);
-    }).catch(err => {
-      console.error(err);
     });
+
+    return response;
   }
 
   /**
@@ -127,23 +168,26 @@ class NeonCore {
         e.name = 'missing_mei';
         reject(e);
       } else {
-        this.db.get(pageURI).then(doc => {
-          return window.fetch(doc.data);
-        }).then(response => {
-          if (response.ok) {
-            return response.text();
-          } else {
-            throw new Error(response.statusText);
-          }
-        }).then(data => {
-          this.loadData(pageURI, data);
-          resolve(this.neonCache.get(pageURI));
-        }).catch(err => {
-          if (err.name === 'not_found') {
-            this.blankPages.push(pageURI);
-          }
-          reject(err);
+        // Find annotation
+        let annotation = this.annotations.find(elem => {
+          return elem.target === pageURI;
         });
+        if (annotation) {
+          window.fetch(annotation.body).then(response => {
+            if (response.ok) {
+              return response.text();
+            } else {
+              throw new Error(response.statusText);
+            }
+          }).then(data => {
+            this.loadData(pageURI, data);
+            resolve(this.neonCache.get(pageURI));
+          }).catch(err => {
+            reject(err);
+          });
+        } else {
+          this.blankPages.push(pageURI);
+        }
       }
     });
   }
@@ -324,8 +368,8 @@ class NeonCore {
         }
         // Update URI in annotations, database
         this.annotations[index].body = uri;
-        await this.db.get(key).then(doc => {
-          doc.data = uri;
+        await this.db.get(this.annotations[index].id).then(doc => {
+          doc.body = uri;
           return this.db.put(doc);
         }).then(() => {
           value.dirty = false;
@@ -336,9 +380,11 @@ class NeonCore {
     }
 
     if (updateTimestamp) {
-      await this.db.get('timestamp').then(doc => {
-        doc.data = (new Date()).toISOString();
+      await this.db.get(this.manifest['@id']).then(doc => {
+        doc.timestamp = (new Date()).toISOString();
         return this.db.put(doc);
+      }).catch(err => {
+        console.error(err);
       });
     }
   }
