@@ -25,6 +25,25 @@ document.getElementById('add-storage-form').onsubmit = (evt) => {
   }
 };
 
+document.getElementById('remove-button').onclick = (evt) => {
+  let form = document.getElementById('user-form');
+  if (form.checkValidity()) {
+    let selectedIndex = document.getElementById('storage-selector').selectedIndex;
+    if (selectedIndex >= 0) {
+      let option = document.getElementById('storage-selector')[selectedIndex];
+      db.get(option.value).then(doc => {
+        db.remove(doc).then(response => {
+          window.location.reload();
+        }).catch(err => {
+          console.error(err);
+        });
+      }).catch(err => {
+        console.error(err);
+      });
+    }
+  }
+};
+
 function getAllDocuments () {
   return new Promise((resolve, reject) => {
     db.allDocs().then(result => { resolve(result); })
