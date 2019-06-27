@@ -194,7 +194,7 @@ router.route('/edit/:filename').get(function (req, res) {
 });
 
 // redirect to salzinnes editor
-router.route('/edit-iiif/:label/:rev').get((req, res) => {
+router.route('/edit/:label/:rev').get((req, res) => {
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
     res.sendStatus(403);
   }
