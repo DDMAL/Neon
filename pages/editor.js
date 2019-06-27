@@ -49,9 +49,10 @@ if (name) {
   });
 } else {
   let db = new PouchDb('Neon-User-Storage');
-  db.get(storage).then(async doc => {
-    console.log(doc);
-    let manifest = JSON.parse(doc.content);
+  db.getAttachment(storage, 'manifest').then(blob => {
+    return new window.Response(blob).json();
+  }).then(async manifest => {
+    console.log(manifest);
     let params = {
       manifest: manifest,
       Display: DisplayPanel,

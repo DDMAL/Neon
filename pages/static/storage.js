@@ -31,12 +31,8 @@ document.getElementById('remove-button').onclick = (evt) => {
     let selectedIndex = document.getElementById('storage-selector').selectedIndex;
     if (selectedIndex >= 0) {
       let option = document.getElementById('storage-selector')[selectedIndex];
-      db.get(option.value).then(doc => {
-        db.remove(doc).then(response => {
-          window.location.reload();
-        }).catch(err => {
-          console.error(err);
-        });
+      deleteEntry(option.value).then(response => {
+        window.location.reload();
       }).catch(err => {
         console.error(err);
       });
@@ -58,15 +54,18 @@ function getAllDocuments () {
  */
 function addEntry (title, content) {
   return new Promise((resolve, reject) => {
-    (new window.Response(content)).text().then(data => {
-      db.put({
-        _id: title,
-        content: data
-      }).then(response => {
-        resolve(true);
-      }).catch(err => {
-        reject(err);
-      });
+    db.put({
+      _id: title,
+      _attachments: {
+        manifest: {
+          content_type: 'application/ld+json',
+          data: content
+        }
+      }
+    }).then(response => {
+      resolve(true);
+    }).catch(err => {
+      reject(err);
     });
   });
 }
