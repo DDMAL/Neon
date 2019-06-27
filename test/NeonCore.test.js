@@ -6,12 +6,10 @@ const verovio = require('verovio-dev');
 
 const pathToMei = './test/resources/test.mei';
 const pathToPNG = './test/resources/test.png';
-var mei, DOMParser, parser;
+const pathToContext = './src/utils/manifest/context.json';
+var mei = {};
 
 beforeAll(() => {
-  mei = fs.readFileSync(pathToMei).toString();
-  // DOMParser = new jsdom.JSDOM().window.DOMParser;
-  parser = new window.DOMParser();
   let meiData = fs.readFileSync(pathToMei).toString();
   // Fetch API not present in JSDOM; mock it.
   window.fetch = jest.fn(data => {
@@ -21,19 +19,27 @@ beforeAll(() => {
     });
   });
   let data = 'data:application/mei+xml;base64' + window.btoa(meiData);
-  mei = [
-    {
-      '@context': 'http://www.w3.org/ns/anno.jsonld',
-      'id': '#test-id',
-      'type': 'Annotation',
-      'body': data,
-      'target': './test/resources/test.png'
-    }
-  ];
+  let context = JSON.parse(fs.readFileSync(pathToContext).toString());
+  console.log(context);
+  mei = {
+    '@context': context,
+    '@id': 'example:test',
+    'title': 'Neon Core Test',
+    'timestamp': (new Date()).toISOString(),
+    'image': pathToPNG,
+    'mei_annotations': [
+      {
+        'id': 'example:test-annotation',
+        'type': 'Annotation',
+        'body': data,
+        'target': pathToPNG
+      }
+    ]
+  };
 });
 
 test("Test 'SetText' function", async () => {
-  let neon = new NeonCore(mei, 'test');
+  let neon = new NeonCore(mei);
   await neon.initDb();
   let svg = await neon.getSVG(pathToPNG);
   let syl = svg.getElementById('testsyl').textContent.trim();
@@ -52,12 +58,12 @@ test("Test 'SetText' function", async () => {
 });
 
 afterAll(async () => {
-  let neon = new NeonCore(mei, 'test');
+  let neon = new NeonCore(mei);
   await neon.db.destroy();
 });
 
 test("Test 'getElementAttr' function", async () => {
-  let neon = new NeonCore(mei, 'test');
+  let neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG); // for some reason verovio can't recognize the ids if this isn't done
   let atts = await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', pathToPNG);
@@ -66,7 +72,7 @@ test("Test 'getElementAttr' function", async () => {
 });
 
 test("Test 'drag' action, neume", async () => {
-  let neon = new NeonCore(mei, 'test');
+  let neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
   let originalAtts = await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', pathToPNG);
@@ -90,7 +96,7 @@ test("Test 'drag' action, neume", async () => {
 
 describe('Test insert editor action', () => {
   test("Test 'insert' action, punctum", async () => {
-    let neon = new NeonCore(mei, 'test');
+    let neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
     let editorAction = {
@@ -109,7 +115,7 @@ describe('Test insert editor action', () => {
   });
 
   test("Test 'insert' action, clef", async () => {
-    let neon = new NeonCore(mei, 'test');
+    let neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
     let editorAction = {
@@ -131,7 +137,7 @@ describe('Test insert editor action', () => {
   });
 
   test("Test 'insert' action, custos", async () => {
-    let neon = new NeonCore(mei, 'test');
+    let neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
     let editorAction = {
@@ -149,7 +155,7 @@ describe('Test insert editor action', () => {
     expect(insertAtts.oct).toBe('2');
   });
   test("Test 'insert' action, nc", async () => {
-    let neon = new NeonCore(mei, 'test');
+    let neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
     let editorAction = {
@@ -170,7 +176,7 @@ describe('Test insert editor action', () => {
 
 describe("Test 'group and ungroup' functions", () => {
   test("Test 'group/ungroup' functions, nc, syllable", async () => {
-    let neon = new NeonCore(mei, 'test');
+    let neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
     // group
@@ -211,7 +217,7 @@ describe("Test 'group and ungroup' functions", () => {
   });
 
   test("the test", async () => {
-    let neon = new NeonCore(mei, 'test');
+    let neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
 
@@ -259,7 +265,7 @@ describe("Test 'group and ungroup' functions", () => {
   });
 
   test("Test 'group/ungroup' functions, neueme with one fullParent", async () => {
-    let neon = new NeonCore(mei, 'test');
+    let neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
     let setupGroup = {
@@ -320,7 +326,7 @@ describe("Test 'group and ungroup' functions", () => {
   });
 
   test("Test 'group/ungroup' functions, neume with no fullParents", async () => {
-    let neon = new NeonCore(mei, 'test');
+    let neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
     let svg = await neon.getSVG(pathToPNG);
@@ -387,7 +393,7 @@ describe("Test 'group and ungroup' functions", () => {
 });
 
 test("Test 'remove' action", async () => {
-  let neon = new NeonCore(mei, 'test');
+  let neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
   let editorAction = {
@@ -402,7 +408,7 @@ test("Test 'remove' action", async () => {
 });
 
 test('Test undo and redo', async () => {
-  let neon = new NeonCore(mei, 'test');
+  let neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
   // Should not be able to undo or redo now
@@ -431,7 +437,7 @@ test('Test undo and redo', async () => {
 });
 
 test('Test chain action', async () => {
-  let neon = new NeonCore(mei, 'test');
+  let neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
   let editorAction = {
@@ -466,7 +472,7 @@ test('Test chain action', async () => {
 });
 
 test("Test 'set' action", async () => {
-  let neon = new NeonCore(mei, 'test');
+  let neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
   expect(await await neon.getElementAttr('m-6831ff33-aa39-4b0d-a383-e44585c6c644', pathToPNG)).toEqual({ pname: 'g', oct: '2' });
@@ -483,7 +489,7 @@ test("Test 'set' action", async () => {
 });
 
 test("Test 'split' action", async () => {
-  let neon = new NeonCore(mei, 'test');
+  let neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
   let editorAction = {
