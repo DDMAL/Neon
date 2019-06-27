@@ -9,13 +9,20 @@ const uuidv4 = require('uuid/v4');
 var router = express.Router();
 const __base = '';
 
+const manifestUpload = path.join(__base, 'public', 'uploads', 'manifests');
 const meiUpload = path.join(__base, 'public', 'uploads', 'mei');
-const pngUpload = path.join(__base, 'public', 'uploads', 'png');
+const imgUpload = path.join(__base, 'public', 'uploads', 'img');
 const iiifUpload = path.join(__base, 'public', 'uploads', 'iiif');
 const iiifPublicPath = path.join('/', 'uploads', 'iiif');
+const neonContext = JSON.parse(fs.readFileSync(path.join(__base, 'src', 'utils', 'manifest', 'context.json')).toString());
 
 const allowedPattern = /^[-_\.,\d\w ]+$/;
 const consequtivePeriods = /\.{2,}/;
+
+var upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { filesize: 100000 }
+});
 
 function isUserInputValid (input) {
   return (input.match(allowedPattern) && !input.match(consequtivePeriods));
@@ -30,7 +37,7 @@ router.route('/')
   .get(function (req, res) {
     var meiFiles = [];
     var iiifFiles = [];
-    fs.readdir(meiUpload, function (err, files) {
+    fs.readdir(manifestUpload, function (err, files) {
       if (err) {
         console.error(err);
         res.sendStatus(500);
@@ -69,37 +76,54 @@ router.route('/')
     });
   });
 
-var upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { filesize: 100000 }
-});
-
-router.route('/upload_file')
-  .post(upload.array('resource', 2), function (req, res) {
-    if (req.files[1].mimetype !== 'image/png') {
-      res.sendStatus(400);
-    }
-    let files = [req.files[0].originalname, req.files[1].originalname];
-    let meiSplit = files[0].split(/\.mei/, 2);
-    let filename = meiSplit[0];
-    let newImageName = filename + '.png';
-    if (!isUserInputValid(files[0]) || !isUserInputValid(newImageName)) {
-      res.sendStatus(403);
-    }
-    fs.writeFile(path.join(meiUpload, files[0]), req.files[0].buffer, (err) => {
-      if (err) {
-        console.error(err);
-        throw err;
-      }
-      fs.writeFile(path.join(pngUpload, newImageName), req.files[1].buffer, (err) => {
-        if (err) {
-          console.error(err);
-          throw err;
+router.route('/upload_file').post(upload.array('resource', 2), function (req, res) {
+  // Check media type
+  if (!req.files[1].mimetype.match(/^image\/*/)) {
+    res.sendStatus(415); // Unsupported Media Type
+  } else {
+    let meiFileName = req.files[0].originalname;
+    let basename = meiFileName.split(/\.mei$/, 2)[0];
+    let imageExtension = /^.*(\.[a-zA-Z0-9]+)$/.exec(req.files[1].originalname)[1];
+    let imageName = basename + (imageExtension !== null ? imageExtension : '');
+    let manifestName = basename + '.jsonld';
+    // Validate the file names
+    if (!isUserInputValid(meiFileName) || !isUserInputValid(imageName) || !isUserInputValid(manifestName)) {
+      res.sendStatus(403); // Forbidden
+    } else {
+      let manifest = {
+        '@context': neonContext,
+        '@id': '/uploads/manifests/' + manifestName,
+        title: basename,
+        timestamp: (new Date()).toISOString(),
+        image: '/uploads/img/' + imageName,
+        mei_annotations: [
+          {
+            id: 'urn:uuid:' + uuidv4(),
+            type: 'Annotation',
+            body: '/uploads/mei/' + meiFileName,
+            target: '/uploads/img/' + imageName
+          }
+        ]
+      };
+      // Ensure files do not already exist
+      if (fs.existsSync(path.join(meiUpload, meiFileName)) || fs.existsSync(path.join(imgUpload, imageName)) || fs.existsSync(path.join(manifestUpload, manifestName))) {
+        res.sendStatus(409); // Conflict
+      } else {
+        // Write files
+        try {
+          fs.writeFileSync(path.join(meiUpload, meiFileName), req.files[0].buffer);
+          fs.writeFileSync(path.join(imgUpload, imageName), req.files[1].buffer);
+          fs.writeFileSync(path.join(manifestUpload, manifestName), JSON.stringify(manifest, null, 4));
+        } catch (e) {
+          console.error(e);
+          res.sendStatus(500);
+          return;
         }
         res.redirect('/');
-      });
-    });
-  });
+      }
+    }
+  }
+});
 
 // Delete file TODO: Optimize function with regex
 router.route('/delete/:filename')
@@ -115,7 +139,7 @@ router.route('/delete/:filename')
         return console.log('failed to delete mei file');
       }
     });
-    fs.unlink(path.join(pngUpload, pngfile), function (err) {
+    fs.unlink(path.join(imgUpload, pngfile), function (err) {
       if (err) {
         return console.log('failed to delete png file');
       }
@@ -138,24 +162,31 @@ router.route('/delete/:label/:rev').get((req, res) => {
 });
 
 // redirect to editor
-router.route('/edit/:filename')
-  .get(function (req, res) {
-    if (!isUserInputValid(req.params.filename)) {
-      res.sendStatus(403);
-    }
-    var mei = req.params.filename;
-    var bgimg = mei.split('.', 2)[0] + '.png';
-    var autosave = false;
-    // Check that the MEI exists
-    fs.stat(path.join(meiUpload, mei), (err, stats) => {
-      if (err) {
-        console.error("File of name '" + mei + "' does not exist.");
-        res.status(404).render('error', { statusCode: '404 - File Not Found', message: 'The file ' + mei + ' could not be found on the server!' });
-        return;
+router.route('/edit/:filename').get(function (req, res) {
+  if (!isUserInputValid(req.params.filename)) {
+    res.sendStatus(403);
+  }
+
+  // Check that the manifest exists
+  fs.stat(path.join(manifestUpload, req.params.filename), (err, stats) => {
+    if (err) {
+      if (err.code !== 'ENOENT') {
+        console.error(err);
       }
-      res.render('editor', { 'meifile': '/uploads/mei/' + mei, 'bgimg': '/uploads/png/' + bgimg, 'autosave': autosave, 'uuid': uuidv4() });
-    });
+      res.sendStatus(404); // Not Found
+    } else {
+      // Read manifest
+      fs.readFile(path.join(manifestUpload, req.params.filename), (err, data) => {
+        if (err) {
+          console.error(err);
+          res.sendStatus(500); // Internal Server Error
+        } else {
+          res.render('editor', { 'manifest': encodeURIComponent(data) });
+        }
+      });
+    }
   });
+});
 
 // redirect to salzinnes editor
 router.route('/edit-iiif/:label/:rev').get((req, res) => {
