@@ -34,6 +34,7 @@ if (manifest !== '') {
     let params = {
       manifest: {
         '@context': NeonContext,
+        '@id': uuid,
         title: title,
         timestamp: (new Date()).toISOString(),
         image: bgImg,

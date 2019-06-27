@@ -4,6 +4,7 @@ var fs = require('fs-extra');
 var multer = require('multer');
 const request = require('request');
 const path = require('path');
+const uuidv4 = require('uuid/v4');
 
 var router = express.Router();
 const __base = '';
@@ -152,7 +153,7 @@ router.route('/edit/:filename')
         res.status(404).render('error', { statusCode: '404 - File Not Found', message: 'The file ' + mei + ' could not be found on the server!' });
         return;
       }
-      res.render('editor', { 'meifile': '/uploads/mei/' + mei, 'bgimg': '/uploads/png/' + bgimg, 'autosave': autosave });
+      res.render('editor', { 'meifile': '/uploads/mei/' + mei, 'bgimg': '/uploads/png/' + bgimg, 'autosave': autosave, 'uuid': uuidv4() });
     });
   });
 
@@ -192,6 +193,7 @@ router.route('/edit-iiif/:label/:rev').get((req, res) => {
             }
           }
         ],
+        '@id': 'urn:uuid:' + uuidv4(),
         'image': metadata.manifest,
         'mei_annotations': []
       };
