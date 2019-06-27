@@ -298,8 +298,16 @@ router.route('/add-iiif').get(function (req, res) {
             console.error(err);
             res.sendStatus(500);
           }
-          fs.writeFile(path.join(iiifUpload, label, req.body.revision, 'metadata.json'),
-            JSON.stringify({ manifest: req.body.manifest, pages: [] }),
+          let manifest = {
+            '@context': neonContext,
+            '@id': '/uploads/iiif/' + label + '/' + req.body.revision + '/manifest.jsonld',
+            'title': label,
+            'timestamp': (new Date()).toISOString(),
+            'image': req.body.manifest,
+            'mei_annotations': []
+          };
+          fs.writeFile(path.join(iiifUpload, label, req.body.revision, 'manifest.jsonld'),
+            JSON.stringify(manifest, null, 4),
             (err) => {
               if (err) {
                 console.error(err);
@@ -317,30 +325,30 @@ router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (re
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
     res.sendStatus(403);
   }
-  // Get metadata
-  let metadata;
+  let manifest;
   try {
-    metadata = JSON.parse(fs.readFileSync(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json')));
+    manifest = JSON.parse(fs.readFileSync(path.join(iiifUpload, req.params.label, req.params.rev, 'manifest.jsonld')));
   } catch (e) {
     console.error(e);
     res.sendStatus(500);
   }
 
-  // Get manifest
-  request(metadata.manifest, (error, response, body) => {
+  request(manifest.image, (error, response, body) => {
     if (error) {
       res.send(error);
     } else if (!response.statusCode === 200) {
       res.status(response.statusCode).send(response.statusMessage);
     } else {
-      let manifest;
+      let iiif;
       try {
         manifest = JSON.parse(body);
       } catch (e) {
         res.status(500).send('Could not parse the JSON object');
       }
+
       let labels = [];
       let ids = [];
+
       for (let sequence of manifest['sequences']) {
         for (let canvas of sequence['canvases']) {
           labels.push(canvas['label']);
@@ -383,32 +391,47 @@ router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
     res.sendStatus(403);
   }
-  // Load metadata file
-  let metadata;
+  // Load manifest file
+  let manifest;
   try {
-    metadata = JSON.parse(fs.readFileSync(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json')));
+    manifest = JSON.parse(fs.readFileSync(path.join(iiifUpload, req.params.label, req.params.rev, 'manifest.jsonld')));
   } catch (e) {
     console.error(e);
-    res.sendStatus(500);
+    return res.sendStatus(500);
   }
 
-  // Update metadata
-  metadata.pages = [];
+  console.log(manifest);
+
+  manifest.mei_annotations = [];
   if (typeof req.body.select !== 'string') {
-    for (let entry of req.body.select) {
-      metadata.pages.push(JSON.parse(entry));
+    for (let entryText of req.body.select) {
+      let entry = JSON.parse(entryText);
+      manifest.mei_annotations.push({
+        'id': 'urn:uuid:' + uuidv4(),
+        'type': 'Annotation',
+        'body': '/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/' + entry.file,
+        'target': entry.id
+      });
     }
   } else {
-    metadata.pages.push(JSON.parse(req.body.select));
+    let entry = JSON.parse(req.body.select);
+    manifest.mei_annotations.push({
+      'id': 'urn:uuid:' + uuidv4(),
+      'type': 'Annotation',
+      'body': '/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/' + entry.file,
+      'target': entry.id
+    });
   }
 
-  fs.writeFile(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json'), JSON.stringify(metadata, null, 2), (err) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-    }
-    res.redirect('/');
-  });
+  fs.writeFile(path.join(iiifUpload, req.params.label, req.params.rev, 'manifest.jsonld'),
+    JSON.stringify(manifest, null, 4), (err) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        res.redirect('/');
+      }
+    });
 });
 
 router.route('/uploads/mei/:file').put(function (req, res) {
