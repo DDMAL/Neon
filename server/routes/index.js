@@ -199,50 +199,12 @@ router.route('/edit-iiif/:label/:rev').get((req, res) => {
     res.sendStatus(403);
   }
   let pathName = path.join(req.params.label, req.params.rev);
-  fs.readFile(path.join(iiifUpload, pathName, 'metadata.json'), (err, data) => {
+  fs.readFile(path.join(iiifUpload, pathName, 'manifest.jsonld'), (err, data) => {
     if (err) {
       console.error(err);
       res.status(500).render('error', { statusCode: '500 - Internal Server Error', message: 'Could not find the manifest for IIIF entry ' + pathName });
     } else {
-      let metadata;
-      try {
-        metadata = JSON.parse(data.toString());
-      } catch (e) {
-        console.error(e);
-        res.status(500).render('error', { statusCode: '500 - Internal Server Error', message: 'Could not parse entry metadata' });
-      }
-      let manifest = {
-        '@context': [
-          'http://www.w3.org/ns/anno.jsonld',
-          {
-            'schema': 'http://schema.org/',
-            'title': 'schema:name',
-            'timestamp': 'schema:dateModified',
-            'image': {
-              '@id': 'schema:image',
-              '@type': '@id'
-            },
-            'mei_annotations': {
-              '@id': 'Annotation',
-              '@type': '@id',
-              '@container': '@list'
-            }
-          }
-        ],
-        '@id': 'urn:uuid:' + uuidv4(),
-        'image': metadata.manifest,
-        'mei_annotations': []
-      };
-      for (let page of metadata.pages) {
-        let annotation = {
-          'id': '#' + page.index,
-          'type': 'Annotation',
-          'body': path.join(iiifPublicPath, pathName, page.file),
-          'target': page.id
-        };
-        manifest.mei_annotations.push(annotation);
-      }
-      res.render('editor', { 'iiif': metadata.manifest, 'manifest': encodeURIComponent(JSON.stringify(manifest)) });
+      res.render('editor', { 'manifest': encodeURIComponent(data) });
     }
   });
 });
