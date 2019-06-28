@@ -18,7 +18,7 @@ afterAll(() => {
     // Nothing here since if a test fails unlink will fail
   }
 });
-/*
+
 describe('Check root', () => {
   test('Encode URI', done => {
     request(url + encodeURIComponent(toTest), (error, response, body) => {
@@ -46,7 +46,7 @@ describe('Check root', () => {
     });
   });
 });
-*/
+
 describe('Check /edit/:filename', () => {
   const testUrl = url + 'edit/';
 
@@ -76,7 +76,7 @@ describe('Check /edit/:filename', () => {
     });
   });
 });
-/*
+
 describe('Check /delete/:filename', () => {
   const testUrl = url + 'delete/';
 
@@ -143,4 +143,4 @@ describe('Check /upload/mei/:file', () => {
       done();
     });
   });
-}); */
+});
