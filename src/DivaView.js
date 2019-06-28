@@ -79,7 +79,12 @@ class DivaView {
     })).then(() => {
       this.changePage(this.diva.getActivePageIndex());
       Array.from(document.getElementsByClassName('neon-container'))
-        .forEach(elem => { elem.style.display = ''; });
+        .forEach(elem => {
+          let svg = elem.firstChild;
+          let pageNo = parseInt(elem.id.match(/\d+/)[0]);
+          this.updateSVG(svg, pageNo);
+          elem.style.display = '';
+        });
     });
   }
 
