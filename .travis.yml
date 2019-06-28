@@ -5,6 +5,7 @@ if: (branch = master OR branch = develop)
 addons:
   firefox: latest
   homebrew:
+    update: true
     packages:
       - geckodriver
     casks:
