@@ -73,8 +73,10 @@ class TextView {
       $('.sylTextRect-display').addClass('sylTextRect');
       $('.sylTextRect-display').removeClass('sylTextRect-display');
       $('#selByBBox').css('display', 'none');
-      $('#selByBBox').removeClass('is-active');
-      $('#selBySyl').addClass('is-active');
+      if ($('#selByBBox').hasClass('is-active')) {
+        $('#selByBBox').removeClass('is-active');
+        $('#selBySyl').addClass('is-active');
+      }
     }
   }
 
