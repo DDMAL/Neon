@@ -84,7 +84,7 @@ export default class TextEditMode {
       rects.forEach(rect => {
         $(rect).off('click', unselect);
         $(rect).on('click', () => {
-          if ($('#selByBBox').hasClass('is-active')) {
+          if ($('#selByBBox').hasClass('is-active') && !rect.classList.contains('sylTextRect-select')) {
             let dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
             let resize = new Resize(rect.closest('.syl').id, this.neonView, dragHandler);
             selectBBox(rect, dragHandler);
