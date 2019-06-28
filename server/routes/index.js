@@ -168,8 +168,6 @@ router.route('/delete/:label/:rev').get((req, res) => {
 
 // redirect to editor
 router.route('/edit/:filename').get(function (req, res) {
-  console.log('Single edit');
-  console.log(req.params.filename);
   if (!isUserInputValid(req.params.filename)) {
     return res.sendStatus(403);
   }
@@ -197,9 +195,6 @@ router.route('/edit/:filename').get(function (req, res) {
 
 // redirect to salzinnes editor
 router.route('/edit/:label/:rev').get((req, res) => {
-  console.log('Multi edit');
-  console.log(req.params.label);
-  console.log(req.params.rev);
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
     return res.sendStatus(403);
   }
@@ -366,8 +361,6 @@ router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
     console.error(e);
     return res.sendStatus(500);
   }
-
-  console.log(manifest);
 
   manifest.mei_annotations = [];
   if (typeof req.body.select !== 'string') {
