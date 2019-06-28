@@ -59,6 +59,9 @@ function Resize (elementId, neonView, dragHandler) {
       if (rect === null) {
         rect = element.querySelector('.sylTextRect-display');
       }
+      if (rect === null) {
+        rect = element.querySelector('.sylTextRect');
+      }
       ulx = Number(rect.getAttribute('x'));
       uly = Number(rect.getAttribute('y'));
       lrx = +ulx + +rect.getAttribute('width');

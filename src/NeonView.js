@@ -121,6 +121,7 @@ class NeonView {
     let pageNo = this.view.getCurrentPage();
     return Promise.resolve(this.core.getSVG(pageNo).then((svg) => {
       this.view.updateSVG(svg, pageNo);
+      this.view.updateCallbacks.forEach(callback => callback());
     }));
   }
 
