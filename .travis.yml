@@ -1,13 +1,15 @@
 language: node_js
 node_js: 10
 os: osx
-env:
-  - HOMEBREW_NO_AUTO_UPDATE="1"
 if: (branch = master OR branch = develop)
 addons:
   firefox: latest
-before_install:
-  - brew install geckodriver
+  homebrew:
+    packages:
+      - geckodriver
+    casks:
+      - google-chrome
+      - chromedriver
 install:
   - yarn install
 script:
