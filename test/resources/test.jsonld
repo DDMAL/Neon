@@ -1,0 +1,31 @@
+{
+    "@context": [
+        "http://www.w3.org/ns/anno.jsonld",
+        {
+            "schema": "http://schema.org/",
+            "title": "schema:name",
+            "timestamp": "schema:dateModified",
+            "image": {
+                "@id": "schema:image",
+                "@type": "@id"
+            },
+            "mei_annotations": {
+                "@id": "Annotation",
+                "@type": "@id",
+                "@container": "@list"
+            }
+        }
+    ],
+    "@id": "/uploads/manifests/test.jsonld",
+    "title": "Neon View Test Manifest",
+    "timestamp": "2019-06-27T16:49:39-0400",
+    "image": "/uploads/img/test.png",
+    "mei_annotations": [
+        {
+            "id": "urn:uuid:361FDAAC-AACB-4BF1-B205-27B0397D45F5",
+            "type": "Annotation",
+            "body": "/uploads/mei/test.mei",
+            "target": "/uploads/img/test.png"
+        }
+    ]
+}

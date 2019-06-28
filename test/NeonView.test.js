@@ -1,7 +1,7 @@
 /* eslint-env jest */
 const pathToResources = './test/resources/';
 const pathToUploads = './public/uploads/';
-const editUrl = 'http://localhost:8080/edit/test.mei';
+const editUrl = 'http://localhost:8080/edit/test.jsonld';
 
 const fs = require('fs');
 const { Builder, By, Key, until } = require('selenium-webdriver');
@@ -15,8 +15,9 @@ jest.setTimeout('15000');
 
 beforeAll(async () => {
   // Link test MEI/png to public/uploads so we can use them
-  fs.linkSync(pathToResources + 'test.png', pathToUploads + 'png/test.png');
+  fs.linkSync(pathToResources + 'test.png', pathToUploads + 'img/test.png');
   fs.linkSync(pathToResources + 'test.mei', pathToUploads + 'mei/test.mei');
+  fs.linkSync(pathToResources + 'test.jsonld', pathToUploads + 'manifests/test.jsonld');
 
   // Set up the webdriver
   let options = new firefox.Options()
@@ -31,12 +32,10 @@ beforeAll(async () => {
 
 afterAll(() => {
   // Clean up test files
-  fs.unlinkSync(pathToUploads + 'png/test.png');
+  fs.unlinkSync(pathToUploads + 'img/test.png');
   fs.unlinkSync(pathToUploads + 'mei/test.mei');
-  try {
-    fs.unlinkSync(pathToUploads + 'mei-auto/test.mei');
-  } catch (err) { // this is just to clean up so we don't care if it fails
-  }
+  fs.unlinkSync(pathToUploads + 'manifests/test.jsonld');
+
   if (browser !== null) {
     browser.quit();
   }

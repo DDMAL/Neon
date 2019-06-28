@@ -129,7 +129,7 @@ router.route('/upload_file').post(upload.array('resource', 2), function (req, re
 router.route('/delete/:filename')
   .get(function (req, res) {
     if (!isUserInputValid(req.params.filename)) {
-      res.sendStatus(403);
+      return res.sendStatus(403);
     }
     fs.readFile(path.join(manifestUpload, req.params.filename), (err, data) => {
       if (err) {
@@ -168,8 +168,10 @@ router.route('/delete/:label/:rev').get((req, res) => {
 
 // redirect to editor
 router.route('/edit/:filename').get(function (req, res) {
+  console.log('Single edit');
+  console.log(req.params.filename);
   if (!isUserInputValid(req.params.filename)) {
-    res.sendStatus(403);
+    return res.sendStatus(403);
   }
 
   // Check that the manifest exists
@@ -195,8 +197,11 @@ router.route('/edit/:filename').get(function (req, res) {
 
 // redirect to salzinnes editor
 router.route('/edit/:label/:rev').get((req, res) => {
+  console.log('Multi edit');
+  console.log(req.params.label);
+  console.log(req.params.rev);
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
-    res.sendStatus(403);
+    return res.sendStatus(403);
   }
   let pathName = path.join(req.params.label, req.params.rev);
   fs.readFile(path.join(iiifUpload, pathName, 'manifest.jsonld'), (err, data) => {
