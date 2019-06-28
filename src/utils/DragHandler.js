@@ -7,7 +7,6 @@ const $ = require('jquery');
  * @param {NeonView} neonView - The NeonView parent object.
  */
 function DragHandler (neonView, selector) {
-  console.log(neonView);
   var dragStartCoords;
   var dragEndCoords;
   var resetToAction;
@@ -53,8 +52,9 @@ function DragHandler (neonView, selector) {
       dragEndCoords = [d3.event.x, d3.event.y];
       let paramArray = [];
       selection.forEach((el) => {
+        let id = (el.tagName === 'rect') ? el.closest('.syl').id : el.id;
         let singleAction = { action: 'drag',
-          param: { elementId: el.id,
+          param: { elementId: id,
             x: parseInt(dragEndCoords[0] - dragStartCoords[0]),
             y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -1 }
         };

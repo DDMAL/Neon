@@ -1,5 +1,6 @@
 import { unselect, selectBBox } from './utils/SelectTools.js';
 import DragHandler from './utils/DragHandler.js';
+import { Resize } from './utils/Resize.js';
 
 const $ = require('jquery');
 
@@ -49,7 +50,7 @@ export default class TextEditMode {
       let block = $('#selBySyl').parent('.control').parent('.field');
       block.append("<p class='control'><button class='button sel-by' id='selByBBox'>BBox</button></p>");
       let button = $('#selByBBox');
-      button.on('click', this.selectByBBoxHandler);
+      button.on('click', this.selectByBBoxHandler.bind(this));
     } else {
       let block = $('#undo').parent('.control');
       block.append("<p class='control'><button class='button sel-by' id='selByBBox'>BBox</button></p>");
@@ -74,11 +75,14 @@ export default class TextEditMode {
 
       let rects = Array.from($('.sylTextRect-display'));
       rects.forEach(rect => {
-        $(rect).off('click');
+        $(rect).off('click', unselect);
         $(rect).on('click', () => {
           if ($('#selByBBox').hasClass('is-active')) {
-            console.log(this.neonView);
-            selectBBox(rect, new DragHandler(this.neonView, '.sylTextRect-display'));
+            let dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
+            selectBBox(rect, dragHandler);
+            // console.log(rect.closest('.syl').id);
+            let resize = new Resize(rect.closest('.syl').id, this.neonView, dragHandler);
+            resize.drawInitialRect();
           }
         });
       });
