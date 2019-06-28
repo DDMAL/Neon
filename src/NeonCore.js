@@ -164,6 +164,7 @@ class NeonCore {
       if (this.neonCache.has(pageURI)) {
         resolve(this.neonCache.get(pageURI));
       } else if (this.blankPages.includes(pageURI)) {
+        Validation.blankPage();
         let e = new Error('No MEI file for page ' + pageURI);
         e.name = 'missing_mei';
         reject(e);
@@ -186,6 +187,7 @@ class NeonCore {
             reject(err);
           });
         } else {
+          Validation.blankPage();
           this.blankPages.push(pageURI);
         }
       }
