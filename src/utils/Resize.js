@@ -56,14 +56,13 @@ function Resize (elementId, neonView, dragHandler) {
     // if it's a boundingbox just get the coordinates
     if (element.classList.contains('syl')) {
       let rect = element.querySelector('.sylTextRect-select');
-      console.log(rect);
+      if (rect === null) {
+        rect = element.querySelector('.sylTextRect-display');
+      }
       ulx = Number(rect.getAttribute('x'));
       uly = Number(rect.getAttribute('y'));
-      console.log(ulx);
-      console.log(rect.getAttribute('width'));
-      console.log(+ulx + +rect.getAttribute('width'));
       lrx = +ulx + +rect.getAttribute('width');
-      lry = parseInt(uly, 10) + parseInt(rect.getAttribute('height'), 10);
+      lry = +uly + +rect.getAttribute('height');
     }
 
     // if it's a staff use the paths to get it's boundingbox
@@ -148,11 +147,6 @@ function Resize (elementId, neonView, dragHandler) {
           'lry': lry
         }
       };
-      console.log(element.id);
-      console.log(ulx.constructor);
-      console.log(uly.constructor);
-      console.log(lrx.constructor);
-      console.log(lry.constructor);
       neonView.edit(editorAction, neonView.view.getCurrentPage()).then(async (result) => {
         if (result) {
           await neonView.updateForCurrentPagePromise();
@@ -162,8 +156,8 @@ function Resize (elementId, neonView, dragHandler) {
         uly = undefined;
         lrx = undefined;
         lry = undefined;
-        if (element.classList.contains('sylTextRect')) {
-          selectBBox(element, dragHandler);
+        if (element.classList.contains('syl')) {
+          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler);
         } else {
           selectStaff(element, dragHandler);
         }

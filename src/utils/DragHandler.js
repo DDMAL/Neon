@@ -46,6 +46,11 @@ function DragHandler (neonView, selector) {
           return 'translate(' + [relativeX, relativeY] + ')';
         });
       });
+      if (selection.filter(element => element.classList.contains('sylTextRect-select')).length !== 0) {
+        d3.select('#resizeRect').attr('transform', function () {
+          return 'translate(' + [relativeX, relativeY] + ')';
+        });
+      }
     }
 
     function dragEnded () {

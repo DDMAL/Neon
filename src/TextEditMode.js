@@ -50,38 +50,44 @@ export default class TextEditMode {
       let block = $('#selBySyl').parent('.control').parent('.field');
       block.append("<p class='control'><button class='button sel-by' id='selByBBox'>BBox</button></p>");
       let button = $('#selByBBox');
-      button.on('click', this.selectByBBoxHandler.bind(this));
+      button.on('click', () => {
+        if (!$('#selByBBox').hasClass('is-active')) {
+          unselect();
+          $('#moreEdit').empty();
+          $('#selByBBox').addClass('is-active');
+          $('#selByNc').removeClass('is-active');
+          $('#selByNc').removeClass('is-active');
+          $('#selByStaff').removeClass('is-active');
+          $('#selBySyl').removeClass('is-active');
+        }
+        this.addBBoxListeners();
+      }).bind(this);
+      this.neonView.view.addUpdateCallback(this.addBBoxListeners.bind(this));
     } else {
       let block = $('#undo').parent('.control');
       block.append("<p class='control'><button class='button sel-by' id='selByBBox'>BBox</button></p>");
       let button = $('#selByBBox');
       button.addClass('is-active');
       button.css('display', 'none');
+      this.addBBoxListeners();
+      this.neonView.addUpdateCallback(this.addBBoxListeners.bind(this));
     }
   }
 
   /**
    * initialize select by bbox mode
    */
-  selectByBBoxHandler () {
-    if (!$('#selByBBox').hasClass('is-active')) {
+  addBBoxListeners () {
+    if ($('#selByBBox').hasClass('is-active')) {
       unselect();
-      $('#moreEdit').empty();
-      $('#selByBBox').addClass('is-active');
-      $('#selByNc').removeClass('is-active');
-      $('#selByNc').removeClass('is-active');
-      $('#selByStaff').removeClass('is-active');
-      $('#selBySyl').removeClass('is-active');
-
       let rects = Array.from($('.sylTextRect-display'));
       rects.forEach(rect => {
         $(rect).off('click', unselect);
         $(rect).on('click', () => {
           if ($('#selByBBox').hasClass('is-active')) {
             let dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
-            selectBBox(rect, dragHandler);
-            // console.log(rect.closest('.syl').id);
             let resize = new Resize(rect.closest('.syl').id, this.neonView, dragHandler);
+            selectBBox(rect, dragHandler);
             resize.drawInitialRect();
           }
         });
