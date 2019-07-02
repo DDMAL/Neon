@@ -4,16 +4,25 @@ var fs = require('fs-extra');
 var multer = require('multer');
 const request = require('request');
 const path = require('path');
+const uuidv4 = require('uuid/v4');
 
 var router = express.Router();
 const __base = '';
 
+const manifestUpload = path.join(__base, 'public', 'uploads', 'manifests');
 const meiUpload = path.join(__base, 'public', 'uploads', 'mei');
-const pngUpload = path.join(__base, 'public', 'uploads', 'png');
+const imgUpload = path.join(__base, 'public', 'uploads', 'img');
 const iiifUpload = path.join(__base, 'public', 'uploads', 'iiif');
+const iiifPublicPath = path.join('/', 'uploads', 'iiif');
+const neonContext = JSON.parse(fs.readFileSync(path.join(__base, 'src', 'utils', 'manifest', 'context.json')).toString());
 
 const allowedPattern = /^[-_\.,\d\w ]+$/;
 const consequtivePeriods = /\.{2,}/;
+
+var upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { filesize: 100000 }
+});
 
 function isUserInputValid (input) {
   return (input.match(allowedPattern) && !input.match(consequtivePeriods));
@@ -28,7 +37,7 @@ router.route('/')
   .get(function (req, res) {
     var meiFiles = [];
     var iiifFiles = [];
-    fs.readdir(meiUpload, function (err, files) {
+    fs.readdir(manifestUpload, function (err, files) {
       if (err) {
         console.error(err);
         res.sendStatus(500);
@@ -67,58 +76,80 @@ router.route('/')
     });
   });
 
-var upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { filesize: 100000 }
-});
-
-router.route('/upload_file')
-  .post(upload.array('resource', 2), function (req, res) {
-    if (req.files[1].mimetype !== 'image/png') {
-      res.sendStatus(400);
-    }
-    let files = [req.files[0].originalname, req.files[1].originalname];
-    let meiSplit = files[0].split(/\.mei/, 2);
-    let filename = meiSplit[0];
-    let newImageName = filename + '.png';
-    if (!isUserInputValid(files[0]) || !isUserInputValid(newImageName)) {
-      res.sendStatus(403);
-    }
-    fs.writeFile(path.join(meiUpload, files[0]), req.files[0].buffer, (err) => {
-      if (err) {
-        console.error(err);
-        throw err;
-      }
-      fs.writeFile(path.join(pngUpload, newImageName), req.files[1].buffer, (err) => {
-        if (err) {
-          console.error(err);
-          throw err;
+router.route('/upload_file').post(upload.array('resource', 2), function (req, res) {
+  // Check media type
+  if (!req.files[1].mimetype.match(/^image\/*/)) {
+    res.sendStatus(415); // Unsupported Media Type
+  } else {
+    let meiFileName = req.files[0].originalname;
+    let basename = meiFileName.split(/\.mei$/, 2)[0];
+    let imageExtension = /^.*(\.[a-zA-Z0-9]+)$/.exec(req.files[1].originalname)[1];
+    let imageName = basename + (imageExtension !== null ? imageExtension : '');
+    let manifestName = basename + '.jsonld';
+    // Validate the file names
+    if (!isUserInputValid(meiFileName) || !isUserInputValid(imageName) || !isUserInputValid(manifestName)) {
+      res.sendStatus(403); // Forbidden
+    } else {
+      let manifest = {
+        '@context': neonContext,
+        '@id': '/uploads/manifests/' + manifestName,
+        title: basename,
+        timestamp: (new Date()).toISOString(),
+        image: '/uploads/img/' + imageName,
+        mei_annotations: [
+          {
+            id: 'urn:uuid:' + uuidv4(),
+            type: 'Annotation',
+            body: '/uploads/mei/' + meiFileName,
+            target: '/uploads/img/' + imageName
+          }
+        ]
+      };
+      // Ensure files do not already exist
+      if (fs.existsSync(path.join(meiUpload, meiFileName)) || fs.existsSync(path.join(imgUpload, imageName)) || fs.existsSync(path.join(manifestUpload, manifestName))) {
+        res.sendStatus(409); // Conflict
+      } else {
+        // Write files
+        try {
+          fs.writeFileSync(path.join(meiUpload, meiFileName), req.files[0].buffer);
+          fs.writeFileSync(path.join(imgUpload, imageName), req.files[1].buffer);
+          fs.writeFileSync(path.join(manifestUpload, manifestName), JSON.stringify(manifest, null, 4));
+        } catch (e) {
+          console.error(e);
+          res.sendStatus(500);
+          return;
         }
         res.redirect('/');
-      });
-    });
-  });
+      }
+    }
+  }
+});
 
 // Delete file TODO: Optimize function with regex
 router.route('/delete/:filename')
   .get(function (req, res) {
     if (!isUserInputValid(req.params.filename)) {
-      res.sendStatus(403);
+      return res.sendStatus(403);
     }
-    var meifile = req.params.filename;
-    var pngfile = meifile.split('.')[0] + '.png';
-    // delete file from all folders
-    fs.unlink(path.join(meiUpload), function (err) {
+    fs.readFile(path.join(manifestUpload, req.params.filename), (err, data) => {
       if (err) {
-        return console.log('failed to delete mei file');
+        console.error(err);
+        res.sendStatus(404);
+      } else {
+        let manifest = JSON.parse(data);
+        let imagePath = manifest.image.split('/');
+        let meiPath = manifest.mei_annotations[0].body.split('/');
+        try {
+          fs.unlinkSync(path.join(manifestUpload, req.params.filename));
+          fs.unlinkSync(path.join('public', ...imagePath));
+          fs.unlinkSync(path.join('public', ...meiPath));
+        } catch (e) {
+          console.error(e);
+          return res.sendStatus(500);
+        }
+        res.redirect('/');
       }
     });
-    fs.unlink(path.join(pngUpload, pngfile), function (err) {
-      if (err) {
-        return console.log('failed to delete png file');
-      }
-    });
-    res.redirect('/');
   });
 
 // Delete IIIF files
@@ -136,55 +167,44 @@ router.route('/delete/:label/:rev').get((req, res) => {
 });
 
 // redirect to editor
-router.route('/edit/:filename')
-  .get(function (req, res) {
-    if (!isUserInputValid(req.params.filename)) {
-      res.sendStatus(403);
-    }
-    var mei = req.params.filename;
-    var bgimg = mei.split('.', 2)[0] + '.png';
-    var autosave = false;
-    // Check that the MEI exists
-    fs.stat(path.join(meiUpload, mei), (err, stats) => {
-      if (err) {
-        console.error("File of name '" + mei + "' does not exist.");
-        res.status(404).render('error', { statusCode: '404 - File Not Found', message: 'The file ' + mei + ' could not be found on the server!' });
-        return;
+router.route('/edit/:filename').get(function (req, res) {
+  if (!isUserInputValid(req.params.filename)) {
+    return res.sendStatus(403);
+  }
+
+  // Check that the manifest exists
+  fs.stat(path.join(manifestUpload, req.params.filename), (err, stats) => {
+    if (err) {
+      if (err.code !== 'ENOENT') {
+        console.error(err);
       }
-      res.render('editor', { 'meifile': '/uploads/mei/' + mei, 'bgimg': '/uploads/png/' + bgimg, 'autosave': autosave });
-    });
+      res.sendStatus(404); // Not Found
+    } else {
+      // Read manifest
+      fs.readFile(path.join(manifestUpload, req.params.filename), (err, data) => {
+        if (err) {
+          console.error(err);
+          res.sendStatus(500); // Internal Server Error
+        } else {
+          res.render('editor', { 'manifest': encodeURIComponent(data) });
+        }
+      });
+    }
   });
+});
 
 // redirect to salzinnes editor
-router.route('/edit-iiif/:label/:rev').get((req, res) => {
+router.route('/edit/:label/:rev').get((req, res) => {
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
-    res.sendStatus(403);
+    return res.sendStatus(403);
   }
   let pathName = path.join(req.params.label, req.params.rev);
-  fs.readFile(path.join(iiifUpload, pathName, 'metadata.json'), (err, data) => {
+  fs.readFile(path.join(iiifUpload, pathName, 'manifest.jsonld'), (err, data) => {
     if (err) {
       console.error(err);
       res.status(500).render('error', { statusCode: '500 - Internal Server Error', message: 'Could not find the manifest for IIIF entry ' + pathName });
     } else {
-      let metadata;
-      try {
-        metadata = JSON.parse(data.toString());
-      } catch (e) {
-        console.error(e);
-        res.status(500).render('error', { statusCode: '500 - Internal Server Error', message: 'Could not parse entry metadata' });
-      }
-      let map = new Map();
-      for (let page of metadata.pages) {
-        let data;
-        try {
-          data = fs.readFileSync(path.join(iiifUpload, pathName, page.file));
-        } catch (e) {
-          console.error(e);
-          continue;
-        }
-        map.set(page.index, data.toString());
-      }
-      res.render('editor', { 'manifest': metadata.manifest, 'meiMap': encodeURIComponent(JSON.stringify([...map])) });
+      res.render('editor', { 'manifest': encodeURIComponent(data) });
     }
   });
 });
@@ -240,8 +260,16 @@ router.route('/add-iiif').get(function (req, res) {
             console.error(err);
             res.sendStatus(500);
           }
-          fs.writeFile(path.join(iiifUpload, label, req.body.revision, 'metadata.json'),
-            JSON.stringify({ manifest: req.body.manifest, pages: [] }),
+          let manifest = {
+            '@context': neonContext,
+            '@id': '/uploads/iiif/' + label + '/' + req.body.revision + '/manifest.jsonld',
+            'title': label,
+            'timestamp': (new Date()).toISOString(),
+            'image': req.body.manifest,
+            'mei_annotations': []
+          };
+          fs.writeFile(path.join(iiifUpload, label, req.body.revision, 'manifest.jsonld'),
+            JSON.stringify(manifest, null, 4),
             (err) => {
               if (err) {
                 console.error(err);
@@ -259,32 +287,34 @@ router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (re
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
     res.sendStatus(403);
   }
-  // Get metadata
-  let metadata;
+  let manifest;
   try {
-    metadata = JSON.parse(fs.readFileSync(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json')));
+    manifest = JSON.parse(fs.readFileSync(path.join(iiifUpload, req.params.label, req.params.rev, 'manifest.jsonld')));
   } catch (e) {
     console.error(e);
     res.sendStatus(500);
   }
 
-  // Get manifest
-  request(metadata.manifest, (error, response, body) => {
+  request(manifest.image, (error, response, body) => {
     if (error) {
       res.send(error);
     } else if (!response.statusCode === 200) {
       res.status(response.statusCode).send(response.statusMessage);
     } else {
-      let manifest;
+      let iiif;
       try {
         manifest = JSON.parse(body);
       } catch (e) {
         res.status(500).send('Could not parse the JSON object');
       }
+
       let labels = [];
+      let ids = [];
+
       for (let sequence of manifest['sequences']) {
         for (let canvas of sequence['canvases']) {
           labels.push(canvas['label']);
+          ids.push(canvas['@id']);
         }
       }
 
@@ -311,7 +341,8 @@ router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (re
           label: req.params.label,
           rev: req.params.rev,
           files: filenames,
-          labels: labels
+          labels: labels,
+          ids: ids
         }
       );
     }
@@ -322,27 +353,100 @@ router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
   if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev)) {
     res.sendStatus(403);
   }
-  // Load metadata file
-  let metadata;
+  // Load manifest file
+  let manifest;
   try {
-    metadata = JSON.parse(fs.readFileSync(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json')));
+    manifest = JSON.parse(fs.readFileSync(path.join(iiifUpload, req.params.label, req.params.rev, 'manifest.jsonld')));
   } catch (e) {
     console.error(e);
-    res.sendStatus(500);
+    return res.sendStatus(500);
   }
 
-  // Update metadata
-  metadata.pages = [];
-  for (let entry of req.body.select) {
-    metadata.pages.push(JSON.parse(entry));
-  }
-
-  fs.writeFile(path.join(iiifUpload, req.params.label, req.params.rev, 'metadata.json'), JSON.stringify(metadata), (err) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
+  manifest.mei_annotations = [];
+  if (typeof req.body.select !== 'string') {
+    for (let entryText of req.body.select) {
+      let entry = JSON.parse(entryText);
+      manifest.mei_annotations.push({
+        'id': 'urn:uuid:' + uuidv4(),
+        'type': 'Annotation',
+        'body': '/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/' + entry.file,
+        'target': entry.id
+      });
     }
-    res.redirect('/');
+  } else {
+    let entry = JSON.parse(req.body.select);
+    manifest.mei_annotations.push({
+      'id': 'urn:uuid:' + uuidv4(),
+      'type': 'Annotation',
+      'body': '/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/' + entry.file,
+      'target': entry.id
+    });
+  }
+
+  fs.writeFile(path.join(iiifUpload, req.params.label, req.params.rev, 'manifest.jsonld'),
+    JSON.stringify(manifest, null, 4), (err) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        res.redirect('/');
+      }
+    });
+});
+
+router.route('/uploads/mei/:file').put(function (req, res) {
+  if (!isUserInputValid(req.params.file)) {
+    res.sendStatus(403);
+    return;
+  }
+  if (typeof req.body.mei === 'undefined') {
+    res.sendStatus(400);
+    return;
+  }
+
+  // Check if file file exists. If it does, write. Otherwise return 404
+  let filePath = path.join(meiUpload, req.params.file);
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      res.sendStatus(404);
+    } else {
+      fs.writeFile(filePath, req.body.mei, (err) => {
+        if (err) {
+          console.error(err);
+          res.sendStatus(500);
+        } else {
+          res.sendStatus(200);
+        }
+      });
+    }
+  });
+});
+
+router.route('/uploads/iiif/:label/:rev/:file').put(function (req, res) {
+  if (!isUserInputValid(req.params.label) || !isUserInputValid(req.params.rev) || !isUserInputValid(req.params.file)) {
+    res.sendStatus(403);
+    return;
+  }
+  if (typeof req.body.mei === 'undefined') {
+    res.sendStatus(400);
+    return;
+  }
+
+  // Check if file exists. If it does, write. Otherwise 404.
+  let filePath = path.join(iiifUpload, req.params.label, req.params.rev, req.params.file);
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      res.sendStatus(404);
+    } else {
+      fs.writeFile(filePath, req.body.mei, (err) => {
+        if (err) {
+          console.error(err);
+          res.sendStatus(500);
+        } else {
+          res.sendStatus(200);
+        }
+      });
+    }
   });
 });
 

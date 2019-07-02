@@ -46,6 +46,8 @@ class SingleView {
     this.setViewEventHandlers();
     this.displayPanel.setDisplayListeners();
 
+    this.pageURI = image;
+
     document.getElementById('loading').style.display = 'none';
   }
 
@@ -107,6 +109,14 @@ class SingleView {
   }
 
   /**
+   * Returns the page URI.
+   * @returns {string}
+   */
+  getCurrentPageURI () {
+    return this.pageURI;
+  }
+
+  /**
    * Set event handlers for the view and display panel.
    */
   setViewEventHandlers () {
@@ -132,7 +142,7 @@ class SingleView {
             d3.select('#svg_group').on('.drag', null);
             Cursor.updateCursorTo('');
             if (this.neonView.getUserMode !== 'viewer') {
-              this.neonView.NeumeEdit.setSelectListeners();
+              this.neonView.neumeEdit.setSelectListeners();
             }
             if (this.neonView.getUserMode() === 'insert') {
               Cursor.updateCursor();

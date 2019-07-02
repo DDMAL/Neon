@@ -29,7 +29,7 @@ section.container
   ul
     each entry in iiif
       li
-        a(href='/edit-iiif/' + entry[0] + '/' + entry[1])= entry[0] + ' (' + entry[1] + ')'
+        a(href='/edit/' + entry[0] + '/' + entry[1])= entry[0] + ' (' + entry[1] + ')'
         a(href='/delete/' + entry[0] + '/' + entry[1])
           span.icon
             i.fas.fa-times

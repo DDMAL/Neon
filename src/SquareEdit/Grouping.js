@@ -81,7 +81,7 @@ export function initGroupingListeners () {
           unsetInclinatumAction(elementIds[0]), unsetVirgaAction(elementIds[0]),
           unsetInclinatumAction(elementIds[1]), unsetVirgaAction(elementIds[1])
         ] };
-      await neonView.edit(chainAction, neonView.view.getCurrentPage());
+      await neonView.edit(chainAction, neonView.view.getCurrentPageURI());
     }
 
     let editorAction = {
@@ -91,11 +91,96 @@ export function initGroupingListeners () {
         'isLigature': isLigature.toString()
       }
     };
-    neonView.edit(editorAction, neonView.view.getCurrentPage()).then((result) => {
+    neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
       if (result) {
         Notification.queueNotification('Ligature Toggled');
       } else {
         Notification.queueNotification('Ligature Toggle Failed');
+      }
+      endGroupingSelection();
+      neonView.updateForCurrentPage();
+    });
+  });
+  $('#toggle-link').on('click', function (evt) {
+    let elementIds = getIds();
+    let chainAction = {
+      'action': 'chain',
+      'param': []
+    };
+    if (document.getElementById(elementIds[0]).getAttribute('mei:precedes')) {
+      chainAction.param.push({
+        'action': 'set',
+        'param': {
+          'elementId': elementIds[0],
+          'attrType': 'precedes',
+          'attrValue': ''
+        }
+      });
+      chainAction.param.push({
+        'action': 'set',
+        'param': {
+          'elementId': elementIds[1],
+          'attrType': 'follows',
+          'attrValue': ''
+        }
+      });
+    } else if (document.getElementById(elementIds[0]).getAttribute('mei:follows')) {
+      chainAction.param.push({
+        'action': 'set',
+        'param': {
+          'elementId': elementIds[0],
+          'attrType': 'follows',
+          'attrValue': ''
+        }
+      });
+      chainAction.param.push({
+        'action': 'set',
+        'param': {
+          'elementId': elementIds[1],
+          'attrType': 'precedes',
+          'attrValue': ''
+        }
+      });
+    } else {
+      // Associate syllables. Will need to find which is first. Use staves.
+      let syllable0 = document.getElementById(elementIds[0]);
+      let syllable1 = document.getElementById(elementIds[1]);
+      let staff0 = syllable0.closest('.staff');
+      let staff1 = syllable1.closest('.staff');
+      let staffChildren = Array.from(staff0.parentNode.children).filter(elem => elem.classList.contains('staff'));
+
+      let firstSyllable, secondSyllable;
+      // Determine first syllable comes first by staff
+      if (staffChildren.indexOf(staff0) < staffChildren.indexOf(staff1)) {
+        firstSyllable = syllable0;
+        secondSyllable = syllable1;
+      } else {
+        firstSyllable = syllable1;
+        secondSyllable = syllable0;
+      }
+
+      chainAction.param.push({
+        'action': 'set',
+        'param': {
+          'elementId': firstSyllable.id,
+          'attrType': 'precedes',
+          'attrValue': secondSyllable.id
+        }
+      });
+      chainAction.param.push({
+        'action': 'set',
+        'param': {
+          'elementId': secondSyllable.id,
+          'attrType': 'follows',
+          'attrValue': firstSyllable.id
+        }
+      });
+    }
+    neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => {
+      if (result) {
+        Notification.queueNotification('Toggled Syllable Link');
+      } else {
+        Notification.queueNotification('Failed to Toggle Syllable Link');
       }
       endGroupingSelection();
       neonView.updateForCurrentPage();
@@ -117,7 +202,7 @@ function groupingAction (action, groupType, elementIds) {
       'elementIds': elementIds
     }
   };
-  neonView.edit(editorAction, neonView.view.getCurrentPage()).then((result) => {
+  neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
     if (result) {
       if (action === 'group') {
         Notification.queueNotification('Grouping Success');

@@ -1,0 +1,75 @@
+<html>
+  <meta charset="UTF-8">
+  <head>
+    <title>Neon</title>
+    <script src="./pretty.js"></script>
+    <script src="./verovio-toolkit.js"></script>
+    <script src="//code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.min.js" integrity="sha256-0OcjjB7oKWCwru7gzilCYvXgTE9augkyvMI0WFC1ODg=" crossorigin="anonymous"></script>
+    <script src="./diva-v6.0.1/diva.js"></script>
+    <link rel="stylesheet" href="./diva-v6.0.1/diva.css"></link>
+  </head>
+
+  <body>
+    <div class="overlay" id="loading">
+      <div class="loader"></div>
+    </div>
+    <nav class="navbar is-light">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="//github.com/DDMAL/Neon/wiki" target="_blank">
+          <p>Neon</p>
+        </a>
+        <a class="navbar-burger" id="burgerMenu" role="button" aria-label="menu" aria-expanded="false">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="navbar-menu" id="navMenu">
+        <div class="navbar-start">
+          <div id="dropdown_toggle">
+          </div>
+        </div>
+        <div class="navbar-end">
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">Help</a>
+            <div class="navbar-dropdown is-right">
+              <a class="navbar-item" href="//github.com/DDMAL/Neon/wiki/Instructions" target="_blank">User Guide</a>
+              <a class="navbar-item" href="//github.com/DDMAL/Neon/wiki" target="_blank">Wiki</a>
+              <a class="navbar-item" href="http://ddmal.music.mcgill.ca" target="_blank">DDMAL</a>
+              <a class="navbar-item" onclick="hotkeyDialog()">Hotkeys</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="columns">
+      <div id="notification-content" style="display:none;"></div>
+      <div class="column is-two-thirds box" id="container" style="height:getHeight()"></div>
+      <div class="column is-one-third is-hidden-mobile" id="right-column">
+        <div class="panel">
+          <div id="display_controls"></div>
+          <div id="insert_controls"></div>
+          <div id="edit_controls"></div>
+        </div>
+        <div id="neume_info"></div>
+        <div id="syl_text" class="box" style="display:none;"></div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      function hotkeyDialog() {
+        alert(
+          "Hotkey : Action\n\n" +
+          "+ : Zoom in\t\ts : Save File\t\tCtrl-z or \u{2318}-z : Undo\n" +
+          "\u{2013} : Zoom out\t\th : Hide MEI\t\tCtrl-Z or \u{2318}-Z : Redo\n" +
+          "0 : Zoom reset\tEsc : Return to Edit Mode\n\n1/2/3/4 : Select by Syllable/Neume/Neume Component/Staff\n\n" +
+          "Shift+Number : Begin Insert for the nth option in the selected tab");
+      }
+      function getHeight() {
+        alert(window.innerHeight);
+      }
+    </script>
+    <script src="./editor.js"></script>
+  </body>
+</html>

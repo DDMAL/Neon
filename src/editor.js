@@ -8,47 +8,31 @@ import InfoModule from './InfoModule.js';
 import TextView from './TextView.js';
 import TextEditMode from './TextEditMode.js';
 
-const $ = require('jquery');
+var view;
+init();
 
-if (manifest !== '') {
-  $.get(manifest).then((data) => {
+async function init () {
+  if (manifestText !== '') {
+    let manifest = JSON.parse(manifestText);
     let params = {
-      mode: 'iiif',
-      options: {
-        manifest: manifest,
-        meiMap: meiMap,
-        name: data.label
-      },
-      View: DivaView,
+      manifest: manifest,
       Display: DisplayPanel,
       Info: InfoModule,
-      NeumeEdit: DivaEdit,
-      TextView: TextView,
-      TextEdit: TextEditMode
+      TextView: TextView
     };
-    var view = new NeonView(params);
-    view.start();
-  });
-} else {
-  $.get(meiFile, (data) => {
-    let map = new Map();
-    map.set(0, data);
-    let params = {
-      mode: 'single',
-      options: {
-        image: bgImg,
-        meiMap: map,
-        name: 'test'
-      },
-      View: SingleView,
-      Display: DisplayPanel,
-      Info: InfoModule,
-      NeumeEdit: SingleEditMode,
-      TextView: TextView,
-      TextEdit: TextEditMode
-    };
+    let mediaType = await window.fetch(manifest.image).then(response => {
+      if (response.ok) {
+        return response.headers.get('Content-Type');
+      } else {
+        throw new Error(response.statusText);
+      }
+    });
 
-    var view = new NeonView(params);
+    let singlePage = mediaType.match(/^image\/*/);
+    params.View = singlePage ? SingleView : DivaView;
+    params.NeumeEdit = singlePage ? SingleEditMode : DivaEdit;
+
+    view = new NeonView(params);
     view.start();
-  });
+  }
 }
