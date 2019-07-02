@@ -2,6 +2,7 @@ import { bindInsertTabs, initInsertEditControls, initEditModeControls, initSelec
 import * as Select from '../utils/Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';
+import DragHandler from '../utils/DragHandler.js';
 
 class DivaEdit {
   constructor (neonView) {
@@ -10,9 +11,11 @@ class DivaEdit {
   }
 
   initEditMode () {
+    this.dragHandler = new DragHandler(this.neonView, '.active-page > svg');
     this.insertHandler = new InsertHandler(this.neonView, '.active-page > svg');
     bindInsertTabs(this.insertHandler);
     document.getElementById('neumeTab').click();
+    Select.setSelectHelperObjects(this.neonView, this.dragHandler);
     this.setSelectListeners();
 
     SelectOptions.initNeonView(this.neonView);

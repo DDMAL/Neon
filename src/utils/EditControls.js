@@ -1,7 +1,7 @@
 /** @module UnifiedEdit/EditControls */
 
 import * as Notification from './Notification.js';
-import { navbarDropdownMenu, undoRedoPanel } from './utils/EditContents';
+import { navbarDropdownMenu, undoRedoPanel } from './EditContents';
 
 const $ = require('jquery');
 
@@ -21,7 +21,7 @@ export function prepareEditMode (neonView) {
   parent.appendChild(editItem);
 
   editButton.addEventListener('click', () => {
-    this.startEditMode();
+    startEditMode();
   });
 }
 

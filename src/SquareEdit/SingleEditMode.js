@@ -2,6 +2,7 @@ import { bindInsertTabs, initInsertEditControls, initEditModeControls, initSelec
 import * as Select from '../utils/Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';
+import DragHandler from '../utils/DragHandler.js';
 
 /**
  * An Edit Module for a single page of a manuscript.
@@ -21,9 +22,11 @@ class SingleEditMode {
    * Initialize the start of edit mode when first leaving viewer mode.
    */
   initEditMode () {
+    this.dragHandler = new DragHandler(this.neonView, '#svg_group');
     this.insertHandler = new InsertHandler(this.neonView, '#svg_group');
     bindInsertTabs(this.insertHandler);
     document.getElementById('neumeTab').click();
+    Select.setSelectHelperObjects(this.neonView, this.dragHandler);
     this.setSelectListeners();
 
     SelectOptions.initNeonView(this.neonView);

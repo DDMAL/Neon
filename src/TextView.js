@@ -43,7 +43,7 @@ class TextView {
 
     this.setTextViewControls();
     this.neonView.view.addUpdateCallback(this.updateTextViewVisibility.bind(this));
-    this.neonView.view.addUpdateCallback(this.updateBboxViewVisibility.bind(this));
+    this.neonView.view.addUpdateCallback(this.updateBBoxViewVisibility.bind(this));
   }
 
   /**
