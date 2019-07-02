@@ -255,7 +255,7 @@ router.route('/add-iiif').get(function (req, res) {
         }
 
         // Create appropriate directory
-        fs.mkdir(path.join(iiifUpload, label, req.body.revision), (err) => {
+        fs.mkdir(path.join(iiifUpload, label, req.body.revision), { recursive: true }, (err) => {
           if (err) {
             console.error(err);
             res.sendStatus(500);
