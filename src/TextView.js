@@ -20,26 +20,26 @@ class TextView {
 
     // add checkbox to enable/disable the view
     let block = document.getElementById('extensible-block');
-    let label = document.createElement('label');
-    let label2 = document.createElement('label');
-    let input = document.createElement('input');
-    let input2 = document.createElement('input');
-    label.classList.add('checkbox');
-    label2.classList.add('checkbox');
-    label.textContent = 'Display Text: ';
-    label2.textContent = 'Display Text BBoxes: ';
-    input.classList.add('checkbox');
-    input2.classList.add('checkbox');
-    input.id = 'displayText';
-    input.type = 'checkbox';
-    input2.id = 'displayBBox';
-    input2.type = 'checkbox';
-    input.checked = false;
-    input2.checked = false;
-    label.appendChild(input);
-    label2.appendChild(input2);
-    block.prepend(label2);
-    block.prepend(label);
+    let textLabel = document.createElement('label');
+    let bboxLabel = document.createElement('label');
+    let textButton = document.createElement('input');
+    let bboxButton = document.createElement('input');
+    textLabel.classList.add('checkbox');
+    bboxLabel.classList.add('checkbox');
+    textLabel.textContent = 'Display Text: ';
+    bboxLabel.textContent = 'Display Text BBoxes: ';
+    textButton.classList.add('checkbox');
+    bboxButton.classList.add('checkbox');
+    textButton.id = 'displayText';
+    textButton.type = 'checkbox';
+    bboxButton.id = 'displayBBox';
+    bboxButton.type = 'checkbox';
+    textButton.checked = false;
+    bboxButton.checked = false;
+    textLabel.appendChild(textButton);
+    bboxLabel.appendChild(bboxButton);
+    block.prepend(bboxLabel);
+    block.prepend(textLabel);
 
     this.setTextViewControls();
     this.neonView.view.addUpdateCallback(this.updateTextViewVisibility.bind(this));
@@ -51,19 +51,19 @@ class TextView {
   */
   setTextViewControls () {
     this.updateTextViewVisibility();
-    this.updateBboxViewVisibility();
+    this.updateBBoxViewVisibility();
     $('#displayText').on('click', () => {
       this.updateTextViewVisibility();
     });
     $('#displayBBox').on('click', () => {
-      this.updateBboxViewVisibility();
+      this.updateBBoxViewVisibility();
     });
   }
 
   /**
    * update visibility of text boundinb boxes
    */
-  updateBboxViewVisibility () {
+  updateBBoxViewVisibility () {
     if ($('#displayBBox').is(':checked')) {
       $('.sylTextRect').addClass('sylTextRect-display');
       $('.sylTextRect').removeClass('sylTextRect');

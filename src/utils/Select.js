@@ -1,4 +1,4 @@
-/** @module Select */
+/** @module utils/Select */
 
 import {
   unselect, getStaffBBox, selectStaff, selectAll, getSelectionType

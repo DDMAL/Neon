@@ -41,7 +41,7 @@ class NeonView {
     this.display = this.view.display;
     this.info = new params.Info(this);
 
-    if (params.NeumeEdit !== undefined || params.TextView !== undefined) {
+    if (params.NeumeEdit !== undefined || (params.TextEdit !== undefined && params.TextView !== undefined)) {
       // Set up display for edit button
       let parent = document.getElementById('dropdown_toggle');
       let editItem = document.createElement('a');

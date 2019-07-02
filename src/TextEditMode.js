@@ -10,6 +10,7 @@ const $ = require('jquery');
 export default class TextEditMode {
   /**
    * Constructor for a TextEdit
+   * @param {NeonView} neonView
    */
 
   constructor (neonView) {
