@@ -78,6 +78,9 @@ export function select (el, dragHandler) {
       $(el).find('.sylTextRect-display').css('fill', 'red');
       $(el).find('.sylTextRect-display').addClass('sylTextRect-select');
       $(el).find('.sylTextRect-display').removeClass('sylTextRect-display');
+    } else if ($(el).find('.sylTextRect').length) {
+      $(el).find('.sylTextRect').addClass('sylTextRect-hiddenSelect');
+      $(el).find('.sylTextRect').removeClass('sylTextRect');
     }
   }
   updateHighlight();

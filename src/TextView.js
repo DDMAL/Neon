@@ -62,12 +62,15 @@ class TextView {
   }
 
   /**
-   * update visibility of text boundinb boxes
+   * update visibility of text bounding boxes
    */
   updateBBoxViewVisibility () {
     if ($('#displayBBox').is(':checked')) {
       $('.sylTextRect').addClass('sylTextRect-display');
       $('.sylTextRect').removeClass('sylTextRect');
+      $('.sylTextRect-hiddenSelect').addClass('sylTextRect-select');
+      $('.sylTextRect-hiddenSelect').removeClass('sylTextRect-hiddenSelect');
+      $('.sylTextRect-select').css('fill', 'red');
       if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
         this.neonView.TextEdit.initSelectByBBoxButton();
       }
