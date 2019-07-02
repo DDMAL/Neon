@@ -1,4 +1,5 @@
 import * as Notification from './utils/Notification.js';
+import { unselect } from './utils/SelectTools.js';
 
 /** @module TextView */
 
@@ -70,13 +71,14 @@ class TextView {
         this.neonView.TextEdit.initSelectByBBoxButton();
       }
     } else {
-      $('.sylTextRect-display').addClass('sylTextRect');
-      $('.sylTextRect-display').removeClass('sylTextRect-display');
-      $('#selByBBox').css('display', 'none');
       if ($('#selByBBox').hasClass('is-active')) {
+        unselect();
         $('#selByBBox').removeClass('is-active');
         $('#selBySyl').addClass('is-active');
       }
+      $('.sylTextRect-display').addClass('sylTextRect');
+      $('.sylTextRect-display').removeClass('sylTextRect-display');
+      $('#selByBBox').css('display', 'none');
     }
   }
 
