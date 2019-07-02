@@ -78,7 +78,7 @@ class InfoModule {
         var ncs = element.children('.nc');
         var contour = await this.getContour(ncs);
         if (contour === 'Clivis') {
-          var attr = await this.neonView.getElementAttr($(ncs[0])[0].id, this.neonView.view.getCurrentPage());
+          var attr = await this.neonView.getElementAttr($(ncs[0])[0].id, this.neonView.view.getCurrentPageURI());
           if (attr.ligated) {
             contour = 'Ligature';
           }
@@ -90,11 +90,11 @@ class InfoModule {
                 'Pitch(es): ' + pitches;
         break;
       case 'custos':
-        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPage());
+        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         body += 'Pitch: ' + (attributes.pname).toUpperCase() + attributes.oct;
         break;
       case 'clef':
-        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPage());
+        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         body += 'Shape: ' + attributes.shape + '<br/>' +
                 'Line: ' + attributes.line;
         break;
@@ -118,7 +118,7 @@ class InfoModule {
   async getPitches (ncs) {
     var pitches = '';
     for (let nc of ncs) {
-      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPage());
+      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
       pitches += attributes.pname + attributes.oct + ' ';
     }
     return pitches;
@@ -132,7 +132,7 @@ class InfoModule {
     var contour = '';
     var previous = null;
     for (let nc of ncs) {
-      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPage());
+      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
       if (previous !== null) {
         if (previous.oct > attributes.oct) {
           contour += 'd';

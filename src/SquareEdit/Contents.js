@@ -233,5 +233,9 @@ export const groupingMenu = {
   'ligature': "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
         "<button class='button' id='toggle-ligature'>Toggle Ligature</button>" +
+        "<button class='button' id='delete'>Delete</button></p></div></div>",
+  'splitSyllable': "<div class='field is-grouped'>" +
+        "<div><p class='control'>" +
+        "<button class='button' id='toggle-link'>Toggle Linked Syllables</button>" +
         "<button class='button' id='delete'>Delete</button></p></div></div>"
 };
