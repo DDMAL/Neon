@@ -42,7 +42,7 @@ class NeonView {
       editButton.textContent = 'Edit MEI';
       editItem.appendChild(editButton);
       parent.appendChild(editItem);
-      this.NeumeEdit = new params.NeumeEdit(this);
+      this.neumeEdit = new params.NeumeEdit(this);
     }
     if (params.TextView !== undefined) {
       this.textView = new params.TextView(this);
@@ -109,12 +109,13 @@ class NeonView {
 
   /**
    * Get the mode Neon is in: viewer, insert, or edit.
+   * @returns {string}
    */
   getUserMode () {
-    if (this.editor === undefined) {
+    if (this.neumeEdit === undefined) {
       return 'viewer';
     } else {
-      return this.editor.getUserMode();
+      return this.neumeEdit.getUserMode();
     }
   }
 
