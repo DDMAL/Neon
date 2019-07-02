@@ -141,9 +141,7 @@ export function triggerNcActions (nc) {
   });
   console.log(neonView.view.constructor.name);
   $('#delete').on('click', removeHandler);
-  $('body').on('keydown', (evt) => {
-    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
-  });
+  $('body').on('keydown', deleteButtonHandler);
 
   initOptionsListeners();
 }
@@ -185,9 +183,7 @@ export function triggerNeumeActions () {
     });
   }
   $('#delete').on('click', removeHandler);
-  $('body').on('keydown', (evt) => {
-    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
-  });
+  $('body').on('keydown', deleteButtonHandler);
 
   initOptionsListeners();
   Grouping.initGroupingListeners();
@@ -209,9 +205,7 @@ export function triggerSylActions () {
   );
 
   $('#delete').on('click', removeHandler);
-  $('body').on('keydown', (evt) => {
-    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
-  });
+  $('body').on('keydown', deleteButtonHandler);
 
   Grouping.initGroupingListeners();
 }
@@ -262,9 +256,7 @@ export function triggerClefActions (clef) {
   });
 
   $('#delete').on('click', removeHandler);
-  $('body').on('keydown', (evt) => {
-    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
-  });
+  $('body').on('keydown', deleteButtonHandler);
 
   initOptionsListeners();
 }
@@ -301,9 +293,7 @@ export function triggerStaffActions () {
   });
 
   $('#delete').on('click', removeHandler);
-  $('body').on('keydown', (evt) => {
-    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
-  });
+  $('body').on('keydown', deleteButtonHandler);
 }
 
 /**
@@ -322,9 +312,7 @@ export function triggerSplitActions () {
   });
 
   $('#delete').on('click', removeHandler);
-  $('body').on('keydown', (evt) => {
-    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
-  });
+  $('body').on('keydown', deleteButtonHandler);
 }
 
 /**
@@ -336,9 +324,7 @@ export function triggerDefaultActions () {
   $('#moreEdit').append(Contents.defaultActionContents);
 
   $('#delete').on('click', removeHandler);
-  $('body').on('keydown', (evt) => {
-    if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
-  });
+  $('body').on('keydown', deleteButtonHandler);
 }
 
 /**
@@ -347,6 +333,7 @@ export function triggerDefaultActions () {
 export function endOptionsSelection () {
   $('#moreEdit').empty();
   $('#moreEdit').addClass('is-invisible');
+  $('body').off('keydown', deleteButtonHandler);
 }
 
 /**
@@ -356,4 +343,8 @@ function initOptionsListeners () {
   $('#drop_select').on('click', function () {
     $(this).toggleClass('is-active');
   });
+}
+
+function deleteButtonHandler (evt) {
+  if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
 }
