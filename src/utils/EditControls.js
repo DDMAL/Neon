@@ -21,7 +21,7 @@ export function prepareEditMode (neonView) {
   parent.appendChild(editItem);
 
   editButton.addEventListener('click', () => {
-    startEditMode();
+    startEditMode(neonView);
   });
 }
 

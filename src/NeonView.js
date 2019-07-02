@@ -38,7 +38,7 @@ class NeonView {
 
     if (params.NeumeEdit !== undefined || (params.TextEdit !== undefined && params.TextView !== undefined)) {
       // Set up display for edit button
-      prepareEditMode();
+      prepareEditMode(this);
     }
 
     if (params.NeumeEdit !== undefined) {
