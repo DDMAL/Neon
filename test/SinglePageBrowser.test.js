@@ -26,7 +26,7 @@ afterAll(() => {
   fs.unlinkSync(pathToUploads + 'manifests/test.jsonld');
 });
 
-describe.each(['firefox', 'chrome'])('Tests on %s', (title) => {
+describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
   var browser;
 
   beforeAll(async () => {
@@ -52,9 +52,10 @@ describe.each(['firefox', 'chrome'])('Tests on %s', (title) => {
   describe('Check Info Box', () => {
     test('Check Info Box Neumes', async () => {
       let neumeID = 'm-07ad2140-4fa1-45d4-af47-6733add00825';
+      var message;
       await browser.wait(until.elementLocated(By.id(neumeID)), 2000); // Wait two seconds for elements to appear
       await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new window.Event('mouseover')); }, neumeID);
-      var message = await browser.findElement(By.className('message-body')).getText();
+      message = await browser.findElement(By.className('message-body')).getText();
 
       expect(message).toContain('Clivis');
       expect(message).toContain('A2 G2');
@@ -101,7 +102,7 @@ describe.each(['firefox', 'chrome'])('Tests on %s', (title) => {
       var originalTransform = await browser.executeScript(() => { return document.getElementById('svg_group').getAttribute('viewBox'); });
       const actions = browser.actions();
       var svgGroup = await browser.findElement(By.id('svg_group'));
-      await actions.keyDown(Key.SHIFT).dragAndDrop(svgGroup, { x: 100, y: 100 }).keyUp(Key.SHIFT).perform();
+      await actions.keyDown(Key.SHIFT).dragAndDrop(svgGroup, { x: 50, y: 50 }).keyUp(Key.SHIFT).perform();
       var newTransform = await browser.executeScript(() => { return document.getElementById('svg_group').getAttribute('viewBox'); });
 
       var originalSplit = originalTransform.split(' ');
@@ -151,14 +152,12 @@ describe.each(['firefox', 'chrome'])('Tests on %s', (title) => {
     /// TEST EDIT MODE ///
     describe('Edit Mode', () => {
       beforeAll(async () => {
-        var editBtn = await browser.findElement(By.linkText('Edit MEI'));
-        const actions = browser.actions();
-        await actions.click(editBtn).perform();
+        await browser.executeScript(() => { document.getElementById('edit_mode').click(); });
       });
 
       describe('Selection', () => {
         test('Test drag selection', async () => {
-          var canvas = await browser.findElement(By.id('mei_output'));
+          var canvas = await browser.findElement(By.id('svg_group'));
           const actions = browser.actions();
           await actions.move({ origin: canvas }).press().move({ x: 200, y: 200 }).perform();
           await browser.findElement(By.id('selectRect'));
@@ -170,6 +169,7 @@ describe.each(['firefox', 'chrome'])('Tests on %s', (title) => {
 
         test('Test click select .nc', async () => {
           var selByNcButton = await browser.findElement(By.id('selByNc'));
+          await browser.executeScript(() => { document.getElementById('selByNc').scrollIntoView(true); });
           const actions = browser.actions();
           await actions.click(selByNcButton).perform();
           var nc = await browser.findElement(By.className('nc'));
@@ -227,12 +227,12 @@ describe.each(['firefox', 'chrome'])('Tests on %s', (title) => {
           var selByStaff = await browser.findElement(By.id('selByStaff'));
           const actions = browser.actions();
           expect(await selByStaff.isDisplayed()).toBeTruthy();
-          await browser.executeScript("document.getElementById('selByStaff').scrollIntoView(true);");
+          await browser.executeScript(() => { document.getElementById('selByStaff').scrollIntoView(true); });
           await actions.click(selByStaff).perform();
           expect(await selByStaff.getAttribute('class')).toContain('is-active');
           var staff = await browser.findElement(By.className('staff'));
           var nc = await staff.findElement(By.className('nc'));
-          await actions.click(nc).perform();
+          await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new window.Event('mousedown')); }, await nc.getAttribute('id'));
           let staffClass = await staff.getAttribute('class');
           expect(staffClass).toBe('staff selected');
           await actions.click().perform();
@@ -270,7 +270,6 @@ describe.each(['firefox', 'chrome'])('Tests on %s', (title) => {
         // Doesn't test location of insert, only that the handler works.
         test('Insert Punctum', async () => {
           let insertPunctum = await browser.findElement(By.id('punctum'));
-          const actions = browser.actions();
           let ncCount = (await browser.findElements(By.className('nc'))).length;
           let someNc = await browser.findElement(By.className('nc'));
           await browser.executeScript((id) => { document.getElementById(id).scrollIntoView(true); }, (await someNc.getAttribute('id')));
@@ -280,15 +279,14 @@ describe.each(['firefox', 'chrome'])('Tests on %s', (title) => {
           let clickedInsertPunctum = await browser.findElement(By.id('punctum'));
           let buttonClass = await clickedInsertPunctum.getAttribute('class');
           expect(buttonClass).toContain('is-active');
-          await actions.move({ origin: someNc, x: 100, y: 100 }).click().perform();
+          // await browser.actions().move({ origin: someNc, x: 100, y: 100 }).click().perform();
+          await browser.executeScript(() => { document.getElementById('svg_group').dispatchEvent(new window.MouseEvent('click', { bubbles: true })); });
           let newNcCount = (await browser.findElements(By.className('nc'))).length;
           expect(newNcCount).toBe(ncCount + 1);
         });
 
         test('Insert Pes', async () => {
-          let groupingTab = await browser.findElement(By.id('groupingTab'));
-          const actions = browser.actions();
-          await actions.click(groupingTab).perform();
+          await browser.executeScript(() => { document.getElementById('groupingTab').dispatchEvent(new window.Event('click')); });
           let pesButton = await browser.findElement(By.id('pes'));
           await pesButton.click();
           // Get initial neume and nc counts
@@ -296,12 +294,9 @@ describe.each(['firefox', 'chrome'])('Tests on %s', (title) => {
           let ncCount = (await browser.findElements(By.className('nc'))).length;
           // Check that insert panel heading title is selected (check if bold)
           let insertHeader = await browser.findElement(By.id('insertMenu'));
-          expect(await insertHeader.getCssValue('font-weight')).toBe('700');
-
+          expect(await insertHeader.getCssValue('font-weight')).toMatch(/(700|bold)/);
           // Move mouse and click
-          let bg = await browser.findElement(By.id('bgimg'));
-          // await actions.move({ origin: bg, x: 200, y: 300 }).click().perform();
-          await bg.click();
+          await browser.executeScript(() => { document.getElementById('svg_group').dispatchEvent(new window.MouseEvent('click', { bubbles: true })); });
           // Get new counts
           await browser.wait(async () => {
             let count = (await browser.findElements(By.className('neume'))).length;
