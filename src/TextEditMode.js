@@ -1,6 +1,7 @@
 import { unselect, selectBBox } from './utils/SelectTools.js';
 import DragHandler from './utils/DragHandler.js';
 import { Resize } from './utils/Resize.js';
+import { setSelectHelperObjects } from './utils/Select.js';
 
 const $ = require('jquery');
 
@@ -12,11 +13,17 @@ export default class TextEditMode {
    * Constructor for a TextEdit
    * @param {NeonView} neonView
    */
-
   constructor (neonView) {
     this.neonView = neonView;
+    this.initEditModeControls();
+  }
+
+  /**
+   * set listener on edit mode button
+   */
+  initEditModeControls () {
     document.getElementById('edit_mode').addEventListener('click', () => {
-      this.setTextEdit();
+      this.initTextEdit();
       if ($('#displayBBox').is(':checked')) {
         this.initSelectByBBoxButton();
       }
@@ -26,7 +33,9 @@ export default class TextEditMode {
   /**
   * set text to edit mode
   */
-  setTextEdit () {
+  initTextEdit () {
+    this.dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
+    setSelectHelperObjects(this.neonView, this.dragHandler);
     let spans = Array.from($('#syl_text').children('p').children('span'));
     spans.forEach(span => {
       $(span).off('click');
@@ -86,9 +95,8 @@ export default class TextEditMode {
         $(rect).off('click', unselect);
         $(rect).on('click', () => {
           if ($('#selByBBox').hasClass('is-active') && !rect.classList.contains('sylTextRect-select')) {
-            let dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
-            let resize = new Resize(rect.closest('.syl').id, this.neonView, dragHandler);
-            selectBBox(rect, dragHandler);
+            selectBBox(rect, this.dragHandler);
+            let resize = new Resize(rect.closest('.syl').id, this.neonView, this.dragHandler);
             resize.drawInitialRect();
           }
         });

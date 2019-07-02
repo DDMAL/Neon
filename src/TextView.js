@@ -121,7 +121,7 @@ class TextView {
         });
       });
       if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
-        this.neonView.TextEdit.setTextEdit();
+        this.neonView.TextEdit.initTextEdit();
       }
     } else {
       $('#syl_text').css('display', 'none');
