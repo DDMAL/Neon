@@ -18,7 +18,8 @@ async function init () {
       manifest: manifest,
       Display: DisplayPanel,
       Info: InfoModule,
-      TextView: TextView
+      TextView: TextView,
+      TextEdit: TextEditMode
     };
     let mediaType = await window.fetch(manifest.image).then(response => {
       if (response.ok) {

@@ -47,7 +47,7 @@ export default class TextEditMode {
 
   /**
   * add the selectByRect button
-  * if neumeedit mode is there, add it to the bar with the other select by buttons
+  * if neume edit mode is there, add it to the bar with the other select by buttons
   * otherwise add an invisible button
   * since the only edit mode is selectByRect in that case
   */
@@ -119,7 +119,7 @@ export default class TextEditMode {
           'text': corrected
         }
       };
-      this.neonView.edit(editorAction, this.neonView.view.getCurrentPage()).then((response) => {
+      this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then((response) => {
         if (response) {
           this.neonView.updateForCurrentPage();
         }
