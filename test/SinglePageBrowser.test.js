@@ -33,7 +33,7 @@ describe.each(['firefox', 'chrome'])('Tests on %s', (title) => {
     browser = await new Builder()
       .forBrowser(title)
       .setFirefoxOptions(new firefox.Options().headless())
-      .setChromeOptions(new chrome.Options().headless())
+      .setChromeOptions(new chrome.Options().headless().windowSize({ width: 1280, height: 800 }))
       .build();
     await browser.get(editUrl);
   });
