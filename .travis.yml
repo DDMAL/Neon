@@ -15,9 +15,9 @@ addons:
       - google-chrome
       - chromedriver
 install:
+  - sudo safaridriver --enable
   - yarn install
 script:
-  - safaridriver --enable
   - yarn build
   - yarn start &
   - yarn test
