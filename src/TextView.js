@@ -1,5 +1,6 @@
 import * as Notification from './utils/Notification.js';
 import { unselect } from './utils/SelectTools.js';
+import { updateHighlight } from './DisplayPanel/DisplayControls.js';
 
 /** @module TextView */
 
@@ -80,6 +81,7 @@ class TextView {
       $('.sylTextRect-display').removeClass('sylTextRect-display');
       $('#selByBBox').css('display', 'none');
     }
+    updateHighlight();
   }
 
   /**

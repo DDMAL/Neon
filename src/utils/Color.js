@@ -90,7 +90,7 @@ export function highlight (staff, color) {
       child.setAttribute('fill', color);
       let rects = Array.from($(child).find('.sylTextRect-display'));
       if (!rects.length) { rects = Array.from($(child).parents('syllable').find('.sylTextRect-display')); }
-      rects.forEach(function (rect) { 
+      rects.forEach(function (rect) {
         $(rect).css('fill', color);
         $(rect).addClass('highlighted');
       });
