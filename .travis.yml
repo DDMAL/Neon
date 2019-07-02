@@ -17,6 +17,7 @@ addons:
 install:
   - yarn install
 script:
+  - safaridriver --enable
   - yarn build
   - yarn start &
   - yarn test
