@@ -1,10 +1,5 @@
 import NeonCore from './NeonCore.js';
-import { initNavbar, initUndoRedoPanel } from './utils/EditControls';
-import DragHandler from './utils/DragHandler';
-import { clickSelect, dragSelect, setSelectHelperObjects } from './utils/Select';
-import { navbarDropdownMenu, undoRedoPanel } from './utils/EditContents';
-
-const $ = require('jquery');
+import { prepareEditMode } from './utils/EditControls';
 
 /**
  * NeonView class. Manages the other modules of Neon and communicates with
@@ -43,21 +38,7 @@ class NeonView {
 
     if (params.NeumeEdit !== undefined || (params.TextEdit !== undefined && params.TextView !== undefined)) {
       // Set up display for edit button
-      let parent = document.getElementById('dropdown_toggle');
-      let editItem = document.createElement('a');
-      editItem.classList.add('navbar-item');
-      let editButton = document.createElement('button');
-      editButton.classList.add('button');
-      editButton.id = 'edit_mode';
-      editButton.textContent = 'Edit MEI';
-      this.dragHandler = new DragHandler(this, '#svg_group');
-      setSelectHelperObjects(this, this.dragHandler);
-      editItem.appendChild(editButton);
-      parent.appendChild(editItem);
-
-      editButton.addEventListener('click', () => {
-        this.initEditMode();
-      });
+      prepareEditMode();
     }
 
     if (params.NeumeEdit !== undefined) {
@@ -69,20 +50,6 @@ class NeonView {
         this.TextEdit = new params.TextEdit(this);
       }
     }
-  }
-
-  /**
-   * initialize basic edit mode features
-   * called when the edit MEI button is clicked
-   */
-  initEditMode () {
-    clickSelect('#mei_output, #mei_output use');
-    dragSelect('#svg_group');
-    $('#dropdown_toggle').empty();
-    $('#dropdown_toggle').append(navbarDropdownMenu);
-    $('#undoRedo_controls').append(undoRedoPanel);
-    initNavbar(this);
-    initUndoRedoPanel(this);
   }
 
   /**

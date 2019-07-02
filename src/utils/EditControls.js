@@ -1,7 +1,42 @@
 /** @module UnifiedEdit/EditControls */
 
 import * as Notification from './Notification.js';
+import { navbarDropdownMenu, undoRedoPanel } from './utils/EditContents';
+
 const $ = require('jquery');
+
+/**
+ * prepare the edit mode button
+ * @param {NeonView} neonView
+ */
+export function prepareEditMode (neonView) {
+  let parent = document.getElementById('dropdown_toggle');
+  let editItem = document.createElement('a');
+  editItem.classList.add('navbar-item');
+  let editButton = document.createElement('button');
+  editButton.classList.add('button');
+  editButton.id = 'edit_mode';
+  editButton.textContent = 'Edit MEI';
+  editItem.appendChild(editButton);
+  parent.appendChild(editItem);
+
+  editButton.addEventListener('click', () => {
+    this.startEditMode();
+  });
+}
+
+/**
+ * start the basic edit mode features
+ * is called when the edit mode button is clicked
+ * @param {NeonView} neonView
+ */
+export function startEditMode (neonView) {
+  $('#dropdown_toggle').empty();
+  $('#dropdown_toggle').append(navbarDropdownMenu);
+  $('#undoRedo_controls').append(undoRedoPanel);
+  initNavbar(neonView);
+  initUndoRedoPanel(neonView);
+}
 
 /**
  * Set listener on switching EditMode button to File dropdown in the navbar.
