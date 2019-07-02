@@ -46,6 +46,8 @@ class SingleView {
     this.setViewEventHandlers();
     this.displayPanel.setDisplayListeners();
 
+    this.pageURI = image;
+
     document.getElementById('loading').style.display = 'none';
   }
 
@@ -104,6 +106,14 @@ class SingleView {
    */
   getCurrentPage () {
     return 0;
+  }
+
+  /**
+   * Returns the page URI.
+   * @returns {string}
+   */
+  getCurrentPageURI () {
+    return this.pageURI;
   }
 
   /**

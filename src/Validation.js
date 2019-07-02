@@ -75,3 +75,14 @@ function updateUI (message) {
     statusField.appendChild(link);
   }
 }
+
+/**
+ * Update the message on a blank page when there is no MEI.
+ */
+export function blankPage () {
+  for (let child of statusField.children) {
+    statusField.deleteChild(child);
+  }
+  statusField.textContent = 'No MEI'
+  statusField.style = 'color:gray';
+}

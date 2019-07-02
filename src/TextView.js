@@ -75,7 +75,7 @@ class TextView {
           'text': corrected
         }
       };
-      this.neonView.edit(editorAction, this.neonView.view.getCurrentPage()).then((response) => {
+      this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then((response) => {
         if (response) {
           this.neonView.updateForCurrentPage();
         }

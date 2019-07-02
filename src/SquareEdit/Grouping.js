@@ -81,7 +81,7 @@ export function initGroupingListeners () {
           unsetInclinatumAction(elementIds[0]), unsetVirgaAction(elementIds[0]),
           unsetInclinatumAction(elementIds[1]), unsetVirgaAction(elementIds[1])
         ] };
-      await neonView.edit(chainAction, neonView.view.getCurrentPage());
+      await neonView.edit(chainAction, neonView.view.getCurrentPageURI());
     }
 
     let editorAction = {
@@ -91,7 +91,7 @@ export function initGroupingListeners () {
         'isLigature': isLigature.toString()
       }
     };
-    neonView.edit(editorAction, neonView.view.getCurrentPage()).then((result) => {
+    neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
       if (result) {
         Notification.queueNotification('Ligature Toggled');
       } else {
@@ -176,7 +176,7 @@ export function initGroupingListeners () {
         }
       });
     }
-    neonView.edit(chainAction, neonView.view.getCurrentPage()).then((result) => {
+    neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => {
       if (result) {
         Notification.queueNotification('Toggled Syllable Link');
       } else {
@@ -202,7 +202,7 @@ function groupingAction (action, groupType, elementIds) {
       'elementIds': elementIds
     }
   };
-  neonView.edit(editorAction, neonView.view.getCurrentPage()).then((result) => {
+  neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
     if (result) {
       if (action === 'group') {
         Notification.queueNotification('Grouping Success');

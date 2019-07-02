@@ -123,7 +123,7 @@ export async function selectNcs (el, neonView, dragHandler) {
  * @returns {boolean}
  */
 export async function isLigature (nc, neonView) {
-  var attributes = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPage());
+  var attributes = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPageURI());
   return (attributes.ligated === 'true');
 }
 
@@ -289,7 +289,7 @@ export async function selectAll (elements, neonView, info, dragHandler) {
   if (containsClefOrCustos) {
     // A context menu will only be displayed if there is a single clef
     if (groupsToSelect.size === 1 && groups[0].classList.contains('clef')) {
-      SelectOptions.triggerClefActions(groupsToSelect[0]);
+      SelectOptions.triggerClefActions(groups[0]);
     } else {
       SelectOptions.triggerDefaultActions();
     }

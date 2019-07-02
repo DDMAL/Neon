@@ -5,7 +5,8 @@
 export const navbarDropdownMenu =
     "<div class='navbar-item has-dropdown is-hoverable'><a class='navbar-link'>File</a>" +
     "<div id='navbar-dropdown-options' class='navbar-dropdown'>" +
-    "<a id='save' class='navbar-item'>Save File</a>" +
+    "<a id='save' class='navbar-item'>Save</a>" +
+    "<a id='export' class='navbar-item'>Save and Export to File</a>" +
     "<a id='getmei' class='navbar-item' href='' download=''> Download MEI </a>" +
     "<a id='revert' class='navbar-item'> Revert </a>";
 
