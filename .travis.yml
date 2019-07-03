@@ -1,6 +1,7 @@
 language: node_js
 node_js: 10
 os: osx
+osx_image: xcode10.2
 if: (branch = master OR branch = develop)
 cache:
   directories:
@@ -15,6 +16,7 @@ addons:
       - google-chrome
       - chromedriver
 install:
+  - sudo safaridriver --enable
   - yarn install
 script:
   - yarn build
