@@ -85,5 +85,32 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       expect(opacityText).toBe('100');
       expect(canvasStyle).toContain('opacity: 1;');
     });
+
+    test('Test Highlight (Syllable)', async () => {
+      let highlightButton = await browser.findElement(By.id('highlight-button'));
+      await browser.actions().click(highlightButton).perform();
+      let highlightSyllable = await browser.findElement(By.id('highlight-syllable'));
+      await browser.actions().click(highlightSyllable).perform();
+      let someSyllable = await browser.findElement(By.className('syllable'));
+      let syllableClasses = await someSyllable.getAttribute('class');
+      expect(syllableClasses).toContain('highlighted');
+    });
+  });
+
+  describe('Test diva.js viewer', () => {
+    test('Test scrolling to new active page', async () => {
+      // Verify that the first page is active.
+      let containerZero = await browser.findElement(By.id('neon-container-0'));
+      let containerZeroClass = await containerZero.getAttribute('class');
+      expect(containerZeroClass).toContain('active-page');
+
+      // Change page and verify that active page changes
+      // scroll
+      await browser.executeScript(() => { document.getElementById('diva-1-viewport').scrollBy(0, 1000); });
+      // Wait for load
+      await browser.wait(until.elementLocated(By.id('neon-container-1')), 2000);
+      let containerOneClass = await browser.findElement(By.id('neon-container-1')).getAttribute('class');
+      expect(containerOneClass).toContain('active-page');
+    });
   });
 });
