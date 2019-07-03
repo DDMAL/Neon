@@ -1,6 +1,6 @@
 /* eslint-env jest */
 const fs = require('fs');
-const { Builder, By, Key, until } = require('selenium-webdriver');
+const { Builder, By, until } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 const chrome = require('selenium-webdriver/chrome');
 const path = require('path');
@@ -111,6 +111,22 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       await browser.wait(until.elementLocated(By.id('neon-container-1')), 2000);
       let containerOneClass = await browser.findElement(By.id('neon-container-1')).getAttribute('class');
       expect(containerOneClass).toContain('active-page');
+    });
+
+    test('Test diva.js zoom', async () => {
+      // Zoom in
+      let zoomInButton = await browser.findElement(By.id('diva-1-zoom-in-button'));
+      let activeContainer = await browser.findElement(By.className('neon-container'));
+      let initialSize = await activeContainer.getRect();
+      await browser.actions().click(zoomInButton).perform();
+      // wait until active container is visible
+      await browser.wait(async () => {
+        let style = await activeContainer.getAttribute('style');
+        return !style.match(/display: none;/);
+      }, 1500);
+      let zoomedSize = await activeContainer.getRect();
+      expect(zoomedSize.height).toBeGreaterThan(initialSize.height);
+      expect(zoomedSize.width).toBeGreaterThan(initialSize.width);
     });
   });
 });
