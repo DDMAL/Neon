@@ -51,10 +51,21 @@ function DragHandler (neonView, selector) {
        * In the case of staves the resizeRect is a child of the staff, so it is done in the previous forEach loop
        * But in the bbox case it's not a child so we need to do it manually
        * so if we are in the sylTextRect case we get the resizeRect and animate its dragging
+       * in the case where we're not dragging a syl boundingbox
+       * we want to make sure that the bounding box for the thing we are moving
+       * (if it exists and is displaying) doesn't move along with it
+       * but the above forEach selects all children of the element we're dragging
+       * including (potentially) it's syl bbox child
+       * the below line cancels that dragging out
+       * yes i realize this is very hacky
        */
       if (selection.filter(element => element.classList.contains('sylTextRect-select')).length !== 0) {
         d3.select('#resizeRect').attr('transform', function () {
           return 'translate(' + [relativeX, relativeY] + ')';
+        });
+      } else {
+        d3.select('.sylTextRect-select').attr('transform', function () {
+          return 'translate(' + [-1 * relativeX, -1 * relativeY] + ')';
         });
       }
     }
