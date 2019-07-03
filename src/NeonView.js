@@ -1,4 +1,5 @@
 import NeonCore from './NeonCore.js';
+
 import { parseManifest } from './utils/NeonManifest.js';
 import { prepareEditMode } from './utils/EditControls';
 
