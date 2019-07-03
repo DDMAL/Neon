@@ -66,7 +66,7 @@ export default class TextEditMode {
           $('#moreEdit').empty();
           $('#selByBBox').addClass('is-active');
           $('#selByNc').removeClass('is-active');
-          $('#selByNc').removeClass('is-active');
+          $('#selByNeume').removeClass('is-active');
           $('#selByStaff').removeClass('is-active');
           $('#selBySyl').removeClass('is-active');
         }
