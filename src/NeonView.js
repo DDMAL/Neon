@@ -1,6 +1,7 @@
 import NeonCore from './NeonCore.js';
+
 import { parseManifest } from './utils/NeonManifest.js';
-import * as Notification from './utils/Notification.js';
+import { prepareEditMode } from './utils/EditControls';
 
 /**
  * NeonView class. Manages the other modules of Neon and communicates with
@@ -31,24 +32,19 @@ class NeonView {
     this.display = this.view.display;
     this.info = new params.Info(this);
 
-    if (params.NeumeEdit !== undefined) {
+    if (params.NeumeEdit !== undefined || (params.TextEdit !== undefined && params.TextView !== undefined)) {
       // Set up display for edit button
-      let parent = document.getElementById('dropdown_toggle');
-      let editItem = document.createElement('a');
-      editItem.classList.add('navbar-item');
-      let editButton = document.createElement('button');
-      editButton.classList.add('button');
-      editButton.id = 'edit_mode';
-      editButton.textContent = 'Edit MEI';
-      editItem.appendChild(editButton);
-      parent.appendChild(editItem);
-      this.neumeEdit = new params.NeumeEdit(this);
+      prepareEditMode(this);
+    }
+
+    if (params.NeumeEdit !== undefined) {
+      this.NeumeEdit = new params.NeumeEdit(this);
     }
     if (params.TextView !== undefined) {
       this.textView = new params.TextView(this);
-    }
-    if (params.TextEdit !== undefined) {
-      this.textEdit = new params.TextEdit(this);
+      if (params.TextEdit !== undefined) {
+        this.TextEdit = new params.TextEdit(this);
+      }
     }
   }
 
@@ -90,6 +86,7 @@ class NeonView {
     let pageURI = this.view.getCurrentPageURI();
     return Promise.resolve(this.core.getSVG(pageURI).then((svg) => {
       this.view.updateSVG(svg, pageNo);
+      this.view.updateCallbacks.forEach(callback => callback());
     }));
   }
 
@@ -112,10 +109,12 @@ class NeonView {
    * @returns {string}
    */
   getUserMode () {
-    if (this.neumeEdit === undefined) {
-      return 'viewer';
+    if (this.NeumeEdit !== undefined) {
+      return this.NeumeEdit.getUserMode();
+    } else if (this.TextEdit !== undefined) {
+      return 'edit';
     } else {
-      return this.neumeEdit.getUserMode();
+      return 'viewer';
     }
   }
 

@@ -5,6 +5,21 @@ import { unselect } from '../utils/SelectTools.js';
 const $ = require('jquery');
 
 /**
+ * Set listener on EditMode button.
+ * @param {EditMode} editMode - The EditMode object.
+ */
+export function initEditModeControls (editMode) {
+  /* document.getElementById('dropdown_toggle').innerHTML =
+    '<a class="navbar-item"><button class="button" id="edit_mode">' +
+    'Edit MEI</button></a>'; */
+  document.getElementById('edit_mode').addEventListener('click', function () {
+    $('#insert_controls').append(Contents.insertControlsPanel);
+    $('#edit_controls').append(Contents.editControlsPanel);
+    editMode.initEditMode();
+  });
+}
+
+/**
  * Bind listeners to insert tabs.'
  * @param {InsertHandler} insertHandler - An InsertHandler to run the tasks.
  */
@@ -116,6 +131,7 @@ export function initSelectionButtons () {
       unselect();
       $('#moreEdit').empty();
       $('#selBySyl').addClass('is-active');
+      $('#selByBBox').removeClass('is-active');
       $('#selByNeume').removeClass('is-active');
       $('#selByNc').removeClass('is-active');
       $('#selByStaff').removeClass('is-active');
@@ -134,6 +150,7 @@ export function initSelectionButtons () {
       unselect();
       $('#moreEdit').empty();
       $('#selByNeume').addClass('is-active');
+      $('#selByBBox').removeClass('is-active');
       $('#selByNc').removeClass('is-active');
       $('#selByStaff').removeClass('is-active');
       $('#selBySyl').removeClass('is-active');
@@ -152,6 +169,7 @@ export function initSelectionButtons () {
       unselect();
       $('#moreEdit').empty();
       $('#selByNc').addClass('is-active');
+      $('#selByBBox').removeClass('is-active');
       $('#selByNeume').removeClass('is-active');
       $('#selByStaff').removeClass('is-active');
       $('#selBySyl').removeClass('is-active');
@@ -170,6 +188,7 @@ export function initSelectionButtons () {
       unselect();
       $('#moreEdit').empty();
       $('#selByStaff').addClass('is-active');
+      $('#selByBBox').removeClass('is-active');
       $('#selByNc').removeClass('is-active');
       $('#selByNeume').removeClass('is-active');
       $('#selBySyl').removeClass('is-active');

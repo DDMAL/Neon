@@ -31,19 +31,31 @@ export function unselect () {
   for (var i = 0; i < selected.length; i++) {
     if ($(selected[i]).hasClass('staff')) {
       $(selected[i]).removeClass('selected');
+      selected[i].removeAttribute('style');
       Color.unhighlight(selected[i]);
+    } else if ($(selected[i]).hasClass('sylTextRect-select')) {
+      $(selected[i]).removeClass('selected');
+      $(selected[i]).removeClass('sylTextRect-select');
+      $(selected[i]).addClass('sylTextRect-display');
+      let syllable = $(selected[i]).closest('.syllable');
+      if (syllable.css('fill') !== 'rgb(0, 0, 0)') {
+        $(selected[i]).css('fill', syllable.css('fill'));
+      } else {
+        $(selected[i]).css('fill', 'blue');
+      }
     } else {
-      $(selected[i]).removeClass('selected').attr('fill', null);
+      $(selected[i]).removeClass('selected');
+      selected[i].removeAttribute('style');
     }
   }
-  $('.syl-select').css('color', '');
-  $('.syl-select').css('font-weight', '');
-  $('.syl-select').removeClass('syl-select');
-
-  $('.sylTextRect-select').addClass('sylTextRect');
+  $('.sylTextRect-select').css('fill', 'blue');
+  $('.sylTextRect-select').addClass('sylTextRect-display');
   $('.sylTextRect-select').removeClass('sylTextRect-select');
 
-  d3.select('#resizeRect').remove();
+  $('.sylTextRect-hiddenSelect').addClass('sylTextRect');
+  $('.sylTextRect-hiddenSelect').removeClass('sylTextRect-hiddenSelect');
+
+  d3.selectAll('#resizeRect').remove();
 
   if (!$('#selByStaff').hasClass('is-active')) {
     Grouping.endGroupingSelection();
@@ -60,25 +72,18 @@ export function unselect () {
  */
 export function select (el, dragHandler) {
   if (!$(el).hasClass('selected')) {
-    if (el.classList.contains('staff')) {
-      selectStaff(el, dragHandler);
-    } else {
-      $(el).attr('fill', '#d00');
-      $(el).addClass('selected');
-
-      var sylId;
-      if ($(el).hasClass('syllable')) {
-        sylId = el.id;
-      } else if ($(el).parents('.syllable').length) {
-        sylId = $(el).parents('.syllable').attr('id');
-      }
-      if (sylId !== undefined) {
-        if ($('span').filter('.' + sylId).length) {
-          $('span').filter('.' + sylId).css('color', '#d00');
-          $('span').filter('.' + sylId).css('font-weight', 'bold');
-          $('span').filter('.' + sylId).addClass('syl-select');
-        }
-      }
+    $(el).addClass('selected');
+    $(el).css('fill', '#d00');
+    if ($(el).hasClass('sylTextRect-display')) {
+      $(el).addClass('sylTextRect-select');
+      $(el).removeClass('sylTextRect-display');
+    } else if ($(el).find('.sylTextRect-display').length) {
+      $(el).find('.sylTextRect-display').css('fill', 'red');
+      $(el).find('.sylTextRect-display').addClass('sylTextRect-select');
+      $(el).find('.sylTextRect-display').removeClass('sylTextRect-display');
+    } else if ($(el).find('.sylTextRect').length) {
+      $(el).find('.sylTextRect').addClass('sylTextRect-hiddenSelect');
+      $(el).find('.sylTextRect').removeClass('sylTextRect');
     }
   }
   updateHighlight();
@@ -176,16 +181,15 @@ export function getStaffBBox (staff) {
  * @param {DragHandler} dragHandler - the drag handler in use
  */
 export function selectBBox (el, dragHandler) {
-  // -------this method is preliminary and will need to be fixed later---------------------
-
   let bbox = $(el);
-  if (!bbox.hasClass('sylTextRect-select')) {
-    unselect();
-    bbox.removeClass('sylTextRect');
-    bbox.addClass('sylTextRect-select');
-    updateHighlight();
-    dragHandler.dragInit();
-  }
+  unselect();
+  bbox.removeClass('sylTextRect');
+  bbox.removeClass('sylTextRect-display');
+  bbox.addClass('sylTextRect-select');
+  bbox.addClass('selected');
+  bbox.css('fill', '#d00');
+  updateHighlight();
+  dragHandler.dragInit();
 }
 
 /**
@@ -230,37 +234,40 @@ export async function selectAll (elements, neonView, info, dragHandler) {
     return;
   }
 
-  let neumeSelectionClass;
+  let selectionClass;
   let containsClefOrCustos = false;
 
   switch (selectionType) {
     case 'selBySyl':
-      neumeSelectionClass = '.syllable';
+      selectionClass = '.syllable';
       break;
     case 'selByNeume':
-      neumeSelectionClass = '.neume';
+      selectionClass = '.neume';
       break;
     case 'selByNc':
-      neumeSelectionClass = '.nc';
+      selectionClass = '.nc';
       break;
     case 'selByStaff':
-      neumeSelectionClass = '.staff';
+      selectionClass = '.staff';
+      break;
+    case 'selByBBox':
+      selectionClass = '.sylTextRect-display';
       break;
     default:
       console.error('Unknown selection type ' + selectionType);
       return;
   }
 
-  // Get the groupings specified by neumeSelectionClass
+  // Get the groupings specified by selectionClass
   // that contain the provided elements to select.
   let groupsToSelect = new Set();
   for (let element of elements) {
-    let grouping = element.closest(neumeSelectionClass);
+    let grouping = element.closest(selectionClass);
     if (grouping === null) {
       // Check if we click-selected a clef or a custos
       grouping = element.closest('.clef, .custos');
       if (grouping === null) {
-        console.warning('Element ' + element.id + ' is not part of specified group and is not a clef or custos.');
+        console.warn('Element ' + element.id + ' is not part of specified group and is not a clef or custos.');
         continue;
       }
       containsClefOrCustos |= true;
@@ -433,6 +440,18 @@ export async function selectAll (elements, neonView, info, dragHandler) {
           } else {
             SelectOptions.triggerDefaultActions();
           }
+      }
+      break;
+    case 'selByBBox':
+      switch (groups.length) {
+        case 1:
+          let resize = new Resize(groups[0].id, neonView, dragHandler);
+          resize.drawInitialRect();
+          SelectOptions.triggerDefaultActions();
+          break;
+        default:
+          SelectOptions.triggerDefaultActions();
+          break;
       }
       break;
     default:

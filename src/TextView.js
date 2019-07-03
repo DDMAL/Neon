@@ -1,4 +1,6 @@
 import * as Notification from './utils/Notification.js';
+import { unselect } from './utils/SelectTools.js';
+import { updateHighlight } from './DisplayPanel/DisplayControls.js';
 
 /** @module TextView */
 
@@ -19,22 +21,30 @@ class TextView {
 
     // add checkbox to enable/disable the view
     let block = document.getElementById('extensible-block');
-    let label = document.createElement('label');
-    let input = document.createElement('input');
-    label.classList.add('checkbox');
-    label.textContent = 'Display Text: ';
-    input.classList.add('checkbox');
-    input.id = 'displayText';
-    input.type = 'checkbox';
-    input.checked = false;
-    label.appendChild(input);
-    block.prepend(label);
+    let textLabel = document.createElement('label');
+    let bboxLabel = document.createElement('label');
+    let textButton = document.createElement('input');
+    let bboxButton = document.createElement('input');
+    textLabel.classList.add('checkbox');
+    bboxLabel.classList.add('checkbox');
+    textLabel.textContent = 'Display Text: ';
+    bboxLabel.textContent = 'Display Text BBoxes: ';
+    textButton.classList.add('checkbox');
+    bboxButton.classList.add('checkbox');
+    textButton.id = 'displayText';
+    textButton.type = 'checkbox';
+    bboxButton.id = 'displayBBox';
+    bboxButton.type = 'checkbox';
+    textButton.checked = false;
+    bboxButton.checked = false;
+    textLabel.appendChild(textButton);
+    bboxLabel.appendChild(bboxButton);
+    block.prepend(bboxLabel);
+    block.prepend(textLabel);
 
-    $('#edit_mode').on('click', () => {
-      this.setTextEdit();
-    });
     this.setTextViewControls();
     this.neonView.view.addUpdateCallback(this.updateTextViewVisibility.bind(this));
+    this.neonView.view.addUpdateCallback(this.updateBBoxViewVisibility.bind(this));
   }
 
   /**
@@ -42,45 +52,42 @@ class TextView {
   */
   setTextViewControls () {
     this.updateTextViewVisibility();
+    this.updateBBoxViewVisibility();
     $('#displayText').on('click', () => {
       this.updateTextViewVisibility();
     });
-  }
-
-  /**
-  * set text to edit mode
-  */
-  setTextEdit () {
-    let spans = Array.from($('#syl_text').children('p').children('span'));
-    spans.forEach(span => {
-      $(span).off('click');
-      $(span).on('click', () => {
-        this.updateSylText(span);
-      });
+    $('#displayBBox').on('click', () => {
+      this.updateBBoxViewVisibility();
     });
   }
 
   /**
-  * Update the text for a single syl element
-  * @param {HTMLElement} span
-  */
-  updateSylText (span) {
-    let orig = formatRaw($(span).html());
-    let corrected = window.prompt('', orig);
-    if (corrected !== null && corrected !== orig) {
-      let editorAction = {
-        'action': 'setText',
-        'param': {
-          'elementId': $('#' + $(span).attr('class').replace('syl-select', '').trim()).attr('id'),
-          'text': corrected
-        }
-      };
-      this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then((response) => {
-        if (response) {
-          this.neonView.updateForCurrentPage();
-        }
-      });
+   * update visibility of text bounding boxes
+   */
+  updateBBoxViewVisibility () {
+    if ($('#displayBBox').is(':checked')) {
+      $('.sylTextRect').addClass('sylTextRect-display');
+      $('.sylTextRect').removeClass('sylTextRect');
+      $('.sylTextRect-hiddenSelect').addClass('sylTextRect-select');
+      $('.sylTextRect-hiddenSelect').removeClass('sylTextRect-hiddenSelect');
+      $('.sylTextRect-select').css('fill', 'red');
+      if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
+        this.neonView.TextEdit.initSelectByBBoxButton();
+      }
+    } else {
+      if ($('#selByBBox').hasClass('is-active')) {
+        unselect();
+        $('#selByBBox').removeClass('is-active');
+        $('#selBySyl').addClass('is-active');
+      }
+      $('.sylTextRect-display').addClass('sylTextRect');
+      $('.sylTextRect-display').removeClass('sylTextRect-display');
+      $('.sylTextRect-select').addClass('sylTextRect-hiddenSelect');
+      $('.sylTextRect-select').css('fill', 'none');
+      $('.sylTextRect-select').removeClass('sylTextRect-select');
+      $('#selByBBox').css('display', 'none');
     }
+    updateHighlight();
   }
 
   /**
@@ -96,31 +103,33 @@ class TextView {
         let syllable = $('#' + $(span).attr('class'));
         let syl = syllable.children('.syl');
         let text = syl.children('text');
-        let int_text = text.children('.text');
-        let real_text = text.children('.text').children('.text');
         let rect = syl.children('rect');
         if (text.attr('class') == null) {
           text.addClass('text');
         }
         $(span).on('mouseenter', () => {
-          syllable.addClass('syl-select');
-          syllable.attr('fill', '#d00');
-          rect.removeClass('sylTextRect');
+          syllable.addClass('selected');
+          rect.css('fill', '#d00');
+          rect.removeClass('sylTextRect-display');
           rect.addClass('sylTextRect-select');
           // syl.attr('fill', '#ffc7c7');
           // this.highlightBoundingBox(span);
         });
         $(span).on('mouseleave', () => {
-          syllable.removeClass('syl-select');
-          syllable.attr('fill', null);
+          syllable.removeClass('selected');
+          if (syllable.css('fill') !== 'rgb(0, 0, 0)') {
+            rect.css('fill', syllable.css('fill'));
+          } else {
+            rect.css('fill', 'blue');
+          }
           rect.removeClass('sylTextRect-select');
-          rect.addClass('sylTextRect');
+          rect.addClass('sylTextRect-display');
           // syl.attr('fill', null);
           // this.removeBoundingBox(span);
         });
       });
-      if (this.neonView.getUserMode() !== 'viewer') {
-        this.setTextEdit();
+      if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
+        this.neonView.TextEdit.initTextEdit();
       }
     } else {
       $('#syl_text').css('display', 'none');
@@ -157,16 +166,6 @@ class TextView {
     }
     return lyrics.replace(uniToDash, '-');
   }
-}
-
-/**
- * Format a string for prompting the user.
- * @param {string} rawString
- * @returns {string}
- */
-function formatRaw (rawString) {
-  let removeSymbol = /\u{25CA}/u;
-  return rawString.replace(removeSymbol, '').trim();
 }
 
 export { TextView as default };

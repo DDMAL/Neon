@@ -1,6 +1,5 @@
-/** @module SingleEdit/Select */
+/** @module utils/Select */
 
-import { initSelectionButtons } from '../SquareEdit/Controls.js';
 import {
   unselect, getStaffBBox, selectStaff, selectAll, getSelectionType
 } from './SelectTools.js';
@@ -26,8 +25,6 @@ export function setSelectHelperObjects (nv, dh) {
   neonView = nv;
   info = neonView.info;
   zoomHandler = neonView.view.zoomHandler;
-
-  initSelectionButtons();
 }
 
 /**

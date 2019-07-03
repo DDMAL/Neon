@@ -1,27 +1,41 @@
 /** @module UnifiedEdit/EditControls */
 
-import * as Contents from '../SquareEdit/Contents.js';
-import * as EditContents from './EditContents';
 import * as Notification from './Notification.js';
+import { navbarDropdownMenu, undoRedoPanel } from './EditContents';
+
 const $ = require('jquery');
 
 /**
- * Set listener on EditMode button.
- * @param {SingleEditMode} editMode - The EditMode object.
+ * prepare the edit mode button
+ * @param {NeonView} neonView
  */
-export function initEditModeControls (editMode) {
-  /* document.getElementById('dropdown_toggle').innerHTML =
-    '<a class="navbar-item"><button class="button" id="edit_mode">' +
-    'Edit MEI</button></a>'; */
-  $('#edit_mode').on('click', function () {
-    $('#dropdown_toggle').empty();
-    $('#dropdown_toggle').append(EditContents.navbarDropdownMenu);
-    $('#insert_controls').append(Contents.insertControlsPanel);
-    $('#edit_controls').append(Contents.editControlsPanel);
-    $('#undoRedo_controls').append(EditContents.undoRedoPanel);
+export function prepareEditMode (neonView) {
+  let parent = document.getElementById('dropdown_toggle');
+  let editItem = document.createElement('a');
+  editItem.classList.add('navbar-item');
+  let editButton = document.createElement('button');
+  editButton.classList.add('button');
+  editButton.id = 'edit_mode';
+  editButton.textContent = 'Edit MEI';
+  editItem.appendChild(editButton);
+  parent.appendChild(editItem);
 
-    editMode.initEditMode();
+  editButton.addEventListener('click', () => {
+    startEditMode(neonView);
   });
+}
+
+/**
+ * start the basic edit mode features
+ * is called when the edit mode button is clicked
+ * @param {NeonView} neonView
+ */
+export function startEditMode (neonView) {
+  $('#dropdown_toggle').empty();
+  $('#dropdown_toggle').append(navbarDropdownMenu);
+  $('#undoRedo_controls').append(undoRedoPanel);
+  initNavbar(neonView);
+  initUndoRedoPanel(neonView);
 }
 
 /**

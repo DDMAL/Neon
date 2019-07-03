@@ -1,9 +1,8 @@
-import { bindInsertTabs, initInsertEditControls } from './Controls.js';
-import { initEditModeControls, initNavbar, initUndoRedoPanel } from '../utils/EditControls.js';
-import DragHandler from '../utils/DragHandler.js';
+import { bindInsertTabs, initInsertEditControls, initEditModeControls, initSelectionButtons } from './Controls.js';
 import * as Select from '../utils/Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';
+import DragHandler from '../utils/DragHandler.js';
 
 /**
  * An Edit Module for a single page of a manuscript.
@@ -24,15 +23,11 @@ class SingleEditMode {
    */
   initEditMode () {
     this.dragHandler = new DragHandler(this.neonView, '#svg_group');
-    initNavbar(this.neonView);
-    initUndoRedoPanel(this.neonView);
-    Select.setSelectHelperObjects(this.neonView, this.dragHandler);
-    Select.clickSelect('#mei_output, #mei_output use');
-
     this.insertHandler = new InsertHandler(this.neonView, '#svg_group');
     bindInsertTabs(this.insertHandler);
     document.getElementById('neumeTab').click();
-    Select.dragSelect('#svg_group');
+    Select.setSelectHelperObjects(this.neonView, this.dragHandler);
+    this.setSelectListeners();
 
     SelectOptions.initNeonView(this.neonView);
     initInsertEditControls(this.neonView);
@@ -60,6 +55,7 @@ class SingleEditMode {
   setSelectListeners () {
     Select.clickSelect('#mei_output, #mei_output use');
     Select.dragSelect('#svg_group');
+    initSelectionButtons();
   }
 }
 

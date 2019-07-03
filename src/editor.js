@@ -6,6 +6,7 @@ import SingleView from './SingleView/SingleView.js';
 import SingleEditMode from './SquareEdit/SingleEditMode.js';
 import InfoModule from './InfoModule.js';
 import TextView from './TextView.js';
+import TextEditMode from './TextEditMode.js';
 
 var view;
 init();
@@ -17,7 +18,8 @@ async function init () {
       manifest: manifest,
       Display: DisplayPanel,
       Info: InfoModule,
-      TextView: TextView
+      TextView: TextView,
+      TextEdit: TextEditMode
     };
     let mediaType = await window.fetch(manifest.image).then(response => {
       if (response.ok) {

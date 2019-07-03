@@ -12,8 +12,8 @@ function DragHandler (neonView, selector) {
   var resetToAction;
 
   /**
-     * Initialize the dragging action and handler for selected elements.
-     */
+   * Initialize the dragging action and handler for selected elements.
+   */
   function dragInit () {
     // Adding listeners
     var dragBehaviour = d3.drag().on('start', dragStarted)
@@ -46,14 +46,26 @@ function DragHandler (neonView, selector) {
           return 'translate(' + [relativeX, relativeY] + ')';
         });
       });
+      /*
+       * We want to make sure that the rect drawn for resizing (with bboxes and staves) is dragged along when dragging
+       * In the case of staves the resizeRect is a child of the staff, so it is done in the previous forEach loop
+       * But in the bbox case it's not a child so we need to do it manually
+       * so if we are in the sylTextRect case we get the resizeRect and animate its dragging
+       */
+      if (selection.filter(element => element.classList.contains('sylTextRect-select')).length !== 0) {
+        d3.select('#resizeRect').attr('transform', function () {
+          return 'translate(' + [relativeX, relativeY] + ')';
+        });
+      }
     }
 
     function dragEnded () {
       dragEndCoords = [d3.event.x, d3.event.y];
       let paramArray = [];
       selection.forEach((el) => {
+        let id = (el.tagName === 'rect') ? el.closest('.syl').id : el.id;
         let singleAction = { action: 'drag',
-          param: { elementId: el.id,
+          param: { elementId: id,
             x: parseInt(dragEndCoords[0] - dragStartCoords[0]),
             y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -1 }
         };
