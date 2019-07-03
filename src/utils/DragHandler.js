@@ -64,7 +64,7 @@ function DragHandler (neonView, selector) {
           return 'translate(' + [relativeX, relativeY] + ')';
         });
       } else {
-        d3.select('.sylTextRect-select').attr('transform', function () {
+        d3.selectAll('.sylTextRect-select').attr('transform', function () {
           return 'translate(' + [-1 * relativeX, -1 * relativeY] + ')';
         });
       }

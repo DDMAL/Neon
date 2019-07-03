@@ -34,23 +34,24 @@ export function unselect () {
       selected[i].removeAttribute('style');
       Color.unhighlight(selected[i]);
     } else if ($(selected[i]).hasClass('sylTextRect-select')) {
+      selected[i].removeAttribute('style');
       $(selected[i]).removeClass('selected');
       $(selected[i]).removeClass('sylTextRect-select');
       $(selected[i]).addClass('sylTextRect-display');
-      let syllable = $(selected[i]).closest('.syllable');
-      if (syllable.css('fill') !== 'rgb(0, 0, 0)') {
-        $(selected[i]).css('fill', syllable.css('fill'));
-      } else {
-        $(selected[i]).css('fill', 'blue');
-      }
     } else {
       $(selected[i]).removeClass('selected');
       selected[i].removeAttribute('style');
+      $(selected[i]).attr('fill', 'null');
+      $(selected[i]).removeClass('selected');
     }
   }
   $('.sylTextRect-select').css('fill', 'blue');
   $('.sylTextRect-select').addClass('sylTextRect-display');
   $('.sylTextRect-select').removeClass('sylTextRect-select');
+
+  $('.syllable-highlighted').css('fill', '');
+  $('.syllable-highlighted').addClass('syllable');
+  $('.syllable-highlighted').removeClass('syllable-highlighted');
 
   $('.sylTextRect-hiddenSelect').addClass('sylTextRect');
   $('.sylTextRect-hiddenSelect').removeClass('sylTextRect-hiddenSelect');
@@ -188,6 +189,8 @@ export function selectBBox (el, dragHandler) {
   bbox.addClass('sylTextRect-select');
   bbox.addClass('selected');
   bbox.css('fill', '#d00');
+  $(el).parents('.syllable').css('fill', 'red');
+  $(el).parents('.syllable').addClass('syllable-highlighted');
   updateHighlight();
   dragHandler.dragInit();
 }
