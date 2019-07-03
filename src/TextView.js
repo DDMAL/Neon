@@ -82,6 +82,9 @@ class TextView {
       }
       $('.sylTextRect-display').addClass('sylTextRect');
       $('.sylTextRect-display').removeClass('sylTextRect-display');
+      $('.sylTextRect-select').addClass('sylTextRect-hiddenSelect');
+      $('.sylTextRect-select').css('fill', 'none');
+      $('.sylTextRect-select').removeClass('sylTextRect-select');
       $('#selByBBox').css('display', 'none');
     }
     updateHighlight();

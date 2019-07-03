@@ -52,6 +52,9 @@ export function unselect () {
   $('.sylTextRect-select').addClass('sylTextRect-display');
   $('.sylTextRect-select').removeClass('sylTextRect-select');
 
+  $('.sylTextRect-hiddenSelect').addClass('sylTextRect');
+  $('.sylTextRect-hiddenSelect').removeClass('sylTextRect-hiddenSelect');
+
   d3.selectAll('#resizeRect').remove();
 
   if (!$('#selByStaff').hasClass('is-active')) {
