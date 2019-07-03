@@ -80,8 +80,10 @@ export function initNavbar (neonView) {
   // Download link for MEI
   // Is an actual file with a valid URI except in local mode where it must be generated.
   $('#getmei').on('click', () => {
-    neonView.getPageURI().then((uri) => {
-      $('#getmei').attr('href', uri)
+    let uri = neonView.view.getCurrentPageURI();
+    neonView.getPageMEI(uri).then(mei => {
+      let data = 'data:application/mei+xml;base64,' + window.btoa(mei);
+      $('#getmei').attr('href', data)
         .attr('download', neonView.view.getPageName() + '.mei');
     });
   });
