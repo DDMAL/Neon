@@ -66,5 +66,24 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       expect(opacityText).toBe('100');
       expect(containerStyle).toContain('opacity: 1;');
     });
+
+    test('Check Image Opacity', async () => {
+      // Set opacity to 0
+      let imageOpacitySlider = await browser.findElement(By.id('bgOpacitySlider'));
+      let rect = await imageOpacitySlider.getRect();
+      await browser.actions().dragAndDrop(imageOpacitySlider, { x: -1 * parseInt(rect.width), y: 0 }).perform();
+      let opacityText = await browser.findElement(By.id('bgOpacityOutput')).getText();
+      let canvasStyle = await browser.findElement(By.className('diva-viewer-canvas')).getAttribute('style');
+      expect(opacityText).toBe('0');
+      expect(canvasStyle).toContain('opacity: 0;');
+
+      // Reset opacity to 1
+      let opacityButton = await browser.findElement(By.id('reset-bg-opacity'));
+      await browser.actions().click(opacityButton).perform();
+      opacityText = await browser.findElement(By.id('bgOpacityOutput')).getText();
+      canvasStyle = await browser.findElement(By.className('diva-viewer-canvas')).getAttribute('style');
+      expect(opacityText).toBe('100');
+      expect(canvasStyle).toContain('opacity: 1;');
+    });
   });
 });
