@@ -87,10 +87,8 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
     });
 
     test('Test Highlight (Syllable)', async () => {
-      let highlightButton = await browser.findElement(By.id('highlight-button'));
-      await browser.actions().click(highlightButton).perform();
-      let highlightSyllable = await browser.findElement(By.id('highlight-syllable'));
-      await browser.actions().click(highlightSyllable).perform();
+      await browser.executeScript(() => { document.getElementById('highlight-button').click(); });
+      await browser.executeScript(() => { document.getElementById('highlight-syllable').click(); });
       let someSyllable = await browser.findElement(By.className('syllable'));
       let syllableClasses = await someSyllable.getAttribute('class');
       expect(syllableClasses).toContain('highlighted');
