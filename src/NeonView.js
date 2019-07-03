@@ -85,8 +85,6 @@ class NeonView {
    * Redo an action performed on the current page (if any)
    */
   redo () {
-    // let val = await this.core.redo(this.view.getCurrentPageURI());
-    // return val;
     return this.core.redo(this.view.getCurrentPageURI());
   }
 
@@ -94,8 +92,6 @@ class NeonView {
    * Undo the last action performed on the current page (if any)
    */
   undo () {
-    // let val = await this.core.undo(this.view.getCurrentPageURI());
-    // return val;
     return this.core.undo(this.view.getCurrentPageURI());
   }
 
