@@ -181,7 +181,7 @@ export function getStaffBBox (staff) {
  * @param {SVGGElement} el - the bbox (sylTextRect) element in the DOM
  * @param {DragHandler} dragHandler - the drag handler in use
  */
-export function selectBBox (el, dragHandler) {
+export function selectBBox (el, dragHandler, resizeHandler) {
   let bbox = $(el);
   unselect();
   bbox.removeClass('sylTextRect');
@@ -191,7 +191,9 @@ export function selectBBox (el, dragHandler) {
   bbox.css('fill', '#d00');
   $(el).parents('.syllable').css('fill', 'red');
   $(el).parents('.syllable').addClass('syllable-highlighted');
-  dragHandler.dragInit();
+  if (resizeHandler !== undefined) {
+    resizeHandler.drawInitialRect();
+  }
 }
 
 /**
@@ -230,6 +232,7 @@ export function selectStaff (el, dragHandler) {
  * @param {DragHandler} dragHandler
  */
 export async function selectAll (elements, neonView, info, dragHandler) {
+  console.log(elements);
   let selectionType = getSelectionType();
   unselect();
   if (elements.length === 0) {
@@ -279,10 +282,12 @@ export async function selectAll (elements, neonView, info, dragHandler) {
     // Check for precedes/follows
     let follows = grouping.getAttribute('mei:follows');
     if (follows) {
+      console.log(follows);
       groupsToSelect.add(document.getElementById(follows));
     }
     let precedes = grouping.getAttribute('mei:precedes');
     if (precedes) {
+      console.log(precedes);
       groupsToSelect.add(document.getElementById(precedes));
     }
   }
@@ -447,12 +452,11 @@ export async function selectAll (elements, neonView, info, dragHandler) {
     case 'selByBBox':
       switch (groups.length) {
         case 1:
-          let resize = new Resize(groups[0].id, neonView, dragHandler);
-          resize.drawInitialRect();
-          SelectOptions.triggerDefaultActions();
+          let resize = new Resize(groups[0].closest('.syl').id, neonView, dragHandler);
+          selectBBox(groups[0], dragHandler, resize);
           break;
         default:
-          SelectOptions.triggerDefaultActions();
+          groups.forEach(g => selectBBox(g, dragHandler, undefined));
           break;
       }
       break;

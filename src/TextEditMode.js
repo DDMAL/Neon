@@ -1,7 +1,6 @@
-import { unselect, selectBBox } from './utils/SelectTools.js';
+import { unselect } from './utils/SelectTools.js';
 import DragHandler from './utils/DragHandler.js';
-import { Resize } from './utils/Resize.js';
-import { setSelectHelperObjects, dragSelect } from './utils/Select.js';
+import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select.js';
 
 const $ = require('jquery');
 
@@ -36,6 +35,7 @@ export default class TextEditMode {
   initTextEdit () {
     this.dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
     setSelectHelperObjects(this.neonView, this.dragHandler);
+    console.log('initTextEdit dragSelect');
     dragSelect('#svg_group');
     let spans = Array.from($('#syl_text').children('p').children('span'));
     spans.forEach(span => {
@@ -91,17 +91,8 @@ export default class TextEditMode {
   addBBoxListeners () {
     if ($('#selByBBox').hasClass('is-active')) {
       unselect();
-      let rects = Array.from($('.sylTextRect-display'));
-      rects.forEach(rect => {
-        $(rect).off('click', unselect);
-        $(rect).on('click', () => {
-          if ($('#selByBBox').hasClass('is-active') && !rect.classList.contains('sylTextRect-select')) {
-            selectBBox(rect, this.dragHandler);
-            let resize = new Resize(rect.closest('.syl').id, this.neonView, this.dragHandler);
-            resize.drawInitialRect();
-          }
-        });
-      });
+      console.log('hi');
+      clickSelect('#svg_group');
     }
   }
 

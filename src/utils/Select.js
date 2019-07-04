@@ -63,11 +63,23 @@ function clickHandler (evt) {
 
   // If in insert mode or panning is active from shift key
   if (mode === 'insert' || evt.shiftKey) { return; }
-
   // Check if the element being clicked on is part of a drag Selection
   if (this.tagName === 'use') {
+    console.log('use');
     if ($(this).parents('.selected').length === 0) {
       let selection = [this];
+      if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
+        selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
+      }
+      selectAll(selection, neonView, info, dragHandler);
+      if (dragHandler) {
+        dragHandler.dragInit();
+      }
+    }
+  } else if (evt.target.tagName === 'rect' && getSelectionType() === 'selByBBox') {
+    console.log('rect');
+    if ($(this).parents('.selected').length === 0) {
+      let selection = [evt.target];
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
         selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
       }
@@ -212,6 +224,7 @@ export function dragSelect (selector) {
   }
 
   function selEnd () {
+    console.log('selEnd');
     if (!panning && dragSelecting) {
       var rx = parseInt($('#selectRect').attr('x'));
       var ry = parseInt($('#selectRect').attr('y'));
@@ -258,7 +271,8 @@ export function dragSelect (selector) {
           return !(((ul.x < box.ulx && lr.x < box.ulx) || (ul.x > box.lrx && lr.x > box.lrx)) || ((ul.y < box.uly && lr.y < box.uly) || (ul.y > box.lry && lr.y > box.lry)));
         }
       });
-
+      console.log('dragselect selectAll about to be called');
+      console.log(elements);
       selectAll(elements, neonView, info, dragHandler);
 
       if (dragHandler) {

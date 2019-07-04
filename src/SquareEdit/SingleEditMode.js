@@ -54,6 +54,7 @@ class SingleEditMode {
 
   setSelectListeners () {
     Select.clickSelect('#mei_output, #mei_output use');
+    console.log('SingleEditMode dragSelect');
     Select.dragSelect('#svg_group');
     initSelectionButtons();
   }
