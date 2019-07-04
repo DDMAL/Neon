@@ -6,6 +6,7 @@ import DivaEdit from '../src/SquareEdit/DivaEditMode.js';
 import SingleEditMode from '../src/SquareEdit/SingleEditMode.js';
 import InfoModule from '../src/InfoModule.js';
 import TextView from '../src/TextView.js';
+import TextEditMode from '../src/TextEditMode.js';
 
 import PouchDb from 'pouchdb';
 
@@ -26,7 +27,8 @@ if (name) {
       manifest: manifest,
       Display: DisplayPanel,
       Info: InfoModule,
-      TextView: TextView
+      TextView: TextView,
+      TextEdit: TextEditMode
     };
     // Determine if it is a single page or multiple by media type
     let mediaType = await new Promise((resolve, reject) => {
@@ -57,7 +59,8 @@ if (name) {
       manifest: manifest,
       Display: DisplayPanel,
       Info: InfoModule,
-      TextView: TextView
+      TextView: TextView,
+      TextEdit: TextEditMode
     };
 
     let mediaType = await new Promise((resolve, reject) => {
