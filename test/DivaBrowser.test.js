@@ -5,18 +5,18 @@ const firefox = require('selenium-webdriver/firefox');
 const chrome = require('selenium-webdriver/chrome');
 const path = require('path');
 
-const uploadPath = path.join('.', 'public', 'uploads', 'iiif');
+const uploadPath = './public/uploads/iiif/';
 const editUrl = 'http://localhost:8080/edit/test/diva-test';
 
 jest.setTimeout('15000');
 
 beforeAll(() => {
   // Link test folder
-  fs.linkSync(path.join('.', 'test', 'test'), path.join(uploadPath, 'test'));
+  fs.linkSync('./test/test', uploadPath + 'test');
 });
 
 afterAll(() => {
-  fs.unlinkSync(path.join(uploadPath, 'test'));
+  fs.unlinkSync(uploadPath + 'test');
 });
 
 describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
