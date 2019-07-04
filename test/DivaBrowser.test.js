@@ -120,9 +120,14 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       // wait until active container is visible
       await browser.wait(async () => {
         let style = await activeContainer.getAttribute('style');
+        return style.match(/display: none;/);
+      }, 1500);
+      await browser.wait(async () => {
+        let style = await activeContainer.getAttribute('style');
         return !style.match(/display: none;/);
       }, 1500);
       let zoomedSize = await activeContainer.getRect();
+      await browser.sleep(3000);
       expect(zoomedSize.height).toBeGreaterThan(initialSize.height);
       expect(zoomedSize.width).toBeGreaterThan(initialSize.width);
     });
