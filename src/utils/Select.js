@@ -231,18 +231,27 @@ export function dragSelect (selector) {
       var nc;
       if ($('#selByStaff').hasClass('is-active')) {
         nc = d3.selectAll(selector + ' use, ' + selector + ' .staff')._groups[0];
+      } else if ($('#selByBBox').hasClass('is-active')) {
+        nc = d3.selectAll(selector + ' .sylTextRect-display')._groups[0];
       } else {
         nc = d3.selectAll(selector + ' use')._groups[0];
       }
       var els = Array.from(nc);
 
       var elements = els.filter(function (d) {
-        if (d.tagName === 'use') {
+        var ulx, uly, lrx, lry;
+        if ($('#selByBBox').hasClass('is-active')) {
+          ulx = Number($(d).attr('x'));
+          uly = Number($(d).attr('y'));
+          lrx = +ulx + +(d.getAttribute('width').slice(0, -2));
+          lry = +uly + +(d.getAttribute('height').slice(0, -2));
+          return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
+        } else if (d.tagName === 'use') {
           let box = d.parentNode.getBBox();
-          let ulx = box.x;
-          let uly = box.y;
-          let lrx = box.x + box.width;
-          let lry = box.y + box.height;
+          ulx = box.x;
+          uly = box.y;
+          lrx = box.x + box.width;
+          lry = box.y + box.height;
           return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
         } else {
           let box = getStaffBBox(d);

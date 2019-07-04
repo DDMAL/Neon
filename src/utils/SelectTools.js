@@ -191,7 +191,6 @@ export function selectBBox (el, dragHandler) {
   bbox.css('fill', '#d00');
   $(el).parents('.syllable').css('fill', 'red');
   $(el).parents('.syllable').addClass('syllable-highlighted');
-  updateHighlight();
   dragHandler.dragInit();
 }
 
