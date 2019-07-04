@@ -72,6 +72,16 @@ class SingleView {
   }
 
   /**
+   * Change to a certain page
+   * Since there is only one page, this is essentially a wrapper for updateSVG
+   * @param {number} page
+   */
+  async changePage (page) {
+    let svg = await this.neonView.getPageSVG(this.getCurrentPageURI());
+    this.updateSVG(svg);
+  }
+
+  /**
    * Add a callback to the list of those be called when the page updates.
    * @param {function} cb - The callback function to add to the list.
    */
