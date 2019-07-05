@@ -109,18 +109,24 @@ export function initUndoRedoPanel (neonView) {
   });
 
   function undoHandler () {
-    if (!neonView.undo(neonView.view.getCurrentPageURI())) {
-      console.error('Failed to undo action.');
-    } else {
-      neonView.updateForCurrentPage();
-    }
+    neonView.undo(neonView.view.getCurrentPageURI()).then(result => {
+      if (result) {
+        console.debug('Success');
+        neonView.updateForCurrentPage();
+      } else {
+        console.error('Failed to undo action');
+      }
+    });
   }
 
   function redoHandler () {
-    if (!neonView.redo(neonView.view.getCurrentPageURI())) {
-      console.error('Failed to redo action');
-    } else {
-      neonView.updateForCurrentPage();
-    }
+    neonView.redo(neonView.view.getCurrentPageURI()).then(result => {
+      if (result) {
+        console.debug('Success');
+        neonView.updateForCurrentPage();
+      } else {
+        console.error('Failed to redo action');
+      }
+    });
   }
 }
