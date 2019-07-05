@@ -59,7 +59,6 @@ export function clickSelect (selector) {
  * @param {object} evt
  */
 function clickHandler (evt) {
-  console.log('clickHandler');
   if (!neonView) return;
   let mode = neonView.getUserMode();
 
@@ -159,7 +158,6 @@ function clickHandler (evt) {
  * @param {string} selector - The CSS selector used to choose where listeners are applied.
  */
 export function dragSelect (selector) {
-  console.log('dragSelect');
   var initialX = 0;
   var initialY = 0;
   var panning = false;
@@ -178,7 +176,6 @@ export function dragSelect (selector) {
   }
 
   function selStart () {
-    console.log('selStart');
     if (!neonView) return;
     let userMode = neonView.getUserMode();
     if (d3.event.sourceEvent.target.nodeName !== 'use' && userMode !== 'insert' && d3.event.sourceEvent.target.nodeName !== 'rect') {
