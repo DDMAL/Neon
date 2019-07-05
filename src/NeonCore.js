@@ -1,7 +1,7 @@
 import * as Validation from './Validation.js';
+import VerovioWorker from './VerovioWorker.js';
 import PouchDb from 'pouchdb';
-
-const verovio = require('verovio-dev');
+const uuid = require('uuid/v4');
 
 /**
  * The core component of Neon. This manages the database,
@@ -14,18 +14,7 @@ class NeonCore {
    * @returns {object} A NeonCore object.
    */
   constructor (manifest) {
-    this.verovioOptions = {
-      format: 'mei',
-      noFooter: 1,
-      noHeader: 1,
-      pageMarginLeft: 0,
-      pageMarginTop: 0,
-      font: 'Bravura',
-      useFacsimile: true,
-      createDefaultSyl: true,
-      createDefaultSylBBox: true
-    };
-
+    this.verovioWorker = new VerovioWorker();
     Validation.init();
 
     /**
@@ -58,18 +47,12 @@ class NeonCore {
 
     this.db = new PouchDb('Neon');
 
-    /**
-     * A map associating page URIs with their respective Verovio toolkit
-     * instances. This is used to decrease latency in loading files.
-     * @type {Map.<string, object>}
-     */
-    this.toolkits = new Map();
-
     this.blankPages = [];
 
     // Add each MEI to the database
     this.manifest = manifest;
     this.annotations = manifest.mei_annotations;
+    this.lastPageLoaded = '';
   }
 
   /**
@@ -163,8 +146,12 @@ class NeonCore {
    */
   loadPage (pageURI) {
     return new Promise((resolve, reject) => {
-      if (this.neonCache.has(pageURI)) {
+      if (this.lastPageLoaded === pageURI) {
         resolve(this.neonCache.get(pageURI));
+      } else if (this.neonCache.has(pageURI)) {
+        this.loadData(pageURI, this.neonCache.get(pageURI).mei).then(() => {
+          resolve(this.neonCache.get(pageURI));
+        });
       } else if (this.blankPages.includes(pageURI)) {
         Validation.blankPage();
         let e = new Error('No MEI file for page ' + pageURI);
@@ -183,8 +170,10 @@ class NeonCore {
               throw new Error(response.statusText);
             }
           }).then(data => {
-            this.loadData(pageURI, data);
-            resolve(this.neonCache.get(pageURI));
+            this.loadData(pageURI, data).then(() => {
+              this.lastPageLoaded = pageURI;
+              resolve(this.neonCache.get(pageURI));
+            });
           }).catch(err => {
             reject(err);
           });
@@ -201,17 +190,33 @@ class NeonCore {
    * @param {string} pageURI - The URI of the selected page.
    * @param {string} data - The MEI of the page as a string.
    * @param {boolean} [dirty] - If the cache entry should be marked as dirty. Defaults to false.
+   * @returns {Promise} promise that resolves when this action is done
    */
   loadData (pageURI, data, dirty = false) {
     Validation.sendForValidation(data);
-    let svg = this.parser.parseFromString(
-      this.getToolkit(pageURI).renderData(data, {}),
-      'image/svg+xml'
-    ).documentElement;
-    this.neonCache.set(pageURI, {
-      svg: svg,
-      mei: data,
-      dirty: dirty
+    return new Promise((resolve, reject) => {
+      let message = {
+        id: uuid(),
+        action: 'renderData',
+        mei: data
+      };
+      function handle (evt) {
+        if (evt.data.id === message.id) {
+          let svg = this.parser.parseFromString(
+            evt.data.svg,
+            'image/svg+xml'
+          ).documentElement;
+          this.neonCache.set(pageURI, {
+            svg: svg,
+            mei: data,
+            dirty: dirty
+          });
+          evt.target.removeEventListener('message', handle);
+          resolve();
+        }
+      }
+      this.verovioWorker.addEventListener('message', handle.bind(this));
+      this.verovioWorker.postMessage(message);
     });
   }
 
@@ -250,7 +255,18 @@ class NeonCore {
   getElementAttr (elementId, pageURI) {
     return new Promise((resolve) => {
       this.loadPage(pageURI).then(() => {
-        resolve(this.getToolkit(pageURI).getElementAttr(elementId));
+        let message = {
+          id: uuid(),
+          action: 'getElementAttr',
+          elementId: elementId
+        };
+        this.verovioWorker.addEventListener('message', function handle (evt) {
+          if (evt.data.id === message.id) {
+            evt.target.removeEventListener('message', handle);
+            resolve(evt.data.attributes);
+          }
+        });
+        this.verovioWorker.postMessage(message);
       });
     });
   }
@@ -261,76 +277,170 @@ class NeonCore {
    * @param {string} action.action - The name of the action to perform.
    * @param {object|array} action.param - The parameters of the action(s)
    * @param {string} pageURI - The URI of the selected page.
-   * @returns {boolean} If the action succeeded or not.
+   * @returns {Promise} Resolves to boolean if the action succeeded or not.
    */
-  async edit (editorAction, pageURI) {
-    if (this.currentPage !== pageURI) {
-      await this.loadPage(pageURI);
+  edit (editorAction, pageURI) {
+    let promise;
+    if (this.lastPageLoaded === pageURI) {
+      promise = Promise.resolve(this.neonCache.get(pageURI));
+    } else {
+      promise = this.loadPage(pageURI);
     }
-    let currentMEI = this.getMEI(pageURI);
-    let result = this.getToolkit(pageURI).edit(editorAction);
-    if (result) {
-      if (!this.undoStacks.has(pageURI)) {
-        this.undoStacks.set(pageURI, []);
-      }
-      this.undoStacks.get(pageURI).push(await currentMEI);
-      this.redoStacks.set(pageURI, []);
+    console.log(promise);
+    return new Promise((resolve, reject) => {
+      promise.then(entry => {
+        let currentMEI = entry.mei;
+        let message = {
+          id: uuid(),
+          action: 'edit',
+          editorAction: editorAction
+        };
+        function handle (evt) {
+          if (evt.data.id === message.id) {
+            if (evt.data.result) {
+              if (!this.undoStacks.has(pageURI)) {
+                this.undoStacks.set(pageURI, []);
+              }
+              this.undoStacks.get(pageURI).push(currentMEI);
+              this.redoStacks.set(pageURI, []);
 
-      // Update cache
-      this.neonCache.set(pageURI, {
-        mei: this.getToolkit(pageURI).getMEI(0, true),
-        svg: this.parser.parseFromString(this.getToolkit(pageURI).renderToSVG(1),
-          'image/svg+xml').documentElement,
-        dirty: true
+              evt.target.removeEventListener('message', handle);
+              this.updateCache(pageURI).then(() => { resolve(evt.data.result); });
+            }
+          }
+        }
+        this.verovioWorker.addEventListener('message', handle.bind(this));
+        this.verovioWorker.postMessage(message);
       });
-    }
-    return result;
+    });
+  }
+
+  /**
+   * Update contents of the cache using information in verovio toolkit.
+   * @param {string} pageURI - Page to be updated in cache.
+   * @param {boolean} dirty - If the entry should be marked as dirty
+   * @returns {Promise}
+   */
+  updateCache (pageURI, dirty) {
+    return new Promise((resolve, reject) => {
+      // Must get MEI and then get SVG then finish.
+      var mei, svgText;
+      let meiPromise = new Promise((resolve, reject) => {
+        let message = {
+          id: uuid(),
+          action: 'getMEI'
+        };
+        this.verovioWorker.addEventListener('message', function handle (evt) {
+          if (evt.data.id === message.id) {
+            mei = evt.data.mei;
+            evt.target.removeEventListener('message', handle);
+            resolve();
+          }
+        });
+        this.verovioWorker.postMessage(message);
+      });
+      let svgPromise = new Promise((resolve, reject) => {
+        let message = {
+          id: uuid(),
+          action: 'renderToSVG'
+        };
+        this.verovioWorker.addEventListener('message', function handle (evt) {
+          if (evt.data.id === message.id) {
+            svgText = evt.data.svg;
+            evt.target.removeEventListener('message', handle);
+            resolve();
+          }
+        });
+        this.verovioWorker.postMessage(message);
+      });
+
+      meiPromise.then(() => { return svgPromise; }).then(() => {
+        let svg = this.parser.parseFromString(
+          svgText,
+          'image/svg+xml'
+        ).documentElement;
+        this.neonCache.set(pageURI, {
+          mei: mei,
+          svg: svg,
+          dirty: dirty
+        });
+        resolve();
+      });
+    });
   }
 
   /**
    * Get the edit info string from the verovio toolkit.
-   * @returns {string}
+   * @returns {Promise} Promise that resolves to info string
    */
   info (pageURI) {
-    return this.getToolkit(pageURI).editInfo();
+    let promise;
+    if (this.lastPageLoaded === pageURI) {
+      promise = Promise.resolve();
+    } else {
+      promise = this.loadPage(pageURI);
+    }
+    return new Promise((resolve, reject) => {
+      promise.then(() => {
+        let message = {
+          id: uuid(),
+          action: 'editInfo'
+        };
+        this.verovioWorker.addEventListener('message', function handle (evt) {
+          if (evt.data.id === message.id) {
+            evt.target.removeEventListener('message', handle);
+            resolve(evt.data.info);
+          }
+        });
+        this.verovioWorker.postMessage(message);
+      });
+    });
   }
 
   /**
    * Undo the last action performed on a specific page.
    * @param {string} pageURI - The URI of the selected page.
-   * @returns {boolean} If an action undone.
+   * @returns {Promise} If an action undone.
    */
   undo (pageURI) {
-    if (this.undoStacks.has(pageURI)) {
-      let state = this.undoStacks.get(pageURI).pop();
-      if (state !== undefined) {
-        this.getMEI(pageURI).then((mei) => {
-          this.redoStacks.get(pageURI).push(mei);
-        });
-        this.loadData(pageURI, state, true);
-        return true;
+    return new Promise((resolve, reject) => {
+      if (this.undoStacks.has(pageURI)) {
+        let state = this.undoStacks.get(pageURI).pop();
+        if (state !== undefined) {
+          this.getMEI(pageURI).then(mei => {
+            this.redoStacks.get(pageURI).push(mei);
+            return this.loadData(pageURI, state, true);
+          }).then(() => {
+            resolve(true);
+          });
+          return;
+        }
       }
-    }
-    return false;
+      resolve(false);
+    });
   }
 
   /**
    * Redo the last action performed on a page.
    * @param {string} pageURI - The zero-indexed page number.
-   * @returns {boolean} If an action was redone or not.
+   * @returns {Promise} If an action was redone or not.
    */
   redo (pageURI) {
-    if (this.redoStacks.has(pageURI)) {
-      let state = this.redoStacks.get(pageURI).pop();
-      if (state !== undefined) {
-        this.getMEI(pageURI).then((mei) => {
-          this.undoStacks.get(pageURI).push(mei);
-        });
-        this.loadData(pageURI, state, true);
-        return true;
+    return new Promise((resolve, reject) => {
+      if (this.redoStacks.has(pageURI)) {
+        let state = this.redoStacks.get(pageURI).pop();
+        if (state !== undefined) {
+          this.getMEI(pageURI).then((mei) => {
+            this.undoStacks.get(pageURI).push(mei);
+            return this.loadData(pageURI, state, true);
+          }).then(() => {
+            resolve(true);
+          });
+          return;
+        }
       }
-    }
-    return false;
+      resolve(false);
+    });
   }
 
   /**
@@ -391,14 +501,6 @@ class NeonCore {
         console.error(err);
       });
     }
-  }
-
-  getToolkit (pageURI) {
-    if (!this.toolkits.has(pageURI)) {
-      this.toolkits.set(pageURI, new verovio.toolkit());
-      this.toolkits.get(pageURI).setOptions(this.verovioOptions);
-    }
-    return this.toolkits.get(pageURI);
   }
 }
 
