@@ -52,6 +52,10 @@ export function bindInsertTabs (insertHandler) {
       $('#insert_data').empty();
       $('#insert_data').append(Contents.insertTabHtml[tab]);
       bindElements(insertHandler);
+      deactivate('.insertel');
+      let firstOption = document.getElementsByClassName('insertel')[0];
+      activate(firstOption.id, insertHandler);
+      Cursor.updateCursor();
     });
   });
 }
