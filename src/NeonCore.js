@@ -146,11 +146,10 @@ class NeonCore {
    */
   loadPage (pageURI) {
     return new Promise((resolve, reject) => {
-      if (this.lastPageLoaded === pageURI) {
+      if (this.lastPageLoaded === pageURI && this.neonCache.has(pageURI)) {
         resolve(this.neonCache.get(pageURI));
       } else if (this.neonCache.has(pageURI)) {
         this.loadData(pageURI, this.neonCache.get(pageURI).mei).then(() => {
-          this.lastPageLoaded = pageURI;
           resolve(this.neonCache.get(pageURI));
         });
       } else if (this.blankPages.includes(pageURI)) {
@@ -172,7 +171,6 @@ class NeonCore {
             }
           }).then(data => {
             this.loadData(pageURI, data).then(() => {
-              this.lastPageLoaded = pageURI;
               resolve(this.neonCache.get(pageURI));
             });
           }).catch(err => {
@@ -195,6 +193,7 @@ class NeonCore {
    */
   loadData (pageURI, data, dirty = false) {
     Validation.sendForValidation(data);
+    this.lastPageLoaded = pageURI;
     return new Promise((resolve, reject) => {
       let message = {
         id: uuid(),
