@@ -50,6 +50,7 @@ export function clickSelect (selector) {
   $('#container').on('contextmenu', (evt) => { evt.preventDefault(); });
 
   $('use').on('click', (e) => { e.stopPropagation(); });
+  $('rect').on('click', (e) => { e.stopPropagation(); });
   $('#moreEdit').on('click', (e) => { e.stopPropagation(); });
 }
 
@@ -65,7 +66,6 @@ function clickHandler (evt) {
   if (mode === 'insert' || evt.shiftKey) { return; }
   // Check if the element being clicked on is part of a drag Selection
   if (this.tagName === 'use') {
-    console.log('use');
     if ($(this).parents('.selected').length === 0) {
       let selection = [this];
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
@@ -77,7 +77,6 @@ function clickHandler (evt) {
       }
     }
   } else if (evt.target.tagName === 'rect' && getSelectionType() === 'selByBBox') {
-    console.log('rect');
     if ($(this).parents('.selected').length === 0) {
       let selection = [evt.target];
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
@@ -166,7 +165,7 @@ export function dragSelect (selector) {
   function selStart () {
     if (!neonView) return;
     let userMode = neonView.getUserMode();
-    if (d3.event.sourceEvent.target.nodeName !== 'use' && userMode !== 'insert') {
+    if (d3.event.sourceEvent.target.nodeName !== 'use' && userMode !== 'insert' && d3.event.sourceEvent.target.nodeName !== 'rect') {
       if (!d3.event.sourceEvent.shiftKey) { // If not holding down shift key to pan
         if (!$('#selByStaff').hasClass('is-active') || pointNotInStaff(d3.mouse(this))) {
           unselect();
@@ -224,7 +223,6 @@ export function dragSelect (selector) {
   }
 
   function selEnd () {
-    console.log('selEnd');
     if (!panning && dragSelecting) {
       var rx = parseInt($('#selectRect').attr('x'));
       var ry = parseInt($('#selectRect').attr('y'));
@@ -271,8 +269,6 @@ export function dragSelect (selector) {
           return !(((ul.x < box.ulx && lr.x < box.ulx) || (ul.x > box.lrx && lr.x > box.lrx)) || ((ul.y < box.uly && lr.y < box.uly) || (ul.y > box.lry && lr.y > box.lry)));
         }
       });
-      console.log('dragselect selectAll about to be called');
-      console.log(elements);
       selectAll(elements, neonView, info, dragHandler);
 
       if (dragHandler) {

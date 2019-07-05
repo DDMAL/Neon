@@ -33,10 +33,6 @@ export default class TextEditMode {
   * set text to edit mode
   */
   initTextEdit () {
-    this.dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
-    setSelectHelperObjects(this.neonView, this.dragHandler);
-    console.log('initTextEdit dragSelect');
-    dragSelect('#svg_group');
     let spans = Array.from($('#syl_text').children('p').children('span'));
     spans.forEach(span => {
       $(span).off('click');
@@ -91,8 +87,13 @@ export default class TextEditMode {
   addBBoxListeners () {
     if ($('#selByBBox').hasClass('is-active')) {
       unselect();
-      console.log('hi');
-      clickSelect('#svg_group');
+      this.dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
+      if (this.neonView.NeumeEdit === undefined) {
+        // just in case
+        setSelectHelperObjects(this.neonView, this.dragHandler);
+        clickSelect('#mei_output, #mei_output rect');
+        dragSelect('#svg_group');
+      }
     }
   }
 

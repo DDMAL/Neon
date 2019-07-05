@@ -92,7 +92,7 @@ function Resize (elementId, neonView, dragHandler) {
       d3.drag()
         .on('start', resizeStart)
         .on('drag', resizeDrag)
-        .on('end', resizeEnd)
+        .on('end', resizeEnd.bind(this))
     );
 
     var side;

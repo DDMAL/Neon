@@ -75,10 +75,7 @@ export function select (el, dragHandler) {
   if (!$(el).hasClass('selected')) {
     $(el).addClass('selected');
     $(el).css('fill', '#d00');
-    if ($(el).hasClass('sylTextRect-display')) {
-      $(el).addClass('sylTextRect-select');
-      $(el).removeClass('sylTextRect-display');
-    } else if ($(el).find('.sylTextRect-display').length) {
+    if ($(el).find('.sylTextRect-display').length) {
       $(el).find('.sylTextRect-display').css('fill', 'red');
       $(el).find('.sylTextRect-display').addClass('sylTextRect-select');
       $(el).find('.sylTextRect-display').removeClass('sylTextRect-display');
@@ -183,7 +180,6 @@ export function getStaffBBox (staff) {
  */
 export function selectBBox (el, dragHandler, resizeHandler) {
   let bbox = $(el);
-  unselect();
   bbox.removeClass('sylTextRect');
   bbox.removeClass('sylTextRect-display');
   bbox.addClass('sylTextRect-select');
@@ -232,7 +228,6 @@ export function selectStaff (el, dragHandler) {
  * @param {DragHandler} dragHandler
  */
 export async function selectAll (elements, neonView, info, dragHandler) {
-  console.log(elements);
   let selectionType = getSelectionType();
   unselect();
   if (elements.length === 0) {
@@ -282,12 +277,10 @@ export async function selectAll (elements, neonView, info, dragHandler) {
     // Check for precedes/follows
     let follows = grouping.getAttribute('mei:follows');
     if (follows) {
-      console.log(follows);
       groupsToSelect.add(document.getElementById(follows));
     }
     let precedes = grouping.getAttribute('mei:precedes');
     if (precedes) {
-      console.log(precedes);
       groupsToSelect.add(document.getElementById(precedes));
     }
   }
