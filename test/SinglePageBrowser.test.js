@@ -55,7 +55,9 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       var message;
       await browser.wait(until.elementLocated(By.id(neumeID)), 2000); // Wait two seconds for elements to appear
       await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new window.Event('mouseover')); }, neumeID);
-      message = await browser.findElement(By.className('message-body')).getText();
+      let body = await browser.findElement(By.className('message-body'));
+      await browser.wait(until.elementIsVisible(body), 1000);
+      message = await body.getText();
 
       expect(message).toContain('Clivis');
       expect(message).toContain('A2 G2');
@@ -66,8 +68,8 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       await browser.wait(until.elementLocated(By.id(clefId)), 2000);
       await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new window.Event('mouseover')); }, clefId);
       var notification = await browser.findElement(By.className('message'));
-      await browser.wait(until.elementIsVisible(notification));
-      var message = await browser.findElement(By.className('message')).getText();
+      await browser.wait(until.elementTextMatches(notification, /clef/), 1000);
+      var message = await browser.findElement(By.className('message-body')).getText();
       expect(message).toContain('Shape: C');
       expect(message).toContain('Line: 3');
     });
