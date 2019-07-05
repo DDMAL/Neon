@@ -252,6 +252,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
         await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new window.Event('mousedown')); }, id);
         let deleteButton = await browser.findElement(By.id('delete'));
         await actions.click(deleteButton).perform();
+        await browser.wait(until.stalenessOf(syl), 1000);
         return expect(browser.findElement(By.id(id))).rejects.toThrowError(error.NoSuchElementError);
       });
 
