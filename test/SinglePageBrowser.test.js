@@ -259,12 +259,16 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       test('Undo/Redo', async () => {
         let undoButton = await browser.findElement(By.id('undo'));
         const actions = browser.actions();
+        let element = await browser.findElement(By.className('nc'));
         let origCount = (await browser.findElements(By.className('nc'))).length;
         await actions.click(undoButton).perform();
+        await browser.wait(until.stalenessOf(element), 1000);
         let newCount = (await browser.findElements(By.className('nc'))).length;
         expect(newCount).toBeGreaterThan(origCount);
+        element = browser.findElement(By.className('nc'));
         // await actions.click(redoButton).perform();
         await browser.executeScript(() => { document.getElementById('redo').dispatchEvent(new window.Event('click')); });
+        await browser.wait(until.stalenessOf(element), 1000);
         newCount = (await browser.findElements(By.className('nc'))).length;
         expect(newCount).toEqual(origCount);
       });
