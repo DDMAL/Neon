@@ -29,6 +29,21 @@ export function bindInsertTabs (insertHandler) {
     return tab.id;
   });
 
+  document.body.addEventListener('keydown', (evt) => {
+    if (evt.code.match(/^Digit\d$/) && evt.shiftKey) {
+      try {
+        let index = Number(evt.code[evt.code.length - 1]) - 1;
+        let insertOptions = document.getElementsByClassName('insertel');
+        let selectedOption = insertOptions[index];
+        deactivate('.insertel');
+        activate(selectedOption.id, insertHandler);
+        Cursor.updateCursor();
+      } catch (e) {
+        console.debug(e);
+      }
+    }
+  });
+
   $.each(tabIds, function (i, tab) {
     $('#' + tab).on('click', () => {
       deactivate('.insertTab');
@@ -104,13 +119,6 @@ function bindElements (insertHandler) {
       deactivate('.insertel');
       activate(el, insertHandler);
       Cursor.updateCursor();
-    });
-    document.body.addEventListener('keydown', (evt) => {
-      if (evt.code === 'Digit' + (i + 1) && evt.shiftKey) {
-        deactivate('.insertel');
-        activate(el, insertHandler);
-        Cursor.updateCursor();
-      }
     });
   });
 }
