@@ -17,7 +17,8 @@ function DragHandler (neonView, selector) {
   function dragInit () {
     // Adding listeners
     console.log('dragInit');
-    var dragBehaviour = d3.drag().on('start', dragStarted)
+    var dragBehaviour = d3.drag()
+      .on('start', dragStarted)
       .on('drag', dragging)
       .on('end', dragEnded);
 

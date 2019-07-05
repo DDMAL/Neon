@@ -87,6 +87,19 @@ function clickHandler (evt) {
       if (dragHandler) {
         dragHandler.dragInit();
       }
+      // Trigger mousedown event on the bbox
+      (selection[0]).dispatchEvent(new window.MouseEvent('mousedown', {
+        screenX: evt.screenX,
+        screenY: evt.screenY,
+        clientX: evt.clientX,
+        clientY: evt.clientY,
+        ctrlKey: evt.ctrlKey,
+        shiftKey: evt.shiftKey,
+        altKey: evt.altKey,
+        metaKey: evt.metaKey,
+        view: evt.view
+      }));
+      (evt).stopPropagation();
     }
   } else {
     // Check if the point being clicked on is a staff selection (if applicable)
