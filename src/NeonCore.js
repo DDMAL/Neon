@@ -150,6 +150,7 @@ class NeonCore {
         resolve(this.neonCache.get(pageURI));
       } else if (this.neonCache.has(pageURI)) {
         this.loadData(pageURI, this.neonCache.get(pageURI).mei).then(() => {
+          this.lastPageLoaded = pageURI;
           resolve(this.neonCache.get(pageURI));
         });
       } else if (this.blankPages.includes(pageURI)) {
