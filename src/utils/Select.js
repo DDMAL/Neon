@@ -1,7 +1,7 @@
 /** @module utils/Select */
 
 import {
-  unselect, getStaffBBox, selectStaff, selectAll, getSelectionType
+  unselect, getStaffBBox, selectStaff, selectAll, getSelectionType, selectBBox
 } from './SelectTools.js';
 import { Resize } from './Resize.js';
 
@@ -83,7 +83,9 @@ function clickHandler (evt) {
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
         selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
       }
-      selectAll(selection, neonView, info, dragHandler);
+      let bbox = selection[0];
+      let resize = new Resize(bbox.closest('.syl').id, neonView, dragHandler);
+      selectBBox(selection[0], dragHandler, resize);
       if (dragHandler) {
         dragHandler.dragInit();
       }

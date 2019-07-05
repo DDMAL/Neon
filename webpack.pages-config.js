@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
   entry: {
     editor: './pages/editor.js',
     index: './pages/index.js',
