@@ -27,7 +27,7 @@ import Icons from '../img/icons.svg';
  * @type {object}
  */
 export const insertTabHtml = {
-  neumeTab: "<p class='control'>" +
+  primitiveTab: "<p class='control'>" +
         "<button id='punctum' class='button insertel smallel' title='punctum'><img src='" + PunctumIcon + "' class='image'/></button></p>" +
         "<p class='control'>" +
         "<button id='virga' class='button insertel smallel' title='virga'><img src='" + VirgaIcon + "' class='image'/></button></p>" +
@@ -38,7 +38,11 @@ export const insertTabHtml = {
         "<p class='control'>" +
         "<button id='quilisma' class='button insertel smallel' title='quilisma'><img src='" + QuilismaIcon + "' class='image'/></button></p>" + */
         "<p class='control'>" +
-        "<button id='custos' class='button insertel smallel' title='custos'><img src='" + CustosIcon + "' class='image'/></button></p>",
+        "<button id='custos' class='button insertel smallel' title='custos'><img src='" + CustosIcon + "' class='image'/></button></p>" +
+        "<p class='control'>" +
+        "<button id='cClef' class='button insertel smallel' title=' C Clef'><img src='" + CClefIcon + "' class='image' /></button></p>" +
+        "<p class='control'>" +
+        "<button id='fClef' class='button insertel smallel' title='F Clef'><img src='" + FClefIcon + "' class='image'/></button></p>",
   groupingTab: "<p class='control'>" +
         "<button id='pes' class='button insertel smallel' title='pes'><img src='" + PesIcon + "' class='image'/></button></p>" +
         "<p class='control'>" +
@@ -53,10 +57,6 @@ export const insertTabHtml = {
         "<button id='porrectus' class='button insertel smallel' title='porrectus'><img src='" + PorrectusIcon + "' class='image'/></button></p>" +
         "<p class='control'>" +
         "<button id='pressus' class='button insertel smallel' title='pressus'><img src='" + PressusIcon + "' class='image'/></button></p>",
-  clefTab: "<p class='control'>" +
-        "<button id='cClef' class='button insertel smallel' title=' C Clef'><img src='" + CClefIcon + "' class='image' /></button></p>" +
-        "<p class='control'>" +
-        "<button id='fClef' class='button insertel smallel' title='F Clef'><img src='" + FClefIcon + "' class='image'/></button></p>",
   systemTab: "<p class='control'>" +
         "<button id='staff' class='button insertel longel' title='system'><img src='" + StaffIcon + "' class='image' /></button></p>" +
         '<p>Click upper left and lower right corners of new staff.</p>'
@@ -79,9 +79,8 @@ export const insertControlsPanel =
     "<svg class='icon is-pulled-right'><use id='toggleInsert' xlink:href='" + Icons + "#dropdown-down'></use></svg></p>" +
     "<div id='insertContents' style='overflow-y: hidden;'>" +
     "<p class='panel-tabs'>" +
-    "<a id='neumeTab' class='insertTab'>Neume</a>" +
+    "<a id='primitiveTab' class='insertTab'>Primitive Elements</a>" +
     "<a id='groupingTab' class='insertTab'>Grouping</a>" +
-    "<a id='clefTab' class='insertTab'>Clef</a>" +
     "<a id='systemTab' class='insertTab'>System</a></p>" +
     // "<a id='divisionTab' class='insertTab'>Division</a></p>" +
     "<a class='panel-block has-text-centered'>" +

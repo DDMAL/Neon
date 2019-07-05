@@ -25,7 +25,7 @@ class SingleEditMode {
     this.dragHandler = new DragHandler(this.neonView, '#svg_group');
     this.insertHandler = new InsertHandler(this.neonView, '#svg_group');
     bindInsertTabs(this.insertHandler);
-    document.getElementById('neumeTab').click();
+    document.getElementById('primitiveTab').click();
     Select.setSelectHelperObjects(this.neonView, this.dragHandler);
     this.setSelectListeners();
 
@@ -34,6 +34,8 @@ class SingleEditMode {
     let editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = '#ffc7c7';
     editMenu.style.fontWeight = 'bold';
+
+    initSelectionButtons();
 
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
   }
@@ -55,7 +57,6 @@ class SingleEditMode {
   setSelectListeners () {
     Select.clickSelect('#mei_output, #mei_output use');
     Select.dragSelect('#svg_group');
-    initSelectionButtons();
   }
 }
 
