@@ -187,8 +187,7 @@ export function selectBBox (el, dragHandler, resizeHandler) {
   bbox.css('fill', '#d00');
   $(el).parents('.syllable').css('fill', 'red');
   $(el).parents('.syllable').addClass('syllable-highlighted');
-  dragHandler.dragInit();
-  if (resizeHandler) {
+  if (resizeHandler !== undefined) {
     resizeHandler.drawInitialRect();
   }
 }
