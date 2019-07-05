@@ -89,6 +89,7 @@ export default class TextEditMode {
       unselect();
       this.dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
       if (this.neonView.NeumeEdit === undefined) {
+        console.log('NeumeEdit undefined, creating own');
         // just in case
         setSelectHelperObjects(this.neonView, this.dragHandler);
         clickSelect('#mei_output, #mei_output rect');

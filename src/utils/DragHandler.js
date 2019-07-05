@@ -16,6 +16,7 @@ function DragHandler (neonView, selector) {
    */
   function dragInit () {
     // Adding listeners
+    console.log('dragInit');
     var dragBehaviour = d3.drag().on('start', dragStarted)
       .on('drag', dragging)
       .on('end', dragEnded);
@@ -32,6 +33,7 @@ function DragHandler (neonView, selector) {
 
     // Drag effects
     function dragStarted () {
+      console.log('dragStarted');
       dragStartCoords = d3.mouse(this);
       if (this.classList.contains('staff')) {
         d3.select(selector).call(dragBehaviour);
@@ -71,6 +73,7 @@ function DragHandler (neonView, selector) {
     }
 
     function dragEnded () {
+      console.log('dragEnded');
       dragEndCoords = [d3.event.x, d3.event.y];
       let paramArray = [];
       selection.forEach((el) => {
