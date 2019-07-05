@@ -345,5 +345,5 @@ function initOptionsListeners () {
 }
 
 function deleteButtonHandler (evt) {
-  if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); }
+  if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); evt.preventDefault(); }
 }
