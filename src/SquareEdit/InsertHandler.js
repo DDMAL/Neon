@@ -256,8 +256,8 @@ function InsertHandler (neonView, sel) {
   }
 
   function removeInsertClickHandlers () {
-    $('body').off('click', staffHandler);
-    $('body').off('click', handler);
+    $('body').off('click', selector, staffHandler);
+    $('body').off('click', selector, handler);
   }
 
   /**
