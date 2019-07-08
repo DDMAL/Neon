@@ -14,7 +14,7 @@ class DivaEdit {
     this.dragHandler = new DragHandler(this.neonView, '.active-page > svg');
     this.insertHandler = new InsertHandler(this.neonView, '.active-page > svg');
     bindInsertTabs(this.insertHandler);
-    document.getElementById('neumeTab').click();
+    document.getElementById('primitiveTab').click();
     Select.setSelectHelperObjects(this.neonView, this.dragHandler);
     this.setSelectListeners();
 
@@ -25,6 +25,8 @@ class DivaEdit {
     editMenu.style.fontWeight = 'bold';
 
     Select.setSelectStrokeWidth(1);
+
+    initSelectionButtons();
 
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
   }
@@ -46,7 +48,6 @@ class DivaEdit {
   setSelectListeners () {
     Select.clickSelect('.active-page > svg > svg, .active-page > svg > svg use');
     Select.dragSelect('.active-page svg');
-    initSelectionButtons();
   }
 }
 

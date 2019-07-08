@@ -69,12 +69,7 @@ class NeonView {
    */
   updateForCurrentPage () {
     let pageNo = this.view.getCurrentPage();
-    let pageURI = this.view.getCurrentPageURI();
-    // load pages
-    this.core.getSVG(pageURI).then((svg) => {
-      this.view.updateSVG(svg, pageNo);
-      this.view.updateCallbacks.forEach(callback => callback());
-    });
+    this.view.changePage(pageNo);
   }
 
   /**
@@ -83,11 +78,7 @@ class NeonView {
    */
   updateForCurrentPagePromise () {
     let pageNo = this.view.getCurrentPage();
-    let pageURI = this.view.getCurrentPageURI();
-    return Promise.resolve(this.core.getSVG(pageURI).then((svg) => {
-      this.view.updateSVG(svg, pageNo);
-      this.view.updateCallbacks.forEach(callback => callback());
-    }));
+    return Promise.resolve(this.view.changePage(pageNo));
   }
 
   /**

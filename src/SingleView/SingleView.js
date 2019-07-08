@@ -72,6 +72,16 @@ class SingleView {
   }
 
   /**
+   * Change to a certain page
+   * Since there is only one page, this is essentially a wrapper for updateSVG
+   * @param {number} page
+   */
+  async changePage (page) {
+    let svg = await this.neonView.getPageSVG(this.getCurrentPageURI());
+    this.updateSVG(svg);
+  }
+
+  /**
    * Add a callback to the list of those be called when the page updates.
    * @param {function} cb - The callback function to add to the list.
    */
@@ -142,7 +152,7 @@ class SingleView {
             d3.select('#svg_group').on('.drag', null);
             Cursor.updateCursorTo('');
             if (this.neonView.getUserMode !== 'viewer') {
-              this.neonView.neumeEdit.setSelectListeners();
+              this.neonView.NeumeEdit.setSelectListeners();
             }
             if (this.neonView.getUserMode() === 'insert') {
               Cursor.updateCursor();

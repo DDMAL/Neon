@@ -11,7 +11,7 @@ class DivaView {
     this.diva.disableDragScrollable();
     this.displayPanel = new Display(this, 'neon-container', 'diva-viewer-canvas');
     this.initDivaEvents();
-    // this.setViewEventHandlers();
+    this.setViewEventHandlers();
   }
 
   initDivaEvents () {
@@ -149,22 +149,25 @@ class DivaView {
   }
 
   setViewEventHandlers () {
-    document.body.addEventListener('keydown', (event) => {
-      switch (event.key) {
-        case 'Shift':
-          this.diva.enableDragScrollable();
+    document.body.addEventListener('keydown', (evt) => {
+      switch (evt.key) {
+        case 'h':
+          for (let container of document.getElementsByClassName('neon-container')) {
+            container.style.visibility = 'hidden';
+          }
           break;
-        default:
-          break;
+        default: break;
       }
     });
-    document.body.addEventListener('keyup', (event) => {
-      switch (event.key) {
-        case 'Shift':
-          this.diva.disableDragScrollable();
+
+    document.body.addEventListener('keyup', (evt) => {
+      switch (evt.key) {
+        case 'h':
+          for (let container of document.getElementsByClassName('neon-container')) {
+            container.style.visibility = '';
+          }
           break;
-        default:
-          break;
+        default: break;
       }
     });
   }

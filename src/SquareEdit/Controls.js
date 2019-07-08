@@ -29,6 +29,21 @@ export function bindInsertTabs (insertHandler) {
     return tab.id;
   });
 
+  document.body.addEventListener('keydown', (evt) => {
+    if (evt.code.match(/^Digit\d$/) && evt.shiftKey) {
+      try {
+        let index = Number(evt.code[evt.code.length - 1]) - 1;
+        let insertOptions = document.getElementsByClassName('insertel');
+        let selectedOption = insertOptions[index];
+        deactivate('.insertel');
+        activate(selectedOption.id, insertHandler);
+        Cursor.updateCursor();
+      } catch (e) {
+        console.debug(e);
+      }
+    }
+  });
+
   $.each(tabIds, function (i, tab) {
     $('#' + tab).on('click', () => {
       deactivate('.insertTab');
@@ -37,6 +52,10 @@ export function bindInsertTabs (insertHandler) {
       $('#insert_data').empty();
       $('#insert_data').append(Contents.insertTabHtml[tab]);
       bindElements(insertHandler);
+      deactivate('.insertel');
+      let firstOption = document.getElementsByClassName('insertel')[0];
+      activate(firstOption.id, insertHandler);
+      Cursor.updateCursor();
     });
   });
 }
@@ -104,13 +123,6 @@ function bindElements (insertHandler) {
       deactivate('.insertel');
       activate(el, insertHandler);
       Cursor.updateCursor();
-    });
-    document.body.addEventListener('keydown', (evt) => {
-      if (evt.code === 'Digit' + (i + 1) && evt.shiftKey) {
-        deactivate('.insertel');
-        activate(el, insertHandler);
-        Cursor.updateCursor();
-      }
     });
   });
 }
