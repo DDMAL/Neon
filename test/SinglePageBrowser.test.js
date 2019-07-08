@@ -288,6 +288,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
           expect(buttonClass).toContain('is-active');
           // await browser.actions().move({ origin: someNc, x: 100, y: 100 }).click().perform();
           await browser.executeScript(() => { document.getElementById('svg_group').dispatchEvent(new window.MouseEvent('click', { bubbles: true })); });
+          await browser.wait(until.stalenessOf(someNc), 1000);
           let newNcCount = (await browser.findElements(By.className('nc'))).length;
           expect(newNcCount).toBe(ncCount + 1);
         });
