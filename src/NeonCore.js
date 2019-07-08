@@ -1,5 +1,5 @@
 import * as Validation from './Validation.js';
-import VerovioWorker from './VerovioWorker.js';
+import VerovioWrapper from './VerovioWrapper.js';
 import PouchDb from 'pouchdb';
 const uuid = require('uuid/v4');
 
@@ -14,7 +14,7 @@ class NeonCore {
    * @returns {object} A NeonCore object.
    */
   constructor (manifest) {
-    this.verovioWorker = new VerovioWorker();
+    this.verovioWrapper = new VerovioWrapper();
     Validation.init();
 
     /**
@@ -215,8 +215,8 @@ class NeonCore {
           resolve();
         }
       }
-      this.verovioWorker.addEventListener('message', handle.bind(this));
-      this.verovioWorker.postMessage(message);
+      this.verovioWrapper.addEventListener('message', handle.bind(this));
+      this.verovioWrapper.postMessage(message);
     });
   }
 
@@ -260,13 +260,13 @@ class NeonCore {
           action: 'getElementAttr',
           elementId: elementId
         };
-        this.verovioWorker.addEventListener('message', function handle (evt) {
+        this.verovioWrapper.addEventListener('message', function handle (evt) {
           if (evt.data.id === message.id) {
             evt.target.removeEventListener('message', handle);
             resolve(evt.data.attributes);
           }
         });
-        this.verovioWorker.postMessage(message);
+        this.verovioWrapper.postMessage(message);
       });
     });
   }
@@ -309,8 +309,8 @@ class NeonCore {
             }
           }
         }
-        this.verovioWorker.addEventListener('message', handle.bind(this));
-        this.verovioWorker.postMessage(message);
+        this.verovioWrapper.addEventListener('message', handle.bind(this));
+        this.verovioWrapper.postMessage(message);
       });
     });
   }
@@ -330,28 +330,28 @@ class NeonCore {
           id: uuid(),
           action: 'getMEI'
         };
-        this.verovioWorker.addEventListener('message', function handle (evt) {
+        this.verovioWrapper.addEventListener('message', function handle (evt) {
           if (evt.data.id === message.id) {
             mei = evt.data.mei;
             evt.target.removeEventListener('message', handle);
             resolve();
           }
         });
-        this.verovioWorker.postMessage(message);
+        this.verovioWrapper.postMessage(message);
       });
       let svgPromise = new Promise((resolve, reject) => {
         let message = {
           id: uuid(),
           action: 'renderToSVG'
         };
-        this.verovioWorker.addEventListener('message', function handle (evt) {
+        this.verovioWrapper.addEventListener('message', function handle (evt) {
           if (evt.data.id === message.id) {
             svgText = evt.data.svg;
             evt.target.removeEventListener('message', handle);
             resolve();
           }
         });
-        this.verovioWorker.postMessage(message);
+        this.verovioWrapper.postMessage(message);
       });
 
       meiPromise.then(() => { return svgPromise; }).then(() => {
@@ -386,13 +386,13 @@ class NeonCore {
           id: uuid(),
           action: 'editInfo'
         };
-        this.verovioWorker.addEventListener('message', function handle (evt) {
+        this.verovioWrapper.addEventListener('message', function handle (evt) {
           if (evt.data.id === message.id) {
             evt.target.removeEventListener('message', handle);
             resolve(evt.data.info);
           }
         });
-        this.verovioWorker.postMessage(message);
+        this.verovioWrapper.postMessage(message);
       });
     });
   }
