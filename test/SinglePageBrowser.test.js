@@ -10,7 +10,7 @@ const error = require('selenium-webdriver/lib/error');
 const firefox = require('selenium-webdriver/firefox');
 const chrome = require('selenium-webdriver/chrome');
 
-jest.setTimeout('15000');
+jest.setTimeout('20000');
 
 beforeAll(async () => {
   // Link test MEI/png to public/uploads so we can use them
@@ -53,9 +53,11 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
     test('Check Info Box Neumes', async () => {
       let neumeID = 'm-07ad2140-4fa1-45d4-af47-6733add00825';
       var message;
-      await browser.wait(until.elementLocated(By.id(neumeID)), 2000); // Wait two seconds for elements to appear
+      await browser.wait(until.elementLocated(By.id(neumeID)), 5000); // Wait two seconds for elements to appear
       await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new window.Event('mouseover')); }, neumeID);
-      message = await browser.findElement(By.className('message-body')).getText();
+      let body = await browser.findElement(By.className('message-body'));
+      await browser.wait(until.elementIsVisible(body), 5000);
+      message = await body.getText();
 
       expect(message).toContain('Clivis');
       expect(message).toContain('A2 G2');
@@ -63,11 +65,11 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
 
     test('Check Info Box Clef', async () => {
       let clefId = 'm-45439068-5e0c-4595-a820-4faa16771422';
-      await browser.wait(until.elementLocated(By.id(clefId)), 2000);
+      await browser.wait(until.elementLocated(By.id(clefId)), 5000);
       await browser.executeScript((id) => { document.getElementById(id).dispatchEvent(new window.Event('mouseover')); }, clefId);
       var notification = await browser.findElement(By.className('message'));
-      await browser.wait(until.elementIsVisible(notification));
-      var message = await browser.findElement(By.className('message')).getText();
+      await browser.wait(until.elementTextMatches(notification, /clef/), 5000);
+      var message = await browser.findElement(By.className('message-body')).getText();
       expect(message).toContain('Shape: C');
       expect(message).toContain('Line: 3');
     });
@@ -250,18 +252,23 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
         await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new window.Event('mousedown')); }, id);
         let deleteButton = await browser.findElement(By.id('delete'));
         await actions.click(deleteButton).perform();
+        await browser.wait(until.stalenessOf(syl), 1000);
         return expect(browser.findElement(By.id(id))).rejects.toThrowError(error.NoSuchElementError);
       });
 
       test('Undo/Redo', async () => {
         let undoButton = await browser.findElement(By.id('undo'));
         const actions = browser.actions();
+        let element = await browser.findElement(By.className('nc'));
         let origCount = (await browser.findElements(By.className('nc'))).length;
         await actions.click(undoButton).perform();
+        await browser.wait(until.stalenessOf(element), 5000);
         let newCount = (await browser.findElements(By.className('nc'))).length;
         expect(newCount).toBeGreaterThan(origCount);
+        element = browser.findElement(By.className('nc'));
         // await actions.click(redoButton).perform();
         await browser.executeScript(() => { document.getElementById('redo').dispatchEvent(new window.Event('click')); });
+        await browser.wait(until.stalenessOf(element), 5000);
         newCount = (await browser.findElements(By.className('nc'))).length;
         expect(newCount).toEqual(origCount);
       });
@@ -281,6 +288,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
           expect(buttonClass).toContain('is-active');
           // await browser.actions().move({ origin: someNc, x: 100, y: 100 }).click().perform();
           await browser.executeScript(() => { document.getElementById('svg_group').dispatchEvent(new window.MouseEvent('click', { bubbles: true })); });
+          await browser.wait(until.stalenessOf(someNc), 5000);
           let newNcCount = (await browser.findElements(By.className('nc'))).length;
           expect(newNcCount).toBe(ncCount + 1);
         });
