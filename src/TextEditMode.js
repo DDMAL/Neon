@@ -91,8 +91,13 @@ export default class TextEditMode {
       if (this.neonView.NeumeEdit === undefined) {
         // just in case
         setSelectHelperObjects(this.neonView, this.dragHandler);
-        clickSelect('#mei_output, #mei_output rect');
-        dragSelect('#svg_group');
+        if (this.neonView.view.constructor.name === 'SingleView') {
+          clickSelect('#mei_output, #mei_output rect');
+          dragSelect('#svg_group');
+        } else {
+          clickSelect('.active-page, .active-page use');
+          dragSelect('.active-page svg');
+        }
       }
     }
   }
