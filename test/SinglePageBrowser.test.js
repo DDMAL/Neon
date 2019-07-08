@@ -56,7 +56,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       await browser.wait(until.elementLocated(By.id(neumeID)), 2000); // Wait two seconds for elements to appear
       await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new window.Event('mouseover')); }, neumeID);
       let body = await browser.findElement(By.className('message-body'));
-      await browser.wait(until.elementIsVisible(body), 1000);
+      await browser.wait(until.elementIsVisible(body), 2000);
       message = await body.getText();
 
       expect(message).toContain('Clivis');
