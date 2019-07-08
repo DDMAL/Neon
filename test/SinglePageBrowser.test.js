@@ -10,7 +10,7 @@ const error = require('selenium-webdriver/lib/error');
 const firefox = require('selenium-webdriver/firefox');
 const chrome = require('selenium-webdriver/chrome');
 
-jest.setTimeout('15000');
+jest.setTimeout('20000');
 
 beforeAll(async () => {
   // Link test MEI/png to public/uploads so we can use them
