@@ -50,6 +50,7 @@ export function clickSelect (selector) {
   $('#container').on('contextmenu', (evt) => { evt.preventDefault(); });
 
   $('use').on('click', (e) => { e.stopPropagation(); });
+  $('rect').on('click', (e) => { e.stopPropagation(); });
   $('#moreEdit').on('click', (e) => { e.stopPropagation(); });
 }
 
@@ -63,7 +64,6 @@ function clickHandler (evt) {
 
   // If in insert mode or panning is active from shift key
   if (mode === 'insert' || evt.shiftKey) { return; }
-
   // Check if the element being clicked on is part of a drag Selection
   if (this.tagName === 'use') {
     if ($(this).parents('.selected').length === 0) {
@@ -75,6 +75,30 @@ function clickHandler (evt) {
       if (dragHandler) {
         dragHandler.dragInit();
       }
+    }
+  } else if (evt.target.tagName === 'rect' && getSelectionType() === 'selByBBox') {
+    if ($(this).parents('.selected').length === 0) {
+      let selection = [evt.target];
+      if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
+        selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
+      }
+      selectAll(selection, neonView, info, dragHandler);
+      if (dragHandler) {
+        dragHandler.dragInit();
+      }
+      // Trigger mousedown event on the bbox
+      (selection[0]).dispatchEvent(new window.MouseEvent('mousedown', {
+        screenX: evt.screenX,
+        screenY: evt.screenY,
+        clientX: evt.clientX,
+        clientY: evt.clientY,
+        ctrlKey: evt.ctrlKey,
+        shiftKey: evt.shiftKey,
+        altKey: evt.altKey,
+        metaKey: evt.metaKey,
+        view: evt.view
+      }));
+      (evt).stopPropagation();
     }
   } else {
     // Check if the point being clicked on is a staff selection (if applicable)
@@ -154,7 +178,7 @@ export function dragSelect (selector) {
   function selStart () {
     if (!neonView) return;
     let userMode = neonView.getUserMode();
-    if (d3.event.sourceEvent.target.nodeName !== 'use' && userMode !== 'insert') {
+    if (d3.event.sourceEvent.target.nodeName !== 'use' && userMode !== 'insert' && d3.event.sourceEvent.target.nodeName !== 'rect') {
       if (!d3.event.sourceEvent.shiftKey) { // If not holding down shift key to pan
         if (!$('#selByStaff').hasClass('is-active') || pointNotInStaff(d3.mouse(this))) {
           unselect();
@@ -231,25 +255,33 @@ export function dragSelect (selector) {
       var nc;
       if ($('#selByStaff').hasClass('is-active')) {
         nc = d3.selectAll(selector + ' use, ' + selector + ' .staff')._groups[0];
+      } else if ($('#selByBBox').hasClass('is-active')) {
+        nc = d3.selectAll(selector + ' .sylTextRect-display')._groups[0];
       } else {
         nc = d3.selectAll(selector + ' use')._groups[0];
       }
       var els = Array.from(nc);
 
       var elements = els.filter(function (d) {
-        if (d.tagName === 'use') {
+        var ulx, uly, lrx, lry;
+        if ($('#selByBBox').hasClass('is-active')) {
+          ulx = Number($(d).attr('x'));
+          uly = Number($(d).attr('y'));
+          lrx = +ulx + +(d.getAttribute('width').slice(0, -2));
+          lry = +uly + +(d.getAttribute('height').slice(0, -2));
+          return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
+        } else if (d.tagName === 'use') {
           let box = d.parentNode.getBBox();
-          let ulx = box.x;
-          let uly = box.y;
-          let lrx = box.x + box.width;
-          let lry = box.y + box.height;
+          ulx = box.x;
+          uly = box.y;
+          lrx = box.x + box.width;
+          lry = box.y + box.height;
           return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
         } else {
           let box = getStaffBBox(d);
           return !(((ul.x < box.ulx && lr.x < box.ulx) || (ul.x > box.lrx && lr.x > box.lrx)) || ((ul.y < box.uly && lr.y < box.uly) || (ul.y > box.lry && lr.y > box.lry)));
         }
       });
-
       selectAll(elements, neonView, info, dragHandler);
 
       if (dragHandler) {

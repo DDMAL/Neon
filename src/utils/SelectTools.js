@@ -34,23 +34,24 @@ export function unselect () {
       selected[i].removeAttribute('style');
       Color.unhighlight(selected[i]);
     } else if ($(selected[i]).hasClass('sylTextRect-select')) {
+      selected[i].removeAttribute('style');
       $(selected[i]).removeClass('selected');
       $(selected[i]).removeClass('sylTextRect-select');
       $(selected[i]).addClass('sylTextRect-display');
-      let syllable = $(selected[i]).closest('.syllable');
-      if (syllable.css('fill') !== 'rgb(0, 0, 0)') {
-        $(selected[i]).css('fill', syllable.css('fill'));
-      } else {
-        $(selected[i]).css('fill', 'blue');
-      }
     } else {
       $(selected[i]).removeClass('selected');
       selected[i].removeAttribute('style');
+      $(selected[i]).attr('fill', 'null');
+      $(selected[i]).removeClass('selected');
     }
   }
   $('.sylTextRect-select').css('fill', 'blue');
   $('.sylTextRect-select').addClass('sylTextRect-display');
   $('.sylTextRect-select').removeClass('sylTextRect-select');
+
+  $('.syllable-highlighted').css('fill', '');
+  $('.syllable-highlighted').addClass('syllable');
+  $('.syllable-highlighted').removeClass('syllable-highlighted');
 
   $('.sylTextRect-hiddenSelect').addClass('sylTextRect');
   $('.sylTextRect-hiddenSelect').removeClass('sylTextRect-hiddenSelect');
@@ -74,10 +75,7 @@ export function select (el, dragHandler) {
   if (!$(el).hasClass('selected')) {
     $(el).addClass('selected');
     $(el).css('fill', '#d00');
-    if ($(el).hasClass('sylTextRect-display')) {
-      $(el).addClass('sylTextRect-select');
-      $(el).removeClass('sylTextRect-display');
-    } else if ($(el).find('.sylTextRect-display').length) {
+    if ($(el).find('.sylTextRect-display').length) {
       $(el).find('.sylTextRect-display').css('fill', 'red');
       $(el).find('.sylTextRect-display').addClass('sylTextRect-select');
       $(el).find('.sylTextRect-display').removeClass('sylTextRect-display');
@@ -180,16 +178,18 @@ export function getStaffBBox (staff) {
  * @param {SVGGElement} el - the bbox (sylTextRect) element in the DOM
  * @param {DragHandler} dragHandler - the drag handler in use
  */
-export function selectBBox (el, dragHandler) {
+export function selectBBox (el, dragHandler, resizeHandler) {
   let bbox = $(el);
-  unselect();
   bbox.removeClass('sylTextRect');
   bbox.removeClass('sylTextRect-display');
   bbox.addClass('sylTextRect-select');
   bbox.addClass('selected');
   bbox.css('fill', '#d00');
-  updateHighlight();
-  dragHandler.dragInit();
+  $(el).parents('.syllable').css('fill', 'red');
+  $(el).parents('.syllable').addClass('syllable-highlighted');
+  if (resizeHandler !== undefined) {
+    resizeHandler.drawInitialRect();
+  }
 }
 
 /**
@@ -445,12 +445,11 @@ export async function selectAll (elements, neonView, info, dragHandler) {
     case 'selByBBox':
       switch (groups.length) {
         case 1:
-          let resize = new Resize(groups[0].id, neonView, dragHandler);
-          resize.drawInitialRect();
-          SelectOptions.triggerDefaultActions();
+          let resize = new Resize(groups[0].closest('.syl').id, neonView, dragHandler);
+          selectBBox(groups[0], dragHandler, resize);
           break;
         default:
-          SelectOptions.triggerDefaultActions();
+          groups.forEach(g => selectBBox(g, dragHandler, undefined));
           break;
       }
       break;

@@ -92,7 +92,7 @@ function Resize (elementId, neonView, dragHandler) {
       d3.drag()
         .on('start', resizeStart)
         .on('drag', resizeDrag)
-        .on('end', resizeEnd)
+        .on('end', resizeEnd.bind(this))
     );
 
     var side;
@@ -160,7 +160,7 @@ function Resize (elementId, neonView, dragHandler) {
         lrx = undefined;
         lry = undefined;
         if (element.classList.contains('syl')) {
-          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler);
+          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
         } else {
           selectStaff(element, dragHandler);
         }

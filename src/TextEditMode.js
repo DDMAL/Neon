@@ -1,7 +1,6 @@
-import { unselect, selectBBox } from './utils/SelectTools.js';
+import { unselect } from './utils/SelectTools.js';
 import DragHandler from './utils/DragHandler.js';
-import { Resize } from './utils/Resize.js';
-import { setSelectHelperObjects } from './utils/Select.js';
+import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select.js';
 
 const $ = require('jquery');
 
@@ -34,8 +33,6 @@ export default class TextEditMode {
   * set text to edit mode
   */
   initTextEdit () {
-    this.dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
-    setSelectHelperObjects(this.neonView, this.dragHandler);
     let spans = Array.from($('#syl_text').children('p').children('span'));
     spans.forEach(span => {
       $(span).off('click');
@@ -66,7 +63,7 @@ export default class TextEditMode {
           $('#moreEdit').empty();
           $('#selByBBox').addClass('is-active');
           $('#selByNc').removeClass('is-active');
-          $('#selByNc').removeClass('is-active');
+          $('#selByNeume').removeClass('is-active');
           $('#selByStaff').removeClass('is-active');
           $('#selBySyl').removeClass('is-active');
         }
@@ -90,17 +87,18 @@ export default class TextEditMode {
   addBBoxListeners () {
     if ($('#selByBBox').hasClass('is-active')) {
       unselect();
-      let rects = Array.from($('.sylTextRect-display'));
-      rects.forEach(rect => {
-        $(rect).off('click', unselect);
-        $(rect).on('click', () => {
-          if ($('#selByBBox').hasClass('is-active') && !rect.classList.contains('sylTextRect-select')) {
-            selectBBox(rect, this.dragHandler);
-            let resize = new Resize(rect.closest('.syl').id, this.neonView, this.dragHandler);
-            resize.drawInitialRect();
-          }
-        });
-      });
+      this.dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
+      if (this.neonView.NeumeEdit === undefined) {
+        // just in case
+        setSelectHelperObjects(this.neonView, this.dragHandler);
+        if (this.neonView.view.constructor.name === 'SingleView') {
+          clickSelect('#mei_output, #mei_output rect');
+          dragSelect('#svg_group');
+        } else {
+          clickSelect('.active-page, .active-page use');
+          dragSelect('.active-page svg');
+        }
+      }
     }
   }
 
