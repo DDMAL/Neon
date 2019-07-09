@@ -250,7 +250,7 @@ function InsertHandler (neonView, sel) {
 
       neonView.edit(action, neonView.view.getCurrentPageURI()).then(() => {
         neonView.updateForCurrentPage();
-        insertDisabled();
+        firstClick = true;
       });
     }
   }

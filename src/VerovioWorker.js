@@ -1,4 +1,4 @@
-const verovio = require('verovio-dev');
+importScripts('./verovio-toolkit.js');
 
 var toolkit = new verovio.toolkit();
 toolkit.setOptions({
