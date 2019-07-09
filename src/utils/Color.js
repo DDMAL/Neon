@@ -50,8 +50,10 @@ export function unsetGroupingHighlight () {
       }
     }
     rects.forEach(function (rect) {
-      $(rect).css('fill', 'blue');
-      $(rect).removeClass('highlighted');
+      if (!($(rect).closest('.syllable').hasClass('selected'))) {
+        $(rect).css('fill', 'blue');
+        $(rect).removeClass('highlighted');
+      }
     });
     $(elem).removeClass('highlighted');
     $(elem).find('sylTextRect-display').removeClass('highlighted');

@@ -55,12 +55,10 @@ function Resize (elementId, neonView, dragHandler) {
 
     // if it's a boundingbox just get the coordinates
     if (element.classList.contains('syl')) {
-      let rect = element.querySelector('.sylTextRect-select');
+      let rect = element.querySelector('.sylTextRect-display');
       if (rect === null) {
-        rect = element.querySelector('.sylTextRect-display');
-      }
-      if (rect === null) {
-        rect = element.querySelector('.sylTextRect');
+        console.warn("Tried to draw resize rect for a sylTextRect that doesn't exist (or isn't displaying)");
+        return;
       }
       ulx = Number(rect.getAttribute('x'));
       uly = Number(rect.getAttribute('y'));

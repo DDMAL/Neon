@@ -33,11 +33,6 @@ export function unselect () {
       $(selected[i]).removeClass('selected');
       selected[i].removeAttribute('style');
       Color.unhighlight(selected[i]);
-    } else if ($(selected[i]).hasClass('sylTextRect-select')) {
-      selected[i].removeAttribute('style');
-      $(selected[i]).removeClass('selected');
-      $(selected[i]).removeClass('sylTextRect-select');
-      $(selected[i]).addClass('sylTextRect-display');
     } else {
       $(selected[i]).removeClass('selected');
       selected[i].removeAttribute('style');
@@ -45,16 +40,12 @@ export function unselect () {
       $(selected[i]).removeClass('selected');
     }
   }
-  $('.sylTextRect-select').css('fill', 'blue');
-  $('.sylTextRect-select').addClass('sylTextRect-display');
-  $('.sylTextRect-select').removeClass('sylTextRect-select');
+  let sylRects = $('.sylTextRect-display');
+  sylRects.css('fill', 'blue');
 
   $('.syllable-highlighted').css('fill', '');
   $('.syllable-highlighted').addClass('syllable');
   $('.syllable-highlighted').removeClass('syllable-highlighted');
-
-  $('.sylTextRect-hiddenSelect').addClass('sylTextRect');
-  $('.sylTextRect-hiddenSelect').removeClass('sylTextRect-hiddenSelect');
 
   d3.selectAll('#resizeRect').remove();
 
@@ -72,16 +63,11 @@ export function unselect () {
  * @param {DragHandler} [dragHandler]
  */
 export function select (el, dragHandler) {
-  if (!$(el).hasClass('selected')) {
+  if (!$(el).hasClass('selected') && !($(el).hasClass('sylTextRect')) && !($(el).hasClass('sylTextRect-display'))) {
     $(el).addClass('selected');
     $(el).css('fill', '#d00');
     if ($(el).find('.sylTextRect-display').length) {
       $(el).find('.sylTextRect-display').css('fill', 'red');
-      $(el).find('.sylTextRect-display').addClass('sylTextRect-select');
-      $(el).find('.sylTextRect-display').removeClass('sylTextRect-display');
-    } else if ($(el).find('.sylTextRect').length) {
-      $(el).find('.sylTextRect').addClass('sylTextRect-hiddenSelect');
-      $(el).find('.sylTextRect').removeClass('sylTextRect');
     }
   }
   updateHighlight();
@@ -180,15 +166,18 @@ export function getStaffBBox (staff) {
  */
 export function selectBBox (el, dragHandler, resizeHandler) {
   let bbox = $(el);
-  bbox.removeClass('sylTextRect');
-  bbox.removeClass('sylTextRect-display');
-  bbox.addClass('sylTextRect-select');
-  bbox.addClass('selected');
-  bbox.css('fill', '#d00');
-  $(el).parents('.syllable').css('fill', 'red');
-  $(el).parents('.syllable').addClass('syllable-highlighted');
-  if (resizeHandler !== undefined) {
-    resizeHandler.drawInitialRect();
+  let syl = bbox.closest('.syl');
+  if (!syl.hasClass('selected')) {
+    syl.addClass('selected');
+    bbox.css('fill', '#d00');
+    $(el).parents('.syllable').css('fill', 'red');
+    $(el).parents('.syllable').addClass('syllable-highlighted');
+    if (resizeHandler !== undefined) {
+      resizeHandler.drawInitialRect();
+    }
+    if (dragHandler !== undefined) {
+      dragHandler.dragInit();
+    }
   }
 }
 

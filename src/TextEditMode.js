@@ -87,15 +87,15 @@ export default class TextEditMode {
   addBBoxListeners () {
     if ($('#selByBBox').hasClass('is-active')) {
       unselect();
-      this.dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
       if (this.neonView.NeumeEdit === undefined) {
         // just in case
+        this.dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
         setSelectHelperObjects(this.neonView, this.dragHandler);
         if (this.neonView.view.constructor.name === 'SingleView') {
           clickSelect('#mei_output, #mei_output rect');
           dragSelect('#svg_group');
         } else {
-          clickSelect('.active-page, .active-page use');
+          clickSelect('.active-page > svg > svg, .active-page > svg > svg rect');
           dragSelect('.active-page svg');
         }
       }
