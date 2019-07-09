@@ -7,10 +7,10 @@ et.register_namespace('', 'http://www.music-encoding.org/ns/mei');
 export function convertStaffToSb (staffBasedMei) {
   let meiTree = et.parse(staffBasedMei);
   let meiTag = meiTree.getroot();
-
   for (let section of meiTag.findall('.//section')) {
     let newStaff = et.Element('staff', { 'n': '1' });
     let container = et.SubElement(newStaff, 'layer');
+
     container.set('n', '1');
 
     for (let staff of section.getchildren()) {
