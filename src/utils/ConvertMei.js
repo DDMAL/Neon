@@ -70,8 +70,6 @@ export function convertSbToStaff (sbBasedMei) {
   let meiTree = et.parse(sbBasedMei);
   let meiTag = meiTree.getroot();
 
-  console.log(meiTag.findall('.//sb'));
-
   for (let section of meiTag.findall('.//section')) {
     let staffStore = [];
     for (let staff of section.getchildren()) {
@@ -83,7 +81,6 @@ export function convertSbToStaff (sbBasedMei) {
 
         for (let [sbIndex, n] of zip(sbIndexes, [...Array(sbIndexes.length).keys()])) {
           let sb = layer.getItem(sbIndex);
-          console.log(sb);
           let newStaff = et.Element('staff', sb.attrib);
           let container = et.Element('layer', { 'n': '1' });
 
