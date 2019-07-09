@@ -33,15 +33,6 @@ export function unselect () {
       $(selected[i]).removeClass('selected');
       selected[i].removeAttribute('style');
       Color.unhighlight(selected[i]);
-    } else if ($(selected[i]).hasClass('syl')) {
-      $(selected[i]).removeClass('selected');
-      let rect = $(selected[i]).find('sylTextRect-display');
-      let syllable = $(selected[i]).closest('syllable');
-      if (syllable.css('fill') !== 'rgb(0, 0, 0)') {
-        rect.css('fill', syllable.css('fill'));
-      } else {
-        rect.css('fill', 'blue');
-      }
     } else {
       $(selected[i]).removeClass('selected');
       selected[i].removeAttribute('style');
@@ -49,6 +40,8 @@ export function unselect () {
       $(selected[i]).removeClass('selected');
     }
   }
+  let sylRects = $('.sylTextRect-display');
+  sylRects.css('fill', 'blue');
 
   $('.syllable-highlighted').css('fill', '');
   $('.syllable-highlighted').addClass('syllable');
@@ -70,7 +63,8 @@ export function unselect () {
  * @param {DragHandler} [dragHandler]
  */
 export function select (el, dragHandler) {
-  if (!$(el).hasClass('selected')) {
+  console.log(el);
+  if (!$(el).hasClass('selected') && !($(el).hasClass('sylTextRect'))) {
     $(el).addClass('selected');
     $(el).css('fill', '#d00');
     if ($(el).find('.sylTextRect-display').length) {
