@@ -95,7 +95,7 @@ export default class TextEditMode {
           clickSelect('#mei_output, #mei_output rect');
           dragSelect('#svg_group');
         } else {
-          clickSelect('.active-page, .active-page use');
+          clickSelect('.active-page > svg > svg, .active-page > svg > svg rect');
           dragSelect('.active-page svg');
         }
       }

@@ -46,7 +46,7 @@ class DivaEdit {
   }
 
   setSelectListeners () {
-    Select.clickSelect('.active-page > svg > svg, .active-page > svg > svg use');
+    Select.clickSelect('.active-page > svg > svg, .active-page > svg > svg use, .active-page > svg > svg rect');
     Select.dragSelect('.active-page svg');
   }
 }
