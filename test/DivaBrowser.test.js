@@ -1,9 +1,8 @@
 /* eslint-env jest */
-const fs = require('fs');
+const fs = require('fs-extra');
 const { Builder, By, until } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 const chrome = require('selenium-webdriver/chrome');
-const path = require('path');
 
 const uploadPath = './public/uploads/iiif/';
 const editUrl = 'http://localhost:8080/edit/test/diva-test';
@@ -12,11 +11,11 @@ jest.setTimeout('15000');
 
 beforeAll(() => {
   // Link test folder
-  fs.linkSync('./test/test', uploadPath + 'test');
+  fs.copySync('./test/test', uploadPath + 'test');
 });
 
 afterAll(() => {
-  fs.unlinkSync(uploadPath + 'test');
+  fs.removeSync(uploadPath + 'test');
 });
 
 describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
