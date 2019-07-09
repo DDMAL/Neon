@@ -44,7 +44,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
   describe('Check Display Panel', () => {
     beforeAll(async () => {
       // Ensure document loaded
-      await browser.wait(until.elementLocated(By.id('opacitySlider')), 5000);
+      await browser.wait(until.elementLocated(By.id('opacitySlider')), 10000);
     });
 
     test('Check Glyph Opacity', async () => {
@@ -54,7 +54,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       await browser.actions().dragAndDrop(glyphOpacitySlider, { x: -1 * parseInt(rect.width / 2), y: 0 }).perform();
       let opacityText = await browser.findElement(By.id('opacityOutput')).getText();
       expect(opacityText).toBe('0');
-      await browser.wait(until.elementLocated(By.className('neon-container')), 5000);
+      await browser.wait(until.elementLocated(By.className('neon-container')), 10000);
       let containerStyle = await browser.findElement(By.className('neon-container')).getAttribute('style');
       expect(containerStyle).toContain('opacity: 0;');
 
@@ -89,7 +89,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
     test('Test Highlight (Syllable)', async () => {
       await browser.executeScript(() => { document.getElementById('highlight-button').click(); });
       await browser.executeScript(() => { document.getElementById('highlight-syllable').click(); });
-      await browser.wait(until.elementLocated(By.className('syllable')), 5000);
+      await browser.wait(until.elementLocated(By.className('syllable')), 10000);
       let someSyllable = await browser.findElement(By.className('syllable'));
       let syllableClasses = await someSyllable.getAttribute('class');
       expect(syllableClasses).toContain('highlighted');
@@ -99,7 +99,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
   describe('Test diva.js viewer', () => {
     test('Test scrolling to new active page', async () => {
       // Verify that the first page is active.
-      await browser.wait(until.elementLocated(By.id('neon-container-0')), 5000);
+      await browser.wait(until.elementLocated(By.id('neon-container-0')), 10000);
       let containerZero = await browser.findElement(By.id('neon-container-0'));
       let containerZeroClass = await containerZero.getAttribute('class');
       expect(containerZeroClass).toContain('active-page');
@@ -116,7 +116,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
     test('Test diva.js zoom', async () => {
       // Zoom in
       let zoomInButton = await browser.findElement(By.id('diva-1-zoom-in-button'));
-      await browser.wait(until.elementLocated(By.className('neon-container')), 5000);
+      await browser.wait(until.elementLocated(By.className('neon-container')), 10000);
       let activeContainer = await browser.findElement(By.className('neon-container'));
       let initialSize = await activeContainer.getRect();
       await browser.actions().click(zoomInButton).perform();
