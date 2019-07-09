@@ -1,3 +1,4 @@
+import { convertSbToStaff } from './utils/ConvertMei.js';
 import * as Validation from './Validation.js';
 import VerovioWrapper from './VerovioWrapper.js';
 import PouchDb from 'pouchdb';
@@ -170,6 +171,10 @@ class NeonCore {
               throw new Error(response.statusText);
             }
           }).then(data => {
+            // Check if the MEI file is sb-based. If so, convert to staff-based.
+            if (data.match(/<sb .+>/)) {
+              data = convertSbToStaff(data);
+            }
             this.loadData(pageURI, data).then(() => {
               resolve(this.neonCache.get(pageURI));
             });
