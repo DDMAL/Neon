@@ -55,10 +55,7 @@ function Resize (elementId, neonView, dragHandler) {
 
     // if it's a boundingbox just get the coordinates
     if (element.classList.contains('syl')) {
-      let rect = element.querySelector('.sylTextRect-select');
-      if (rect === null) {
-        rect = element.querySelector('.sylTextRect-display');
-      }
+      let rect = element.querySelector('.sylTextRect-display');
       if (rect === null) {
         rect = element.querySelector('.sylTextRect');
       }

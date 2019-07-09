@@ -60,12 +60,12 @@ function DragHandler (neonView, selector) {
        * the below line cancels that dragging out
        * yes i realize this is very hacky
        */
-      if (selection.filter(element => element.classList.contains('sylTextRect-select')).length !== 0) {
+      if (selection.filter(element => element.classList.contains('sylTextRect-display')).length !== 0) {
         d3.select('#resizeRect').attr('transform', function () {
           return 'translate(' + [relativeX, relativeY] + ')';
         });
       } else {
-        d3.selectAll('.sylTextRect-select').attr('transform', function () {
+        d3.selectAll('.syl.selected').attr('transform', function () {
           return 'translate(' + [-1 * relativeX, -1 * relativeY] + ')';
         });
       }
