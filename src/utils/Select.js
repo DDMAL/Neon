@@ -86,7 +86,6 @@ function clickHandler (evt) {
       if (dragHandler) {
         dragHandler.dragInit();
       }
-      (evt).stopPropagation();
     }
   } else {
     // Check if the point being clicked on is a staff selection (if applicable)
