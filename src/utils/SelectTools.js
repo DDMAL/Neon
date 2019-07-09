@@ -63,8 +63,7 @@ export function unselect () {
  * @param {DragHandler} [dragHandler]
  */
 export function select (el, dragHandler) {
-  console.log(el);
-  if (!$(el).hasClass('selected') && !($(el).hasClass('sylTextRect'))) {
+  if (!$(el).hasClass('selected') && !($(el).hasClass('sylTextRect')) && !($(el).hasClass('sylTextRect-display'))) {
     $(el).addClass('selected');
     $(el).css('fill', '#d00');
     if ($(el).find('.sylTextRect-display').length) {
@@ -169,8 +168,6 @@ export function selectBBox (el, dragHandler, resizeHandler) {
   let bbox = $(el);
   let syl = bbox.closest('.syl');
   if (!syl.hasClass('selected')) {
-    bbox.removeClass('sylTextRect');
-    bbox.removeClass('sylTextRect-display');
     syl.addClass('selected');
     bbox.css('fill', '#d00');
     $(el).parents('.syllable').css('fill', 'red');
