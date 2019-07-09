@@ -65,7 +65,7 @@ function clickHandler (evt) {
   // If in insert mode or panning is active from shift key
   if (mode === 'insert' || evt.shiftKey) { return; }
   // Check if the element being clicked on is part of a drag Selection
-  if (this.tagName === 'use') {
+  if (this.tagName === 'use' && getSelectionType() !== 'selByBBox') {
     if ($(this).parents('.selected').length === 0) {
       let selection = [this];
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
