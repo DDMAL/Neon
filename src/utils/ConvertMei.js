@@ -70,36 +70,39 @@ export function convertSbToStaff (sbBasedMei) {
   let meiTree = et.parse(sbBasedMei);
   let meiTag = meiTree.getroot();
 
+  console.log(meiTag.findall('.//sb'));
+
   for (let section of meiTag.findall('.//section')) {
     let staffStore = [];
     for (let staff of section.getchildren()) {
       for (let layer of staff.getchildren()) {
         let sbIndexes = [];
         for (let sb of layer.findall('sb')) {
-          sbIndexes.append(layer.getchildren().indexOf(sb));
+          sbIndexes.push(layer.getchildren().indexOf(sb));
         }
 
         for (let [sbIndex, n] of zip(sbIndexes, [...Array(sbIndexes.length).keys()])) {
-          let sb = layer.getIndex(sbIndex);
+          let sb = layer.getItem(sbIndex);
+          console.log(sb);
           let newStaff = et.Element('staff', sb.attrib);
-          let container = et.SubElement(newStaff, 'layer');
+          let container = et.Element('layer', { 'n': '1' });
 
           // Check for custos
-          for (let custos in sb.getchildren()) {
-            staffStore.getIndex(staffStore.len() - 1).getIndex(staffStore.len() - 1).append(custos);
+          for (let i = 0; i < sb.len(); i++) {
+            let custos = sb.getItem(0);
+            let lastStaff = staffStore[staffStore.length - 1];
+            lastStaff.getItem(lastStaff.len() - 1).append(custos);
           }
 
-          // Set attributes
-          container.set('n', '1');
-
           // Get elements to add
-          let lastIndex = n + 1 === sbIndexes.length ? layer.len() : sbIndexes.getIndex(n + 1);
+          let lastIndex = n + 1 === sbIndexes.length ? layer.len() : sbIndexes[n + 1];
           container._children = container._children.concat(layer.getSlice(sbIndex + 1, lastIndex));
-          staffStore.append(newStaff);
+          newStaff.append(container);
+          staffStore.push(newStaff);
         }
       }
     }
-    let sectionId = section.get('id');
+    let sectionId = section.get('xml:id');
     section.clear();
     section.set('xml:id', sectionId);
     section._children = section._children.concat(staffStore);
@@ -143,7 +146,7 @@ export function convertSbToStaff (sbBasedMei) {
           syllable.attrib = syllableAttrib;
           syllable._children = syllable._children.concat(oldSyllableContent);
 
-          section.insert(staffIndex + stavesAdded + 1, newStaff);
+          section._children.splice(staffIndex + stavesAdded + 1, 0, newStaff);
         }
       }
     }
