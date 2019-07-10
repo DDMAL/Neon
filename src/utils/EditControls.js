@@ -111,7 +111,6 @@ export function initUndoRedoPanel (neonView) {
   function undoHandler () {
     neonView.undo(neonView.view.getCurrentPageURI()).then(result => {
       if (result) {
-        console.debug('Success');
         neonView.updateForCurrentPage();
       } else {
         console.error('Failed to undo action');
@@ -122,7 +121,6 @@ export function initUndoRedoPanel (neonView) {
   function redoHandler () {
     neonView.redo(neonView.view.getCurrentPageURI()).then(result => {
       if (result) {
-        console.debug('Success');
         neonView.updateForCurrentPage();
       } else {
         console.error('Failed to redo action');
