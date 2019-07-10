@@ -14,6 +14,10 @@ class NeonCore {
    * @returns {object} A NeonCore object.
    */
   constructor (manifest) {
+    /**
+     * A wrapper for the Verovio Web Worker.
+     * @type {object}
+     */
     this.verovioWrapper = new VerovioWrapper();
     Validation.init();
 

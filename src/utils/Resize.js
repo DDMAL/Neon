@@ -26,30 +26,30 @@ const Side = {
 function Resize (elementId, neonView, dragHandler) {
   var element = document.getElementById(elementId);
   /**
-     * The upper-left x-coordinate of the element.
-     * @type {number}
-     */
+   * The upper-left x-coordinate of the element.
+   * @type {number}
+   */
   var ulx;
   /**
-     * The upper-left y-coordinate of the element.
-     * @type {number}
-     */
+   * The upper-left y-coordinate of the element.
+   * @type {number}
+   */
   var uly;
   /**
-     * The lower-right x-coordinate of the element.
-     * @type {number}
-     */
+   * The lower-right x-coordinate of the element.
+   * @type {number}
+   */
   var lrx;
   /**
-     * The lower-right y-coordinate of the element.
-     * @type {number}
-     */
+   * The lower-right y-coordinate of the element.
+   * @type {number}
+   */
   var lry;
 
   /**
-     * Draw the initial rectangle around the element
-     * and add the listeners to support dragging to resize.
-     */
+   * Draw the initial rectangle around the element
+   * and add the listeners to support dragging to resize.
+   */
   function drawInitialRect () {
     if (element === null) return;
 
@@ -168,8 +168,8 @@ function Resize (elementId, neonView, dragHandler) {
   }
 
   /**
-     * Redraw the rectangle with the new bounds
-     */
+   * Redraw the rectangle with the new bounds
+   */
   function redraw () {
     d3.select('#resizeRect')
       .attr('x', ulx)

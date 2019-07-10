@@ -14,7 +14,6 @@ class TextView {
    * A constructor for a TextView.
    * @param {NeonView} neonView = The NeonView parent.
    */
-
   constructor (neonView) {
     this.neonView = neonView;
     this.notificationSent = false;

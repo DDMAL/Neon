@@ -94,16 +94,26 @@ function DragHandler (neonView, selector) {
     }
   }
 
+  /**
+   * A d3 action that should be put on the selector once the drag action finishes.
+   * @param {oject} reset
+   */
   function resetTo (reset) {
     resetToAction = reset;
   }
 
+  /**
+   * Reset the actino on the selector to the one set by resetTo.
+   */
   function reset () {
     if (resetToAction !== undefined) {
       d3.select(selector).call(resetToAction);
     }
   }
 
+  /**
+   * Remove the additonal editor options that exist.
+   */
   function endOptionsSelection () {
     $('#moreEdit').empty();
     $('#moreEdit').addClass('is-invisible');
