@@ -2,6 +2,7 @@
 
 import * as Notification from './Notification.js';
 import { navbarDropdownMenu, undoRedoPanel } from './EditContents';
+import { convertStaffToSb } from './ConvertMei.js';
 
 const $ = require('jquery');
 
@@ -82,7 +83,7 @@ export function initNavbar (neonView) {
   $('#getmei').on('click', () => {
     let uri = neonView.view.getCurrentPageURI();
     neonView.getPageMEI(uri).then(mei => {
-      let data = 'data:application/mei+xml;base64,' + window.btoa(mei);
+      let data = 'data:application/mei+xml;base64,' + window.btoa(convertStaffToSb(mei));
       $('#getmei').attr('href', data)
         .attr('download', neonView.view.getPageName() + '.mei');
     });
