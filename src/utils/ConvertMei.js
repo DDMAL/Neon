@@ -63,7 +63,7 @@ export function convertStaffToSb (staffBasedMei) {
     section.append(newStaff);
   }
 
-  return meiTree.write({ xml_declaration: true });
+  return meiTree.write({ xml_declaration: true, indent: 4 });
 }
 
 export function convertSbToStaff (sbBasedMei) {
@@ -149,7 +149,7 @@ export function convertSbToStaff (sbBasedMei) {
     }
   }
 
-  return meiTree.write({ xml_declaration: true });
+  return meiTree.write({ xml_declaration: true, indent: 4 });
 }
 
 function zip (array1, array2) {

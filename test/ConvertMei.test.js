@@ -13,6 +13,6 @@ beforeAll(() => {
 
 test('Verify results of \'convertStaffToSb\'', () => {
   let result = ConvertMei.convertStaffToSb(originalTest);
-  let parsedKey = et.parse(sbKey).write({ xml_declaration: true });
+  let parsedKey = et.parse(sbKey).write({ xml_declaration: true, indent: 4 });
   expect(result).toBe(parsedKey);
 });
