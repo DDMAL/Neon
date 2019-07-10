@@ -83,6 +83,78 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
     });
   });
 
+  describe('Check Syl Bounding Box UI', () => {
+    beforeAll(async () => {
+      await browser.executeScript(() => { document.getElementById('edit_mode').click(); });
+      await browser.executeScript(() => { document.getElementById('displayBBox').click(); });
+      await browser.executeScript(() => { document.getElementById('selByBBox').click(); });
+    });
+
+    afterAll(async () => {
+      await browser.executeScript(() => { document.getElementById('displayBBox').click(); });
+    });
+
+    test('Default BBox adding', async () => {
+      let syls = (await browser.findElements(By.className('syl')));
+      expect(syls.length).toBe(189);
+      let bboxes = (await browser.findElements(By.className('sylTextRect-display')));
+      expect(bboxes.length).toBe(188);
+    });
+
+    test('Click selecting BBox', async () => {
+      await browser.executeScript(() => { document.getElementsByClassName('sylTextRect-display')[0].dispatchEvent(new window.Event('mousedown')); });
+      let resizeRectCount = (await browser.findElements(By.id('resizeRect'))).length;
+      expect(resizeRectCount).toBe(1);
+      let sylSelectedCount = (await browser.findElements(By.className('syl selected'))).length;
+      expect(sylSelectedCount).toBe(1);
+      var canvas = await browser.findElement(By.id('svg_group'));
+      const actions = browser.actions();
+      await actions.move({ origin: canvas }).press().release().perform();
+    });
+
+    test('Drag selecting BBoxes', async () => {
+      var canvas = await browser.findElement(By.id('svg_group'));
+      const actions = browser.actions();
+      await actions.move({ origin: canvas }).press().move({ x: 500, y: 500 }).perform();
+      await browser.findElements(By.id('selectRect'));
+      await actions.release().perform();
+      let selected = await browser.findElements(By.css('g.syl.selected'));
+      expect(selected.length).toBeGreaterThan(0);
+      let resizeRects = await browser.findElements(By.id('resizeRect'));
+      expect(resizeRects.length).toBe(0);
+    });
+
+    test('Syl BBox highlighting features', async () => {
+      await browser.executeScript(() => { document.getElementById('highlight-button').dispatchEvent(new window.Event('click')); });
+      await browser.executeScript(() => { document.getElementById('highlight-syllable').dispatchEvent(new window.Event('click')); });
+      let colorCount = (await browser.findElements(By.css('.sylTextRect-display[style="fill: rgb(86, 180, 233);"]'))).length;
+      expect(colorCount).toBeGreaterThan(0);
+
+      await browser.executeScript(() => { document.getElementsByClassName('sylTextRect-display')[0].dispatchEvent(new window.Event('mousedown')); });
+      let newColorCount = (await browser.findElements(By.css('.sylTextRect-display[style="fill: rgb(86, 180, 233);"]'))).length;
+      expect(newColorCount).toBe(colorCount - 1);
+      var canvas = await browser.findElement(By.id('svg_group'));
+      const actions = browser.actions();
+      await actions.move({ origin: canvas }).press().release().perform();
+    });
+
+    test('Test selecting neumes while in bbox selecting mode', async () => {
+      await browser.executeScript(() => { document.getElementsByClassName('nc')[0].children[0].dispatchEvent(new window.Event('mousedown')); });
+      let selCount = (await browser.findElements(By.className('selected'))).length;
+      expect(selCount).toBe(0);
+      var canvas = await browser.findElement(By.id('svg_group'));
+      const actions = browser.actions();
+      await actions.move({ origin: canvas }).press().move({ x: 500, y: 500 }).perform();
+      await browser.findElements(By.id('selectRect'));
+      await actions.release().perform();
+      let goodSelCount = (await browser.findElements(By.className('selected'))).length;
+      expect(goodSelCount).toBeGreaterThan(0);
+      let badSelCount = (await browser.findElements(By.css('.selected:not(.syl)'))).length;
+      expect(badSelCount).toBe(0);
+      await actions.move({ origin: canvas }).press().release().perform();
+    });
+  });
+
   describe('Check Controls UI', () => {
     // Can't get viewBox from selenium for some reason so we can't check more than this
     test('Check Zoom Controls', async () => {
@@ -153,10 +225,6 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
 
     /// TEST EDIT MODE ///
     describe('Edit Mode', () => {
-      beforeAll(async () => {
-        await browser.executeScript(() => { document.getElementById('edit_mode').click(); });
-      });
-
       describe('Selection', () => {
         test('Test drag selection', async () => {
           var canvas = await browser.findElement(By.id('svg_group'));
