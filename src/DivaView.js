@@ -10,6 +10,7 @@ class DivaView {
     this.indexMap = new Map();
     this.diva.disableDragScrollable();
     this.displayPanel = new Display(this, 'neon-container', 'diva-viewer-canvas');
+    this.loadDelay = 500; // in milliseconds
     this.initDivaEvents();
     this.setViewEventHandlers();
   }
@@ -33,22 +34,27 @@ class DivaView {
       elem.classList.remove('active-page');
     });
     for (let page of pageIndexes) {
-      try {
+      window.setTimeout(checkAndLoad.bind(this), this.loadDelay, page);
+    }
+
+    function checkAndLoad (page) {
+      if (page === this.getCurrentPage()) {
         let pageURI = this.indexMap.get(page);
-        let svg = await this.neonView.getPageSVG(pageURI);
-        this.updateSVG(svg, page);
-      } catch (err) {
-        if (err.name !== 'not_found' && err.name !== 'missing_mei') {
-          console.error(err);
-        }
+        this.neonView.getPageSVG(pageURI).then(svg => {
+          this.updateSVG(svg, page);
+          let containerId = 'neon-container-' + page;
+          let container = document.getElementById(containerId);
+          if (container !== null) {
+            container.classList.add('active-page');
+          }
+          this.updateCallbacks.forEach(callback => callback());
+        }).catch(err => {
+          if (err.name !== 'not_found' && err.name !== 'missing_mei') {
+            console.error(err);
+          }
+        });
       }
     }
-    let containerId = 'neon-container-' + this.getCurrentPage();
-    let container = document.getElementById(containerId);
-    if (container !== null) {
-      container.classList.add('active-page');
-    }
-    this.updateCallbacks.forEach(callback => callback());
   }
 
   /**
