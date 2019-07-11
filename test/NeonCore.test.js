@@ -38,28 +38,142 @@ beforeAll(() => {
   };
 });
 
-test("Test 'SetText' function", async () => {
-  let neon = new NeonCore(mei);
-  await neon.initDb();
-  let svg = await neon.getSVG(pathToPNG);
-  let syl = svg.getElementById('testsyl').textContent.trim();
-  expect(syl).toBe('Hello');
-  let editorAction = {
-    'action': 'setText',
-    'param': {
-      'elementId': 'm-f715514e-cb0c-48e4-a1f9-a265ec1d5ca1',
-      'text': 'asdf'
-    }
-  };
-  expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-  svg = await neon.getSVG(pathToPNG);
-  syl = svg.getElementById('testsyl').textContent.trim();
-  expect(syl).toBe('asdf');
-});
-
 afterAll(async () => {
   let neon = new NeonCore(mei);
   await neon.db.destroy();
+});
+
+describe('Test textEdit module funcitons', async () => {
+  test("Test 'SetText' function", async () => {
+    let neon = new NeonCore(mei);
+    await neon.initDb();
+    let svg = await neon.getSVG(pathToPNG);
+    let syl = svg.getElementById('testsyl').textContent.trim();
+    expect(syl).toBe('Hello');
+    let editorAction = {
+      'action': 'setText',
+      'param': {
+        'elementId': 'm-f715514e-cb0c-48e4-a1f9-a265ec1d5ca1',
+        'text': 'asdf'
+      }
+    };
+    expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+    svg = await neon.getSVG(pathToPNG);
+    syl = svg.getElementById('testsyl').textContent.trim();
+    expect(syl).toBe('asdf');
+  });
+
+  test('Test grouping and ungrouping with bounding boxes', async () => {
+    let neon = new NeonCore(mei);
+    await neon.initDb();
+    let svg = await neon.getSVG(pathToPNG);
+    let rect1 = svg.getElementById('m-369ac5d3-9d2a-4fd3-be4f-cb2a3b530fe5').children[1].children[1];
+    let rect2 = svg.getElementById('m-cfe44ba2-a162-4276-9ce9-d34c897c2e75').children[1].children[1];
+    expect(rect1.getAttribute('width')).toBe('143');
+    expect(rect2.getAttribute('width')).toBe('138');
+    let editorAction = {
+      'action': 'group',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ['m-2292df83-f3ad-400e-8fc3-4b69b241a30f', 'm-edbf06f6-5791-4d5a-b5c3-2593a2a0eabe']
+      }
+    };
+    expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+    let info = await neon.info(pathToPNG);
+    svg = await neon.getSVG(pathToPNG);
+    let groupedRect = svg.getElementById(info).children[0].children[1];
+    expect(groupedRect.getAttribute('width')).toBe('278');
+
+    // ungrouping test
+    editorAction = {
+      'action': 'ungroup',
+      'param': {
+        'groupType': 'neume',
+        'elementIds': ['m-2292df83-f3ad-400e-8fc3-4b69b241a30f', 'm-edbf06f6-5791-4d5a-b5c3-2593a2a0eabe']
+      }
+    };
+    expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+    info = await neon.info(pathToPNG);
+    svg = await neon.getSVG(pathToPNG);
+    let arr = info.split(' ');
+    rect1 = svg.getElementById(arr[0]).children[0].children[1];
+    rect2 = svg.getElementById(arr[1]).children[1].children[1];
+    expect(rect1.getAttribute('width')).toBe('278');
+    expect(rect2.getAttribute('width')).toBe('138');
+  });
+
+  test('Test bbox resizing', async () => {
+    let neon = new NeonCore(mei);
+    await neon.initDb();
+    let svg = await neon.getSVG(pathToPNG);
+    let syl = svg.getElementById('m-369ac5d3-9d2a-4fd3-be4f-cb2a3b530fe5').children[1];
+    let bbox = syl.children[1];
+    expect(bbox.getAttribute('class')).toBe('sylTextRect');
+    let initX = parseInt(bbox.getAttribute('x'));
+    let initY = parseInt(bbox.getAttribute('y'));
+    let editorAction = {
+      'action': 'resize',
+      'param': {
+        'elementId': syl.getAttribute('id'),
+        'ulx': (initX + 100),
+        'uly': (initY + 100),
+        'lrx': 100,
+        'lry': 100
+      }
+    };
+    expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+    svg = await neon.getSVG(pathToPNG);
+    bbox = svg.getElementById('m-369ac5d3-9d2a-4fd3-be4f-cb2a3b530fe5').children[1].children[1];
+    expect(parseInt(bbox.getAttribute('x'))).toBe(initX + 100);
+    expect(parseInt(bbox.getAttribute('y'))).toBe(initY + 100);
+  });
+
+  test('Test bbox dragging', async () => {
+    let neon = new NeonCore(mei);
+    await neon.initDb();
+    let svg = await neon.getSVG(pathToPNG);
+    let syl = svg.getElementById('m-369ac5d3-9d2a-4fd3-be4f-cb2a3b530fe5').children[1];
+    let bbox = syl.children[1];
+    expect(bbox.getAttribute('class')).toBe('sylTextRect');
+    let initX = parseInt(bbox.getAttribute('x'));
+    let initY = parseInt(bbox.getAttribute('y'));
+    let editorAction = {
+      'action': 'drag',
+      'param': {
+        'elementId': syl.getAttribute('id'),
+        'x': 100,
+        'y': 100
+      }
+    };
+    expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+    svg = await neon.getSVG(pathToPNG);
+    bbox = svg.getElementById('m-369ac5d3-9d2a-4fd3-be4f-cb2a3b530fe5').children[1].children[1];
+    expect(parseInt(bbox.getAttribute('x'))).toBe(initX + 100);
+    expect(parseInt(bbox.getAttribute('y'))).toBe(initY - 100); // dragging is backwards
+  });
+
+  test('Test bbox insert behavior', async () => {
+    let neon = new NeonCore(mei);
+    await neon.initDb();
+    let editorAction = {
+      'action': 'insert',
+      'param': {
+        'elementType': 'nc',
+        'staffId': 'auto',
+        'ulx': 939,
+        'uly': 2452
+      }
+    };
+    expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+    let svg = await neon.getSVG(pathToPNG);
+    let info = await neon.info(pathToPNG);
+    let nc = svg.getElementById(info);
+    expect(nc.getAttribute('class')).toBe('nc');
+    let syllable = nc.parentElement.parentElement;
+    expect(syllable.getAttribute('class')).toBe('syllable');
+    let bbox = syllable.children[1].children[1];
+    expect(bbox.getAttribute('class')).toBe('sylTextRect');
+  });
 });
 
 test("Test 'getElementAttr' function", async () => {
@@ -216,7 +330,7 @@ describe("Test 'group and ungroup' functions", () => {
     expect(await neon.edit(editorAction4, pathToPNG)).toBeTruthy();
   });
 
-  test("the test", async () => {
+  test("Test 'group/ungroup' functions, neume with multiple fullParents", async () => {
     let neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
