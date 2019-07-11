@@ -21,7 +21,7 @@ class InfoModule {
     input.classList.add('checkbox');
     input.id = 'displayInfo';
     input.type = 'checkbox';
-    input.checked = false;
+    input.checked = true;
     label.appendChild(input);
     block.prepend(label);
 
