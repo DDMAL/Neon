@@ -41,6 +41,45 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
     });
   });
 
+  describe('Boundingbox selecting', () => {
+    test('Select syl bbox', async () => {
+      await browser.wait(until.elementLocated(By.id('displayBBox')), 10000);
+      let displayButton = await browser.findElement(By.id('displayBBox'));
+      // safari webdriver was not cooperating, so some things have to be done slightly differently in safari:
+      if (title !== 'safari') {
+        await browser.actions().click(displayButton).perform();
+      } else {
+        await browser.executeScript(() => { document.getElementById('displayBBox').click(); });
+      }
+
+      await browser.wait(until.elementLocated(By.id('edit_mode')), 10000);
+      let editButton = await browser.findElement(By.id('edit_mode'));
+      if (title !== 'safari') {
+        await browser.actions().click(editButton).perform();
+      } else {
+        await browser.executeScript(() => { document.getElementById('edit_mode').click(); });
+        await browser.executeScript(() => { document.getElementById('selByBBox').scrollIntoView(true); });
+      }
+
+      await browser.wait(until.elementLocated(By.id('selByBBox')), 10000);
+      let selButton = await browser.findElement(By.id('selByBBox'));
+      await browser.actions().click(selButton).perform();
+      await browser.wait(until.elementLocated(By.className('sylTextRect-display')), 10000);
+      let firstBBox = await browser.findElement(By.className('sylTextRect-display'));
+      if (title !== 'safari') {
+        await browser.actions().click(firstBBox).perform();
+      } else {
+        await browser.executeScript(() => { (document.getElementsByClassName('sylTextRect-display')[0]).dispatchEvent(new window.Event('mousedown')); });
+      }
+      let resizeRectCount = (await browser.findElements(By.id('resizeRect'))).length;
+      expect(resizeRectCount).toBe(1);
+      let sylSelectedCount = (await browser.findElements(By.className('syl selected'))).length;
+      expect(sylSelectedCount).toBe(1);
+
+      await browser.actions().click(selButton).perform();
+    });
+  });
+
   describe('Check Display Panel', () => {
     beforeAll(async () => {
       // Ensure document loaded
@@ -49,6 +88,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
 
     test('Check Glyph Opacity', async () => {
       // Set opacity to 0
+      await browser.executeScript(() => { document.getElementById('opacitySlider').scrollIntoView(true); });
       let glyphOpacitySlider = await browser.findElement(By.id('opacitySlider'));
       let rect = await glyphOpacitySlider.getRect();
       await browser.actions().dragAndDrop(glyphOpacitySlider, { x: -1 * parseInt(rect.width / 2), y: 0 }).perform();
