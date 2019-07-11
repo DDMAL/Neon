@@ -45,6 +45,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
     test('Select syl bbox', async () => {
       await browser.wait(until.elementLocated(By.id('displayBBox')), 10000);
       let displayButton = await browser.findElement(By.id('displayBBox'));
+      // safari webdriver was not cooperating, so some things have to be done slightly differently in safari:
       if (title !== 'safari') {
         await browser.actions().click(displayButton).perform();
       } else {
@@ -53,7 +54,6 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
 
       await browser.wait(until.elementLocated(By.id('edit_mode')), 10000);
       let editButton = await browser.findElement(By.id('edit_mode'));
-      // safari webdriver was no cooperating:
       if (title !== 'safari') {
         await browser.actions().click(editButton).perform();
       } else {

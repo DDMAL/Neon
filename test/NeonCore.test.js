@@ -67,6 +67,14 @@ describe('Test textEdit module funcitons', async () => {
     let neon = new NeonCore(mei);
     await neon.initDb();
     let svg = await neon.getSVG(pathToPNG);
+
+    /* there's no real logic to getting the boundingbox from the svg
+     * normally the syl gets added as the last child of a syllable
+     * and normally the sylTextRect comes after the text element
+     * in the syl's list of children
+     * although in these lines and the others like it
+     * it's really just about trying stuff until you get the correct element 
+     */
     let rect1 = svg.getElementById('m-369ac5d3-9d2a-4fd3-be4f-cb2a3b530fe5').children[1].children[1];
     let rect2 = svg.getElementById('m-cfe44ba2-a162-4276-9ce9-d34c897c2e75').children[1].children[1];
     expect(rect1.getAttribute('width')).toBe('143');
@@ -111,6 +119,8 @@ describe('Test textEdit module funcitons', async () => {
     expect(bbox.getAttribute('class')).toBe('sylTextRect');
     let initX = parseInt(bbox.getAttribute('x'));
     let initY = parseInt(bbox.getAttribute('y'));
+
+    // try resizing by an arbitrary amount and make sure that it actually moved by that amount
     let editorAction = {
       'action': 'resize',
       'param': {
@@ -137,6 +147,8 @@ describe('Test textEdit module funcitons', async () => {
     expect(bbox.getAttribute('class')).toBe('sylTextRect');
     let initX = parseInt(bbox.getAttribute('x'));
     let initY = parseInt(bbox.getAttribute('y'));
+
+    // again just moving by an arbitrary amount
     let editorAction = {
       'action': 'drag',
       'param': {
@@ -155,6 +167,8 @@ describe('Test textEdit module funcitons', async () => {
   test('Test bbox insert behavior', async () => {
     let neon = new NeonCore(mei);
     await neon.initDb();
+
+    // again just arbitrary coordinates
     let editorAction = {
       'action': 'insert',
       'param': {

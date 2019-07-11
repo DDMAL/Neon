@@ -286,7 +286,7 @@ class NeonCore {
     } else {
       promise = this.loadPage(pageURI);
     }
-    console.log(promise);
+    // console.log(promise);
     return new Promise((resolve, reject) => {
       promise.then(entry => {
         let currentMEI = entry.mei;
