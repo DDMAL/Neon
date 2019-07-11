@@ -9,9 +9,6 @@ const $ = require('jquery');
  * @param {EditMode} editMode - The EditMode object.
  */
 export function initEditModeControls (editMode) {
-  /* document.getElementById('dropdown_toggle').innerHTML =
-    '<a class="navbar-item"><button class="button" id="edit_mode">' +
-    'Edit MEI</button></a>'; */
   document.getElementById('edit_mode').addEventListener('click', function () {
     $('#insert_controls').append(Contents.insertControlsPanel);
     $('#edit_controls').append(Contents.editControlsPanel);

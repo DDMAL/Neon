@@ -55,7 +55,7 @@ class SingleEditMode {
   }
 
   setSelectListeners () {
-    Select.clickSelect('#mei_output, #mei_output use');
+    Select.clickSelect('#mei_output, #mei_output use, #mei_output rect');
     Select.dragSelect('#svg_group');
   }
 }

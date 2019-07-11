@@ -40,7 +40,6 @@ export function startEditMode (neonView) {
 
 /**
  * Set listener on switching EditMode button to File dropdown in the navbar.
- * @param {string} filename - The name of the MEI file.
  * @param {NeonView} neonView
  */
 export function initNavbar (neonView) {
@@ -90,7 +89,7 @@ export function initNavbar (neonView) {
 }
 
 /**
- * initialize undo/redo panel
+ * Initialize the undo/redo panel
  * @param {NeonView} neonView - the NeonView parent
  */
 export function initUndoRedoPanel (neonView) {
@@ -108,10 +107,12 @@ export function initUndoRedoPanel (neonView) {
     }
   });
 
+  /**
+   * Tries to undo an action and update the page if it succeeds.
+   */
   function undoHandler () {
     neonView.undo(neonView.view.getCurrentPageURI()).then(result => {
       if (result) {
-        console.debug('Success');
         neonView.updateForCurrentPage();
       } else {
         console.error('Failed to undo action');
@@ -119,10 +120,12 @@ export function initUndoRedoPanel (neonView) {
     });
   }
 
+  /**
+   * Tries to redo an action and update the page if it succeeds.
+   */
   function redoHandler () {
     neonView.redo(neonView.view.getCurrentPageURI()).then(result => {
       if (result) {
-        console.debug('Success');
         neonView.updateForCurrentPage();
       } else {
         console.error('Failed to redo action');

@@ -11,7 +11,7 @@ class NeonView {
   /**
    * Constructor for NeonView. Sets mode and passes constructors.
    * @param {object} params
-   * @param {string} params.manifest
+   * @param {string} params.manifest - The contents of a Neon manifest.
    * @param {object} params.View - Constructor for a View module
    * @param {object} params.Display - Constructor for DisplayPanel module
    * @param {object} params.Info - Constructor for InfoModule module
@@ -83,19 +83,17 @@ class NeonView {
 
   /**
    * Redo an action performed on the current page (if any)
+   * @returns {Promise} a promise that resolves to a success boolean
    */
   redo () {
-    // let val = await this.core.redo(this.view.getCurrentPageURI());
-    // return val;
     return this.core.redo(this.view.getCurrentPageURI());
   }
 
   /**
    * Undo the last action performed on the current page (if any)
+   * @returns {Promise} a promise that reoslves to a success boolean
    */
   undo () {
-    // let val = await this.core.undo(this.view.getCurrentPageURI());
-    // return val;
     return this.core.undo(this.view.getCurrentPageURI());
   }
 

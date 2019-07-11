@@ -32,8 +32,6 @@ export function setSelectHelperObjects (nv, dh) {
  * @param {string} selector - The CSS selector used to choose where listeners are applied.
  */
 export function clickSelect (selector) {
-  // $('#mei_output, #mei_output use').off('mousedown', clickHandler);
-  // $('#mei_output, #mei_output use').on('mousedown', clickHandler);
   $(selector).off('mousedown', clickHandler);
   $(selector).on('mousedown', clickHandler);
 
@@ -86,19 +84,6 @@ function clickHandler (evt) {
       if (dragHandler) {
         dragHandler.dragInit();
       }
-      // Trigger mousedown event on the bbox
-      (selection[0]).dispatchEvent(new window.MouseEvent('mousedown', {
-        screenX: evt.screenX,
-        screenY: evt.screenY,
-        clientX: evt.clientX,
-        clientY: evt.clientY,
-        ctrlKey: evt.ctrlKey,
-        shiftKey: evt.shiftKey,
-        altKey: evt.altKey,
-        metaKey: evt.metaKey,
-        view: evt.view
-      }));
-      (evt).stopPropagation();
     }
   } else {
     // Check if the point being clicked on is a staff selection (if applicable)

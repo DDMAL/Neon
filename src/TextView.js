@@ -14,7 +14,6 @@ class TextView {
    * A constructor for a TextView.
    * @param {NeonView} neonView = The NeonView parent.
    */
-
   constructor (neonView) {
     this.neonView = neonView;
     this.notificationSent = false;
@@ -68,9 +67,8 @@ class TextView {
     if ($('#displayBBox').is(':checked')) {
       $('.sylTextRect').addClass('sylTextRect-display');
       $('.sylTextRect').removeClass('sylTextRect');
-      $('.sylTextRect-hiddenSelect').addClass('sylTextRect-select');
-      $('.sylTextRect-hiddenSelect').removeClass('sylTextRect-hiddenSelect');
-      $('.sylTextRect-select').css('fill', 'red');
+      $('.syl.selected').find('.sylTextRect-display').css('fill', 'red');
+
       if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
         this.neonView.TextEdit.initSelectByBBoxButton();
       }
@@ -82,9 +80,7 @@ class TextView {
       }
       $('.sylTextRect-display').addClass('sylTextRect');
       $('.sylTextRect-display').removeClass('sylTextRect-display');
-      $('.sylTextRect-select').addClass('sylTextRect-hiddenSelect');
-      $('.sylTextRect-select').css('fill', 'none');
-      $('.sylTextRect-select').removeClass('sylTextRect-select');
+      $('.syl.selected').find('sylTextRect').css('fill', 'none');
       $('#selByBBox').css('display', 'none');
     }
     updateHighlight();
@@ -110,8 +106,6 @@ class TextView {
         $(span).on('mouseenter', () => {
           syllable.addClass('selected');
           rect.css('fill', '#d00');
-          rect.removeClass('sylTextRect-display');
-          rect.addClass('sylTextRect-select');
           // syl.attr('fill', '#ffc7c7');
           // this.highlightBoundingBox(span);
         });
@@ -122,8 +116,6 @@ class TextView {
           } else {
             rect.css('fill', 'blue');
           }
-          rect.removeClass('sylTextRect-select');
-          rect.addClass('sylTextRect-display');
           // syl.attr('fill', null);
           // this.removeBoundingBox(span);
         });

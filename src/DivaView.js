@@ -1,4 +1,14 @@
+/**
+ * View module that uses the diva.js viewer to render the pages of a IIIF manifests
+ * and then display the rendered MEI files over the proper pages.
+ */
 class DivaView {
+  /**
+   * Constructor for DivaView.
+   * @param {NeonView} neonView - NeonView parent
+   * @param {function} Display - A constructor for a DisplayPanel
+   * @param {string} manifest - Link to the IIIF manifest.
+   */
   constructor (neonView, Display, manifest) {
     this.neonView = neonView;
     this.updateCallbacks = [];
@@ -10,10 +20,14 @@ class DivaView {
     this.indexMap = new Map();
     this.diva.disableDragScrollable();
     this.displayPanel = new Display(this, 'neon-container', 'diva-viewer-canvas');
+    this.loadDelay = 500; // in milliseconds
     this.initDivaEvents();
     this.setViewEventHandlers();
   }
 
+  /**
+   * Set the listeners for certain events internal to diva.js
+   */
   initDivaEvents () {
     Diva.Events.subscribe('ManifestDidLoad', this.parseManifest.bind(this), this.diva.settings.ID);
     Diva.Events.subscribe('ObjectDidLoad', this.didLoad.bind(this), this.diva.settings.ID);
@@ -33,22 +47,27 @@ class DivaView {
       elem.classList.remove('active-page');
     });
     for (let page of pageIndexes) {
-      try {
+      window.setTimeout(checkAndLoad.bind(this), this.loadDelay, page);
+    }
+
+    function checkAndLoad (page) {
+      if (page === this.getCurrentPage()) {
         let pageURI = this.indexMap.get(page);
-        let svg = await this.neonView.getPageSVG(pageURI);
-        this.updateSVG(svg, page);
-      } catch (err) {
-        if (err.name !== 'not_found' && err.name !== 'missing_mei') {
-          console.error(err);
-        }
+        this.neonView.getPageSVG(pageURI).then(svg => {
+          this.updateSVG(svg, page);
+          let containerId = 'neon-container-' + page;
+          let container = document.getElementById(containerId);
+          if (container !== null) {
+            container.classList.add('active-page');
+          }
+          this.updateCallbacks.forEach(callback => callback());
+        }).catch(err => {
+          if (err.name !== 'not_found' && err.name !== 'missing_mei') {
+            console.error(err);
+          }
+        });
       }
     }
-    let containerId = 'neon-container-' + this.getCurrentPage();
-    let container = document.getElementById(containerId);
-    if (container !== null) {
-      container.classList.add('active-page');
-    }
-    this.updateCallbacks.forEach(callback => callback());
   }
 
   /**
@@ -135,10 +154,18 @@ class DivaView {
     console.log(this.diva);
   }
 
+  /**
+   * Add a callback function that will be run whenever an SVG is updated.
+   * @param {function} cb - The callback function.
+   */
   addUpdateCallback (cb) {
     this.updateCallbacks.push(cb);
   }
 
+  /**
+   * Remove a callback function previously added to the list of functions to call.
+   * @param {function} cb - The callback function to remove.
+   */
   removeUpdateCallback (cb) {
     let index = this.updateCallbacks.findItem((elem) => {
       return elem === cb;
@@ -148,6 +175,9 @@ class DivaView {
     }
   }
 
+  /**
+   * Set listeners on the body element for global events.
+   */
   setViewEventHandlers () {
     document.body.addEventListener('keydown', (evt) => {
       switch (evt.key) {
@@ -172,6 +202,10 @@ class DivaView {
     });
   }
 
+  /**
+   * Use the IIIF manifest to create a map between IIIF canvases and page indexes.
+   * @param {object} manifest - The IIIF manifest
+   */
   parseManifest (manifest) {
     this.indexMap.clear();
     for (let sequence of manifest.sequences) {
@@ -181,6 +215,10 @@ class DivaView {
     }
   }
 
+  /**
+   * Get the name of the active page/canvas combined with the manuscript name.
+   * @returns {string}
+   */
   getPageName () {
     let manuscriptName = this.diva.settings.manifest.itemTitle;
     let pageName = this.diva.settings.manifest.pages[this.getCurrentPage()].l;

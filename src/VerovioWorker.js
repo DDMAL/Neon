@@ -15,6 +15,10 @@ toolkit.setOptions({
 
 onmessage = handleNeonEvent;
 
+/**
+ * Parse and respond to messages sent by NeonCore.
+ * @param {MessageEvent} evt
+ */
 function handleNeonEvent (evt) {
   let data = evt.data;
   let result = {

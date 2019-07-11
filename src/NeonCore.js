@@ -14,6 +14,10 @@ class NeonCore {
    * @returns {object} A NeonCore object.
    */
   constructor (manifest) {
+    /**
+     * A wrapper for the Verovio Web Worker.
+     * @type {object}
+     */
     this.verovioWrapper = new VerovioWrapper();
     Validation.init();
 
@@ -286,7 +290,6 @@ class NeonCore {
     } else {
       promise = this.loadPage(pageURI);
     }
-    console.log(promise);
     return new Promise((resolve, reject) => {
       promise.then(entry => {
         let currentMEI = entry.mei;
@@ -303,10 +306,9 @@ class NeonCore {
               }
               this.undoStacks.get(pageURI).push(currentMEI);
               this.redoStacks.set(pageURI, []);
-
-              evt.target.removeEventListener('message', handle);
-              this.updateCache(pageURI).then(() => { resolve(evt.data.result); });
             }
+            evt.target.removeEventListener('message', handle);
+            this.updateCache(pageURI).then(() => { resolve(evt.data.result); });
           }
         }
         this.verovioWrapper.addEventListener('message', handle.bind(this));

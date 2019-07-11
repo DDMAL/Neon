@@ -26,41 +26,39 @@ const Side = {
 function Resize (elementId, neonView, dragHandler) {
   var element = document.getElementById(elementId);
   /**
-     * The upper-left x-coordinate of the element.
-     * @type {number}
-     */
+   * The upper-left x-coordinate of the element.
+   * @type {number}
+   */
   var ulx;
   /**
-     * The upper-left y-coordinate of the element.
-     * @type {number}
-     */
+   * The upper-left y-coordinate of the element.
+   * @type {number}
+   */
   var uly;
   /**
-     * The lower-right x-coordinate of the element.
-     * @type {number}
-     */
+   * The lower-right x-coordinate of the element.
+   * @type {number}
+   */
   var lrx;
   /**
-     * The lower-right y-coordinate of the element.
-     * @type {number}
-     */
+   * The lower-right y-coordinate of the element.
+   * @type {number}
+   */
   var lry;
 
   /**
-     * Draw the initial rectangle around the element
-     * and add the listeners to support dragging to resize.
-     */
+   * Draw the initial rectangle around the element
+   * and add the listeners to support dragging to resize.
+   */
   function drawInitialRect () {
     if (element === null) return;
 
     // if it's a boundingbox just get the coordinates
     if (element.classList.contains('syl')) {
-      let rect = element.querySelector('.sylTextRect-select');
+      let rect = element.querySelector('.sylTextRect-display');
       if (rect === null) {
-        rect = element.querySelector('.sylTextRect-display');
-      }
-      if (rect === null) {
-        rect = element.querySelector('.sylTextRect');
+        console.warn("Tried to draw resize rect for a sylTextRect that doesn't exist (or isn't displaying)");
+        return;
       }
       ulx = Number(rect.getAttribute('x'));
       uly = Number(rect.getAttribute('y'));
@@ -170,8 +168,8 @@ function Resize (elementId, neonView, dragHandler) {
   }
 
   /**
-     * Redraw the rectangle with the new bounds
-     */
+   * Redraw the rectangle with the new bounds
+   */
   function redraw () {
     d3.select('#resizeRect')
       .attr('x', ulx)

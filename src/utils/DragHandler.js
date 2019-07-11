@@ -48,24 +48,13 @@ function DragHandler (neonView, selector) {
         });
       });
       /*
-       * We want to make sure that the rect drawn for resizing (with bboxes and staves) is dragged along when dragging
-       * In the case of staves the resizeRect is a child of the staff, so it is done in the previous forEach loop
-       * But in the bbox case it's not a child so we need to do it manually
-       * so if we are in the sylTextRect case we get the resizeRect and animate its dragging
-       * in the case where we're not dragging a syl boundingbox
-       * we want to make sure that the bounding box for the thing we are moving
-       * (if it exists and is displaying) doesn't move along with it
-       * but the above forEach selects all children of the element we're dragging
-       * including (potentially) it's syl bbox child
-       * the below line cancels that dragging out
-       * yes i realize this is very hacky
+       * if we're dragging a syllable (or neume etc) then there won't be a syl selected
+       * then we don't want the bounding box (if it is displayed) to move when dragging the neumes
+       * it will be a child of the element in selection, so it will get moved in the above loop
+       * so we cancel that movement out here
        */
-      if (selection.filter(element => element.classList.contains('sylTextRect-select')).length !== 0) {
-        d3.select('#resizeRect').attr('transform', function () {
-          return 'translate(' + [relativeX, relativeY] + ')';
-        });
-      } else {
-        d3.selectAll('.sylTextRect-select').attr('transform', function () {
+      if (selection.filter(element => element.classList.contains('syl')).length === 0) {
+        d3.selectAll('.syllable.selected').selectAll('.sylTextRect-display').attr('transform', function () {
           return 'translate(' + [-1 * relativeX, -1 * relativeY] + ')';
         });
       }
@@ -105,16 +94,26 @@ function DragHandler (neonView, selector) {
     }
   }
 
+  /**
+   * A d3 action that should be put on the selector once the drag action finishes.
+   * @param {oject} reset
+   */
   function resetTo (reset) {
     resetToAction = reset;
   }
 
+  /**
+   * Reset the actino on the selector to the one set by resetTo.
+   */
   function reset () {
     if (resetToAction !== undefined) {
       d3.select(selector).call(resetToAction);
     }
   }
 
+  /**
+   * Remove the additonal editor options that exist.
+   */
   function endOptionsSelection () {
     $('#moreEdit').empty();
     $('#moreEdit').addClass('is-invisible');
