@@ -306,10 +306,9 @@ class NeonCore {
               }
               this.undoStacks.get(pageURI).push(currentMEI);
               this.redoStacks.set(pageURI, []);
-
-              evt.target.removeEventListener('message', handle);
-              this.updateCache(pageURI).then(() => { resolve(evt.data.result); });
             }
+            evt.target.removeEventListener('message', handle);
+            this.updateCache(pageURI).then(() => { resolve(evt.data.result); });
           }
         }
         this.verovioWrapper.addEventListener('message', handle.bind(this));

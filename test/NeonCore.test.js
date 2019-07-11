@@ -43,6 +43,19 @@ afterAll(async () => {
   await neon.db.destroy();
 });
 
+test('Test failing editor action', async () => {
+  let neon = new NeonCore(mei);
+  await neon.initDb();
+  let editorAction = {
+    'action': 'setText',
+    'param': {
+      'elementId': null,
+      'text': 'test'
+    }
+  };
+  expect(await neon.edit(editorAction, pathToPNG)).toBeFalsy();
+});
+
 describe('Test textEdit module funcitons', async () => {
   test("Test 'SetText' function", async () => {
     let neon = new NeonCore(mei);
