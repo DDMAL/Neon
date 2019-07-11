@@ -227,6 +227,7 @@ InfoModule.neumeGroups = new Map(
  */
 function setInfoControls () {
   startInfoVisibility();
+  updateInfoVisibility();
   $('#displayInfo').click(updateInfoVisibility);
 }
 
