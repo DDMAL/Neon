@@ -21,7 +21,7 @@ class InfoModule {
     input.classList.add('checkbox');
     input.id = 'displayInfo';
     input.type = 'checkbox';
-    input.checked = true;
+    input.checked = false;
     label.appendChild(input);
     block.prepend(label);
 
@@ -226,8 +226,15 @@ InfoModule.neumeGroups = new Map(
  * Set listener on info visibility checkbox.
  */
 function setInfoControls () {
-  updateInfoVisibility();
+  startInfoVisibility();
   $('#displayInfo').click(updateInfoVisibility);
+}
+
+function startInfoVisibility () {
+  $('#neume_info').append("<article class='message' style='display: none;'><div class='message-header'><p></p>" +
+            "</div>" +
+            "<div class='message-body'></div>");
+  $('#neume_info').addClass('is-invisible');
 }
 
 /**
@@ -235,11 +242,9 @@ function setInfoControls () {
  */
 function updateInfoVisibility () {
   if ($('#displayInfo').is(':checked')) {
-    $('#neume_info').append("<article class='message' style='display: none;'><div class='message-header'><p></p>" +
-            "<button class='delete' id='notification-delete' aria-label='delete'></button></div>" +
-            "<div class='message-body'></div>");
+    $('#neume_info').removeClass('is-invisible');
   } else {
-    $('#neume_info').empty();
+    $('#neume_info').addClass('is-invisible');
   }
 }
 
