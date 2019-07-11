@@ -32,8 +32,6 @@ export function setSelectHelperObjects (nv, dh) {
  * @param {string} selector - The CSS selector used to choose where listeners are applied.
  */
 export function clickSelect (selector) {
-  // $('#mei_output, #mei_output use').off('mousedown', clickHandler);
-  // $('#mei_output, #mei_output use').on('mousedown', clickHandler);
   $(selector).off('mousedown', clickHandler);
   $(selector).on('mousedown', clickHandler);
 

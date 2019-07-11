@@ -112,9 +112,9 @@ class InfoModule {
   }
 
   /**
-     * Get the individual pitches of a neume.
-     * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
-     */
+   * Get the individual pitches of a neume.
+   * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
+   */
   async getPitches (ncs) {
     var pitches = '';
     for (let nc of ncs) {
@@ -125,9 +125,9 @@ class InfoModule {
   }
 
   /**
-     * Get the contour of a neume.
-     * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
-     */
+   * Get the contour of a neume.
+   * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
+   */
   async getContour (ncs) {
     var contour = '';
     var previous = null;
@@ -157,10 +157,10 @@ class InfoModule {
   }
 
   /**
-     * Show and update the info box.
-     * @param {string} title - The info box title.
-     * @param {string} body - The info box contents.
-     */
+   * Show and update the info box.
+   * @param {string} title - The info box title.
+   * @param {string} body - The info box contents.
+   */
   updateInfoModule (title, body) {
     if ($('#displayInfo').is(':checked')) {
       $('.message').css('display', '');
@@ -174,10 +174,10 @@ class InfoModule {
   }
 
   /**
-     * Convert a pitch name (a-g) to a number (where c is 1, d is 2 and b is 7).
-     * @param {string} pname - The pitch name.
-     * @returns {number}
-     */
+   * Convert a pitch name (a-g) to a number (where c is 1, d is 2 and b is 7).
+   * @param {string} pname - The pitch name.
+   * @returns {number}
+   */
   pitchNameToNum (pname) {
     switch (pname) {
       case 'c':
@@ -200,10 +200,10 @@ class InfoModule {
   }
 
   /**
-     * Find the contour of an neume grouping based on the grouping name.
-     * @param {string} value - the value name.
-     * @returns {string}
-     */
+   * Find the contour of an neume grouping based on the grouping name.
+   * @param {string} value - the value name.
+   * @returns {string}
+   */
   getContourByValue (value) {
     for (let [cont, v] of InfoModule.neumeGroups.entries()) {
       if (v === value) {

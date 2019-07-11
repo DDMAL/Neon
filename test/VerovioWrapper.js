@@ -1,5 +1,8 @@
 const verovio = require('verovio-dev');
 
+/**
+ * Wrapper to be used during tests when Web Workers are not available.
+ */
 export default class VerovioWrapper {
   constructor () {
     this.toolkit = new verovio.toolkit();
@@ -16,10 +19,19 @@ export default class VerovioWrapper {
     });
   }
 
+  /**
+   * Fake adding an event handler, just save the handler.
+   * @param {string} type - The event to listen to, which is ignored.
+   * @param {function} handler - The handler that will be saved.
+   */
   addEventListener (type, handler) {
     this.handler = handler;
   }
 
+  /**
+   * Fake sending a message and call the handler with the message here.
+   * @param {object} message
+   */
   postMessage (message) {
     let data = this.handleNeonEvent(message);
     let evt = {
@@ -32,6 +44,11 @@ export default class VerovioWrapper {
     this.handler(evt);
   }
 
+  /**
+   * Handler for the different messages that could be sent.
+   * @param {object} data - The content of the message.
+   * @returns {object}
+   */
   handleNeonEvent (data) {
     let result = {
       id: data.id
