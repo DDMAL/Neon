@@ -52,15 +52,16 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
   describe('Check Info Box', () => {
     test('Check Info Box Neumes', async () => {
       let neumeID = 'm-07ad2140-4fa1-45d4-af47-6733add00825';
-      var message;
-      await browser.wait(until.elementLocated(By.id(neumeID)), 10000); // Wait two seconds for elements to appear
+      await browser.wait(until.elementLocated(By.id(neumeID)), 10000); // Wait ten seconds for elements to appear
+      await browser.executeScript(() => { document.getElementById('displayInfo').click(); });
+      await browser.wait(until.elementLocated(By.className('message-body')), 5000);
       await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new window.Event('mouseover')); }, neumeID);
+      await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new window.Event('mouseleave')); }, neumeID);
       let body = await browser.findElement(By.className('message-body'));
       await browser.wait(until.elementIsVisible(body), 5000);
-      message = await body.getText();
 
-      expect(message).toContain('Clivis');
-      expect(message).toContain('A2 G2');
+      await browser.wait(until.elementTextContains(body, 'Clivis'), 5000);
+      await browser.wait(until.elementTextContains(body, 'A2 G2'), 5000);
     });
 
     test('Check Info Box Clef', async () => {
