@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: TextEditMode.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: TextEditMode.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { unselect } from './utils/SelectTools.js';
+import DragHandler from './utils/DragHandler.js';
+import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select.js';
+
+const $ = require('jquery');
+
+/**
+ * A Text editing module that works with the SingleView and DivaView modules
+ */
+export default class TextEditMode {
+  /**
+   * Constructor for a TextEdit
+   * @param {NeonView} neonView
+   */
+  constructor (neonView) {
+    this.neonView = neonView;
+    this.initEditModeControls();
+  }
+
+  /**
+   * set listener on edit mode button
+   */
+  initEditModeControls () {
+    document.getElementById('edit_mode').addEventListener('click', () => {
+      this.initTextEdit();
+      if ($('#displayBBox').is(':checked')) {
+        this.initSelectByBBoxButton();
+      }
+    });
+  }
+
+  /**
+  * set text to edit mode
+  */
+  initTextEdit () {
+    let spans = Array.from($('#syl_text').children('p').children('span'));
+    spans.forEach(span => {
+      $(span).off('click');
+      $(span).on('click', () => {
+        this.updateSylText(span);
+      });
+    });
+  }
+
+  /**
+  * add the selectByRect button
+  * if neume edit mode is there, add it to the bar with the other select by buttons
+  * otherwise add an invisible button
+  * since the only edit mode is selectByRect in that case
+  */
+  initSelectByBBoxButton () {
+    if (this.neonView.NeumeEdit !== undefined) {
+      if ($('#selByBBox').length) {
+        $('#selByBBox').css('display', '');
+        return;
+      }
+      let block = $('#selBySyl').parent('.control').parent('.field');
+      block.append("&lt;p class='control'>&lt;button class='button sel-by' id='selByBBox'>BBox&lt;/button>&lt;/p>");
+      let button = $('#selByBBox');
+      button.on('click', () => {
+        if (!$('#selByBBox').hasClass('is-active')) {
+          unselect();
+          $('#moreEdit').empty();
+          $('#selByBBox').addClass('is-active');
+          $('#selByNc').removeClass('is-active');
+          $('#selByNeume').removeClass('is-active');
+          $('#selByStaff').removeClass('is-active');
+          $('#selBySyl').removeClass('is-active');
+        }
+        this.addBBoxListeners();
+      }).bind(this);
+      this.neonView.view.addUpdateCallback(this.addBBoxListeners.bind(this));
+    } else {
+      let block = $('#undo').parent('.control');
+      block.append("&lt;p class='control'>&lt;button class='button sel-by' id='selByBBox'>BBox&lt;/button>&lt;/p>");
+      let button = $('#selByBBox');
+      button.addClass('is-active');
+      button.css('display', 'none');
+      this.addBBoxListeners();
+      this.neonView.addUpdateCallback(this.addBBoxListeners.bind(this));
+    }
+  }
+
+  /**
+   * initialize select by bbox mode
+   */
+  addBBoxListeners () {
+    if ($('#selByBBox').hasClass('is-active')) {
+      unselect();
+      if (this.neonView.NeumeEdit === undefined) {
+        // just in case
+        this.dragHandler = new DragHandler(this.neonView, '.sylTextRect-display');
+        setSelectHelperObjects(this.neonView, this.dragHandler);
+        if (this.neonView.view.constructor.name === 'SingleView') {
+          clickSelect('#mei_output, #mei_output rect');
+          dragSelect('#svg_group');
+        } else {
+          clickSelect('.active-page > svg > svg, .active-page > svg > svg rect');
+          dragSelect('.active-page svg');
+        }
+      }
+    }
+  }
+
+  /**
+  * Update the text for a single syl element
+  * @param {HTMLElement} span
+  */
+  updateSylText (span) {
+    let orig = formatRaw($(span).html());
+    let corrected = window.prompt('', orig);
+    if (corrected !== null &amp;&amp; corrected !== orig) {
+      let editorAction = {
+        'action': 'setText',
+        'param': {
+          'elementId': $('#' + $(span).attr('class').replace('syl-select', '').trim()).attr('id'),
+          'text': corrected
+        }
+      };
+      this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then((response) => {
+        if (response) {
+          this.neonView.updateForCurrentPage();
+        }
+      });
+    }
+  }
+}
+
+/**
+ * Format a string for prompting the user.
+ * @param {string} rawString
+ * @returns {string}
+ */
+function formatRaw (rawString) {
+  let removeSymbol = /\u{25CA}/u;
+  return rawString.replace(removeSymbol, '').trim();
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-DisplayPanel_DisplayControls.html">DisplayPanel/DisplayControls</a></li><li><a href="module-DisplayPanel_DisplayPanel.html">DisplayPanel/DisplayPanel</a></li><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-SquareEdit_Contents.html">SquareEdit/Contents</a></li><li><a href="module-SquareEdit_Controls.html">SquareEdit/Controls</a></li><li><a href="module-SquareEdit_Grouping.html">SquareEdit/Grouping</a></li><li><a href="module-SquareEdit_SelectOptions.html">SquareEdit/SelectOptions</a></li><li><a href="module-SquareEdit_StaffTools.html">SquareEdit/StaffTools</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-utils_EditContents.html">utils/EditContents</a></li><li><a href="module-utils_EditControls.html">utils/EditControls</a></li><li><a href="module-utils_NeonManifest.html">utils/NeonManifest</a></li><li><a href="module-utils_Notification.html">utils/Notification</a></li><li><a href="module-utils_Resize.html">utils/Resize</a></li><li><a href="module-utils_Select.html">utils/Select</a></li><li><a href="module-utils_SelectTools.html">utils/SelectTools</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DivaView.html">DivaView</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module-DisplayPanel_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-SquareEdit_StaffTools-SplitHandler.html">SplitHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="module-utils_Notification-Notification.html">Notification</a></li><li><a href="module-utils_Resize-Resize.html">Resize</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addBBoxListeners">addBBoxListeners</a></li><li><a href="global.html#addEventListener">addEventListener</a></li><li><a href="global.html#formatRaw">formatRaw</a></li><li><a href="global.html#handleNeonEvent">handleNeonEvent</a></li><li><a href="global.html#initEditModeControls">initEditModeControls</a></li><li><a href="global.html#initSelectByBBoxButton">initSelectByBBoxButton</a></li><li><a href="global.html#initTextEdit">initTextEdit</a></li><li><a href="global.html#postMessage">postMessage</a></li><li><a href="global.html#updateSylText">updateSylText</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Mon Jul 15 2019 09:24:07 GMT-0400 (GMT-04:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

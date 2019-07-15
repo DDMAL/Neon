@@ -27,7 +27,9 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import NeonCore from './NeonCore.js';
-import * as Notification from './utils/Notification.js';
+
+import { parseManifest } from './utils/NeonManifest.js';
+import { prepareEditMode } from './utils/EditControls';
 
 /**
  * NeonView class. Manages the other modules of Neon and communicates with
@@ -37,49 +39,40 @@ class NeonView {
   /**
    * Constructor for NeonView. Sets mode and passes constructors.
    * @param {object} params
-   * @param {string} params.mode
-   * @param {object} params.options
+   * @param {string} params.manifest - The contents of a Neon manifest.
    * @param {object} params.View - Constructor for a View module
    * @param {object} params.Display - Constructor for DisplayPanel module
    * @param {object} params.Info - Constructor for InfoModule module
-   * @param {object} [params.Edit] - Constructor for EditMode module
+   * @param {object} [params.NeumeEdit] - Constructor for NeumeEdit module
    * @param {object} [params.TextView] - Constructor for TextView module
+   * @param {object} [params.TextEdit] - Constructor for TextEdit module
    */
   constructor (params) {
-    if (params.mode === 'single' || params.mode === 'iiif') {
-      this.mode = params.mode;
-    } else {
-      console.error('Invalid mode');
+    if (!parseManifest(params.manifest)) {
+      console.error('Unable to parse the manifest');
     }
+    this.manifest = params.manifest;
 
-    if (this.mode === 'single') {
-      this.view = new params.View(this, params.Display, params.options.image);
-    } else {
-      this.view = new params.View(this, params.Display, params.options.manifest);
-    }
+    this.view = new params.View(this, params.Display, params.manifest.image);
+    this.name = params.manifest.title;
 
-    this.core = new NeonCore(params.options.meiMap, params.options.name);
-
+    this.core = new NeonCore(params.manifest);
     this.display = this.view.display;
-    this.InfoModule = params.Info;
     this.info = new params.Info(this);
 
-    if (params.Edit !== undefined) {
+    if (params.NeumeEdit !== undefined || (params.TextEdit !== undefined &amp;&amp; params.TextView !== undefined)) {
       // Set up display for edit button
-      let parent = document.getElementById('dropdown_toggle');
-      let editItem = document.createElement('a');
-      editItem.classList.add('navbar-item');
-      let editButton = document.createElement('button');
-      editButton.classList.add('button');
-      editButton.id = 'edit_mode';
-      editButton.textContent = 'Edit MEI';
-      editItem.appendChild(editButton);
-      parent.appendChild(editItem);
+      prepareEditMode(this);
+    }
 
-      this.editor = new params.Edit(this);
+    if (params.NeumeEdit !== undefined) {
+      this.NeumeEdit = new params.NeumeEdit(this);
     }
     if (params.TextView !== undefined) {
       this.textView = new params.TextView(this);
+      if (params.TextEdit !== undefined) {
+        this.TextEdit = new params.TextEdit(this);
+      }
     }
   }
 
@@ -104,34 +97,45 @@ class NeonView {
    */
   updateForCurrentPage () {
     let pageNo = this.view.getCurrentPage();
-    // load pages
-    this.core.getSVG(pageNo).then((svg) => {
-      this.view.updateSVG(svg, pageNo);
-    });
+    this.view.changePage(pageNo);
+  }
+
+  /**
+   * Same as updateForCurrentPage but returns a promise.
+   * @see NeonView.updateForCurrentPage
+   */
+  updateForCurrentPagePromise () {
+    let pageNo = this.view.getCurrentPage();
+    return Promise.resolve(this.view.changePage(pageNo));
   }
 
   /**
    * Redo an action performed on the current page (if any)
+   * @returns {Promise} a promise that resolves to a success boolean
    */
   redo () {
-    return this.core.redo(this.view.getCurrentPage());
+    return this.core.redo(this.view.getCurrentPageURI());
   }
 
   /**
    * Undo the last action performed on the current page (if any)
+   * @returns {Promise} a promise that reoslves to a success boolean
    */
   undo () {
-    return this.core.undo(this.view.getCurrentPage());
+    return this.core.undo(this.view.getCurrentPageURI());
   }
 
   /**
    * Get the mode Neon is in: viewer, insert, or edit.
+   * @returns {string}
    */
   getUserMode () {
-    if (this.editor === undefined) {
-      return 'viewer';
+    if (this.NeumeEdit !== undefined) {
+      return this.NeumeEdit.getUserMode();
+    } else if (this.TextEdit !== undefined) {
+      return 'edit';
     } else {
-      return this.editor.getUserMode();
+      return 'viewer';
     }
   }
 
@@ -140,32 +144,46 @@ class NeonView {
    * @param {object} action - The editor toolkit action object.
    * @param {string} action.action - The name of the action to perform.
    * @param {object|array} action.param - The parameters of the action(s)
-   * @param {number} pageNo - The zero-indexed page number to perform the action on.
+   * @param {string} pageURI - The URI of the page to perform the action on
    * @returns {Promise} A promise that resolves to the result of the action.
    */
-  edit (action, pageNo) {
-    let editPromise = new Promise((resolve) => {
-      resolve(this.core.edit(action, pageNo));
-    });
-    return editPromise;
+  edit (action, pageURI) {
+    return this.core.edit(action, pageURI);
   }
 
   /**
    * Get the attributes for a specific musical element.
    * @param {string} elementID - The unique ID of the element.
-   * @param {number} pageNo - The zero-indexed page number the ID is found on.
+   * @param {string} pageURI - The URI of the page the element is found on
    * @returns {Promise} A promise that resolves to the available attributes.
    */
-  getElementAttr (elementID, pageNo) {
-    let elementPromise = new Promise((resolve, reject) => {
-      resolve(this.core.getElementAttr(elementID, pageNo));
-    });
-    return elementPromise;
+  getElementAttr (elementID, pageURI) {
+    return this.core.getElementAttr(elementID, pageURI);
   }
 
   /**
-   * Save the current state of the MEI file(s) to the browser database.
+   * Updates browser database and creates JSON-LD save file.
    * @returns {Promise} A promise that resolves when the save action is finished.
+   */
+  export () {
+    // return this.core.updateDatabase();
+    return (new Promise((resolve, reject) => {
+      this.core.updateDatabase().then(() => {
+        this.manifest.mei_annotations = this.core.annotations;
+        this.manifest.timestamp = (new Date()).toISOString();
+        let data = new window.Blob([JSON.stringify(this.manifest, null, 2)], { type: 'application/ld+json' });
+        let reader = new window.FileReader();
+        reader.addEventListener('load', () => {
+          resolve(reader.result);
+        });
+        reader.readAsDataURL(data);
+      }).catch(err => { reject(err); });
+    }));
+  }
+
+  /**
+   * Save the current state to the browser database.
+   * @returns {Promise} A promise that resolves when the action is finished.
    */
   save () {
     return this.core.updateDatabase();
@@ -225,13 +243,13 @@ export { NeonView as default };
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-DisplayPanel_DisplayControls.html">DisplayPanel/DisplayControls</a></li><li><a href="module-DisplayPanel_DisplayPanel.html">DisplayPanel/DisplayPanel</a></li><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-SquareEdit_Contents.html">SquareEdit/Contents</a></li><li><a href="module-SquareEdit_Controls.html">SquareEdit/Controls</a></li><li><a href="module-SquareEdit_Grouping.html">SquareEdit/Grouping</a></li><li><a href="module-SquareEdit_SelectOptions.html">SquareEdit/SelectOptions</a></li><li><a href="module-SquareEdit_StaffTools.html">SquareEdit/StaffTools</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-utils_EditContents.html">utils/EditContents</a></li><li><a href="module-utils_EditControls.html">utils/EditControls</a></li><li><a href="module-utils_NeonManifest.html">utils/NeonManifest</a></li><li><a href="module-utils_Notification.html">utils/Notification</a></li><li><a href="module-utils_Resize.html">utils/Resize</a></li><li><a href="module-utils_Select.html">utils/Select</a></li><li><a href="module-utils_SelectTools.html">utils/SelectTools</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DivaView.html">DivaView</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module-DisplayPanel_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-SquareEdit_StaffTools-SplitHandler.html">SplitHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="module-utils_Notification-Notification.html">Notification</a></li><li><a href="module-utils_Resize-Resize.html">Resize</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addBBoxListeners">addBBoxListeners</a></li><li><a href="global.html#addEventListener">addEventListener</a></li><li><a href="global.html#formatRaw">formatRaw</a></li><li><a href="global.html#handleNeonEvent">handleNeonEvent</a></li><li><a href="global.html#initEditModeControls">initEditModeControls</a></li><li><a href="global.html#initSelectByBBoxButton">initSelectByBBoxButton</a></li><li><a href="global.html#initTextEdit">initTextEdit</a></li><li><a href="global.html#postMessage">postMessage</a></li><li><a href="global.html#updateSylText">updateSylText</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 18 2019 11:17:42 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Mon Jul 15 2019 09:24:07 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>

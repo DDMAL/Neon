@@ -46,7 +46,12 @@ export function setGroupingHighlight (grouping) {
     let groupColor = ColorPalette[i % ColorPalette.length];
     if (!$(groups[i]).parents('.selected').length &amp;&amp; !$(groups[i]).hasClass('selected')) {
       groups[i].setAttribute('fill', groupColor);
+      let rects = Array.from($(groups[i]).find('.sylTextRect-display'));
+      rects.forEach(function (rect) {
+        $(rect).css('fill', groupColor);
+      });
       $(groups[i]).addClass('highlighted');
+      $(groups[i]).find('.sylTextRect-display').addClass('highlighted');
     } else {
       if (!$(groups[i]).hasClass('selected')) {
         groups[i].setAttribute('fill', null);
@@ -66,7 +71,20 @@ export function unsetGroupingHighlight () {
   let highlighted = Array.from($('.highlighted').filter((index, elem) => { return !$(elem.parentElement).hasClass('selected'); }));
   highlighted.forEach(elem => {
     elem.setAttribute('fill', null);
+    let rects = Array.from($(elem).find('.sylTextRect-display'));
+    if (!rects.length) {
+      if (Array.from($(elem).parents('syllable')).length) {
+        rects = Array.from($(elem).parents('syllable').find('.sylTextRect-display'));
+      }
+    }
+    rects.forEach(function (rect) {
+      if (!($(rect).closest('.syllable').hasClass('selected'))) {
+        $(rect).css('fill', 'blue');
+        $(rect).removeClass('highlighted');
+      }
+    });
     $(elem).removeClass('highlighted');
+    $(elem).find('sylTextRect-display').removeClass('highlighted');
   });
 }
 
@@ -100,6 +118,12 @@ export function highlight (staff, color) {
       child.setAttribute('stroke', color);
     } else {
       child.setAttribute('fill', color);
+      let rects = Array.from($(child).find('.sylTextRect-display'));
+      if (!rects.length) { rects = Array.from($(child).parents('syllable').find('.sylTextRect-display')); }
+      rects.forEach(function (rect) {
+        $(rect).css('fill', color);
+        $(rect).addClass('highlighted');
+      });
     }
     $(child).addClass('highlighted');
   });
@@ -116,6 +140,12 @@ export function unhighlight (staff) {
       elem.setAttribute('stroke', '#000000');
     } else {
       elem.removeAttribute('fill');
+      let rects = Array.from($(elem).find('.sylTextRect-display'));
+      if (!rects.length) { rects = Array.from($(elem).parents('syllable').find('.sylTextRect-display')); }
+      rects.forEach(function (rect) {
+        $(rect).css('fill', 'blue');
+        $(rect).removeClass('highlighted');
+      });
     }
   });
   $(staff).filter(':not(.selected)').children('.highlighted').removeClass('highlighted');
@@ -147,13 +177,13 @@ const ColorPalette = [
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-DisplayPanel_DisplayControls.html">DisplayPanel/DisplayControls</a></li><li><a href="module-DisplayPanel_DisplayPanel.html">DisplayPanel/DisplayPanel</a></li><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-SquareEdit_Contents.html">SquareEdit/Contents</a></li><li><a href="module-SquareEdit_Controls.html">SquareEdit/Controls</a></li><li><a href="module-SquareEdit_Grouping.html">SquareEdit/Grouping</a></li><li><a href="module-SquareEdit_SelectOptions.html">SquareEdit/SelectOptions</a></li><li><a href="module-SquareEdit_StaffTools.html">SquareEdit/StaffTools</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-utils_EditContents.html">utils/EditContents</a></li><li><a href="module-utils_EditControls.html">utils/EditControls</a></li><li><a href="module-utils_NeonManifest.html">utils/NeonManifest</a></li><li><a href="module-utils_Notification.html">utils/Notification</a></li><li><a href="module-utils_Resize.html">utils/Resize</a></li><li><a href="module-utils_Select.html">utils/Select</a></li><li><a href="module-utils_SelectTools.html">utils/SelectTools</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DivaView.html">DivaView</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module-DisplayPanel_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-SquareEdit_StaffTools-SplitHandler.html">SplitHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="module-utils_Notification-Notification.html">Notification</a></li><li><a href="module-utils_Resize-Resize.html">Resize</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addBBoxListeners">addBBoxListeners</a></li><li><a href="global.html#addEventListener">addEventListener</a></li><li><a href="global.html#formatRaw">formatRaw</a></li><li><a href="global.html#handleNeonEvent">handleNeonEvent</a></li><li><a href="global.html#initEditModeControls">initEditModeControls</a></li><li><a href="global.html#initSelectByBBoxButton">initSelectByBBoxButton</a></li><li><a href="global.html#initTextEdit">initTextEdit</a></li><li><a href="global.html#postMessage">postMessage</a></li><li><a href="global.html#updateSylText">updateSylText</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 18 2019 11:17:42 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Mon Jul 15 2019 09:24:07 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>

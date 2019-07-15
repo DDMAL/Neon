@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: SingleEditMode</title>
+    <title>JSDoc: Module: utils/Select</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: SingleEditMode</h1>
+    <h1 class="page-title">Module: utils/Select</h1>
 
     
 
@@ -28,10 +28,6 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>SingleEditMode<span class="signature">(neonView)</span><span class="type-signature"></span></h2>
-        
-            <div class="class-description">An Edit Module for a single page of a manuscript.
-Works with the SingleView module.</div>
         
     
 </header>
@@ -41,12 +37,34 @@ Works with the SingleView module.</div>
     
         
 
+        
     
-    <h2>Constructor</h2>
+    </div>
+
     
 
     
-    <h4 class="name" id="SingleEditMode"><span class="type-signature"></span>new SingleEditMode<span class="signature">(neonView)</span><span class="type-signature"></span></h4>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".clickSelect"><span class="type-signature">(static) </span>clickSelect<span class="signature">(selector)</span><span class="type-signature"></span></h4>
     
 
     
@@ -54,7 +72,7 @@ Works with the SingleView module.</div>
 
 
 <div class="description">
-    Constructor for an EditMode object.
+    Apply listeners for click selection.
 </div>
 
 
@@ -90,13 +108,13 @@ Works with the SingleView module.</div>
 
         <tr>
             
-                <td class="name"><code>neonView</code></td>
+                <td class="name"><code>selector</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="NeonView.html">NeonView</a></span>
+<span class="param-type">string</span>
 
 
             
@@ -106,7 +124,7 @@ Works with the SingleView module.</div>
 
             
 
-            <td class="description last">The NeonView parent.</td>
+            <td class="description last">The CSS selector used to choose where listeners are applied.</td>
         </tr>
 
     
@@ -147,7 +165,7 @@ Works with the SingleView module.</div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SquareEdit_SingleEditMode.js.html">SquareEdit/SingleEditMode.js</a>, <a href="SquareEdit_SingleEditMode.js.html#line16">line 16</a>
+        <a href="utils_Select.js.html">utils/Select.js</a>, <a href="utils_Select.js.html#line34">line 34</a>
     </li></ul></dd>
     
 
@@ -177,33 +195,13 @@ Works with the SingleView module.</div>
 
 
 
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
         
             
 
     
 
     
-    <h4 class="name" id="getUserMode"><span class="type-signature"></span>getUserMode<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id=".dragSelect"><span class="type-signature">(static) </span>dragSelect<span class="signature">(selector)</span><span class="type-signature"></span></h4>
     
 
     
@@ -211,7 +209,7 @@ Works with the SingleView module.</div>
 
 
 <div class="description">
-    Get the user mode that Neon is in. Either insert, edit, or viewer.
+    Apply listeners for drag selection.
 </div>
 
 
@@ -222,110 +220,53 @@ Works with the SingleView module.</div>
 
 
 
-
-
-
-
-<dl class="details">
-
+    <h5>Parameters:</h5>
     
 
-    
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SquareEdit_SingleEditMode.js.html">SquareEdit/SingleEditMode.js</a>, <a href="SquareEdit_SingleEditMode.js.html#line47">line 47</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
+        <th>Type</th>
 
         
 
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
         
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>selector</code></td>
+            
+
+            <td class="type">
+            
+                
 <span class="param-type">string</span>
 
 
-    </dd>
-</dl>
+            
+            </td>
 
-    
-
-
-
-
-
-        
             
 
-    
+            
+
+            <td class="description last">The CSS selector used to choose where listeners are applied.</td>
+        </tr>
 
     
-    <h4 class="name" id="initEditMode"><span class="type-signature"></span>initEditMode<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Initialize the start of edit mode when first leaving viewer mode.
-</div>
-
-
-
-
-
-
-
+    </tbody>
+</table>
 
 
 
@@ -361,7 +302,304 @@ Works with the SingleView module.</div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SquareEdit_SingleEditMode.js.html">SquareEdit/SingleEditMode.js</a>, <a href="SquareEdit_SingleEditMode.js.html#line24">line 24</a>
+        <a href="utils_Select.js.html">utils/Select.js</a>, <a href="utils_Select.js.html#line145">line 145</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".setSelectHelperObjects"><span class="type-signature">(static) </span>setSelectHelperObjects<span class="signature">(nv, dh)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Set the objects for this module.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>nv</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NeonView.html">NeonView</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The NeonView object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>dh</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="DragHandler.html">DragHandler</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The drag handler object</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_Select.js.html">utils/Select.js</a>, <a href="utils_Select.js.html#line23">line 23</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~clickHandler"><span class="type-signature">(inner) </span>clickHandler<span class="signature">(evt)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handle click events related to element selection.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>evt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_Select.js.html">utils/Select.js</a>, <a href="utils_Select.js.html#line59">line 59</a>
     </li></ul></dd>
     
 

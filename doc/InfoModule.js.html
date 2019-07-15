@@ -106,7 +106,7 @@ class InfoModule {
         var ncs = element.children('.nc');
         var contour = await this.getContour(ncs);
         if (contour === 'Clivis') {
-          var attr = await this.neonView.getElementAttr($(ncs[0])[0].id, this.neonView.view.getCurrentPage());
+          var attr = await this.neonView.getElementAttr($(ncs[0])[0].id, this.neonView.view.getCurrentPageURI());
           if (attr.ligated) {
             contour = 'Ligature';
           }
@@ -118,11 +118,11 @@ class InfoModule {
                 'Pitch(es): ' + pitches;
         break;
       case 'custos':
-        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPage());
+        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         body += 'Pitch: ' + (attributes.pname).toUpperCase() + attributes.oct;
         break;
       case 'clef':
-        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPage());
+        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         body += 'Shape: ' + attributes.shape + '&lt;br/>' +
                 'Line: ' + attributes.line;
         break;
@@ -140,27 +140,27 @@ class InfoModule {
   }
 
   /**
-     * Get the individual pitches of a neume.
-     * @param {array.&lt;SVGGraphicsElement>} ncs - neume components in the neume.
-     */
+   * Get the individual pitches of a neume.
+   * @param {array.&lt;SVGGraphicsElement>} ncs - neume components in the neume.
+   */
   async getPitches (ncs) {
     var pitches = '';
     for (let nc of ncs) {
-      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPage());
+      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
       pitches += attributes.pname + attributes.oct + ' ';
     }
     return pitches;
   }
 
   /**
-     * Get the contour of a neume.
-     * @param {array.&lt;SVGGraphicsElement>} ncs - neume components in the neume.
-     */
+   * Get the contour of a neume.
+   * @param {array.&lt;SVGGraphicsElement>} ncs - neume components in the neume.
+   */
   async getContour (ncs) {
     var contour = '';
     var previous = null;
     for (let nc of ncs) {
-      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPage());
+      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
       if (previous !== null) {
         if (previous.oct > attributes.oct) {
           contour += 'd';
@@ -185,10 +185,10 @@ class InfoModule {
   }
 
   /**
-     * Show and update the info box.
-     * @param {string} title - The info box title.
-     * @param {string} body - The info box contents.
-     */
+   * Show and update the info box.
+   * @param {string} title - The info box title.
+   * @param {string} body - The info box contents.
+   */
   updateInfoModule (title, body) {
     if ($('#displayInfo').is(':checked')) {
       $('.message').css('display', '');
@@ -202,10 +202,10 @@ class InfoModule {
   }
 
   /**
-     * Convert a pitch name (a-g) to a number (where c is 1, d is 2 and b is 7).
-     * @param {string} pname - The pitch name.
-     * @returns {number}
-     */
+   * Convert a pitch name (a-g) to a number (where c is 1, d is 2 and b is 7).
+   * @param {string} pname - The pitch name.
+   * @returns {number}
+   */
   pitchNameToNum (pname) {
     switch (pname) {
       case 'c':
@@ -228,10 +228,10 @@ class InfoModule {
   }
 
   /**
-     * Find the contour of an neume grouping based on the grouping name.
-     * @param {string} value - the value name.
-     * @returns {string}
-     */
+   * Find the contour of an neume grouping based on the grouping name.
+   * @param {string} value - the value name.
+   * @returns {string}
+   */
   getContourByValue (value) {
     for (let [cont, v] of InfoModule.neumeGroups.entries()) {
       if (v === value) {
@@ -282,13 +282,13 @@ export { InfoModule as default };
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-DisplayPanel_DisplayControls.html">DisplayPanel/DisplayControls</a></li><li><a href="module-DisplayPanel_DisplayPanel.html">DisplayPanel/DisplayPanel</a></li><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-SquareEdit_Contents.html">SquareEdit/Contents</a></li><li><a href="module-SquareEdit_Controls.html">SquareEdit/Controls</a></li><li><a href="module-SquareEdit_Grouping.html">SquareEdit/Grouping</a></li><li><a href="module-SquareEdit_SelectOptions.html">SquareEdit/SelectOptions</a></li><li><a href="module-SquareEdit_StaffTools.html">SquareEdit/StaffTools</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-utils_EditContents.html">utils/EditContents</a></li><li><a href="module-utils_EditControls.html">utils/EditControls</a></li><li><a href="module-utils_NeonManifest.html">utils/NeonManifest</a></li><li><a href="module-utils_Notification.html">utils/Notification</a></li><li><a href="module-utils_Resize.html">utils/Resize</a></li><li><a href="module-utils_Select.html">utils/Select</a></li><li><a href="module-utils_SelectTools.html">utils/SelectTools</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DivaView.html">DivaView</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module-DisplayPanel_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-SquareEdit_StaffTools-SplitHandler.html">SplitHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="module-utils_Notification-Notification.html">Notification</a></li><li><a href="module-utils_Resize-Resize.html">Resize</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addBBoxListeners">addBBoxListeners</a></li><li><a href="global.html#addEventListener">addEventListener</a></li><li><a href="global.html#formatRaw">formatRaw</a></li><li><a href="global.html#handleNeonEvent">handleNeonEvent</a></li><li><a href="global.html#initEditModeControls">initEditModeControls</a></li><li><a href="global.html#initSelectByBBoxButton">initSelectByBBoxButton</a></li><li><a href="global.html#initTextEdit">initTextEdit</a></li><li><a href="global.html#postMessage">postMessage</a></li><li><a href="global.html#updateSylText">updateSylText</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 18 2019 11:17:42 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Mon Jul 15 2019 09:24:07 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>

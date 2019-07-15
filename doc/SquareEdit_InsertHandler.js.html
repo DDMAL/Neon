@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: SingleEdit/InsertHandler.js</title>
+    <title>JSDoc: Source: SquareEdit/InsertHandler.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: SingleEdit/InsertHandler.js</h1>
+    <h1 class="page-title">Source: SquareEdit/InsertHandler.js</h1>
 
     
 
@@ -34,12 +34,14 @@ const $ = require('jquery');
  * Handle inserting new musical elements and communicate this to Verovio.
  * @constructor
  * @param {NeonView} neonView - The NeonView parent.
+ * @param {string} sel - A CSS selector representing where to put the listeners.
  */
-function InsertHandler (neonView) {
+function InsertHandler (neonView, sel) {
   var type = '';
   var firstClick = true;
   var coord;
   var attributes = null;
+  var selector = sel;
 
   /**
      * Switch to insert mode based on the button pressed.
@@ -126,8 +128,8 @@ function InsertHandler (neonView) {
     }
     removeInsertClickHandlers();
     if (type === 'staff') {
-      $('body').on('click', '#svg_group', staffHandler);
-    } else { $('body').on('click', '#svg_group', handler); }
+      $('body').on('click', selector, staffHandler);
+    } else { $('body').on('click', selector, handler); }
 
     // Disable edit mode listeners
     $('body').on('keydown', keydownListener);
@@ -138,14 +140,11 @@ function InsertHandler (neonView) {
 
     // Add 'return to edit mode' button
     if (!alreadyInInsertMode) {
-      let editModeContainer = document.createElement('p');
-      editModeContainer.classList.add('control');
       let editModeButton = document.createElement('button');
       editModeButton.id = 'returnToEditMode';
       editModeButton.classList.add('button');
       editModeButton.innerHTML = 'Return to Edit Mode';
-      editModeContainer.appendChild(editModeButton);
-      document.getElementById('delete').parentNode.parentNode.appendChild(editModeContainer);
+      document.getElementById('redo').parentNode.appendChild(editModeButton);
       editModeButton.addEventListener('click', insertDisabled);
     }
     $('#editMenu').css('backgroundColor', 'whitesmoke');
@@ -166,7 +165,11 @@ function InsertHandler (neonView) {
     $('.insertel.is-active').removeClass('is-active');
     firstClick = true;
     Cursor.resetCursor();
-    $(document.getElementById('returnToEditMode').parentNode).remove();
+    try {
+      $(document.getElementById('returnToEditMode')).remove();
+    } catch (e) {
+      console.debug(e);
+    }
     $('#insertMenu').css('backgroundColor', 'whitesmoke');
     $('#insertMenu').css('font-weight', '');
     $('#editMenu').css('backgroundColor', '#ffc7c7');
@@ -174,8 +177,9 @@ function InsertHandler (neonView) {
   }
 
   function clickawayHandler (evt) {
-    if (evt.target.id !== 'svg_group' &amp;&amp; $('#svg_group').find(evt.target).length === 0 &amp;&amp; evt.target.tagName !== 'path' &amp;&amp;
-            !($(evt.target).hasClass('insertel') || $(evt.target).hasClass('image'))) {
+    if ($(evt.target).closest('.active-page').length === 0 &amp;&amp;
+      $(evt.target).closest('#insert_controls').length === 0 &amp;&amp;
+      $(evt.target).closest('#svg_group').length === 0) {
       insertDisabled();
       $('body').off('keydown', staffHandler);
       $('body').off('keydown', handler);
@@ -184,7 +188,7 @@ function InsertHandler (neonView) {
 
   function resetInsertHandler (evt) {
     if (evt.key === 'Shift') {
-      $('body').on('click', '#svg_group', type === 'staff' ? staffHandler : handler);
+      $('body').on('click', selector, type === 'staff' ? staffHandler : handler);
     }
   }
 
@@ -203,12 +207,12 @@ function InsertHandler (neonView) {
      * @param {object} evt - JQuery event object.
      */
   function handler (evt) {
-    var container = document.getElementsByClassName('definition-scale')[0];
+    var container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     var pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
     // Transform pt to SVG context
-    var transformMatrix = container.getScreenCTM();
+    var transformMatrix = container.getElementsByClassName('system')[0].getScreenCTM();
     var cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
     let editorAction = {
@@ -225,7 +229,7 @@ function InsertHandler (neonView) {
       editorAction['param']['attributes'] = attributes;
     }
 
-    neonView.edit(editorAction, 0).then(() => {
+    neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(() => {
       neonView.updateForCurrentPage();
     });
   }
@@ -235,11 +239,11 @@ function InsertHandler (neonView) {
      * @param {object} evt - JQuery event object.
      */
   function staffHandler (evt) {
-    var container = document.getElementsByClassName('definition-scale')[0];
+    var container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     var pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
-    var transformMatrix = container.getScreenCTM();
+    var transformMatrix = container.getElementsByClassName('system')[0].getScreenCTM();
     var cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
     if (firstClick) {
@@ -272,16 +276,16 @@ function InsertHandler (neonView) {
         }
       };
 
-      neonView.edit(action, 0).then(() => {
+      neonView.edit(action, neonView.view.getCurrentPageURI()).then(() => {
         neonView.updateForCurrentPage();
-        insertDisabled();
+        firstClick = true;
       });
     }
   }
 
   function removeInsertClickHandlers () {
-    $('body').off('click', '#svg_group', staffHandler);
-    $('body').off('click', '#svg_group', handler);
+    $('body').off('click', selector, staffHandler);
+    $('body').off('click', selector, handler);
   }
 
   /**
@@ -308,13 +312,13 @@ export { InsertHandler as default };
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-DisplayPanel_DisplayControls.html">DisplayPanel/DisplayControls</a></li><li><a href="module-DisplayPanel_DisplayPanel.html">DisplayPanel/DisplayPanel</a></li><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-SquareEdit_Contents.html">SquareEdit/Contents</a></li><li><a href="module-SquareEdit_Controls.html">SquareEdit/Controls</a></li><li><a href="module-SquareEdit_Grouping.html">SquareEdit/Grouping</a></li><li><a href="module-SquareEdit_SelectOptions.html">SquareEdit/SelectOptions</a></li><li><a href="module-SquareEdit_StaffTools.html">SquareEdit/StaffTools</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-utils_EditContents.html">utils/EditContents</a></li><li><a href="module-utils_EditControls.html">utils/EditControls</a></li><li><a href="module-utils_NeonManifest.html">utils/NeonManifest</a></li><li><a href="module-utils_Notification.html">utils/Notification</a></li><li><a href="module-utils_Resize.html">utils/Resize</a></li><li><a href="module-utils_Select.html">utils/Select</a></li><li><a href="module-utils_SelectTools.html">utils/SelectTools</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DivaView.html">DivaView</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module-DisplayPanel_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-SquareEdit_StaffTools-SplitHandler.html">SplitHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="module-utils_Notification-Notification.html">Notification</a></li><li><a href="module-utils_Resize-Resize.html">Resize</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addBBoxListeners">addBBoxListeners</a></li><li><a href="global.html#addEventListener">addEventListener</a></li><li><a href="global.html#formatRaw">formatRaw</a></li><li><a href="global.html#handleNeonEvent">handleNeonEvent</a></li><li><a href="global.html#initEditModeControls">initEditModeControls</a></li><li><a href="global.html#initSelectByBBoxButton">initSelectByBBoxButton</a></li><li><a href="global.html#initTextEdit">initTextEdit</a></li><li><a href="global.html#postMessage">postMessage</a></li><li><a href="global.html#updateSylText">updateSylText</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 18 2019 11:17:42 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Mon Jul 15 2019 09:24:07 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>

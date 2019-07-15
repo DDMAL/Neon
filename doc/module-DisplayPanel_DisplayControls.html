@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Global</title>
+    <title>JSDoc: Module: DisplayPanel/DisplayControls</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Global</h1>
+    <h1 class="page-title">Module: DisplayPanel/DisplayControls</h1>
 
     
 
@@ -28,7 +28,6 @@
 
 <header>
     
-        <h2></h2>
         
     
 </header>
@@ -37,45 +36,6 @@
     <div class="container-overview">
     
         
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
 
         
     
@@ -104,7 +64,7 @@
     
 
     
-    <h4 class="name" id="addBBoxListeners"><span class="type-signature"></span>addBBoxListeners<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".initDisplayControls"><span class="type-signature">(static) </span>initDisplayControls<span class="signature">(meiClassName, background)</span><span class="type-signature"></span></h4>
     
 
     
@@ -112,95 +72,7 @@
 
 
 <div class="description">
-    initialize select by bbox mode
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TextEditMode.js.html">TextEditMode.js</a>, <a href="TextEditMode.js.html#line87">line 87</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="addEventListener"><span class="type-signature"></span>addEventListener<span class="signature">(type, handler)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Set an event listener onto the actual web worker.
+    Initialize listeners and controls for display panel.
 </div>
 
 
@@ -236,7 +108,7 @@
 
         <tr>
             
-                <td class="name"><code>type</code></td>
+                <td class="name"><code>meiClassName</code></td>
             
 
             <td class="type">
@@ -252,20 +124,20 @@
 
             
 
-            <td class="description last">The event to listen to.</td>
+            <td class="description last">The class used to signifiy the MEI element(s).</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>handler</code></td>
+                <td class="name"><code>background</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type">string</span>
 
 
             
@@ -275,7 +147,7 @@
 
             
 
-            <td class="description last">The function to be called when the event occurs.</td>
+            <td class="description last">The class used to signify the background.</td>
         </tr>
 
     
@@ -316,7 +188,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VerovioWrapper.js.html">VerovioWrapper.js</a>, <a href="VerovioWrapper.js.html#line16">line 16</a>
+        <a href="DisplayPanel_DisplayControls.js.html">DisplayPanel/DisplayControls.js</a>, <a href="DisplayPanel_DisplayControls.js.html#line15">line 15</a>
     </li></ul></dd>
     
 
@@ -352,7 +224,7 @@
     
 
     
-    <h4 class="name" id="formatRaw"><span class="type-signature"></span>formatRaw<span class="signature">(rawString)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id=".setHighlightControls"><span class="type-signature">(static) </span>setHighlightControls<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -360,7 +232,95 @@
 
 
 <div class="description">
-    Format a string for prompting the user.
+    Set listener on staff highlighting checkbox.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="DisplayPanel_DisplayControls.js.html">DisplayPanel/DisplayControls.js</a>, <a href="DisplayPanel_DisplayControls.js.html#line133">line 133</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".setOpacityFromSlider"><span class="type-signature">(static) </span>setOpacityFromSlider<span class="signature">(meiClassName)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Update MEI opacity to value from the slider.
 </div>
 
 
@@ -396,7 +356,7 @@
 
         <tr>
             
-                <td class="name"><code>rawString</code></td>
+                <td class="name"><code>meiClassName</code></td>
             
 
             <td class="type">
@@ -453,7 +413,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TextEditMode.js.html">TextEditMode.js</a>, <a href="TextEditMode.js.html#line134">line 134</a>
+        <a href="DisplayPanel_DisplayControls.js.html">DisplayPanel/DisplayControls.js</a>, <a href="DisplayPanel_DisplayControls.js.html#line101">line 101</a>
     </li></ul></dd>
     
 
@@ -478,24 +438,6 @@
 
 
 
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -507,7 +449,7 @@
     
 
     
-    <h4 class="name" id="handleNeonEvent"><span class="type-signature"></span>handleNeonEvent<span class="signature">(evt)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".setZoomControls"><span class="type-signature">(static) </span>setZoomControls<span class="signature">(zoomHandler)</span><span class="type-signature"></span></h4>
     
 
     
@@ -515,7 +457,7 @@
 
 
 <div class="description">
-    Parse and respond to messages sent by NeonCore.
+    Set zoom control listener for button and slider
 </div>
 
 
@@ -551,13 +493,326 @@
 
         <tr>
             
-                <td class="name"><code>evt</code></td>
+                <td class="name"><code>zoomHandler</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">MessageEvent</span>
+<span class="param-type">ZoomHandler</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The zoomHandler, if it exists.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="DisplayPanel_DisplayControls.js.html">DisplayPanel/DisplayControls.js</a>, <a href="DisplayPanel_DisplayControls.js.html#line36">line 36</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".updateHighlight"><span class="type-signature">(static) </span>updateHighlight<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Reset the highlight for different types based on the 'highlight-selected' class in the DOM.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="DisplayPanel_DisplayControls.js.html">DisplayPanel/DisplayControls.js</a>, <a href="DisplayPanel_DisplayControls.js.html#line175">line 175</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~highlightClickaway"><span class="type-signature">(inner) </span>highlightClickaway<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Clickaway listener for the highlight dropdown.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="DisplayPanel_DisplayControls.js.html">DisplayPanel/DisplayControls.js</a>, <a href="DisplayPanel_DisplayControls.js.html#line205">line 205</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~setBackgroundOpacityControls"><span class="type-signature">(inner) </span>setBackgroundOpacityControls<span class="signature">(background)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Set background image opacity button and slider listeners.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>background</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
 
 
             
@@ -608,7 +863,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VerovioWorker.js.html">VerovioWorker.js</a>, <a href="VerovioWorker.js.html#line22">line 22</a>
+        <a href="DisplayPanel_DisplayControls.js.html">DisplayPanel/DisplayControls.js</a>, <a href="DisplayPanel_DisplayControls.js.html#line110">line 110</a>
     </li></ul></dd>
     
 
@@ -644,7 +899,7 @@
     
 
     
-    <h4 class="name" id="initEditModeControls"><span class="type-signature"></span>initEditModeControls<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~setBurgerControls"><span class="type-signature">(inner) </span>setBurgerControls<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -652,7 +907,7 @@
 
 
 <div class="description">
-    set listener on edit mode button
+    Set listener on burger menu for smaller screens.
 </div>
 
 
@@ -696,7 +951,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TextEditMode.js.html">TextEditMode.js</a>, <a href="TextEditMode.js.html#line23">line 23</a>
+        <a href="DisplayPanel_DisplayControls.js.html">DisplayPanel/DisplayControls.js</a>, <a href="DisplayPanel_DisplayControls.js.html#line195">line 195</a>
     </li></ul></dd>
     
 
@@ -732,7 +987,7 @@
     
 
     
-    <h4 class="name" id="initSelectByBBoxButton"><span class="type-signature"></span>initSelectByBBoxButton<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~setOpacityControls"><span class="type-signature">(inner) </span>setOpacityControls<span class="signature">(meiClassName)</span><span class="type-signature"></span></h4>
     
 
     
@@ -740,186 +995,7 @@
 
 
 <div class="description">
-    add the selectByRect button
-if neume edit mode is there, add it to the bar with the other select by buttons
-otherwise add an invisible button
-since the only edit mode is selectByRect in that case
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TextEditMode.js.html">TextEditMode.js</a>, <a href="TextEditMode.js.html#line51">line 51</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="initTextEdit"><span class="type-signature"></span>initTextEdit<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    set text to edit mode
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TextEditMode.js.html">TextEditMode.js</a>, <a href="TextEditMode.js.html#line35">line 35</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="postMessage"><span class="type-signature"></span>postMessage<span class="signature">(message)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Send a message to the actual web worker.
+    Set rendered MEI opacity button and slider listeners.
 </div>
 
 
@@ -955,150 +1031,13 @@ since the only edit mode is selectByRect in that case
 
         <tr>
             
-                <td class="name"><code>message</code></td>
+                <td class="name"><code>meiClassName</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The message to be sent.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="VerovioWrapper.js.html">VerovioWrapper.js</a>, <a href="VerovioWrapper.js.html#line24">line 24</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="updateSylText"><span class="type-signature"></span>updateSylText<span class="signature">(span)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Update the text for a single syl element
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>span</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">HTMLElement</span>
+<span class="param-type">string</span>
 
 
             
@@ -1149,7 +1088,7 @@ since the only edit mode is selectByRect in that case
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TextEditMode.js.html">TextEditMode.js</a>, <a href="TextEditMode.js.html#line109">line 109</a>
+        <a href="DisplayPanel_DisplayControls.js.html">DisplayPanel/DisplayControls.js</a>, <a href="DisplayPanel_DisplayControls.js.html#line76">line 76</a>
     </li></ul></dd>
     
 
@@ -1182,180 +1121,6 @@ since the only edit mode is selectByRect in that case
         
     
 
-    
-        <h3 class="subsection-title">Type Definitions</h3>
-
-        
-                
-<h4 class="name" id="CacheEntry">CacheEntry</h4>
-
-
-
-
-<div class="description">
-    A cache entry.
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Object</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>dirty</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">If the entry has been modified since being fetched from the database.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>mei</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The MEI data for the page.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>svg</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">SVGSVGElement</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The rendered SVG for the page.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="NeonCore.js.html">NeonCore.js</a>, <a href="NeonCore.js.html#line36">line 36</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-            
     
 
     
@@ -1375,7 +1140,7 @@ since the only edit mode is selectByRect in that case
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Mon Jul 15 2019 09:24:07 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Mon Jul 15 2019 09:24:08 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>

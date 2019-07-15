@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: SingleEditMode</title>
+    <title>JSDoc: Class: DisplayPanel</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: SingleEditMode</h1>
+    <h1 class="page-title">Class: DisplayPanel</h1>
 
     
 
@@ -28,10 +28,11 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>SingleEditMode<span class="signature">(neonView)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="module-DisplayPanel_DisplayPanel.html">DisplayPanel/DisplayPanel</a>~</span>DisplayPanel<span class="signature">(view, className, background, zoomHandler<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">An Edit Module for a single page of a manuscript.
-Works with the SingleView module.</div>
+            <div class="class-description">A class that sets the content of the display panel to the right and
+manages controls for viewing.</div>
         
     
 </header>
@@ -46,7 +47,7 @@ Works with the SingleView module.</div>
     
 
     
-    <h4 class="name" id="SingleEditMode"><span class="type-signature"></span>new SingleEditMode<span class="signature">(neonView)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="DisplayPanel"><span class="type-signature"></span>new DisplayPanel<span class="signature">(view, className, background, zoomHandler<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -54,7 +55,7 @@ Works with the SingleView module.</div>
 
 
 <div class="description">
-    Constructor for an EditMode object.
+    Constructor for DisplayPanel.
 </div>
 
 
@@ -78,6 +79,8 @@ Works with the SingleView module.</div>
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -90,23 +93,129 @@ Works with the SingleView module.</div>
 
         <tr>
             
-                <td class="name"><code>neonView</code></td>
+                <td class="name"><code>view</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="NeonView.html">NeonView</a></span>
+<span class="param-type"><a href="SingleView.html">SingleView</a></span>
+|
+
+<span class="param-type"><a href="DivaView.html">DivaView</a></span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">The NeonView parent.</td>
+            <td class="description last">The View parent.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>className</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The class name for the rendered SVG object(s).</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>background</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The class name associated with the background.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>zoomHandler</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">ZoomHandler</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The ZoomHandler object, if SingleView.</td>
         </tr>
 
     
@@ -147,7 +256,7 @@ Works with the SingleView module.</div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SquareEdit_SingleEditMode.js.html">SquareEdit/SingleEditMode.js</a>, <a href="SquareEdit_SingleEditMode.js.html#line16">line 16</a>
+        <a href="DisplayPanel_DisplayPanel.js.html">DisplayPanel/DisplayPanel.js</a>, <a href="DisplayPanel_DisplayPanel.js.html#line18">line 18</a>
     </li></ul></dd>
     
 
@@ -203,7 +312,7 @@ Works with the SingleView module.</div>
     
 
     
-    <h4 class="name" id="getUserMode"><span class="type-signature"></span>getUserMode<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id="setDisplayListeners"><span class="type-signature"></span>setDisplayListeners<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -211,7 +320,7 @@ Works with the SingleView module.</div>
 
 
 <div class="description">
-    Get the user mode that Neon is in. Either insert, edit, or viewer.
+    Apply event listeners related to the DisplayPanel.
 </div>
 
 
@@ -255,7 +364,7 @@ Works with the SingleView module.</div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SquareEdit_SingleEditMode.js.html">SquareEdit/SingleEditMode.js</a>, <a href="SquareEdit_SingleEditMode.js.html#line47">line 47</a>
+        <a href="DisplayPanel_DisplayPanel.js.html">DisplayPanel/DisplayPanel.js</a>, <a href="DisplayPanel_DisplayPanel.js.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -280,24 +389,6 @@ Works with the SingleView module.</div>
 
 
 
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -309,7 +400,7 @@ Works with the SingleView module.</div>
     
 
     
-    <h4 class="name" id="initEditMode"><span class="type-signature"></span>initEditMode<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="updateVisualization"><span class="type-signature"></span>updateVisualization<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -317,7 +408,7 @@ Works with the SingleView module.</div>
 
 
 <div class="description">
-    Initialize the start of edit mode when first leaving viewer mode.
+    Update SVG based on visualization settings
 </div>
 
 
@@ -361,7 +452,7 @@ Works with the SingleView module.</div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SquareEdit_SingleEditMode.js.html">SquareEdit/SingleEditMode.js</a>, <a href="SquareEdit_SingleEditMode.js.html#line24">line 24</a>
+        <a href="DisplayPanel_DisplayPanel.js.html">DisplayPanel/DisplayPanel.js</a>, <a href="DisplayPanel_DisplayPanel.js.html#line43">line 43</a>
     </li></ul></dd>
     
 
