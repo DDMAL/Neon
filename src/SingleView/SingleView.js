@@ -5,6 +5,15 @@ import ZoomHandler from './Zoom.js';
 const d3 = require('d3');
 const $ = require('jquery');
 
+/* A view module must contain the following functions:
+ * updateSVG(svg, pageNo) - a function that updates the dipslayed SVG with
+ *    the provided SVG for the given zero-indexed page number.
+ * add/removeUpdateCallback - functions that add or remove callback functions
+ *    that occur when the page updates.
+ * getCurrentPage(URI) - functions that return the current page index (URI).
+ * getPageName - function that returns a user-readable name for the page.
+ */
+
 /**
  * A view module for displaying a single page of a manuscript.
  */
