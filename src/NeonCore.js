@@ -198,6 +198,15 @@ class NeonCore {
   loadData (pageURI, data, dirty = false) {
     Validation.sendForValidation(data);
     this.lastPageLoaded = pageURI;
+    /* A promise is returned that will resolve to the result of the action.
+     * However the value that is must return comes from the Web Worker and
+     * information passed between the worker and main context much be in a
+     * message. So an event handler is put on verovioWrapper for when a message
+     * is receieved from the worker. Then a message is sent to the worker to
+     * take an action. A response is sent back and the previously mentioned
+     * event handler handles the response. Since it is defined within the
+     * promise it has access to the necessary resolve function.
+     */
     return new Promise((resolve, reject) => {
       let message = {
         id: uuid(),
