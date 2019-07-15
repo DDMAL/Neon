@@ -63,6 +63,9 @@ export function unselect () {
  * @param {DragHandler} [dragHandler]
  */
 export function select (el, dragHandler) {
+  if (el.classList.contains('staff')) {
+    return selectStaff(el, dragHandler);
+  }
   if (!$(el).hasClass('selected') && !($(el).hasClass('sylTextRect')) && !($(el).hasClass('sylTextRect-display'))) {
     $(el).addClass('selected');
     $(el).css('fill', '#d00');
