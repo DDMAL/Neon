@@ -1,4 +1,4 @@
-/** @module Notification */
+/** @module utils/Notification */
 
 const uuid = require('uuid/v4');
 const $ = require('jquery');

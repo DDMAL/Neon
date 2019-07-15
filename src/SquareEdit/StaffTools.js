@@ -1,3 +1,5 @@
+/** @module SquareEdit/StaffTools */
+
 import * as Notification from '../utils/Notification.js';
 
 const $ = require('jquery');

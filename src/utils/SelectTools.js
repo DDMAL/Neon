@@ -1,4 +1,4 @@
-/** @module UnifiedEdit/SelectTools */
+/** @module utils/SelectTools */
 
 import * as Color from './Color.js';
 import { updateHighlight } from '../DisplayPanel/DisplayControls.js';

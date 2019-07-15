@@ -1,3 +1,5 @@
+/** @module SquareEdit/Controls */
+
 import * as Contents from './Contents.js';
 import * as Cursor from '../utils/Cursor.js';
 import Icons from '../img/icons.svg';

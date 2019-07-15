@@ -1,4 +1,4 @@
-/** @module Resize */
+/** @module utils/Resize */
 
 /* for resizing objects.
  * current use cases: bounding boxes and staves

@@ -1,4 +1,4 @@
-/** @module SingleEdit/Grouping */
+/** @module SquareEdit/Grouping */
 
 import * as Contents from './Contents.js';
 import * as Warnings from '../Warnings.js';

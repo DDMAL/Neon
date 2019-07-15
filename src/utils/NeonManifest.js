@@ -1,3 +1,5 @@
+/** @module utils/NeonManifest */
+
 import NeonSchema from './manifest/NeonSchema.json';
 import NeonContext from './manifest/context.json';
 

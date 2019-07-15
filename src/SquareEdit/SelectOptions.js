@@ -1,4 +1,4 @@
-/** @module SingleEdit/SelectOptions */
+/** @module SquareEdit/SelectOptions */
 import * as Contents from './Contents.js';
 import * as Grouping from './Grouping.js';
 import * as Notification from '../utils/Notification.js';

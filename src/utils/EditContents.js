@@ -1,3 +1,5 @@
+/** @module utils/EditContents */
+
 /**
  * Contents of navbar menu after switching to edit mode.
  * @type {string}

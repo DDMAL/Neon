@@ -1,4 +1,4 @@
-/** @module UnifiedEdit/EditControls */
+/** @module utils/EditControls */
 
 import * as Notification from './Notification.js';
 import { navbarDropdownMenu, undoRedoPanel } from './EditContents';
