@@ -175,6 +175,16 @@ export function initGroupingListeners () {
           'attrValue': firstSyllable.id
         }
       });
+      // Delete syl on second syllable
+      let syl = secondSyllable.querySelector('.syl');
+      if (syl !== null) {
+        chainAction.param.push({
+          'action': 'remove',
+          'param': {
+            'elementId': syl.id
+          }
+        });
+      }
     }
     neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => {
       if (result) {
