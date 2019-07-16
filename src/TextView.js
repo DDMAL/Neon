@@ -148,8 +148,6 @@ class TextView {
           });
         }
         lyrics += ' </span>';
-      } else {
-        lyrics += "<span class='" + syllable.id + "'>&#x25CA; </span>";
       }
     });
     if (!TextView.notificationSent) {
