@@ -66,6 +66,30 @@ function clickHandler (evt) {
   if (this.tagName === 'use' && getSelectionType() !== 'selByBBox') {
     if ($(this).parents('.selected').length === 0) {
       let selection = [this];
+      // Check if this is part of a ligature and, if so, add all of it to the selection.
+      const firstLigatureHalf = /E9B[45678]/;
+      const secondLigatureHalf = /E9B[9ABC]/;
+      if (this.getAttribute('xlink:href').match(secondLigatureHalf)) {
+        // This is the second part of a ligature
+        let nc = this.closest('.nc');
+        let neume = this.closest('.neume');
+        let ncIndex = Array.from(neume.children).indexOf(nc);
+        let firstUse = neume.children[ncIndex - 1].children[0];
+        console.assert(firstUse.getAttribute('xlink:href').match(firstLigatureHalf), 'First glyph of ligature unexpected!');
+        if (firstUse.closest('.selected') === null) {
+          selection.unshift(firstUse);
+        }
+      } else if (this.getAttribute('xlink:href').match(firstLigatureHalf)) {
+        // This is the first part of a ligature
+        let nc = this.closest('.nc');
+        let neume = this.closest('.neume');
+        let ncIndex = Array.from(neume.children).indexOf(nc);
+        let secondUse = neume.children[ncIndex + 1].children[0];
+        console.assert(secondUse.getAttribute('xlink:href').match(secondLigatureHalf), 'Second glyph of ligature unexpected!');
+        if (secondUse.closest('.selected') === null) {
+          selection.push(secondUse);
+        }
+      }
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
         selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
       }
