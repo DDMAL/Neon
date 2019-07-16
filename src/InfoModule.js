@@ -21,12 +21,13 @@ class InfoModule {
     input.classList.add('checkbox');
     input.id = 'displayInfo';
     input.type = 'checkbox';
-    input.checked = true;
+    input.checked = false;
     label.appendChild(input);
     block.prepend(label);
 
     this.neonView.view.addUpdateCallback(this.resetInfoListeners.bind(this));
     setInfoControls();
+    this.resetInfoListeners();
   }
 
   /**
@@ -162,15 +163,12 @@ class InfoModule {
    * @param {string} body - The info box contents.
    */
   updateInfoModule (title, body) {
+    $('.message-header').children('p').html(title);
+    $('.message-body').html(body);
+
     if ($('#displayInfo').is(':checked')) {
       $('.message').css('display', '');
-      $('.message-header').children('p').html(title);
-      $('.message-body').html(body);
     }
-    // Setting up listener for dismissing message
-    $('#notification-delete').on('click', function () {
-      $('.message').css('display', 'none');
-    });
   }
 
   /**
@@ -226,8 +224,15 @@ InfoModule.neumeGroups = new Map(
  * Set listener on info visibility checkbox.
  */
 function setInfoControls () {
+  startInfoVisibility();
   updateInfoVisibility();
   $('#displayInfo').click(updateInfoVisibility);
+}
+
+function startInfoVisibility () {
+  $('#neume_info').append("<article class='message'><div class='message-header'><p></p></div>" +
+            "<div class='message-body'></div>");
+  $('#neume_info').addClass('is-invisible');
 }
 
 /**
@@ -235,11 +240,9 @@ function setInfoControls () {
  */
 function updateInfoVisibility () {
   if ($('#displayInfo').is(':checked')) {
-    $('#neume_info').append("<article class='message' style='display: none;'><div class='message-header'><p></p>" +
-            "<button class='delete' id='notification-delete' aria-label='delete'></button></div>" +
-            "<div class='message-body'></div>");
+    $('#neume_info').removeClass('is-invisible');
   } else {
-    $('#neume_info').empty();
+    $('#neume_info').addClass('is-invisible');
   }
 }
 
