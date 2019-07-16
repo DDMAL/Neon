@@ -124,6 +124,13 @@ export function initGroupingListeners () {
           'attrValue': ''
         }
       });
+      chainAction.param.push({
+        'action': 'setText',
+        'param': {
+          'elementId': elementIds[1],
+          'text': ''
+        }
+      });
     } else if (document.getElementById(elementIds[0]).getAttribute('mei:follows')) {
       chainAction.param.push({
         'action': 'set',
@@ -139,6 +146,13 @@ export function initGroupingListeners () {
           'elementId': elementIds[1],
           'attrType': 'precedes',
           'attrValue': ''
+        }
+      });
+      chainAction.param.push({
+        'action': 'setText',
+        'param': {
+          'elementId': elementIds[0],
+          'text': ''
         }
       });
     } else {
