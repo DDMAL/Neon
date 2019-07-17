@@ -8,38 +8,6 @@ html
     script(src='/diva-v6.0.1/diva.js')
     link(rel='stylesheet' href='/diva-v6.0.1/diva.css')
   body
-    .overlay#loading
-      .loader
-    nav.navbar.is-light
-      .navbar-brand
-        a.navbar-item(href='/')
-          p Neon
-        a.navbar-burger#burgerMenu(role="button" aria-label="menu" aria-expanded="false")
-          span(aria-hidden="true")
-          span(aria-hidden="true")
-          span(aria-hidden="true")
-      .navbar-menu#navMenu
-        .navbar-start
-          #dropdown_toggle
-        .navbar-end
-          .navbar-item.has-dropdown.is-hoverable
-            a.navbar-link Help
-            .navbar-dropdown.is-right
-              a.navbar-item(href="//github.com/DDMAL/Neon/wiki/Instructions" target="_blank") User Guide
-              a.navbar-item(href="//github.com/DDMAL/Neon/wiki" target="_blank") Wiki
-              a.navbar-item(href="//ddmal.music.mcgill.ca" target="_blank") DDMAL
-              a.navbar-item(onclick="hotkeyDialog()") Hotkeys
-    .columns
-      #notification-content(style={display: "none"})
-      .column#container.is-two-thirds.box(style={height: "getHeight()"})
-      .column.is-one-third.is-hidden-mobile#right-column
-        .panel
-          #display_controls
-          #insert_controls
-          #edit_controls
-          #undoRedo_controls
-        #neume_info
-        #syl_text.box(style={"display": "none"})
       script(type='text/javascript').
         var manifestText = decodeURIComponent("#{manifest}");
 

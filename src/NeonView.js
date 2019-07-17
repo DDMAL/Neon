@@ -2,6 +2,7 @@ import NeonCore from './NeonCore.js';
 
 import { parseManifest } from './utils/NeonManifest.js';
 import { prepareEditMode } from './utils/EditControls';
+import setBody from './utils/template/Template.js';
 
 /**
  * NeonView class. Manages the other modules of Neon and communicates with
@@ -20,6 +21,8 @@ class NeonView {
    * @param {object} [params.TextEdit] - Constructor for TextEdit module
    */
   constructor (params) {
+    setBody();
+
     if (!parseManifest(params.manifest)) {
       console.error('Unable to parse the manifest');
     }
