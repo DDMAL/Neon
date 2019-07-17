@@ -42,9 +42,15 @@ module.exports = {
         ]
       },
       {
-        test: /Worker\.js/,
+        test: /Worker\.js$/,
         use: [
           'worker-loader'
+        ]
+      },
+      {
+        test: /\.html$/,
+        use: [
+          'html-loader'
         ]
       }
     ]
