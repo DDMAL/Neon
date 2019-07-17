@@ -1,4 +1,4 @@
-const template = require('html-loader!./template.html');
+const template = require('./template.html');
 
 function setBody () {
   document.body.innerHTML = template;
