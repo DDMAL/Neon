@@ -291,6 +291,29 @@ export function dragSelect (selector) {
           return !(((ul.x < box.ulx && lr.x < box.ulx) || (ul.x > box.lrx && lr.x > box.lrx)) || ((ul.y < box.uly && lr.y < box.uly) || (ul.y > box.lry && lr.y > box.lry)));
         }
       });
+
+      // Get other halves of ligatures if only one is selected
+      elements.forEach(element => {
+        if (element.tagName === 'use' && element.getAttribute('xlink:href').match(/E9B[456789ABC]/)) {
+          let neume = element.closest('.neume');
+          let ncIndex = Array.from(neume.children).indexOf(element.closest('.nc'));
+          if (element.getAttribute('xlink:href').match(/E9B[45678]/)) {
+            // Add second half of ligature to selected list if not already present
+            let secondNc = neume.children[ncIndex + 1];
+            let secondUse = secondNc.querySelector('use');
+            if (elements.indexOf(secondUse) < 0) {
+              elements.push(secondUse);
+            }
+          } else {
+            // Add first half of ligature to selected list if not already present
+            let firstNc = neume.children[ncIndex - 1];
+            let firstUse = firstNc.querySelector('use');
+            if (elements.indexOf(firstUse) < 0) {
+              elements.push(firstUse);
+            }
+          }
+        }
+      });
       selectAll(elements, neonView, info, dragHandler);
 
       if (dragHandler) {
