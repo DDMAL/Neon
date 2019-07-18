@@ -16,11 +16,21 @@ export function parseManifest (manifestString) {
     console.error(results.errors);
     return false;
   }
-  if (JSON.stringify(instance['@context']) !== JSON.stringify(NeonContext)) {
+  let context = instance['@context'];
+  if ((context[0] === NeonContext[0]) &&
+      (context[1]['schema'] === NeonContext[1]['schema']) &&
+      (context[1]['title'] === NeonContext[1]['title']) &&
+      (context[1]['timestamp'] === NeonContext[1]['timestamp']) &&
+      (context[1]['image']['@id'] === NeonContext[1]['image']['@id']) &&
+      (context[1]['image']['@type'] === NeonContext[1]['image']['@type']) &&
+      (context[1]['mei_annotations']['@id'] === NeonContext[1]['mei_annotations']['@id']) &&
+      (context[1]['mei_annotations']['@type'] === NeonContext[1]['mei_annotations']['@type']) &&
+      (context[1]['mei_annotations']['@container'] === NeonContext[1]['mei_annotations']['@container'])) {
+    return true;
+  } else {
     console.error('Context mismatch');
-    console.error(instance['@context']);
+    console.error(context);
     console.error(NeonContext);
     return false;
   }
-  return true;
 }
