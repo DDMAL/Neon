@@ -73,6 +73,7 @@ export function removeHandler () {
     'action': 'chain',
     'param': toRemove
   };
+  endOptionsSelection();
   neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then(() => { neonView.updateForCurrentPage(); });
 }
 
