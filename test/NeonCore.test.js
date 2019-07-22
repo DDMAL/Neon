@@ -56,7 +56,7 @@ test('Test failing editor action', async () => {
   expect(await neon.edit(editorAction, pathToPNG)).toBeFalsy();
 });
 
-describe('Test textEdit module funcitons', async () => {
+describe('Test textEdit module functions', async () => {
   test("Test 'SetText' function", async () => {
     let neon = new NeonCore(mei);
     await neon.initDb();
@@ -546,6 +546,188 @@ test("Test 'remove' action", async () => {
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
   let atts = await neon.getElementAttr('m-ceab54b1-893e-42de-8fca-aeeb13254e19', pathToPNG);
   expect(atts).toStrictEqual({});
+});
+
+describe('Test clef reassociation', () => {
+  test('Test Syllable dragging', async () => {
+    let neon = new NeonCore(mei);
+    await neon.initDb();
+    await neon.getSVG(pathToPNG);
+    let insertAction = {
+      'action': 'insert',
+      'param': {
+        'elementType': 'clef',
+        'staffId': 'auto',
+        'ulx': 1690,
+        'uly': 3757,
+        'attributes': {
+          'shape': 'F'
+        }
+      }
+    };
+    expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
+    let originalAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    expect(originalAtts['pname']).toBe('f');
+    let dragAction = {
+      'action': 'drag',
+      'param': {
+        'elementId': 'm-39b6b9be-6c41-41c3-9b1a-241a33809ee2',
+        'x': -400,
+        'y': 0
+      }
+    };
+    expect(await neon.edit(dragAction, pathToPNG)).toBeTruthy();
+    let newAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    expect(newAtts['pname']).toBe('c');
+  });
+  test('Test neume dragging', async () => {
+    let neon = new NeonCore(mei);
+    await neon.initDb();
+    await neon.getSVG(pathToPNG);
+    let insertAction = {
+      'action': 'insert',
+      'param': {
+        'elementType': 'clef',
+        'staffId': 'auto',
+        'ulx': 1690,
+        'uly': 3757,
+        'attributes': {
+          'shape': 'F'
+        }
+      }
+    };
+    expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
+    let originalAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    expect(originalAtts['pname']).toBe('f');
+    let dragAction = {
+      'action': 'drag',
+      'param': {
+        'elementId': 'm-228f9cf1-1b87-420d-bd7c-74bac19f9469',
+        'x': -400,
+        'y': 0
+      }
+    };
+    expect(await neon.edit(dragAction, pathToPNG)).toBeTruthy();
+    let newAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    expect(newAtts['pname']).toBe('c');
+  });
+  test('Test clef inserting and deleting', async () => {
+    let neon = new NeonCore(mei);
+    await neon.initDb();
+    await neon.getSVG(pathToPNG);
+    let originalAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    expect(originalAtts['pname']).toBe('c');
+    let insertAction = {
+      'action': 'insert',
+      'param': {
+        'elementType': 'clef',
+        'staffId': 'auto',
+        'ulx': 1690,
+        'uly': 3757,
+        'attributes': {
+          'shape': 'F'
+        }
+      }
+    };
+    expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
+    let clefId = await neon.info(pathToPNG);
+    let newAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    expect(newAtts['pname']).toBe('f');
+    let deleteAction = {
+      'action': 'remove',
+      'param': {
+        'elementId': clefId
+      }
+    };
+    expect(await neon.edit(deleteAction, pathToPNG)).toBeTruthy();
+    let lastAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    expect(lastAtts['pname']).toBe('c');
+  });
+  test('Test clef dragging case 1', async () => {
+    let neon = new NeonCore(mei);
+    await neon.initDb();
+    await neon.getSVG(pathToPNG);
+    let insertAction = {
+      'action': 'insert',
+      'param': {
+        'elementType': 'clef',
+        'staffId': 'auto',
+        'ulx': 1690,
+        'uly': 3757,
+        'attributes': {
+          'shape': 'F'
+        }
+      }
+    };
+    expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
+    let firstClefId = await neon.info(pathToPNG);
+    let newBeforeAtts = await neon.getElementAttr('m-094bd8da-2bec-4bca-a52b-cb08b682479f', pathToPNG);
+    let sameBeforeAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    expect(newBeforeAtts['pname']).toBe('c');
+    expect(sameBeforeAtts['pname']).toBe('f');
+    let dragAction = {
+      'action': 'drag',
+      'param': {
+        'elementId': firstClefId,
+        'x': -600,
+        'y': 68
+      }
+    };
+    expect(await neon.edit(dragAction, pathToPNG)).toBeTruthy();
+    let newAfterAtts = await neon.getElementAttr('m-094bd8da-2bec-4bca-a52b-cb08b682479f', pathToPNG);
+    let sameAfterAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    expect(newAfterAtts['pname']).toBe('d');
+    expect(sameAfterAtts['pname']).toBe('d');
+  });
+  test('Test clef dragging case 2', async () => {
+    let neon = new NeonCore(mei);
+    await neon.initDb();
+    await neon.getSVG(pathToPNG);
+    let firstInsert = {
+      'action': 'insert',
+      'param': {
+        'elementType': 'clef',
+        'staffId': 'auto',
+        'ulx': 1690,
+        'uly': 3757,
+        'attributes': {
+          'shape': 'F'
+        }
+      }
+    };
+    expect(await neon.edit(firstInsert, pathToPNG)).toBeTruthy();
+    let secondInsert = {
+      'action': 'insert',
+      'param': {
+        'elementType': 'clef',
+        'staffId': 'auto',
+        'ulx': 2990,
+        'uly': 3825,
+        'attributes': {
+          'shape': 'C'
+        }
+      }
+    };
+    expect(await neon.edit(secondInsert, pathToPNG)).toBeTruthy();
+    let secondClefId = await neon.info(pathToPNG);
+    let firstBeforeAtts = await neon.getElementAttr('m-41d52bbf-0734-475a-a2b4-bd6acc9fc5cb', pathToPNG);
+    let secondBeforeAtts = await neon.getElementAttr('m-ce70be9f-aa2d-47f3-b978-13b7e985f9d3', pathToPNG);
+    expect(firstBeforeAtts['pname']).toBe('c');
+    expect(secondBeforeAtts['pname']).toBe('c');
+    let dragAction = {
+      'action': 'drag',
+      'param': {
+        'elementId': secondClefId,
+        'x': -2000,
+        'y': -68
+      }
+    };
+    expect(await neon.edit(dragAction, pathToPNG)).toBeTruthy();
+    let firstAfterAtts = await neon.getElementAttr('m-41d52bbf-0734-475a-a2b4-bd6acc9fc5cb', pathToPNG);
+    let secondAfterAtts = await neon.getElementAttr('m-ce70be9f-aa2d-47f3-b978-13b7e985f9d3', pathToPNG);
+    expect(firstAfterAtts['pname']).toBe('g');
+    expect(secondAfterAtts['pname']).toBe('d');
+  });
 });
 
 test('Test undo and redo', async () => {
