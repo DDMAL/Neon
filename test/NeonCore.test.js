@@ -558,7 +558,7 @@ describe('Test clef reassociation', () => {
       'param': {
         'elementType': 'clef',
         'staffId': 'auto',
-        'ulx': 1690,
+        'ulx': 1720,
         'uly': 3757,
         'attributes': {
           'shape': 'F'
@@ -572,7 +572,7 @@ describe('Test clef reassociation', () => {
       'action': 'drag',
       'param': {
         'elementId': 'm-39b6b9be-6c41-41c3-9b1a-241a33809ee2',
-        'x': -400,
+        'x': -300,
         'y': 0
       }
     };
@@ -589,7 +589,7 @@ describe('Test clef reassociation', () => {
       'param': {
         'elementType': 'clef',
         'staffId': 'auto',
-        'ulx': 1690,
+        'ulx': 1720,
         'uly': 3757,
         'attributes': {
           'shape': 'F'
@@ -603,7 +603,7 @@ describe('Test clef reassociation', () => {
       'action': 'drag',
       'param': {
         'elementId': 'm-228f9cf1-1b87-420d-bd7c-74bac19f9469',
-        'x': -400,
+        'x': -300,
         'y': 0
       }
     };
