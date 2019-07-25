@@ -22,6 +22,7 @@ install:
   - yarn install
 script:
   - yarn build
+  - yarn upgrade verovio-dev
   - yarn start &
   - yarn test
 notifications:
