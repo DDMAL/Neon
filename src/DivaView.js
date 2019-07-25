@@ -38,8 +38,10 @@ class DivaView {
   /**
    * Called when the visible page changes in the diva.js viewer.
    * @param {number | number[]} pageIndexes - The zero-index or -indexes of the page(s) visible.
+   * @param {boolean} delay - whether to delay the loading of the page
+   * delay the loading of the page when scrolling so that neon doesn't lag while scrolling
    */
-  async changePage (pageIndexes) {
+  async changePage (pageIndexes, delay = true) {
     if (typeof pageIndexes !== 'object') {
       pageIndexes = [pageIndexes];
     }
@@ -47,7 +49,7 @@ class DivaView {
       elem.classList.remove('active-page');
     });
     for (let page of pageIndexes) {
-      window.setTimeout(checkAndLoad.bind(this), this.loadDelay, page);
+      window.setTimeout(checkAndLoad.bind(this), (delay ? this.loadDelay : 0), page);
     }
 
     function checkAndLoad (page) {
@@ -96,7 +98,7 @@ class DivaView {
         .forEach(elem => { elem.style.display = 'none'; });
       setTimeout(resolve, this.diva.settings.zoomDuration + 100);
     })).then(() => {
-      this.changePage(this.diva.getActivePageIndex());
+      this.changePage(this.diva.getActivePageIndex(), true);
       Array.from(document.getElementsByClassName('neon-container'))
         .forEach(elem => {
           let svg = elem.firstChild;

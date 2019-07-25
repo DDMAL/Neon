@@ -72,7 +72,7 @@ class NeonView {
    */
   updateForCurrentPage () {
     let pageNo = this.view.getCurrentPage();
-    this.view.changePage(pageNo);
+    this.view.changePage(pageNo, false);
   }
 
   /**
@@ -81,7 +81,7 @@ class NeonView {
    */
   updateForCurrentPagePromise () {
     let pageNo = this.view.getCurrentPage();
-    return Promise.resolve(this.view.changePage(pageNo));
+    return Promise.resolve(this.view.changePage(pageNo, false));
   }
 
   /**
