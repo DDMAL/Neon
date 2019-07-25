@@ -51,6 +51,7 @@ export function unselect () {
   $('.syllable-highlighted').removeClass('syllable-highlighted');
 
   d3.selectAll('#resizeRect').remove();
+  d3.selectAll('.resizePoint').remove();
 
   if (!$('#selByStaff').hasClass('is-active')) {
     Grouping.endGroupingSelection();

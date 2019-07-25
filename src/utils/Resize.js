@@ -9,13 +9,17 @@ import { getStaffBBox, selectBBox, selectStaff } from './SelectTools.js';
 const d3 = require('d3');
 
 /**
- * The sides of the rectangle
+ * The points to put resize dragging points
  */
-const Side = {
-  Top: 0,
-  Bottom: 1,
-  Left: 2,
-  Right: 3
+const PointNames = {
+  TopLeft: 0,
+  Top: 1,
+  TopRight: 2,
+  Right: 3,
+  BottomRight: 4,
+  Bottom: 5,
+  BottomLeft: 6,
+  Left: 7
 };
 
 /**
@@ -77,61 +81,87 @@ function Resize (elementId, neonView, dragHandler) {
       lry = bbox.lry;
     }
 
+    var points = [ 
+      { x: ulx, y: uly, name: PointNames.TopLeft },
+      { x: (ulx + lrx) / 2, y: uly, name: PointNames.Top },
+      { x: lrx, y: uly, name: PointNames.TopRight },
+      { x: lrx, y: (uly + lry) / 2, name: PointNames.Right },
+      { x: lrx, y: lry, name: PointNames.BottomRight },
+      { x: (ulx + lrx) / 2, y: lry, name: PointNames.Bottom },
+      { x: ulx, y: lry, name: PointNames.BottomLeft},
+      { x: ulx, y: (uly + lry) / 2, name: PointNames.Left}
+    ]
+
     d3.select('#' + element.id).append('rect')
       .attr('x', ulx)
       .attr('y', uly)
       .attr('width', lrx - ulx)
       .attr('height', lry - uly)
       .attr('id', 'resizeRect')
-      .attr('stroke', 'black')
-      .attr('stroke-width', 15)
+      .attr('stroke', '#0099ff')
+      .attr('stroke-width', 10)
       .attr('fill', 'none')
-      .style('cursor', 'move');
+      .style('cursor', 'move')
+      .style('stroke-dasharray', '20 10');
 
-    d3.select('#resizeRect').call(
+    points.forEach((point) => {
+      d3.select('#' + element.id).append('circle')
+      .attr('cx', point.x)
+      .attr('cy', point.y)
+      .attr('r', 20)
+      .attr('stroke', 'black')
+      .attr('stroke-width', 3)
+      .attr('fill', '#0099ff')
+      .attr('class', 'resizePoint')
+      .attr('id', point.name);
+    });
+
+    d3.selectAll('.resizePoint').call(
       d3.drag()
-        .on('start', resizeStart)
+        .on('start', () => { resizeStart(d3.select(this).attr('id')); })
         .on('drag', resizeDrag)
         .on('end', resizeEnd.bind(this))
     );
 
-    var side;
+    var whichPoint;
     var initialPoint;
 
-    function resizeStart () {
+    function resizeStart (point) {
+      console.log('hi');
       initialPoint = d3.mouse(this);
-      {
-        let dist = Math.abs(initialPoint[0] - ulx);
-        side = Side.Left;
-        if (dist > Math.abs(initialPoint[0] - lrx)) {
-          dist = Math.abs(initialPoint[0] - lrx);
-          side = Side.Right;
-        }
-        if (dist > Math.abs(initialPoint[1] - uly)) {
-          dist = Math.abs(initialPoint[1] - uly);
-          side = Side.Top;
-        }
-        if (dist > Math.abs(initialPoint[1] - lry)) {
-          dist = Math.abs(initialPoint[1] - lry);
-          side = Side.Bottom;
-        }
-      }
+      whichPoint = point; 
     }
 
     function resizeDrag () {
       let currentPoint = d3.mouse(this);
-      switch (side) {
-        case Side.Left:
+      switch (whichPoint) {
+        case PointNames.TopLeft:
           ulx = currentPoint[0];
-          break;
-        case Side.Right:
-          lrx = currentPoint[0];
-          break;
-        case Side.Top:
           uly = currentPoint[1];
           break;
-        case Side.Bottom:
+        case PointNames.Top:
+          uly = currentPoint[1];
+          break;
+        case PointNames.TopRight:
+          lrx = currentPoint[0];
+          uly = currentPoint[1];
+          break;
+        case PointNames.Right:
+          lrx = currentPoint[0];
+          break;
+        case PointNames.BottomRight:
+          lrx = currentPoint[0];
           lry = currentPoint[1];
+          break;
+        case PointNames.Bottom:
+          lry = currentPoint[1];
+          break;
+        case PointNames.BottomLeft:
+          ulx = currentPoint[0];
+          lry = currentPoint[1];
+          break;
+        case PointNames.Left:
+          ulx = currentPoint[0];
           break;
         default:
           console.error("Something that wasn't a side of the rectangle was dragged. This shouldn't happen.");
@@ -178,6 +208,29 @@ function Resize (elementId, neonView, dragHandler) {
       .attr('y', uly)
       .attr('width', lrx - ulx)
       .attr('height', lry - uly);
+
+    var points = [ 
+      { x: ulx, y: uly, name: PointNames.TopLeft },
+      { x: (ulx + lrx) / 2, y: uly, name: PointNames.Top },
+      { x: lrx, y: uly, name: PointNames.TopRight },
+      { x: lrx, y: (uly + lry) / 2, name: PointNames.Right },
+      { x: lrx, y: lry, name: PointNames.BottomRight },
+      { x: (ulx + lrx) / 2, y: lry, name: PointNames.Bottom },
+      { x: ulx, y: lry, name: PointNames.BottomLeft},
+      { x: ulx, y: (uly + lry) / 2, name: PointNames.Left}
+    ]
+
+    points.forEach((point) => {
+      d3.select('#' + element.id).append('circle')
+      .attr('cx', point.x)
+      .attr('cy', point.y)
+      .attr('r', 20)
+      .attr('stroke', 'black')
+      .attr('stroke-width', 2)
+      .attr('fill', '#0099ff')
+      .attr('class', 'resizePoint')
+      .attr('id', point.name);
+    });
   }
 
   Resize.prototype.constructor = Resize;
