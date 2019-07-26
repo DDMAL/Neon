@@ -38,7 +38,7 @@ class DivaView {
   /**
    * Called when the visible page changes in the diva.js viewer.
    * @param {number | number[]} pageIndexes - The zero-index or -indexes of the page(s) visible.
-   * @param {boolean} delay - whether to delay the loading of the page
+   * @param {boolean} delay - whether to delay the loading of the page. defaults to true
    * delay the loading of the page when scrolling so that neon doesn't lag while scrolling
    */
   async changePage (pageIndexes, delay = true) {

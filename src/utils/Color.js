@@ -50,10 +50,10 @@ export function unsetGroupingHighlight () {
       }
     }
     rects.forEach(function (rect) {
-      if (!($(rect).closest('.syllable').hasClass('selected'))) {
-        $(rect).css('fill', 'blue');
-      } else {
+      if ($(rect).closest('.syllable').hasClass('selected')) {
         $(rect).css('fill', 'red');
+      } else {
+        $(rect).css('fill', 'blue');
       }
       $(rect).removeClass('highlighted');
     });
@@ -120,10 +120,10 @@ export function unhighlight (staff) {
       let rects = Array.from($(elem).find('.sylTextRect-display'));
       if (!rects.length) { rects = Array.from($(elem).parents('syllable').find('.sylTextRect-display')); }
       rects.forEach(function (rect) {
-        if (!($(rect).closest('.syllable').hasClass('selected'))) {
-        $(rect).css('fill', 'blue');
-      } else {
+        if ($(rect).closest('.syllable').hasClass('selected')) {
         $(rect).css('fill', 'red');
+      } else {
+        $(rect).css('fill', 'blue');
       }
       $(rect).removeClass('highlighted');
       });

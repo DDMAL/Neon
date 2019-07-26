@@ -9,7 +9,7 @@ import { getStaffBBox, selectBBox, selectStaff } from './SelectTools.js';
 const d3 = require('d3');
 
 /**
- * The points to put resize dragging points
+ * The points you can click and drag to resize
  */
 const PointNames = {
   TopLeft: 0,

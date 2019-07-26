@@ -84,9 +84,9 @@ class SingleView {
    * Change to a certain page
    * Since there is only one page, this is essentially a wrapper for updateSVG
    * @param {number} page
-   * @param {boolean} delay. should always be false when calling SingleView change page
+   * @param {boolean} delay. defaults to false
    */
-  async changePage (page, delay) {
+  async changePage (page, delay = false) {
     let svg = await this.neonView.getPageSVG(this.getCurrentPageURI());
     this.updateSVG(svg);
   }
