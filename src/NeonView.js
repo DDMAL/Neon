@@ -63,25 +63,25 @@ class NeonView {
         this.updateForCurrentPage();
       }
     }); */
-    this.core.initDb().then(() => { this.updateForCurrentPage(); });
+    this.core.initDb().then(() => { this.updateForCurrentPage(true); });
   }
 
   /**
    * Get the current page from the loaded view and then display the
    * most up to date SVG.
    */
-  updateForCurrentPage () {
+  updateForCurrentPage (delay = false) {
     let pageNo = this.view.getCurrentPage();
-    this.view.changePage(pageNo, false);
+    this.view.changePage(pageNo, delay);
   }
 
   /**
    * Same as updateForCurrentPage but returns a promise.
    * @see NeonView.updateForCurrentPage
    */
-  updateForCurrentPagePromise () {
+  updateForCurrentPagePromise (delay = false) {
     let pageNo = this.view.getCurrentPage();
-    return Promise.resolve(this.view.changePage(pageNo, false));
+    return Promise.resolve(this.view.changePage(pageNo, delay));
   }
 
   /**

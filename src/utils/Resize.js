@@ -101,7 +101,7 @@ function Resize (elementId, neonView, dragHandler) {
       .attr('width', lrx - ulx)
       .attr('height', lry - uly)
       .attr('id', 'resizeRect')
-      .attr('stroke', '#0099ff')
+      .attr('stroke', 'black')
       .attr('stroke-width', 10)
       .attr('fill', 'none')
       .style('cursor', 'move')
@@ -111,16 +111,13 @@ function Resize (elementId, neonView, dragHandler) {
       d3.select('#' + element.id).append('circle')
       .attr('cx', point.x)
       .attr('cy', point.y)
-      .attr('r', 20)
+      .attr('r', 25)
       .attr('stroke', 'black')
-      .attr('stroke-width', 3)
+      .attr('stroke-width', 4)
       .attr('fill', '#0099ff')
       .attr('class', 'resizePoint')
       .attr('id', 'p' + point.name)
-      .style('zIndex', 1000);
     });
-
-    d3.select('#' + element.id).style('zIndex', 100);
 
     // do it as a loop instead of selectAll so that you can easily know which point was clicked
     Object.values(PointNames).forEach((name) => {
@@ -199,7 +196,7 @@ function Resize (elementId, neonView, dragHandler) {
           selectStaff(element, dragHandler);
         }
         d3.selectAll('.resizePoint').remove();
-        d3.selectAll('.resizeRect').remove();
+        d3.selectAll('#resizeRect').remove();
         drawInitialRect();
       });
     }
