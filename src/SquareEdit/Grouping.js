@@ -3,7 +3,7 @@
 import * as Contents from './Contents.js';
 import * as Warnings from '../Warnings.js';
 import * as Notification from '../utils/Notification.js';
-import { unsetVirgaAction, unsetInclinatumAction } from './SelectOptions.js';
+import { unsetVirgaAction, unsetInclinatumAction, removeHandler } from './SelectOptions.js';
 const $ = require('jquery');
 
 /**
@@ -42,6 +42,7 @@ export function endGroupingSelection () {
  * The grouping dropdown listener.
  */
 export function initGroupingListeners () {
+  $('#delete').on('click', removeHandler);
   $('#mergeSyls').on('click', function () {
     var elementIds = getChildrenIds().filter(e =>
       document.getElementById(e).classList.contains('neume')
