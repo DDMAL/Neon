@@ -132,7 +132,6 @@ function Resize (elementId, neonView, dragHandler) {
     });
 
     function resizeStart (name) {
-      console.log(whichPoint);
       whichPoint = name;
       initialPoint = d3.mouse(this);
     }
@@ -199,7 +198,8 @@ function Resize (elementId, neonView, dragHandler) {
         } else {
           selectStaff(element, dragHandler);
         }
-        d3.selectAll('.selectPoint').remove();
+        d3.selectAll('.resizePoint').remove();
+        d3.selectAll('.resizeRect').remove();
         drawInitialRect();
       });
     }
