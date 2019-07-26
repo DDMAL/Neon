@@ -81,6 +81,9 @@ function Resize (elementId, neonView, dragHandler) {
       lry = bbox.lry;
     }
 
+    var whichPoint;
+    var initialPoint;
+
     var points = [ 
       { x: ulx, y: uly, name: PointNames.TopLeft },
       { x: (ulx + lrx) / 2, y: uly, name: PointNames.Top },
@@ -113,23 +116,25 @@ function Resize (elementId, neonView, dragHandler) {
       .attr('stroke-width', 3)
       .attr('fill', '#0099ff')
       .attr('class', 'resizePoint')
-      .attr('id', point.name);
+      .attr('id', 'p' + point.name)
+      .style('zIndex', 1000);
     });
 
-    d3.selectAll('.resizePoint').call(
-      d3.drag()
-        .on('start', () => { resizeStart(d3.select(this).attr('id')); })
+    d3.select('#' + element.id).style('zIndex', 100);
+
+    // do it as a loop instead of selectAll so that you can easily know which point was clicked
+    Object.values(PointNames).forEach((name) => {
+      d3.select('#p' + name).filter('.resizePoint').call(
+        d3.drag()
+        .on('start', () => { resizeStart(name); })
         .on('drag', resizeDrag)
-        .on('end', resizeEnd.bind(this))
-    );
+        .on('end', resizeEnd.bind(this)));
+    });
 
-    var whichPoint;
-    var initialPoint;
-
-    function resizeStart (point) {
-      console.log('hi');
+    function resizeStart (name) {
+      console.log(whichPoint);
+      whichPoint = name;
       initialPoint = d3.mouse(this);
-      whichPoint = point; 
     }
 
     function resizeDrag () {
@@ -194,6 +199,7 @@ function Resize (elementId, neonView, dragHandler) {
         } else {
           selectStaff(element, dragHandler);
         }
+        d3.selectAll('.selectPoint').remove();
         drawInitialRect();
       });
     }
@@ -221,15 +227,9 @@ function Resize (elementId, neonView, dragHandler) {
     ]
 
     points.forEach((point) => {
-      d3.select('#' + element.id).append('circle')
+      d3.select('#p' + point.name).filter('.resizePoint')
       .attr('cx', point.x)
       .attr('cy', point.y)
-      .attr('r', 20)
-      .attr('stroke', 'black')
-      .attr('stroke-width', 2)
-      .attr('fill', '#0099ff')
-      .attr('class', 'resizePoint')
-      .attr('id', point.name);
     });
   }
 
