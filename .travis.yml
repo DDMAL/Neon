@@ -10,12 +10,12 @@ cache:
     - $HOME/Library/Caches/Homebrew
 addons:
   firefox: latest
+  chrome: stable
   homebrew:
     update: true
     packages:
       - geckodriver
     casks:
-      - google-chrome
       - chromedriver
 install:
   - sudo safaridriver --enable
