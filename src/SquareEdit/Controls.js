@@ -2,7 +2,7 @@
 
 import * as Contents from './Contents.js';
 import * as Cursor from '../utils/Cursor.js';
-import { updateHighlight } from '../DisplayPanel/DisplayControls.js';
+import { setGroupingHighlight } from '../utils/Color.js';
 import Icons from '../img/icons.svg';
 import { unselect } from '../utils/SelectTools.js';
 const $ = require('jquery');
@@ -147,8 +147,8 @@ export function initSelectionButtons () {
       $('#selByNeume').removeClass('is-active');
       $('#selByNc').removeClass('is-active');
       $('#selByStaff').removeClass('is-active');
-      if ($('.highlight-selected').attr('id') === 'selection') {
-        updateHighlight();
+      if ($('.highlight-selected').attr('id') === 'highlight-selection') {
+        setGroupingHighlight('syllable');
       }
     }
   }
@@ -169,8 +169,8 @@ export function initSelectionButtons () {
       $('#selByNc').removeClass('is-active');
       $('#selByStaff').removeClass('is-active');
       $('#selBySyl').removeClass('is-active');
-      if ($('.highlight-selected').attr('id') === 'selection') {
-        updateHighlight();
+      if ($('.highlight-selected').attr('id') === 'highlight-selection') {
+        setGroupingHighlight('neume');
       }
     }
   }
@@ -191,8 +191,8 @@ export function initSelectionButtons () {
       $('#selByNeume').removeClass('is-active');
       $('#selByStaff').removeClass('is-active');
       $('#selBySyl').removeClass('is-active');
-      if ($('.highlight-selected').attr('id') === 'selection') {
-        updateHighlight();
+      if ($('.highlight-selected').attr('id') === 'highlight-selection') {
+        setGroupingHighlight('neume');
       }
     }
   }
@@ -213,8 +213,8 @@ export function initSelectionButtons () {
       $('#selByNc').removeClass('is-active');
       $('#selByNeume').removeClass('is-active');
       $('#selBySyl').removeClass('is-active');
-      if ($('.highlight-selected').attr('id') === 'selection') {
-        updateHighlight();
+      if ($('.highlight-selected').attr('id') === 'highlight-selection') {
+        setGroupingHighlight('staff');
       }
     }
   }

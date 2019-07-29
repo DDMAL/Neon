@@ -1,6 +1,7 @@
 import { unselect } from './utils/SelectTools.js';
 import DragHandler from './utils/DragHandler.js';
 import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select.js';
+import { setGroupingHighlight } from './utils/Color.js';
 
 const $ = require('jquery');
 
@@ -66,6 +67,9 @@ export default class TextEditMode {
           $('#selByNeume').removeClass('is-active');
           $('#selByStaff').removeClass('is-active');
           $('#selBySyl').removeClass('is-active');
+          if ($('.highlight-selected').attr('id') === 'highlight-selection') {
+            setGroupingHighlight('syllable');
+          }
         }
         this.addBBoxListeners();
       }).bind(this);

@@ -193,6 +193,7 @@ export function updateHighlight () {
       break;
     case 'highlight-selection':
       Color.setGroupingHighlight('selection');
+      break;
     default:
       Color.unsetGroupingHighlight();
   }

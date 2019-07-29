@@ -26,6 +26,7 @@ export function setGroupingHighlight (grouping) {
         break;
     }
     setGroupingHighlight(grouping);
+    return;
   }
 
   let groups = Array.from($('.' + grouping));
