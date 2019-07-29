@@ -69,7 +69,7 @@ class NeonView {
   /**
    * Get the current page from the loaded view and then display the
    * most up to date SVG.
-   * @param {boolean} [delay=false] whether or not to delay loading the page by 500ms. defaults to false
+   * @param {boolean} [delay=false] - whether or not to delay loading the page by 500ms. defaults to false
    */
   updateForCurrentPage (delay = false) {
     let pageNo = this.view.getCurrentPage();
@@ -78,7 +78,7 @@ class NeonView {
 
   /**
    * Same as updateForCurrentPage but returns a promise.
-   * @param {boolean} [delay=false] whether or not to delay loading the page by 500ms. defaults to false
+   * @param {boolean} [delay=false] - whether or not to delay loading the page by 500ms. defaults to false
    * @see NeonView.updateForCurrentPage
    */
   updateForCurrentPagePromise (delay = false) {
