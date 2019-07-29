@@ -37,6 +37,15 @@ export function startEditMode (neonView) {
   $('#undoRedo_controls').append(undoRedoPanel);
   initNavbar(neonView);
   initUndoRedoPanel(neonView);
+
+  let selectionHighlight = document.createElement("a");
+  let divider = document.createElement('hr');
+  divider.classList.add('dropdown-divider');
+  selectionHighlight.classList.add('dropdown-item');
+  selectionHighlight.id = 'highlight-selection';
+  selectionHighlight.textContent = 'By Selection Mode';
+  (document.getElementsByClassName('dropdown-content'))[0].appendChild(divider);
+  (document.getElementsByClassName('dropdown-content'))[0].appendChild(selectionHighlight);
 }
 
 /**

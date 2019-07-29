@@ -11,6 +11,22 @@ export function setGroupingHighlight (grouping) {
   if (grouping === 'staff') {
     setStaffHighlight();
     return;
+  } else if (grouping === 'selection') {
+    let temp = $('.sel-by.is-active').attr('id');
+    switch (temp) {
+      case 'selBySyl':
+      case 'selByBBox':
+        grouping = 'syllable';
+        break;
+      case 'selByStaff':
+        grouping = 'staff';
+        break;
+      default: 
+        grouping = 'neume';
+        break;
+    }
+    setGroupingHighlight(grouping);
+    return;
   }
 
   let groups = Array.from($('.' + grouping));
