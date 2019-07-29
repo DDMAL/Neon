@@ -157,6 +157,13 @@ export function setHighlightControls () {
         $('#highlight-type').html('&nbsp;- Neume');
         Color.setGroupingHighlight('neume');
       });
+      $('#highlight-selection').on('click', () => {
+        $('#highlight-dropdown').removeClass('is-active');
+        $('.highlight-selected').removeClass('highlight-selected');
+        $('#highlight-selection').addClass('highlight-selected');
+        $('#highlight-type').html('&nbsp;- Selection');
+        Color.setGroupingHighlight('selection');
+      });
       $('#highlight-none').on('click', () => {
         $('#highlight-dropdown').removeClass('is-active');
         $('.highlight-selected').removeClass('highlight-selected');
@@ -184,6 +191,8 @@ export function updateHighlight () {
     case 'highlight-neume':
       Color.setGroupingHighlight('neume');
       break;
+    case 'highlight-selection':
+      Color.setGroupingHighlight('selection');
     default:
       Color.unsetGroupingHighlight();
   }
