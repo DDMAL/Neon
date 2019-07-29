@@ -108,7 +108,7 @@ function Resize (elementId, neonView, dragHandler) {
       .style('stroke-dasharray', '20 10');
 
     points.forEach((point) => {
-      d3.select('#' + element.id).append('circle')
+      d3.select(element.viewportElement).append('circle')
       .attr('cx', point.x)
       .attr('cy', point.y)
       .attr('r', 25)
