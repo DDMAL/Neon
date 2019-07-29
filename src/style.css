@@ -121,7 +121,10 @@ button:focus {
     fill: #d00;
 }
 
-
+.diva-wrapper {
+    min-height: inherit;
+    height: 100%;
+}
 
 @keyframes spin {
     0% {
