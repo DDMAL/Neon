@@ -23,6 +23,7 @@ function DragHandler (neonView, selector) {
 
     var activeNc = d3.selectAll('.selected');
     var selection = Array.from(activeNc._groups[0]);
+    selection = selection.concat(Array.from(document.getElementsByClassName('resizePoint')));
 
     dragStartCoords = new Array(activeNc.size());
     dragEndCoords = new Array(activeNc.size());
@@ -63,7 +64,7 @@ function DragHandler (neonView, selector) {
     function dragEnded () {
       dragEndCoords = [d3.event.x, d3.event.y];
       let paramArray = [];
-      selection.forEach((el) => {
+      selection.filter(el => !el.classList.contains('resizePoint')).forEach((el) => {
         let id = (el.tagName === 'rect') ? el.closest('.syl').id : el.id;
         let singleAction = { action: 'drag',
           param: { elementId: id,

@@ -105,12 +105,14 @@ class TextView {
         }
         $(span).on('mouseenter', () => {
           syllable.addClass('selected');
+          syllable.find('.neume').addClass('selected');
           rect.css('fill', '#d00');
           // syl.attr('fill', '#ffc7c7');
           // this.highlightBoundingBox(span);
         });
         $(span).on('mouseleave', () => {
           syllable.removeClass('selected');
+          syllable.find('.neume').removeClass('selected');
           if (syllable.css('fill') !== 'rgb(0, 0, 0)') {
             rect.css('fill', syllable.css('fill'));
           } else {

@@ -40,6 +40,9 @@ export function unselect () {
       $(selected[i]).removeClass('selected');
     }
   }
+  $('.text-select').css('color', '');
+  $('.text-select').css('font-weight', '');
+  $('.text-select').removeClass('text-select');
   let sylRects = $('.sylTextRect-display');
   sylRects.css('fill', 'blue');
 
@@ -48,6 +51,7 @@ export function unselect () {
   $('.syllable-highlighted').removeClass('syllable-highlighted');
 
   d3.selectAll('#resizeRect').remove();
+  d3.selectAll('.resizePoint').remove();
 
   if (!$('#selByStaff').hasClass('is-active')) {
     Grouping.endGroupingSelection();
@@ -71,6 +75,19 @@ export function select (el, dragHandler) {
     $(el).css('fill', '#d00');
     if ($(el).find('.sylTextRect-display').length) {
       $(el).find('.sylTextRect-display').css('fill', 'red');
+    }
+    var sylId;
+    if ($(el).hasClass('syllable')) {
+      sylId = el.id;
+    } else if ($(el).parents('.syllable').length) {
+      sylId = $(el).parents('.syllable').attr('id');
+    }
+    if (sylId !== undefined) {
+      if ($('span').filter('.' + sylId).length) {
+        $('span').filter('.' + sylId).css('color', '#d00');
+        $('span').filter('.' + sylId).css('font-weight', 'bold');
+        $('span').filter('.' + sylId).addClass('text-select');
+      }
     }
   }
   updateHighlight();
@@ -180,6 +197,15 @@ export function selectBBox (el, dragHandler, resizeHandler) {
     }
     if (dragHandler !== undefined) {
       dragHandler.dragInit();
+    }
+    var sylId;
+    sylId = $(el).parents('.syllable').attr('id');
+    if (sylId !== undefined) {
+      if ($('span').filter('.' + sylId).length) {
+        $('span').filter('.' + sylId).css('color', '#d00');
+        $('span').filter('.' + sylId).css('font-weight', 'bold');
+        $('span').filter('.' + sylId).addClass('text-select');
+      }
     }
   }
 }
