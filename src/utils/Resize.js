@@ -82,18 +82,17 @@ function Resize (elementId, neonView, dragHandler) {
     }
 
     var whichPoint;
-    var initialPoint;
 
-    var points = [ 
+    var points = [
       { x: ulx, y: uly, name: PointNames.TopLeft },
       { x: (ulx + lrx) / 2, y: uly, name: PointNames.Top },
       { x: lrx, y: uly, name: PointNames.TopRight },
       { x: lrx, y: (uly + lry) / 2, name: PointNames.Right },
       { x: lrx, y: lry, name: PointNames.BottomRight },
       { x: (ulx + lrx) / 2, y: lry, name: PointNames.Bottom },
-      { x: ulx, y: lry, name: PointNames.BottomLeft},
-      { x: ulx, y: (uly + lry) / 2, name: PointNames.Left}
-    ]
+      { x: ulx, y: lry, name: PointNames.BottomLeft },
+      { x: ulx, y: (uly + lry) / 2, name: PointNames.Left }
+    ];
 
     d3.select('#' + element.id).append('rect')
       .attr('x', ulx)
@@ -109,28 +108,27 @@ function Resize (elementId, neonView, dragHandler) {
 
     points.forEach((point) => {
       d3.select(element.viewportElement).append('circle')
-      .attr('cx', point.x)
-      .attr('cy', point.y)
-      .attr('r', 25)
-      .attr('stroke', 'black')
-      .attr('stroke-width', 4)
-      .attr('fill', '#0099ff')
-      .attr('class', 'resizePoint')
-      .attr('id', 'p' + point.name)
+        .attr('cx', point.x)
+        .attr('cy', point.y)
+        .attr('r', 25)
+        .attr('stroke', 'black')
+        .attr('stroke-width', 4)
+        .attr('fill', '#0099ff')
+        .attr('class', 'resizePoint')
+        .attr('id', 'p' + point.name);
     });
 
     // do it as a loop instead of selectAll so that you can easily know which point was clicked
     Object.values(PointNames).forEach((name) => {
       d3.select('#p' + name).filter('.resizePoint').call(
         d3.drag()
-        .on('start', () => { resizeStart(name); })
-        .on('drag', resizeDrag)
-        .on('end', resizeEnd.bind(this)));
+          .on('start', () => { resizeStart(name); })
+          .on('drag', resizeDrag)
+          .on('end', resizeEnd.bind(this)));
     });
 
     function resizeStart (name) {
       whichPoint = name;
-      initialPoint = d3.mouse(this);
     }
 
     function resizeDrag () {
@@ -212,21 +210,21 @@ function Resize (elementId, neonView, dragHandler) {
       .attr('width', lrx - ulx)
       .attr('height', lry - uly);
 
-    var points = [ 
+    var points = [
       { x: ulx, y: uly, name: PointNames.TopLeft },
       { x: (ulx + lrx) / 2, y: uly, name: PointNames.Top },
       { x: lrx, y: uly, name: PointNames.TopRight },
       { x: lrx, y: (uly + lry) / 2, name: PointNames.Right },
       { x: lrx, y: lry, name: PointNames.BottomRight },
       { x: (ulx + lrx) / 2, y: lry, name: PointNames.Bottom },
-      { x: ulx, y: lry, name: PointNames.BottomLeft},
-      { x: ulx, y: (uly + lry) / 2, name: PointNames.Left}
-    ]
+      { x: ulx, y: lry, name: PointNames.BottomLeft },
+      { x: ulx, y: (uly + lry) / 2, name: PointNames.Left }
+    ];
 
     points.forEach((point) => {
       d3.select('#p' + point.name).filter('.resizePoint')
-      .attr('cx', point.x)
-      .attr('cy', point.y)
+        .attr('cx', point.x)
+        .attr('cy', point.y);
     });
   }
 
