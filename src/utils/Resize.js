@@ -94,11 +94,12 @@ function Resize (elementId, neonView, dragHandler) {
       { x: ulx, y: (uly + lry) / 2, name: PointNames.Left }
     ];
 
-    d3.select('#' + element.id).append('rect')
-      .attr('x', ulx)
-      .attr('y', uly)
-      .attr('width', lrx - ulx)
-      .attr('height', lry - uly)
+    let pointString = points.filter((elem, index) => { return index % 2 === 0; })
+      .map(elem => elem.x + ',' + elem.y)
+      .join(' ');
+
+    d3.select('#' + element.id).append('polygon')
+      .attr('points', pointString)
       .attr('id', 'resizeRect')
       .attr('stroke', 'black')
       .attr('stroke-width', 10)
@@ -204,12 +205,6 @@ function Resize (elementId, neonView, dragHandler) {
    * Redraw the rectangle with the new bounds
    */
   function redraw () {
-    d3.select('#resizeRect')
-      .attr('x', ulx)
-      .attr('y', uly)
-      .attr('width', lrx - ulx)
-      .attr('height', lry - uly);
-
     var points = [
       { x: ulx, y: uly, name: PointNames.TopLeft },
       { x: (ulx + lrx) / 2, y: uly, name: PointNames.Top },
@@ -220,6 +215,12 @@ function Resize (elementId, neonView, dragHandler) {
       { x: ulx, y: lry, name: PointNames.BottomLeft },
       { x: ulx, y: (uly + lry) / 2, name: PointNames.Left }
     ];
+
+    let pointString = points.filter((elem, index) => { return index % 2 === 0; })
+      .map(elem => elem.x + ',' + elem.y)
+      .join(' ');
+
+    d3.select('#resizeRect').attr('points', pointString);
 
     points.forEach((point) => {
       d3.select('#p' + point.name).filter('.resizePoint')
