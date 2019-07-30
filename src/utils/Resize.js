@@ -53,6 +53,12 @@ function Resize (elementId, neonView, dragHandler) {
   var lry;
 
   /**
+   * The skew of the rect in radians.
+   * @type {number}
+   */
+  var skew;
+
+  /**
    * Draw the initial rectangle around the element
    * and add the listeners to support dragging to resize.
    */
@@ -70,6 +76,8 @@ function Resize (elementId, neonView, dragHandler) {
       uly = Number(rect.getAttribute('y'));
       lrx = +ulx + +rect.getAttribute('width');
       lry = +uly + +rect.getAttribute('height');
+
+      skew = 0;
     }
 
     // if it's a staff use the paths to get it's boundingbox
@@ -79,19 +87,23 @@ function Resize (elementId, neonView, dragHandler) {
       uly = bbox.uly;
       lrx = bbox.lrx;
       lry = bbox.lry;
+
+      let segments = element.querySelector('path').pathSegList;
+      skew = Math.atan((segments[segments.length - 1].y - segments[0].y) /
+        (segments[segments.length - 1].x - segments[0].x));
     }
 
     var whichPoint;
 
     var points = [
       { x: ulx, y: uly, name: PointNames.TopLeft },
-      { x: (ulx + lrx) / 2, y: uly, name: PointNames.Top },
-      { x: lrx, y: uly, name: PointNames.TopRight },
-      { x: lrx, y: (uly + lry) / 2, name: PointNames.Right },
+      { x: (ulx + lrx) / 2, y: uly + (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Top },
+      { x: lrx, y: uly + (lrx - ulx) * Math.sin(skew), name: PointNames.TopRight },
+      { x: lrx, y: (uly + lry + (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Right },
       { x: lrx, y: lry, name: PointNames.BottomRight },
-      { x: (ulx + lrx) / 2, y: lry, name: PointNames.Bottom },
-      { x: ulx, y: lry, name: PointNames.BottomLeft },
-      { x: ulx, y: (uly + lry) / 2, name: PointNames.Left }
+      { x: (ulx + lrx) / 2, y: lry - (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Bottom },
+      { x: ulx, y: lry - (lrx - ulx) * Math.sin(skew), name: PointNames.BottomLeft },
+      { x: ulx, y: (uly + lry - (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Left }
     ];
 
     let pointString = points.filter((elem, index) => { return index % 2 === 0; })
@@ -207,13 +219,13 @@ function Resize (elementId, neonView, dragHandler) {
   function redraw () {
     var points = [
       { x: ulx, y: uly, name: PointNames.TopLeft },
-      { x: (ulx + lrx) / 2, y: uly, name: PointNames.Top },
-      { x: lrx, y: uly, name: PointNames.TopRight },
-      { x: lrx, y: (uly + lry) / 2, name: PointNames.Right },
+      { x: (ulx + lrx) / 2, y: uly + (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Top },
+      { x: lrx, y: uly + (lrx - ulx) * Math.sin(skew), name: PointNames.TopRight },
+      { x: lrx, y: (uly + lry + (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Right },
       { x: lrx, y: lry, name: PointNames.BottomRight },
-      { x: (ulx + lrx) / 2, y: lry, name: PointNames.Bottom },
-      { x: ulx, y: lry, name: PointNames.BottomLeft },
-      { x: ulx, y: (uly + lry) / 2, name: PointNames.Left }
+      { x: (ulx + lrx) / 2, y: lry - (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Bottom },
+      { x: ulx, y: lry - (lrx - ulx) * Math.sin(skew), name: PointNames.BottomLeft },
+      { x: ulx, y: (uly + lry - (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Left }
     ];
 
     let pointString = points.filter((elem, index) => { return index % 2 === 0; })
