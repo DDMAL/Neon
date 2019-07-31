@@ -58,7 +58,7 @@ function Resize (elementId, neonView, dragHandler) {
    */
   var skew;
 
-  var initialPoint, initialUly, initialLry, whichSkewPoint, initialY, polyLen, dy;
+  var initialPoint, initialUly, initialLry, whichSkewPoint, initialY, initialRectY, polyLen, dy, initialSkew;
 
   /**
    * Draw the initial rectangle around the element
@@ -173,37 +173,37 @@ function Resize (elementId, neonView, dragHandler) {
       d3.select('#skewLeft').call(
         d3.drag()
           .on('start', () => { skewStart('skewLeft'); })
-          .on('drag', skewDrag)
+          .on('drag', skewDragLeft)
           .on('end', skewEnd));
 
       d3.select('#skewRight').call(
         d3.drag()
           .on('start', () => {skewStart('skewRight'); })
-          .on('drag', skewDrag)
+          .on('drag', skewDragRight)
           .on('end', skewEnd));
-    }
-
-    function resizeStart (name) {
-      whichPoint = name;
-      let point = points.find(point => { return point.name === name; });
-      initialPoint = [point.x, point.y];
-      console.log('test');
-      initialUly = uly;
-      initialLry = lry;
     }
 
     function skewStart (which) {
       let polygon = d3.select('#' + which);
       let points = polygon.attr('points');
       initialY = points.split(' ')[0].split(',')[1];
-      whichSkewPoint = which;
+      initialRectY = (which === 'skewRight' ? lry : uly);
+      initialSkew = skew;
     }
 
-    function skewDrag () {
+    function skewDragLeft() {
+      let currentY = d3.mouse(this)[1];
+      dy =  currentY - initialY;
+      uly = initialRectY + dy;
+      skew = initialSkew - Math.atan(dy / polyLen);
+      redraw();
+    }
+
+    function skewDragRight () {
       let currentY = d3.mouse(this)[1];
       dy = currentY - initialY;
-      let angle = Math.atan(dy / polyLen * 180 / Math.PI);
-      d3.select('#' + elementId).attr('transform', 'skewY(' + angle + ')');
+      lry = initialRectY + dy;
+      skew = initialSkew + Math.atan(dy / polyLen);
       redraw();
     }
 
@@ -235,6 +235,14 @@ function Resize (elementId, neonView, dragHandler) {
         d3.selectAll('.skewPoint').remove();
         drawInitialRect();
       });
+    }
+
+    function resizeStart (name) {
+      whichPoint = name;
+      let point = points.find(point => { return point.name === name; });
+      initialPoint = [point.x, point.y];
+      initialUly = uly;
+      initialLry = lry;
     }
 
     function resizeDrag () {
@@ -335,6 +343,7 @@ function Resize (elementId, neonView, dragHandler) {
         .attr('cx', point.x)
         .attr('cy', point.y);
     });
+
     let x = points[3].x;
     let y = points[3].y;
     let pointStringRight = (x + 100) + ',' + (y + 85) + ' ' + 
