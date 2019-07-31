@@ -1,4 +1,4 @@
-Neon (develop)
+Neon v4.0.0
 =====
 [![Build_Status](https://travis-ci.org/DDMAL/Neon.svg?branch=develop)](https://travis-ci.org/DDMAL/Neon)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
