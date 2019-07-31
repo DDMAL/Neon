@@ -163,18 +163,18 @@ export function sharedSecondLevelParent (elements) {
 export function getStaffBBox (staff) {
   let ulx, uly, lrx, lry;
   Array.from($(staff).children('path')).forEach(path => {
-    let box = path.getBBox();
-    if (uly === undefined || box.y < uly) {
-      uly = box.y;
+    let segments = path.pathSegList;
+    if (uly === undefined || segments[0].y < uly) {
+      uly = segments[0].y;
     }
-    if (ulx === undefined || box.x < ulx) {
-      ulx = box.x;
+    if (ulx === undefined || segments[0].x < ulx) {
+      ulx = segments[0].x;
     }
-    if (lry === undefined || box.y + box.height > lry) {
-      lry = box.y + box.height;
+    if (lry === undefined || segments[segments.length - 1].y > lry) {
+      lry = segments[segments.length - 1].y;
     }
-    if (lrx === undefined || box.x + box.width > lrx) {
-      lrx = box.x + box.width;
+    if (lrx === undefined || segments[segments.length - 1].x > lrx) {
+      lrx = segments[segments.length - 1].x;
     }
   });
   return { 'ulx': ulx, 'uly': uly, 'lrx': lrx, 'lry': lry };
