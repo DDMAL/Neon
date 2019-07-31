@@ -58,6 +58,8 @@ function Resize (elementId, neonView, dragHandler) {
    */
   var skew;
 
+  var initialPoint, initialUly, initialLry;
+
   /**
    * Draw the initial rectangle around the element
    * and add the listeners to support dragging to resize.
@@ -142,6 +144,11 @@ function Resize (elementId, neonView, dragHandler) {
 
     function resizeStart (name) {
       whichPoint = name;
+      let point = points.find(point => { return point.name === name; });
+      initialPoint = [point.x, point.y];
+      console.log('test');
+      initialUly = uly;
+      initialLry = lry;
     }
 
     function resizeDrag () {
@@ -160,6 +167,7 @@ function Resize (elementId, neonView, dragHandler) {
           break;
         case PointNames.Right:
           lrx = currentPoint[0];
+          lry = initialLry + (currentPoint[0] - initialPoint[0]) * Math.tan(skew);
           break;
         case PointNames.BottomRight:
           lrx = currentPoint[0];
@@ -174,6 +182,7 @@ function Resize (elementId, neonView, dragHandler) {
           break;
         case PointNames.Left:
           ulx = currentPoint[0];
+          uly = initialUly + (currentPoint[0] - initialPoint[0]) * Math.tan(skew);
           break;
         default:
           console.error("Something that wasn't a side of the rectangle was dragged. This shouldn't happen.");
