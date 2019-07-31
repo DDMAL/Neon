@@ -186,6 +186,7 @@ function Resize (elementId, neonView, dragHandler) {
     function skewStart (which) {
       let polygon = d3.select('#' + which);
       let points = polygon.attr('points');
+      whichSkewPoint = which;
       initialY = points.split(' ')[0].split(',')[1];
       initialRectY = (which === 'skewRight' ? lry : uly);
       initialSkew = skew;
@@ -213,7 +214,7 @@ function Resize (elementId, neonView, dragHandler) {
         'param': {
           'elementId': element.id,
           'dy': dy,
-          'rightSide': (whichSkewPoint === 'rightSkew' ? true : false)
+          'rightSide': (whichSkewPoint === 'skewRight' ? true : false)
         }
       };
       neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
