@@ -147,11 +147,11 @@ function Resize (elementId, neonView, dragHandler) {
     if (element.classList.contains('staff')) {
       let x = points[3].x;
       let y = points[3].y;
-      let pointStringRight = (x + 100) + ',' + (y + 85) + ' ' + 
+      let pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
         (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
       x = points[7].x;
       y = points[7].y;
-      let pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' + 
+      let pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
         (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
 
       d3.select('#' + element.id).append('polygon')
@@ -178,7 +178,7 @@ function Resize (elementId, neonView, dragHandler) {
 
       d3.select('#skewRight').call(
         d3.drag()
-          .on('start', () => {skewStart('skewRight'); })
+          .on('start', () => { skewStart('skewRight'); })
           .on('drag', skewDragRight)
           .on('end', skewEnd));
     }
@@ -192,9 +192,9 @@ function Resize (elementId, neonView, dragHandler) {
       initialSkew = skew;
     }
 
-    function skewDragLeft() {
+    function skewDragLeft () {
       let currentY = d3.mouse(this)[1];
-      dy =  currentY - initialY;
+      dy = currentY - initialY;
       uly = initialRectY + dy;
       skew = initialSkew - Math.atan(dy / polyLen);
       redraw();
@@ -208,13 +208,13 @@ function Resize (elementId, neonView, dragHandler) {
       redraw();
     }
 
-    function skewEnd() {
+    function skewEnd () {
       let editorAction = {
         'action': 'changeSkew',
         'param': {
           'elementId': element.id,
           'dy': dy,
-          'rightSide': (whichSkewPoint === 'skewRight' ? true : false)
+          'rightSide': (whichSkewPoint === 'skewRight')
         }
       };
       neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
@@ -347,11 +347,11 @@ function Resize (elementId, neonView, dragHandler) {
 
     let x = points[3].x;
     let y = points[3].y;
-    let pointStringRight = (x + 100) + ',' + (y + 85) + ' ' + 
+    let pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
       (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
     x = points[7].x;
     y = points[7].y;
-    let pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' + 
+    let pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
       (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
 
     d3.select('#skewLeft').attr('points', pointStringLeft);
