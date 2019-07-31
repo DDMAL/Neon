@@ -58,7 +58,7 @@ function Resize (elementId, neonView, dragHandler) {
    */
   var skew;
 
-  var initialPoint, initialUly, initialLry;
+  var initialPoint, initialUly, initialLry, whichSkewPoint, initialY, polyLen, dy;
 
   /**
    * Draw the initial rectangle around the element
@@ -108,6 +108,8 @@ function Resize (elementId, neonView, dragHandler) {
       { x: ulx, y: (uly + lry - (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Left }
     ];
 
+    polyLen = points[2].x - points[0].x;
+
     let pointString = points.filter((elem, index) => { return index % 2 === 0; })
       .map(elem => elem.x + ',' + elem.y)
       .join(' ');
@@ -142,6 +144,45 @@ function Resize (elementId, neonView, dragHandler) {
           .on('end', resizeEnd.bind(this)));
     });
 
+    if (element.classList.contains('staff')) {
+      let x = points[3].x;
+      let y = points[3].y;
+      let pointStringRight = (x + 100) + ',' + (y + 85) + ' ' + 
+        (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
+      x = points[7].x;
+      y = points[7].y;
+      let pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' + 
+        (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
+
+      d3.select('#' + element.id).append('polygon')
+        .attr('points', pointStringRight)
+        .attr('id', 'skewRight')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 7)
+        .attr('fill', '#0099ff')
+        .attr('class', 'skewPoint');
+
+      d3.select('#' + element.id).append('polygon')
+        .attr('points', pointStringLeft)
+        .attr('id', 'skewLeft')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 7)
+        .attr('fill', '#0099ff')
+        .attr('class', 'skewPoint');
+
+      d3.select('#skewLeft').call(
+        d3.drag()
+          .on('start', () => { skewStart('skewLeft'); })
+          .on('drag', skewDrag)
+          .on('end', skewEnd));
+
+      d3.select('#skewRight').call(
+        d3.drag()
+          .on('start', () => {skewStart('skewRight'); })
+          .on('drag', skewDrag)
+          .on('end', skewEnd));
+    }
+
     function resizeStart (name) {
       whichPoint = name;
       let point = points.find(point => { return point.name === name; });
@@ -149,6 +190,51 @@ function Resize (elementId, neonView, dragHandler) {
       console.log('test');
       initialUly = uly;
       initialLry = lry;
+    }
+
+    function skewStart (which) {
+      let polygon = d3.select('#' + which);
+      let points = polygon.attr('points');
+      initialY = points.split(' ')[0].split(',')[1];
+      whichSkewPoint = which;
+    }
+
+    function skewDrag () {
+      let currentY = d3.mouse(this)[1];
+      dy = currentY - initialY;
+      let angle = Math.atan(dy / polyLen * 180 / Math.PI);
+      d3.select('#' + elementId).attr('transform', 'skewY(' + angle + ')');
+      redraw();
+    }
+
+    function skewEnd() {
+      let editorAction = {
+        'action': 'changeSkew',
+        'param': {
+          'elementId': element.id,
+          'dy': dy,
+          'rightSide': (whichSkewPoint === 'rightSkew' ? true : false)
+        }
+      };
+      neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
+        if (result) {
+          await neonView.updateForCurrentPagePromise();
+        }
+        element = document.getElementById(elementId);
+        ulx = undefined;
+        uly = undefined;
+        lrx = undefined;
+        lry = undefined;
+        if (element.classList.contains('syl')) {
+          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
+        } else {
+          selectStaff(element, dragHandler);
+        }
+        d3.selectAll('.resizePoint').remove();
+        d3.selectAll('#resizeRect').remove();
+        d3.selectAll('.skewPoint').remove();
+        drawInitialRect();
+      });
     }
 
     function resizeDrag () {
@@ -217,6 +303,7 @@ function Resize (elementId, neonView, dragHandler) {
         }
         d3.selectAll('.resizePoint').remove();
         d3.selectAll('#resizeRect').remove();
+        d3.selectAll('.skewPoint').remove();
         drawInitialRect();
       });
     }
@@ -248,6 +335,17 @@ function Resize (elementId, neonView, dragHandler) {
         .attr('cx', point.x)
         .attr('cy', point.y);
     });
+    let x = points[3].x;
+    let y = points[3].y;
+    let pointStringRight = (x + 100) + ',' + (y + 85) + ' ' + 
+      (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
+    x = points[7].x;
+    y = points[7].y;
+    let pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' + 
+      (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
+
+    d3.select('#skewLeft').attr('points', pointStringLeft);
+    d3.select('#skewRight').attr('points', pointStringRight);
   }
 
   Resize.prototype.constructor = Resize;

@@ -52,6 +52,7 @@ export function unselect () {
 
   d3.selectAll('#resizeRect').remove();
   d3.selectAll('.resizePoint').remove();
+  d3.selectAll('.skewPoint').remove();
 
   if (!$('#selByStaff').hasClass('is-active')) {
     Grouping.endGroupingSelection();
