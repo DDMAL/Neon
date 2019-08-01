@@ -10,7 +10,8 @@ toolkit.setOptions({
   font: 'Bravura',
   useFacsimile: true,
   createDefaultSyl: true,
-  createDefaultSylBBox: true
+  createDefaultSylBBox: true,
+  useSkew: true
 });
 
 onmessage = handleNeonEvent;
