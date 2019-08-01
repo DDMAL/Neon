@@ -1,6 +1,6 @@
 {
     "name": "Neon",
-    "version": "3.1.1",
+    "version": "4.0.0",
     "description": "A web-based editor for correcting MEI-Neume files",
     "main": "server.js",
     "license": "MIT",
@@ -34,15 +34,16 @@
         "start": "nodemon server.js",
         "build": "./setup-verovio && webpack --config webpack.config.js",
         "test": "jest --silent",
-        "doc": "jsdoc -d ./doc/ ./src/ ./src/SingleEdit/ ./src/SingleView/ ./src/utils/ -R ./README.md",
-        "pages": "./setup-verovio && webpack --config webpack.pages-config.js && cp public/verovio-toolkit.js dist/verovio-toolkit.js"
+        "doc": "jsdoc -d ./doc/ ./src/ ./src/DisplayPanel/ ./src/SingleView/ ./src/SquareEdit/ ./src/utils/ -R ./README.md",
+        "pages": "./setup-verovio && webpack --config webpack.pages-config.js && cp -R public/verovio-toolkit.js public/diva-v6.0.1 pages/manifests dist/ && cp pages/static/* dist/"
     },
     "jest": {
         "testPathIgnorePatterns": [
             "<rootDir>/node_modules/"
         ],
         "moduleNameMapper": {
-            "Validation": "<rootDir>/test/SubstituteValidation.js"
+            "Validation": "<rootDir>/test/SubstituteValidation.js",
+            "VerovioWrapper": "<rootDir>/test/VerovioWrapper.js"
         }
     },
     "babel": {
@@ -64,10 +65,13 @@
         "bulma-slider": "^2.0.0",
         "css-loader": "^0.28.11",
         "d3": "^5.5.0",
+        "elementtree": "^0.1.7",
         "file-loader": "^1.1.11",
+        "html-loader": "^0.5.5",
         "jest": "^23.1.0",
         "jquery": "^3.4.1",
         "jsdoc": "^3.5.5",
+        "jsonschema": "^1.2.4",
         "pouchdb": "^7.0.0",
         "raw-loader": "^2.0.0",
         "selenium-webdriver": "^4.0.0-alpha.1",

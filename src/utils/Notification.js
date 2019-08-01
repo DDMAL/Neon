@@ -1,4 +1,4 @@
-/** @module Notification */
+/** @module utils/Notification */
 
 const uuid = require('uuid/v4');
 const $ = require('jquery');
@@ -87,9 +87,9 @@ function clearOrShowNextNotification (currentId) {
  */
 class Notification {
   /**
-     * Create a new notification
-     * @param {string} message
-     */
+   * Create a new notification
+   * @param {string} message
+   */
   constructor (message) {
     this.message = message;
     this.displayed = false;
@@ -107,9 +107,9 @@ class Notification {
   }
 
   /**
-     * Get the UUID for this notification
-     * @returns {string}
-     */
+   * Get the UUID for this notification
+   * @returns {string}
+   */
   getId () {
     return this.id;
   }

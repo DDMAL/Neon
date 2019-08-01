@@ -108,20 +108,23 @@ button:focus {
     display: none;
 }
 
-.syl-select {
-    background-color: solid red;
-}
-
 .sylTextRect {
     display: none;
 }
 
-.sylTextRect-select {
-    fill: red;
+.sylTextRect-display {
+    fill: blue;
     opacity: 0.2;
 }
 
+.selected {
+    fill: #d00;
+}
 
+.diva-wrapper {
+    min-height: inherit;
+    height: 100%;
+}
 
 @keyframes spin {
     0% {
@@ -133,7 +136,7 @@ button:focus {
     }
 }
 
-@media only screen and (max-width: 1088px) {
+@media only screen and (max-width: 900px) {
     #navMenu {
         position: fixed;
         height: 100%;

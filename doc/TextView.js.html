@@ -27,6 +27,8 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import * as Notification from './utils/Notification.js';
+import { unselect } from './utils/SelectTools.js';
+import { updateHighlight } from './DisplayPanel/DisplayControls.js';
 
 /** @module TextView */
 
@@ -40,29 +42,36 @@ class TextView {
    * A constructor for a TextView.
    * @param {NeonView} neonView = The NeonView parent.
    */
-
   constructor (neonView) {
     this.neonView = neonView;
     this.notificationSent = false;
 
     // add checkbox to enable/disable the view
     let block = document.getElementById('extensible-block');
-    let label = document.createElement('label');
-    let input = document.createElement('input');
-    label.classList.add('checkbox');
-    label.textContent = 'Display Text: ';
-    input.classList.add('checkbox');
-    input.id = 'displayText';
-    input.type = 'checkbox';
-    input.checked = false;
-    label.appendChild(input);
-    block.prepend(label);
+    let textLabel = document.createElement('label');
+    let bboxLabel = document.createElement('label');
+    let textButton = document.createElement('input');
+    let bboxButton = document.createElement('input');
+    textLabel.classList.add('checkbox');
+    bboxLabel.classList.add('checkbox');
+    textLabel.textContent = 'Display Text: ';
+    bboxLabel.textContent = 'Display Text BBoxes: ';
+    textButton.classList.add('checkbox');
+    bboxButton.classList.add('checkbox');
+    textButton.id = 'displayText';
+    textButton.type = 'checkbox';
+    bboxButton.id = 'displayBBox';
+    bboxButton.type = 'checkbox';
+    textButton.checked = false;
+    bboxButton.checked = false;
+    textLabel.appendChild(textButton);
+    bboxLabel.appendChild(bboxButton);
+    block.prepend(bboxLabel);
+    block.prepend(textLabel);
 
-    $('#edit_mode').on('click', () => {
-      this.setTextEdit();
-    });
     this.setTextViewControls();
     this.neonView.view.addUpdateCallback(this.updateTextViewVisibility.bind(this));
+    this.neonView.view.addUpdateCallback(this.updateBBoxViewVisibility.bind(this));
   }
 
   /**
@@ -70,45 +79,39 @@ class TextView {
   */
   setTextViewControls () {
     this.updateTextViewVisibility();
+    this.updateBBoxViewVisibility();
     $('#displayText').on('click', () => {
       this.updateTextViewVisibility();
     });
-  }
-
-  /**
-  * set text to edit mode
-  */
-  setTextEdit () {
-    let spans = Array.from($('#syl_text').children('p').children('span'));
-    spans.forEach(span => {
-      $(span).off('click');
-      $(span).on('click', () => {
-        this.updateSylText(span);
-      });
+    $('#displayBBox').on('click', () => {
+      this.updateBBoxViewVisibility();
     });
   }
 
   /**
-  * Update the text for a single syl element
-  * @param {HTMLElement} span
-  */
-  updateSylText (span) {
-    let orig = formatRaw($(span).html());
-    let corrected = window.prompt('', orig);
-    if (corrected !== null &amp;&amp; corrected !== orig) {
-      let editorAction = {
-        'action': 'setText',
-        'param': {
-          'elementId': $('#' + $(span).attr('class').replace('syl-select', '').trim()).attr('id'),
-          'text': corrected
-        }
-      };
-      this.neonView.edit(editorAction, this.neonView.view.getCurrentPage()).then((response) => {
-        if (response) {
-          this.neonView.updateForCurrentPage();
-        }
-      });
+   * update visibility of text bounding boxes
+   */
+  updateBBoxViewVisibility () {
+    if ($('#displayBBox').is(':checked')) {
+      $('.sylTextRect').addClass('sylTextRect-display');
+      $('.sylTextRect').removeClass('sylTextRect');
+      $('.syl.selected').find('.sylTextRect-display').css('fill', 'red');
+
+      if (this.neonView.getUserMode() !== 'viewer' &amp;&amp; this.neonView.TextEdit !== undefined) {
+        this.neonView.TextEdit.initSelectByBBoxButton();
+      }
+    } else {
+      if ($('#selByBBox').hasClass('is-active')) {
+        unselect();
+        $('#selByBBox').removeClass('is-active');
+        $('#selBySyl').addClass('is-active');
+      }
+      $('.sylTextRect-display').addClass('sylTextRect');
+      $('.sylTextRect-display').removeClass('sylTextRect-display');
+      $('.syl.selected').find('sylTextRect').css('fill', 'none');
+      $('#selByBBox').css('display', 'none');
     }
+    updateHighlight();
   }
 
   /**
@@ -124,31 +127,29 @@ class TextView {
         let syllable = $('#' + $(span).attr('class'));
         let syl = syllable.children('.syl');
         let text = syl.children('text');
-        let int_text = text.children('.text');
-        let real_text = text.children('.text').children('.text');
         let rect = syl.children('rect');
         if (text.attr('class') == null) {
           text.addClass('text');
         }
         $(span).on('mouseenter', () => {
-          syllable.addClass('syl-select');
-          syllable.attr('fill', '#d00');
-          rect.removeClass('sylTextRect');
-          rect.addClass('sylTextRect-select');
+          syllable.addClass('selected');
+          rect.css('fill', '#d00');
           // syl.attr('fill', '#ffc7c7');
           // this.highlightBoundingBox(span);
         });
         $(span).on('mouseleave', () => {
-          syllable.removeClass('syl-select');
-          syllable.attr('fill', null);
-          rect.removeClass('sylTextRect-select');
-          rect.addClass('sylTextRect');
+          syllable.removeClass('selected');
+          if (syllable.css('fill') !== 'rgb(0, 0, 0)') {
+            rect.css('fill', syllable.css('fill'));
+          } else {
+            rect.css('fill', 'blue');
+          }
           // syl.attr('fill', null);
           // this.removeBoundingBox(span);
         });
       });
-      if (this.neonView.getUserMode() !== 'viewer') {
-        this.setTextEdit();
+      if (this.neonView.getUserMode() !== 'viewer' &amp;&amp; this.neonView.TextEdit !== undefined) {
+        this.neonView.TextEdit.initTextEdit();
       }
     } else {
       $('#syl_text').css('display', 'none');
@@ -187,16 +188,6 @@ class TextView {
   }
 }
 
-/**
- * Format a string for prompting the user.
- * @param {string} rawString
- * @returns {string}
- */
-function formatRaw (rawString) {
-  let removeSymbol = /\u{25CA}/u;
-  return rawString.replace(removeSymbol, '').trim();
-}
-
 export { TextView as default };
 </code></pre>
         </article>
@@ -208,13 +199,13 @@ export { TextView as default };
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-Notification.html">Notification</a></li><li><a href="module-SingleEdit_Contents.html">SingleEdit/Contents</a></li><li><a href="module-SingleEdit_EditControls.html">SingleEdit/EditControls</a></li><li><a href="module-SingleEdit_Grouping.html">SingleEdit/Grouping</a></li><li><a href="module-SingleEdit_ResizeStaff.html">SingleEdit/ResizeStaff</a></li><li><a href="module-SingleEdit_Select.html">SingleEdit/Select</a></li><li><a href="module-SingleEdit_SelectOptions.html">SingleEdit/SelectOptions</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-Notification-Notification.html">Notification</a></li><li><a href="module-SingleEdit_ResizeStaff-Resize.html">Resize</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li><li><a href="SplitHandler.html">SplitHandler</a></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-DisplayPanel_DisplayControls.html">DisplayPanel/DisplayControls</a></li><li><a href="module-DisplayPanel_DisplayPanel.html">DisplayPanel/DisplayPanel</a></li><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-SquareEdit_Contents.html">SquareEdit/Contents</a></li><li><a href="module-SquareEdit_Controls.html">SquareEdit/Controls</a></li><li><a href="module-SquareEdit_Grouping.html">SquareEdit/Grouping</a></li><li><a href="module-SquareEdit_SelectOptions.html">SquareEdit/SelectOptions</a></li><li><a href="module-SquareEdit_StaffTools.html">SquareEdit/StaffTools</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-utils_EditContents.html">utils/EditContents</a></li><li><a href="module-utils_EditControls.html">utils/EditControls</a></li><li><a href="module-utils_NeonManifest.html">utils/NeonManifest</a></li><li><a href="module-utils_Notification.html">utils/Notification</a></li><li><a href="module-utils_Resize.html">utils/Resize</a></li><li><a href="module-utils_Select.html">utils/Select</a></li><li><a href="module-utils_SelectTools.html">utils/SelectTools</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DivaView.html">DivaView</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module-DisplayPanel_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-SquareEdit_StaffTools-SplitHandler.html">SplitHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="module-utils_Notification-Notification.html">Notification</a></li><li><a href="module-utils_Resize-Resize.html">Resize</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addBBoxListeners">addBBoxListeners</a></li><li><a href="global.html#addEventListener">addEventListener</a></li><li><a href="global.html#formatRaw">formatRaw</a></li><li><a href="global.html#handleNeonEvent">handleNeonEvent</a></li><li><a href="global.html#initEditModeControls">initEditModeControls</a></li><li><a href="global.html#initSelectByBBoxButton">initSelectByBBoxButton</a></li><li><a href="global.html#initTextEdit">initTextEdit</a></li><li><a href="global.html#postMessage">postMessage</a></li><li><a href="global.html#updateSylText">updateSylText</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 18 2019 11:17:42 GMT-0400 (GMT-04:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Mon Jul 15 2019 09:24:07 GMT-0400 (GMT-04:00)
 </footer>
 
 <script> prettyPrint(); </script>

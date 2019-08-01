@@ -1,4 +1,8 @@
 const path = require('path');
+const webpack = require('webpack');
+const childProcess = require('child_process');
+
+let commitHash = childProcess.execSync('git rev-parse --short HEAD').toString();
 
 module.exports = {
   mode: 'production',
@@ -42,9 +46,15 @@ module.exports = {
         ]
       },
       {
-        test: /Worker\.js/,
+        test: /Worker\.js$/,
         use: [
           'worker-loader'
+        ]
+      },
+      {
+        test: /\.html$/,
+        use: [
+          'html-loader'
         ]
       }
     ]
@@ -53,5 +63,11 @@ module.exports = {
     'verovio-dev': 'verovio',
     jquery: 'jQuery',
     d3: 'd3'
-  }
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      __LINK_LOCATION__: JSON.stringify('/'),
+      __NEON_VERSION__: JSON.stringify('v4.0.0')
+    })
+  ]
 };

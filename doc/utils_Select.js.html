@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utils/Select.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utils/Select.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module utils/Select */
+
+import {
+  unselect, getStaffBBox, selectStaff, selectAll, getSelectionType
+} from './SelectTools.js';
+import { Resize } from './Resize.js';
+
+const d3 = require('d3');
+const $ = require('jquery');
+
+var dragHandler, neonView, info, zoomHandler;
+var strokeWidth = 7;
+
+export function setSelectStrokeWidth (width) {
+  strokeWidth = width;
+}
+
+/**
+ * Set the objects for this module.
+ * @param {NeonView} nv - The NeonView object
+ * @param {DragHandler} dh - The drag handler object
+ */
+export function setSelectHelperObjects (nv, dh) {
+  dragHandler = dh;
+  neonView = nv;
+  info = neonView.info;
+  zoomHandler = neonView.view.zoomHandler;
+}
+
+/**
+ * Apply listeners for click selection.
+ * @param {string} selector - The CSS selector used to choose where listeners are applied.
+ */
+export function clickSelect (selector) {
+  $(selector).off('mousedown', clickHandler);
+  $(selector).on('mousedown', clickHandler);
+
+  // Click away listeners
+  $('body').on('keydown', (evt) => {
+    if (evt.key === 'Escape') {
+      if ($('.selected').length > 0) {
+        info.infoListeners();
+      }
+      unselect();
+    }
+  });
+
+  $('#container').on('contextmenu', (evt) => { evt.preventDefault(); });
+
+  $('use').on('click', (e) => { e.stopPropagation(); });
+  $('rect').on('click', (e) => { e.stopPropagation(); });
+  $('#moreEdit').on('click', (e) => { e.stopPropagation(); });
+}
+
+/**
+ * Handle click events related to element selection.
+ * @param {object} evt
+ */
+function clickHandler (evt) {
+  if (!neonView) return;
+  let mode = neonView.getUserMode();
+
+  // If in insert mode or panning is active from shift key
+  if (mode === 'insert' || evt.shiftKey) { return; }
+  // Check if the element being clicked on is part of a drag Selection
+  if (this.tagName === 'use' &amp;&amp; getSelectionType() !== 'selByBBox') {
+    if ($(this).parents('.selected').length === 0) {
+      let selection = [this];
+      if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
+        selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
+      }
+      selectAll(selection, neonView, info, dragHandler);
+      if (dragHandler) {
+        dragHandler.dragInit();
+      }
+    }
+  } else if (evt.target.tagName === 'rect' &amp;&amp; getSelectionType() === 'selByBBox') {
+    if ($(this).parents('.selected').length === 0) {
+      let selection = [evt.target];
+      if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
+        selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
+      }
+      selectAll(selection, neonView, info, dragHandler);
+      if (dragHandler) {
+        dragHandler.dragInit();
+      }
+    }
+  } else {
+    // Check if the point being clicked on is a staff selection (if applicable)
+    if (getSelectionType() !== 'selByStaff') {
+      info.infoListeners();
+      return;
+    }
+
+    // Check if the point is in a staff.
+    let container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
+    let pt = container.createSVGPoint();
+    pt.x = evt.clientX;
+    pt.y = evt.clientY;
+    let transformMatrix = container.getElementsByClassName('system')[0].getScreenCTM();
+    pt = pt.matrixTransform(transformMatrix.inverse());
+
+    let selectedStaves = Array.from($('.staff')).filter((staff) => {
+      let bbox = getStaffBBox(staff);
+      return (bbox.ulx &lt; pt.x &amp;&amp; pt.x &lt; bbox.lrx) &amp;&amp; (bbox.uly &lt; pt.y &amp;&amp; pt.y &lt; bbox.lry);
+    });
+    if (selectedStaves.length !== 1) {
+      if ($('.selected').length > 0) {
+        info.infoListeners();
+      }
+      unselect();
+      return;
+    }
+
+    // Select a staff
+    let staff = selectedStaves[0];
+    if (!staff.classList.contains('selected')) {
+      // Select previously unselected staff
+      selectStaff(staff, dragHandler);
+      let resize = new Resize(staff.id, neonView, dragHandler);
+      resize.drawInitialRect();
+      if (dragHandler) {
+        dragHandler.dragInit();
+      }
+    }
+    // Trigger mousedown event on the staff
+    staff.dispatchEvent(new window.MouseEvent('mousedown', {
+      screenX: evt.screenX,
+      screenY: evt.screenY,
+      clientX: evt.clientX,
+      clientY: evt.clientY,
+      ctrlKey: evt.ctrlKey,
+      shiftKey: evt.shiftKey,
+      altKey: evt.altKey,
+      metaKey: evt.metaKey,
+      view: evt.view
+    }));
+  }
+}
+
+/**
+ * Apply listeners for drag selection.
+ * @param {string} selector - The CSS selector used to choose where listeners are applied.
+ */
+export function dragSelect (selector) {
+  var initialX = 0;
+  var initialY = 0;
+  var panning = false;
+  var dragSelecting = false;
+  // var canvas = d3.select('#svg_group');
+  d3.selectAll(selector.replace('.active-page', '').trim())
+    .on('.drag', null);
+  var canvas = d3.select(selector);
+  var dragSelectAction = d3.drag()
+    .on('start', selStart)
+    .on('drag', selecting)
+    .on('end', selEnd);
+  canvas.call(dragSelectAction);
+  if (dragHandler) {
+    dragHandler.resetTo(dragSelectAction);
+  }
+
+  function selStart () {
+    if (!neonView) return;
+    let userMode = neonView.getUserMode();
+    if (d3.event.sourceEvent.target.nodeName !== 'use' &amp;&amp; userMode !== 'insert' &amp;&amp; d3.event.sourceEvent.target.nodeName !== 'rect') {
+      if (!d3.event.sourceEvent.shiftKey) { // If not holding down shift key to pan
+        if (!$('#selByStaff').hasClass('is-active') || pointNotInStaff(d3.mouse(this))) {
+          unselect();
+          dragSelecting = true;
+          let initialP = d3.mouse(this);
+          initialX = initialP[0];
+          initialY = initialP[1];
+          initRect(initialX, initialY);
+        }
+      } else {
+        panning = true;
+        if (zoomHandler !== undefined) {
+          zoomHandler.startDrag();
+        }
+      }
+    } else if (d3.event.sourceEvent.shiftKey) {
+      panning = true;
+      if (zoomHandler !== undefined) {
+        zoomHandler.startDrag();
+      }
+    }
+  }
+
+  /**
+   * Check if a point is in the bounds of a staff element.
+   * @param {SVGPoint} point
+   * @returns {boolean}
+   */
+  function pointNotInStaff (point) {
+    let staves = Array.from(document.getElementsByClassName('staff'));
+    let filtered = staves.filter((staff) => {
+      let box = getStaffBBox(staff);
+      return (box.ulx &lt; point[0] &amp;&amp; point[0] &lt; box.lrx) &amp;&amp; (box.uly &lt; point[1] &amp;&amp; point[1] &lt; box.lry);
+    });
+    return (filtered.length === 0);
+  }
+
+  function selecting () {
+    if (!panning &amp;&amp; dragSelecting) {
+      var currentPt = d3.mouse(this);
+      var curX = currentPt[0];
+      var curY = currentPt[1];
+
+      var newX = curX &lt; initialX ? curX : initialX;
+      var newY = curY &lt; initialY ? curY : initialY;
+      var width = curX &lt; initialX ? initialX - curX : curX - initialX;
+      var height = curY &lt; initialY ? initialY - curY : curY - initialY;
+
+      updateRect(newX, newY, width, height);
+    } else if (panning) {
+      if (zoomHandler !== undefined) {
+        zoomHandler.dragging();
+      }
+    }
+  }
+
+  function selEnd () {
+    if (!panning &amp;&amp; dragSelecting) {
+      var rx = parseInt($('#selectRect').attr('x'));
+      var ry = parseInt($('#selectRect').attr('y'));
+      var lx = parseInt($('#selectRect').attr('x')) + parseInt($('#selectRect').attr('width'));
+      var ly = parseInt($('#selectRect').attr('y')) + parseInt($('#selectRect').attr('height'));
+      // Transform to the correct coordinate system
+      let ul = canvas.node().createSVGPoint();
+      ul.x = rx;
+      ul.y = ry;
+      let lr = canvas.node().createSVGPoint();
+      lr.x = lx;
+      lr.y = ly;
+      let transform = canvas.node().getScreenCTM().inverse().multiply(canvas.select('.system').node().getScreenCTM()).inverse();
+      ul = ul.matrixTransform(transform);
+      lr = lr.matrixTransform(transform);
+
+      var nc;
+      if ($('#selByStaff').hasClass('is-active')) {
+        nc = d3.selectAll(selector + ' use, ' + selector + ' .staff')._groups[0];
+      } else if ($('#selByBBox').hasClass('is-active')) {
+        nc = d3.selectAll(selector + ' .sylTextRect-display')._groups[0];
+      } else {
+        nc = d3.selectAll(selector + ' use')._groups[0];
+      }
+      var els = Array.from(nc);
+
+      var elements = els.filter(function (d) {
+        var ulx, uly, lrx, lry;
+        if ($('#selByBBox').hasClass('is-active')) {
+          ulx = Number($(d).attr('x'));
+          uly = Number($(d).attr('y'));
+          lrx = +ulx + +(d.getAttribute('width').slice(0, -2));
+          lry = +uly + +(d.getAttribute('height').slice(0, -2));
+          return !(((ul.x &lt; ulx &amp;&amp; lr.x &lt; ulx) || (ul.x > lrx &amp;&amp; lr.x > lrx)) || ((ul.y &lt; uly &amp;&amp; lr.y &lt; uly) || (ul.y > lry &amp;&amp; lr.y > lry)));
+        } else if (d.tagName === 'use') {
+          let box = d.parentNode.getBBox();
+          ulx = box.x;
+          uly = box.y;
+          lrx = box.x + box.width;
+          lry = box.y + box.height;
+          return !(((ul.x &lt; ulx &amp;&amp; lr.x &lt; ulx) || (ul.x > lrx &amp;&amp; lr.x > lrx)) || ((ul.y &lt; uly &amp;&amp; lr.y &lt; uly) || (ul.y > lry &amp;&amp; lr.y > lry)));
+        } else {
+          let box = getStaffBBox(d);
+          return !(((ul.x &lt; box.ulx &amp;&amp; lr.x &lt; box.ulx) || (ul.x > box.lrx &amp;&amp; lr.x > box.lrx)) || ((ul.y &lt; box.uly &amp;&amp; lr.y &lt; box.uly) || (ul.y > box.lry &amp;&amp; lr.y > box.lry)));
+        }
+      });
+      selectAll(elements, neonView, info, dragHandler);
+
+      if (dragHandler) {
+        dragHandler.dragInit();
+      }
+      d3.selectAll('#selectRect').remove();
+      dragSelecting = false;
+    }
+    panning = false;
+  }
+
+  /**
+     * Create an initial dragging rectangle.
+     * @param {number} ulx - The upper left x-position of the new rectangle.
+     * @param {number} uly - The upper left y-position of the new rectangle.
+     */
+  function initRect (ulx, uly) {
+    canvas.append('rect')
+      .attr('x', ulx)
+      .attr('y', uly)
+      .attr('width', 0)
+      .attr('height', 0)
+      .attr('id', 'selectRect')
+      .attr('stroke', 'black')
+      .attr('stroke-width', strokeWidth)
+      .attr('fill', 'none');
+  }
+
+  /**
+     * Update the dragging rectangle.
+     * @param {number} newX - The new ulx.
+     * @param {number} newY - The new uly.
+     * @param {number} currentWidth - The width of the rectangle in pixels.
+     * @param {number} currentHeight - The height of the rectangle in pixels.
+     */
+  function updateRect (newX, newY, currentWidth, currentHeight) {
+    d3.select('#selectRect')
+      .attr('x', newX)
+      .attr('y', newY)
+      .attr('width', currentWidth)
+      .attr('height', currentHeight);
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-DisplayPanel_DisplayControls.html">DisplayPanel/DisplayControls</a></li><li><a href="module-DisplayPanel_DisplayPanel.html">DisplayPanel/DisplayPanel</a></li><li><a href="module-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.html">SingleView/Zoom</a></li><li><a href="module-SquareEdit_Contents.html">SquareEdit/Contents</a></li><li><a href="module-SquareEdit_Controls.html">SquareEdit/Controls</a></li><li><a href="module-SquareEdit_Grouping.html">SquareEdit/Grouping</a></li><li><a href="module-SquareEdit_SelectOptions.html">SquareEdit/SelectOptions</a></li><li><a href="module-SquareEdit_StaffTools.html">SquareEdit/StaffTools</a></li><li><a href="module-TextView.html">TextView</a></li><li><a href="module-utils_Color.html">utils/Color</a></li><li><a href="module-utils_Cursor.html">utils/Cursor</a></li><li><a href="module-utils_EditContents.html">utils/EditContents</a></li><li><a href="module-utils_EditControls.html">utils/EditControls</a></li><li><a href="module-utils_NeonManifest.html">utils/NeonManifest</a></li><li><a href="module-utils_Notification.html">utils/Notification</a></li><li><a href="module-utils_Resize.html">utils/Resize</a></li><li><a href="module-utils_Select.html">utils/Select</a></li><li><a href="module-utils_SelectTools.html">utils/SelectTools</a></li><li><a href="module-Validation.html">Validation</a></li><li><a href="module-Warnings.html">Warnings</a></li></ul><h3>Classes</h3><ul><li><a href="DivaView.html">DivaView</a></li><li><a href="DragHandler.html">DragHandler</a></li><li><a href="InsertHandler.html">InsertHandler</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module-DisplayPanel_DisplayPanel-DisplayPanel.html">DisplayPanel</a></li><li><a href="module-InfoModule-InfoModule.html">InfoModule</a></li><li><a href="module-SingleView_Zoom.ViewBox.html">ViewBox</a></li><li><a href="module-SingleView_Zoom-ZoomHandler.html">ZoomHandler</a></li><li><a href="module-SquareEdit_StaffTools-SplitHandler.html">SplitHandler</a></li><li><a href="module-TextView-TextView.html">TextView</a></li><li><a href="module-utils_Notification-Notification.html">Notification</a></li><li><a href="module-utils_Resize-Resize.html">Resize</a></li><li><a href="NeonCore.html">NeonCore</a></li><li><a href="NeonView.html">NeonView</a></li><li><a href="SingleEditMode.html">SingleEditMode</a></li><li><a href="SingleView.html">SingleView</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addBBoxListeners">addBBoxListeners</a></li><li><a href="global.html#addEventListener">addEventListener</a></li><li><a href="global.html#formatRaw">formatRaw</a></li><li><a href="global.html#handleNeonEvent">handleNeonEvent</a></li><li><a href="global.html#initEditModeControls">initEditModeControls</a></li><li><a href="global.html#initSelectByBBoxButton">initSelectByBBoxButton</a></li><li><a href="global.html#initTextEdit">initTextEdit</a></li><li><a href="global.html#postMessage">postMessage</a></li><li><a href="global.html#updateSylText">updateSylText</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Mon Jul 15 2019 09:24:07 GMT-0400 (GMT-04:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

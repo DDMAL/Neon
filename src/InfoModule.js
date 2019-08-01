@@ -21,12 +21,13 @@ class InfoModule {
     input.classList.add('checkbox');
     input.id = 'displayInfo';
     input.type = 'checkbox';
-    input.checked = true;
+    input.checked = false;
     label.appendChild(input);
     block.prepend(label);
 
     this.neonView.view.addUpdateCallback(this.resetInfoListeners.bind(this));
     setInfoControls();
+    this.resetInfoListeners();
   }
 
   /**
@@ -78,7 +79,7 @@ class InfoModule {
         var ncs = element.children('.nc');
         var contour = await this.getContour(ncs);
         if (contour === 'Clivis') {
-          var attr = await this.neonView.getElementAttr($(ncs[0])[0].id, this.neonView.view.getCurrentPage());
+          var attr = await this.neonView.getElementAttr($(ncs[0])[0].id, this.neonView.view.getCurrentPageURI());
           if (attr.ligated) {
             contour = 'Ligature';
           }
@@ -90,11 +91,11 @@ class InfoModule {
                 'Pitch(es): ' + pitches;
         break;
       case 'custos':
-        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPage());
+        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         body += 'Pitch: ' + (attributes.pname).toUpperCase() + attributes.oct;
         break;
       case 'clef':
-        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPage());
+        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         body += 'Shape: ' + attributes.shape + '<br/>' +
                 'Line: ' + attributes.line;
         break;
@@ -112,27 +113,27 @@ class InfoModule {
   }
 
   /**
-     * Get the individual pitches of a neume.
-     * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
-     */
+   * Get the individual pitches of a neume.
+   * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
+   */
   async getPitches (ncs) {
     var pitches = '';
     for (let nc of ncs) {
-      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPage());
+      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
       pitches += attributes.pname + attributes.oct + ' ';
     }
     return pitches;
   }
 
   /**
-     * Get the contour of a neume.
-     * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
-     */
+   * Get the contour of a neume.
+   * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
+   */
   async getContour (ncs) {
     var contour = '';
     var previous = null;
     for (let nc of ncs) {
-      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPage());
+      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
       if (previous !== null) {
         if (previous.oct > attributes.oct) {
           contour += 'd';
@@ -157,27 +158,24 @@ class InfoModule {
   }
 
   /**
-     * Show and update the info box.
-     * @param {string} title - The info box title.
-     * @param {string} body - The info box contents.
-     */
+   * Show and update the info box.
+   * @param {string} title - The info box title.
+   * @param {string} body - The info box contents.
+   */
   updateInfoModule (title, body) {
+    $('.message-header').children('p').html(title);
+    $('.message-body').html(body);
+
     if ($('#displayInfo').is(':checked')) {
       $('.message').css('display', '');
-      $('.message-header').children('p').html(title);
-      $('.message-body').html(body);
     }
-    // Setting up listener for dismissing message
-    $('#notification-delete').on('click', function () {
-      $('.message').css('display', 'none');
-    });
   }
 
   /**
-     * Convert a pitch name (a-g) to a number (where c is 1, d is 2 and b is 7).
-     * @param {string} pname - The pitch name.
-     * @returns {number}
-     */
+   * Convert a pitch name (a-g) to a number (where c is 1, d is 2 and b is 7).
+   * @param {string} pname - The pitch name.
+   * @returns {number}
+   */
   pitchNameToNum (pname) {
     switch (pname) {
       case 'c':
@@ -200,10 +198,10 @@ class InfoModule {
   }
 
   /**
-     * Find the contour of an neume grouping based on the grouping name.
-     * @param {string} value - the value name.
-     * @returns {string}
-     */
+   * Find the contour of an neume grouping based on the grouping name.
+   * @param {string} value - the value name.
+   * @returns {string}
+   */
   getContourByValue (value) {
     for (let [cont, v] of InfoModule.neumeGroups.entries()) {
       if (v === value) {
@@ -226,8 +224,15 @@ InfoModule.neumeGroups = new Map(
  * Set listener on info visibility checkbox.
  */
 function setInfoControls () {
+  startInfoVisibility();
   updateInfoVisibility();
   $('#displayInfo').click(updateInfoVisibility);
+}
+
+function startInfoVisibility () {
+  $('#neume_info').append("<article class='message'><div class='message-header'><p></p></div>" +
+            "<div class='message-body'></div>");
+  $('#neume_info').addClass('is-invisible');
 }
 
 /**
@@ -235,11 +240,9 @@ function setInfoControls () {
  */
 function updateInfoVisibility () {
   if ($('#displayInfo').is(':checked')) {
-    $('#neume_info').append("<article class='message' style='display: none;'><div class='message-header'><p></p>" +
-            "<button class='delete' id='notification-delete' aria-label='delete'></button></div>" +
-            "<div class='message-body'></div>");
+    $('#neume_info').removeClass('is-invisible');
   } else {
-    $('#neume_info').empty();
+    $('#neume_info').addClass('is-invisible');
   }
 }
 

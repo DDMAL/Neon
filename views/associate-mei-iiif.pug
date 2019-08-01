@@ -21,7 +21,7 @@ html
                   .select.level-item
                     select(name='select', id=file)
                       each label, index in labels
-                        option(value=JSON.stringify({ 'file': file, 'index': index, 'label': label}), id=label)= label
+                        option(value=JSON.stringify({ 'file': file, 'index': index, 'label': label, 'id': ids[index]}), id=label)= label
             .field
               .control
                 button.button.is-link(id='submit') Submit Associations

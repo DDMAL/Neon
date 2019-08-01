@@ -1,4 +1,4 @@
-Neon v 3.1.1
+Neon v4.0.0
 =====
 [![Build_Status](https://travis-ci.org/DDMAL/Neon.svg?branch=master)](https://travis-ci.org/DDMAL/Neon)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -46,11 +46,12 @@ Neon has two main modes: viewer and editor. To learn how to use both, [read the 
 Test
 ----
 
-Follow the instructions from above first. The tests for Neon use [Selenium](https://docs.seleniumhq.org/) and so require a web browser ([Firefox](https://mozilla.org/firefox)) and its driver ([geckodriver](https://github.com/mozilla/geckodriver)).
-On Mac install these with Homebrew:
-```
+Follow the instructions from above first. The tests for Neon use [Selenium](https://docs.seleniumhq.org/) and use Firefox, Safari, and Chrome. Their respective webdrivers are required. Safari 12 or greater is required. On Mac, Firefox and Chrome can be installed by:
+```shell
 brew cask install firefox
+brew cask install google-chrome
 brew install geckodriver
+brew cask install chromedriver
 ```
 Then you can run the tests locally using `yarn test`. We use [jest](https://facebook.github.io/jest/) to script our tests.
 

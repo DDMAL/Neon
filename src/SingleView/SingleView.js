@@ -5,6 +5,15 @@ import ZoomHandler from './Zoom.js';
 const d3 = require('d3');
 const $ = require('jquery');
 
+/* A view module must contain the following functions:
+ * updateSVG(svg, pageNo) - a function that updates the dipslayed SVG with
+ *    the provided SVG for the given zero-indexed page number.
+ * add/removeUpdateCallback - functions that add or remove callback functions
+ *    that occur when the page updates.
+ * getCurrentPage(URI) - functions that return the current page index (URI).
+ * getPageName - function that returns a user-readable name for the page.
+ */
+
 /**
  * A view module for displaying a single page of a manuscript.
  */
@@ -46,6 +55,8 @@ class SingleView {
     this.setViewEventHandlers();
     this.displayPanel.setDisplayListeners();
 
+    this.pageURI = image;
+
     document.getElementById('loading').style.display = 'none';
   }
 
@@ -67,6 +78,17 @@ class SingleView {
     updateHighlight();
     this.resetTransformations();
     this.updateCallbacks.forEach(callback => callback());
+  }
+
+  /**
+   * Change to a certain page
+   * Since there is only one page, this is essentially a wrapper for updateSVG
+   * @param {number} page
+   * @param {boolean} delay. defaults to false
+   */
+  async changePage (page, delay = false) {
+    let svg = await this.neonView.getPageSVG(this.getCurrentPageURI());
+    this.updateSVG(svg);
   }
 
   /**
@@ -107,6 +129,14 @@ class SingleView {
   }
 
   /**
+   * Returns the page URI.
+   * @returns {string}
+   */
+  getCurrentPageURI () {
+    return this.pageURI;
+  }
+
+  /**
    * Set event handlers for the view and display panel.
    */
   setViewEventHandlers () {
@@ -131,6 +161,9 @@ class SingleView {
           case 'Shift':
             d3.select('#svg_group').on('.drag', null);
             Cursor.updateCursorTo('');
+            if (this.neonView.getUserMode !== 'viewer') {
+              this.neonView.NeumeEdit.setSelectListeners();
+            }
             if (this.neonView.getUserMode() === 'insert') {
               Cursor.updateCursor();
             }
@@ -160,6 +193,14 @@ class SingleView {
         $('#container').attr('height', newHeight);
       }
     });
+  }
+
+  /**
+   * A human readable name for the page. Used for downloads.
+   * @returns {string}
+   */
+  getPageName () {
+    return this.neonView.name;
   }
 }
 

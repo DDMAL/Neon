@@ -23,7 +23,7 @@ class DisplayPanel {
 
     let displayPanel = document.getElementById('display_controls');
     displayPanel.innerHTML = displayControlsPanel(this.zoomHandler);
-    this.view.addUpdateCallback(this.updateGlyphOpacity.bind(this));
+    this.view.addUpdateCallback(this.updateVisualization.bind(this));
   }
 
   /**
@@ -38,10 +38,11 @@ class DisplayPanel {
   }
 
   /**
-   * Update the opacity of rendered SVGs.
+   * Update SVG based on visualization settings
    */
-  updateGlyphOpacity () {
+  updateVisualization () {
     DisplayControls.setOpacityFromSlider(this.className);
+    DisplayControls.updateHighlight();
   }
 }
 
