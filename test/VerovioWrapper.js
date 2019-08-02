@@ -15,7 +15,8 @@ export default class VerovioWrapper {
       font: 'Bravura',
       useFacsimile: true,
       createDefaultSyl: true,
-      createDefaultSylBBox: true
+      createDefaultSylBBox: true,
+      useSkew: true
     });
   }
 
