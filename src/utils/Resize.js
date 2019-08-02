@@ -258,7 +258,7 @@ function Resize (elementId, neonView, dragHandler) {
           break;
         case PointNames.TopRight:
           lrx = currentPoint[0];
-          uly = currentPoint[1];
+          uly = currentPoint[1] - (lrx - ulx) * Math.tan(skew);
           break;
         case PointNames.Right:
           lrx = currentPoint[0];
@@ -273,7 +273,7 @@ function Resize (elementId, neonView, dragHandler) {
           break;
         case PointNames.BottomLeft:
           ulx = currentPoint[0];
-          lry = currentPoint[1];
+          lry = currentPoint[1] + (lrx - ulx) * Math.tan(skew);
           break;
         case PointNames.Left:
           ulx = currentPoint[0];
