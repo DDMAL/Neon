@@ -106,6 +106,8 @@ export function highlight (staff, color) {
   children.forEach(child => {
     if (child.tagName === 'path') {
       child.setAttribute('stroke', color);
+    } else if (child.classList.contains('resizePoint') || child.id === 'resizeRect' || child.classList.contains('skewPoint')) {
+      return;
     } else {
       child.setAttribute('fill', color);
       let rects = Array.from($(child).find('.sylTextRect-display'));
