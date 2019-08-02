@@ -2,7 +2,6 @@
 import NeonCore from '../src/NeonCore.js';
 
 const fs = require('fs');
-const verovio = require('verovio-dev');
 
 const pathToMei = './test/resources/test.mei';
 const pathToPNG = './test/resources/test.png';
@@ -86,7 +85,7 @@ describe('Test textEdit module functions', async () => {
      * and normally the sylTextRect comes after the text element
      * in the syl's list of children
      * although in these lines and the others like it
-     * it's really just about trying stuff until you get the correct element 
+     * it's really just about trying stuff until you get the correct element
      */
     let rect1 = svg.getElementById('m-369ac5d3-9d2a-4fd3-be4f-cb2a3b530fe5').children[1].children[1];
     let rect2 = svg.getElementById('m-cfe44ba2-a162-4276-9ce9-d34c897c2e75').children[1].children[1];
@@ -825,4 +824,21 @@ test("Test 'split' action", async () => {
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
   let newId = await neon.info(pathToPNG);
   expect(await neon.getElementAttr(newId, pathToPNG)).toEqual({ n: '17' });
+});
+
+test("Test 'change skew' action", async () => {
+  let neon = new NeonCore(mei);
+  await neon.initDb();
+  await neon.getSVG(pathToPNG);
+  const id = 'm-6231e253-9c3a-4e4b-a9a8-a15b0091677d';
+  let editorAction = {
+    'action': 'changeSkew',
+    'param': {
+      'elementId': id,
+      'dy': 1000,
+      'rightSide': true
+    }
+  };
+  expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+  expect(Math.round(await neon.info(pathToPNG))).toBe(-52);
 });
