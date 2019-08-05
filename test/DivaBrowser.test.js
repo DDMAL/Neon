@@ -7,6 +7,11 @@ const chrome = require('selenium-webdriver/chrome');
 const uploadPath = './public/uploads/iiif/';
 const editUrl = 'http://localhost:8080/edit/test/diva-test';
 
+var browserNames = ['firefox', 'chrome'];
+if (require('os').platform() === 'darwin') {
+  browserNames.push('safari');
+}
+
 jest.setTimeout('15000');
 
 beforeAll(() => {
