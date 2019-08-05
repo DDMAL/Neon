@@ -10,6 +10,11 @@ const error = require('selenium-webdriver/lib/error');
 const firefox = require('selenium-webdriver/firefox');
 const chrome = require('selenium-webdriver/chrome');
 
+var browserNames = ['firefox', 'chrome'];
+if (require('os').platform() === 'darwin') {
+  browserNames.push('safari');
+}
+
 jest.setTimeout('20000');
 
 beforeAll(async () => {
@@ -26,7 +31,7 @@ afterAll(() => {
   fs.unlinkSync(pathToUploads + 'manifests/test.jsonld');
 });
 
-describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
+describe.each(browserNames)('Tests on %s', (title) => {
   var browser;
 
   beforeAll(async () => {
