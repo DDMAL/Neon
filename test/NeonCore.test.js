@@ -99,7 +99,7 @@ describe('Test textEdit module functions', async () => {
       }
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-    let info = await neon.info(pathToPNG);
+    let info = (await neon.info(pathToPNG)).uuid;
     svg = await neon.getSVG(pathToPNG);
     let groupedRect = svg.getElementById(info).children[0].children[1];
     expect(groupedRect.getAttribute('width')).toBe('278');
@@ -115,7 +115,7 @@ describe('Test textEdit module functions', async () => {
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     info = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
-    let arr = info.split(' ');
+    let arr = info.uuid;
     rect1 = svg.getElementById(arr[0]).children[0].children[1];
     rect2 = svg.getElementById(arr[1]).children[1].children[1];
     expect(rect1.getAttribute('width')).toBe('278');
@@ -193,7 +193,7 @@ describe('Test textEdit module functions', async () => {
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     let svg = await neon.getSVG(pathToPNG);
     let info = await neon.info(pathToPNG);
-    let nc = svg.getElementById(info);
+    let nc = svg.getElementById(info.uuid);
     expect(nc.getAttribute('class')).toBe('nc');
     let syllable = nc.parentElement.parentElement;
     expect(syllable.getAttribute('class')).toBe('syllable');
@@ -249,7 +249,7 @@ describe('Test insert editor action', () => {
       }
     };
     await neon.edit(editorAction, pathToPNG);
-    let insertAtts = await neon.getElementAttr(await neon.info(pathToPNG), pathToPNG);
+    let insertAtts = await neon.getElementAttr((await neon.info(pathToPNG)).uuid, pathToPNG);
     expect(insertAtts['pname']).toBe('e');
     expect(insertAtts['oct']).toBe('3');
   });
@@ -271,7 +271,7 @@ describe('Test insert editor action', () => {
       }
     };
     await neon.edit(editorAction, pathToPNG);
-    let insertAtts = await neon.getElementAttr(await neon.info(pathToPNG), pathToPNG);
+    let insertAtts = await neon.getElementAttr((await neon.info(pathToPNG)).uuid, pathToPNG);
     expect(insertAtts['shape']).toBe('C');
     expect(insertAtts['line']).toBe('3');
   });
@@ -290,7 +290,7 @@ describe('Test insert editor action', () => {
       }
     };
     await neon.edit(editorAction, pathToPNG);
-    let insertAtts = await neon.getElementAttr(await neon.info(pathToPNG), pathToPNG);
+    let insertAtts = await neon.getElementAttr((await neon.info(pathToPNG)).uuid, pathToPNG);
     expect(insertAtts.pname).toBe('g');
     expect(insertAtts.oct).toBe('2');
   });
@@ -308,7 +308,7 @@ describe('Test insert editor action', () => {
       }
     };
     await neon.edit(editorAction, pathToPNG);
-    let insertAtts = await neon.getElementAttr(await neon.info(pathToPNG), pathToPNG);
+    let insertAtts = await neon.getElementAttr((await neon.info(pathToPNG)).uuid, pathToPNG);
     expect(insertAtts.pname).toBe('a');
     expect(insertAtts.oct).toBe('2');
   });
@@ -383,7 +383,7 @@ describe("Test 'group and ungroup' functions", () => {
     expect(await neon.edit(editorAction2, pathToPNG)).toBeTruthy();
     let info = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
-    syl = svg.getElementById(info).textContent.trim().replace(/\s/g,'');
+    syl = svg.getElementById(info.uuid).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('Helloworld!');
 
     // ungroup
@@ -397,7 +397,7 @@ describe("Test 'group and ungroup' functions", () => {
     expect(await neon.edit(editorAction3, pathToPNG)).toBeTruthy();
     let info2 = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
-    let array = info2.split(' ');
+    let array = info2.uuid;
     syl = svg.getElementById(array[0]).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('Helloworld!');
     syl = svg.getElementById(array[1]).textContent.trim();
@@ -418,7 +418,7 @@ describe("Test 'group and ungroup' functions", () => {
     expect(await neon.edit(setupGroup, pathToPNG)).toBeTruthy();
     let firstGroup = await neon.info(pathToPNG);
     let svg = await neon.getSVG(pathToPNG);
-    let syl = svg.getElementById(firstGroup).textContent.trim();
+    let syl = svg.getElementById(firstGroup.uuid).textContent.trim();
     expect(syl).toBe('Hello');
     let setupSetText = {
       'action': 'setText',
@@ -443,9 +443,9 @@ describe("Test 'group and ungroup' functions", () => {
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     let info = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
-    syl = svg.getElementById(info).textContent.trim().replace(/\s/g, '');
+    syl = svg.getElementById(info.uuid).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('world!');
-    syl = svg.getElementById(firstGroup).textContent.trim().replace(/\s/g, '');
+    syl = svg.getElementById(firstGroup.uuid).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('Hello');
 
     let ungroupAction = {
@@ -457,7 +457,7 @@ describe("Test 'group and ungroup' functions", () => {
     };
     expect(await neon.edit(ungroupAction, pathToPNG)).toBeTruthy();
     let ungroupInfo = await neon.info(pathToPNG);
-    let array = ungroupInfo.split(' ');
+    let array = ungroupInfo.uuid;
     svg = await neon.getSVG(pathToPNG);
     syl = svg.getElementById(array[0]).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('world!');
@@ -482,13 +482,13 @@ describe("Test 'group and ungroup' functions", () => {
     let setupName1 = {
       'action': 'setText',
       'param': {
-        'elementId': firstSyl,
+        'elementId': firstSyl.uuid,
         'text': 'hello1'
       }
     };
     expect(await neon.edit(setupName1, pathToPNG)).toBeTruthy();
     svg = await neon.getSVG(pathToPNG);
-    let syl = svg.getElementById(firstSyl).textContent.trim();
+    let syl = svg.getElementById(firstSyl.uuid).textContent.trim();
     expect(syl).toBe('hello1');
     let setupGroup2 = {
       'action': 'group',
@@ -502,13 +502,13 @@ describe("Test 'group and ungroup' functions", () => {
     let setupName2 = {
       'action': 'setText',
       'param': {
-        'elementId': secondSyl,
+        'elementId': secondSyl.uuid,
         'text': 'hello2'
       }
     };
     expect(await neon.edit(setupName2, pathToPNG)).toBeTruthy();
     svg = await neon.getSVG(pathToPNG);
-    syl = svg.getElementById(secondSyl).textContent.trim();
+    syl = svg.getElementById(secondSyl.uuid).textContent.trim();
     expect(syl).toBe('hello2');
 
     let editorAction = {
@@ -521,13 +521,13 @@ describe("Test 'group and ungroup' functions", () => {
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     let mergedSyl = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
-    syl = svg.getElementById(mergedSyl).textContent.trim();
+    syl = svg.getElementById(mergedSyl.uuid).textContent.trim();
     expect(syl).toBe('');
 
-    syl = svg.getElementById(firstSyl).textContent.trim();
+    syl = svg.getElementById(firstSyl.uuid).textContent.trim();
     expect(syl).toBe('hello1');
 
-    syl = svg.getElementById(secondSyl).textContent.trim();
+    syl = svg.getElementById(secondSyl.uuid).textContent.trim();
     expect(syl).toBe('hello2');
   });
 });
@@ -629,7 +629,7 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
-    let clefId = await neon.info(pathToPNG);
+    let clefId = (await neon.info(pathToPNG)).uuid;
     let newAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
     expect(newAtts['pname']).toBe('f');
     let deleteAction = {
@@ -659,7 +659,7 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
-    let firstClefId = await neon.info(pathToPNG);
+    let firstClefId = (await neon.info(pathToPNG)).uuid;
     let newBeforeAtts = await neon.getElementAttr('m-094bd8da-2bec-4bca-a52b-cb08b682479f', pathToPNG);
     let sameBeforeAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
     expect(newBeforeAtts['pname']).toBe('c');
@@ -708,7 +708,7 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(secondInsert, pathToPNG)).toBeTruthy();
-    let secondClefId = await neon.info(pathToPNG);
+    let secondClefId = (await neon.info(pathToPNG)).uuid;
     let firstBeforeAtts = await neon.getElementAttr('m-41d52bbf-0734-475a-a2b4-bd6acc9fc5cb', pathToPNG);
     let secondBeforeAtts = await neon.getElementAttr('m-ce70be9f-aa2d-47f3-b978-13b7e985f9d3', pathToPNG);
     expect(firstBeforeAtts['pname']).toBe('c');
@@ -786,7 +786,7 @@ test('Test chain action', async () => {
   };
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
   let dragAtts = await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', pathToPNG);
-  let insertAtts = await neon.getElementAttr(JSON.parse(await neon.info(pathToPNG))[1], pathToPNG);
+  let insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['1'].uuid, pathToPNG);
   expect(dragAtts.pname).toBe('b');
   expect(dragAtts.oct).toBe('2');
   expect(insertAtts.pname).toBe('e');
@@ -822,7 +822,7 @@ test("Test 'split' action", async () => {
     }
   };
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-  let newId = await neon.info(pathToPNG);
+  let newId = (await neon.info(pathToPNG)).uuid;
   expect(await neon.getElementAttr(newId, pathToPNG)).toEqual({ n: '17' });
 });
 
@@ -840,5 +840,6 @@ test("Test 'change skew' action", async () => {
     }
   };
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-  expect(Math.round(await neon.info(pathToPNG))).toBe(-52);
+  let skew = (await neon.info(pathToPNG)).skew;
+  expect(Math.round(skew)).toBe(-52);
 });
