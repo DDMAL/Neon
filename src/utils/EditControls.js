@@ -34,11 +34,14 @@ export function prepareEditMode (neonView) {
 export function startEditMode (neonView) {
   $('#dropdown_toggle').empty();
   $('#dropdown_toggle').append(navbarDropdownMenu);
+  let parent = document.getElementById('dropdown_toggle').parentNode;
+  document.getElementById('dropdown_toggle').remove();
+  parent.innerHTML = navbarDropdownMenu;
   $('#undoRedo_controls').append(undoRedoPanel);
   initNavbar(neonView);
   initUndoRedoPanel(neonView);
 
-  let selectionHighlight = document.createElement("a");
+  let selectionHighlight = document.createElement('a');
   let divider = document.createElement('hr');
   divider.classList.add('dropdown-divider');
   selectionHighlight.classList.add('dropdown-item');
