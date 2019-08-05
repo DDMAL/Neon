@@ -9,6 +9,7 @@ addons:
   firefox: latest
   chrome: stable
   homebrew:
+    update: true
     packages:
       - geckodriver
     casks:
