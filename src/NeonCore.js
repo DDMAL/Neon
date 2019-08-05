@@ -405,7 +405,7 @@ class NeonCore {
         this.verovioWrapper.addEventListener('message', function handle (evt) {
           if (evt.data.id === message.id) {
             evt.target.removeEventListener('message', handle);
-            resolve(evt.data.info);
+            resolve(JSON.parse(evt.data.info));
           }
         });
         this.verovioWrapper.postMessage(message);
