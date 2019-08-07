@@ -345,6 +345,6 @@ function initOptionsListeners () {
   });
 }
 
-function deleteButtonHandler (evt) {
+export function deleteButtonHandler (evt) {
   if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); evt.preventDefault(); }
 }
