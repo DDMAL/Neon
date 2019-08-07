@@ -24,6 +24,5 @@ test('Verify results of \'convertStaffToSb\'', () => {
 test('Verify results of \'convertSbToStaff\'', () => {
   let result = ConvertMei.convertSbToStaff(sbKey);
   let parsedKey = et.parse(staffKey).write({ xml_declaration: true, indent: 4 });
-  fs.writeFileSync('test.mei', result);
   expect(result).toBe(parsedKey);
 });
