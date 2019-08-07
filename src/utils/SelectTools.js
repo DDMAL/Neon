@@ -316,6 +316,8 @@ export async function selectAll (elements, neonView, info, dragHandler) {
     // A context menu will only be displayed if there is a single clef
     if (groupsToSelect.size === 1 && groups[0].classList.contains('clef')) {
       SelectOptions.triggerClefActions(groups[0]);
+    } else if (groupsToSelect.size === 1 && groups[0].classList.contains('custos')) {
+      SelectOptions.triggerCustosActions(groups[0]);
     } else {
       SelectOptions.triggerDefaultActions();
     }

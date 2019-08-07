@@ -54,7 +54,6 @@ export function unsetVirgaAction (id) {
 
 /**
  * function to handle removing elements
- * @param { NeonView } neonView - a neonView object
  */
 export function removeHandler () {
   let toRemove = [];
@@ -72,6 +71,30 @@ export function removeHandler () {
   let chainAction = {
     'action': 'chain',
     'param': toRemove
+  };
+  endOptionsSelection();
+  neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then(() => { neonView.updateForCurrentPage(); });
+}
+
+/**
+ * function to handle re-associating elements to the nearest staff
+ */
+export function changeStaffHandler() {
+  let toChange = [];
+  var selected = Array.from(document.getElementsByClassName('selected'));
+  selected.forEach(elem => {
+    toChange.push(
+      {
+        'action': 'changeStaff',
+        'param': {
+          'elementId': elem.id
+        }
+      }
+    );
+  });
+  let chainAction = {
+    'action': 'chain',
+    'param': toChange
   };
   endOptionsSelection();
   neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then(() => { neonView.updateForCurrentPage(); });
@@ -203,6 +226,12 @@ export function triggerSylActions () {
     "<div><p class='control'>" +
         "<button class='button' id='delete'>Delete</button></p></div>"
   );
+  $('#moreEdit').append(
+    "<div><p class='control'>" +
+        "<button class='button' id='changeStaff'>Re-associate to nearest staff</button></p></div>"
+  );
+
+  $('#changeStaff').on('click', changeStaffHandler);
 
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', deleteButtonHandler);
@@ -255,10 +284,27 @@ export function triggerClefActions (clef) {
     });
   });
 
+  $('#changeStaff').on('click', changeStaffHandler);
+
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', deleteButtonHandler);
 
   initOptionsListeners();
+}
+
+/**
+ * trigger extra custos actions.
+ * @param {SVGGraphicsElement} custos - the custos that actions would be applied to
+ */
+export function triggerCustosActions (custos) {
+  endOptionsSelection();
+  $('#moreEdit').removeClass('is-invisible');
+  $('#moreEdit').append(Contents.custosActionContents);
+
+  $('#changeStaff').on('click', changeStaffHandler);
+
+  $('#delete').on('click', removeHandler);
+  $('body').on('keydown', deleteButtonHandler);
 }
 
 /**
