@@ -27,6 +27,17 @@ export function setSelectHelperObjects (nv, dh) {
   zoomHandler = neonView.view.zoomHandler;
 }
 
+function escapeKeyListener (evt) {
+  if (evt.key === 'Escape') {
+    if ($('.selected').length > 0) {
+      info.infoListeners();
+    }
+    unselect();
+  }
+}
+
+function stopPropHandler (evt) { evt.stopPropagation(); }
+
 /**
  * Apply listeners for click selection.
  * @param {string} selector - The CSS selector used to choose where listeners are applied.
@@ -36,20 +47,17 @@ export function clickSelect (selector) {
   $(selector).on('mousedown', clickHandler);
 
   // Click away listeners
-  $('body').on('keydown', (evt) => {
-    if (evt.key === 'Escape') {
-      if ($('.selected').length > 0) {
-        info.infoListeners();
-      }
-      unselect();
-    }
-  });
+  $('body').off('keydown', escapeKeyListener);
+  $('body').on('keydown', escapeKeyListener);
 
   $('#container').on('contextmenu', (evt) => { evt.preventDefault(); });
 
-  $('use').on('click', (e) => { e.stopPropagation(); });
-  $('rect').on('click', (e) => { e.stopPropagation(); });
-  $('#moreEdit').on('click', (e) => { e.stopPropagation(); });
+  $('use').off('click', stopPropHandler);
+  $('use').on('click', stopPropHandler);
+  $('rect').off('click', stopPropHandler);
+  $('rect').on('click', stopPropHandler);
+  $('#moreEdit').off('click', stopPropHandler);
+  $('#moreEdit').on('click', stopPropHandler);
 }
 
 /**
