@@ -3,7 +3,7 @@
 import * as Contents from './Contents.js';
 import * as Warnings from '../Warnings.js';
 import * as Notification from '../utils/Notification.js';
-import { unsetVirgaAction, unsetInclinatumAction, removeHandler } from './SelectOptions.js';
+import { unsetVirgaAction, unsetInclinatumAction, removeHandler, deleteButtonHandler } from './SelectOptions.js';
 const $ = require('jquery');
 
 /**
@@ -36,6 +36,7 @@ export function triggerGrouping (type) {
 export function endGroupingSelection () {
   $('#moreEdit').empty();
   $('#moreEdit').addClass('is-invisible');
+  $('body').off('keydown', deleteButtonHandler);
 }
 
 /**
@@ -43,6 +44,7 @@ export function endGroupingSelection () {
  */
 export function initGroupingListeners () {
   $('#delete').on('click', removeHandler);
+  $('body').on('keydown', deleteButtonHandler);
   $('#mergeSyls').on('click', function () {
     var elementIds = getChildrenIds().filter(e =>
       document.getElementById(e).classList.contains('neume')
