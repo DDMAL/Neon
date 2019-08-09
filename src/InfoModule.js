@@ -1,7 +1,5 @@
 /** @module InfoModule */
 
-const $ = require('jquery');
-
 /**
  * Class that manages getting information for elements in Neon from Verovio.
  */
@@ -34,14 +32,20 @@ class InfoModule {
    * Set listeners for the InfoModule.
    */
   infoListeners () {
-    $('.active-page').find('.neume,.custos,.clef').on('mouseover', this.updateInfo.bind(this));
+    document.getElementsByClassName('active-page')[0]
+      .querySelectorAll('.neume,.custos,.clef')
+      .forEach(node => {
+        node.addEventListener('mouseover', this.updateInfo.bind(this));
+      });
   }
 
   /**
    * Stop listeners for the InfoModule.
    */
   stopListeners () {
-    $('.neume,.custos,.clef').off('mouseover', this.updateInfo.bind(this));
+    document.querySelectorAll('.neume,.custos,.clef').forEach(node => {
+      node.removeEventListener('mouseover', this.updateInfo.bind(this));
+    });
   }
 
   /**
@@ -61,14 +65,16 @@ class InfoModule {
   // So we will simply return if ID does not exist for now
     let id = event.currentTarget.id;
     if (id === '') {
-      $('#neume_info').empty();
+      Array.from(document.getElementById('neume_info').children).forEach(child => {
+        child.remove();
+      });
       console.log('No id!');
       return;
     }
 
-    var element = $('#' + id);
+    let element = document.getElementById(id);
     var classRe = /neume|nc|clef|custos|staff/;
-    var elementClass = element.attr('class').match(classRe)[0];
+    let elementClass = element.getAttribute('class').match(classRe)[0];
     var body = '';
     var attributes;
 
@@ -76,10 +82,10 @@ class InfoModule {
     switch (elementClass) {
       case 'neume':
         // Select neume components of selected neume
-        var ncs = element.children('.nc');
+        var ncs = element.querySelectorAll('.nc');
         var contour = await this.getContour(ncs);
         if (contour === 'Clivis') {
-          var attr = await this.neonView.getElementAttr($(ncs[0])[0].id, this.neonView.view.getCurrentPageURI());
+          var attr = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
           if (attr.ligated) {
             contour = 'Ligature';
           }
@@ -87,7 +93,7 @@ class InfoModule {
         var pitches = await this.getPitches(ncs);
 
         pitches = pitches.trim().toUpperCase();
-        body = 'Shape: ' + (contour === undefined ? 'Compound' : contour) + '<br/>' +
+        body = 'Shape: ' + (contour === undefined ? 'Compound' : contour) + '\r\n' +
                 'Pitch(es): ' + pitches;
         break;
       case 'custos':
@@ -96,13 +102,13 @@ class InfoModule {
         break;
       case 'clef':
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
-        body += 'Shape: ' + attributes.shape + '<br/>' +
+        body += 'Shape: ' + attributes.shape + '\r\n' +
                 'Line: ' + attributes.line;
         break;
       case 'staff':
         elementClass = 'clef';
         var staffDefAttributes = await this.neonView.getElementStaffDef(id);
-        body = 'Shape: ' + staffDefAttributes['clef.shape'] + '<br/>' +
+        body = 'Shape: ' + staffDefAttributes['clef.shape'] + '\r\n' +
                 'Line: ' + staffDefAttributes['clef.line'];
         break;
       default:
@@ -163,11 +169,12 @@ class InfoModule {
    * @param {string} body - The info box contents.
    */
   updateInfoModule (title, body) {
-    $('.message-header').children('p').html(title);
-    $('.message-body').html(body);
+    document.getElementsByClassName('message-header')[0].querySelector('p')
+      .textContent = title;
+    document.getElementsByClassName('message-body')[0].innerText = body;
 
-    if ($('#displayInfo').is(':checked')) {
-      $('.message').css('display', '');
+    if (document.getElementById('displayInfo').checked) {
+      document.getElementsByClassName('message')[0].display = '';
     }
   }
 
@@ -226,23 +233,25 @@ InfoModule.neumeGroups = new Map(
 function setInfoControls () {
   startInfoVisibility();
   updateInfoVisibility();
-  $('#displayInfo').click(updateInfoVisibility);
+  document.getElementById('displayInfo').addEventListener('click', updateInfoVisibility);
 }
 
 function startInfoVisibility () {
-  $('#neume_info').append("<article class='message'><div class='message-header'><p></p></div>" +
-            "<div class='message-body'></div>");
-  $('#neume_info').addClass('is-invisible');
+  document.getElementById('neume_info').innerHTML =
+    "<article class='message'><div class='message-header'><p></p></div>" +
+      "<div class='message-body'></div>";
+  document.getElementById('neume_info').classList.add('is-invisible');
 }
 
 /**
  * Update the visibility of infoBox
  */
 function updateInfoVisibility () {
-  if ($('#displayInfo').is(':checked')) {
-    $('#neume_info').removeClass('is-invisible');
+  let neumeInfo = document.getElementById('neume_info');
+  if (document.getElementById('displayInfo').checked) {
+    neumeInfo.classList.remove('is-invisible');
   } else {
-    $('#neume_info').addClass('is-invisible');
+    neumeInfo.classList.add('is-invisible');
   }
 }
 
