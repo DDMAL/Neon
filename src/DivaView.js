@@ -23,6 +23,17 @@ class DivaView {
     this.loadDelay = 500; // in milliseconds
     this.initDivaEvents();
     this.setViewEventHandlers();
+
+    window.onresize = (evt) => {
+      let height = window.innerHeight;
+      let width = window.innerWidth;
+
+      window.setTimeout(() => {
+        if ((height === window.innerHeight) && (width === window.innerWidth)) {
+          this.changePage(this.getCurrentPage(), false);
+        }
+      }, this.loadDelay);
+    };
   }
 
   /**
