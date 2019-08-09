@@ -43,6 +43,7 @@ export function endGroupingSelection () {
  * The grouping dropdown listener.
  */
 export function initGroupingListeners () {
+  $('#delete').off('click', removeHandler);
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', deleteButtonHandler);
   $('#mergeSyls').on('click', function () {
