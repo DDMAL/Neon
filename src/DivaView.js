@@ -31,7 +31,7 @@ class DivaView {
   initDivaEvents () {
     Diva.Events.subscribe('ManifestDidLoad', this.parseManifest.bind(this), this.diva.settings.ID);
     Diva.Events.subscribe('ObjectDidLoad', this.didLoad.bind(this), this.diva.settings.ID);
-    Diva.Events.subscribe('VisiblePageDidChange', this.changePage.bind(this), this.diva.settings.ID);
+    Diva.Events.subscribe('ActivePageDidChange', this.changePage.bind(this), this.diva.settings.ID);
     Diva.Events.subscribe('ZoomLevelDidChange', this.adjustZoom.bind(this), this.diva.settings.ID);
   }
 
