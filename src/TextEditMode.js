@@ -117,7 +117,7 @@ export default class TextEditMode {
       let editorAction = {
         'action': 'setText',
         'param': {
-          'elementId': $('#' + $(span).attr('class').replace('syl-select', '').trim()).attr('id'),
+          'elementId': [...span.classList.entries()].filter(e => e[1] !== 'text-select')[0][1],
           'text': corrected
         }
       };
