@@ -245,7 +245,7 @@ describe('Test insert editor action', () => {
         'elementType': 'nc',
         'staffId': 'auto',
         'ulx': 939,
-        'uly': 2452
+        'uly': 2462
       }
     };
     await neon.edit(editorAction, pathToPNG);
@@ -304,7 +304,7 @@ describe('Test insert editor action', () => {
         'elementType': 'nc',
         'staffId': 'auto',
         'ulx': 1337,
-        'uly': 655
+        'uly': 665
       }
     };
     await neon.edit(editorAction, pathToPNG);
@@ -779,7 +779,7 @@ test('Test chain action', async () => {
           'elementType': 'nc',
           'staffId': 'auto',
           'ulx': 939,
-          'uly': 2452
+          'uly': 2462
         }
       }
     ]
