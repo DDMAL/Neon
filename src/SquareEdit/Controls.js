@@ -36,6 +36,7 @@ export function bindInsertTabs (insertHandler) {
         let insertOptions = document.getElementsByClassName('insertel');
         let selectedOption = insertOptions[index];
         deactivate('.insertel');
+        insertHandler.insertDisabled();
         activate(selectedOption.id, insertHandler);
         Cursor.updateCursor();
       } catch (e) {

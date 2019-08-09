@@ -233,7 +233,6 @@ export function selectStaff (el, dragHandler) {
   let staff = $(el);
   if (!staff.hasClass('selected')) {
     staff.addClass('selected');
-    updateHighlight();
     Color.highlight(el, '#d00');
     dragHandler.dragInit();
   }

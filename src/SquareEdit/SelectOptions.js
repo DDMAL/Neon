@@ -287,9 +287,7 @@ export function triggerClefActions (clef) {
     });
   });
 
-  $('#changeStaff').on('click', changeStaffHandler);
 
-  $('#delete').off('click', removeHandler);
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', deleteButtonHandler);
 
