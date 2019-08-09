@@ -163,6 +163,7 @@ export function triggerNcActions (nc) {
       neonView.updateForCurrentPage();
     });
   });
+  $('#delete').off('click', removeHandler);
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', deleteButtonHandler);
 
@@ -205,6 +206,7 @@ export function triggerNeumeActions () {
       neonView.updateForCurrentPage();
     });
   }
+  $('#delete').off('click', removeHandler);
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', deleteButtonHandler);
 
@@ -233,6 +235,7 @@ export function triggerSylActions () {
 
   $('#changeStaff').on('click', changeStaffHandler);
 
+  $('#delete').off('click', removeHandler);
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', deleteButtonHandler);
 
@@ -286,6 +289,7 @@ export function triggerClefActions (clef) {
 
   $('#changeStaff').on('click', changeStaffHandler);
 
+  $('#delete').off('click', removeHandler);
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', deleteButtonHandler);
 
@@ -303,6 +307,7 @@ export function triggerCustosActions (custos) {
 
   $('#changeStaff').on('click', changeStaffHandler);
 
+  $('#delete').off('click', removeHandler);
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', deleteButtonHandler);
 }
@@ -338,6 +343,7 @@ export function triggerStaffActions () {
     });
   });
 
+  $('#delete').off('click', removeHandler);
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', deleteButtonHandler);
 }
@@ -357,6 +363,7 @@ export function triggerSplitActions () {
     endOptionsSelection();
   });
 
+  $('#delete').off('click', removeHandler);
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', deleteButtonHandler);
 }
@@ -369,6 +376,7 @@ export function triggerDefaultActions () {
   $('#moreEdit').removeClass('is-invisible');
   $('#moreEdit').append(Contents.defaultActionContents);
 
+  $('#delete').off('click', removeHandler);
   $('#delete').on('click', removeHandler);
   $('body').on('keydown', deleteButtonHandler);
 }
