@@ -843,3 +843,26 @@ test("Test 'change skew' action", async () => {
   let skew = (await neon.info(pathToPNG)).skew;
   expect(Math.round(skew)).toBe(-52);
 });
+
+test("Test 'change staff association' action", async () => {
+  let neon = new NeonCore(mei);
+  await neon.initDb();
+  await neon.getSVG(pathToPNG);
+  let editorAction = {
+    'action': 'drag',
+    'param': {
+      'elementId': "m-5336ecdd-16ac-4d06-ac93-0d83b7458cea",
+      'x': 0,
+      'y': -500
+    }
+  };
+  expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+  editorAction = {
+    'action': 'changeStaff',
+    'param': {
+      'elementId': 'm-5336ecdd-16ac-4d06-ac93-0d83b7458cea'
+    }
+  };
+  expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+  expect(await neon.getElementAttr('m-abb8ee90-a032-4cdd-ba1a-3cf3e3fd3ed6', pathToPNG).pname).toBe('c');
+});
