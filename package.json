@@ -50,12 +50,17 @@
         "presets": "env"
     },
     "dependencies": {
+        "@types/pouchdb": "^6.4.0",
+        "@types/uuid": "^3.4.5",
+        "@types/webpack": "^4.32.1",
+        "awesome-typescript-loader": "^5.2.1",
         "express": "^4.16.3",
         "fs-extra": "^8.0.1",
         "multer": "^1.3.0",
         "nodemon": "^1.17.5",
         "pug": "^2.0.3",
         "request": "^2.88.0",
+        "typescript": "^3.5.3",
         "verovio-dev": "file:src/verovio-dev"
     },
     "devDependencies": {
