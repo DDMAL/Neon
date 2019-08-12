@@ -1,4 +1,5 @@
 import { bindInsertTabs, initInsertEditControls, initEditModeControls, initSelectionButtons } from './Controls.js';
+import { setHighlightSelectionControls } from '../DisplayPanel/DisplayControls.js';
 import * as Select from '../utils/Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';
@@ -36,6 +37,8 @@ class SingleEditMode {
     editMenu.style.fontWeight = 'bold';
 
     initSelectionButtons();
+
+    setHighlightSelectionControls();
 
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
   }

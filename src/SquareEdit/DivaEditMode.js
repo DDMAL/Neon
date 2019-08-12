@@ -2,6 +2,7 @@ import { bindInsertTabs, initInsertEditControls, initEditModeControls, initSelec
 import * as Select from '../utils/Select.js';
 import InsertHandler from './InsertHandler.js';
 import * as SelectOptions from './SelectOptions.js';
+import { setHighlightSelectionControls } from '../DisplayPanel/DisplayControls.js';
 import DragHandler from '../utils/DragHandler.js';
 
 class DivaEdit {
@@ -27,6 +28,8 @@ class DivaEdit {
     Select.setSelectStrokeWidth(1);
 
     initSelectionButtons();
+
+    setHighlightSelectionControls();
 
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
   }
