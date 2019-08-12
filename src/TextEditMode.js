@@ -68,6 +68,13 @@ export default class TextEditMode {
       p.appendChild(button);
       block.appendChild(p);
       button.addEventListener('click', selBySylListener.bind(this));
+      document.body.addEventListener('keydown', (evt) => {
+        if (evt.key === '5') {
+          if (document.getElementById('selByBBox').style.display === '') {
+            selBySylListener().bind(this);
+          }
+        }
+      });
       this.neonView.view.addUpdateCallback(this.addBBoxListeners.bind(this));
     } else {
       let block = document.getElementById('undo').closest('.control');
