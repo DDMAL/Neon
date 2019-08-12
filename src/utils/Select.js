@@ -6,7 +6,6 @@ import {
 import { Resize } from './Resize.js';
 
 const d3 = require('d3');
-const $ = require('jquery');
 
 var dragHandler, neonView, info, zoomHandler;
 var strokeWidth = 7;
@@ -29,11 +28,19 @@ export function setSelectHelperObjects (nv, dh) {
 
 function escapeKeyListener (evt) {
   if (evt.key === 'Escape') {
-    if ($('.selected').length > 0) {
+    if (document.getElementsByClassName('selected').length > 0) {
       info.infoListeners();
     }
     unselect();
   }
+}
+
+function isSelByBBox () {
+  let selByBBox = document.getElementById('selByBBox');
+  if (selByBBox) {
+    return selByBBox.classList.contains('is-active');
+  }
+  return false;
 }
 
 function stopPropHandler (evt) { evt.stopPropagation(); }
@@ -43,21 +50,22 @@ function stopPropHandler (evt) { evt.stopPropagation(); }
  * @param {string} selector - The CSS selector used to choose where listeners are applied.
  */
 export function clickSelect (selector) {
-  $(selector).off('mousedown', clickHandler);
-  $(selector).on('mousedown', clickHandler);
+  document.querySelectorAll(selector).forEach(sel => {
+    sel.removeEventListener('mousedown', clickHandler);
+    sel.addEventListener('mousedown', clickHandler);
+  });
 
   // Click away listeners
-  $('body').off('keydown', escapeKeyListener);
-  $('body').on('keydown', escapeKeyListener);
+  document.body.removeEventListener('keydown', escapeKeyListener);
+  document.body.addEventListener('keydown', escapeKeyListener);
 
-  $('#container').on('contextmenu', (evt) => { evt.preventDefault(); });
+  document.getElementById('container')
+    .addEventListener('contextmenu', (evt) => { evt.preventDefault(); });
 
-  $('use').off('click', stopPropHandler);
-  $('use').on('click', stopPropHandler);
-  $('rect').off('click', stopPropHandler);
-  $('rect').on('click', stopPropHandler);
-  $('#moreEdit').off('click', stopPropHandler);
-  $('#moreEdit').on('click', stopPropHandler);
+  document.querySelectorAll('use,rect,#moreEdit').forEach(sel => {
+    sel.removeEventListener('click', stopPropHandler);
+    sel.addEventListener('click', stopPropHandler);
+  });
 }
 
 /**
@@ -72,7 +80,7 @@ function clickHandler (evt) {
   if (mode === 'insert' || evt.shiftKey) { return; }
   // Check if the element being clicked on is part of a drag Selection
   if (this.tagName === 'use' && getSelectionType() !== 'selByBBox') {
-    if ($(this).parents('.selected').length === 0) {
+    if (this.closest('.selected') === null) {
       let selection = [this];
       // Check if this is part of a ligature and, if so, add all of it to the selection.
       const firstLigatureHalf = /E9B[45678]/;
@@ -107,7 +115,7 @@ function clickHandler (evt) {
       }
     }
   } else if (evt.target.tagName === 'rect' && getSelectionType() === 'selByBBox') {
-    if ($(this).parents('.selected').length === 0) {
+    if (this.closest('.selected') === null) {
       let selection = [evt.target];
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
         selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
@@ -132,12 +140,13 @@ function clickHandler (evt) {
     let transformMatrix = container.getElementsByClassName('system')[0].getScreenCTM();
     pt = pt.matrixTransform(transformMatrix.inverse());
 
-    let selectedStaves = Array.from($('.staff')).filter((staff) => {
-      let bbox = getStaffBBox(staff);
-      return (bbox.ulx < pt.x && pt.x < bbox.lrx) && (bbox.uly < pt.y && pt.y < bbox.lry);
-    });
+    let selectedStaves = Array.from(document.getElementsByClassName('staff'))
+      .filter((staff) => {
+        let bbox = getStaffBBox(staff);
+        return (bbox.ulx < pt.x && pt.x < bbox.lrx) && (bbox.uly < pt.y && pt.y < bbox.lry);
+      });
     if (selectedStaves.length !== 1) {
-      if ($('.selected').length > 0) {
+      if (document.getElementsByClassName('selected').length > 0) {
         info.infoListeners();
       }
       unselect();
@@ -197,7 +206,8 @@ export function dragSelect (selector) {
     let userMode = neonView.getUserMode();
     if (d3.event.sourceEvent.target.nodeName !== 'use' && userMode !== 'insert' && d3.event.sourceEvent.target.nodeName !== 'rect') {
       if (!d3.event.sourceEvent.shiftKey) { // If not holding down shift key to pan
-        if (!$('#selByStaff').hasClass('is-active') || pointNotInStaff(d3.mouse(this))) {
+        if (!document.getElementById('selByStaff').classList.contains('is-active') ||
+          pointNotInStaff(d3.mouse(this))) {
           unselect();
           dragSelecting = true;
           let initialP = d3.mouse(this);
@@ -254,10 +264,12 @@ export function dragSelect (selector) {
 
   function selEnd () {
     if (!panning && dragSelecting) {
-      var rx = parseInt($('#selectRect').attr('x'));
-      var ry = parseInt($('#selectRect').attr('y'));
-      var lx = parseInt($('#selectRect').attr('x')) + parseInt($('#selectRect').attr('width'));
-      var ly = parseInt($('#selectRect').attr('y')) + parseInt($('#selectRect').attr('height'));
+      var rx = parseInt(document.getElementById('selectRect').getAttribute('x'));
+      var ry = parseInt(document.getElementById('selectRect').getAttribute('y'));
+      var lx = parseInt(document.getElementById('selectRect').getAttribute('x')) +
+        parseInt(document.getElementById('selectRect').getAttribute('width'));
+      var ly = parseInt(document.getElementById('selectRect').getAttribute('y')) +
+        parseInt(document.getElementById('selectRect').getAttribute('height'));
       // Transform to the correct coordinate system
       let ul = canvas.node().createSVGPoint();
       ul.x = rx;
@@ -270,9 +282,9 @@ export function dragSelect (selector) {
       lr = lr.matrixTransform(transform);
 
       var nc;
-      if ($('#selByStaff').hasClass('is-active')) {
+      if (document.getElementById('selByStaff').classList.contains('is-active')) {
         nc = d3.selectAll(selector + ' use, ' + selector + ' .staff')._groups[0];
-      } else if ($('#selByBBox').hasClass('is-active')) {
+      } else if (isSelByBBox()) {
         nc = d3.selectAll(selector + ' .sylTextRect-display')._groups[0];
       } else {
         nc = d3.selectAll(selector + ' use')._groups[0];
@@ -281,9 +293,9 @@ export function dragSelect (selector) {
 
       var elements = els.filter(function (d) {
         var ulx, uly, lrx, lry;
-        if ($('#selByBBox').hasClass('is-active')) {
-          ulx = Number($(d).attr('x'));
-          uly = Number($(d).attr('y'));
+        if (isSelByBBox()) {
+          ulx = Number(d.getAttribute('x'));
+          uly = Number(d.getAttribute('y'));
           lrx = +ulx + +(d.getAttribute('width').slice(0, -2));
           lry = +uly + +(d.getAttribute('height').slice(0, -2));
           return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
