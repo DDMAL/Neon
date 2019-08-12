@@ -180,6 +180,15 @@ export const defaultActionContents =
     "<button class='button' id='delete'>Delete</button></p></div>";
 
 /**
+ * Contents of custos action menu.
+ * @type {string}
+ */
+export const custosActionContents = 
+    "<div><p class='control'>" +
+    "<button class='button' id='delete'>Delete</button>" + 
+    "<button class='button' id='changeStaff'>Re-associate to nearest staff</button></p></div>";
+
+/**
  * Contents of split action menu.
  * @type {string}
  */
@@ -204,7 +213,8 @@ export const clefActionContents =
     "<div class='dropdown-content'>" +
     "<a id='CClef' class='dropdown-item'>C Clef</a>" +
     "<a id='FClef' class='dropdown-item'>F Clef</a></div></div>" +
-    "<button class='button' id='delete'>Delete</button></div>";
+    "<button class='button' id='delete'>Delete</button>" + 
+    "<button class='button' id='changeStaff'>Re-associate to nearest staff</button></div>";
 
 /**
  * HTML for grouping selection menu.
@@ -222,7 +232,8 @@ export const groupingMenu = {
   'syl': "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
         "<button class='button' id='mergeSyls'>Merge Syllables</button>" +
-        "<button class='button' id='delete'>Delete</button></p></div>",
+        "<button class='button' id='delete'>Delete</button>" + 
+        "<button class='button' id='changeStaff'>Re-associate to nearest staff</button></p></div>",
   'ligatureNc': "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
         "<button class='button' id='groupNcs'>Group Neume Components</button></p></div>" +

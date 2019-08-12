@@ -23,6 +23,17 @@ class DivaView {
     this.loadDelay = 500; // in milliseconds
     this.initDivaEvents();
     this.setViewEventHandlers();
+
+    window.onresize = (evt) => {
+      let height = window.innerHeight;
+      let width = window.innerWidth;
+
+      window.setTimeout(() => {
+        if ((height === window.innerHeight) && (width === window.innerWidth)) {
+          this.changePage(this.getCurrentPage(), false);
+        }
+      }, this.loadDelay);
+    };
   }
 
   /**
@@ -31,7 +42,7 @@ class DivaView {
   initDivaEvents () {
     Diva.Events.subscribe('ManifestDidLoad', this.parseManifest.bind(this), this.diva.settings.ID);
     Diva.Events.subscribe('ObjectDidLoad', this.didLoad.bind(this), this.diva.settings.ID);
-    Diva.Events.subscribe('VisiblePageDidChange', this.changePage.bind(this), this.diva.settings.ID);
+    Diva.Events.subscribe('ActivePageDidChange', this.changePage.bind(this), this.diva.settings.ID);
     Diva.Events.subscribe('ZoomLevelDidChange', this.adjustZoom.bind(this), this.diva.settings.ID);
   }
 
