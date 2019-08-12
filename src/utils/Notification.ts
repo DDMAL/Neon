@@ -1,24 +1,23 @@
 /** @module utils/Notification */
-
-const uuid = require('uuid/v4');
+import * as uuid from 'uuid/v4';
 
 /** @type {Array.<module:Notification~Notification>} */
-var notifications = new Array(0);
+var notifications: Notification[] = new Array(0);
 /** @type {module:Notification~Notification} */
-var currentModeMessage = null;
+var currentModeMessage: Notification = null;
 var notifying = false;
 
 /**
  * Number of notifications to display at a time.
  * @type {number}
  */
-const NUMBER_TO_DISPLAY = 3;
+const NUMBER_TO_DISPLAY: number = 3;
 
 /**
  * Add a notification to the queue.
  * @param {string} notification
  */
-export function queueNotification (notification) {
+export function queueNotification (notification: string) {
   let notif = new Notification(notification);
   notifications.push(notif);
   if (!notifying || document.getElementById('notification-content').querySelectorAll('.neon-notification').length < NUMBER_TO_DISPLAY) {
@@ -46,7 +45,7 @@ function startNotification () {
  * Display a notification.
  * @param {module:Notification~Notification} notification
  */
-function displayNotification (notification) {
+function displayNotification (notification: Notification) {
   if (notification.isModeMessage) {
     if (currentModeMessage === null) {
       currentModeMessage = notification;
@@ -67,7 +66,7 @@ function displayNotification (notification) {
  * Clear the notifications if no more exist or display another from the queue.
  * @param {string} currentId - The ID of the notification to be cleared.
  */
-function clearOrShowNextNotification (currentId) {
+function clearOrShowNextNotification (currentId: string) {
   // clear notification currently displayed
 
   document.getElementById(currentId).remove();
@@ -86,11 +85,16 @@ function clearOrShowNextNotification (currentId) {
  * A class to manage Neon notifications.
  */
 class Notification {
+  message: string;
+  displayed: boolean;
+  id: string;
+  isModeMessage: boolean;
+  timeoutID: number;
   /**
    * Create a new notification
    * @param {string} message
    */
-  constructor (message) {
+  constructor (message: string) {
     this.message = message;
     this.displayed = false;
     this.id = uuid();
@@ -98,7 +102,7 @@ class Notification {
     this.timeoutID = -1;
   }
 
-  setTimeoutId (id) {
+  setTimeoutId (id: number) {
     this.timeoutID = Math.max(id, -1);
   }
 
@@ -110,7 +114,7 @@ class Notification {
    * Get the UUID for this notification
    * @returns {string}
    */
-  getId () {
+  getId (): string {
     return this.id;
   }
 }
