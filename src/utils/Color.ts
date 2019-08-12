@@ -4,7 +4,7 @@
  * Set a highlight by a different grouping. Either staff, syllable, or neume.
  * @param {string} grouping - The grouping name.
  */
-export function setGroupingHighlight (grouping) {
+export function setGroupingHighlight (grouping: string) {
   unsetGroupingHighlight();
   if (grouping === 'staff') {
     setStaffHighlight();
@@ -27,12 +27,12 @@ export function setGroupingHighlight (grouping) {
     return;
   }
 
-  let groups = Array.from(document.getElementsByClassName(grouping));
+  let groups = <HTMLCollectionOf<HTMLElement>>document.getElementsByClassName(grouping);
   for (var i = 0; i < groups.length; i++) {
     let groupColor = ColorPalette[i % ColorPalette.length];
     if ((groups[i].closest('.selected') === null) && !groups[i].classList.contains('selected')) {
       groups[i].setAttribute('fill', groupColor);
-      let rects = groups[i].querySelectorAll('.sylTextRect-display');
+      let rects = <NodeListOf<HTMLElement>>groups[i].querySelectorAll('.sylTextRect-display');
       rects.forEach(function (rect) {
         rect.style.fill = groupColor;
       });
@@ -57,8 +57,8 @@ export function setGroupingHighlight (grouping) {
 export function unsetGroupingHighlight () {
   unsetStaffHighlight();
   let highlighted = Array.from(document.getElementsByClassName('highlighted'))
-    .filter(elem => !elem.parentNode.classList.contains('selected'));
-  highlighted.forEach(elem => {
+    .filter((elem: HTMLElement) => !elem.parentElement.classList.contains('selected'));
+  highlighted.forEach((elem: HTMLElement) => {
     elem.setAttribute('fill', null);
     let rects = elem.querySelectorAll('.sylTextRect-display');
     if (!rects.length) {
@@ -66,7 +66,7 @@ export function unsetGroupingHighlight () {
         rects = elem.closest('.syllable').querySelectorAll('sylTextRect-display');
       }
     }
-    rects.forEach(function (rect) {
+    rects.forEach(function (rect: HTMLElement) {
       if (rect.closest('.syllable').classList.contains('selected')) {
         rect.style.fill = 'red';
       } else {
@@ -85,7 +85,7 @@ export function unsetGroupingHighlight () {
  * Highlight each staff a different color.
  */
 export function setStaffHighlight () {
-  let staves = Array.from(document.getElementsByClassName('staff'));
+  let staves = <SVGGElement[]>Array.from(document.getElementsByClassName('staff'));
   for (var i = 0; i < staves.length; i++) {
     let staffColor = ColorPalette[i % ColorPalette.length];
     highlight(staves[i], staffColor);
@@ -104,7 +104,7 @@ export function unsetStaffHighlight () {
  * @param {SVGGElement} staff - The staff's SVG element.
  * @param {string} color - The color to highlight the staff.
  */
-export function highlight (staff, color) {
+export function highlight (staff: SVGGElement, color: string) {
   let children = Array.from(staff.children);
   children.forEach(child => {
     if (child.tagName === 'path') {
@@ -118,10 +118,10 @@ export function highlight (staff, color) {
         try {
           rects = child.closest('.syllable').querySelectorAll('.sylTextRect-display');
         } catch (e) {
-          rects = [];
+          rects = <NodeListOf<Element>><unknown>[];
         }
       }
-      rects.forEach(function (rect) {
+      rects.forEach(function (rect: HTMLElement) {
         let syllable = rect.closest('.syllable');
         if (!syllable.classList.contains('selected')) {
           rect.style.fill = color;
@@ -137,8 +137,8 @@ export function highlight (staff, color) {
  * Remove the highlight from a staff.
  * @param {(SVGGElement)} staff - The staff's SVG element
  */
-export function unhighlight (staff) {
-  let children;
+export function unhighlight (staff?: SVGGElement) {
+  let children: NodeListOf<Element>;
   if (staff) {
     children = staff.querySelectorAll(':not(.selected) .highlighted');
   } else {
@@ -154,10 +154,10 @@ export function unhighlight (staff) {
         try {
           rects = elem.closest('.syllable').querySelectorAll('.sylTextRect-display');
         } catch (e) {
-          rects = [];
+          rects = <NodeListOf<Element>><unknown>[];
         }
       }
-      rects.forEach(function (rect) {
+      rects.forEach(function (rect: HTMLElement) {
         if (rect.closest('.syllable').classList.contains('selected')) {
           rect.style.fill = 'red';
         } else {
@@ -176,7 +176,7 @@ export function unhighlight (staff) {
  * ["Points of view: Color blindness" by Bang Wong published in Nature Methods volume 8 on 27 May 2011]{@link https://www.nature.com/articles/nmeth.1618?WT.ec_id=NMETH-201106}
  * @type {string[]}
  */
-const ColorPalette = [
+const ColorPalette: string[] = [
 //    "rgb(0,0,0)",
   'rgb(230, 159, 0)',
   'rgb(86, 180, 233)',
