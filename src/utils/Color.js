@@ -1,7 +1,5 @@
 /** @module utils/Color */
 
-const $ = require('jquery');
-
 /**
  * Set a highlight by a different grouping. Either staff, syllable, or neume.
  * @param {string} grouping - The grouping name.
@@ -12,7 +10,7 @@ export function setGroupingHighlight (grouping) {
     setStaffHighlight();
     return;
   } else if (grouping === 'selection') {
-    let temp = $('.sel-by.is-active').attr('id');
+    let temp = document.querySelector('.sel-by.is-active').id;
     switch (temp) {
       case 'selBySyl':
       case 'selByBBox':
@@ -21,7 +19,7 @@ export function setGroupingHighlight (grouping) {
       case 'selByStaff':
         grouping = 'staff';
         break;
-      default: 
+      default:
         grouping = 'neume';
         break;
     }
@@ -29,24 +27,26 @@ export function setGroupingHighlight (grouping) {
     return;
   }
 
-  let groups = Array.from($('.' + grouping));
+  let groups = Array.from(document.getElementsByClassName(grouping));
   for (var i = 0; i < groups.length; i++) {
     let groupColor = ColorPalette[i % ColorPalette.length];
-    if (!$(groups[i]).parents('.selected').length && !$(groups[i]).hasClass('selected')) {
+    if ((groups[i].closest('.selected') === null) && !groups[i].classList.contains('selected')) {
       groups[i].setAttribute('fill', groupColor);
-      let rects = Array.from($(groups[i]).find('.sylTextRect-display'));
+      let rects = groups[i].querySelectorAll('.sylTextRect-display');
       rects.forEach(function (rect) {
-        $(rect).css('fill', groupColor);
+        rect.style.fill = groupColor;
       });
-      $(groups[i]).addClass('highlighted');
-      $(groups[i]).find('.sylTextRect-display').addClass('highlighted');
+      groups[i].classList.add('highlighted');
+      groups[i].querySelectorAll('.sylTextRect-display').forEach(rect => {
+        rect.classList.add('highlighted');
+      });
     } else {
-      if (!$(groups[i]).hasClass('selected')) {
+      if (!groups[i].classList.contains('selected')) {
         groups[i].setAttribute('fill', null);
       } else {
         groups[i].setAttribute('fill', '#d00');
       }
-      $(groups[i]).removeClass('highlighted');
+      groups[i].classList.remove('highlighted');
     }
   }
 }
@@ -56,25 +56,28 @@ export function setGroupingHighlight (grouping) {
  */
 export function unsetGroupingHighlight () {
   unsetStaffHighlight();
-  let highlighted = Array.from($('.highlighted').filter((index, elem) => { return !$(elem.parentElement).hasClass('selected'); }));
+  let highlighted = Array.from(document.getElementsByClassName('highlighted'))
+    .filter(elem => !elem.parentNode.classList.contains('selected'));
   highlighted.forEach(elem => {
     elem.setAttribute('fill', null);
-    let rects = Array.from($(elem).find('.sylTextRect-display'));
+    let rects = elem.querySelectorAll('.sylTextRect-display');
     if (!rects.length) {
-      if (Array.from($(elem).parents('syllable')).length) {
-        rects = Array.from($(elem).parents('syllable').find('.sylTextRect-display'));
+      if (elem.closest('.syllable') !== null) {
+        rects = elem.closest('.syllable').querySelectorAll('sylTextRect-display');
       }
     }
     rects.forEach(function (rect) {
-      if ($(rect).closest('.syllable').hasClass('selected')) {
-        $(rect).css('fill', 'red');
+      if (rect.closest('.syllable').classList.contains('selected')) {
+        rect.style.fill = 'red';
       } else {
-        $(rect).css('fill', 'blue');
+        rect.style.fill = 'blue';
       }
-      $(rect).removeClass('highlighted');
+      rect.classList.remove('highlighted');
     });
-    $(elem).removeClass('highlighted');
-    $(elem).find('sylTextRect-display').removeClass('highlighted');
+    elem.classList.remove('highlighted');
+    elem.querySelectorAll('sylTextRect-display').forEach(rect => {
+      rect.classList.remove('highlighted');
+    });
   });
 }
 
@@ -93,7 +96,7 @@ export function setStaffHighlight () {
  * Remove the highlight from each staff.
  */
 export function unsetStaffHighlight () {
-  unhighlight('.staff');
+  unhighlight();
 }
 
 /**
@@ -102,7 +105,7 @@ export function unsetStaffHighlight () {
  * @param {string} color - The color to highlight the staff.
  */
 export function highlight (staff, color) {
-  let children = Array.from($('#' + staff.id).children());
+  let children = Array.from(staff.children);
   children.forEach(child => {
     if (child.tagName === 'path') {
       child.setAttribute('stroke', color);
@@ -110,44 +113,61 @@ export function highlight (staff, color) {
       return;
     } else {
       child.setAttribute('fill', color);
-      let rects = Array.from($(child).find('.sylTextRect-display'));
-      if (!rects.length) { rects = Array.from($(child).parents('syllable').find('.sylTextRect-display')); }
+      let rects = child.querySelectorAll('.sylTextRect-display');
+      if (!rects.length) {
+        try {
+          rects = child.closest('.syllable').querySelectorAll('.sylTextRect-display');
+        } catch (e) {
+          rects = [];
+        }
+      }
       rects.forEach(function (rect) {
-        let syllable = $(rect).parents('.syllable');
-        if (!syllable.hasClass('selected')) {
-          $(rect).css('fill', color);
-          $(rect).addClass('highlighted');
+        let syllable = rect.closest('.syllable');
+        if (!syllable.classList.contains('selected')) {
+          rect.style.fill = color;
+          rect.classList.add('highlighted');
         }
       });
     }
-    $(child).addClass('highlighted');
+    child.classList.add('highlighted');
   });
 }
 
 /**
  * Remove the highlight from a staff.
- * @param {(SVGGElement|string)} staff - The staff's SVG element or a JQuery selector.
+ * @param {(SVGGElement)} staff - The staff's SVG element
  */
 export function unhighlight (staff) {
-  let children = Array.from($(staff).filter(':not(.selected)').children('.highlighted'));
+  let children;
+  if (staff) {
+    children = staff.querySelectorAll(':not(.selected) .highlighted');
+  } else {
+    children = document.querySelectorAll(':not(.selected) .highlighted');
+  }
   children.forEach(elem => {
     if (elem.tagName === 'path') {
       elem.setAttribute('stroke', '#000000');
     } else {
       elem.removeAttribute('fill');
-      let rects = Array.from($(elem).find('.sylTextRect-display'));
-      if (!rects.length) { rects = Array.from($(elem).parents('syllable').find('.sylTextRect-display')); }
-      rects.forEach(function (rect) {
-        if ($(rect).closest('.syllable').hasClass('selected')) {
-        $(rect).css('fill', 'red');
-      } else {
-        $(rect).css('fill', 'blue');
+      let rects = elem.querySelectorAll('.sylTextRect-display');
+      if (!rects.length) {
+        try {
+          rects = elem.closest('.syllable').querySelectorAll('.sylTextRect-display');
+        } catch (e) {
+          rects = [];
+        }
       }
-      $(rect).removeClass('highlighted');
+      rects.forEach(function (rect) {
+        if (rect.closest('.syllable').classList.contains('selected')) {
+          rect.style.fill = 'red';
+        } else {
+          rect.style.fill = 'blue';
+        }
+        rect.classList.remove('highlighted');
       });
     }
+    elem.classList.remove('highlighted');
   });
-  $(staff).filter(':not(.selected)').children('.highlighted').removeClass('highlighted');
 }
 
 /**
