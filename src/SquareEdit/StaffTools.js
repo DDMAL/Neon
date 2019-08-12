@@ -2,23 +2,21 @@
 
 import * as Notification from '../utils/Notification.js';
 
-const $ = require('jquery');
-
 /**
  * Handler splitting a staff into two staves through Verovio.
  * @constructor
  * @param {NeonView} neonView - The NeonView parent.
  */
-function SplitHandler (neonView, selector) {
+function SplitHandler (neonView, selector = '.active-page') {
   function startSplit () {
     splitDisable();
 
-    $('body').on('click', selector, handler);
+    document.body.addEventListener('click', handler);
 
     // Handle keypresses
-    $('body').on('keydown', keydownListener);
-    $('body').on('keyup', resetHandler);
-    $('body').on('click', clickawayHandler);
+    document.body.addEventListener('keydown', keydownListener);
+    document.body.addEventListener('keyup', resetHandler);
+    document.body.addEventListener('click', clickawayHandler);
 
     Notification.queueNotification('Click Where to Split');
   }
@@ -27,26 +25,26 @@ function SplitHandler (neonView, selector) {
     if (evt.key === 'Escape') {
       splitDisable();
     } else if (evt.key === 'Shift') {
-      $('body').off('click', selector, handler);
+      document.body.removeEventListener('click', handler);
     }
   }
 
   function clickawayHandler (evt) {
     console.log(evt);
-    if ($(evt.target).closest('.active-page').length === 0) {
+    if (evt.target.closest('.active-page') === null) {
       splitDisable();
-      $('body').off('click', selector, handler);
+      document.body.removeEventListener('click', handler);
     }
   }
 
   function resetHandler (evt) {
     if (evt.key === 'Shift') {
-      $('body').on('click', selector, handler);
+      document.body.addEventListener('click', handler);
     }
   }
 
   function handler (evt) {
-    let id = $('.selected')[0].id;
+    let id = document.querySelector('.selected').id;
 
     var container = document.getElementsByClassName('active-page')[0]
       .getElementsByClassName('definition-scale')[0];
@@ -79,10 +77,10 @@ function SplitHandler (neonView, selector) {
   }
 
   function splitDisable () {
-    $('body').off('keydown', keydownListener);
-    $('body').off('keyup', resetHandler);
-    $('body').off('click', clickawayHandler);
-    $('body').off('click', handler);
+    document.body.removeEventListener('keydown', keydownListener);
+    document.body.removeEventListener('keyup', resetHandler);
+    document.body.removeEventListener('click', clickawayHandler);
+    document.body.removeEventListener('click', handler);
   }
 
   SplitHandler.prototype.constructor = SplitHandler;
