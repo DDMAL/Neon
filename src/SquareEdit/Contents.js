@@ -84,7 +84,7 @@ export const insertControlsPanel =
     "<a id='systemTab' class='insertTab'>System</a></p>" +
     // "<a id='divisionTab' class='insertTab'>Division</a></p>" +
     "<a class='panel-block has-text-centered'>" +
-    "<div id='insert_data' class='field is-grouped buttons'/></a></div>";
+    "<div id='insert_data' class='field is-grouped buttons'></div></a></div>";
 
 /**
  * Contents of edit panel with buttons.
