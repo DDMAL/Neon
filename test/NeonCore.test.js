@@ -3,7 +3,7 @@ import NeonCore from '../src/NeonCore.js';
 
 const fs = require('fs');
 
-const pathToMei = './test/resources/test.mei';
+const pathToMei = './test/resources/newtest.mei';
 const pathToPNG = './test/resources/test.png';
 const pathToContext = './src/utils/manifest/context.json';
 var mei = {};
@@ -60,18 +60,18 @@ describe('Test textEdit module functions', async () => {
     let neon = new NeonCore(mei);
     await neon.initDb();
     let svg = await neon.getSVG(pathToPNG);
-    let syl = svg.getElementById('testsyl').textContent.trim();
-    expect(syl).toBe('Hello');
+    let syl = svg.getElementById('m-b24ba821-788e-4904-b611-448b30d2cc15').textContent.trim();
+    expect(syl).toBe('mi');
     let editorAction = {
       'action': 'setText',
       'param': {
-        'elementId': 'm-f715514e-cb0c-48e4-a1f9-a265ec1d5ca1',
+        'elementId': 'm-ca34b59d-7c2a-411c-8be5-c24e0fbe1ed4',
         'text': 'asdf'
       }
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     svg = await neon.getSVG(pathToPNG);
-    syl = svg.getElementById('testsyl').textContent.trim();
+    syl = svg.getElementById('m-b24ba821-788e-4904-b611-448b30d2cc15').textContent.trim();
     expect(syl).toBe('asdf');
   });
 
@@ -87,29 +87,29 @@ describe('Test textEdit module functions', async () => {
      * although in these lines and the others like it
      * it's really just about trying stuff until you get the correct element
      */
-    let rect1 = svg.getElementById('m-369ac5d3-9d2a-4fd3-be4f-cb2a3b530fe5').children[1].children[1];
-    let rect2 = svg.getElementById('m-cfe44ba2-a162-4276-9ce9-d34c897c2e75').children[1].children[1];
-    expect(rect1.getAttribute('width')).toBe('143');
-    expect(rect2.getAttribute('width')).toBe('138');
+    let rect1 = svg.getElementById('m-ca34b59d-7c2a-411c-8be5-c24e0fbe1ed4').children[1].children[1];
+    let rect2 = svg.getElementById('m-432f94f2-3089-4767-b099-2b0573e55e99').children[1].children[1];
+    expect(rect1.getAttribute('width')).toBe('259');
+    expect(rect2.getAttribute('width')).toBe('310');
     let editorAction = {
       'action': 'group',
       'param': {
         'groupType': 'neume',
-        'elementIds': ['m-2292df83-f3ad-400e-8fc3-4b69b241a30f', 'm-edbf06f6-5791-4d5a-b5c3-2593a2a0eabe']
+        'elementIds': ['m-691b53d6-e0d4-478c-aba8-78009ce36ea1', 'm-3f122e0e-0176-40c8-9368-29a407bf954f']
       }
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     let info = (await neon.info(pathToPNG)).uuid;
     svg = await neon.getSVG(pathToPNG);
     let groupedRect = svg.getElementById(info).children[0].children[1];
-    expect(groupedRect.getAttribute('width')).toBe('278');
+    expect(groupedRect.getAttribute('width')).toBe('642');
 
     // ungrouping test
     editorAction = {
       'action': 'ungroup',
       'param': {
         'groupType': 'neume',
-        'elementIds': ['m-2292df83-f3ad-400e-8fc3-4b69b241a30f', 'm-edbf06f6-5791-4d5a-b5c3-2593a2a0eabe']
+        'elementIds': ['m-691b53d6-e0d4-478c-aba8-78009ce36ea1', 'm-3f122e0e-0176-40c8-9368-29a407bf954f']
       }
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
@@ -118,15 +118,15 @@ describe('Test textEdit module functions', async () => {
     let arr = info.uuid;
     rect1 = svg.getElementById(arr[0]).children[0].children[1];
     rect2 = svg.getElementById(arr[1]).children[1].children[1];
-    expect(rect1.getAttribute('width')).toBe('278');
-    expect(rect2.getAttribute('width')).toBe('138');
+    expect(rect1.getAttribute('width')).toBe('642');
+    expect(rect2.getAttribute('width')).toBe('155');
   });
 
   test('Test bbox resizing', async () => {
     let neon = new NeonCore(mei);
     await neon.initDb();
     let svg = await neon.getSVG(pathToPNG);
-    let syl = svg.getElementById('m-369ac5d3-9d2a-4fd3-be4f-cb2a3b530fe5').children[1];
+    let syl = svg.getElementById('m-9d333590-b8a3-44f6-8e1b-b72b80dfd3b5');
     let bbox = syl.children[1];
     expect(bbox.getAttribute('class')).toBe('sylTextRect');
     let initX = parseInt(bbox.getAttribute('x'));
@@ -145,7 +145,7 @@ describe('Test textEdit module functions', async () => {
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     svg = await neon.getSVG(pathToPNG);
-    bbox = svg.getElementById('m-369ac5d3-9d2a-4fd3-be4f-cb2a3b530fe5').children[1].children[1];
+    bbox = svg.getElementById('m-9d333590-b8a3-44f6-8e1b-b72b80dfd3b5').children[1];
     expect(parseInt(bbox.getAttribute('x'))).toBe(initX + 100);
     expect(parseInt(bbox.getAttribute('y'))).toBe(initY + 100);
   });
@@ -154,7 +154,7 @@ describe('Test textEdit module functions', async () => {
     let neon = new NeonCore(mei);
     await neon.initDb();
     let svg = await neon.getSVG(pathToPNG);
-    let syl = svg.getElementById('m-369ac5d3-9d2a-4fd3-be4f-cb2a3b530fe5').children[1];
+    let syl = svg.getElementById('m-4929be85-acef-4b69-ba82-f329a3c17b33').children[1];
     let bbox = syl.children[1];
     expect(bbox.getAttribute('class')).toBe('sylTextRect');
     let initX = parseInt(bbox.getAttribute('x'));
@@ -171,7 +171,7 @@ describe('Test textEdit module functions', async () => {
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     svg = await neon.getSVG(pathToPNG);
-    bbox = svg.getElementById('m-369ac5d3-9d2a-4fd3-be4f-cb2a3b530fe5').children[1].children[1];
+    bbox = svg.getElementById('m-6e8c6717-bbda-4923-b584-416a3fdfbc24').children[1];
     expect(parseInt(bbox.getAttribute('x'))).toBe(initX + 100);
     expect(parseInt(bbox.getAttribute('y'))).toBe(initY - 100); // dragging is backwards
   });
@@ -206,7 +206,7 @@ test("Test 'getElementAttr' function", async () => {
   let neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG); // for some reason verovio can't recognize the ids if this isn't done
-  let atts = await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', pathToPNG);
+  let atts = await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG);
   expect(atts['pname']).toBe('a');
   expect(atts['oct']).toBe('2');
 });
@@ -215,17 +215,17 @@ test("Test 'drag' action, neume", async () => {
   let neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
-  let originalAtts = await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', pathToPNG);
+  let originalAtts = await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG);
   let editorAction = {
     'action': 'drag',
     'param': {
-      'elementId': 'm-54220197-ac7d-452c-8c34-b3d0bdbaefa0',
+      'elementId': 'm-044e7093-895e-4a78-bbda-7f1779a896d4',
       'x': 2,
       'y': 34
     }
   };
   await neon.edit(editorAction, pathToPNG);
-  let newAtts = await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', pathToPNG);
+  let newAtts = await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG);
 
   expect(originalAtts['pname']).toBe('a');
   expect(originalAtts['oct']).toBe('2');
@@ -291,8 +291,8 @@ describe('Test insert editor action', () => {
     };
     await neon.edit(editorAction, pathToPNG);
     let insertAtts = await neon.getElementAttr((await neon.info(pathToPNG)).uuid, pathToPNG);
-    expect(insertAtts.pname).toBe('g');
-    expect(insertAtts.oct).toBe('2');
+    expect(insertAtts.pname).toBe('c');
+    expect(insertAtts.oct).toBe('3');
   });
   test("Test 'insert' action, nc", async () => {
     let neon = new NeonCore(mei);
@@ -309,8 +309,8 @@ describe('Test insert editor action', () => {
     };
     await neon.edit(editorAction, pathToPNG);
     let insertAtts = await neon.getElementAttr((await neon.info(pathToPNG)).uuid, pathToPNG);
-    expect(insertAtts.pname).toBe('a');
-    expect(insertAtts.oct).toBe('2');
+    expect(insertAtts.pname).toBe('d');
+    expect(insertAtts.oct).toBe('3');
   });
 });
 
@@ -319,12 +319,11 @@ describe("Test 'group and ungroup' functions", () => {
     let neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
-    // group
     let editorAction = {
       'action': 'group',
       'param': {
         'groupType': 'neume',
-        'elementIds': ['m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5', 'm-4475cbc8-ad26-44ee-999b-d18ce43600ab']
+        'elementIds': ['neume-0000001155883838', 'neume-0000001837566710']
       }
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
@@ -332,17 +331,16 @@ describe("Test 'group and ungroup' functions", () => {
       'action': 'group',
       'param': {
         'groupType': 'nc',
-        'elementIds': ['m-ceab54b1-893e-42de-8fca-aeeb13254e19', 'm-2cf5243a-7042-42f9-b0c0-fd65f3ed67e0']
+        'elementIds': ['nc-0000000790425780', 'nc-0000000963196713']
       }
     };
     expect(await neon.edit(editorAction2, pathToPNG)).toBeTruthy();
 
-    // ungroup
     let editorAction3 = {
       'action': 'ungroup',
       'param': {
         'groupType': 'nc',
-        'elementIds': ['m-ceab54b1-893e-42de-8fca-aeeb13254e19', 'm-2cf5243a-7042-42f9-b0c0-fd65f3ed67e0']
+        'elementIds': ['nc-0000000790425780', 'nc-0000000963196713']
       }
     };
     expect(await neon.edit(editorAction3, pathToPNG)).toBeTruthy();
@@ -350,7 +348,7 @@ describe("Test 'group and ungroup' functions", () => {
       'action': 'ungroup',
       'param': {
         'groupType': 'neume',
-        'elementIds': ['m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5', 'm-4475cbc8-ad26-44ee-999b-d18ce43600ab']
+        'elementIds': ['neume-0000001155883838', 'neume-0000001837566710']
       }
     };
     expect(await neon.edit(editorAction4, pathToPNG)).toBeTruthy();
@@ -361,37 +359,46 @@ describe("Test 'group and ungroup' functions", () => {
     await neon.initDb();
     await neon.getSVG(pathToPNG);
 
-    // group
     let editorAction = {
       'action': 'setText',
       'param': {
-        'elementId': 'm-ef58ea53-8d3a-4e9b-9b82-b9a057fe3fe4',
+        'elementId': 'm-ca34b59d-7c2a-411c-8be5-c24e0fbe1ed4',
         'text': 'world!'
       }
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     let svg = await neon.getSVG(pathToPNG);
-    let syl = svg.getElementById('m-ef58ea53-8d3a-4e9b-9b82-b9a057fe3fe4').textContent.trim();
+    let syl = svg.getElementById('m-ca34b59d-7c2a-411c-8be5-c24e0fbe1ed4').textContent.trim();
     expect(syl).toBe('world!');
+    editorAction = {
+      'action': 'setText',
+      'param': {
+        'elementId': 'm-432f94f2-3089-4767-b099-2b0573e55e99',
+        'text': 'hello'
+      }
+    };
+    expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+    svg = await neon.getSVG(pathToPNG);
+    syl = svg.getElementById('m-432f94f2-3089-4767-b099-2b0573e55e99').textContent.trim();
+    expect(syl).toBe('hello');
     let editorAction2 = {
       'action': 'group',
       'param': {
         'groupType': 'neume',
-        'elementIds': ['m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5', 'm-4475cbc8-ad26-44ee-999b-d18ce43600ab']
+        'elementIds': ['m-691b53d6-e0d4-478c-aba8-78009ce36ea1', 'm-3f122e0e-0176-40c8-9368-29a407bf954f']
       }
     };
     expect(await neon.edit(editorAction2, pathToPNG)).toBeTruthy();
     let info = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
     syl = svg.getElementById(info.uuid).textContent.trim().replace(/\s/g, '');
-    expect(syl).toBe('Helloworld!');
+    expect(syl).toBe('world!hello');
 
-    // ungroup
     let editorAction3 = {
       'action': 'ungroup',
       'param': {
         'groupType': 'neume',
-        'elementIds': ['m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5', 'm-4475cbc8-ad26-44ee-999b-d18ce43600ab']
+        'elementIds': ['m-691b53d6-e0d4-478c-aba8-78009ce36ea1', 'm-3f122e0e-0176-40c8-9368-29a407bf954f']
       }
     };
     expect(await neon.edit(editorAction3, pathToPNG)).toBeTruthy();
@@ -399,7 +406,7 @@ describe("Test 'group and ungroup' functions", () => {
     svg = await neon.getSVG(pathToPNG);
     let array = info2.uuid;
     syl = svg.getElementById(array[0]).textContent.trim().replace(/\s/g, '');
-    expect(syl).toBe('Helloworld!');
+    expect(syl).toBe('world!hello');
     syl = svg.getElementById(array[1]).textContent.trim();
     expect(syl).toBe('');
   });
@@ -408,51 +415,52 @@ describe("Test 'group and ungroup' functions", () => {
     let neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
-    let setupGroup = {
-      'action': 'group',
-      'param': {
-        'groupType': 'neume',
-        'elementIds': ['m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5', 'm-4475cbc8-ad26-44ee-999b-d18ce43600ab']
-      }
-    };
-    expect(await neon.edit(setupGroup, pathToPNG)).toBeTruthy();
-    let firstGroup = await neon.info(pathToPNG);
-    let svg = await neon.getSVG(pathToPNG);
-    let syl = svg.getElementById(firstGroup.uuid).textContent.trim();
-    expect(syl).toBe('Hello');
     let setupSetText = {
       'action': 'setText',
       'param': {
-        'elementId': 'm-4450b0db-733d-459c-afad-e050eab0af63',
-        'text': 'world!'
+        'elementId': 'syllable-0000001585962296',
+        'text': 'hello'
+      }
+    };
+
+    expect(await neon.edit(setupSetText, pathToPNG)).toBeTruthy();
+    let svg = await neon.getSVG(pathToPNG);
+    let syl = svg.getElementById('syllable-0000001585962296').textContent.trim();
+    expect(syl).toBe('hello');
+
+    setupSetText = {
+      'action': 'setText',
+      'param': {
+        'elementId': 'syllable-0000000338767184',
+        'text': 'world'
       }
     };
 
     expect(await neon.edit(setupSetText, pathToPNG)).toBeTruthy();
     svg = await neon.getSVG(pathToPNG);
-    syl = svg.getElementById('m-4450b0db-733d-459c-afad-e050eab0af63').textContent.trim();
-    expect(syl).toBe('world!');
+    syl = svg.getElementById('syllable-0000000338767184').textContent.trim();
+    expect(syl).toBe('world');
 
     let editorAction = {
       'action': 'group',
       'param': {
         'groupType': 'neume',
-        'elementIds': ['m-4475cbc8-ad26-44ee-999b-d18ce43600ab', 'm-07ad2140-4fa1-45d4-af47-6733add00825']
+        'elementIds': ['neume-0000000137236976', 'neume-0000000484383177', 'neume-0000000680908622']
       }
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     let info = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
     syl = svg.getElementById(info.uuid).textContent.trim().replace(/\s/g, '');
-    expect(syl).toBe('world!');
-    syl = svg.getElementById(firstGroup.uuid).textContent.trim().replace(/\s/g, '');
-    expect(syl).toBe('Hello');
+    expect(syl).toBe('world');
+    syl = svg.getElementById('syllable-0000001585962296').textContent.trim().replace(/\s/g, '');
+    expect(syl).toBe('hello');
 
     let ungroupAction = {
       'action': 'ungroup',
       'param': {
         'groupType': 'neume',
-        'elementIds': ['m-4475cbc8-ad26-44ee-999b-d18ce43600ab', 'm-07ad2140-4fa1-45d4-af47-6733add00825']
+        'elementIds': ['neume-0000000137236976', 'neume-0000000484383177', 'neume-0000000680908622']
       }
     };
     expect(await neon.edit(ungroupAction, pathToPNG)).toBeTruthy();
@@ -460,7 +468,7 @@ describe("Test 'group and ungroup' functions", () => {
     let array = ungroupInfo.uuid;
     svg = await neon.getSVG(pathToPNG);
     syl = svg.getElementById(array[0]).textContent.trim().replace(/\s/g, '');
-    expect(syl).toBe('world!');
+    expect(syl).toBe('world');
     syl = svg.getElementById(array[1]).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('');
   });
@@ -470,65 +478,48 @@ describe("Test 'group and ungroup' functions", () => {
     await neon.initDb();
     await neon.getSVG(pathToPNG);
     let svg = await neon.getSVG(pathToPNG);
-    let setupGroup1 = {
-      'action': 'group',
-      'param': {
-        'groupType': 'neume',
-        'elementIds': ['m-daa3c33c-49c9-4afd-ae50-6e458f12b5a5', 'm-4475cbc8-ad26-44ee-999b-d18ce43600ab']
-      }
-    };
-    expect(await neon.edit(setupGroup1, pathToPNG)).toBeTruthy();
-    let firstSyl = await neon.info(pathToPNG);
     let setupName1 = {
       'action': 'setText',
       'param': {
-        'elementId': firstSyl.uuid,
-        'text': 'hello1'
+        'elementId': 'syllable-0000001585962296',
+        'text': 'hello'
       }
     };
     expect(await neon.edit(setupName1, pathToPNG)).toBeTruthy();
     svg = await neon.getSVG(pathToPNG);
-    let syl = svg.getElementById(firstSyl.uuid).textContent.trim();
-    expect(syl).toBe('hello1');
-    let setupGroup2 = {
-      'action': 'group',
-      'param': {
-        'groupType': 'neume',
-        'elementIds': ['m-07ad2140-4fa1-45d4-af47-6733add00825', 'm-2292df83-f3ad-400e-8fc3-4b69b241a30f']
-      }
-    };
-    expect(await neon.edit(setupGroup2, pathToPNG)).toBeTruthy();
-    let secondSyl = await neon.info(pathToPNG);
+    let syl = svg.getElementById('syllable-0000001585962296').textContent.trim();
+    expect(syl).toBe('hello');
+
     let setupName2 = {
       'action': 'setText',
       'param': {
-        'elementId': secondSyl.uuid,
-        'text': 'hello2'
+        'elementId': 'syllable-0000000338767184',
+        'text': 'world'
       }
     };
     expect(await neon.edit(setupName2, pathToPNG)).toBeTruthy();
     svg = await neon.getSVG(pathToPNG);
-    syl = svg.getElementById(secondSyl.uuid).textContent.trim();
-    expect(syl).toBe('hello2');
+    syl = svg.getElementById('syllable-0000000338767184').textContent.trim();
+    expect(syl).toBe('world');
 
-    let editorAction = {
+    let setupGroup2 = {
       'action': 'group',
       'param': {
         'groupType': 'neume',
-        'elementIds': ['m-4475cbc8-ad26-44ee-999b-d18ce43600ab', 'm-07ad2140-4fa1-45d4-af47-6733add00825']
+        'elementIds': ['neume-0000000137236976', 'neume-0000000484383177']
       }
     };
-    expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+    expect(await neon.edit(setupGroup2, pathToPNG)).toBeTruthy();
     let mergedSyl = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
     syl = svg.getElementById(mergedSyl.uuid).textContent.trim();
     expect(syl).toBe('');
 
-    syl = svg.getElementById(firstSyl.uuid).textContent.trim();
-    expect(syl).toBe('hello1');
+    syl = svg.getElementById('syllable-0000001585962296').textContent.trim();
+    expect(syl).toBe('hello');
 
-    syl = svg.getElementById(secondSyl.uuid).textContent.trim();
-    expect(syl).toBe('hello2');
+    syl = svg.getElementById('syllable-0000000338767184').textContent.trim();
+    expect(syl).toBe('world');
   });
 });
 
@@ -539,11 +530,11 @@ test("Test 'remove' action", async () => {
   let editorAction = {
     'action': 'remove',
     'param': {
-      'elementId': 'm-ceab54b1-893e-42de-8fca-aeeb13254e19'
+      'elementId': 'nc-0000001205387746'
     }
   };
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-  let atts = await neon.getElementAttr('m-ceab54b1-893e-42de-8fca-aeeb13254e19', pathToPNG);
+  let atts = await neon.getElementAttr('nc-0000001205387746', pathToPNG);
   expect(atts).toStrictEqual({});
 });
 
@@ -557,26 +548,26 @@ describe('Test clef reassociation', () => {
       'param': {
         'elementType': 'clef',
         'staffId': 'auto',
-        'ulx': 1720,
-        'uly': 3757,
+        'ulx': 1857,
+        'uly': 3376,
         'attributes': {
           'shape': 'F'
         }
       }
     };
     expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
-    let originalAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    let originalAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(originalAtts['pname']).toBe('f');
     let dragAction = {
       'action': 'drag',
       'param': {
-        'elementId': 'm-39b6b9be-6c41-41c3-9b1a-241a33809ee2',
-        'x': -300,
+        'elementId': 'm-9d477450-8ea4-4042-b4d0-a688ab4aa50b',
+        'x': -1000,
         'y': 0
       }
     };
     expect(await neon.edit(dragAction, pathToPNG)).toBeTruthy();
-    let newAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    let newAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(newAtts['pname']).toBe('c');
   });
   test('Test neume dragging', async () => {
@@ -588,41 +579,41 @@ describe('Test clef reassociation', () => {
       'param': {
         'elementType': 'clef',
         'staffId': 'auto',
-        'ulx': 1720,
-        'uly': 3757,
+        'ulx': 1857,
+        'uly': 3376,
         'attributes': {
           'shape': 'F'
         }
       }
     };
     expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
-    let originalAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    let originalAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(originalAtts['pname']).toBe('f');
     let dragAction = {
       'action': 'drag',
       'param': {
-        'elementId': 'm-228f9cf1-1b87-420d-bd7c-74bac19f9469',
-        'x': -300,
+        'elementId': 'm-6897205e-78df-4745-9249-9fb2bbdd5c2b',
+        'x': -1000,
         'y': 0
       }
     };
     expect(await neon.edit(dragAction, pathToPNG)).toBeTruthy();
-    let newAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    let newAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(newAtts['pname']).toBe('c');
   });
   test('Test clef inserting and deleting', async () => {
     let neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
-    let originalAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    let originalAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(originalAtts['pname']).toBe('c');
     let insertAction = {
       'action': 'insert',
       'param': {
         'elementType': 'clef',
         'staffId': 'auto',
-        'ulx': 1690,
-        'uly': 3757,
+        'ulx': 1857,
+        'uly': 3376,
         'attributes': {
           'shape': 'F'
         }
@@ -630,7 +621,7 @@ describe('Test clef reassociation', () => {
     };
     expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
     let clefId = (await neon.info(pathToPNG)).uuid;
-    let newAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    let newAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(newAtts['pname']).toBe('f');
     let deleteAction = {
       'action': 'remove',
@@ -639,7 +630,7 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(deleteAction, pathToPNG)).toBeTruthy();
-    let lastAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    let lastAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(lastAtts['pname']).toBe('c');
   });
   test('Test clef dragging case 1', async () => {
@@ -651,8 +642,8 @@ describe('Test clef reassociation', () => {
       'param': {
         'elementType': 'clef',
         'staffId': 'auto',
-        'ulx': 1690,
-        'uly': 3757,
+        'ulx': 1857,
+        'uly': 3376,
         'attributes': {
           'shape': 'F'
         }
@@ -660,8 +651,8 @@ describe('Test clef reassociation', () => {
     };
     expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
     let firstClefId = (await neon.info(pathToPNG)).uuid;
-    let newBeforeAtts = await neon.getElementAttr('m-094bd8da-2bec-4bca-a52b-cb08b682479f', pathToPNG);
-    let sameBeforeAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
+    let newBeforeAtts = await neon.getElementAttr('m-ddacb1cc-ce38-4fd3-91c0-1843c581e5c8', pathToPNG);
+    let sameBeforeAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(newBeforeAtts['pname']).toBe('c');
     expect(sameBeforeAtts['pname']).toBe('f');
     let dragAction = {
@@ -669,14 +660,14 @@ describe('Test clef reassociation', () => {
       'param': {
         'elementId': firstClefId,
         'x': -600,
-        'y': 68
+        'y': -64
       }
     };
     expect(await neon.edit(dragAction, pathToPNG)).toBeTruthy();
-    let newAfterAtts = await neon.getElementAttr('m-094bd8da-2bec-4bca-a52b-cb08b682479f', pathToPNG);
-    let sameAfterAtts = await neon.getElementAttr('m-9c9c9be6-39c7-414f-9fc9-8f6668d41816', pathToPNG);
-    expect(newAfterAtts['pname']).toBe('d');
-    expect(sameAfterAtts['pname']).toBe('d');
+    let newAfterAtts = await neon.getElementAttr('m-ddacb1cc-ce38-4fd3-91c0-1843c581e5c8', pathToPNG);
+    let sameAfterAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
+    expect(newAfterAtts['pname']).toBe('a');
+    expect(sameAfterAtts['pname']).toBe('a');
   });
   test('Test clef dragging case 2', async () => {
     let neon = new NeonCore(mei);
@@ -687,8 +678,8 @@ describe('Test clef reassociation', () => {
       'param': {
         'elementType': 'clef',
         'staffId': 'auto',
-        'ulx': 1690,
-        'uly': 3757,
+        'ulx': 1793,
+        'uly': 2611,
         'attributes': {
           'shape': 'F'
         }
@@ -700,8 +691,8 @@ describe('Test clef reassociation', () => {
       'param': {
         'elementType': 'clef',
         'staffId': 'auto',
-        'ulx': 2990,
-        'uly': 3825,
+        'ulx': 2650,
+        'uly': 2680,
         'attributes': {
           'shape': 'C'
         }
@@ -709,10 +700,10 @@ describe('Test clef reassociation', () => {
     };
     expect(await neon.edit(secondInsert, pathToPNG)).toBeTruthy();
     let secondClefId = (await neon.info(pathToPNG)).uuid;
-    let firstBeforeAtts = await neon.getElementAttr('m-41d52bbf-0734-475a-a2b4-bd6acc9fc5cb', pathToPNG);
-    let secondBeforeAtts = await neon.getElementAttr('m-ce70be9f-aa2d-47f3-b978-13b7e985f9d3', pathToPNG);
-    expect(firstBeforeAtts['pname']).toBe('c');
-    expect(secondBeforeAtts['pname']).toBe('c');
+    let firstBeforeAtts = await neon.getElementAttr('m-75c52573-311d-4bfc-adaf-3f6e8013aab2', pathToPNG);
+    let secondBeforeAtts = await neon.getElementAttr('m-1dac2d79-7ac3-4859-bb35-c945c419d867', pathToPNG);
+    expect(firstBeforeAtts['pname']).toBe('e');
+    expect(secondBeforeAtts['pname']).toBe('d');
     let dragAction = {
       'action': 'drag',
       'param': {
@@ -722,10 +713,10 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(dragAction, pathToPNG)).toBeTruthy();
-    let firstAfterAtts = await neon.getElementAttr('m-41d52bbf-0734-475a-a2b4-bd6acc9fc5cb', pathToPNG);
-    let secondAfterAtts = await neon.getElementAttr('m-ce70be9f-aa2d-47f3-b978-13b7e985f9d3', pathToPNG);
-    expect(firstAfterAtts['pname']).toBe('g');
-    expect(secondAfterAtts['pname']).toBe('d');
+    let firstAfterAtts = await neon.getElementAttr('m-11ffd2df-ed2a-4e20-919e-31e2602b9c19', pathToPNG);
+    let secondAfterAtts = await neon.getElementAttr('m-22468132-4135-4fe5-a425-37c22201144e', pathToPNG);
+    expect(firstAfterAtts['pname']).toBe('c');
+    expect(secondAfterAtts['pname']).toBe('a');
   });
 });
 
@@ -740,22 +731,22 @@ test('Test undo and redo', async () => {
   let editorAction = {
     'action': 'drag',
     'param': {
-      'elementId': 'm-54220197-ac7d-452c-8c34-b3d0bdbaefa0',
+      'elementId': 'm-e43924c3-fd16-4664-8bd0-9e5b73659844',
       'x': 2,
       'y': 34
     }
   };
     // Ensure the editor is working
-  expect(await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', pathToPNG)).toEqual({ pname: 'a', oct: '2' });
+  expect(await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG)).toEqual({ pname: 'a', oct: '2' });
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-  expect(await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', pathToPNG)).toEqual({ pname: 'b', oct: '2' });
+  expect(await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG)).toEqual({ pname: 'b', oct: '2' });
 
   expect(await neon.undo(pathToPNG)).toBeTruthy();
   await neon.getSVG(pathToPNG);
-  expect(await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', pathToPNG)).toEqual({ pname: 'a', oct: '2' });
+  expect(await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG)).toEqual({ pname: 'a', oct: '2' });
   expect(await neon.redo(pathToPNG)).toBeTruthy();
   await neon.getSVG(pathToPNG);
-  expect(await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', pathToPNG)).toEqual({ pname: 'b', oct: '2' });
+  expect(await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG)).toEqual({ pname: 'b', oct: '2' });
 });
 
 test('Test chain action', async () => {
@@ -768,7 +759,7 @@ test('Test chain action', async () => {
       {
         'action': 'drag',
         'param': {
-          'elementId': 'm-5ba56425-5c59-4f34-9e56-b86779cb4d6d',
+          'elementId': 'm-044e7093-895e-4a78-bbda-7f1779a896d4',
           'x': 2,
           'y': 34
         }
@@ -785,7 +776,7 @@ test('Test chain action', async () => {
     ]
   };
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-  let dragAtts = await neon.getElementAttr('m-5ba56425-5c59-4f34-9e56-b86779cb4d6d', pathToPNG);
+  let dragAtts = await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG);
   let insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['1'].uuid, pathToPNG);
   expect(dragAtts.pname).toBe('b');
   expect(dragAtts.oct).toBe('2');
@@ -797,17 +788,17 @@ test("Test 'set' action", async () => {
   let neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
-  expect(await await neon.getElementAttr('m-6831ff33-aa39-4b0d-a383-e44585c6c644', pathToPNG)).toEqual({ pname: 'g', oct: '2' });
+  expect(await await neon.getElementAttr('m-71c06e82-7558-42d9-96ab-40fb50b74e2c', pathToPNG)).toEqual({ pname: 'g', oct: '2' });
   let setAction = {
     'action': 'set',
     'param': {
-      'elementId': 'm-6831ff33-aa39-4b0d-a383-e44585c6c644',
+      'elementId': 'm-71c06e82-7558-42d9-96ab-40fb50b74e2c',
       'attrType': 'tilt',
       'attrValue': 'n'
     }
   };
   await await neon.edit(setAction, pathToPNG);
-  expect(await await neon.getElementAttr('m-6831ff33-aa39-4b0d-a383-e44585c6c644', pathToPNG)).toEqual({ pname: 'g', oct: '2', tilt: 'n' });
+  expect(await await neon.getElementAttr('m-71c06e82-7558-42d9-96ab-40fb50b74e2c', pathToPNG)).toEqual({ pname: 'g', oct: '2', tilt: 'n' });
 });
 
 test("Test 'split' action", async () => {
@@ -817,20 +808,20 @@ test("Test 'split' action", async () => {
   let editorAction = {
     'action': 'split',
     'param': {
-      'elementId': 'm-6231e253-9c3a-4e4b-a9a8-a15b0091677d',
+      'elementId': 'm-8beed2bc-3d4f-4456-ab50-c13c47a51525',
       'x': 1000
     }
   };
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
   let newId = (await neon.info(pathToPNG)).uuid;
-  expect(await neon.getElementAttr(newId, pathToPNG)).toEqual({ n: '17' });
+  expect(await neon.getElementAttr(newId, pathToPNG)).toEqual({ n: '15' });
 });
 
 test("Test 'change skew' action", async () => {
   let neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
-  const id = 'm-6231e253-9c3a-4e4b-a9a8-a15b0091677d';
+  const id = 'm-8beed2bc-3d4f-4456-ab50-c13c47a51525';
   let editorAction = {
     'action': 'changeSkew',
     'param': {
@@ -841,5 +832,33 @@ test("Test 'change skew' action", async () => {
   };
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
   let skew = (await neon.info(pathToPNG)).skew;
-  expect(Math.round(skew)).toBe(-52);
+  expect(Math.round(skew)).toBe(-35);
+});
+
+test("Test 'change staff association' action", async () => {
+  let neon = new NeonCore(mei);
+  await neon.initDb();
+  await neon.getSVG(pathToPNG);
+  let svg = await neon.getSVG(pathToPNG);
+  let staff = svg.getElementById('m-d0411b11-f0be-42ff-9bf6-255740eb3b94').parentElement.parentElement
+  expect(staff.id).toBe('m-8beed2bc-3d4f-4456-ab50-c13c47a51525');
+  let editorAction = {
+    'action': 'drag',
+    'param': {
+      'elementId': "m-d0411b11-f0be-42ff-9bf6-255740eb3b94",
+      'x': 0,
+      'y': -500
+    }
+  };
+  expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+  editorAction = {
+    'action': 'changeStaff',
+    'param': {
+      'elementId': 'm-d0411b11-f0be-42ff-9bf6-255740eb3b94'
+    }
+  };
+  expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+  svg = await neon.getSVG(pathToPNG);
+  staff = svg.getElementById('m-d0411b11-f0be-42ff-9bf6-255740eb3b94').parentElement.parentElement;
+  expect(staff.id).toBe('m-932e7223-76e8-4517-abba-fdbbf2cea050');
 });
