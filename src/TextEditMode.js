@@ -3,8 +3,6 @@ import DragHandler from './utils/DragHandler.js';
 import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select.js';
 import { setGroupingHighlight } from './utils/Color.js';
 
-const $ = require('jquery');
-
 /**
  * A Text editing module that works with the SingleView and DivaView modules
  */
@@ -24,7 +22,7 @@ export default class TextEditMode {
   initEditModeControls () {
     document.getElementById('edit_mode').addEventListener('click', () => {
       this.initTextEdit();
-      if ($('#displayBBox').is(':checked')) {
+      if (document.getElementById('displayBBox').checked) {
         this.initSelectByBBoxButton();
       }
     });
@@ -34,12 +32,13 @@ export default class TextEditMode {
   * set text to edit mode
   */
   initTextEdit () {
-    let spans = Array.from($('#syl_text').children('p').children('span'));
+    let spans = document.getElementById('syl_text').querySelectorAll('p > span');
     spans.forEach(span => {
-      $(span).off('click');
-      $(span).on('click', () => {
+      span.removeEventListener('click', updateSylText.bind(this));
+      span.addEventListener('click', updateSylText.bind(this));
+      function updateSylText () {
         this.updateSylText(span);
-      });
+      }
     });
   }
 
@@ -51,35 +50,37 @@ export default class TextEditMode {
   */
   initSelectByBBoxButton () {
     if (this.neonView.NeumeEdit !== undefined) {
-      if ($('#selByBBox').length) {
-        $('#selByBBox').css('display', '');
+      let selByBBox = document.getElementById('selByBBox');
+      if (selByBBox) {
+        selByBBox.style.display = '';
         return;
       }
-      let block = $('#selBySyl').parent('.control').parent('.field');
-      block.append("<p class='control'><button class='button sel-by' id='selByBBox'>BBox</button></p>");
-      let button = $('#selByBBox');
-      button.on('click', () => {
-        if (!$('#selByBBox').hasClass('is-active')) {
-          unselect();
-          $('#moreEdit').empty();
-          $('#selByBBox').addClass('is-active');
-          $('#selByNc').removeClass('is-active');
-          $('#selByNeume').removeClass('is-active');
-          $('#selByStaff').removeClass('is-active');
-          $('#selBySyl').removeClass('is-active');
-          if ($('.highlight-selected').attr('id') === 'highlight-selection') {
-            setGroupingHighlight('syllable');
-          }
-        }
-        this.addBBoxListeners();
-      }).bind(this);
+
+      let block = document.getElementById('selBySyl')
+        .closest('.control')
+        .closest('.field');
+      let p = document.createElement('p');
+      p.classList.add('control');
+      let button = document.createElement('button');
+      button.classList.add('button', 'sel-by');
+      button.id = 'selByBBox';
+      button.textContent = 'BBox';
+      p.appendChild(button);
+      block.appendChild(p);
+      button.addEventListener('click', selBySylListener.bind(this));
       this.neonView.view.addUpdateCallback(this.addBBoxListeners.bind(this));
     } else {
-      let block = $('#undo').parent('.control');
-      block.append("<p class='control'><button class='button sel-by' id='selByBBox'>BBox</button></p>");
-      let button = $('#selByBBox');
-      button.addClass('is-active');
-      button.css('display', 'none');
+      let block = document.getElementById('undo').closest('.control');
+      let p = document.createElement('p');
+      p.classList.add('control');
+      let button = document.createElement('button');
+      button.classList.add('button', 'sel-by');
+      button.id = 'selByBBox';
+      button.textContent = 'BBox';
+      p.appendChild(button);
+      block.appendChild(p);
+      button.classList.add('is-active');
+      button.style.display = 'none';
       this.addBBoxListeners();
       this.neonView.addUpdateCallback(this.addBBoxListeners.bind(this));
     }
@@ -89,7 +90,7 @@ export default class TextEditMode {
    * initialize select by bbox mode
    */
   addBBoxListeners () {
-    if ($('#selByBBox').hasClass('is-active')) {
+    if (document.getElementById('selByBBox').classList.contains('is-active')) {
       unselect();
       if (this.neonView.NeumeEdit === undefined) {
         // just in case
@@ -111,7 +112,7 @@ export default class TextEditMode {
   * @param {HTMLElement} span
   */
   updateSylText (span) {
-    let orig = formatRaw($(span).html());
+    let orig = formatRaw(span.textContent);
     let corrected = window.prompt('', orig);
     if (corrected !== null && corrected !== orig) {
       let editorAction = {
@@ -138,4 +139,26 @@ export default class TextEditMode {
 function formatRaw (rawString) {
   let removeSymbol = /\u{25CA}/u;
   return rawString.replace(removeSymbol, '').trim();
+}
+
+function selBySylListener () {
+  if (!document.getElementById('selByBBox').classList.contains('is-active')) {
+    unselect();
+    try {
+      document.getElementById('moreEdit').innerHTML = '';
+    } catch (e) {}
+    document.getElementById('selByBBox').classList.add('is-active');
+    try {
+      document.getElementById('selByNc').classList.remove('is-active');
+      document.getElementById('selByNeume').classList.remove('is-active');
+      document.getElementById('selByStaff').classList.remove('is-active');
+      document.getElementById('selBySyl').classList.remove('is-active');
+    } catch (e) {}
+    try {
+      if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
+        setGroupingHighlight('syllable');
+      }
+    } catch (e) {}
+  }
+  this.addBBoxListeners();
 }
