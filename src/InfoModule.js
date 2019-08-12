@@ -32,11 +32,13 @@ class InfoModule {
    * Set listeners for the InfoModule.
    */
   infoListeners () {
-    document.getElementsByClassName('active-page')[0]
-      .querySelectorAll('.neume,.custos,.clef')
-      .forEach(node => {
-        node.addEventListener('mouseover', this.updateInfo.bind(this));
-      });
+    try {
+      document.getElementsByClassName('active-page')[0]
+        .querySelectorAll('.neume,.custos,.clef')
+        .forEach(node => {
+          node.addEventListener('mouseover', this.updateInfo.bind(this));
+        });
+    } catch (e) {}
   }
 
   /**
