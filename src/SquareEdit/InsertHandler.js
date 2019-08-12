@@ -1,6 +1,5 @@
 import * as Cursor from '../utils/Cursor.js';
 const d3 = require('d3');
-const $ = require('jquery');
 
 /**
  * Handle inserting new musical elements and communicate this to Verovio.
@@ -100,15 +99,15 @@ function InsertHandler (neonView, sel) {
     }
     removeInsertClickHandlers();
     if (type === 'staff') {
-      $('body').on('click', selector, staffHandler);
-    } else { $('body').on('click', selector, handler); }
+      document.querySelector(selector).addEventListener('click', staffHandler);
+    } else {
+      document.querySelector(selector).addEventListener('click', handler);
+    }
 
     // Disable edit mode listeners
-    $('body').on('keydown', keydownListener);
-
-    $('body').on('keyup', resetInsertHandler);
-
-    $('body').on('click', clickawayHandler);
+    document.body.addEventListener('keydown', keydownListener);
+    document.body.addEventListener('keyup', resetInsertHandler);
+    document.body.addEventListener('click', clickawayHandler);
 
     // Add 'return to edit mode' button
     if (!alreadyInInsertMode) {
@@ -119,10 +118,12 @@ function InsertHandler (neonView, sel) {
       document.getElementById('redo').parentNode.appendChild(editModeButton);
       editModeButton.addEventListener('click', insertDisabled);
     }
-    $('#editMenu').css('backgroundColor', 'whitesmoke');
-    $('#editMenu').css('font-weight', '');
-    $('#insertMenu').css('backgroundColor', '#ffc7c7');
-    $('#insertMenu').css('font-weight', 'bold');
+    let editMenu = document.getElementById('editMenu');
+    editMenu.style.backgroundColor = 'whitesmoke';
+    editMenu.style.fontWeight = '';
+    let insertMenu = document.getElementById('insertMenu');
+    insertMenu.style.backgroundColor = '#ffc7c7';
+    insertMenu.style.fontWeight = 'bold';
   }
 
   /**
@@ -131,44 +132,47 @@ function InsertHandler (neonView, sel) {
   function insertDisabled () {
     type = '';
     removeInsertClickHandlers();
-    $('body').off('keydown', keydownListener);
-    $('body').off('keyup', resetInsertHandler);
-    $('body').off('click', clickawayHandler);
-    $('.insertel.is-active').removeClass('is-active');
+    document.body.removeEventListener('keydown', keydownListener);
+    document.body.removeEventListener('keyup', resetInsertHandler);
+    document.body.removeEventListener('click', clickawayHandler);
+    document.querySelector('.insertel.is-active').classList.remove('is-active');
     firstClick = true;
     Cursor.resetCursor();
     try {
-      $(document.getElementById('returnToEditMode')).remove();
+      document.getElementById('returnToEditMode').remove();
     } catch (e) {
       console.debug(e);
     }
-    $('#insertMenu').css('backgroundColor', 'whitesmoke');
-    $('#insertMenu').css('font-weight', '');
-    $('#editMenu').css('backgroundColor', '#ffc7c7');
-    $('#editMenu').css('font-weight', 'bold');
+    let editMenu = document.getElementById('editMenu');
+    let insertMenu = document.getElementById('insertMenu');
+    editMenu.style.backgroundColor = '#ffc7c7';
+    editMenu.style.fontWeight = 'bold';
+    insertMenu.style.backgroundColor = 'whitesmoke';
+    insertMenu.style.fontWeight = '';
   }
 
   function clickawayHandler (evt) {
-    if ($(evt.target).closest('.active-page').length === 0 &&
-      $(evt.target).closest('#insert_controls').length === 0 &&
-      $(evt.target).closest('#svg_group').length === 0) {
+    if (evt.target.closest('.active-page') === null &&
+      evt.target.closest('#insert_controls') === null &&
+      evt.target.closest('#svg_group') === null) {
       insertDisabled();
-      $('body').off('keydown', staffHandler);
-      $('body').off('keydown', handler);
+      document.body.removeEventListener('keydown', staffHandler);
+      document.body.removeEventListener('keydown', handler);
     }
   }
 
   function resetInsertHandler (evt) {
     if (evt.key === 'Shift') {
-      $('body').on('click', selector, type === 'staff' ? staffHandler : handler);
+      document.querySelector(selector).addEventListener('click',
+        type === 'staff' ? staffHandler : handler);
     }
   }
 
   function keydownListener (evt) {
     if (evt.key === 'Escape') {
       insertDisabled();
-      $('body').off('keydown', staffHandler);
-      $('body').off('keydown', handler);
+      document.body.removeEventListener('keydown', staffHandler);
+      document.body.removeEventListener('keydown', handler);
     } else if (evt.key === 'Shift') {
       removeInsertClickHandlers();
     }
@@ -235,7 +239,7 @@ function InsertHandler (neonView, sel) {
         ul = coord;
         lr = cursorpt;
       }
-      $('#staff-circle').remove();
+      document.getElementById('staff-circle').remove();
       let action = {
         'action': 'insert',
         'param': {
@@ -256,8 +260,8 @@ function InsertHandler (neonView, sel) {
   }
 
   function removeInsertClickHandlers () {
-    $('body').off('click', selector, staffHandler);
-    $('body').off('click', selector, handler);
+    document.querySelector(selector).removeEventListener('click', staffHandler);
+    document.querySelector(selector).removeEventListener('click', handler);
   }
 
   /**
