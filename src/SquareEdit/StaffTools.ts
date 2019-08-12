@@ -1,13 +1,14 @@
 /** @module SquareEdit/StaffTools */
 
-import * as Notification from '../utils/Notification.js';
+import * as Notification from '../utils/Notification';
+import NeonView from '../NeonView';
 
 /**
  * Handler splitting a staff into two staves through Verovio.
  * @constructor
  * @param {NeonView} neonView - The NeonView parent.
  */
-function SplitHandler (neonView, selector = '.active-page') {
+function SplitHandler (neonView: NeonView) {
   function startSplit () {
     splitDisable();
 
@@ -21,7 +22,7 @@ function SplitHandler (neonView, selector = '.active-page') {
     Notification.queueNotification('Click Where to Split');
   }
 
-  function keydownListener (evt) {
+  function keydownListener (evt: KeyboardEvent) {
     if (evt.key === 'Escape') {
       splitDisable();
     } else if (evt.key === 'Shift') {
@@ -29,31 +30,31 @@ function SplitHandler (neonView, selector = '.active-page') {
     }
   }
 
-  function clickawayHandler (evt) {
+  function clickawayHandler (evt: MouseEvent) {
     console.log(evt);
-    if (evt.target.closest('.active-page') === null) {
+    if ((<HTMLElement>evt.target).closest('.active-page') === null) {
       splitDisable();
       document.body.removeEventListener('click', handler);
     }
   }
 
-  function resetHandler (evt) {
+  function resetHandler (evt: KeyboardEvent) {
     if (evt.key === 'Shift') {
       document.body.addEventListener('click', handler);
     }
   }
 
-  function handler (evt) {
+  function handler (evt: MouseEvent) {
     let id = document.querySelector('.selected').id;
 
-    var container = document.getElementsByClassName('active-page')[0]
+    var container = <SVGSVGElement>document.getElementsByClassName('active-page')[0]
       .getElementsByClassName('definition-scale')[0];
     var pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
 
     // Transform to SVG coordinate system.
-    var transformMatrix = container.getElementsByClassName('system')[0]
+    var transformMatrix = (<SVGGElement>container.getElementsByClassName('system')[0])
       .getScreenCTM().inverse();
     var cursorPt = pt.matrixTransform(transformMatrix);
     console.log(cursorPt.x);
@@ -64,7 +65,7 @@ function SplitHandler (neonView, selector = '.active-page') {
       'action': 'split',
       'param': {
         'elementId': id,
-        'x': parseInt(cursorPt.x)
+        'x': cursorPt.x
       }
     };
 
