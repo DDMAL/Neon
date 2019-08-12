@@ -1,21 +1,19 @@
 /** @module utils/Cursor */
 
-const $ = require('jquery');
-
 /**
  * Update the cursor to a crosshair.
  */
 export function updateCursor () {
-  $('#bgimg').css('cursor', 'crosshair');
-  $('#mei_output').css('cursor', 'crosshair');
+  document.getElementById('bgimg').style.cursor = 'crosshair';
+  document.getElementById('mei_output').style.cursor = 'crosshair';
 }
 
 /**
  * Reset the cursor to the typical pointer.
  */
 export function resetCursor () {
-  $('#bgimg').css('cursor', 'default');
-  $('#mei_output').css('cursor', 'default');
+  document.getElementById('bgimg').style.cursor = '';
+  document.getElementById('mei_output').style.cursor = '';
 }
 
 /**
@@ -23,7 +21,7 @@ export function resetCursor () {
  * @param {string} type - The CSS cursor property value.
  */
 export function updateCursorTo (type) {
-  $('#svg_group').css('cursor', type);
-  $('#bgimg').css('cursor', type);
-  $('#mei_output').css('cursor', type);
+  document.getElementById('svg_group').style.cursor = type;
+  document.getElementById('mei_output').style.cursor = type;
+  document.getElementById('bgimg').style.cursor = type;
 }
