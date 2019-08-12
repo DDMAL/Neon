@@ -4,8 +4,6 @@ import * as Notification from './Notification.js';
 import { navbarDropdownMenu, undoRedoPanel } from './EditContents';
 import { convertStaffToSb } from './ConvertMei.js';
 
-const $ = require('jquery');
-
 /**
  * prepare the edit mode button
  * @param {NeonView} neonView
@@ -32,12 +30,12 @@ export function prepareEditMode (neonView) {
  * @param {NeonView} neonView
  */
 export function startEditMode (neonView) {
-  $('#dropdown_toggle').empty();
-  $('#dropdown_toggle').append(navbarDropdownMenu);
+  let dropdownToggle = document.getElementById('dropdown_toggle');
+  dropdownToggle.innerHTML = navbarDropdownMenu;
   let parent = document.getElementById('dropdown_toggle').parentNode;
   document.getElementById('dropdown_toggle').remove();
   parent.innerHTML = navbarDropdownMenu;
-  $('#undoRedo_controls').append(undoRedoPanel);
+  document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;
   initNavbar(neonView);
   initUndoRedoPanel(neonView);
 
@@ -57,12 +55,12 @@ export function startEditMode (neonView) {
  */
 export function initNavbar (neonView) {
   // setup navbar listeners
-  $('#save').on('click', () => {
+  document.getElementById('save').addEventListener('click', () => {
     neonView.save().then(() => {
       Notification.queueNotification('Saved');
     });
   });
-  $('body').on('keydown', (evt) => {
+  document.body.addEventListener('keydown', (evt) => {
     if (evt.key === 's') {
       neonView.save().then(() => {
         Notification.queueNotification('Saved');
@@ -70,19 +68,19 @@ export function initNavbar (neonView) {
     }
   });
 
-  $('#export').on('click', (evt) => {
+  document.getElementById('export').addEventListener('click', (evt) => {
     neonView.export().then(manifest => {
       let link = document.createElement('a');
       link.href = manifest;
       link.download = neonView.name + '.jsonld';
-      $('body').append(link);
+      document.body.appendChild(link);
       link.click();
       link.remove();
       Notification.queueNotification('Saved');
     });
   });
 
-  $('#revert').on('click', function () {
+  document.getElementById('revert').addEventListener('click', function () {
     if (window.confirm('Reverting will cause all changes to be lost. Press OK to continue.')) {
       neonView.deleteDb().then(() => {
         window.location.reload();
@@ -91,12 +89,12 @@ export function initNavbar (neonView) {
   });
   // Download link for MEI
   // Is an actual file with a valid URI except in local mode where it must be generated.
-  $('#getmei').on('click', () => {
+  document.getElementById('getmei').addEventListener('click', () => {
     let uri = neonView.view.getCurrentPageURI();
     neonView.getPageMEI(uri).then(mei => {
       let data = 'data:application/mei+xml;base64,' + window.btoa(convertStaffToSb(mei));
-      $('#getmei').attr('href', data)
-        .attr('download', neonView.view.getPageName() + '.mei');
+      document.getElementById('getmei').setAttribute('href', data);
+      document.getElementById('getmei').setAttribute('download', neonView.view.getPageName() + '.mei');
     });
   });
 }
@@ -106,15 +104,15 @@ export function initNavbar (neonView) {
  * @param {NeonView} neonView - the NeonView parent
  */
 export function initUndoRedoPanel (neonView) {
-  $('#undo').on('click', undoHandler);
-  $('body').on('keydown', (evt) => {
+  document.getElementById('undo').addEventListener('click', undoHandler);
+  document.body.addEventListener('keydown', (evt) => {
     if (evt.key === 'z' && (evt.ctrlKey || evt.metaKey)) {
       undoHandler();
     }
   });
 
-  $('#redo').on('click', redoHandler);
-  $('body').on('keydown', (evt) => {
+  document.getElementById('redo').addEventListener('click', redoHandler);
+  document.body.addEventListener('keydown', (evt) => {
     if ((evt.key === 'Z' || (evt.key === 'z' && evt.shiftKey)) && (evt.ctrlKey || evt.metaKey)) {
       redoHandler();
     }
