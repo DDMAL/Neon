@@ -324,14 +324,22 @@ export function triggerClefActions (clef) {
  */
 export function triggerCustosActions (custos) {
   endOptionsSelection();
-  $('#moreEdit').removeClass('is-invisible');
-  $('#moreEdit').append(Contents.custosActionContents);
+  try {
+    let moreEdit = document.getElementById('moreEdit');
+    moreEdit.classList.remove('is-invisible');
+    moreEdit.innerHTML = Contents.custosActionContents;
+  } catch (e) {}
 
-  $('#changeStaff').on('click', changeStaffHandler);
+  document.querySelector('#changeStaff')
+    .addEventListener('click', changeStaffHandler);
+    
+  try {
+    let del = document.getElementById('delete');
+    del.removeEventListener('click', removeHandler);
+    del.addEventListener('click', removeHandler);
+  } catch (e) {}
 
-  $('#delete').off('click', removeHandler);
-  $('#delete').on('click', removeHandler);
-  $('body').on('keydown', deleteButtonHandler);
+  document.body.addEventListener('keydown', deleteButtonHandler);
 }
 
 /**
