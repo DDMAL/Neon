@@ -69,6 +69,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       await browser.wait(until.elementLocated(By.id('selByBBox')), 10000);
       let selButton = await browser.findElement(By.id('selByBBox'));
       await browser.actions().click(selButton).perform();
+      await browser.executeScript(() => { (document.getElementById('selByBBox')).dispatchEvent(new window.Event('mousedown')); });
       await browser.wait(until.elementLocated(By.className('sylTextRect-display')), 10000);
       let firstBBox = await browser.findElement(By.className('sylTextRect-display'));
       if (title !== 'safari') {
