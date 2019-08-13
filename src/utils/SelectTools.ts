@@ -6,6 +6,7 @@ import * as Grouping from '../SquareEdit/Grouping';
 import { Resize } from './Resize';
 import NeonView from '../NeonView';
 import InfoModule from '../InfoModule';
+import DragHandler from './DragHandler';
 import * as SelectOptions from '../SquareEdit/SelectOptions';
 
 const d3 = require('d3');
@@ -70,7 +71,7 @@ export function unselect () {
  * @param {SVGGraphicsElement} el
  * @param {DragHandler} [dragHandler]
  */
-export function select (el: SVGGraphicsElement, dragHandler?: any) {
+export function select (el: SVGGraphicsElement, dragHandler?: DragHandler) {
   if (el.classList.contains('staff')) {
     return selectStaff(el, dragHandler);
   }
@@ -107,7 +108,7 @@ export function select (el: SVGGraphicsElement, dragHandler?: any) {
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  * @param {NeonView} neonView - The NeonView parent
  */
-export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dragHandler: any) {
+export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dragHandler: DragHandler) {
   if (!el.parentElement.classList.contains('selected')) {
     var parent = <SVGGraphicsElement><unknown>el.parentElement;
     unselect();
@@ -192,7 +193,7 @@ export function getStaffBBox (staff: SVGGElement): {ulx: number, uly: number, lr
  * @param {SVGGElement} el - the bbox (sylTextRect) element in the DOM
  * @param {DragHandler} dragHandler - the drag handler in use
  */
-export function selectBBox (el: SVGGraphicsElement, dragHandler: any, resizeHandler: any) {
+export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, resizeHandler: any) {
   let bbox = el;
   let syl = bbox.closest('.syl');
   if (!syl.classList.contains('selected')) {
@@ -237,7 +238,7 @@ export function selectNn (notNeumes: SVGGraphicsElement[]) {
  * @param {SVGGElement} staff - The staff element in the DOM.
  * @param {DragHandler} dragHandler - The drag handler in use.
  */
-export function selectStaff (staff: SVGGElement, dragHandler: any) {
+export function selectStaff (staff: SVGGElement, dragHandler: DragHandler) {
   if (!staff.classList.contains('selected')) {
     staff.classList.add('selected');
     Color.highlight(staff, '#d00');
@@ -252,7 +253,7 @@ export function selectStaff (staff: SVGGElement, dragHandler: any) {
  * @param {InfoModule} info
  * @param {DragHandler} dragHandler
  */
-export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: NeonView, info: InfoModule, dragHandler: any) {
+export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: NeonView, info: InfoModule, dragHandler: DragHandler) {
   let selectionType = getSelectionType();
   unselect();
   if (elements.length === 0) {

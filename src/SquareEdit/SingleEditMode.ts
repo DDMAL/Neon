@@ -12,7 +12,7 @@ import DragHandler from '../utils/DragHandler';
  */
 class SingleEditMode {
   neonView: NeonView;
-  dragHandler: any;
+  dragHandler: DragHandler;
   insertHandler: any;
   /**
    * Constructor for an EditMode object.
@@ -51,7 +51,7 @@ class SingleEditMode {
    * Get the user mode that Neon is in. Either insert, edit, or viewer.
    * @returns {string}
    */
-  getUserMode () {
+  getUserMode (): string {
     if (this.insertHandler !== undefined) {
       if (this.insertHandler.isInsertMode()) {
         return 'insert';

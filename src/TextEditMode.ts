@@ -8,7 +8,7 @@ import { setGroupingHighlight } from './utils/Color';
  * A Text editing module that works with the SingleView and DivaView modules
  */
 export default class TextEditMode {
-  dragHandler: any;
+  dragHandler: DragHandler;
   neonView: NeonView;
 
   /**

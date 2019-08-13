@@ -8,7 +8,7 @@ import DragHandler from '../utils/DragHandler';
 
 class DivaEdit {
   neonView: NeonView;
-  dragHandler: any;
+  dragHandler: DragHandler;
   insertHandler: any;
   constructor (neonView: NeonView) {
     this.neonView = neonView;
