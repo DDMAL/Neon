@@ -28,6 +28,16 @@ export interface ViewInterface {
   getPageName (): string;
 }
 
+export interface NeumeEditConstructable {
+  new (a: NeonView): NeumeEditInterface;
+}
+
+export interface NeumeEditInterface {
+  initEditMode (): void;
+  getUserMode (): string;
+  setSelectListeners (): void;
+}
+
 export interface SimpleConstructable {
   new (a: NeonView): any;
 }
@@ -37,7 +47,7 @@ export interface NeonViewParams {
   View: ViewConstructable,
   Display: DisplayConstructable,
   Info: SimpleConstructable,
-  NeumeEdit?: SimpleConstructable,
+  NeumeEdit?: NeumeEditConstructable,
   TextView?: SimpleConstructable,
   TextEdit?: SimpleConstructable
 }

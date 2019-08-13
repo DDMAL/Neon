@@ -5,8 +5,9 @@ import NeonView from '../NeonView';
 import * as SelectOptions from './SelectOptions';
 import { setHighlightSelectionControls } from '../DisplayPanel/DisplayControls';
 import DragHandler from '../utils/DragHandler';
+import { NeumeEditInterface } from '../Interfaces';
 
-class DivaEdit {
+class DivaEdit implements NeumeEditInterface {
   neonView: NeonView;
   dragHandler: DragHandler;
   insertHandler: any;

@@ -2,8 +2,6 @@ import NeonCore from './NeonCore';
 
 import { parseManifest, NeonManifest } from './utils/NeonManifest';
 import InfoModule from './InfoModule';
-import SingleEditMode from './SquareEdit/SingleEditMode';
-import DivaEditMode from './SquareEdit/DivaEditMode';
 import TextView from './TextView';
 import TextEditMode from './TextEditMode';
 import { prepareEditMode } from './utils/EditControls';
@@ -21,7 +19,7 @@ class NeonView {
   name: string;
   core: NeonCore;
   info: InfoModule;
-  NeumeEdit: (SingleEditMode | DivaEditMode);
+  NeumeEdit: Interfaces.NeumeEditInterface;
   textView: TextView;
   TextEdit: TextEditMode;
 

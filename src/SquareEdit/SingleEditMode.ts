@@ -5,12 +5,13 @@ import InsertHandler from './InsertHandler';
 import NeonView from '../NeonView';
 import * as SelectOptions from './SelectOptions';
 import DragHandler from '../utils/DragHandler';
+import { NeumeEditInterface } from '../Interfaces';
 
 /**
  * An Edit Module for a single page of a manuscript.
  * Works with the SingleView module.
  */
-class SingleEditMode {
+class SingleEditMode implements NeumeEditInterface {
   neonView: NeonView;
   dragHandler: DragHandler;
   insertHandler: any;
