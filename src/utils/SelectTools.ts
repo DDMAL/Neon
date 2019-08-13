@@ -198,7 +198,7 @@ export function selectBBox (el: SVGGraphicsElement, dragHandler: any, resizeHand
   if (!syl.classList.contains('selected')) {
     syl.classList.add('selected');
     bbox.style.fill = '#d00';
-    let closest = <HTMLElement>el.closest('syllable');
+    let closest = <HTMLElement>el.closest('.syllable');
     closest.style.fill = 'red';
     closest.classList.add('syllable-highlighted');
     if (resizeHandler !== undefined) {
