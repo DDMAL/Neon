@@ -1,14 +1,12 @@
-import NeonView from '../src/NeonView.js';
-import DisplayPanel from '../src/DisplayPanel/DisplayPanel.js';
-import DivaView from '../src/DivaView.js';
-import SingleView from '../src/SingleView/SingleView.js';
-import DivaEdit from '../src/SquareEdit/DivaEditMode.js';
-import SingleEditMode from '../src/SquareEdit/SingleEditMode.js';
-import InfoModule from '../src/InfoModule.js';
-import TextView from '../src/TextView.js';
-import TextEditMode from '../src/TextEditMode.js';
-
-import PouchDb from 'pouchdb';
+import NeonView from '../src/NeonView';
+import DisplayPanel from '../src/DisplayPanel/DisplayPanel';
+import DivaView from '../src/DivaView';
+import SingleView from '../src/SingleView/SingleView';
+import DivaEdit from '../src/SquareEdit/DivaEditMode';
+import SingleEditMode from '../src/SquareEdit/SingleEditMode';
+import InfoModule from '../src/InfoModule';
+import TextView from '../src/TextView';
+import TextEditMode from '../src/TextEditMode';
 
 let name = getGetParam('manifest');
 let manifestLocation = 'manifests/' + name + '.jsonld';

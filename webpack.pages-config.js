@@ -9,7 +9,7 @@ module.exports = {
   entry: {
     editor: './pages/editor.js',
     index: './pages/index.js',
-    pretty: './src/pretty.js'
+    pretty: './src/pretty.ts'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -18,8 +18,16 @@ module.exports = {
   node: {
     fs: 'empty'
   },
+  devtool: 'source-map',
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        use: [
+          'awesome-typescript-loader'
+        ],
+        exclude: /node_modules/
+      },
       {
         test: /\.css$/,
         use: [
@@ -71,9 +79,11 @@ module.exports = {
       }
     ]
   },
+  resolve: {
+    extensions: [ '.ts', '.js' ]
+  },
   externals: {
     'verovio-dev': 'verovio',
-    jquery: 'jQuery',
     d3: 'd3'
   },
   plugins: [
