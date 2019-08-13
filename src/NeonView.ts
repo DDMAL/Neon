@@ -62,6 +62,13 @@ class NeonView {
     this.core = new NeonCore(params.manifest);
     this.info = new params.Info(this);
 
+    window.setTimeout(this.setupEdit.bind(this), 2000, params);
+  }
+
+  /**
+   * setup edit modes
+   */
+  setupEdit(params) {
     if (params.NeumeEdit !== undefined || (params.TextEdit !== undefined && params.TextView !== undefined)) {
       // Set up display for edit button
       prepareEditMode(this);

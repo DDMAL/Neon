@@ -91,6 +91,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
 
   describe('Check Syl Bounding Box UI', () => {
     beforeAll(async () => {
+      await browser.wait(until.elementLocated(By.id('edit_mode')), 5000);
       await browser.executeScript(() => { document.getElementById('edit_mode').click(); });
       await browser.executeScript(() => { document.getElementById('displayBBox').click(); });
       await browser.executeScript(() => { document.getElementById('selByBBox').click(); });
