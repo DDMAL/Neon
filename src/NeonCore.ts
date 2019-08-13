@@ -4,7 +4,7 @@ import VerovioWrapper from './VerovioWrapper';
 import { NeonManifest, Annotation } from './utils/NeonManifest';
 import * as uuid from 'uuid/v4';
 
-const PouchDB = require('pouchdb');
+import PouchDB from 'pouchdb';
 
 interface CacheEntry {
   dirty: boolean,

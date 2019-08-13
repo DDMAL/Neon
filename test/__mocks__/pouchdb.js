@@ -2,4 +2,4 @@
 
 var PouchDB = require('pouchdb-memory');
 
-module.exports = PouchDB;
+module.exports = { default: PouchDB };
