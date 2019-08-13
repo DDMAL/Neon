@@ -15,6 +15,7 @@ class DivaView {
   indexMap: Map<number, string>;
   displayPanel: DisplayPanel;
   loadDelay: number;
+  zoomHandler;
 
   /**
    * Constructor for DivaView.
