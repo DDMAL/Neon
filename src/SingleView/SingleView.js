@@ -3,7 +3,6 @@ import * as Cursor from '../utils/Cursor.js';
 import ZoomHandler from './Zoom.js';
 
 const d3 = require('d3');
-const $ = require('jquery');
 
 /* A view module must contain the following functions:
  * updateSVG(svg, pageNo) - a function that updates the dipslayed SVG with
@@ -140,39 +139,38 @@ class SingleView {
    * Set event handlers for the view and display panel.
    */
   setViewEventHandlers () {
-    $('body').on('keydown keyup', (evt) => {
-      if (evt.type === 'keydown') {
-        switch (evt.key) {
-          case 'Shift':
-            d3.select('#svg_group').on('.drag', null);
-            d3.select('#svg_group').call(
-              d3.drag().on('start', this.displayPanel.zoomHandler.startDrag)
-                .on('drag', this.displayPanel.zoomHandler.dragging)
-            );
-            Cursor.updateCursorTo('grab');
-            break;
-          case 'h':
-            $('#mei_output').css('visibility', 'hidden');
-            break;
-          default: break;
-        }
-      } else {
-        switch (evt.key) {
-          case 'Shift':
-            d3.select('#svg_group').on('.drag', null);
-            Cursor.updateCursorTo('');
-            if (this.neonView.getUserMode !== 'viewer') {
-              this.neonView.NeumeEdit.setSelectListeners();
-            }
-            if (this.neonView.getUserMode() === 'insert') {
-              Cursor.updateCursor();
-            }
-            break;
-          case 'h':
-            $('#mei_output').css('visibility', 'visible');
-            break;
-          default: break;
-        }
+    document.body.addEventListener('keydown', (evt) => {
+      switch (evt.key) {
+        case 'Shift':
+          d3.select('#svg_group').on('.drag', null);
+          d3.select('#svg_group').call(
+            d3.drag().on('start', this.displayPanel.zoomHandler.startDrag)
+              .on('drag', this.displayPanel.zoomHandler.dragging)
+          );
+          Cursor.updateCursorTo('grab');
+          break;
+        case 'h':
+          document.getElementById('mei_output').setAttribute('visibility', 'hidden');
+          break;
+        default: break;
+      }
+    });
+    document.body.addEventListener('keyup', (evt) => {
+      switch (evt.key) {
+        case 'Shift':
+          d3.select('#svg_group').on('.drag', null);
+          Cursor.updateCursorTo('');
+          if (this.neonView.getUserMode !== 'viewer') {
+            this.neonView.NeumeEdit.setSelectListeners();
+          }
+          if (this.neonView.getUserMode() === 'insert') {
+            Cursor.updateCursor();
+          }
+          break;
+        case 'h':
+          document.getElementById('mei_output').setAttribute('visibility', 'visible');
+          break;
+        default: break;
       }
     });
 
@@ -187,12 +185,13 @@ class SingleView {
     });
     d3.select('#container').on('wheel', this.displayPanel.zoomHandler.scrollZoom, false);
     // Update height of container based on window
-    $(window).on('resize', () => {
+    window.onresize = () => {
       let newHeight = window.innerHeight;
-      if (newHeight > Number($('#container').attr('height'))) {
-        $('#container').attr('height', newHeight);
+      let container = document.getElementById('container');
+      if (newHeight > Number(container.getAttribute('height'))) {
+        container.setAttribute('height', newHeight);
       }
-    });
+    };
   }
 
   /**

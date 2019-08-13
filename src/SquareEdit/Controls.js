@@ -5,7 +5,6 @@ import * as Cursor from '../utils/Cursor.js';
 import { setGroupingHighlight } from '../utils/Color.js';
 import Icons from '../img/icons.svg';
 import { unselect } from '../utils/SelectTools.js';
-const $ = require('jquery');
 
 /**
  * Set listener on EditMode button.
@@ -13,8 +12,8 @@ const $ = require('jquery');
  */
 export function initEditModeControls (editMode) {
   document.getElementById('edit_mode').addEventListener('click', function () {
-    $('#insert_controls').append(Contents.insertControlsPanel);
-    $('#edit_controls').append(Contents.editControlsPanel);
+    document.getElementById('insert_controls').innerHTML += Contents.insertControlsPanel;
+    document.getElementById('edit_controls').innerHTML += Contents.editControlsPanel;
     editMode.initEditMode();
   });
 }
@@ -24,10 +23,8 @@ export function initEditModeControls (editMode) {
  * @param {InsertHandler} insertHandler - An InsertHandler to run the tasks.
  */
 export function bindInsertTabs (insertHandler) {
-  var insertTabs = $('.insertTab');
-  var tabIds = $.map(insertTabs, function (tab, i) {
-    return tab.id;
-  });
+  var insertTabs = Array.from(document.getElementsByClassName('insertTab'));
+  var tabIds = insertTabs.map((tab, i) => { return tab.id; });
 
   document.body.addEventListener('keydown', (evt) => {
     if (evt.code.match(/^Digit\d$/) && evt.shiftKey) {
@@ -45,13 +42,12 @@ export function bindInsertTabs (insertHandler) {
     }
   });
 
-  $.each(tabIds, function (i, tab) {
-    $('#' + tab).on('click', () => {
+  tabIds.forEach((tab) => {
+    document.getElementById(tab).addEventListener('click', () => {
       deactivate('.insertTab');
       activate(tab, insertHandler);
       Cursor.resetCursor();
-      $('#insert_data').empty();
-      $('#insert_data').append(Contents.insertTabHtml[tab]);
+      document.getElementById('insert_data').innerHTML = Contents.insertTabHtml[tab];
       bindElements(insertHandler);
       deactivate('.insertel');
       let firstOption = document.getElementsByClassName('insertel')[0];
@@ -66,23 +62,27 @@ export function bindInsertTabs (insertHandler) {
  * @param {NeonView} neonView - The NeonView parent.
  */
 export function initInsertEditControls (neonView) {
-  $('#toggleInsert').on('click', () => {
-    if ($('#insertContents').is(':hidden')) {
-      $('#insertContents').css('display', '');
-      $('#toggleInsert').attr('xlink:href', Icons + '#dropdown-down');
+  let toggleInsert = document.getElementById('toggleInsert');
+  let toggleEdit = document.getElementById('toggleEdit');
+  let insertContents = document.getElementById('insertContents');
+  let editContents = document.getElementById('editContents');
+  toggleInsert.addEventListener('click', () => {
+    if (insertContents.style.display === 'none') {
+      insertContents.style.display = '';
+      toggleInsert.setAttribute('xlink:href', Icons + '#dropdown-down');
     } else {
-      $('#insertContents').css('display', 'none');
-      $('#toggleInsert').attr('xlink:href', Icons + '#dropdown-side');
+      insertContents.style.display = 'none';
+      toggleInsert.setAttribute('xlink:href', Icons + '#dropdown-side');
     }
   });
 
-  $('#toggleEdit').on('click', () => {
-    if ($('#editContents').is(':hidden')) {
-      $('#editContents').css('display', '');
-      $('#toggleEdit').attr('xlink:href', Icons + '#dropdown-down');
+  toggleEdit.addEventListener('click', () => {
+    if (editContents.style.display === 'none') {
+      editContents.style.display = '';
+      toggleEdit.setAttribute('xlink:href', Icons + '#dropdown-down');
     } else {
-      $('#editContents').css('display', 'none');
-      $('#toggleEdit').attr('xlink:href', Icons + '#dropdown-side');
+      editContents.style.display = 'none';
+      toggleEdit.setAttribute('xlink:href', Icons + '#dropdown-side');
     }
   });
 }
@@ -93,7 +93,7 @@ export function initInsertEditControls (neonView) {
  * @param {InsertHandler} insertHandler - An InsertHandler object.
  */
 function activate (id, insertHandler) {
-  $('#' + id).addClass('is-active');
+  document.getElementById(id).classList.add('is-active');
   if (document.getElementById(id).classList.contains('insertel')) {
     insertHandler.insertActive(id);
   }
@@ -101,12 +101,12 @@ function activate (id, insertHandler) {
 
 /**
  * Deactivate a certain insert action.
- * @param {string} type - A JQuery selector for the action tab.
+ * @param {string} type - A CSS selector for the action tab.
  */
 function deactivate (type) {
-  var elList = Array.from($(type));
-  elList.forEach((el, i) => {
-    $(elList[i]).removeClass('is-active');
+  var elList = document.querySelectorAll(type);
+  elList.forEach(el => {
+    el.classList.remove('is-active');
   });
 }
 
@@ -115,12 +115,10 @@ function deactivate (type) {
  * @param {InsertHandler} insertHandler - An InsertHandler object.
  */
 function bindElements (insertHandler) {
-  var insertElements = $('.insertel');
-  var elementIds = $.map(insertElements, function (el, i) {
-    return el.id;
-  });
-  $.each(elementIds, function (i, el) {
-    $('#' + el).on('click', function () {
+  var insertElements = Array.from(document.getElementsByClassName('insertel'));
+  var elementIds = insertElements.map(el => el.id);
+  elementIds.forEach(el => {
+    document.getElementById(el).addEventListener('click', () => {
       deactivate('.insertel');
       activate(el, insertHandler);
       Cursor.updateCursor();
@@ -132,91 +130,112 @@ function bindElements (insertHandler) {
  * Set listeners on the buttons to change selection modes.
  */
 export function initSelectionButtons () {
-  $('#selBySyl').on('click', selectBySylHandler);
-  $('body').on('keydown', (evt) => {
+  let selBySyl = document.getElementById('selBySyl');
+  let selByNeume = document.getElementById('selByNeume');
+  let selByNc = document.getElementById('selByNc');
+  let selByStaff = document.getElementById('selByStaff');
+
+  selBySyl.addEventListener('click', selectBySylHandler);
+  document.body.addEventListener('keydown', (evt) => {
     if (evt.key === '1') {
       selectBySylHandler();
     }
   });
 
-  function selectBySylHandler () {
-    if (!$('#selBySyl').hasClass('is-active')) {
-      unselect();
-      $('#moreEdit').empty();
-      $('#selBySyl').addClass('is-active');
-      $('#selByBBox').removeClass('is-active');
-      $('#selByNeume').removeClass('is-active');
-      $('#selByNc').removeClass('is-active');
-      $('#selByStaff').removeClass('is-active');
-      if ($('.highlight-selected').attr('id') === 'highlight-selection') {
-        setGroupingHighlight('syllable');
-      }
-    }
-  }
-
-  $('#selByNeume').on('click', selectByNeumeHandler);
-  $('body').on('keydown', (evt) => {
+  selByNeume.addEventListener('click', selectByNeumeHandler);
+  document.body.addEventListener('keydown', (evt) => {
     if (evt.key === '2') {
       selectByNeumeHandler();
     }
   });
 
-  function selectByNeumeHandler () {
-    if (!$('#selByNeume').hasClass('is-active')) {
-      unselect();
-      $('#moreEdit').empty();
-      $('#selByNeume').addClass('is-active');
-      $('#selByBBox').removeClass('is-active');
-      $('#selByNc').removeClass('is-active');
-      $('#selByStaff').removeClass('is-active');
-      $('#selBySyl').removeClass('is-active');
-      if ($('.highlight-selected').attr('id') === 'highlight-selection') {
-        setGroupingHighlight('neume');
-      }
-    }
-  }
-
-  $('#selByNc').on('click', selectByNcHandler);
-  $('body').on('keydown', (evt) => {
+  selByNc.addEventListener('click', selectByNcHandler);
+  document.body.addEventListener('keydown', (evt) => {
     if (evt.key === '3') {
       selectByNcHandler();
     }
   });
 
-  function selectByNcHandler () {
-    if (!$('#selByNc').hasClass('is-active')) {
-      unselect();
-      $('#moreEdit').empty();
-      $('#selByNc').addClass('is-active');
-      $('#selByBBox').removeClass('is-active');
-      $('#selByNeume').removeClass('is-active');
-      $('#selByStaff').removeClass('is-active');
-      $('#selBySyl').removeClass('is-active');
-      if ($('.highlight-selected').attr('id') === 'highlight-selection') {
-        setGroupingHighlight('neume');
-      }
-    }
-  }
-
-  $('#selByStaff').on('click', selectByStaffHandler);
-  $('body').on('keydown', (evt) => {
+  selByStaff.addEventListener('click', selectByStaffHandler);
+  document.body.addEventListener('keydown', (evt) => {
     if (evt.key === '4') {
       selectByStaffHandler();
     }
   });
 
-  function selectByStaffHandler () {
-    if (!$('#selByStaff').hasClass('is-active')) {
+  function selectBySylHandler () {
+    if (!selBySyl.classList.contains('is-active')) {
       unselect();
-      $('#moreEdit').empty();
-      $('#selByStaff').addClass('is-active');
-      $('#selByBBox').removeClass('is-active');
-      $('#selByNc').removeClass('is-active');
-      $('#selByNeume').removeClass('is-active');
-      $('#selBySyl').removeClass('is-active');
-      if ($('.highlight-selected').attr('id') === 'highlight-selection') {
-        setGroupingHighlight('staff');
-      }
+      document.getElementById('moreEdit').innerHTML = '';
+      selBySyl.classList.add('is-active');
+      selByNeume.classList.remove('is-active');
+      selByNc.classList.remove('is-active');
+      selByStaff.classList.remove('is-active');
+      try {
+        document.getElementById('selByBBox').classList.remove('is-active');
+      } catch (e) {}
+      try {
+        if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
+          setGroupingHighlight('syllable');
+        }
+      } catch (e) {}
+    }
+  }
+
+  function selectByNeumeHandler () {
+    if (!selByNeume.classList.contains('is-active')) {
+      unselect();
+      document.getElementById('moreEdit').innerHTML = '';
+      selByNeume.classList.add('is-active');
+      selByNc.classList.remove('is-active');
+      selBySyl.classList.remove('is-active');
+      selByStaff.classList.remove('is-active');
+      try {
+        document.getElementById('selByBBox').classList.remove('is-active');
+      } catch (e) {}
+      try {
+        if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
+          setGroupingHighlight('neume');
+        }
+      } catch (e) {}
+    }
+  }
+
+  function selectByNcHandler () {
+    if (!selByNc.classList.contains('is-active')) {
+      unselect();
+      document.getElementById('moreEdit').innerHTML = '';
+      selByNc.classList.add('is-active');
+      selByNeume.classList.remove('is-active');
+      selBySyl.classList.remove('is-active');
+      selByStaff.classList.remove('is-active');
+      try {
+        document.getElementById('selByBBox').classList.remove('is-active');
+      } catch (e) {}
+      try {
+        if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
+          setGroupingHighlight('neume');
+        }
+      } catch (e) {}
+    }
+  }
+
+  function selectByStaffHandler () {
+    if (!selByStaff.classList.contains('is-active')) {
+      unselect();
+      document.getElementById('moreEdit').innerHTML = '';
+      selByStaff.classList.add('is-active');
+      selByNeume.classList.remove('is-active');
+      selByNc.classList.remove('is-active');
+      selBySyl.classList.remove('is-active');
+      try {
+        document.getElementById('selByBBox').classList.remove('is-active');
+      } catch (e) {}
+      try {
+        if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
+          setGroupingHighlight('staff');
+        }
+      } catch (e) {}
     }
   }
 }

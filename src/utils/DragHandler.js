@@ -1,5 +1,4 @@
 const d3 = require('d3');
-const $ = require('jquery');
 
 /**
  * Handle the dragging of musical elements and communicate actions.
@@ -116,8 +115,10 @@ function DragHandler (neonView, selector) {
    * Remove the additonal editor options that exist.
    */
   function endOptionsSelection () {
-    $('#moreEdit').empty();
-    $('#moreEdit').addClass('is-invisible');
+    try {
+      document.getElementById('moreEdit').innerHTML = '';
+      document.getElementById('moreEdit').classList.add('is-invisible');
+    } catch (e) {}
   }
 
   DragHandler.prototype.dragInit = dragInit;

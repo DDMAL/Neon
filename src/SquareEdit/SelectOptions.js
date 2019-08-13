@@ -3,7 +3,6 @@ import * as Contents from './Contents.js';
 import * as Grouping from './Grouping.js';
 import * as Notification from '../utils/Notification.js';
 import { SplitHandler } from './StaffTools.js';
-const $ = require('jquery');
 
 /**
  * The NeonView parent to call editor actions.
@@ -106,66 +105,75 @@ export function changeStaffHandler() {
  */
 export function triggerNcActions (nc) {
   endOptionsSelection();
-  $('#moreEdit').removeClass('is-invisible');
-  $('#moreEdit').append(Contents.ncActionContents);
+  try {
+    let moreEdit = document.getElementById('moreEdit');
+    moreEdit.classList.remove('is-invisible');
+    moreEdit.innerHTML = Contents.ncActionContents;
+  } catch (e) {}
 
-  $('#Punctum.dropdown-item').on('click', () => {
-    let unsetInclinatum = unsetInclinatumAction(nc.id);
-    let unsetVirga = unsetVirgaAction(nc.id);
-    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
-      if (result) {
-        Notification.queueNotification('Shape Changed');
-      } else {
-        Notification.queueNotification('Shape Change Failed');
-      }
-      endOptionsSelection();
-      neonView.updateForCurrentPage();
+  document.querySelector('#Punctum.dropdown-item')
+    .addEventListener('click', () => {
+      let unsetInclinatum = unsetInclinatumAction(nc.id);
+      let unsetVirga = unsetVirgaAction(nc.id);
+      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Shape Changed');
+        } else {
+          Notification.queueNotification('Shape Change Failed');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
     });
-  });
 
-  $('#Inclinatum.dropdown-item').on('click', () => {
-    let setInclinatum = {
-      'action': 'set',
-      'param': {
-        'elementId': nc.id,
-        'attrType': 'tilt',
-        'attrValue': 'se'
-      }
-    };
-    neonView.edit(setInclinatum, neonView.view.getCurrentPageURI()).then((result) => {
-      if (result) {
-        Notification.queueNotification('Shape Changed');
-      } else {
-        Notification.queueNotification('Shape Change Failed');
-      }
-      endOptionsSelection();
-      neonView.updateForCurrentPage();
+  document.querySelector('#Inclinatum.dropdown-item')
+    .addEventListener('click', () => {
+      let setInclinatum = {
+        'action': 'set',
+        'param': {
+          'elementId': nc.id,
+          'attrType': 'tilt',
+          'attrValue': 'se'
+        }
+      };
+      neonView.edit(setInclinatum, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Shape Changed');
+        } else {
+          Notification.queueNotification('Shape Change Failed');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
     });
-  });
 
-  $('#Virga.dropdown-item').on('click', () => {
-    let unsetInclinatum = unsetInclinatumAction(nc.id);
-    let setVirga = {
-      'action': 'set',
-      'param': {
-        'elementId': nc.id,
-        'attrType': 'tilt',
-        'attrValue': 'n'
-      }
-    };
-    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, setVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
-      if (result) {
-        Notification.queueNotification('Shape Changed');
-      } else {
-        Notification.queueNotification('Shape Change Failed');
-      }
-      endOptionsSelection();
-      neonView.updateForCurrentPage();
+  document.querySelector('#Virga.dropdown-item')
+    .addEventListener('click', () => {
+      let unsetInclinatum = unsetInclinatumAction(nc.id);
+      let setVirga = {
+        'action': 'set',
+        'param': {
+          'elementId': nc.id,
+          'attrType': 'tilt',
+          'attrValue': 'n'
+        }
+      };
+      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, setVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Shape Changed');
+        } else {
+          Notification.queueNotification('Shape Change Failed');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
     });
-  });
-  $('#delete').off('click', removeHandler);
-  $('#delete').on('click', removeHandler);
-  $('body').on('keydown', deleteButtonHandler);
+  try {
+    let del = document.getElementById('delete');
+    del.removeEventListener('click', removeHandler);
+    del.addEventListener('click', removeHandler);
+  } catch (e) {}
+  document.body.addEventListener('keydown', deleteButtonHandler);
 
   initOptionsListeners();
 }
@@ -175,18 +183,22 @@ export function triggerNcActions (nc) {
  */
 export function triggerNeumeActions () {
   endOptionsSelection();
-  $('#moreEdit').removeClass('is-invisible');
-  $('#moreEdit').append(Contents.neumeActionContents);
-  var neume = $('.selected');
+  try {
+    let moreEdit = document.getElementById('moreEdit');
+    moreEdit.classList.remove('is-invisible');
+    moreEdit.innerHTML = Contents.neumeActionContents;
+  } catch (e) {}
+  var neume = document.querySelectorAll('.selected');
   if (neume.length !== 1) {
     console.warn('More than one neume selected! Cannot trigger Neume ClickSelect actions.');
     return;
   }
 
-  $('.grouping').on('click', (e) => {
-    var contour = neonView.info.getContourByValue(e.target.id);
-    triggerChangeGroup(contour);
-  });
+  document.querySelector('.grouping')
+    .addEventListener('click', (e) => {
+      var contour = neonView.info.getContourByValue(e.target.id);
+      triggerChangeGroup(contour);
+    });
 
   function triggerChangeGroup (contour) {
     let changeGroupingAction = {
@@ -206,9 +218,12 @@ export function triggerNeumeActions () {
       neonView.updateForCurrentPage();
     });
   }
-  $('#delete').off('click', removeHandler);
-  $('#delete').on('click', removeHandler);
-  $('body').on('keydown', deleteButtonHandler);
+  try {
+    let del = document.getElementById('delete');
+    del.removeEventListener('click', removeHandler);
+    del.addEventListener('click', removeHandler);
+  } catch (e) {}
+  document.body.addEventListener('keydown', deleteButtonHandler);
 
   initOptionsListeners();
   Grouping.initGroupingListeners();
@@ -219,25 +234,24 @@ export function triggerNeumeActions () {
  */
 export function triggerSylActions () {
   endOptionsSelection();
-  $('#moreEdit').removeClass('is-invisible');
-  $('#moreEdit').append(
-    "<div><p class='control'>" +
-        "<button class='button' id='ungroupNeumes'>Ungroup</button></p></div>"
-  );
-  $('#moreEdit').append(
-    "<div><p class='control'>" +
-        "<button class='button' id='delete'>Delete</button></p></div>"
-  );
-  $('#moreEdit').append(
-    "<div><p class='control'>" +
-        "<button class='button' id='changeStaff'>Re-associate to nearest staff</button></p></div>"
-  );
-
-  $('#changeStaff').on('click', changeStaffHandler);
-
-  $('#delete').off('click', removeHandler);
-  $('#delete').on('click', removeHandler);
-  $('body').on('keydown', deleteButtonHandler);
+  try {
+    let moreEdit = document.getElementById('moreEdit');
+    moreEdit.classList.remove('is-invisible');
+    moreEdit.innerHTML =
+      "<div><p class='control'>" +
+          "<button class='button' id='ungroupNeumes'>Ungroup</button></p></div>" +
+      "<div><p class='control'>" +
+          "<button class='button' id='delete'>Delete</button></p></div>" +
+      "<div><p class='control'>" +
+        "<button class='button' id='changeStaff'>Re-associate to nearest staff</button></p></div>";
+    document.getElementById('changeStaff').addEventListener('click', changeStaffHandler);
+  } catch (e) {}
+  try {
+    let del = document.getElementById('delete');
+    del.removeEventListener('click', removeHandler);
+    del.addEventListener('click', removeHandler);
+  } catch (e) {}
+  document.body.addEventListener('keydown', deleteButtonHandler);
 
   Grouping.initGroupingListeners();
 }
@@ -248,50 +262,58 @@ export function triggerSylActions () {
  */
 export function triggerClefActions (clef) {
   endOptionsSelection();
-  $('#moreEdit').removeClass('is-invisible');
-  $('#moreEdit').append(Contents.clefActionContents);
-  $('#CClef.dropdown-item').on('click', () => {
-    let setCClef = {
-      'action': 'setClef',
-      'param': {
-        'elementId': clef.id,
-        'shape': 'C'
-      }
-    };
-    neonView.edit(setCClef, neonView.view.getCurrentPageURI()).then((result) => {
-      if (result) {
-        Notification.queueNotification('Shape Changed');
-      } else {
-        Notification.queueNotification('Shape Change Failed');
-      }
-      endOptionsSelection();
-      neonView.updateForCurrentPage();
+  try {
+    let moreEdit = document.getElementById('moreEdit');
+    moreEdit.classList.remove('is-invisible');
+    moreEdit.innerHTML = Contents.clefActionContents;
+  } catch (e) {}
+  document.querySelector('#CClef.dropdown-item')
+    .addEventListener('click', () => {
+      let setCClef = {
+        'action': 'setClef',
+        'param': {
+          'elementId': clef.id,
+          'shape': 'C'
+        }
+      };
+      neonView.edit(setCClef, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Shape Changed');
+        } else {
+          Notification.queueNotification('Shape Change Failed');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
     });
-  });
-  $('#FClef.dropdown-item').on('click', () => {
-    let setFClef = {
-      'action': 'setClef',
-      'param': {
-        'elementId': clef.id,
-        'shape': 'F'
-      }
-    };
-    neonView.edit(setFClef, neonView.view.getCurrentPageURI()).then((result) => {
-      if (result) {
-        Notification.queueNotification('Shape Changed');
-      } else {
-        Notification.queueNotification('Shape Change Failed');
-      }
-      endOptionsSelection();
-      neonView.updateForCurrentPage();
+  document.querySelector('#FClef.dropdown-item')
+    .addEventListener('click', () => {
+      let setFClef = {
+        'action': 'setClef',
+        'param': {
+          'elementId': clef.id,
+          'shape': 'F'
+        }
+      };
+      neonView.edit(setFClef, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Shape Changed');
+        } else {
+          Notification.queueNotification('Shape Change Failed');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
     });
-  });
 
-  $('#changeStaff').on('click', changeStaffHandler);
+  try {
+    let del = document.getElementById('delete');
+    del.removeEventListener('click', removeHandler);
+    del.addEventListener('click', removeHandler);
+    document.getElementById('changeStaff').addEventListener('click', changeStaffHandler);
+  } catch (e) {}
+  document.body.addEventListener('keydown', deleteButtonHandler);
 
-  $('#delete').off('click', removeHandler);
-  $('#delete').on('click', removeHandler);
-  $('body').on('keydown', deleteButtonHandler);
 
   initOptionsListeners();
 }
@@ -302,14 +324,22 @@ export function triggerClefActions (clef) {
  */
 export function triggerCustosActions (custos) {
   endOptionsSelection();
-  $('#moreEdit').removeClass('is-invisible');
-  $('#moreEdit').append(Contents.custosActionContents);
+  try {
+    let moreEdit = document.getElementById('moreEdit');
+    moreEdit.classList.remove('is-invisible');
+    moreEdit.innerHTML = Contents.custosActionContents;
+  } catch (e) {}
 
-  $('#changeStaff').on('click', changeStaffHandler);
+  document.querySelector('#changeStaff')
+    .addEventListener('click', changeStaffHandler);
+    
+  try {
+    let del = document.getElementById('delete');
+    del.removeEventListener('click', removeHandler);
+    del.addEventListener('click', removeHandler);
+  } catch (e) {}
 
-  $('#delete').off('click', removeHandler);
-  $('#delete').on('click', removeHandler);
-  $('body').on('keydown', deleteButtonHandler);
+  document.body.addEventListener('keydown', deleteButtonHandler);
 }
 
 /**
@@ -317,35 +347,42 @@ export function triggerCustosActions (custos) {
  */
 export function triggerStaffActions () {
   endOptionsSelection();
-  $('#moreEdit').removeClass('is-invisible');
-  $('#moreEdit').append(Contents.staffActionContents);
+  try {
+    let moreEdit = document.getElementById('moreEdit');
+    moreEdit.classList.remove('is-invisible');
+    moreEdit.innerHTML = Contents.staffActionContents;
+  } catch (e) {}
 
-  $('#merge-systems').on('click', () => {
-    let systems = Array.from($('.staff.selected'));
-    let elementIds = [];
-    systems.forEach(staff => {
-      elementIds.push(staff.id);
+  document.getElementById('merge-systems')
+    .addEventListener('click', () => {
+      let systems = document.querySelectorAll('.staff.selected');
+      let elementIds = [];
+      systems.forEach(staff => {
+        elementIds.push(staff.id);
+      });
+      let editorAction = {
+        'action': 'merge',
+        'param': {
+          'elementIds': elementIds
+        }
+      };
+      neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Staff Merged');
+          endOptionsSelection();
+          neonView.updateForCurrentPage();
+        } else {
+          Notification.queueNotification('Merge Failed');
+        }
+      });
     });
-    let editorAction = {
-      'action': 'merge',
-      'param': {
-        'elementIds': elementIds
-      }
-    };
-    neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
-      if (result) {
-        Notification.queueNotification('Staff Merged');
-        endOptionsSelection();
-        neonView.updateForCurrentPage();
-      } else {
-        Notification.queueNotification('Merge Failed');
-      }
-    });
-  });
 
-  $('#delete').off('click', removeHandler);
-  $('#delete').on('click', removeHandler);
-  $('body').on('keydown', deleteButtonHandler);
+  try {
+    let del = document.getElementById('delete');
+    del.removeEventListener('click', removeHandler);
+    del.addEventListener('click', removeHandler);
+  } catch (e) {}
+  document.body.addEventListener('keydown', deleteButtonHandler);
 }
 
 /**
@@ -353,19 +390,26 @@ export function triggerStaffActions () {
  */
 export function triggerSplitActions () {
   endOptionsSelection();
-  $('#moreEdit').removeClass('is-invisible');
-  $('#moreEdit').append(Contents.splitActionContents);
+  try {
+    let moreEdit = document.getElementById('moreEdit');
+    moreEdit.classList.remove('is-invisible');
+    moreEdit.innerHTML = Contents.splitActionContents;
+  } catch (e) {}
 
   // TODO add trigger for split action
-  $('#split-system').on('click', () => {
-    var split = new SplitHandler(neonView);
-    split.startSplit();
-    endOptionsSelection();
-  });
+  document.getElementById('split-system')
+    .addEventListener('click', () => {
+      var split = new SplitHandler(neonView);
+      split.startSplit();
+      endOptionsSelection();
+    });
 
-  $('#delete').off('click', removeHandler);
-  $('#delete').on('click', removeHandler);
-  $('body').on('keydown', deleteButtonHandler);
+  try {
+    let del = document.getElementById('delete');
+    del.removeEventListener('click', removeHandler);
+    del.addEventListener('click', removeHandler);
+  } catch (e) {}
+  document.body.addEventListener('keydown', deleteButtonHandler);
 }
 
 /**
@@ -373,29 +417,38 @@ export function triggerSplitActions () {
  */
 export function triggerDefaultActions () {
   endOptionsSelection();
-  $('#moreEdit').removeClass('is-invisible');
-  $('#moreEdit').append(Contents.defaultActionContents);
+  try {
+    let moreEdit = document.getElementById('moreEdit');
+    moreEdit.classList.remove('is-invisible');
+    moreEdit.innerHTML = Contents.defaultActionContents;
+  } catch (e) {}
 
-  $('#delete').off('click', removeHandler);
-  $('#delete').on('click', removeHandler);
-  $('body').on('keydown', deleteButtonHandler);
+  try {
+    let del = document.getElementById('delete');
+    del.removeEventListener('click', removeHandler);
+    del.addEventListener('click', removeHandler);
+  } catch (e) {}
+  document.body.addEventListener('keydown', deleteButtonHandler);
 }
 
 /**
  * End the extra options menu.
  */
 export function endOptionsSelection () {
-  $('#moreEdit').empty();
-  $('#moreEdit').addClass('is-invisible');
-  $('body').off('keydown', deleteButtonHandler);
+  try {
+    let moreEdit = document.getElementById('moreEdit');
+    moreEdit.innerHTML = '';
+    moreEdit.classList.add('is-invisible');
+  } catch (e) {}
+  document.body.removeEventListener('keydown', deleteButtonHandler);
 }
 
 /**
  * Initialize extra dropdown options.
  */
 function initOptionsListeners () {
-  $('#drop_select').on('click', function () {
-    $(this).toggleClass('is-active');
+  document.getElementById('drop_select').addEventListener('click', function (evt) {
+    this.classList.toggle('is-active');
   });
 }
 

@@ -1,7 +1,6 @@
 /** @module utils/Notification */
 
 const uuid = require('uuid/v4');
-const $ = require('jquery');
 
 /** @type {Array.<module:Notification~Notification>} */
 var notifications = new Array(0);
@@ -22,7 +21,7 @@ const NUMBER_TO_DISPLAY = 3;
 export function queueNotification (notification) {
   let notif = new Notification(notification);
   notifications.push(notif);
-  if (!notifying || $('#notification-content').children('.neon-notification').length < NUMBER_TO_DISPLAY) {
+  if (!notifying || document.getElementById('notification-content').querySelectorAll('.neon-notification').length < NUMBER_TO_DISPLAY) {
     startNotification();
   }
 }
@@ -36,7 +35,7 @@ function startNotification () {
     let currentNotification = notifications.pop();
     displayNotification(currentNotification);
     currentNotification.setTimeoutId(window.setTimeout(clearOrShowNextNotification, 5000, currentNotification.getId()));
-    $('#' + currentNotification.getId()).on('click', () => {
+    document.getElementById(currentNotification.getId()).addEventListener('click', () => {
       window.clearTimeout(currentNotification.timeoutID);
       clearOrShowNextNotification(currentNotification.getId());
     });
@@ -58,8 +57,9 @@ function displayNotification (notification) {
       return;
     }
   }
-  $('#notification-content').append("<div class='neon-notification' id='" + notification.getId() + "'>" + notification.message + '</div> ');
-  $('#notification-content').css('display', '');
+  let notificationContent = document.getElementById('notification-content');
+  notificationContent.innerHTML += "<div class='neon-notification' id='" + notification.getId() + "'>" + notification.message + '</div> ';
+  notificationContent.setAttribute('display', '');
   notification.display();
 }
 
@@ -69,15 +69,15 @@ function displayNotification (notification) {
  */
 function clearOrShowNextNotification (currentId) {
   // clear notification currently displayed
-  $('#' + currentId).off('click');
-  $('.neon-notification').remove('#' + currentId);
+
+  document.getElementById(currentId).remove();
   if (currentModeMessage !== null && currentModeMessage.getId() === currentId) {
     currentModeMessage = null;
   }
   if (notifications.length > 0) {
     startNotification();
-  } else if ($('.neon-notification').length === 0) {
-    $('#notification-content').css('display', 'none');
+  } else if (document.querySelectorAll('.neon-notification').length === 0) {
+    document.getElementById('notification-content').setAttribute('display', 'none');
     notifying = false;
   }
 }

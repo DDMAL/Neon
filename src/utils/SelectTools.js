@@ -7,7 +7,6 @@ import { Resize } from './Resize.js';
 import * as SelectOptions from '../SquareEdit/SelectOptions.js';
 
 const d3 = require('d3');
-const $ = require('jquery');
 
 /**
  * Get the selection mode chosen by the user.
@@ -27,34 +26,36 @@ export function getSelectionType () {
  * actions.
  */
 export function unselect () {
-  var selected = $('.selected');
-  for (var i = 0; i < selected.length; i++) {
-    if ($(selected[i]).hasClass('staff')) {
-      $(selected[i]).removeClass('selected');
-      selected[i].removeAttribute('style');
-      Color.unhighlight(selected[i]);
+  document.querySelectorAll('.selected').forEach(selected => {
+    selected.classList.remove('selected');
+    if (selected.classList.contains('staff')) {
+      selected.removeAttribute('style');
+      Color.unhighlight(selected);
     } else {
-      $(selected[i]).removeClass('selected');
-      selected[i].removeAttribute('style');
-      $(selected[i]).attr('fill', 'null');
-      $(selected[i]).removeClass('selected');
+      selected.removeAttribute('style');
+      selected.style.fill = '';
     }
-  }
-  $('.text-select').css('color', '');
-  $('.text-select').css('font-weight', '');
-  $('.text-select').removeClass('text-select');
-  let sylRects = $('.sylTextRect-display');
-  sylRects.css('fill', 'blue');
+  });
+  Array.from(document.getElementsByClassName('text-select')).forEach(el => {
+    el.setAttribute('color', '');
+    el.setAttribute('font-weight', '');
+    el.classList.remove('text-select');
+  });
+  Array.from(document.getElementsByClassName('sylTextRect-display')).forEach(sylRect => {
+    sylRect.style.fill = 'blue';
+  });
 
-  $('.syllable-highlighted').css('fill', '');
-  $('.syllable-highlighted').addClass('syllable');
-  $('.syllable-highlighted').removeClass('syllable-highlighted');
+  Array.from(document.getElementsByClassName('syllable-highlighted')).forEach(syllable => {
+    syllable.style.fill = '';
+    syllable.classList.add('syllable');
+    syllable.classList.remove('syllable-highlighted');
+  });
 
   d3.selectAll('#resizeRect').remove();
   d3.selectAll('.resizePoint').remove();
   d3.selectAll('.skewPoint').remove();
 
-  if (!$('#selByStaff').hasClass('is-active')) {
+  if (!document.getElementById('selByStaff').classList.contains('is-active')) {
     Grouping.endGroupingSelection();
   } else {
     SelectOptions.endOptionsSelection();
@@ -71,24 +72,28 @@ export function select (el, dragHandler) {
   if (el.classList.contains('staff')) {
     return selectStaff(el, dragHandler);
   }
-  if (!$(el).hasClass('selected') && !($(el).hasClass('sylTextRect')) && !($(el).hasClass('sylTextRect-display'))) {
-    $(el).addClass('selected');
-    $(el).css('fill', '#d00');
-    if ($(el).find('.sylTextRect-display').length) {
-      $(el).find('.sylTextRect-display').css('fill', 'red');
+  if (!el.classList.contains('selected') && !el.classList.contains('sylTextRect') &&
+      !el.classList.contains('sylTextRect-display')) {
+    el.classList.add('selected');
+    el.style.fill = '#d00';
+    if (el.querySelectorAll('.sylTextRect-display').length) {
+      el.querySelectorAll('.sylTextRect-display').forEach(elem => {
+        elem.style.fill = 'red';
+      });
     }
     var sylId;
-    if ($(el).hasClass('syllable')) {
+    if (el.classList.contains('syllable')) {
       sylId = el.id;
-    } else if ($(el).parents('.syllable').length) {
-      sylId = $(el).parents('.syllable').attr('id');
+    } else if (el.closest('.syllable') !== null) {
+      sylId = el.closest('.syllable').id;
     }
     if (sylId !== undefined) {
-      if ($('span').filter('.' + sylId).length) {
-        $('span').filter('.' + sylId).css('color', '#d00');
-        $('span').filter('.' + sylId).css('font-weight', 'bold');
-        $('span').filter('.' + sylId).addClass('text-select');
-      }
+      let spans = document.querySelectorAll('span.' + sylId);
+      spans.forEach(span => {
+        span.style.color = '#d00';
+        span.style.fontWeight = 'bold';
+        span.classList.add('text-select');
+      });
     }
   }
   updateHighlight();
@@ -101,16 +106,16 @@ export function select (el, dragHandler) {
  * @param {NeonView} neonView - The NeonView parent
  */
 export async function selectNcs (el, neonView, dragHandler) {
-  if (!$(el).parent().hasClass('selected')) {
+  if (!el.parentNode.classList.contains('selected')) {
     var parent = el.parentNode;
     unselect();
     select(parent);
     if (await isLigature(parent, neonView)) {
-      var prevNc = $(parent).prev()[0];
+      var prevNc = parent.previousSibling;
       if (await isLigature(prevNc, neonView)) {
         select(prevNc);
       } else {
-        var nextNc = $(parent).next()[0];
+        var nextNc = parent.nextSibling;
         if (await isLigature(nextNc, neonView)) {
           select(nextNc);
         } else {
@@ -118,7 +123,7 @@ export async function selectNcs (el, neonView, dragHandler) {
         }
       }
       Grouping.triggerGrouping('ligature');
-    } else if ($(parent).hasClass('nc')) {
+    } else if (parent.classList.contains('nc')) {
       SelectOptions.triggerNcActions(parent);
     } else {
       console.warn('No action triggered!');
@@ -162,7 +167,7 @@ export function sharedSecondLevelParent (elements) {
  */
 export function getStaffBBox (staff) {
   let ulx, uly, lrx, lry;
-  Array.from($(staff).children('path')).forEach(path => {
+  staff.querySelectorAll('path').forEach(path => {
     let segments = path.pathSegList;
     if (uly === undefined || segments[0].y < uly) {
       uly = segments[0].y;
@@ -186,26 +191,26 @@ export function getStaffBBox (staff) {
  * @param {DragHandler} dragHandler - the drag handler in use
  */
 export function selectBBox (el, dragHandler, resizeHandler) {
-  let bbox = $(el);
+  let bbox = el;
   let syl = bbox.closest('.syl');
-  if (!syl.hasClass('selected')) {
-    syl.addClass('selected');
-    bbox.css('fill', '#d00');
-    $(el).parents('.syllable').css('fill', 'red');
-    $(el).parents('.syllable').addClass('syllable-highlighted');
+  if (!syl.classList.contains('selected')) {
+    syl.classList.add('selected');
+    bbox.style.fill = '#d00';
+    el.closest('.syllable').style.fill = 'red';
+    el.closest('.syllable').classList.add('syllable-highlighted');
     if (resizeHandler !== undefined) {
       resizeHandler.drawInitialRect();
     }
     if (dragHandler !== undefined) {
       dragHandler.dragInit();
     }
-    var sylId;
-    sylId = $(el).parents('.syllable').attr('id');
+    var sylId = el.closest('.syllable').id;
     if (sylId !== undefined) {
-      if ($('span').filter('.' + sylId).length) {
-        $('span').filter('.' + sylId).css('color', '#d00');
-        $('span').filter('.' + sylId).css('font-weight', 'bold');
-        $('span').filter('.' + sylId).addClass('text-select');
+      let span = document.querySelector('span.' + sylId);
+      if (span) {
+        span.style.color = '#d00';
+        span.style.fontWeight = 'bold';
+        span.classList.add('text-select');
       }
     }
   }
@@ -226,14 +231,13 @@ export function selectNn (notNeumes) {
 
 /**
  * Select a staff element.
- * @param {SVGGElement} el - The staff element in the DOM.
+ * @param {SVGGElement} staff - The staff element in the DOM.
  * @param {DragHandler} dragHandler - The drag handler in use.
  */
-export function selectStaff (el, dragHandler) {
-  let staff = $(el);
-  if (!staff.hasClass('selected')) {
-    staff.addClass('selected');
-    Color.highlight(el, '#d00');
+export function selectStaff (staff, dragHandler) {
+  if (!staff.classList.contains('selected')) {
+    staff.classList.add('selected');
+    Color.highlight(staff, '#d00');
     dragHandler.dragInit();
   }
 }
