@@ -195,16 +195,22 @@ function Resize (elementId, neonView, dragHandler) {
     function skewDragLeft () {
       let currentY = d3.mouse(this)[1];
       dy = currentY - initialY;
-      uly = initialRectY + dy;
-      skew = initialSkew - Math.atan(dy / polyLen);
-      redraw();
+      let tempSkew = initialSkew - Math.atan(dy / polyLen);
+      if (tempSkew > -0.2 && tempSkew < 0.2) {
+        uly = initialRectY + dy;
+        skew = tempSkew;
+      }
+      redraw(); 
     }
 
     function skewDragRight () {
       let currentY = d3.mouse(this)[1];
       dy = currentY - initialY;
-      lry = initialRectY + dy;
-      skew = initialSkew + Math.atan(dy / polyLen);
+      let tempSkew = initialSkew + Math.atan(dy / polyLen);
+      if (tempSkew > -0.2 && tempSkew < 0.2) {
+        skew = tempSkew;
+        lry = initialRectY + dy;
+      }
       redraw();
     }
 
