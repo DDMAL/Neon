@@ -5,7 +5,7 @@ const childProcess = require('child_process');
 let commitHash = childProcess.execSync('git rev-parse --short HEAD').toString();
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: {
     editor: './src/editor.ts',
     pretty: './src/pretty.ts'
