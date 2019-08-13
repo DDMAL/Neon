@@ -1,15 +1,28 @@
+import NeonView from './NeonView';
+import DisplayPanel from './DisplayPanel/DisplayPanel';
+
+declare var Diva: any;
+
 /**
  * View module that uses the diva.js viewer to render the pages of a IIIF manifests
  * and then display the rendered MEI files over the proper pages.
  */
 class DivaView {
+  neonView: NeonView;
+  updateCallbacks: Function[];
+  divaReady: boolean;
+  diva: any;
+  indexMap: Map<number, string>;
+  displayPanel: DisplayPanel;
+  loadDelay: number;
+
   /**
    * Constructor for DivaView.
    * @param {NeonView} neonView - NeonView parent
    * @param {function} Display - A constructor for a DisplayPanel
    * @param {string} manifest - Link to the IIIF manifest.
    */
-  constructor (neonView, Display, manifest) {
+  constructor (neonView: NeonView, Display: (a: DivaView, b: string, c: string) => void, manifest: string) {
     this.neonView = neonView;
     this.updateCallbacks = [];
     this.divaReady = false;
@@ -24,7 +37,7 @@ class DivaView {
     this.initDivaEvents();
     this.setViewEventHandlers();
 
-    window.onresize = (evt) => {
+    window.onresize = () => {
       let height = window.innerHeight;
       let width = window.innerWidth;
 
@@ -52,10 +65,8 @@ class DivaView {
    * @param {boolean} [delay=true] - whether to delay the loading of the page. defaults to true
    * delay the loading of the page when scrolling so that neon doesn't lag while scrolling
    */
-  async changePage (pageIndexes, delay = true) {
-    if (typeof pageIndexes !== 'object') {
-      pageIndexes = [pageIndexes];
-    }
+  async changePage (pageIndex: number, delay: boolean = true) {
+    let pageIndexes = [pageIndex];
     Array.from(document.getElementsByClassName('active-page')).forEach(elem => {
       elem.classList.remove('active-page');
     });
@@ -63,17 +74,17 @@ class DivaView {
       window.setTimeout(checkAndLoad.bind(this), (delay ? this.loadDelay : 0), page);
     }
 
-    function checkAndLoad (page) {
+    function checkAndLoad (page: number) {
       if (page === this.getCurrentPage()) {
         let pageURI = this.indexMap.get(page);
-        this.neonView.getPageSVG(pageURI).then(svg => {
+        this.neonView.getPageSVG(pageURI).then((svg: SVGSVGElement) => {
           this.updateSVG(svg, page);
           let containerId = 'neon-container-' + page;
           let container = document.getElementById(containerId);
           if (container !== null) {
             container.classList.add('active-page');
           }
-          this.updateCallbacks.forEach(callback => callback());
+          this.updateCallbacks.forEach((callback: Function) => callback());
         }).catch(err => {
           if (err.name !== 'not_found' && err.name !== 'missing_mei') {
             console.error(err);
@@ -87,7 +98,7 @@ class DivaView {
    * Get the active page in the diva.js viewer.
    * @returns {number}
    */
-  getCurrentPage () {
+  getCurrentPage (): number {
     return this.diva.getActivePageIndex();
   }
 
@@ -95,7 +106,7 @@ class DivaView {
    * Get the active page URI in the diva.js viewer.
    * @returns {string}
    */
-  getCurrentPageURI () {
+  getCurrentPageURI (): string {
     return this.indexMap.get(this.getCurrentPage());
   }
 
@@ -103,16 +114,16 @@ class DivaView {
    * Adjust the rendered SVG(s) to be the correct size after zooming.
    * @param {number} zoomLevel - The new diva.js zoom level.
    */
-  adjustZoom (zoomLevel) {
+  adjustZoom (zoomLevel: number) {
     (new Promise((resolve) => {
       Array.from(document.getElementsByClassName('neon-container'))
-        .forEach(elem => { elem.style.display = 'none'; });
+        .forEach((elem: HTMLElement) => { elem.style.display = 'none'; });
       setTimeout(resolve, this.diva.settings.zoomDuration + 100);
     })).then(() => {
       this.changePage(this.diva.getActivePageIndex(), true);
       Array.from(document.getElementsByClassName('neon-container'))
-        .forEach(elem => {
-          let svg = elem.firstChild;
+        .forEach((elem: HTMLElement) => {
+          let svg = <SVGSVGElement>elem.firstChild;
           let pageNo = parseInt(elem.id.match(/\d+/)[0]);
           this.updateSVG(svg, pageNo);
           elem.style.display = '';
@@ -125,7 +136,7 @@ class DivaView {
    * @param {SVGSVGElement} svg - The updated SVG.
    * @param {number} pageNo - The zero-indexed page number.
    */
-  updateSVG (svg, pageNo) {
+  updateSVG (svg: SVGSVGElement, pageNo: number) {
     let inner = document.getElementById('diva-1-inner');
     let dimensions = this.diva.getPageDimensionsAtCurrentZoomLevel(pageNo);
     let offset = this.diva.settings.viewHandler._viewerCore.getPageRegion(pageNo, {
@@ -171,7 +182,7 @@ class DivaView {
    * Add a callback function that will be run whenever an SVG is updated.
    * @param {function} cb - The callback function.
    */
-  addUpdateCallback (cb) {
+  addUpdateCallback (cb: Function) {
     this.updateCallbacks.push(cb);
   }
 
@@ -179,8 +190,8 @@ class DivaView {
    * Remove a callback function previously added to the list of functions to call.
    * @param {function} cb - The callback function to remove.
    */
-  removeUpdateCallback (cb) {
-    let index = this.updateCallbacks.findItem((elem) => {
+  removeUpdateCallback (cb: Function) {
+    let index = this.updateCallbacks.findIndex((elem) => {
       return elem === cb;
     });
     if (index !== -1) {
@@ -195,7 +206,7 @@ class DivaView {
     document.body.addEventListener('keydown', (evt) => {
       switch (evt.key) {
         case 'h':
-          for (let container of document.getElementsByClassName('neon-container')) {
+          for (let container of <HTMLCollectionOf<HTMLElement>>document.getElementsByClassName('neon-container')) {
             container.style.visibility = 'hidden';
           }
           break;
@@ -206,7 +217,7 @@ class DivaView {
     document.body.addEventListener('keyup', (evt) => {
       switch (evt.key) {
         case 'h':
-          for (let container of document.getElementsByClassName('neon-container')) {
+          for (let container of <HTMLCollectionOf<HTMLElement>>document.getElementsByClassName('neon-container')) {
             container.style.visibility = '';
           }
           break;
@@ -219,7 +230,7 @@ class DivaView {
    * Use the IIIF manifest to create a map between IIIF canvases and page indexes.
    * @param {object} manifest - The IIIF manifest
    */
-  parseManifest (manifest) {
+  parseManifest (manifest: any) {
     this.indexMap.clear();
     for (let sequence of manifest.sequences) {
       for (let canvas of sequence.canvases) {
@@ -232,7 +243,7 @@ class DivaView {
    * Get the name of the active page/canvas combined with the manuscript name.
    * @returns {string}
    */
-  getPageName () {
+  getPageName (): string {
     let manuscriptName = this.diva.settings.manifest.itemTitle;
     let pageName = this.diva.settings.manifest.pages[this.getCurrentPage()].l;
     return manuscriptName + ' \u2014 ' + pageName;

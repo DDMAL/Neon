@@ -1,6 +1,7 @@
-import * as Notification from './utils/Notification.js';
-import { unselect } from './utils/SelectTools.js';
-import { updateHighlight } from './DisplayPanel/DisplayControls.js';
+import * as Notification from './utils/Notification';
+import NeonView from './NeonView';
+import { unselect } from './utils/SelectTools';
+import { updateHighlight } from './DisplayPanel/DisplayControls';
 
 /** @module TextView */
 
@@ -8,11 +9,13 @@ import { updateHighlight } from './DisplayPanel/DisplayControls.js';
  * Class that manages getting the text for syllables in Neon from the mei file
  */
 class TextView {
+  neonView: NeonView;
+  notificationSent: boolean;
   /**
    * A constructor for a TextView.
    * @param {NeonView} neonView = The NeonView parent.
    */
-  constructor (neonView) {
+  constructor (neonView: NeonView) {
     this.neonView = neonView;
     this.notificationSent = false;
 
@@ -63,13 +66,13 @@ class TextView {
    * update visibility of text bounding boxes
    */
   updateBBoxViewVisibility () {
-    if (document.getElementById('displayBBox').checked) {
+    if ((<HTMLInputElement>document.getElementById('displayBBox')).checked) {
       document.querySelectorAll('.sylTextRect').forEach(rect => {
         rect.classList.add('sylTextRect-display');
         rect.classList.remove('sylTextRect');
       });
       document.querySelectorAll('.syl.selected .sylTextRect-display')
-        .forEach(rect => { rect.style.fill = 'red'; });
+        .forEach((rect: HTMLElement) => { rect.style.fill = 'red'; });
 
       if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
         this.neonView.TextEdit.initSelectByBBoxButton();
@@ -85,7 +88,7 @@ class TextView {
         rect.classList.add('sylTextRect');
         rect.classList.remove('sylTextRect-display');
       });
-      document.querySelectorAll('.syl.selected .sylTextRect').forEach(rect => {
+      document.querySelectorAll('.syl.selected .sylTextRect').forEach((rect: HTMLElement) => {
         rect.style.fill = 'none';
       });
       try {
@@ -100,7 +103,7 @@ class TextView {
   * and add the event listeners to make sure the syl highlights when moused over
   */
   updateTextViewVisibility () {
-    if (document.getElementById('displayText').checked) {
+    if ((<HTMLInputElement>document.getElementById('displayText')).checked) {
       let sylText = document.getElementById('syl_text');
       sylText.style.display = '';
       sylText.innerHTML = '<p>' + this.getSylText() + '</p>';
@@ -154,7 +157,7 @@ class TextView {
    * Get the syllable text of the loaded file
    * @returns {string}
    */
-  getSylText () {
+  getSylText (): string {
     var lyrics = '';
     let uniToDash = /\ue551/g;
     let syllables = document.querySelectorAll('.active-page .syllable');
@@ -172,9 +175,9 @@ class TextView {
         lyrics += ' </span>';
       }
     });
-    if (!TextView.notificationSent) {
+    if (!this.notificationSent) {
       Notification.queueNotification('Blank syllables are represented by &#x25CA;!');
-      TextView.notificationSent = true;
+      this.notificationSent = true;
     }
     return lyrics.replace(uniToDash, '-');
   }

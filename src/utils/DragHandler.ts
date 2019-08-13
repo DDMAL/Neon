@@ -53,7 +53,7 @@ function DragHandler (neonView, selector) {
        * it will be a child of the element in selection, so it will get moved in the above loop
        * so we cancel that movement out here
        */
-      if (selection.filter(element => element.classList.contains('syl')).length === 0) {
+      if (selection.filter((element: HTMLElement) => element.classList.contains('syl')).length === 0) {
         d3.selectAll('.syllable.selected').selectAll('.sylTextRect-display').attr('transform', function () {
           return 'translate(' + [-1 * relativeX, -1 * relativeY] + ')';
         });
@@ -63,12 +63,12 @@ function DragHandler (neonView, selector) {
     function dragEnded () {
       dragEndCoords = [d3.event.x, d3.event.y];
       let paramArray = [];
-      selection.filter(el => !el.classList.contains('resizePoint')).forEach((el) => {
+      selection.filter((el: SVGElement) => !el.classList.contains('resizePoint')).forEach((el: SVGElement) => {
         let id = (el.tagName === 'rect') ? el.closest('.syl').id : el.id;
         let singleAction = { action: 'drag',
           param: { elementId: id,
-            x: parseInt(dragEndCoords[0] - dragStartCoords[0]),
-            y: parseInt(dragEndCoords[1] - dragStartCoords[1]) * -1 }
+            x: dragEndCoords[0] - dragStartCoords[0],
+            y: dragEndCoords[1] - dragStartCoords[1] * -1 }
         };
         paramArray.push(singleAction);
       });

@@ -1,15 +1,15 @@
-const et = require('elementtree');
-const uuid = require('uuid/v4');
+import * as et from 'elementtree';
+import * as uuid from 'uuid/v4';
 
 et.register_namespace('xml', 'http://www.w3.org/XML/1998/namespace');
 et.register_namespace('', 'http://www.music-encoding.org/ns/mei');
 
-export function convertStaffToSb (staffBasedMei) {
+export function convertStaffToSb (staffBasedMei: string): string {
   let meiTree = et.parse(staffBasedMei);
   let meiTag = meiTree.getroot();
   for (let section of meiTag.findall('.//section')) {
     let newStaff = et.Element('staff', { 'n': '1' });
-    let container = et.SubElement(newStaff, 'layer');
+    let container: any = et.SubElement(newStaff, 'layer');
 
     container.set('n', '1');
 
@@ -48,7 +48,7 @@ export function convertStaffToSb (staffBasedMei) {
         if (!firstSyllable) {
           container.append(sb);
         } else {
-          let syllable = container.find(
+          let syllable: any = container.find(
             './/*[@xml:id=\'' + syllableId + '\']'
           );
           syllable.append(sb);
@@ -66,11 +66,11 @@ export function convertStaffToSb (staffBasedMei) {
   return meiTree.write({ xml_declaration: true, indent: 4 });
 }
 
-export function convertSbToStaff (sbBasedMei) {
+export function convertSbToStaff (sbBasedMei: string): string {
   let meiTree = et.parse(sbBasedMei);
   let meiTag = meiTree.getroot();
 
-  for (let section of meiTag.findall('.//section')) {
+  for (let section of <any>meiTag.findall('.//section')) {
     let staffStore = [];
     for (let staff of section.getchildren()) {
       for (let layer of staff.getchildren()) {
@@ -82,7 +82,7 @@ export function convertSbToStaff (sbBasedMei) {
         for (let [sbIndex, n] of zip(sbIndexes, [...Array(sbIndexes.length).keys()])) {
           let sb = layer.getItem(sbIndex);
           let newStaff = et.Element('staff', sb.attrib);
-          let container = et.Element('layer', { 'n': '1' });
+          let container: any = et.Element('layer', { 'n': '1' });
 
           // Check for custos
           for (let i = 0; i < sb.len(); i++) {
@@ -114,11 +114,11 @@ export function convertSbToStaff (sbBasedMei) {
             continue;
           }
           let newStaff = et.Element('staff', sb.attrib);
-          let newLayer = et.SubElement(newStaff, 'layer');
+          let newLayer: any = et.SubElement(newStaff, 'layer');
           newLayer.set('n', '1');
 
           let newSyllableId = uuid();
-          let newSyllable = et.SubElement(newLayer, 'syllable');
+          let newSyllable: any = et.SubElement(newLayer, 'syllable');
           newSyllable.set('follows', syllable.get('xml:id'));
           newSyllable.set('xml:id', newSyllableId);
           syllable.set('precedes', newSyllableId);
@@ -152,7 +152,7 @@ export function convertSbToStaff (sbBasedMei) {
   return meiTree.write({ xml_declaration: true, indent: 4 });
 }
 
-function zip (array1, array2) {
+function zip (array1: Array<any>, array2: Array<any>): Array<any> {
   let result = [];
   for (let i = 0; i < (array1.length > array2.length ? array2.length : array1.length); i++) {
     result.push([array1[i], array2[i]]);

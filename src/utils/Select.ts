@@ -2,8 +2,8 @@
 
 import {
   unselect, getStaffBBox, selectStaff, selectAll, getSelectionType
-} from './SelectTools.js';
-import { Resize } from './Resize.js';
+} from './SelectTools';
+import { Resize } from './Resize';
 
 const d3 = require('d3');
 
@@ -133,15 +133,15 @@ function clickHandler (evt) {
     }
 
     // Check if the point is in a staff.
-    let container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
+    let container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     let pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
-    let transformMatrix = container.getElementsByClassName('system')[0].getScreenCTM();
+    let transformMatrix = (<SVGGraphicsElement>container.getElementsByClassName('system')[0]).getScreenCTM();
     pt = pt.matrixTransform(transformMatrix.inverse());
 
     let selectedStaves = Array.from(document.getElementsByClassName('staff'))
-      .filter((staff) => {
+      .filter((staff: SVGGElement) => {
         let bbox = getStaffBBox(staff);
         return (bbox.ulx < pt.x && pt.x < bbox.lrx) && (bbox.uly < pt.y && pt.y < bbox.lry);
       });
@@ -154,7 +154,7 @@ function clickHandler (evt) {
     }
 
     // Select a staff
-    let staff = selectedStaves[0];
+    let staff = <SVGGElement>selectedStaves[0];
     if (!staff.classList.contains('selected')) {
       // Select previously unselected staff
       selectStaff(staff, dragHandler);
@@ -165,7 +165,7 @@ function clickHandler (evt) {
       }
     }
     // Trigger mousedown event on the staff
-    staff.dispatchEvent(new window.MouseEvent('mousedown', {
+    staff.dispatchEvent(new MouseEvent('mousedown', {
       screenX: evt.screenX,
       screenY: evt.screenY,
       clientX: evt.clientX,
@@ -236,7 +236,7 @@ export function dragSelect (selector) {
    */
   function pointNotInStaff (point) {
     let staves = Array.from(document.getElementsByClassName('staff'));
-    let filtered = staves.filter((staff) => {
+    let filtered = staves.filter((staff: SVGGElement) => {
       let box = getStaffBBox(staff);
       return (box.ulx < point[0] && point[0] < box.lrx) && (box.uly < point[1] && point[1] < box.lry);
     });
@@ -291,7 +291,7 @@ export function dragSelect (selector) {
       }
       var els = Array.from(nc);
 
-      var elements = els.filter(function (d) {
+      var elements = <SVGGraphicsElement[]>els.filter(function (d: SVGGraphicsElement) {
         var ulx, uly, lrx, lry;
         if (isSelByBBox()) {
           ulx = Number(d.getAttribute('x'));
@@ -300,7 +300,7 @@ export function dragSelect (selector) {
           lry = +uly + +(d.getAttribute('height').slice(0, -2));
           return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
         } else if (d.tagName === 'use') {
-          let box = d.parentNode.getBBox();
+          let box = (<SVGGElement>d.parentNode).getBBox();
           ulx = box.x;
           uly = box.y;
           lrx = box.x + box.width;
@@ -313,7 +313,7 @@ export function dragSelect (selector) {
       });
 
       // Get other halves of ligatures if only one is selected
-      elements.forEach(element => {
+      elements.forEach((element: SVGElement) => {
         if (element.tagName === 'use' && element.getAttribute('xlink:href').match(/E9B[456789ABC]/)) {
           let neume = element.closest('.neume');
           let ncIndex = Array.from(neume.children).indexOf(element.closest('.nc'));

@@ -1,26 +1,26 @@
 /** @module SquareEdit/Contents */
 
-import PunctumIcon from '../img/punctum.png';
-import VirgaIcon from '../img/virga.png';
-import DiamondIcon from '../img/diamond.png';
-// import WhitePunctumIcon from "./img/white_punct.png";
-// import QuilismaIcon from "./img/quilisma.png";
-import CustosIcon from '../img/custos.png';
-import CClefIcon from '../img/cClef.png';
-import FClefIcon from '../img/fClef.png';
-import StaffIcon from '../img/staff.png';
-// import SmallDivIcon from "./img/smallDiv.png";
-// import MinorDivIcon from "./img/minorDiv.png";
-// import MajorDivIcon from "./img/majorDiv.png";
-// import FinalDivIcon from "./img/finalDiv.png";
-import PesIcon from '../img/pes.png';
-import ClivisIcon from '../img/clivis.png';
-import ScandicusIcon from '../img/scandicus.png';
-import ClimacusIcon from '../img/climacus.png';
-import TorculusIcon from '../img/torculus.png';
-import PorrectusIcon from '../img/porrectus.png';
-import PressusIcon from '../img/pressus.png';
-import Icons from '../img/icons.svg';
+const PunctumIcon = require('../img/punctum.png');
+const VirgaIcon = require('../img/virga.png');
+const DiamondIcon = require('../img/diamond.png');
+// const WhitePunctumIcon = require()"./img/white_punct.png";
+// const QuilismaIcon = require()"./img/quilisma.png";
+const CustosIcon = require('../img/custos.png');
+const CClefIcon = require('../img/cClef.png');
+const FClefIcon = require('../img/fClef.png');
+const StaffIcon = require('../img/staff.png');
+// const SmallDivIcon = require()"./img/smallDiv.png";
+// const MinorDivIcon = require()"./img/minorDiv.png";
+// const MajorDivIcon = require()"./img/majorDiv.png";
+// const FinalDivIcon = require()"./img/finalDiv.png";
+const PesIcon = require('../img/pes.png');
+const ClivisIcon = require('../img/clivis.png');
+const ScandicusIcon = require('../img/scandicus.png');
+const ClimacusIcon = require('../img/climacus.png');
+const TorculusIcon = require('../img/torculus.png');
+const PorrectusIcon = require('../img/porrectus.png');
+const PressusIcon = require('../img/pressus.png');
+const Icons = require('../img/icons.svg');
 
 /**
  * HTML for each insert tab (neume, grouping, clef, system, and division).
@@ -183,9 +183,9 @@ export const defaultActionContents =
  * Contents of custos action menu.
  * @type {string}
  */
-export const custosActionContents = 
+export const custosActionContents =
     "<div><p class='control'>" +
-    "<button class='button' id='delete'>Delete</button>" + 
+    "<button class='button' id='delete'>Delete</button>" +
     "<button class='button' id='changeStaff'>Re-associate to nearest staff</button></p></div>";
 
 /**
@@ -213,7 +213,7 @@ export const clefActionContents =
     "<div class='dropdown-content'>" +
     "<a id='CClef' class='dropdown-item'>C Clef</a>" +
     "<a id='FClef' class='dropdown-item'>F Clef</a></div></div>" +
-    "<button class='button' id='delete'>Delete</button>" + 
+    "<button class='button' id='delete'>Delete</button>" +
     "<button class='button' id='changeStaff'>Re-associate to nearest staff</button></div>";
 
 /**
@@ -232,7 +232,7 @@ export const groupingMenu = {
   'syl': "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
         "<button class='button' id='mergeSyls'>Merge Syllables</button>" +
-        "<button class='button' id='delete'>Delete</button>" + 
+        "<button class='button' id='delete'>Delete</button>" +
         "<button class='button' id='changeStaff'>Re-associate to nearest staff</button></p></div>",
   'ligatureNc': "<div class='field is-grouped'>" +
         "<div><p class='control'>" +

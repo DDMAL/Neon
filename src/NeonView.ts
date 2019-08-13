@@ -1,14 +1,42 @@
-import NeonCore from './NeonCore.js';
+import NeonCore from './NeonCore';
 
-import { parseManifest } from './utils/NeonManifest.js';
+import { parseManifest, NeonManifest } from './utils/NeonManifest';
+import SingleView from './SingleView/SingleView';
+import DivaView from './DivaView';
+import InfoModule from './InfoModule';
+import DisplayPanel from './DisplayPanel/DisplayPanel';
+import SingleEditMode from './SquareEdit/SingleEditMode';
+import DivaEditMode from './SquareEdit/DivaEditMode';
+import TextView from './TextView';
+import TextEditMode from './TextEditMode';
 import { prepareEditMode } from './utils/EditControls';
-import setBody from './utils/template/Template.js';
+import setBody from './utils/template/Template';
+
+export interface NeonViewParams {
+  manifest: NeonManifest,
+  View: (a,b,c) => void,
+  Display: (a,b,c,d) => void,
+  Info: (a: NeonView) => void,
+  NeumeEdit?: (a: NeonView) => void,
+  TextView?: (a: NeonView) => void,
+  TextEdit?: (a: NeonView) => void
+}
 
 /**
  * NeonView class. Manages the other modules of Neon and communicates with
  * NeonCore.
  */
 class NeonView {
+  manifest: NeonManifest;
+  view: (SingleView | DivaView);
+  name: string;
+  core: NeonCore;
+  info: InfoModule;
+  NeumeEdit: (SingleEditMode | DivaEditMode);
+  textView: TextView;
+  TextEdit: TextEditMode;
+
+
   /**
    * Constructor for NeonView. Sets mode and passes constructors.
    * @param {object} params
@@ -20,7 +48,7 @@ class NeonView {
    * @param {object} [params.TextView] - Constructor for TextView module
    * @param {object} [params.TextEdit] - Constructor for TextEdit module
    */
-  constructor (params) {
+  constructor (params: any) {
     setBody();
 
     if (!parseManifest(params.manifest)) {
@@ -32,7 +60,6 @@ class NeonView {
     this.name = params.manifest.title;
 
     this.core = new NeonCore(params.manifest);
-    this.display = this.view.display;
     this.info = new params.Info(this);
 
     if (params.NeumeEdit !== undefined || (params.TextEdit !== undefined && params.TextView !== undefined)) {
@@ -71,7 +98,7 @@ class NeonView {
    * most up to date SVG.
    * @param {boolean} [delay=false] - whether or not to delay loading the page by 500ms. defaults to false
    */
-  updateForCurrentPage (delay = false) {
+  updateForCurrentPage (delay: boolean = false) {
     let pageNo = this.view.getCurrentPage();
     this.view.changePage(pageNo, delay);
   }
@@ -81,7 +108,7 @@ class NeonView {
    * @param {boolean} [delay=false] - whether or not to delay loading the page by 500ms. defaults to false
    * @see NeonView.updateForCurrentPage
    */
-  updateForCurrentPagePromise (delay = false) {
+  updateForCurrentPagePromise (delay: boolean = false) {
     let pageNo = this.view.getCurrentPage();
     return Promise.resolve(this.view.changePage(pageNo, delay));
   }
@@ -90,7 +117,7 @@ class NeonView {
    * Redo an action performed on the current page (if any)
    * @returns {Promise} a promise that resolves to a success boolean
    */
-  redo () {
+  redo (): Promise<boolean> {
     return this.core.redo(this.view.getCurrentPageURI());
   }
 
@@ -98,7 +125,7 @@ class NeonView {
    * Undo the last action performed on the current page (if any)
    * @returns {Promise} a promise that reoslves to a success boolean
    */
-  undo () {
+  undo (): Promise<boolean> {
     return this.core.undo(this.view.getCurrentPageURI());
   }
 
@@ -106,7 +133,7 @@ class NeonView {
    * Get the mode Neon is in: viewer, insert, or edit.
    * @returns {string}
    */
-  getUserMode () {
+  getUserMode (): string {
     if (this.NeumeEdit !== undefined) {
       return this.NeumeEdit.getUserMode();
     } else if (this.TextEdit !== undefined) {
@@ -149,7 +176,7 @@ class NeonView {
         this.manifest.mei_annotations = this.core.annotations;
         this.manifest.timestamp = (new Date()).toISOString();
         let data = new window.Blob([JSON.stringify(this.manifest, null, 2)], { type: 'application/ld+json' });
-        let reader = new window.FileReader();
+        let reader = new FileReader();
         reader.addEventListener('load', () => {
           resolve(reader.result);
         });
@@ -162,7 +189,7 @@ class NeonView {
    * Save the current state to the browser database.
    * @returns {Promise} A promise that resolves when the action is finished.
    */
-  save () {
+  save (): Promise<void> {
     return this.core.updateDatabase();
   }
 
@@ -170,7 +197,7 @@ class NeonView {
    * Deletes the local database of the loaded MEI file(s).
    * @returns {Promise} A promise that resolves when the database is deleted.
    */
-  deleteDb () {
+  deleteDb (): PromiseLike<any> {
     return this.core.db.destroy();
   }
 
@@ -179,7 +206,7 @@ class NeonView {
    * @param {number} pageNo - The zero-indexed page to encode.
    * @returns {Promise} A promise that resolves to the URI.
    */
-  getPageURI (pageNo) {
+  getPageURI (pageNo): Promise<string> {
     if (pageNo === undefined) {
       pageNo = this.view.getCurrentPage();
     }
@@ -195,7 +222,7 @@ class NeonView {
    * @param {number} pageNo - The zero-indexed page to get.
    * @returns {Promise} A promise that resolves to the string.
    */
-  getPageMEI (pageNo) {
+  getPageMEI (pageNo: string): Promise<string> {
     return this.core.getMEI(pageNo);
   }
 

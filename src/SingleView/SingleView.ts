@@ -1,8 +1,10 @@
-import { updateHighlight, setOpacityFromSlider } from '../DisplayPanel/DisplayControls.js';
-import * as Cursor from '../utils/Cursor.js';
-import ZoomHandler from './Zoom.js';
+import { updateHighlight, setOpacityFromSlider } from '../DisplayPanel/DisplayControls';
+import * as Cursor from '../utils/Cursor';
+import NeonView from '../NeonView';
+import DisplayPanel from '../DisplayPanel/DisplayPanel';
+import ZoomHandler from './Zoom';
 
-const d3 = require('d3');
+import * as d3 from 'd3';
 
 /* A view module must contain the following functions:
  * updateSVG(svg, pageNo) - a function that updates the dipslayed SVG with
@@ -17,30 +19,39 @@ const d3 = require('d3');
  * A view module for displaying a single page of a manuscript.
  */
 class SingleView {
+  neonView: NeonView;
+  container: HTMLElement;
+  updateCallbacks: Function[];
+  group: SVGSVGElement;
+  bg: SVGImageElement;
+  mei: SVGSVGElement;
+  zoomHandler: ZoomHandler;
+  displayPanel: DisplayPanel;
+  pageURI: string;
   /**
    * Constructor for SingleView.
    * @param {NeonView} neonView - The NeonView parent.
    * @param {function} DisplayPanel - The constructor for a DisplayPanel.
    * @param {string} image - The link to the background image for the page.
    */
-  constructor (neonView, DisplayPanel, image) {
+  constructor (neonView: NeonView, panel: (a,b,c,d) => void, image: string) {
     this.neonView = neonView;
     this.container = document.getElementById('container');
     this.updateCallbacks = new Array(0);
     // Group will contain the image and the rendered SVG
     this.group = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     this.group.id = 'svg_group';
-    this.group.setAttribute('height', window.innerHeight);
+    this.group.setAttribute('height', window.innerHeight.toString());
     this.group.setAttribute('width', '100%');
 
     this.bg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
     this.bg.id = 'bgimg';
     this.bg.classList.add('background');
     this.bg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', image);
-    this.bg.setAttribute('x', 0);
-    this.bg.setAttribute('y', 0);
+    this.bg.setAttribute('x', '0');
+    this.bg.setAttribute('y', '0');
 
-    this.mei = document.createElementNS('http://www.w3.org/svg', 'svg');
+    this.mei = <SVGSVGElement>document.createElementNS('http://www.w3.org/svg', 'svg');
     this.mei.id = 'mei_output';
     this.mei.classList.add('neon-container', 'active-page');
 
@@ -49,7 +60,7 @@ class SingleView {
     this.container.appendChild(this.group);
 
     this.zoomHandler = new ZoomHandler();
-    this.displayPanel = new DisplayPanel(this, 'neon-container', 'background', this.zoomHandler);
+    this.displayPanel = new panel(this, 'neon-container', 'background', this.zoomHandler);
 
     this.setViewEventHandlers();
     this.displayPanel.setDisplayListeners();
@@ -63,7 +74,7 @@ class SingleView {
    * Update the SVG being displayed.
    * @param {SVGSVGElement} svg - The SVG to update to.
    */
-  updateSVG (svg/*, pageNo */) {
+  updateSVG (svg: SVGSVGElement /*, pageNo */) {
     this.group.replaceChild(svg, this.mei);
     this.mei = svg;
     this.mei.id = 'mei_output';
@@ -71,8 +82,8 @@ class SingleView {
     let height = parseInt(this.mei.getAttribute('height'));
     let width = parseInt(this.mei.getAttribute('width'));
 
-    this.bg.setAttribute('height', height);
-    this.bg.setAttribute('width', width);
+    this.bg.setAttribute('height', height.toString());
+    this.bg.setAttribute('width', width.toString());
     this.group.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
     updateHighlight();
     this.resetTransformations();
@@ -85,7 +96,7 @@ class SingleView {
    * @param {number} page
    * @param {boolean} delay. defaults to false
    */
-  async changePage (page, delay = false) {
+  async changePage (page: number, delay: boolean = false) {
     let svg = await this.neonView.getPageSVG(this.getCurrentPageURI());
     this.updateSVG(svg);
   }
@@ -94,7 +105,7 @@ class SingleView {
    * Add a callback to the list of those be called when the page updates.
    * @param {function} cb - The callback function to add to the list.
    */
-  addUpdateCallback (cb) {
+  addUpdateCallback (cb: Function) {
     this.updateCallbacks.push(cb);
   }
 
@@ -102,7 +113,7 @@ class SingleView {
    * Remove a callback from the list of callbacks if it is part of the list.
    * @param {function} cb - The callback to be removed.
    */
-  removeUpdateCallback (cb) {
+  removeUpdateCallback (cb: Function) {
     let index = this.updateCallbacks.findIndex((elem) => {
       return elem === cb;
     });
@@ -123,7 +134,7 @@ class SingleView {
    * Returns the zero-indexed number of the current page. This will always be zero.
    * @returns {number}
    */
-  getCurrentPage () {
+  getCurrentPage (): number {
     return 0;
   }
 
@@ -131,7 +142,7 @@ class SingleView {
    * Returns the page URI.
    * @returns {string}
    */
-  getCurrentPageURI () {
+  getCurrentPageURI (): string {
     return this.pageURI;
   }
 
@@ -144,8 +155,8 @@ class SingleView {
         case 'Shift':
           d3.select('#svg_group').on('.drag', null);
           d3.select('#svg_group').call(
-            d3.drag().on('start', this.displayPanel.zoomHandler.startDrag)
-              .on('drag', this.displayPanel.zoomHandler.dragging)
+            d3.drag().on('start', this.displayPanel.zoomHandler.startDrag.bind(this.displayPanel.zoomHandler))
+              .on('drag', this.displayPanel.zoomHandler.dragging.bind(this.displayPanel.zoomHandler))
           );
           Cursor.updateCursorTo('grab');
           break;
@@ -160,7 +171,7 @@ class SingleView {
         case 'Shift':
           d3.select('#svg_group').on('.drag', null);
           Cursor.updateCursorTo('');
-          if (this.neonView.getUserMode !== 'viewer') {
+          if (this.neonView.getUserMode() !== 'viewer') {
             this.neonView.NeumeEdit.setSelectListeners();
           }
           if (this.neonView.getUserMode() === 'insert') {
@@ -177,19 +188,19 @@ class SingleView {
     d3.select('#container').on('touchstart', () => {
       if (d3.event.touches.length === 2) {
         this.displayPanel.zoomHandler.startDrag();
-        d3.select('#container').on('touchmove', this.displayPanel.zoomHandler.dragging);
+        d3.select('#container').on('touchmove', this.displayPanel.zoomHandler.dragging.bind(this.displayPanel.zoomHandler));
         d3.select('#container').on('touchend', () => {
           d3.select('#container').on('touchmove', null);
         });
       }
     });
-    d3.select('#container').on('wheel', this.displayPanel.zoomHandler.scrollZoom, false);
+    d3.select('#container').on('wheel', this.displayPanel.zoomHandler.scrollZoom.bind(this.displayPanel.zoomHandler), false);
     // Update height of container based on window
     window.onresize = () => {
       let newHeight = window.innerHeight;
       let container = document.getElementById('container');
       if (newHeight > Number(container.getAttribute('height'))) {
-        container.setAttribute('height', newHeight);
+        container.setAttribute('height', newHeight.toString());
       }
     };
   }
@@ -198,7 +209,7 @@ class SingleView {
    * A human readable name for the page. Used for downloads.
    * @returns {string}
    */
-  getPageName () {
+  getPageName (): string {
     return this.neonView.name;
   }
 }

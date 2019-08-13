@@ -1,13 +1,21 @@
 /** @module DisplayPanel/DisplayPanel */
 
-import * as DisplayControls from './DisplayControls.js';
-import Icons from '../img/icons.svg';
+import * as DisplayControls from './DisplayControls';
+const Icons = require('../img/icons.svg');
+import SingleView from '../SingleView/SingleView';
+import DivaView from '../DivaView';
+import ZoomHandler from '../SingleView/Zoom';
 
 /**
  * A class that sets the content of the display panel to the right and
  * manages controls for viewing.
  */
 class DisplayPanel {
+  view: (SingleView | DivaView);
+  className: string;
+  background: string;
+  zoomHandler: ZoomHandler;
+
   /**
    * Constructor for DisplayPanel.
    * @param {SingleView | DivaView} view - The View parent.
@@ -15,7 +23,8 @@ class DisplayPanel {
    * @param {string} background - The class name associated with the background.
    * @param {ZoomHandler} [zoomHandler] - The ZoomHandler object, if SingleView.
    */
-  constructor (view, className, background, zoomHandler = undefined) {
+  constructor (view: (SingleView | DivaView), className: string,
+      background: string, zoomHandler: ZoomHandler = undefined) {
     this.view = view;
     this.className = className;
     this.background = background;
@@ -51,7 +60,7 @@ class DisplayPanel {
  * @param {ZoomHandler} handleZoom - Includes zoom controls if defined.
  * @returns {string}
  */
-function displayControlsPanel (handleZoom) {
+function displayControlsPanel (handleZoom: ZoomHandler): string {
   let contents =
   "<p class='panel-heading' id='displayHeader'>Display" +
   "<svg class='icon is-pulled-right'><use id='toggleDisplay' xlink:href='" + Icons + "#dropdown-down'></use></svg></p>" +

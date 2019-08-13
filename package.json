@@ -50,6 +50,7 @@
         "presets": "env"
     },
     "dependencies": {
+        "@types/d3": "^5.7.2",
         "@types/pouchdb": "^6.4.0",
         "@types/uuid": "^3.4.5",
         "@types/webpack": "^4.32.1",
@@ -64,6 +65,7 @@
         "verovio-dev": "file:src/verovio-dev"
     },
     "devDependencies": {
+        "@types/elementtree": "^0.1.0",
         "babel-preset-env": "^1.7.0",
         "bulma": "^0.7.1",
         "bulma-extensions": "^2.2.1",
@@ -80,6 +82,7 @@
         "raw-loader": "^2.0.0",
         "selenium-webdriver": "^4.0.0-alpha.1",
         "semistandard": "^13.0.1",
+        "source-map": "^0.7.3",
         "style-loader": "^0.21.0",
         "uuid": "^3.3.2",
         "verovio-dev": "file:src/verovio-dev",

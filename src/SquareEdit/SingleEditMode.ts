@@ -1,20 +1,24 @@
-import { bindInsertTabs, initInsertEditControls, initEditModeControls, initSelectionButtons } from './Controls.js';
-import { setHighlightSelectionControls } from '../DisplayPanel/DisplayControls.js';
-import * as Select from '../utils/Select.js';
-import InsertHandler from './InsertHandler.js';
-import * as SelectOptions from './SelectOptions.js';
-import DragHandler from '../utils/DragHandler.js';
+import { bindInsertTabs, initInsertEditControls, initEditModeControls, initSelectionButtons } from './Controls';
+import { setHighlightSelectionControls } from '../DisplayPanel/DisplayControls';
+import * as Select from '../utils/Select';
+import InsertHandler from './InsertHandler';
+import NeonView from '../NeonView';
+import * as SelectOptions from './SelectOptions';
+import DragHandler from '../utils/DragHandler';
 
 /**
  * An Edit Module for a single page of a manuscript.
  * Works with the SingleView module.
  */
 class SingleEditMode {
+  neonView: NeonView;
+  dragHandler: any;
+  insertHandler: any;
   /**
    * Constructor for an EditMode object.
    * @param {NeonView} neonView - The NeonView parent.
    */
-  constructor (neonView) {
+  constructor (neonView: NeonView) {
     this.neonView = neonView;
     initEditModeControls(this);
   }

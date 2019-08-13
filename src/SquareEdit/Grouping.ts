@@ -1,21 +1,22 @@
 /** @module SquareEdit/Grouping */
 
-import * as Contents from './Contents.js';
-import * as Warnings from '../Warnings.js';
-import * as Notification from '../utils/Notification.js';
-import { unsetVirgaAction, unsetInclinatumAction, removeHandler, deleteButtonHandler } from './SelectOptions.js';
+import * as Contents from './Contents';
+import * as Warnings from '../Warnings';
+import * as Notification from '../utils/Notification';
+import NeonView from '../NeonView';
+import { unsetVirgaAction, unsetInclinatumAction, removeHandler, deleteButtonHandler } from './SelectOptions';
 
 /**
  * The NeonView parent to access editor actions.
  * @type {NeonView}
  */
-var neonView;
+var neonView: NeonView;
 
 /**
  * Set the neonView member.
  * @param {NeonView} view
  */
-export function initNeonView (view) {
+export function initNeonView (view: NeonView) {
   neonView = view;
 }
 
@@ -23,7 +24,7 @@ export function initNeonView (view) {
  * Trigger the grouping selection menu.
  * @param {string} type - The grouping type: nc, neume, syl, ligatureNc, or ligature
  */
-export function triggerGrouping (type) {
+export function triggerGrouping (type: string) {
   let moreEdit = document.getElementById('moreEdit');
   moreEdit.classList.remove('is-invisible');
   moreEdit.innerHTML += Contents.groupingMenu[type];
@@ -122,7 +123,7 @@ export function initGroupingListeners () {
   } catch (e) {}
 
   try {
-    document.getElementById('toggle-link').addEventListener('click', (evt) => {
+    document.getElementById('toggle-link').addEventListener('click', (evt: MouseEvent) => {
       let elementIds = getIds();
       let chainAction = {
         'action': 'chain',
@@ -267,8 +268,8 @@ function groupingAction (action, groupType, elementIds) {
     // Prompt user to confirm if Neon does not re cognize contour
     if (groupType === 'nc') {
       var neumeParent = document.getElementById(elementIds[0]).parentNode;
-      var ncs = Array.from(neumeParent.children);
-      var contour = neonView.info.getContour((ncs));
+      var ncs = <SVGGraphicsElement[]>Array.from(neumeParent.children);
+      var contour = neonView.info.getContour(ncs);
       if (contour === undefined) {
         Warnings.groupingNotRecognized();
       }

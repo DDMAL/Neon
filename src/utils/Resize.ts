@@ -4,10 +4,9 @@
  * current use cases: bounding boxes and staves
  */
 
-import { getStaffBBox, selectBBox, selectStaff } from './SelectTools.js';
+import { getStaffBBox, selectBBox, selectStaff } from './SelectTools';
 
-const d3 = require('d3');
-
+import * as d3 from 'd3';
 /**
  * The points you can click and drag to resize
  */
@@ -30,7 +29,7 @@ const PointNames = {
  * @param {DragHandler} dragHandler - A drag handler object.
  */
 function Resize (elementId, neonView, dragHandler) {
-  var element = document.getElementById(elementId);
+  var element = <SVGGElement><unknown>document.getElementById(elementId);
   /**
    * The upper-left x-coordinate of the element.
    * @type {number}
@@ -90,7 +89,7 @@ function Resize (elementId, neonView, dragHandler) {
       lrx = bbox.lrx;
       lry = bbox.lry;
 
-      let segments = element.querySelector('path').pathSegList;
+      let segments: any = element.querySelector('path').pathSegList;
       skew = Math.atan((segments[segments.length - 1].y - segments[0].y) /
         (segments[segments.length - 1].x - segments[0].x));
     }
@@ -135,14 +134,14 @@ function Resize (elementId, neonView, dragHandler) {
         .attr('id', 'p' + point.name);
     });
 
-    // do it as a loop instead of selectAll so that you can easily know which point was clicked
-    Object.values(PointNames).forEach((name) => {
+    // do it as a loop instead of selectAll so that you can easily know which point was
+    for (let name in PointNames) {
       d3.select('#p' + name).filter('.resizePoint').call(
         d3.drag()
           .on('start', () => { resizeStart(name); })
           .on('drag', resizeDrag)
           .on('end', resizeEnd.bind(this)));
-    });
+    }
 
     if (element.classList.contains('staff')) {
       let x = points[3].x;
@@ -227,7 +226,7 @@ function Resize (elementId, neonView, dragHandler) {
         if (result) {
           await neonView.updateForCurrentPagePromise();
         }
-        element = document.getElementById(elementId);
+        element = <SVGGElement><unknown>document.getElementById(elementId);
         ulx = undefined;
         uly = undefined;
         lrx = undefined;
@@ -303,7 +302,7 @@ function Resize (elementId, neonView, dragHandler) {
         if (result) {
           await neonView.updateForCurrentPagePromise();
         }
-        element = document.getElementById(elementId);
+        element = <SVGGElement><unknown>document.getElementById(elementId);
         ulx = undefined;
         uly = undefined;
         lrx = undefined;

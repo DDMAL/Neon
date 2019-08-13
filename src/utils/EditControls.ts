@@ -1,8 +1,8 @@
 /** @module utils/EditControls */
 
-import * as Notification from './Notification.js';
+import * as Notification from './Notification';
 import { navbarDropdownMenu, undoRedoPanel } from './EditContents';
-import { convertStaffToSb } from './ConvertMei.js';
+import { convertStaffToSb } from './ConvertMei';
 
 /**
  * prepare the edit mode button
@@ -32,7 +32,7 @@ export function prepareEditMode (neonView) {
 export function startEditMode (neonView) {
   let dropdownToggle = document.getElementById('dropdown_toggle');
   dropdownToggle.innerHTML = navbarDropdownMenu;
-  let parent = document.getElementById('dropdown_toggle').parentNode;
+  let parent = document.getElementById('dropdown_toggle').parentElement;
   document.getElementById('dropdown_toggle').remove();
   parent.innerHTML = navbarDropdownMenu;
   document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;

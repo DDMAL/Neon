@@ -1,8 +1,8 @@
 /** @module SquareEdit/SelectOptions */
-import * as Contents from './Contents.js';
-import * as Grouping from './Grouping.js';
-import * as Notification from '../utils/Notification.js';
-import { SplitHandler } from './StaffTools.js';
+import * as Contents from './Contents';
+import * as Grouping from './Grouping';
+import * as Notification from '../utils/Notification';
+import { SplitHandler } from './StaffTools';
 
 /**
  * The NeonView parent to call editor actions.
@@ -20,7 +20,7 @@ export function initNeonView (view) {
 }
 
 /**
- * Return a JSON action that unsets the inclinatum parameter of an nc.
+ * Return aON action that unsets the inclinatum parameter of an nc.
  * @param {string} id - The id of the neume component.
  * @returns {object}
  */
@@ -36,7 +36,7 @@ export function unsetInclinatumAction (id) {
 }
 
 /**
- * Return a JSON action that unsets the virga parameter of an nc.
+ * Return aON action that unsets the virga parameter of an nc.
  * @param {string} id - The id of the neume component.
  * @returns {object}
  */
@@ -196,7 +196,7 @@ export function triggerNeumeActions () {
 
   document.querySelector('.grouping')
     .addEventListener('click', (e) => {
-      var contour = neonView.info.getContourByValue(e.target.id);
+      var contour = neonView.info.getContourByValue((<HTMLElement>e.target).id);
       triggerChangeGroup(contour);
     });
 
@@ -327,19 +327,20 @@ export function triggerCustosActions (custos) {
   try {
     let moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.custosActionContents;
+    moreEdit.innerHTML += Contents.custosActionContents;
   } catch (e) {}
 
-  document.querySelector('#changeStaff')
-    .addEventListener('click', changeStaffHandler);
-    
+  try {
+    document.getElementById('changeStaff')
+      .addEventListener('click', changeStaffHandler);
+  } catch (e) {}
+
   try {
     let del = document.getElementById('delete');
     del.removeEventListener('click', removeHandler);
     del.addEventListener('click', removeHandler);
+    document.body.addEventListener('keydown', deleteButtonHandler);
   } catch (e) {}
-
-  document.body.addEventListener('keydown', deleteButtonHandler);
 }
 
 /**

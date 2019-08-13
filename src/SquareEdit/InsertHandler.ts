@@ -1,4 +1,4 @@
-import * as Cursor from '../utils/Cursor.js';
+import * as Cursor from '../utils/Cursor';
 const d3 = require('d3');
 
 /**
@@ -183,12 +183,12 @@ function InsertHandler (neonView, sel) {
      * @param {object} evt - JQuery event object.
      */
   function handler (evt) {
-    var container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
+    var container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     var pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
     // Transform pt to SVG context
-    var transformMatrix = container.getElementsByClassName('system')[0].getScreenCTM();
+    var transformMatrix = (<SVGGraphicsElement>container.getElementsByClassName('system')[0]).getScreenCTM();
     var cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
     let editorAction = {
@@ -215,11 +215,11 @@ function InsertHandler (neonView, sel) {
      * @param {object} evt - JQuery event object.
      */
   function staffHandler (evt) {
-    var container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
+    var container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     var pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
-    var transformMatrix = container.getElementsByClassName('system')[0].getScreenCTM();
+    var transformMatrix = (<SVGGraphicsElement>container.getElementsByClassName('system')[0]).getScreenCTM();
     var cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
     if (firstClick) {

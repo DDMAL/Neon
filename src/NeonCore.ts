@@ -1,20 +1,37 @@
-import { convertSbToStaff } from './utils/ConvertMei.js';
-import * as Validation from './Validation.js';
-import VerovioWrapper from './VerovioWrapper.js';
-import PouchDb from 'pouchdb';
-const uuid = require('uuid/v4');
+import { convertSbToStaff } from './utils/ConvertMei';
+import * as Validation from './Validation';
+import VerovioWrapper from './VerovioWrapper';
+import { NeonManifest, Annotation } from './utils/NeonManifest';
+import PouchDB from 'pouchdb';
+import * as uuid from 'uuid/v4';
+
+interface CacheEntry {
+  dirty: boolean,
+  mei: string,
+  svg: SVGSVGElement
+}
 
 /**
  * The core component of Neon. This manages the database,
  * the verovio toolkit, the cache, and undo/redo stacks.
  */
 class NeonCore {
+  verovioWrapper: VerovioWrapper;
+  undoStacks: Map<string, string[]>;
+  redoStacks: Map<string, string[]>;
+  neonCache: Map<string, CacheEntry>;
+  db: PouchDB.Database;
+  parser: DOMParser;
+  blankPages: Array<string>;
+  annotations: Annotation[];
+  manifest: NeonManifest;
+  lastPageLoaded: string;
+
   /**
    * Constructor for NeonCore
    * @param {object} manifest - The manifest to load.
-   * @returns {object} A NeonCore object.
    */
-  constructor (manifest) {
+  constructor (manifest: NeonManifest) {
     /**
      * A wrapper for the Verovio Web Worker.
      * @type {object}
@@ -26,7 +43,7 @@ class NeonCore {
      * Stacks of previous MEI files representing actions that can be undone for each page.
      * @type {Map.<string, Array.<string>>}
      */
-    this.undoStacks = new Map();
+    this.undoStacks = new Map<string, string[]>();
 
     /**
      * Stacks of previous MEI files representing actions that can be redone for each page.
@@ -35,22 +52,14 @@ class NeonCore {
     this.redoStacks = new Map();
 
     /**
-     * A cache entry.
-     * @typedef {Object} CacheEntry
-     * @property {boolean} dirty - If the entry has been modified since being fetched from the database.
-     * @property {string} mei - The MEI data for the page.
-     * @property {SVGSVGElement} svg - The rendered SVG for the page.
-     */
-
-    /**
      * A cache mapping a page URI to a {@link CacheEntry}.
      * @type {Map.<string, CacheEntry>}
      */
     this.neonCache = new Map();
 
-    this.parser = new window.DOMParser();
+    this.parser = new DOMParser();
 
-    this.db = new PouchDb('Neon');
+    this.db = new PouchDB('Neon');
 
     this.blankPages = [];
 
@@ -67,7 +76,7 @@ class NeonCore {
    * @param {boolean} force - If a database update should be forced.
    * @returns {boolean}
    */
-  async initDb (force = false) {
+  async initDb (force: boolean = false): Promise<any> {
     // Check for existing manifest
     let response = await new Promise((resolve, reject) => {
       this.db.get(this.manifest['@id']).catch(err => {
@@ -88,7 +97,7 @@ class NeonCore {
           console.error(err);
           return reject(err);
         }
-      }).then(async doc => {
+      }).then(async (doc: any) => {
         // Check if doc timestamp is newer than manifest
         let docTime = (new Date(doc.timestamp)).getTime();
         let manTime = (new Date(this.manifest.timestamp)).getTime();
@@ -97,7 +106,7 @@ class NeonCore {
             // Fill annotations list with db annotations
             this.annotations = [];
             doc.annotations.forEach(async id => {
-              await this.db.get(id).then(annotation => {
+              await this.db.get(id).then((annotation: any) => {
                 this.annotations.push({
                   id: annotation._id,
                   type: 'Annotation',
@@ -122,7 +131,7 @@ class NeonCore {
               console.error(err);
               return reject(err);
             }
-          }).then(newAnnotation => {
+          }).then((newAnnotation: any) => {
             newAnnotation.body = annotation.body;
             newAnnotation.target = annotation.target;
             return this.db.put(newAnnotation);
@@ -149,7 +158,7 @@ class NeonCore {
    * @param {string} pageURI - The URI of the selected page.
    * @returns {Promise} A promise that resolves to the cache entry.
    */
-  loadPage (pageURI) {
+  loadPage (pageURI: string): Promise<CacheEntry> {
     return new Promise((resolve, reject) => {
       if (this.lastPageLoaded === pageURI && this.neonCache.has(pageURI)) {
         resolve(this.neonCache.get(pageURI));
@@ -200,7 +209,7 @@ class NeonCore {
    * @param {boolean} [dirty] - If the cache entry should be marked as dirty. Defaults to false.
    * @returns {Promise} promise that resolves when this action is done
    */
-  loadData (pageURI, data, dirty = false) {
+  loadData (pageURI: string, data: string, dirty: boolean = false): Promise<void> {
     Validation.sendForValidation(data);
     this.lastPageLoaded = pageURI;
     /* A promise is returned that will resolve to the result of the action.
@@ -212,13 +221,13 @@ class NeonCore {
      * event handler handles the response. Since it is defined within the
      * promise it has access to the necessary resolve function.
      */
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       let message = {
         id: uuid(),
         action: 'renderData',
         mei: data
       };
-      function handle (evt) {
+      function handle (evt: MessageEvent) {
         if (evt.data.id === message.id) {
           let svg = this.parser.parseFromString(
             evt.data.svg,
@@ -243,7 +252,7 @@ class NeonCore {
    * @param {string} pageURI - The URI of the selected page.
    * @returns {Promise} A promise that resolves to the SVG.
    */
-  getSVG (pageURI) {
+  getSVG (pageURI: string): Promise<SVGSVGElement> {
     return new Promise((resolve, reject) => {
       this.loadPage(pageURI).then((entry) => {
         resolve(entry.svg);
@@ -256,7 +265,7 @@ class NeonCore {
    * @param {string} pageURI - The URI of the selected page.
    * @returns {Promise} A promise that resolves to the MEI as a string.
    */
-  getMEI (pageURI) {
+  getMEI (pageURI: string): Promise<string> {
     return new Promise((resolve, reject) => {
       this.loadPage(pageURI).then((entry) => {
         resolve(entry.mei);
@@ -270,7 +279,7 @@ class NeonCore {
    * @param {string} pageURI - The URI of the selected page.
    * @returns {Promise} A promise that resolves to the attributes in an object.
    */
-  getElementAttr (elementId, pageURI) {
+  getElementAttr (elementId: string, pageURI: string): Promise<Object> {
     return new Promise((resolve) => {
       this.loadPage(pageURI).then(() => {
         let message = {
@@ -278,7 +287,7 @@ class NeonCore {
           action: 'getElementAttr',
           elementId: elementId
         };
-        this.verovioWrapper.addEventListener('message', function handle (evt) {
+        this.verovioWrapper.addEventListener('message', function handle (evt: MessageEvent) {
           if (evt.data.id === message.id) {
             evt.target.removeEventListener('message', handle);
             resolve(evt.data.attributes);
@@ -297,14 +306,14 @@ class NeonCore {
    * @param {string} pageURI - The URI of the selected page.
    * @returns {Promise} Resolves to boolean if the action succeeded or not.
    */
-  edit (editorAction, pageURI) {
-    let promise;
+  edit (editorAction: Object, pageURI: string): Promise<boolean> {
+    let promise: Promise<any>;
     if (this.lastPageLoaded === pageURI) {
       promise = Promise.resolve(this.neonCache.get(pageURI));
     } else {
       promise = this.loadPage(pageURI);
     }
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       promise.then(entry => {
         let currentMEI = entry.mei;
         let message = {
@@ -312,7 +321,7 @@ class NeonCore {
           action: 'edit',
           editorAction: editorAction
         };
-        function handle (evt) {
+        function handle (evt: MessageEvent) {
           if (evt.data.id === message.id) {
             if (evt.data.result) {
               if (!this.undoStacks.has(pageURI)) {
@@ -337,16 +346,16 @@ class NeonCore {
    * @param {boolean} dirty - If the entry should be marked as dirty
    * @returns {Promise}
    */
-  updateCache (pageURI, dirty) {
-    return new Promise((resolve, reject) => {
+  updateCache (pageURI: string, dirty: boolean): Promise<void> {
+    return new Promise((resolve) => {
       // Must get MEI and then get SVG then finish.
-      var mei, svgText;
-      let meiPromise = new Promise((resolve, reject) => {
+      var mei: string, svgText: string;
+      let meiPromise = new Promise((resolve) => {
         let message = {
           id: uuid(),
           action: 'getMEI'
         };
-        this.verovioWrapper.addEventListener('message', function handle (evt) {
+        this.verovioWrapper.addEventListener('message', function handle (evt: MessageEvent) {
           if (evt.data.id === message.id) {
             mei = evt.data.mei;
             evt.target.removeEventListener('message', handle);
@@ -355,12 +364,12 @@ class NeonCore {
         });
         this.verovioWrapper.postMessage(message);
       });
-      let svgPromise = new Promise((resolve, reject) => {
+      let svgPromise = new Promise((resolve) => {
         let message = {
           id: uuid(),
           action: 'renderToSVG'
         };
-        this.verovioWrapper.addEventListener('message', function handle (evt) {
+        this.verovioWrapper.addEventListener('message', function handle (evt: MessageEvent) {
           if (evt.data.id === message.id) {
             svgText = evt.data.svg;
             evt.target.removeEventListener('message', handle);
@@ -371,7 +380,7 @@ class NeonCore {
       });
 
       meiPromise.then(() => { return svgPromise; }).then(() => {
-        let svg = this.parser.parseFromString(
+        let svg = <SVGSVGElement><unknown>this.parser.parseFromString(
           svgText,
           'image/svg+xml'
         ).documentElement;
@@ -389,20 +398,20 @@ class NeonCore {
    * Get the edit info string from the verovio toolkit.
    * @returns {Promise} Promise that resolves to info string
    */
-  info (pageURI) {
-    let promise;
+  info (pageURI: string): Promise<string> {
+    let promise: Promise<any>;
     if (this.lastPageLoaded === pageURI) {
       promise = Promise.resolve();
     } else {
       promise = this.loadPage(pageURI);
     }
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       promise.then(() => {
         let message = {
           id: uuid(),
           action: 'editInfo'
         };
-        this.verovioWrapper.addEventListener('message', function handle (evt) {
+        this.verovioWrapper.addEventListener('message', function handle (evt: MessageEvent) {
           if (evt.data.id === message.id) {
             evt.target.removeEventListener('message', handle);
             resolve(JSON.parse(evt.data.info));
@@ -418,8 +427,8 @@ class NeonCore {
    * @param {string} pageURI - The URI of the selected page.
    * @returns {Promise} If an action undone.
    */
-  undo (pageURI) {
-    return new Promise((resolve, reject) => {
+  undo (pageURI: string): Promise<boolean> {
+    return new Promise((resolve) => {
       if (this.undoStacks.has(pageURI)) {
         let state = this.undoStacks.get(pageURI).pop();
         if (state !== undefined) {
@@ -441,8 +450,8 @@ class NeonCore {
    * @param {string} pageURI - The zero-indexed page number.
    * @returns {Promise} If an action was redone or not.
    */
-  redo (pageURI) {
-    return new Promise((resolve, reject) => {
+  redo (pageURI: string): Promise<boolean> {
+    return new Promise((resolve) => {
       if (this.redoStacks.has(pageURI)) {
         let state = this.redoStacks.get(pageURI).pop();
         if (state !== undefined) {
@@ -470,11 +479,11 @@ class NeonCore {
       let key = pair[0];
       let value = pair[1];
       if (value.dirty) {
-        updateTimestamp ^= true;
+        updateTimestamp = true;
         let index = this.annotations.findIndex(elem => { return elem.target === key; });
         // try to update server with PUT (if applicable
         // only attempt if not a data URI
-        let uri;
+        let uri: string;
         if (!this.annotations[index].body.match(/^data:/)) {
           await window.fetch(this.annotations[index].body,
             {
@@ -498,7 +507,7 @@ class NeonCore {
         }
         // Update URI in annotations, database
         this.annotations[index].body = uri;
-        await this.db.get(this.annotations[index].id).then(doc => {
+        await this.db.get(this.annotations[index].id).then((doc: any) => {
           doc.body = uri;
           return this.db.put(doc);
         }).then(() => {
@@ -510,7 +519,7 @@ class NeonCore {
     }
 
     if (updateTimestamp) {
-      await this.db.get(this.manifest['@id']).then(doc => {
+      await this.db.get(this.manifest['@id']).then((doc: any) => {
         doc.timestamp = (new Date()).toISOString();
         return this.db.put(doc);
       }).catch(err => {

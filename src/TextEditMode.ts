@@ -1,17 +1,21 @@
-import { unselect } from './utils/SelectTools.js';
-import DragHandler from './utils/DragHandler.js';
-import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select.js';
-import { setGroupingHighlight } from './utils/Color.js';
+import { unselect } from './utils/SelectTools';
+import DragHandler from './utils/DragHandler';
+import NeonView from './NeonView';
+import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select';
+import { setGroupingHighlight } from './utils/Color';
 
 /**
  * A Text editing module that works with the SingleView and DivaView modules
  */
 export default class TextEditMode {
+  dragHandler: any;
+  neonView: NeonView;
+
   /**
    * Constructor for a TextEdit
    * @param {NeonView} neonView
    */
-  constructor (neonView) {
+  constructor (neonView: NeonView) {
     this.neonView = neonView;
     this.initEditModeControls();
   }
@@ -22,7 +26,7 @@ export default class TextEditMode {
   initEditModeControls () {
     document.getElementById('edit_mode').addEventListener('click', () => {
       this.initTextEdit();
-      if (document.getElementById('displayBBox').checked) {
+      if ((<HTMLInputElement>document.getElementById('displayBBox')).checked) {
         this.initSelectByBBoxButton();
       }
     });
@@ -71,7 +75,7 @@ export default class TextEditMode {
       document.body.addEventListener('keydown', (evt) => {
         if (evt.key === '5') {
           if (document.getElementById('selByBBox').style.display === '') {
-            selBySylListener().bind(this);
+            selBySylListener.bind(this)();
           }
         }
       });
@@ -89,7 +93,7 @@ export default class TextEditMode {
       button.classList.add('is-active');
       button.style.display = 'none';
       this.addBBoxListeners();
-      this.neonView.addUpdateCallback(this.addBBoxListeners.bind(this));
+      this.neonView.view.addUpdateCallback(this.addBBoxListeners.bind(this));
     }
   }
 
@@ -118,7 +122,7 @@ export default class TextEditMode {
   * Update the text for a single syl element
   * @param {HTMLElement} span
   */
-  updateSylText (span) {
+  updateSylText (span: HTMLSpanElement) {
     let orig = formatRaw(span.textContent);
     let corrected = window.prompt('', orig);
     if (corrected !== null && corrected !== orig) {
@@ -143,7 +147,7 @@ export default class TextEditMode {
  * @param {string} rawString
  * @returns {string}
  */
-function formatRaw (rawString) {
+function formatRaw (rawString: string): string {
   let removeSymbol = /\u{25CA}/u;
   return rawString.replace(removeSymbol, '').trim();
 }

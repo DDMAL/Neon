@@ -1,14 +1,18 @@
 /** @module InfoModule */
 
+import NeonView from './NeonView';
+
 /**
  * Class that manages getting information for elements in Neon from Verovio.
  */
 class InfoModule {
+  neonView: NeonView;
+
   /**
    * A constructor for an InfoModule.
    * @param {NeonView} neonView - The NeonView parent.
    */
-  constructor (neonView) {
+  constructor (neonView: NeonView) {
     this.neonView = neonView;
     // Add info box enable/disable check box
     let block = document.getElementById('extensible-block');
@@ -62,10 +66,10 @@ class InfoModule {
    * Get updated info for the calling element based on its element type.
    * Makes calls to NeonCore to get the information necessary.
    */
-  async updateInfo (event) {
+  async updateInfo (event: MouseEvent) {
   // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the <g> element
   // So we will simply return if ID does not exist for now
-    let id = event.currentTarget.id;
+    let id = (<HTMLElement>event.currentTarget).id;
     if (id === '') {
       Array.from(document.getElementById('neume_info').children).forEach(child => {
         child.remove();
@@ -84,10 +88,10 @@ class InfoModule {
     switch (elementClass) {
       case 'neume':
         // Select neume components of selected neume
-        var ncs = element.querySelectorAll('.nc');
+        var ncs = <NodeListOf<SVGGraphicsElement>>element.querySelectorAll('.nc');
         var contour = await this.getContour(ncs);
         if (contour === 'Clivis') {
-          var attr = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
+          var attr: any = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
           if (attr.ligated) {
             contour = 'Ligature';
           }
@@ -107,12 +111,6 @@ class InfoModule {
         body += 'Shape: ' + attributes.shape + '\r\n' +
                 'Line: ' + attributes.line;
         break;
-      case 'staff':
-        elementClass = 'clef';
-        var staffDefAttributes = await this.neonView.getElementStaffDef(id);
-        body = 'Shape: ' + staffDefAttributes['clef.shape'] + '\r\n' +
-                'Line: ' + staffDefAttributes['clef.line'];
-        break;
       default:
         body += 'nothing';
         break;
@@ -124,10 +122,10 @@ class InfoModule {
    * Get the individual pitches of a neume.
    * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
    */
-  async getPitches (ncs) {
+  async getPitches (ncs: Iterable<SVGGraphicsElement>): Promise<string> {
     var pitches = '';
     for (let nc of ncs) {
-      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
+      var attributes: any = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
       pitches += attributes.pname + attributes.oct + ' ';
     }
     return pitches;
@@ -137,11 +135,11 @@ class InfoModule {
    * Get the contour of a neume.
    * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
    */
-  async getContour (ncs) {
+  async getContour (ncs: Iterable<SVGGraphicsElement>) {
     var contour = '';
-    var previous = null;
+    var previous: any = null;
     for (let nc of ncs) {
-      var attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
+      var attributes: any = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
       if (previous !== null) {
         if (previous.oct > attributes.oct) {
           contour += 'd';
@@ -159,10 +157,10 @@ class InfoModule {
       }
       previous = attributes;
     }
-    if (InfoModule.neumeGroups.get(contour) === undefined) {
+    if (neumeGroups.get(contour) === undefined) {
       console.warn('Unknown contour: ' + contour);
     }
-    return InfoModule.neumeGroups.get(contour);
+    return neumeGroups.get(contour);
   }
 
   /**
@@ -170,13 +168,13 @@ class InfoModule {
    * @param {string} title - The info box title.
    * @param {string} body - The info box contents.
    */
-  updateInfoModule (title, body) {
+  updateInfoModule (title: string, body: string) {
     document.getElementsByClassName('message-header')[0].querySelector('p')
       .textContent = title;
-    document.getElementsByClassName('message-body')[0].innerText = body;
+    (<HTMLElement>document.getElementsByClassName('message-body')[0]).innerText = body;
 
-    if (document.getElementById('displayInfo').checked) {
-      document.getElementsByClassName('message')[0].display = '';
+    if ((<HTMLInputElement>document.getElementById('displayInfo')).checked) {
+      (<HTMLElement>document.getElementsByClassName('message')[0]).style.display = '';
     }
   }
 
@@ -185,7 +183,7 @@ class InfoModule {
    * @param {string} pname - The pitch name.
    * @returns {number}
    */
-  pitchNameToNum (pname) {
+  pitchNameToNum (pname: string): number {
     switch (pname) {
       case 'c':
         return 1;
@@ -211,8 +209,8 @@ class InfoModule {
    * @param {string} value - the value name.
    * @returns {string}
    */
-  getContourByValue (value) {
-    for (let [cont, v] of InfoModule.neumeGroups.entries()) {
+  getContourByValue (value: string): string {
+    for (let [cont, v] of neumeGroups.entries()) {
       if (v === value) {
         return cont;
       }
@@ -223,7 +221,7 @@ class InfoModule {
 /**
  * Map of contours to neume names.
  */
-InfoModule.neumeGroups = new Map(
+var neumeGroups = new Map(
   [['', 'Punctum'], ['u', 'Pes'], ['d', 'Clivis'], ['uu', 'Scandicus'], ['ud', 'Torculus'], ['du', 'Porrectus'], ['s', 'Distropha'], ['ss', 'Tristopha'],
     ['sd', 'Pressus'], ['dd', 'Climacus'], ['ddu', 'Climacus resupinus'], ['udu', 'Torculus resupinus'], ['dud', 'Porrectus flexus'],
     ['udd', 'Pes subpunctis'], ['uud', 'Scandicus flexus'], ['uudd', 'Scandicus subpunctis'], ['dudd', 'Porrectus subpunctis']]
@@ -250,7 +248,7 @@ function startInfoVisibility () {
  */
 function updateInfoVisibility () {
   let neumeInfo = document.getElementById('neume_info');
-  if (document.getElementById('displayInfo').checked) {
+  if ((<HTMLInputElement>document.getElementById('displayInfo')).checked) {
     neumeInfo.classList.remove('is-invisible');
   } else {
     neumeInfo.classList.add('is-invisible');

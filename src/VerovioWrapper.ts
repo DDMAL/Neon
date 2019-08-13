@@ -1,9 +1,10 @@
-import VerovioWorker from './VerovioWorker.js';
+const VerovioWorker = require('./VerovioWorker.js');
 
 /**
  * A wrapper around the verovio web worker to permit mocking in tests.
  */
 export default class VerovioWrapper {
+  verovioWorker: any;
   constructor () {
     this.verovioWorker = new VerovioWorker();
   }
@@ -13,7 +14,7 @@ export default class VerovioWrapper {
    * @param {string} type - The event to listen to.
    * @param {function} handler - The function to be called when the event occurs.
    */
-  addEventListener (type, handler) {
+  addEventListener (type: string, handler: Function) {
     return this.verovioWorker.addEventListener(type, handler);
   }
 
@@ -21,7 +22,7 @@ export default class VerovioWrapper {
    * Send a message to the actual web worker.
    * @param {object} message - The message to be sent.
    */
-  postMessage (message) {
+  postMessage (message: object) {
     return this.verovioWorker.postMessage(message);
   }
 }

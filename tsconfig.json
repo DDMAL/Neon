@@ -2,9 +2,12 @@
     "compilerOptions": {
         "outDir": "./build",
         "allowJs": true,
-        "target": "es6"
+        "target": "es6",
+        "sourceMap": true,
+        "module": "commonjs",
+        "allowSyntheticDefaultImports": true
     },
     "include": [
-        "./src/**/*"
+        "./src/**/*.ts"
     ]
 }

@@ -1,12 +1,16 @@
-import { bindInsertTabs, initInsertEditControls, initEditModeControls, initSelectionButtons } from './Controls.js';
-import * as Select from '../utils/Select.js';
-import InsertHandler from './InsertHandler.js';
-import * as SelectOptions from './SelectOptions.js';
-import { setHighlightSelectionControls } from '../DisplayPanel/DisplayControls.js';
-import DragHandler from '../utils/DragHandler.js';
+import { bindInsertTabs, initInsertEditControls, initEditModeControls, initSelectionButtons } from './Controls';
+import * as Select from '../utils/Select';
+import InsertHandler from './InsertHandler';
+import NeonView from '../NeonView';
+import * as SelectOptions from './SelectOptions';
+import { setHighlightSelectionControls } from '../DisplayPanel/DisplayControls';
+import DragHandler from '../utils/DragHandler';
 
 class DivaEdit {
-  constructor (neonView) {
+  neonView: NeonView;
+  dragHandler: any;
+  insertHandler: any;
+  constructor (neonView: NeonView) {
     this.neonView = neonView;
     initEditModeControls(this);
   }
@@ -38,7 +42,7 @@ class DivaEdit {
    * Get the user mode that Neon is in. Either insert, edit, or viewer.
    * @returns {string}
    */
-  getUserMode () {
+  getUserMode (): string {
     if (this.insertHandler !== undefined) {
       if (this.insertHandler.isInsertMode()) {
         return 'insert';

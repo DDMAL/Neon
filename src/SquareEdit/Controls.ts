@@ -1,16 +1,19 @@
 /** @module SquareEdit/Controls */
 
-import * as Contents from './Contents.js';
-import * as Cursor from '../utils/Cursor.js';
-import { setGroupingHighlight } from '../utils/Color.js';
-import Icons from '../img/icons.svg';
-import { unselect } from '../utils/SelectTools.js';
+import * as Contents from './Contents';
+import * as Cursor from '../utils/Cursor';
+import { setGroupingHighlight } from '../utils/Color';
+const Icons = require('../img/icons.svg');
+import { unselect } from '../utils/SelectTools';
+import SingleEditMode from './SingleEditMode';
+import DivaEditMode from './DivaEditMode';
+import InsertHandler from './InsertHandler';
 
 /**
  * Set listener on EditMode button.
  * @param {EditMode} editMode - The EditMode object.
  */
-export function initEditModeControls (editMode) {
+export function initEditModeControls (editMode: (SingleEditMode | DivaEditMode)) {
   document.getElementById('edit_mode').addEventListener('click', function () {
     document.getElementById('insert_controls').innerHTML += Contents.insertControlsPanel;
     document.getElementById('edit_controls').innerHTML += Contents.editControlsPanel;
@@ -22,7 +25,7 @@ export function initEditModeControls (editMode) {
  * Bind listeners to insert tabs.'
  * @param {InsertHandler} insertHandler - An InsertHandler to run the tasks.
  */
-export function bindInsertTabs (insertHandler) {
+export function bindInsertTabs (insertHandler: any) {
   var insertTabs = Array.from(document.getElementsByClassName('insertTab'));
   var tabIds = insertTabs.map((tab, i) => { return tab.id; });
 

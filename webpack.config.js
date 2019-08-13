@@ -5,10 +5,10 @@ const childProcess = require('child_process');
 let commitHash = childProcess.execSync('git rev-parse --short HEAD').toString();
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
   entry: {
-    editor: './src/editor.js',
-    pretty: './src/pretty.js'
+    editor: './src/editor.ts',
+    pretty: './src/pretty.ts'
   },
   output: {
     path: path.resolve(__dirname, 'public'),
@@ -18,8 +18,16 @@ module.exports = {
   node: {
     fs: 'empty'
   },
+  devtool: 'source-map',
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        use: [
+          'awesome-typescript-loader'
+        ],
+        exclude: /node_modules/
+      },
       {
         test: /\.css$/,
         use: [
@@ -59,9 +67,11 @@ module.exports = {
       }
     ]
   },
+  resolve: {
+    extensions: [ '.ts', '.js' ]
+  },
   externals: {
     'verovio-dev': 'verovio',
-    jquery: 'jQuery',
     d3: 'd3'
   },
   plugins: [

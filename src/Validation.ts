@@ -1,8 +1,8 @@
 /** @module Validation */
 
- const schemaPromise = import('./validation/mei-all.rng');
-
-import Worker from './Worker.js';
+// const schemaPromise = import('./validation/mei-all.rng');
+const schemaPromise = require('./validation/mei-all.rng');
+const Worker = require('./Worker.js');
 var worker, schema, statusField;
 
 /**

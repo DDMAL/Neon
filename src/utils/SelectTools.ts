@@ -1,10 +1,12 @@
 /** @module utils/SelectTools */
 
-import * as Color from './Color.js';
-import { updateHighlight } from '../DisplayPanel/DisplayControls.js';
-import * as Grouping from '../SquareEdit/Grouping.js';
-import { Resize } from './Resize.js';
-import * as SelectOptions from '../SquareEdit/SelectOptions.js';
+import * as Color from './Color';
+import { updateHighlight } from '../DisplayPanel/DisplayControls';
+import * as Grouping from '../SquareEdit/Grouping';
+import { Resize } from './Resize';
+import NeonView from '../NeonView';
+import InfoModule from '../InfoModule';
+import * as SelectOptions from '../SquareEdit/SelectOptions';
 
 const d3 = require('d3');
 
@@ -12,7 +14,7 @@ const d3 = require('d3');
  * Get the selection mode chosen by the user.
  * @returns {string|null}
  */
-export function getSelectionType () {
+export function getSelectionType (): string {
   let element = document.getElementsByClassName('sel-by is-active');
   if (element.length !== 0) {
     return element[0].id;
@@ -26,7 +28,7 @@ export function getSelectionType () {
  * actions.
  */
 export function unselect () {
-  document.querySelectorAll('.selected').forEach(selected => {
+  document.querySelectorAll('.selected').forEach((selected: SVGGElement) => {
     selected.classList.remove('selected');
     if (selected.classList.contains('staff')) {
       selected.removeAttribute('style');
@@ -41,11 +43,11 @@ export function unselect () {
     el.setAttribute('font-weight', '');
     el.classList.remove('text-select');
   });
-  Array.from(document.getElementsByClassName('sylTextRect-display')).forEach(sylRect => {
+  Array.from(document.getElementsByClassName('sylTextRect-display')).forEach((sylRect: HTMLElement) => {
     sylRect.style.fill = 'blue';
   });
 
-  Array.from(document.getElementsByClassName('syllable-highlighted')).forEach(syllable => {
+  Array.from(document.getElementsByClassName('syllable-highlighted')).forEach((syllable: HTMLElement) => {
     syllable.style.fill = '';
     syllable.classList.add('syllable');
     syllable.classList.remove('syllable-highlighted');
@@ -68,7 +70,7 @@ export function unselect () {
  * @param {SVGGraphicsElement} el
  * @param {DragHandler} [dragHandler]
  */
-export function select (el, dragHandler) {
+export function select (el: SVGGraphicsElement, dragHandler?: any) {
   if (el.classList.contains('staff')) {
     return selectStaff(el, dragHandler);
   }
@@ -77,7 +79,7 @@ export function select (el, dragHandler) {
     el.classList.add('selected');
     el.style.fill = '#d00';
     if (el.querySelectorAll('.sylTextRect-display').length) {
-      el.querySelectorAll('.sylTextRect-display').forEach(elem => {
+      el.querySelectorAll('.sylTextRect-display').forEach((elem: HTMLElement) => {
         elem.style.fill = 'red';
       });
     }
@@ -89,7 +91,7 @@ export function select (el, dragHandler) {
     }
     if (sylId !== undefined) {
       let spans = document.querySelectorAll('span.' + sylId);
-      spans.forEach(span => {
+      spans.forEach((span: HTMLElement) => {
         span.style.color = '#d00';
         span.style.fontWeight = 'bold';
         span.classList.add('text-select');
@@ -105,17 +107,17 @@ export function select (el, dragHandler) {
  * @param {DragHandler} dragHandler - An instantiated DragHandler.
  * @param {NeonView} neonView - The NeonView parent
  */
-export async function selectNcs (el, neonView, dragHandler) {
-  if (!el.parentNode.classList.contains('selected')) {
-    var parent = el.parentNode;
+export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dragHandler: any) {
+  if (!el.parentElement.classList.contains('selected')) {
+    var parent = <SVGGraphicsElement><unknown>el.parentElement;
     unselect();
     select(parent);
     if (await isLigature(parent, neonView)) {
-      var prevNc = parent.previousSibling;
+      var prevNc = <SVGGraphicsElement><unknown>parent.previousSibling;
       if (await isLigature(prevNc, neonView)) {
         select(prevNc);
       } else {
-        var nextNc = parent.nextSibling;
+        var nextNc = <SVGGraphicsElement><unknown>parent.nextSibling;
         if (await isLigature(nextNc, neonView)) {
           select(nextNc);
         } else {
@@ -137,8 +139,8 @@ export async function selectNcs (el, neonView, dragHandler) {
  * @param {SVGGraphicsElement} nc - The neume component to check.
  * @returns {boolean}
  */
-export async function isLigature (nc, neonView) {
-  var attributes = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPageURI());
+export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): Promise<boolean> {
+  var attributes: any = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPageURI());
   return (attributes.ligated === 'true');
 }
 
@@ -147,7 +149,7 @@ export async function isLigature (nc, neonView) {
  * @param {Array<Element>} elements - The array of elements.
  * @returns {boolean} - If the elements share the same second level parent.
  */
-export function sharedSecondLevelParent (elements) {
+export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
   let tempElements = Array.from(elements);
   let firstElement = tempElements.pop();
   let secondParent = firstElement.parentElement.parentElement;
@@ -165,10 +167,10 @@ export function sharedSecondLevelParent (elements) {
  * @param {SVGGElement} staff
  * @returns {object}
  */
-export function getStaffBBox (staff) {
+export function getStaffBBox (staff: SVGGElement): {ulx: number, uly: number, lrx: number, lry: number} {
   let ulx, uly, lrx, lry;
   staff.querySelectorAll('path').forEach(path => {
-    let segments = path.pathSegList;
+    let segments: any = path.pathSegList;
     if (uly === undefined || segments[0].y < uly) {
       uly = segments[0].y;
     }
@@ -190,14 +192,15 @@ export function getStaffBBox (staff) {
  * @param {SVGGElement} el - the bbox (sylTextRect) element in the DOM
  * @param {DragHandler} dragHandler - the drag handler in use
  */
-export function selectBBox (el, dragHandler, resizeHandler) {
+export function selectBBox (el: SVGGraphicsElement, dragHandler: any, resizeHandler: any) {
   let bbox = el;
   let syl = bbox.closest('.syl');
   if (!syl.classList.contains('selected')) {
     syl.classList.add('selected');
     bbox.style.fill = '#d00';
-    el.closest('.syllable').style.fill = 'red';
-    el.closest('.syllable').classList.add('syllable-highlighted');
+    let closest = <HTMLElement>el.closest('syllable');
+    closest.style.fill = 'red';
+    closest.classList.add('syllable-highlighted');
     if (resizeHandler !== undefined) {
       resizeHandler.drawInitialRect();
     }
@@ -206,7 +209,7 @@ export function selectBBox (el, dragHandler, resizeHandler) {
     }
     var sylId = el.closest('.syllable').id;
     if (sylId !== undefined) {
-      let span = document.querySelector('span.' + sylId);
+      let span: HTMLSpanElement = document.querySelector('span.' + sylId);
       if (span) {
         span.style.color = '#d00';
         span.style.fontWeight = 'bold';
@@ -220,7 +223,7 @@ export function selectBBox (el, dragHandler, resizeHandler) {
  * Select not neume elements.
  * @param {SVGGraphicsElement[]} notNeumes - An array of not neumes elements.
  */
-export function selectNn (notNeumes) {
+export function selectNn (notNeumes: SVGGraphicsElement[]) {
   if (notNeumes.length > 0) {
     notNeumes.forEach(nn => { select(nn); });
     return false;
@@ -234,7 +237,7 @@ export function selectNn (notNeumes) {
  * @param {SVGGElement} staff - The staff element in the DOM.
  * @param {DragHandler} dragHandler - The drag handler in use.
  */
-export function selectStaff (staff, dragHandler) {
+export function selectStaff (staff: SVGGElement, dragHandler: any) {
   if (!staff.classList.contains('selected')) {
     staff.classList.add('selected');
     Color.highlight(staff, '#d00');
@@ -249,7 +252,7 @@ export function selectStaff (staff, dragHandler) {
  * @param {InfoModule} info
  * @param {DragHandler} dragHandler
  */
-export async function selectAll (elements, neonView, info, dragHandler) {
+export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: NeonView, info: InfoModule, dragHandler: any) {
   let selectionType = getSelectionType();
   unselect();
   if (elements.length === 0) {
@@ -292,7 +295,7 @@ export async function selectAll (elements, neonView, info, dragHandler) {
         console.warn('Element ' + element.id + ' is not part of specified group and is not a clef or custos.');
         continue;
       }
-      containsClefOrCustos |= true;
+      containsClefOrCustos = containsClefOrCustos || true;
     }
     groupsToSelect.add(grouping);
 
@@ -308,11 +311,11 @@ export async function selectAll (elements, neonView, info, dragHandler) {
   }
 
   // Select the elements
-  groupsToSelect.forEach(group => { select(group, dragHandler); });
+  groupsToSelect.forEach((group: SVGGraphicsElement) => { select(group, dragHandler); });
 
   /* Determine the context menu to display (if any) */
 
-  let groups = Array.from(groupsToSelect.values());
+  let groups: SVGGraphicsElement[] = <SVGGraphicsElement[]>Array.from(groupsToSelect.values());
 
   // Handle occurance of clef or custos
   if (containsClefOrCustos) {
@@ -377,8 +380,8 @@ export async function selectAll (elements, neonView, info, dragHandler) {
               let secondLayer = secondStaff.querySelector('.layer');
 
               // Check that the first staff has either syllable as the last syllable
-              let firstSyllableChildren = Array.from(firstLayer.children).filter(elem => elem.classList.contains('syllable'));
-              let secondSyllableChildren = Array.from(secondLayer.children).filter(elem => elem.classList.contains('syllable'));
+              let firstSyllableChildren = <HTMLElement[]>Array.from(firstLayer.children).filter((elem: HTMLElement) => elem.classList.contains('syllable'));
+              let secondSyllableChildren = <HTMLElement[]>Array.from(secondLayer.children).filter((elem: HTMLElement) => elem.classList.contains('syllable'));
               let lastSyllable = firstSyllableChildren[firstSyllableChildren.length - 1];
               let firstSyllable = secondSyllableChildren[0];
               if (lastSyllable.id === groups[0].id && firstSyllable.id === groups[1].id) {
@@ -432,22 +435,22 @@ export async function selectAll (elements, neonView, info, dragHandler) {
                 // Check that second neume component is lower than first.
                 // Note that the order in the list may not be the same as the
                 // order by x-position.
-                let orderFirstX = groups[0].children[0].x.baseVal.value;
-                let orderSecondX = groups[1].children[0].x.baseVal.value;
+                let orderFirstX = (<SVGUseElement>groups[0].children[0]).x.baseVal.value;
+                let orderSecondX = (<SVGUseElement>groups[1].children[0]).x.baseVal.value;
                 let posFirstY, posSecondY;
 
                 if (orderFirstX < orderSecondX) {
-                  posFirstY = groups[0].children[0].y.baseVal.value;
-                  posSecondY = groups[1].children[0].y.baseVal.value;
+                  posFirstY = (<SVGUseElement>groups[0].children[0]).y.baseVal.value;
+                  posSecondY = (<SVGUseElement>groups[1].children[0]).y.baseVal.value;
                 } else {
-                  posFirstY = groups[1].children[0].y.baseVal.value;
-                  posSecondY = groups[0].children[0].y.baseVal.value;
+                  posFirstY = (<SVGUseElement>groups[1].children[0]).y.baseVal.value;
+                  posSecondY = (<SVGUseElement>groups[0].children[0]).y.baseVal.value;
                 }
 
                 // Also ensure both components are marked or not marked as ligatures.
                 let isFirstLigature = await isLigature(groups[0], neonView);
                 let isSecondLigature = await isLigature(groups[1], neonView);
-                if ((posSecondY > posFirstY) && !(isFirstLigature ^ isSecondLigature)) {
+                if ((posSecondY > posFirstY) && !(isFirstLigature !== isSecondLigature)) {
                   Grouping.triggerGrouping('ligature');
                   break;
                 }
