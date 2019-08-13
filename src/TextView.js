@@ -120,7 +120,7 @@ class TextView {
             neume.classList.add('selected');
           });
           if (rect !== null) {
-            rect.style.fill = '#d00';
+            rect.setAttribute('fill', '#d00');
           }
           // syl.attr('fill', '#ffc7c7');
           // this.highlightBoundingBox(span);
@@ -132,8 +132,8 @@ class TextView {
             neume.classList.remove('selected');
           });
           if (rect !== null) {
-            if (syllable.style.fill !== 'rgb(0, 0, 0)') {
-              rect.style.fill = syllable.style.fill;
+            if (syllable.style.fill !== 'rgb(0, 0, 0)') { // syllable.getAttributeNS('http://www.w3.org/2000/SVG', 'fill');
+              rect.setAttribute('fill', syllable.getAttribute('fill'));
             } else {
               rect.style.fill = 'blue';
             }
