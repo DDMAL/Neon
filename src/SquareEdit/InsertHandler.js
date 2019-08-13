@@ -205,10 +205,6 @@ function InsertHandler (neonView, sel) {
       editorAction['param']['attributes'] = attributes;
     }
 
-    if (attributes['shape'] === 'F' ) {
-      editorAction['param']['ulx'] = editorAction['param']['ulx'] - 50;
-    }
-
     neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(() => {
       neonView.updateForCurrentPage();
     });
