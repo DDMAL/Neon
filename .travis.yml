@@ -1,7 +1,5 @@
 language: node_js
 node_js: lts/*
-env:
-  - NODE_OPTIONS=--max_old_space_size=2048
 os: osx
 osx_image: xcode10.2
 if: (branch = master OR branch = develop)
