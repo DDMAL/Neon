@@ -7,6 +7,7 @@ import SingleEditMode from './SquareEdit/SingleEditMode';
 import InfoModule from './InfoModule';
 import TextView from './TextView';
 import TextEditMode from './TextEditMode';
+import { NeonManifest } from './utils/NeonManifest';
 
 declare var manifestText: string;
 
@@ -15,7 +16,7 @@ init();
 
 async function init () {
   if (manifestText !== '') {
-    let manifest = JSON.parse(manifestText);
+    let manifest: NeonManifest = JSON.parse(manifestText);
     let params = {
       manifest: manifest,
       Display: DisplayPanel,

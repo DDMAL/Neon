@@ -1,5 +1,6 @@
 import NeonView from './NeonView';
 import DisplayPanel from './DisplayPanel/DisplayPanel';
+import { DisplayConstructable, ViewInterface } from './Interfaces';
 
 declare var Diva: any;
 
@@ -7,7 +8,7 @@ declare var Diva: any;
  * View module that uses the diva.js viewer to render the pages of a IIIF manifests
  * and then display the rendered MEI files over the proper pages.
  */
-class DivaView {
+class DivaView implements ViewInterface {
   neonView: NeonView;
   updateCallbacks: Function[];
   divaReady: boolean;
@@ -23,7 +24,7 @@ class DivaView {
    * @param {function} Display - A constructor for a DisplayPanel
    * @param {string} manifest - Link to the IIIF manifest.
    */
-  constructor (neonView: NeonView, Display: (a: DivaView, b: string, c: string) => void, manifest: string) {
+  constructor (neonView: NeonView, Display: DisplayConstructable, manifest: string) {
     this.neonView = neonView;
     this.updateCallbacks = [];
     this.divaReady = false;
@@ -66,7 +67,7 @@ class DivaView {
    * @param {boolean} [delay=true] - whether to delay the loading of the page. defaults to true
    * delay the loading of the page when scrolling so that neon doesn't lag while scrolling
    */
-  async changePage (pageIndex: number, delay: boolean = true) {
+  async changePage (pageIndex: number, delay: boolean = true): Promise<void> {
     let pageIndexes = [pageIndex];
     Array.from(document.getElementsByClassName('active-page')).forEach(elem => {
       elem.classList.remove('active-page');
@@ -115,7 +116,7 @@ class DivaView {
    * Adjust the rendered SVG(s) to be the correct size after zooming.
    * @param {number} zoomLevel - The new diva.js zoom level.
    */
-  adjustZoom (zoomLevel: number) {
+  adjustZoom (_zoomLevel: number) {
     (new Promise((resolve) => {
       Array.from(document.getElementsByClassName('neon-container'))
         .forEach((elem: HTMLElement) => { elem.style.display = 'none'; });

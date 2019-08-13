@@ -3,6 +3,7 @@ import * as Cursor from '../utils/Cursor';
 import NeonView from '../NeonView';
 import DisplayPanel from '../DisplayPanel/DisplayPanel';
 import ZoomHandler from './Zoom';
+import { ViewInterface } from '../Interfaces';
 
 import * as d3 from 'd3';
 
@@ -18,7 +19,7 @@ import * as d3 from 'd3';
 /**
  * A view module for displaying a single page of a manuscript.
  */
-class SingleView {
+class SingleView implements ViewInterface {
   neonView: NeonView;
   container: HTMLElement;
   updateCallbacks: Function[];
@@ -96,7 +97,7 @@ class SingleView {
    * @param {number} page
    * @param {boolean} delay. defaults to false
    */
-  async changePage (page: number, delay: boolean = false) {
+  async changePage (_page: number, _delay: boolean = false) {
     let svg = await this.neonView.getPageSVG(this.getCurrentPageURI());
     this.updateSVG(svg);
   }

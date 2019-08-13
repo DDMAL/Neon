@@ -5,13 +5,14 @@ const Icons = require('../img/icons.svg');
 import SingleView from '../SingleView/SingleView';
 import DivaView from '../DivaView';
 import ZoomHandler from '../SingleView/Zoom';
+import { DisplayInterface, ViewInterface } from '../Interfaces';
 
 /**
  * A class that sets the content of the display panel to the right and
  * manages controls for viewing.
  */
-class DisplayPanel {
-  view: (SingleView | DivaView);
+class DisplayPanel implements DisplayInterface {
+  view: ViewInterface;
   className: string;
   background: string;
   zoomHandler: ZoomHandler;

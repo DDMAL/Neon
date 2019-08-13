@@ -9,8 +9,7 @@ import InfoModule from '../InfoModule';
 import DragHandler from './DragHandler';
 import * as SelectOptions from '../SquareEdit/SelectOptions';
 
-const d3 = require('d3');
-
+import * as d3 from 'd3';
 /**
  * Get the selection mode chosen by the user.
  * @returns {string|null}

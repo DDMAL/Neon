@@ -1,26 +1,15 @@
 import NeonCore from './NeonCore';
 
 import { parseManifest, NeonManifest } from './utils/NeonManifest';
-import SingleView from './SingleView/SingleView';
-import DivaView from './DivaView';
 import InfoModule from './InfoModule';
-import DisplayPanel from './DisplayPanel/DisplayPanel';
 import SingleEditMode from './SquareEdit/SingleEditMode';
 import DivaEditMode from './SquareEdit/DivaEditMode';
 import TextView from './TextView';
 import TextEditMode from './TextEditMode';
 import { prepareEditMode } from './utils/EditControls';
 import setBody from './utils/template/Template';
+import * as Interfaces from './Interfaces';
 
-export interface NeonViewParams {
-  manifest: NeonManifest,
-  View: (a,b,c) => void,
-  Display: (a,b,c,d) => void,
-  Info: (a: NeonView) => void,
-  NeumeEdit?: (a: NeonView) => void,
-  TextView?: (a: NeonView) => void,
-  TextEdit?: (a: NeonView) => void
-}
 
 /**
  * NeonView class. Manages the other modules of Neon and communicates with
@@ -28,7 +17,7 @@ export interface NeonViewParams {
  */
 class NeonView {
   manifest: NeonManifest;
-  view: (SingleView | DivaView);
+  view: Interfaces.ViewInterface;
   name: string;
   core: NeonCore;
   info: InfoModule;
@@ -48,7 +37,7 @@ class NeonView {
    * @param {object} [params.TextView] - Constructor for TextView module
    * @param {object} [params.TextEdit] - Constructor for TextEdit module
    */
-  constructor (params: any) {
+  constructor (params: Interfaces.NeonViewParams) {
     setBody();
 
     if (!parseManifest(params.manifest)) {
@@ -158,7 +147,7 @@ class NeonView {
    * @param {string} pageURI - The URI of the page to perform the action on
    * @returns {Promise} A promise that resolves to the result of the action.
    */
-  edit (action, pageURI) {
+  edit (action: Object, pageURI: string): Promise<boolean> {
     return this.core.edit(action, pageURI);
   }
 
@@ -168,7 +157,7 @@ class NeonView {
    * @param {string} pageURI - The URI of the page the element is found on
    * @returns {Promise} A promise that resolves to the available attributes.
    */
-  getElementAttr (elementID, pageURI) {
+  getElementAttr (elementID: string, pageURI: string): Promise<any> {
     return this.core.getElementAttr(elementID, pageURI);
   }
 
@@ -176,7 +165,7 @@ class NeonView {
    * Updates browser database and creates JSON-LD save file.
    * @returns {Promise} A promise that resolves when the save action is finished.
    */
-  export () {
+  export (): Promise<string | ArrayBuffer> {
     // return this.core.updateDatabase();
     return (new Promise((resolve, reject) => {
       this.core.updateDatabase().then(() => {
@@ -213,9 +202,9 @@ class NeonView {
    * @param {number} pageNo - The zero-indexed page to encode.
    * @returns {Promise} A promise that resolves to the URI.
    */
-  getPageURI (pageNo): Promise<string> {
+  getPageURI (pageNo: string): Promise<string> {
     if (pageNo === undefined) {
-      pageNo = this.view.getCurrentPage();
+      pageNo = this.view.getCurrentPageURI();
     }
     return new Promise((resolve) => {
       this.core.getMEI(pageNo).then((mei) => {
@@ -238,7 +227,7 @@ class NeonView {
    * @param {number} pageNo - The zero-indexed page to get.
    * @returns {Promise} A promise that resolves to the SVG.
    */
-  getPageSVG (pageNo) {
+  getPageSVG (pageNo: string): Promise<SVGSVGElement> {
     return this.core.getSVG(pageNo);
   }
 }
