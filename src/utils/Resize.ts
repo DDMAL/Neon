@@ -1,12 +1,11 @@
-/** @module utils/Resize */
-
-/* for resizing objects.
- * current use cases: bounding boxes and staves
- */
-
 import { getStaffBBox, selectBBox, selectStaff } from './SelectTools';
+import NeonView from '../NeonView';
+import DragHandler from './DragHandler';
 
 import * as d3 from 'd3';
+
+type Point = { x: number, y: number, name: number };
+
 /**
  * The points you can click and drag to resize
  */
@@ -24,40 +23,34 @@ const PointNames = {
 /**
  * Handle the resizing of the selected object.
  * @constructor
- * @param {string} elementId - The ID of the element to resize.
- * @param {NeonView} neonView - The NeonView parent for editing and refreshing.
- * @param {DragHandler} dragHandler - A drag handler object.
+ * @param elementId - The ID of the element to resize.
  */
-function Resize (elementId, neonView, dragHandler) {
+function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler) {
   var element = <SVGGElement><unknown>document.getElementById(elementId);
   /**
    * The upper-left x-coordinate of the element.
-   * @type {number}
    */
-  var ulx;
+  var ulx: number;
   /**
    * The upper-left y-coordinate of the element.
-   * @type {number}
    */
-  var uly;
+  var uly: number;
   /**
    * The lower-right x-coordinate of the element.
-   * @type {number}
    */
-  var lrx;
+  var lrx: number;
   /**
    * The lower-right y-coordinate of the element.
-   * @type {number}
    */
-  var lry;
+  var lry: number;
 
   /**
    * The skew of the rect in radians.
-   * @type {number}
    */
-  var skew;
+  var skew: number;
 
-  var initialPoint, initialUly, initialLry, whichSkewPoint, initialY, initialRectY, polyLen, dy, initialSkew;
+  var initialPoint: number[], initialUly: number, initialLry: number, whichSkewPoint: string,
+      initialY: number, initialRectY: number, polyLen: number, dy: number, initialSkew: number;
 
   /**
    * Draw the initial rectangle around the element
@@ -94,9 +87,9 @@ function Resize (elementId, neonView, dragHandler) {
         (segments[segments.length - 1].x - segments[0].x));
     }
 
-    var whichPoint;
+    var whichPoint: string;
 
-    var points = [
+    var points: Array<Point> = [
       { x: ulx, y: uly, name: PointNames.TopLeft },
       { x: (ulx + lrx) / 2, y: uly + (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Top },
       { x: lrx, y: uly + (lrx - ulx) * Math.sin(skew), name: PointNames.TopRight },
@@ -109,7 +102,7 @@ function Resize (elementId, neonView, dragHandler) {
 
     polyLen = points[2].x - points[0].x;
 
-    let pointString = points.filter((elem, index) => { return index % 2 === 0; })
+    let pointString = points.filter((_elem, index) => { return index % 2 === 0; })
       .map(elem => elem.x + ',' + elem.y)
       .join(' ');
 
@@ -122,7 +115,8 @@ function Resize (elementId, neonView, dragHandler) {
       .style('cursor', 'move')
       .style('stroke-dasharray', '20 10');
 
-    points.forEach((point) => {
+    for (let pointName in PointNames) {
+      let point: Point = points[PointNames[pointName]];
       d3.select(element.viewportElement).append('circle')
         .attr('cx', point.x)
         .attr('cy', point.y)
@@ -131,12 +125,12 @@ function Resize (elementId, neonView, dragHandler) {
         .attr('stroke-width', 4)
         .attr('fill', '#0099ff')
         .attr('class', 'resizePoint')
-        .attr('id', 'p' + point.name);
-    });
+        .attr('id', 'p-' + pointName);
+    }
 
     // do it as a loop instead of selectAll so that you can easily know which point was
     for (let name in PointNames) {
-      d3.select('#p' + name).filter('.resizePoint').call(
+      d3.select('#p-' + name).filter('.resizePoint').call(
         d3.drag()
           .on('start', () => { resizeStart(name); })
           .on('drag', resizeDrag)
@@ -182,11 +176,11 @@ function Resize (elementId, neonView, dragHandler) {
           .on('end', skewEnd));
     }
 
-    function skewStart (which) {
+    function skewStart (which: string) {
       let polygon = d3.select('#' + which);
       let points = polygon.attr('points');
       whichSkewPoint = which;
-      initialY = points.split(' ')[0].split(',')[1];
+      initialY = Number(points.split(' ')[0].split(',')[1]);
       initialRectY = (which === 'skewRight' ? lry : uly);
       initialSkew = skew;
     }
@@ -199,7 +193,7 @@ function Resize (elementId, neonView, dragHandler) {
         uly = initialRectY + dy;
         skew = tempSkew;
       }
-      redraw(); 
+      redraw();
     }
 
     function skewDragRight () {
@@ -240,9 +234,9 @@ function Resize (elementId, neonView, dragHandler) {
       });
     }
 
-    function resizeStart (name) {
+    function resizeStart (name: string) {
       whichPoint = name;
-      let point = points.find(point => { return point.name === name; });
+      let point = points.find(point => { return point.name === PointNames[name]; });
       initialPoint = [point.x, point.y];
       initialUly = uly;
       initialLry = lry;
@@ -250,7 +244,7 @@ function Resize (elementId, neonView, dragHandler) {
 
     function resizeDrag () {
       let currentPoint = d3.mouse(this);
-      switch (whichPoint) {
+      switch (PointNames[whichPoint]) {
         case PointNames.TopLeft:
           ulx = currentPoint[0];
           uly = currentPoint[1];
@@ -324,7 +318,7 @@ function Resize (elementId, neonView, dragHandler) {
    * Redraw the rectangle with the new bounds
    */
   function redraw () {
-    var points = [
+    var points: Point[] = [
       { x: ulx, y: uly, name: PointNames.TopLeft },
       { x: (ulx + lrx) / 2, y: uly + (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Top },
       { x: lrx, y: uly + (lrx - ulx) * Math.sin(skew), name: PointNames.TopRight },
@@ -335,17 +329,18 @@ function Resize (elementId, neonView, dragHandler) {
       { x: ulx, y: (uly + lry - (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Left }
     ];
 
-    let pointString = points.filter((elem, index) => { return index % 2 === 0; })
+    let pointString: string = points.filter((_elem, index) => { return index % 2 === 0; })
       .map(elem => elem.x + ',' + elem.y)
       .join(' ');
 
     d3.select('#resizeRect').attr('points', pointString);
 
-    points.forEach((point) => {
-      d3.select('#p' + point.name).filter('.resizePoint')
+    for (let pointName in PointNames) {
+      let point: Point = points[PointNames[pointName]];
+      d3.select('#p-' + pointName).filter('.resizePoint')
         .attr('cx', point.x)
         .attr('cy', point.y);
-    });
+    }
 
     let x = points[3].x;
     let y = points[3].y;
