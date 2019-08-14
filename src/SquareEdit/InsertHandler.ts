@@ -194,6 +194,9 @@ class InsertHandler {
 
     if (this.attributes !== null) {
       editorAction['param']['attributes'] = this.attributes;
+      if (this.attributes['shape'] === 'F') {
+        editorAction['param']['ulx'] -= 50;
+      }
     }
 
     this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(() => {
