@@ -24,7 +24,7 @@ export function initEditModeControls (editMode: NeumeEditInterface) {
  * Bind listeners to insert tabs.'
  * @param {InsertHandler} insertHandler - An InsertHandler to run the tasks.
  */
-export function bindInsertTabs (insertHandler: any) {
+export function bindInsertTabs (insertHandler: InsertHandler) {
   var insertTabs = Array.from(document.getElementsByClassName('insertTab'));
   var tabIds = insertTabs.map((tab) => { return tab.id; });
 
@@ -94,7 +94,7 @@ export function initInsertEditControls () {
  * @param {string} id - The ID of the insert action tab.
  * @param {InsertHandler} insertHandler - An InsertHandler object.
  */
-function activate (id: string, insertHandler: any) {
+function activate (id: string, insertHandler: InsertHandler) {
   document.getElementById(id).classList.add('is-active');
   if (document.getElementById(id).classList.contains('insertel')) {
     insertHandler.insertActive(id);
@@ -116,7 +116,7 @@ function deactivate (type: string) {
  * Bind listeners to insert tab elements.
  * @param {InsertHandler} insertHandler - An InsertHandler object.
  */
-function bindElements (insertHandler: any) {
+function bindElements (insertHandler: InsertHandler) {
   var insertElements = Array.from(document.getElementsByClassName('insertel'));
   var elementIds = insertElements.map(el => el.id);
   elementIds.forEach(el => {

@@ -10,7 +10,7 @@ import { NeumeEditInterface } from '../Interfaces';
 class DivaEdit implements NeumeEditInterface {
   neonView: NeonView;
   dragHandler: DragHandler;
-  insertHandler: any;
+  insertHandler: InsertHandler;
   constructor (neonView: NeonView) {
     this.neonView = neonView;
     initEditModeControls(this);

@@ -14,7 +14,7 @@ import { NeumeEditInterface } from '../Interfaces';
 class SingleEditMode implements NeumeEditInterface {
   neonView: NeonView;
   dragHandler: DragHandler;
-  insertHandler: any;
+  insertHandler: InsertHandler;
   /**
    * Constructor for an EditMode object.
    * @param {NeonView} neonView - The NeonView parent.
