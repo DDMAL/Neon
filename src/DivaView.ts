@@ -1,6 +1,7 @@
 import NeonView from './NeonView';
 import DisplayPanel from './DisplayPanel/DisplayPanel';
 import { DisplayConstructable, ViewInterface } from './Interfaces';
+import ZoomHandler from './SingleView/Zoom';
 
 declare var Diva: any;
 
@@ -16,7 +17,7 @@ class DivaView implements ViewInterface {
   private indexMap: Map<number, string>;
   private displayPanel: DisplayPanel;
   private loadDelay: number;
-  zoomHandler;
+  zoomHandler: ZoomHandler;
 
   /**
    * @param manifest - Link to the IIIF manifest.
@@ -83,7 +84,7 @@ class DivaView implements ViewInterface {
             container.classList.add('active-page');
           }
           this.updateCallbacks.forEach((callback: Function) => callback());
-        }).catch(err => {
+        }).catch((err: { name: string; }) => {
           if (err.name !== 'not_found' && err.name !== 'missing_mei') {
             console.error(err);
           }
