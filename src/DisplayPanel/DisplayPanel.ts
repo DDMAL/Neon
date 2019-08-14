@@ -2,8 +2,6 @@
 
 import * as DisplayControls from './DisplayControls';
 const Icons = require('../img/icons.svg');
-import SingleView from '../SingleView/SingleView';
-import DivaView from '../DivaView';
 import ZoomHandler from '../SingleView/Zoom';
 import { DisplayInterface, ViewInterface } from '../Interfaces';
 
@@ -24,7 +22,7 @@ class DisplayPanel implements DisplayInterface {
    * @param {string} background - The class name associated with the background.
    * @param {ZoomHandler} [zoomHandler] - The ZoomHandler object, if SingleView.
    */
-  constructor (view: (SingleView | DivaView), className: string,
+  constructor (view: ViewInterface, className: string,
       background: string, zoomHandler: ZoomHandler = undefined) {
     this.view = view;
     this.className = className;
