@@ -36,7 +36,7 @@ class SingleEditMode implements NeumeEditInterface {
     this.setSelectListeners();
 
     SelectOptions.initNeonView(this.neonView);
-    initInsertEditControls(this.neonView);
+    initInsertEditControls();
     let editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = '#ffc7c7';
     editMenu.style.fontWeight = 'bold';

@@ -113,7 +113,7 @@ function clickHandler (evt: MouseEvent) {
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
         selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
       }
-      selectAll(selection, neonView, info, dragHandler);
+      selectAll(selection, neonView, dragHandler);
       if (dragHandler) {
         dragHandler.dragInit();
       }
@@ -124,7 +124,7 @@ function clickHandler (evt: MouseEvent) {
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
         selection = selection.concat(<SVGGElement[]>Array.from(document.getElementsByClassName('selected')));
       }
-      selectAll(selection, neonView, info, dragHandler);
+      selectAll(selection, neonView, dragHandler);
       if (dragHandler) {
         dragHandler.dragInit();
       }
@@ -341,7 +341,7 @@ export function dragSelect (selector: string) {
           }
         }
       });
-      selectAll(elements, neonView, info, dragHandler);
+      selectAll(elements, neonView, dragHandler);
 
       if (dragHandler) {
         dragHandler.dragInit();

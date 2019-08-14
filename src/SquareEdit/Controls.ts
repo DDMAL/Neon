@@ -5,15 +5,14 @@ import * as Cursor from '../utils/Cursor';
 import { setGroupingHighlight } from '../utils/Color';
 const Icons = require('../img/icons.svg');
 import { unselect } from '../utils/SelectTools';
-import SingleEditMode from './SingleEditMode';
-import DivaEditMode from './DivaEditMode';
 import InsertHandler from './InsertHandler';
+import { NeumeEditInterface } from '../Interfaces';
 
 /**
  * Set listener on EditMode button.
  * @param {EditMode} editMode - The EditMode object.
  */
-export function initEditModeControls (editMode: (SingleEditMode | DivaEditMode)) {
+export function initEditModeControls (editMode: NeumeEditInterface) {
   document.getElementById('edit_mode').addEventListener('click', function () {
     document.getElementById('insert_controls').innerHTML += Contents.insertControlsPanel;
     document.getElementById('edit_controls').innerHTML += Contents.editControlsPanel;
@@ -27,7 +26,7 @@ export function initEditModeControls (editMode: (SingleEditMode | DivaEditMode))
  */
 export function bindInsertTabs (insertHandler: any) {
   var insertTabs = Array.from(document.getElementsByClassName('insertTab'));
-  var tabIds = insertTabs.map((tab, i) => { return tab.id; });
+  var tabIds = insertTabs.map((tab) => { return tab.id; });
 
   document.body.addEventListener('keydown', (evt) => {
     if (evt.code.match(/^Digit\d$/) && evt.shiftKey) {
@@ -64,7 +63,7 @@ export function bindInsertTabs (insertHandler: any) {
  * Initialize Edit and Insert control panels.
  * @param {NeonView} neonView - The NeonView parent.
  */
-export function initInsertEditControls (neonView) {
+export function initInsertEditControls () {
   let toggleInsert = document.getElementById('toggleInsert');
   let toggleEdit = document.getElementById('toggleEdit');
   let insertContents = document.getElementById('insertContents');
@@ -95,7 +94,7 @@ export function initInsertEditControls (neonView) {
  * @param {string} id - The ID of the insert action tab.
  * @param {InsertHandler} insertHandler - An InsertHandler object.
  */
-function activate (id, insertHandler) {
+function activate (id: string, insertHandler: any) {
   document.getElementById(id).classList.add('is-active');
   if (document.getElementById(id).classList.contains('insertel')) {
     insertHandler.insertActive(id);
@@ -106,7 +105,7 @@ function activate (id, insertHandler) {
  * Deactivate a certain insert action.
  * @param {string} type - A CSS selector for the action tab.
  */
-function deactivate (type) {
+function deactivate (type: string) {
   var elList = document.querySelectorAll(type);
   elList.forEach(el => {
     el.classList.remove('is-active');
@@ -117,7 +116,7 @@ function deactivate (type) {
  * Bind listeners to insert tab elements.
  * @param {InsertHandler} insertHandler - An InsertHandler object.
  */
-function bindElements (insertHandler) {
+function bindElements (insertHandler: any) {
   var insertElements = Array.from(document.getElementsByClassName('insertel'));
   var elementIds = insertElements.map(el => el.id);
   elementIds.forEach(el => {

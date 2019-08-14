@@ -5,7 +5,6 @@ import { updateHighlight } from '../DisplayPanel/DisplayControls';
 import * as Grouping from '../SquareEdit/Grouping';
 import { Resize } from './Resize';
 import NeonView from '../NeonView';
-import InfoModule from '../InfoModule';
 import DragHandler from './DragHandler';
 import * as SelectOptions from '../SquareEdit/SelectOptions';
 
@@ -252,7 +251,7 @@ export function selectStaff (staff: SVGGElement, dragHandler: DragHandler) {
  * @param {InfoModule} info
  * @param {DragHandler} dragHandler
  */
-export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: NeonView, info: InfoModule, dragHandler: DragHandler) {
+export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: NeonView, dragHandler: DragHandler) {
   let selectionType = getSelectionType();
   unselect();
   if (elements.length === 0) {
