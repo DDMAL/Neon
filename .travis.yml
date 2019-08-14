@@ -16,6 +16,7 @@ install:
   - sudo safaridriver --enable
   - yarn install
 script:
+  - export NODE_OPTIONS=--max_old_space_size=8192
   - yarn build
   - yarn upgrade verovio-dev
   - yarn start &
