@@ -72,7 +72,7 @@ class NeonView {
   /**
    * Start Neon
    */
-  start () {
+  start (): void {
     /* this.core.db.info().then((info) => {
       if (info.doc_count === 0) {
         this.core.initDb().then(() => { this.updateForCurrentPage(); });
@@ -88,16 +88,16 @@ class NeonView {
    * Get the current page from the loaded view and then display the
    * most up to date SVG.
    */
-  updateForCurrentPage (delay: boolean = false): void {
-    let pageNo = this.view.getCurrentPage();
+  updateForCurrentPage (delay = false): void {
+    const pageNo = this.view.getCurrentPage();
     this.view.changePage(pageNo, delay);
   }
 
   /**
    * Same as [[updateForCurrentPage]] but returns a promise.
    */
-  updateForCurrentPagePromise (delay: boolean = false): Promise<void> {
-    let pageNo = this.view.getCurrentPage();
+  updateForCurrentPagePromise (delay = false): Promise<void> {
+    const pageNo = this.view.getCurrentPage();
     return Promise.resolve(this.view.changePage(pageNo, delay));
   }
 
@@ -134,7 +134,7 @@ class NeonView {
    * @param action - The editor toolkit action object.
    * @param pageURI - The URI of the page to perform the action on
    */
-  edit (action: Object, pageURI: string): Promise<boolean> {
+  edit (action: object, pageURI: string): Promise<boolean> {
     return this.core.edit(action, pageURI);
   }
 
@@ -143,7 +143,7 @@ class NeonView {
    * @param elementId - The unique ID of the musical element.
    * @param pageURI - The URI of the page the element is found on.
    */
-  getElementAttr (elementID: string, pageURI: string): Promise<any> {
+  getElementAttr (elementID: string, pageURI: string): Promise<object> {
     return this.core.getElementAttr(elementID, pageURI);
   }
 
@@ -152,12 +152,12 @@ class NeonView {
    * @returns The contents of this file.
    */
   export (): Promise<string | ArrayBuffer> {
-    return (new Promise((resolve, reject) => {
+    return (new Promise((resolve, reject): void => {
       this.core.updateDatabase().then(() => {
-        this.manifest.mei_annotations = this.core.getAnnotations();
+        this.manifest['mei_annotations'] = this.core.getAnnotations();
         this.manifest.timestamp = (new Date()).toISOString();
-        let data = new window.Blob([JSON.stringify(this.manifest, null, 2)], { type: 'application/ld+json' });
-        let reader = new FileReader();
+        const data = new window.Blob([JSON.stringify(this.manifest, null, 2)], { type: 'application/ld+json' });
+        const reader = new FileReader();
         reader.addEventListener('load', () => {
           resolve(reader.result);
         });
@@ -189,7 +189,7 @@ class NeonView {
     if (pageNo === undefined) {
       pageNo = this.view.getCurrentPageURI();
     }
-    return new Promise((resolve) => {
+    return new Promise((resolve): void => {
       this.core.getMEI(pageNo).then((mei) => {
         resolve('data:application/mei+xml;charset=utf-8,' + encodeURIComponent(mei));
       });
