@@ -1,113 +1,81 @@
 import * as Cursor from '../utils/Cursor';
-const d3 = require('d3');
+import NeonView from '../NeonView';
+import * as d3 from 'd3';
 
-/**
- * Handle inserting new musical elements and communicate this to Verovio.
- * @constructor
- * @param {NeonView} neonView - The NeonView parent.
- * @param {string} sel - A CSS selector representing where to put the listeners.
- */
-function InsertHandler (neonView, sel) {
-  var type = '';
-  var firstClick = true;
-  var coord;
-  var attributes = null;
-  var selector = sel;
+class InsertHandler {
+  type: string;
+  firstClick: boolean = true;
+  coord: DOMPoint;
+  attributes: any;
+  selector: string;
+  neonView: NeonView;
 
-  /**
-     * Switch to insert mode based on the button pressed.
-     * @param {string} buttonId - The ID of the button pressed.
-     */
-  function insertActive (buttonId) {
-    let alreadyInInsertMode = isInsertMode();
-    if (buttonId === 'punctum') {
-      type = 'nc';
-      attributes = null;
-    } else if (buttonId === 'diamond') {
-      type = 'nc';
-      attributes = {
-        'tilt': 'se'
-      };
-    } else if (buttonId === 'virga') {
-      type = 'nc';
-      attributes = {
-        'tilt': 'n'
-      };
-    } else if (buttonId === 'pes') {
-      let contour = neonView.info.getContourByValue('Pes');
-      type = 'grouping';
-      attributes = {
-        'contour': contour
-      };
-    } else if (buttonId === 'clivis') {
-      let contour = neonView.info.getContourByValue('Clivis');
-      type = 'grouping';
-      attributes = {
-        'contour': contour
-      };
-    } else if (buttonId === 'scandicus') {
-      let contour = neonView.info.getContourByValue('Scandicus');
-      type = 'grouping';
-      attributes = {
-        'contour': contour
-      };
-    } else if (buttonId === 'climacus') {
-      let contour = neonView.info.getContourByValue('Climacus');
-      type = 'grouping';
-      attributes = {
-        'contour': contour
-      };
-    } else if (buttonId === 'torculus') {
-      let contour = neonView.info.getContourByValue('Torculus');
-      type = 'grouping';
-      attributes = {
-        'contour': contour
-      };
-    } else if (buttonId === 'porrectus') {
-      let contour = neonView.info.getContourByValue('Porrectus');
-      type = 'grouping';
-      attributes = {
-        'contour': contour
-      };
-    } else if (buttonId === 'pressus') {
-      let contour = neonView.info.getContourByValue('Pressus');
-      type = 'grouping';
-      attributes = {
-        'contour': contour
-      };
-    } else if (buttonId === 'cClef') {
-      type = 'clef';
-      attributes = {
-        'shape': 'C'
-      };
-    } else if (buttonId === 'fClef') {
-      type = 'clef';
-      attributes = {
-        'shape': 'F'
-      };
-    } else if (buttonId === 'custos') {
-      type = 'custos';
-      attributes = null;
-    } else if (buttonId === 'staff') {
-      type = 'staff';
-      attributes = null;
-    } else {
-      type = '';
-      attributes = null;
-      console.error('Invalid button for insertion: ' + buttonId + '.');
-      return;
+  constructor (neonView: NeonView, sel: string) {
+    this.neonView = neonView;
+    this.selector = sel;
+  }
+
+  insertActive (buttonId: string): void {
+    let alreadyInInsertMode = this.isInsertMode();
+    switch (buttonId) {
+      case 'punctum':
+        this.type = 'nc';
+        this.attributes = null;
+        break;
+      case 'diamond':
+        this.type = 'nc';
+        this.attributes = { 'tilt': 'se' };
+        break;
+      case 'virga':
+        this.type = 'nc';
+        this.attributes = { 'tilt': 'n' };
+        break;
+      case 'pes':
+      case 'clivis':
+      case 'scandicus':
+      case 'climacus':
+      case 'torculus':
+      case 'porrectus':
+      case 'pressus':
+        let contour = this.neonView.info.getContourByValue(
+          buttonId.charAt(0).toUpperCase() + buttonId.slice(1)
+        );
+        this.type = 'grouping';
+        this.attributes = { 'contour': contour };
+        break;
+      case 'cClef':
+      case 'fClef':
+        this.type = 'clef';
+        this.attributes = { 'shape': buttonId.charAt(0).toUpperCase() };
+        break;
+      case 'custos':
+        this.type = 'custos';
+        this.attributes = null;
+        break;
+      case 'staff':
+        this.type = 'staff';
+        this.attributes = null;
+        break;
+      default:
+        this.type = '';
+        this.attributes = null;
+        console.error('Invalid button for insertion: ' + buttonId + '.');
+        return;
     }
-    removeInsertClickHandlers();
-    if (type === 'staff') {
-      document.querySelector(selector).addEventListener('click', staffHandler);
+
+    this.removeInsertClickHandlers();
+    if (this.type === 'staff') {
+      document.querySelector(this.selector)
+        .addEventListener('click', this.staffHandler);
     } else {
-      document.querySelector(selector).addEventListener('click', handler);
+      document.querySelector(this.selector)
+        .addEventListener('click', this.handler);
     }
 
     // Disable edit mode listeners
-    document.body.addEventListener('keydown', keydownListener);
-    document.body.addEventListener('keyup', resetInsertHandler);
-    document.body.addEventListener('click', clickawayHandler);
+    document.body.addEventListener('keydown', this.keydownListener);
+    document.body.addEventListener('keyup', this.resetInsertHandler);
+    document.body.addEventListener('click', this.clickawayHandler);
 
     // Add 'return to edit mode' button
     if (!alreadyInInsertMode) {
@@ -116,7 +84,7 @@ function InsertHandler (neonView, sel) {
       editModeButton.classList.add('button');
       editModeButton.innerHTML = 'Return to Edit Mode';
       document.getElementById('redo').parentNode.appendChild(editModeButton);
-      editModeButton.addEventListener('click', insertDisabled);
+      editModeButton.addEventListener('click', this.insertDisabled);
     }
     let editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = 'whitesmoke';
@@ -126,17 +94,14 @@ function InsertHandler (neonView, sel) {
     insertMenu.style.fontWeight = 'bold';
   }
 
-  /**
-     * Disable insert mode
-     */
-  function insertDisabled () {
-    type = '';
-    removeInsertClickHandlers();
-    document.body.removeEventListener('keydown', keydownListener);
-    document.body.removeEventListener('keyup', resetInsertHandler);
-    document.body.removeEventListener('click', clickawayHandler);
+  insertDisabled = (function insertDisabled (): void {
+    this.type = '';
+    this.removeInsertClickHandlers();
+    document.body.removeEventListener('keydown', this.keydownListener);
+    document.body.removeEventListener('keyup', this.resetInsertHandler);
+    document.body.removeEventListener('click', this.clickawayHandler);
     document.querySelector('.insertel.is-active').classList.remove('is-active');
-    firstClick = true;
+    this.firstClick = true;
     Cursor.resetCursor();
     try {
       document.getElementById('returnToEditMode').remove();
@@ -149,42 +114,43 @@ function InsertHandler (neonView, sel) {
     editMenu.style.fontWeight = 'bold';
     insertMenu.style.backgroundColor = 'whitesmoke';
     insertMenu.style.fontWeight = '';
-  }
+  }).bind(this);
 
-  function clickawayHandler (evt) {
-    if (evt.target.closest('.active-page') === null &&
-      evt.target.closest('#insert_controls') === null &&
-      evt.target.closest('#svg_group') === null) {
-      insertDisabled();
-      document.body.removeEventListener('keydown', staffHandler);
-      document.body.removeEventListener('keydown', handler);
+  clickawayHandler = (function clickawayHandler (evt: MouseEvent): void {
+    let target = <HTMLElement>evt.target;
+    if (target.closest('.active-page') === null &&
+      target.closest('#insert_controls') === null &&
+      target.closest('#svg_group') === null) {
+      this.insertDisabled();
+      document.body.removeEventListener('keydown',
+        this.staffHandler);
+      document.body.removeEventListener('keydown',
+        this.handler);
     }
-  }
+  }).bind(this);
 
-  function resetInsertHandler (evt) {
+  resetInsertHandler = (function resetInsertHandler (evt: KeyboardEvent): void {
     if (evt.key === 'Shift') {
-      document.querySelector(selector).addEventListener('click',
-        type === 'staff' ? staffHandler : handler);
+      document.querySelector(this.selector)
+        .addEventListener('click', this.type === 'staff' ?
+        this.staffHandler : this.handler);
     }
-  }
+  }).bind(this);
 
-  function keydownListener (evt) {
+  keydownListener = (function keydownListener (evt: KeyboardEvent): void {
     if (evt.key === 'Escape') {
-      insertDisabled();
-      document.body.removeEventListener('keydown', staffHandler);
-      document.body.removeEventListener('keydown', handler);
+      this.insertDisabled();
+      document.body.removeEventListener('keydown', this.staffHandler);
+      document.body.removeEventListener('keydown', this.handler);
     } else if (evt.key === 'Shift') {
-      removeInsertClickHandlers();
+      this.removeInsertClickHandlers();
     }
-  }
+  }).bind(this);
 
-  /**
-     * Event handler for insert events other than staff. Creates an insert action and sends it to Verovio.
-     * @param {object} evt - JQuery event object.
-     */
-  function handler (evt) {
-    var container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
-    var pt = container.createSVGPoint();
+  handler = (function handler (evt: MouseEvent): void {
+    console.debug(evt);
+    let container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
+    let pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
     // Transform pt to SVG context
@@ -194,49 +160,45 @@ function InsertHandler (neonView, sel) {
     let editorAction = {
       'action': 'insert',
       'param': {
-        'elementType': type,
+        'elementType': this.type,
         'staffId': 'auto',
         'ulx': cursorpt.x,
         'uly': cursorpt.y
       }
     };
 
-    if (attributes !== null) {
-      editorAction['param']['attributes'] = attributes;
+    if (this.attributes !== null) {
+      editorAction['param']['attributes'] = this.attributes;
     }
 
-    neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(() => {
-      neonView.updateForCurrentPage();
+    this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(() => {
+      this.neonView.updateForCurrentPage();
     });
-  }
+  }).bind(this);
 
-  /**
-     * Event handler for staff insertion. Creates an insert action with two points (ul and lr) and sends it to Verovio.
-     * @param {object} evt - JQuery event object.
-     */
-  function staffHandler (evt) {
-    var container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
-    var pt = container.createSVGPoint();
+  staffHandler = (function staffHandler (evt: MouseEvent): void {
+    let container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
+    let pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
-    var transformMatrix = (<SVGGraphicsElement>container.getElementsByClassName('system')[0]).getScreenCTM();
-    var cursorpt = pt.matrixTransform(transformMatrix.inverse());
+    let transformMatrix = (<SVGGraphicsElement>container.getElementsByClassName('system')[0]).getScreenCTM();
+    let cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
-    if (firstClick) {
-      coord = cursorpt;
+    if (this.firstClick) {
+      this.coord = cursorpt;
       d3.select(container).append('circle').attr('cx', cursorpt.x)
         .attr('cy', cursorpt.y)
         .attr('r', 10)
         .attr('id', 'staff-circle')
         .attr('fill', 'green');
-      firstClick = false;
+      this.firstClick = false;
     } else {
       var ul, lr;
-      if (cursorpt.x < coord.x || cursorpt.y < coord.y) { // second point is not lr
+      if (cursorpt.x < this.coord.x || cursorpt.y < this.coord.y) { // second point is not lr
         ul = cursorpt;
-        lr = coord;
+        lr = this.coord;
       } else {
-        ul = coord;
+        ul = this.coord;
         lr = cursorpt;
       }
       document.getElementById('staff-circle').remove();
@@ -252,29 +214,20 @@ function InsertHandler (neonView, sel) {
         }
       };
 
-      neonView.edit(action, neonView.view.getCurrentPageURI()).then(() => {
-        neonView.updateForCurrentPage();
-        firstClick = true;
+      this.neonView.edit(action, this.neonView.view.getCurrentPageURI()).then(() => {
+        this.neonView.updateForCurrentPage();
+        this.firstClick = true;
       });
     }
-  }
+  }).bind(this);
 
-  function removeInsertClickHandlers () {
-    document.querySelector(selector).removeEventListener('click', staffHandler);
-    document.querySelector(selector).removeEventListener('click', handler);
-  }
+  removeInsertClickHandlers = (function removeInsertClickHandlers (): void {
+    document.querySelector(this.selector).removeEventListener('click', this.staffHandler);
+    document.querySelector(this.selector).removeEventListener('click', this.handler);
+  }).bind(this);
 
-  /**
-     * If Neon is in insert mode.
-     * @returns {boolean}
-     */
-  function isInsertMode () {
-    return (type !== '');
+  isInsertMode (): boolean {
+    return (this.type !== '');
   }
-
-  InsertHandler.prototype.constructor = InsertHandler;
-  InsertHandler.prototype.insertActive = insertActive;
-  InsertHandler.prototype.insertDisabled = insertDisabled;
-  InsertHandler.prototype.isInsertMode = isInsertMode;
 }
 export { InsertHandler as default };
