@@ -7,9 +7,9 @@ import * as uuid from 'uuid/v4';
 import PouchDB from 'pouchdb';
 
 interface CacheEntry {
-  dirty: boolean,
-  mei: string,
-  svg: SVGSVGElement
+  dirty: boolean;
+  mei: string;
+  svg: SVGSVGElement;
 }
 
 /**
@@ -34,7 +34,7 @@ class NeonCore {
   private manifest: NeonManifest;
   private lastPageLoaded: string;
 
-  getAnnotations () { return this.annotations; }
+  getAnnotations (): Annotation[] { return this.annotations; }
 
   /**
    * Constructor for NeonCore
@@ -75,13 +75,15 @@ class NeonCore {
    * not update the database unless forced.
    * @param force - If a database update should be forced.
    */
-  async initDb (force: boolean = false): Promise<{}> {
+  async initDb (force = false): Promise<{}> {
     // Check for existing manifest
-    let response = await new Promise((resolve, reject) => {
+    type DbAnnotation = PouchDB.Core.IdMeta & PouchDB.Core.GetMeta & Annotation;
+    type Doc = PouchDB.Core.IdMeta & PouchDB.Core.GetMeta & { timestamp: string; annotations: string[]};
+    const response = await new Promise<{}>((resolve, reject): void => {
       this.db.get(this.manifest['@id']).catch(err => {
         if (err.name === 'not_found') {
           // This is a new document.
-          let doc = {
+          const doc = {
             _id: this.manifest['@id'],
             timestamp: this.manifest.timestamp,
             image: this.manifest.image,
@@ -96,16 +98,16 @@ class NeonCore {
           console.error(err);
           return reject(err);
         }
-      }).then(async (doc: any) => {
+      }).then(async (doc: Doc) => {
         // Check if doc timestamp is newer than manifest
-        let docTime = (new Date(doc.timestamp)).getTime();
-        let manTime = (new Date(this.manifest.timestamp)).getTime();
+        const docTime = (new Date(doc.timestamp)).getTime();
+        const manTime = (new Date(this.manifest.timestamp)).getTime();
         if (docTime > manTime) {
           if (!force) {
             // Fill annotations list with db annotations
             this.annotations = [];
-            doc.annotations.forEach(async id => {
-              await this.db.get(id).then((annotation: any) => {
+            doc.annotations.forEach(async (id: string) => {
+              await this.db.get(id).then((annotation: DbAnnotation) => {
                 this.annotations.push({
                   id: annotation._id,
                   type: 'Annotation',
@@ -119,7 +121,7 @@ class NeonCore {
             return resolve(false);
           }
         }
-        for (let annotation of this.annotations) {
+        for (const annotation of this.annotations) {
           // Add annotations to database
           await this.db.get(annotation.id).catch(err => {
             if (err.name === 'not_found') {
@@ -130,7 +132,7 @@ class NeonCore {
               console.error(err);
               return reject(err);
             }
-          }).then((newAnnotation: any) => {
+          }).then((newAnnotation: DbAnnotation) => {
             newAnnotation.body = annotation.body;
             newAnnotation.target = annotation.target;
             return this.db.put(newAnnotation);
@@ -157,7 +159,7 @@ class NeonCore {
    * @param pageURI - The URI of the selected page.
    */
   loadPage (pageURI: string): Promise<CacheEntry> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject): void => {
       if (this.lastPageLoaded === pageURI && this.neonCache.has(pageURI)) {
         resolve(this.neonCache.get(pageURI));
       } else if (this.neonCache.has(pageURI)) {
@@ -166,12 +168,12 @@ class NeonCore {
         });
       } else if (this.blankPages.includes(pageURI)) {
         Validation.blankPage();
-        let e = new Error('No MEI file for page ' + pageURI);
+        const e = new Error('No MEI file for page ' + pageURI);
         e.name = 'missing_mei';
         reject(e);
       } else {
         // Find annotation
-        let annotation = this.annotations.find(elem => {
+        const annotation = this.annotations.find(elem => {
           return elem.target === pageURI;
         });
         if (annotation) {
@@ -206,7 +208,7 @@ class NeonCore {
    * @param data - The MEI of the page as a string.
    * @param dirty - If the cache entry should be marked as dirty.
    */
-  loadData (pageURI: string, data: string, dirty: boolean = false): Promise<void> {
+  loadData (pageURI: string, data: string, dirty = false): Promise<void> {
     Validation.sendForValidation(data);
     this.lastPageLoaded = pageURI;
     /* A promise is returned that will resolve to the result of the action.
@@ -218,15 +220,15 @@ class NeonCore {
      * event handler handles the response. Since it is defined within the
      * promise it has access to the necessary resolve function.
      */
-    return new Promise((resolve) => {
-      let message = {
+    return new Promise((resolve): void => {
+      const message = {
         id: uuid(),
         action: 'renderData',
         mei: data
       };
-      function handle (evt: MessageEvent) {
+      function handle (evt: MessageEvent): void {
         if (evt.data.id === message.id) {
-          let svg = this.parser.parseFromString(
+          const svg = this.parser.parseFromString(
             evt.data.svg,
             'image/svg+xml'
           ).documentElement;
@@ -249,7 +251,7 @@ class NeonCore {
    * @param pageURI - The URI of the selected page.
    */
   getSVG (pageURI: string): Promise<SVGSVGElement> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject): void => {
       this.loadPage(pageURI).then((entry) => {
         resolve(entry.svg);
       }).catch((err) => { reject(err); });
@@ -261,7 +263,7 @@ class NeonCore {
    * @param pageURI - The URI of the selected page.
    */
   getMEI (pageURI: string): Promise<string> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject): void => {
       this.loadPage(pageURI).then((entry) => {
         resolve(entry.mei);
       }).catch((err) => { reject(err); });
@@ -273,10 +275,10 @@ class NeonCore {
    * @param elementId - The unique ID of the musical element.
    * @param pageURI - The URI of the selected page.
    */
-  getElementAttr (elementId: string, pageURI: string): Promise<Object> {
-    return new Promise((resolve) => {
+  getElementAttr (elementId: string, pageURI: string): Promise<object> {
+    return new Promise((resolve): void => {
       this.loadPage(pageURI).then(() => {
-        let message = {
+        const message = {
           id: uuid(),
           action: 'getElementAttr',
           elementId: elementId
@@ -297,22 +299,22 @@ class NeonCore {
    * @param action - The editor toolkit action object.
    * @param pageURI - The URI of the selected page.
    */
-  edit (editorAction: Object, pageURI: string): Promise<boolean> {
-    let promise: Promise<any>;
+  edit (editorAction: object, pageURI: string): Promise<boolean> {
+    let promise: Promise<CacheEntry>;
     if (this.lastPageLoaded === pageURI) {
       promise = Promise.resolve(this.neonCache.get(pageURI));
     } else {
       promise = this.loadPage(pageURI);
     }
-    return new Promise((resolve) => {
+    return new Promise((resolve): void => {
       promise.then(entry => {
-        let currentMEI = entry.mei;
-        let message = {
+        const currentMEI = entry.mei;
+        const message = {
           id: uuid(),
           action: 'edit',
           editorAction: editorAction
         };
-        function handle (evt: MessageEvent) {
+        function handle (evt: MessageEvent): void {
           if (evt.data.id === message.id) {
             if (evt.data.result) {
               if (!this.undoStacks.has(pageURI)) {
@@ -337,11 +339,11 @@ class NeonCore {
    * @param dirty - If the entry should be marked as dirty
    */
   updateCache (pageURI: string, dirty: boolean): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise((resolve): void => {
       // Must get MEI and then get SVG then finish.
-      var mei: string, svgText: string;
-      let meiPromise = new Promise((resolve) => {
-        let message = {
+      let mei: string, svgText: string;
+      const meiPromise = new Promise((resolve): void => {
+        const message = {
           id: uuid(),
           action: 'getMEI'
         };
@@ -354,8 +356,8 @@ class NeonCore {
         });
         this.verovioWrapper.postMessage(message);
       });
-      let svgPromise = new Promise((resolve) => {
-        let message = {
+      const svgPromise = new Promise((resolve): void => {
+        const message = {
           id: uuid(),
           action: 'renderToSVG'
         };
@@ -370,10 +372,10 @@ class NeonCore {
       });
 
       meiPromise.then(() => { return svgPromise; }).then(() => {
-        let svg = <SVGSVGElement><unknown>this.parser.parseFromString(
+        const svg = this.parser.parseFromString(
           svgText,
           'image/svg+xml'
-        ).documentElement;
+        ).documentElement as unknown as SVGSVGElement;
         this.neonCache.set(pageURI, {
           mei: mei,
           svg: svg,
@@ -389,15 +391,15 @@ class NeonCore {
    * @param pageURI - The URI of the page to get the edit info string from.
    */
   info (pageURI: string): Promise<string> {
-    let promise: Promise<any>;
+    let promise: Promise<CacheEntry | void>;
     if (this.lastPageLoaded === pageURI) {
       promise = Promise.resolve();
     } else {
       promise = this.loadPage(pageURI);
     }
-    return new Promise((resolve) => {
+    return new Promise((resolve): void => {
       promise.then(() => {
-        let message = {
+        const message = {
           id: uuid(),
           action: 'editInfo'
         };
@@ -418,9 +420,9 @@ class NeonCore {
    * @returns If the action was undone.
    */
   undo (pageURI: string): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve): void => {
       if (this.undoStacks.has(pageURI)) {
-        let state = this.undoStacks.get(pageURI).pop();
+        const state = this.undoStacks.get(pageURI).pop();
         if (state !== undefined) {
           this.getMEI(pageURI).then(mei => {
             this.redoStacks.get(pageURI).push(mei);
@@ -441,9 +443,9 @@ class NeonCore {
    * @returns If the action was redone.
    */
   redo (pageURI: string): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve): void => {
       if (this.redoStacks.has(pageURI)) {
-        let state = this.redoStacks.get(pageURI).pop();
+        const state = this.redoStacks.get(pageURI).pop();
         if (state !== undefined) {
           this.getMEI(pageURI).then((mei) => {
             this.undoStacks.get(pageURI).push(mei);
@@ -464,13 +466,14 @@ class NeonCore {
    * only entries marked as dirty will be updated.
    */
   async updateDatabase (): Promise<void> {
+    type Doc = PouchDB.Core.GetMeta & PouchDB.Core.IdMeta & { body: string; timestamp: string };
     let updateTimestamp = false;
-    for (let pair of this.neonCache) {
-      let key = pair[0];
-      let value = pair[1];
+    for (const pair of this.neonCache) {
+      const key = pair[0];
+      const value = pair[1];
       if (value.dirty) {
         updateTimestamp = true;
-        let index = this.annotations.findIndex(elem => { return elem.target === key; });
+        const index = this.annotations.findIndex(elem => { return elem.target === key; });
         // try to update server with PUT (if applicable
         // only attempt if not a data URI
         let uri: string;
@@ -497,7 +500,7 @@ class NeonCore {
         }
         // Update URI in annotations, database
         this.annotations[index].body = uri;
-        await this.db.get(this.annotations[index].id).then((doc: any) => {
+        await this.db.get(this.annotations[index].id).then((doc: Doc) => {
           doc.body = uri;
           return this.db.put(doc);
         }).then(() => {
@@ -509,7 +512,7 @@ class NeonCore {
     }
 
     if (updateTimestamp) {
-      await this.db.get(this.manifest['@id']).then((doc: any) => {
+      await this.db.get(this.manifest['@id']).then((doc: Doc) => {
         doc.timestamp = (new Date()).toISOString();
         return this.db.put(doc);
       }).catch(err => {
