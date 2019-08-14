@@ -6,6 +6,7 @@ const editUrl = 'http://localhost:8080/edit/test.jsonld';
 const fs = require('fs');
 const { Builder, By, Key, until } = require('selenium-webdriver');
 const error = require('selenium-webdriver/lib/error');
+const logging = require('selenium-webdriver/lib/logging');
 // const input = require('selenium-webdriver/lib/input');
 const firefox = require('selenium-webdriver/firefox');
 const chrome = require('selenium-webdriver/chrome');
@@ -33,18 +34,33 @@ afterAll(() => {
 
 describe.each(browserNames)('Tests on %s', (title) => {
   var browser;
+  var prefs = new logging.Preferences();
+  prefs.setLevel(logging.Type.BROWSER, logging.Level.ALL);
 
   beforeAll(async () => {
     browser = await new Builder()
       .forBrowser(title)
       .setFirefoxOptions(new firefox.Options().headless())
       .setChromeOptions(new chrome.Options().headless().windowSize({ width: 1280, height: 800 }))
+      .setLoggingPrefs(prefs)
       .build();
     await browser.get(editUrl);
   });
 
-  afterAll(() => {
-    browser.quit();
+  afterAll(done => {
+    if (title === 'chrome') {
+      browser.manage().logs().get(logging.Type.BROWSER).then(entries => {
+        entries.forEach(entry => {
+          console.log(entry);
+        });
+      }).catch(err => { console.error(err); }).then(() => {
+        browser.quit();
+        done();
+      });
+    } else {
+      browser.quit();
+      done();
+    }
   });
 
   describe('Neon Basics', () => {

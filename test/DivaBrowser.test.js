@@ -1,6 +1,7 @@
 /* eslint-env jest */
 const fs = require('fs-extra');
 const { Builder, By, until } = require('selenium-webdriver');
+const { Preferences, Type, Level } = require('selenium-webdriver/lib/logging');
 const firefox = require('selenium-webdriver/firefox');
 const chrome = require('selenium-webdriver/chrome');
 
@@ -27,16 +28,34 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
   var browser;
 
   beforeAll(async () => {
+    let prefs = new Preferences();
+    prefs.setLevel(Type.BROWSER, Level.ALL);
+
     browser = await new Builder()
       .forBrowser(title)
       .setFirefoxOptions(new firefox.Options().headless())
       .setChromeOptions(new chrome.Options().headless().windowSize({ width: 1280, height: 800 }))
+      .setLoggingPrefs(prefs)
       .build();
     await browser.get(editUrl);
   });
 
-  afterAll(() => {
-    browser.quit();
+  afterAll(done => {
+    if (title === 'chrome') {
+      browser.manage().logs().get(Type.BROWSER).then(entries => {
+        entries.forEach(entry => {
+          console.log(entry);
+        });
+      }).catch(err => {
+        console.error(err);
+      }).then(() => {
+        browser.quit();
+        done();
+      })
+    } else {
+      browser.quit();
+      done();
+    }
   });
 
   describe('Neon Basics', () => {
@@ -76,7 +95,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       await browser.executeScript(() => {
         console.log(document.getElementById('m-bc67f558-4736-49d0-bc71-8e05c72bc46e'));
         console.log(document.getElementById('m-bc67f558-4736-49d0-bc71-8e05c72bc46e').children[1]);
-        (document.getElementById('m-bc67f558-4736-49d0-bc71-8e05c72bc46e').children[1]).dispatchEvent(new window.Event('mousedown')); 
+        (document.getElementById('m-bc67f558-4736-49d0-bc71-8e05c72bc46e').children[1]).dispatchEvent(new window.Event('mousedown'));
       });
 
       await browser.wait(until.elementLocated(By.id('resizeRect')), 10000);
