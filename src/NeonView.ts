@@ -1,9 +1,6 @@
 import NeonCore from './NeonCore';
 
 import { parseManifest, NeonManifest } from './utils/NeonManifest';
-import InfoModule from './InfoModule';
-import TextView from './TextView';
-import TextEditMode from './TextEditMode';
 import { prepareEditMode } from './utils/EditControls';
 import setBody from './utils/template/Template';
 import * as Interfaces from './Interfaces';
@@ -18,10 +15,10 @@ class NeonView {
   view: Interfaces.ViewInterface;
   name: string;
   core: NeonCore;
-  info: InfoModule;
+  info: Interfaces.InfoInterface;
   NeumeEdit: Interfaces.NeumeEditInterface;
-  textView: TextView;
-  TextEdit: TextEditMode;
+  textView: Interfaces.TextViewInterface;
+  TextEdit: Interfaces.TextEditInterface;
 
 
   /**

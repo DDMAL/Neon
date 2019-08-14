@@ -2,13 +2,14 @@ import * as Notification from './utils/Notification';
 import NeonView from './NeonView';
 import { unselect } from './utils/SelectTools';
 import { updateHighlight } from './DisplayPanel/DisplayControls';
+import { TextViewInterface } from './Interfaces';
 
 /** @module TextView */
 
 /*
  * Class that manages getting the text for syllables in Neon from the mei file
  */
-class TextView {
+class TextView implements TextViewInterface {
   neonView: NeonView;
   notificationSent: boolean;
   /**

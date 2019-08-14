@@ -3,11 +3,12 @@ import DragHandler from './utils/DragHandler';
 import NeonView from './NeonView';
 import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select';
 import { setGroupingHighlight } from './utils/Color';
+import { TextEditInterface } from './Interfaces';
 
 /**
  * A Text editing module that works with the SingleView and DivaView modules
  */
-export default class TextEditMode {
+export default class TextEditMode implements TextEditInterface {
   dragHandler: DragHandler;
   neonView: NeonView;
 

@@ -1,11 +1,12 @@
 /** @module InfoModule */
 
 import NeonView from './NeonView';
+import { InfoInterface } from './Interfaces';
 
 /**
  * Class that manages getting information for elements in Neon from Verovio.
  */
-class InfoModule {
+class InfoModule implements InfoInterface {
   neonView: NeonView;
 
   /**
@@ -135,7 +136,7 @@ class InfoModule {
    * Get the contour of a neume.
    * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
    */
-  async getContour (ncs: Iterable<SVGGraphicsElement>) {
+  async getContour (ncs: Iterable<SVGGraphicsElement>): Promise<string> {
     var contour = '';
     var previous: any = null;
     for (let nc of ncs) {

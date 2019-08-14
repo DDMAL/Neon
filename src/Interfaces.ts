@@ -38,6 +38,38 @@ export interface NeumeEditInterface {
   setSelectListeners (): void;
 }
 
+export interface TextEditConstructable {
+  new (a: NeonView): TextEditInterface;
+}
+
+export interface TextEditInterface {
+  initTextEdit (): void;
+  initSelectByBBoxButton (): void;
+}
+
+export interface TextViewConstructable {
+  new (a: NeonView): TextViewInterface
+}
+
+export interface TextViewInterface {}
+
+export interface InfoConstructable {
+  new (a: NeonView): InfoInterface;
+}
+
+export interface InfoInterface {
+  neonView: NeonView;
+  getContour (ncs: Iterable<SVGGraphicsElement>): Promise<string>;
+  getPitches (ncs: Iterable<SVGGraphicsElement>): Promise<string>;
+  pitchNameToNum (pname: string): number;
+  getContourByValue (value: string): string;
+  updateInfoModule (a: string, b: string): void;
+  infoListeners (): void;
+  stopListeners (): void;
+  resetInfoListeners (): void;
+  updateInfo (evt: MouseEvent): Promise<void>;
+}
+
 export interface SimpleConstructable {
   new (a: NeonView): any;
 }
@@ -46,8 +78,8 @@ export interface NeonViewParams {
   manifest: NeonManifest,
   View: ViewConstructable,
   Display: DisplayConstructable,
-  Info: SimpleConstructable,
+  Info: InfoConstructable,
   NeumeEdit?: NeumeEditConstructable,
-  TextView?: SimpleConstructable,
-  TextEdit?: SimpleConstructable
+  TextView?: TextViewConstructable,
+  TextEdit?: TextEditConstructable
 }
