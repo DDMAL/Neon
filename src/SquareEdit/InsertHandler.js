@@ -205,7 +205,7 @@ function InsertHandler (neonView, sel) {
       editorAction['param']['attributes'] = attributes;
     }
 
-    if (attributes['shape'] === 'F' ) {
+    if (attributes !== null && attributes['shape'] === 'F' ) {
       editorAction['param']['ulx'] = editorAction['param']['ulx'] - 50;
     }
 
