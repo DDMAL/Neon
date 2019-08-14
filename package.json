@@ -34,7 +34,7 @@
         "start": "nodemon server.js",
         "build": "./setup-verovio && webpack --config webpack.config.js",
         "test": "jest --silent",
-        "doc": "jsdoc -d ./doc/ ./src/ ./src/DisplayPanel/ ./src/SingleView/ ./src/SquareEdit/ ./src/utils/ -R ./README.md",
+        "doc": "typedoc --out ./doc --mode file --exclude '**/verovio-dev/**/*' ./src",
         "pages": "./setup-verovio && webpack --config webpack.pages-config.js && cp -R public/verovio-toolkit.js public/diva-v6.0.1 pages/manifests dist/ && cp pages/static/* dist/"
     },
     "jest": {
@@ -44,10 +44,8 @@
         "moduleNameMapper": {
             "Validation": "<rootDir>/test/SubstituteValidation.js",
             "VerovioWrapper": "<rootDir>/test/VerovioWrapper.js"
-        }
-    },
-    "babel": {
-        "presets": "env"
+        },
+        "preset": "ts-jest/presets/js-with-ts"
     },
     "dependencies": {
         "express": "^4.16.3",
@@ -56,26 +54,35 @@
         "nodemon": "^1.17.5",
         "pug": "^2.0.3",
         "request": "^2.88.0",
+        "typescript": "^3.5.3",
         "verovio-dev": "file:src/verovio-dev"
     },
     "devDependencies": {
-        "babel-preset-env": "^1.7.0",
+        "@types/d3": "^5.7.2",
+        "@types/elementtree": "^0.1.0",
+        "@types/pouchdb": "^6.4.0",
+        "@types/uuid": "^3.4.5",
+        "@types/webpack": "^4.32.1",
+        "awesome-typescript-loader": "^5.2.1",
         "bulma": "^0.7.1",
         "bulma-extensions": "^2.2.1",
         "bulma-slider": "^2.0.0",
-        "css-loader": "^0.28.11",
+        "css-loader": "^3.2.0",
         "d3": "^5.5.0",
         "elementtree": "^0.1.7",
         "file-loader": "^1.1.11",
         "html-loader": "^0.5.5",
-        "jest": "^23.1.0",
-        "jsdoc": "^3.5.5",
+        "jest": "^24.8.0",
         "jsonschema": "^1.2.4",
         "pouchdb": "^7.0.0",
+        "pouchdb-memory": "^6.0.0",
         "raw-loader": "^2.0.0",
         "selenium-webdriver": "^4.0.0-alpha.1",
         "semistandard": "^13.0.1",
+        "source-map": "^0.7.3",
         "style-loader": "^0.21.0",
+        "ts-jest": "^24.0.2",
+        "typedoc": "^0.15.0",
         "uuid": "^3.3.2",
         "verovio-dev": "file:src/verovio-dev",
         "webpack": "^4.12.0",

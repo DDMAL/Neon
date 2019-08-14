@@ -1,5 +1,7 @@
 /* eslint-env jest */
-import NeonCore from '../src/NeonCore.js';
+import NeonCore from '../src/NeonCore';
+
+jest.mock('pouchdb');
 
 const fs = require('fs');
 

@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "outDir": "./build",
+        "allowJs": true,
+        "target": "es6",
+        "sourceMap": true,
+        "module": "commonjs",
+        "allowSyntheticDefaultImports": true
+    },
+    "include": [
+        "./src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

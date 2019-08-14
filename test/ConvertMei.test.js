@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import * as ConvertMei from '../src/utils/ConvertMei.js';
+const ConvertMei = require('../src/utils/ConvertMei');
 
 const fs = require('fs');
 const et = require('elementtree');

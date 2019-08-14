@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import { ViewBox } from '../src/SingleView/Zoom.js';
+const ViewBox = require('../src/SingleView/Zoom').ViewBox;
 
 test('Check ViewBox constructor', () => {
   let viewBox = new ViewBox(300, 400);
