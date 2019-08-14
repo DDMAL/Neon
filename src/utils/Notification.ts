@@ -1,23 +1,18 @@
-/** @module utils/Notification */
 import * as uuid from 'uuid/v4';
 
-/** @type {Array.<module:Notification~Notification>} */
 var notifications: Notification[] = new Array(0);
-/** @type {module:Notification~Notification} */
 var currentModeMessage: Notification = null;
-var notifying = false;
+var notifying: boolean = false;
 
 /**
  * Number of notifications to display at a time.
- * @type {number}
  */
 const NUMBER_TO_DISPLAY: number = 3;
 
 /**
  * Add a notification to the queue.
- * @param {string} notification
  */
-export function queueNotification (notification: string) {
+export function queueNotification (notification: string): void {
   let notif = new Notification(notification);
   notifications.push(notif);
   if (!notifying || document.getElementById('notification-content').querySelectorAll('.neon-notification').length < NUMBER_TO_DISPLAY) {
@@ -28,7 +23,7 @@ export function queueNotification (notification: string) {
 /**
  * Start displaying notifications. Called automatically.
  */
-function startNotification () {
+function startNotification (): void {
   if (notifications.length > 0) {
     notifying = true;
     let currentNotification = notifications.pop();
@@ -43,9 +38,8 @@ function startNotification () {
 
 /**
  * Display a notification.
- * @param {module:Notification~Notification} notification
  */
-function displayNotification (notification: Notification) {
+function displayNotification (notification: Notification): void {
   if (notification.isModeMessage) {
     if (currentModeMessage === null) {
       currentModeMessage = notification;
@@ -64,11 +58,9 @@ function displayNotification (notification: Notification) {
 
 /**
  * Clear the notifications if no more exist or display another from the queue.
- * @param {string} currentId - The ID of the notification to be cleared.
+ * @param currentId - The ID of the notification to be cleared.
  */
-function clearOrShowNextNotification (currentId: string) {
-  // clear notification currently displayed
-
+function clearOrShowNextNotification (currentId: string): void {
   document.getElementById(currentId).remove();
   if (currentModeMessage !== null && currentModeMessage.getId() === currentId) {
     currentModeMessage = null;
@@ -91,8 +83,7 @@ class Notification {
   isModeMessage: boolean;
   timeoutID: number;
   /**
-   * Create a new notification
-   * @param {string} message
+   * Create a new notification.
    */
   constructor (message: string) {
     this.message = message;
@@ -102,17 +93,18 @@ class Notification {
     this.timeoutID = -1;
   }
 
+  /** Set the ID from setTimeout. */
   setTimeoutId (id: number) {
     this.timeoutID = Math.max(id, -1);
   }
 
+  /** Display the Notification. */
   display () {
     this.displayed = true;
   }
 
   /**
    * Get the UUID for this notification
-   * @returns {string}
    */
   getId (): string {
     return this.id;

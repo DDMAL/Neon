@@ -1,5 +1,3 @@
-/** @module SingleView/Zoom */
-
 import * as d3 from 'd3';
 
 export class ZoomHandler {
@@ -133,7 +131,7 @@ export class ZoomHandler {
 
     // Update zoom slider
     slider.value = (newK * 100).toString();
-    (<HTMLOutputElement>document.getElementById('zoomOutput')).value = String(newK * 100);
+    (<HTMLOutputElement>document.getElementById('zoomOutput')).value = String(Math.round(newK * 100));
   }
 }
 

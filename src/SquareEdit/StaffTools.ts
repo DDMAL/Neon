@@ -1,12 +1,9 @@
-/** @module SquareEdit/StaffTools */
-
 import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
 
 /**
  * Handler splitting a staff into two staves through Verovio.
  * @constructor
- * @param {NeonView} neonView - The NeonView parent.
  */
 function SplitHandler (neonView: NeonView) {
   function startSplit () {

@@ -2,6 +2,9 @@ import * as Cursor from '../utils/Cursor';
 import NeonView from '../NeonView';
 import * as d3 from 'd3';
 
+/**
+ * Class that handles insert mode, events, and actions.
+ */
 class InsertHandler {
   type: string;
   firstClick: boolean = true;
@@ -15,6 +18,11 @@ class InsertHandler {
     this.selector = sel;
   }
 
+  /**
+   * Called when an insert button is clicked.
+   * Triggers the start of insert mode.
+   * @param buttonId - The ID of the button that was clicked.
+   */
   insertActive (buttonId: string): void {
     let alreadyInInsertMode = this.isInsertMode();
     switch (buttonId) {
@@ -94,6 +102,9 @@ class InsertHandler {
     insertMenu.style.fontWeight = 'bold';
   }
 
+  /**
+   * Disable insert mode and remove event listeners.
+   */
   insertDisabled = (function insertDisabled (): void {
     this.type = '';
     this.removeInsertClickHandlers();
@@ -116,6 +127,10 @@ class InsertHandler {
     insertMenu.style.fontWeight = '';
   }).bind(this);
 
+  /**
+   * Event handler to handle a user clicking away from the active page
+   * causing insert mode to end.
+   */
   clickawayHandler = (function clickawayHandler (evt: MouseEvent): void {
     let target = <HTMLElement>evt.target;
     if (target.closest('.active-page') === null &&
@@ -129,6 +144,9 @@ class InsertHandler {
     }
   }).bind(this);
 
+  /**
+   * Resets an insert event listener after temporarily removing it.
+   */
   resetInsertHandler = (function resetInsertHandler (evt: KeyboardEvent): void {
     if (evt.key === 'Shift') {
       document.querySelector(this.selector)
@@ -137,6 +155,10 @@ class InsertHandler {
     }
   }).bind(this);
 
+  /**
+   * Listens to key presses to either exit edit mode (if Escape) or
+   * temporarily remove insert event listeners (if Shift).
+   */
   keydownListener = (function keydownListener (evt: KeyboardEvent): void {
     if (evt.key === 'Escape') {
       this.insertDisabled();
@@ -147,6 +169,9 @@ class InsertHandler {
     }
   }).bind(this);
 
+  /**
+   * Event handler for clicking to insert any element except a staff.
+   */
   handler = (function handler (evt: MouseEvent): void {
     console.debug(evt);
     let container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
@@ -176,6 +201,9 @@ class InsertHandler {
     });
   }).bind(this);
 
+  /**
+   * Event handler to insert a staff.
+   */
   staffHandler = (function staffHandler (evt: MouseEvent): void {
     let container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     let pt = container.createSVGPoint();
@@ -221,6 +249,9 @@ class InsertHandler {
     }
   }).bind(this);
 
+  /**
+   * Remove the insert listeners while not leaving insert mode entirely.
+   */
   removeInsertClickHandlers = (function removeInsertClickHandlers (): void {
     document.querySelector(this.selector).removeEventListener('click', this.staffHandler);
     document.querySelector(this.selector).removeEventListener('click', this.handler);

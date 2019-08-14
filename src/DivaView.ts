@@ -9,20 +9,17 @@ declare var Diva: any;
  * and then display the rendered MEI files over the proper pages.
  */
 class DivaView implements ViewInterface {
-  neonView: NeonView;
-  updateCallbacks: Function[];
+  readonly neonView: NeonView;
+  private updateCallbacks: Array<() => void>;
   divaReady: boolean;
-  diva: any;
-  indexMap: Map<number, string>;
-  displayPanel: DisplayPanel;
-  loadDelay: number;
+  private diva: any;
+  private indexMap: Map<number, string>;
+  private displayPanel: DisplayPanel;
+  private loadDelay: number;
   zoomHandler;
 
   /**
-   * Constructor for DivaView.
-   * @param {NeonView} neonView - NeonView parent
-   * @param {function} Display - A constructor for a DisplayPanel
-   * @param {string} manifest - Link to the IIIF manifest.
+   * @param manifest - Link to the IIIF manifest.
    */
   constructor (neonView: NeonView, Display: DisplayConstructable, manifest: string) {
     this.neonView = neonView;
@@ -63,9 +60,8 @@ class DivaView implements ViewInterface {
 
   /**
    * Called when the visible page changes in the diva.js viewer.
-   * @param {number | number[]} pageIndexes - The zero-index or -indexes of the page(s) visible.
-   * @param {boolean} [delay=true] - whether to delay the loading of the page. defaults to true
-   * delay the loading of the page when scrolling so that neon doesn't lag while scrolling
+   * @param pageIndex - The zero-indexed page that is most visible.
+   * @param delay - Whether to delay the loading of the page so that neon doesn't lag while scrolling.
    */
   async changePage (pageIndex: number, delay: boolean = true): Promise<void> {
     let pageIndexes = [pageIndex];
@@ -98,7 +94,6 @@ class DivaView implements ViewInterface {
 
   /**
    * Get the active page in the diva.js viewer.
-   * @returns {number}
    */
   getCurrentPage (): number {
     return this.diva.getActivePageIndex();
@@ -106,7 +101,6 @@ class DivaView implements ViewInterface {
 
   /**
    * Get the active page URI in the diva.js viewer.
-   * @returns {string}
    */
   getCurrentPageURI (): string {
     return this.indexMap.get(this.getCurrentPage());
@@ -114,9 +108,8 @@ class DivaView implements ViewInterface {
 
   /**
    * Adjust the rendered SVG(s) to be the correct size after zooming.
-   * @param {number} zoomLevel - The new diva.js zoom level.
    */
-  adjustZoom (_zoomLevel: number) {
+  adjustZoom () {
     (new Promise((resolve) => {
       Array.from(document.getElementsByClassName('neon-container'))
         .forEach((elem: HTMLElement) => { elem.style.display = 'none'; });
@@ -135,8 +128,7 @@ class DivaView implements ViewInterface {
 
   /**
    * Update the SVG being displayed for the specified page.
-   * @param {SVGSVGElement} svg - The updated SVG.
-   * @param {number} pageNo - The zero-indexed page number.
+   * @param pageNo - The zero-indexed page number.
    */
   updateSVG (svg: SVGSVGElement, pageNo: number) {
     let inner = document.getElementById('diva-1-inner');
@@ -182,17 +174,15 @@ class DivaView implements ViewInterface {
 
   /**
    * Add a callback function that will be run whenever an SVG is updated.
-   * @param {function} cb - The callback function.
    */
-  addUpdateCallback (cb: Function) {
+  addUpdateCallback (cb: () => void): void {
     this.updateCallbacks.push(cb);
   }
 
   /**
    * Remove a callback function previously added to the list of functions to call.
-   * @param {function} cb - The callback function to remove.
    */
-  removeUpdateCallback (cb: Function) {
+  removeUpdateCallback (cb: () => void): void {
     let index = this.updateCallbacks.findIndex((elem) => {
       return elem === cb;
     });
@@ -230,7 +220,7 @@ class DivaView implements ViewInterface {
 
   /**
    * Use the IIIF manifest to create a map between IIIF canvases and page indexes.
-   * @param {object} manifest - The IIIF manifest
+   * @param manifest - The IIIF manifest object.
    */
   parseManifest (manifest: any) {
     this.indexMap.clear();
@@ -243,7 +233,6 @@ class DivaView implements ViewInterface {
 
   /**
    * Get the name of the active page/canvas combined with the manuscript name.
-   * @returns {string}
    */
   getPageName (): string {
     let manuscriptName = this.diva.settings.manifest.itemTitle;

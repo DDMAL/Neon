@@ -3,39 +3,28 @@ import * as Cursor from '../utils/Cursor';
 import NeonView from '../NeonView';
 import DisplayPanel from '../DisplayPanel/DisplayPanel';
 import ZoomHandler from './Zoom';
-import { ViewInterface } from '../Interfaces';
+import { ViewInterface, DisplayConstructable } from '../Interfaces';
 
 import * as d3 from 'd3';
-
-/* A view module must contain the following functions:
- * updateSVG(svg, pageNo) - a function that updates the dipslayed SVG with
- *    the provided SVG for the given zero-indexed page number.
- * add/removeUpdateCallback - functions that add or remove callback functions
- *    that occur when the page updates.
- * getCurrentPage(URI) - functions that return the current page index (URI).
- * getPageName - function that returns a user-readable name for the page.
- */
 
 /**
  * A view module for displaying a single page of a manuscript.
  */
 class SingleView implements ViewInterface {
-  neonView: NeonView;
-  container: HTMLElement;
-  updateCallbacks: Function[];
-  group: SVGSVGElement;
-  bg: SVGImageElement;
-  mei: SVGSVGElement;
+  readonly neonView: NeonView;
+  private container: HTMLElement;
+  private updateCallbacks: Array<() => void>;
+  private group: SVGSVGElement;
+  private bg: SVGImageElement;
+  private mei: SVGSVGElement;
   zoomHandler: ZoomHandler;
-  displayPanel: DisplayPanel;
-  pageURI: string;
+  private displayPanel: DisplayPanel;
+  readonly pageURI: string;
   /**
    * Constructor for SingleView.
-   * @param {NeonView} neonView - The NeonView parent.
-   * @param {function} DisplayPanel - The constructor for a DisplayPanel.
-   * @param {string} image - The link to the background image for the page.
+   * @param image - The URI to the background image for the page.
    */
-  constructor (neonView: NeonView, panel: (a,b,c,d) => void, image: string) {
+  constructor (neonView: NeonView, panel: DisplayConstructable, image: string) {
     this.neonView = neonView;
     this.container = document.getElementById('container');
     this.updateCallbacks = new Array(0);
@@ -73,9 +62,8 @@ class SingleView implements ViewInterface {
 
   /**
    * Update the SVG being displayed.
-   * @param {SVGSVGElement} svg - The SVG to update to.
    */
-  updateSVG (svg: SVGSVGElement /*, pageNo */) {
+  updateSVG (svg: SVGSVGElement) {
     this.group.replaceChild(svg, this.mei);
     this.mei = svg;
     this.mei.id = 'mei_output';
@@ -94,8 +82,6 @@ class SingleView implements ViewInterface {
   /**
    * Change to a certain page
    * Since there is only one page, this is essentially a wrapper for updateSVG
-   * @param {number} page
-   * @param {boolean} delay. defaults to false
    */
   async changePage (_page: number, _delay: boolean = false) {
     let svg = await this.neonView.getPageSVG(this.getCurrentPageURI());
@@ -104,17 +90,15 @@ class SingleView implements ViewInterface {
 
   /**
    * Add a callback to the list of those be called when the page updates.
-   * @param {function} cb - The callback function to add to the list.
    */
-  addUpdateCallback (cb: Function) {
+  addUpdateCallback (cb: () => void) {
     this.updateCallbacks.push(cb);
   }
 
   /**
    * Remove a callback from the list of callbacks if it is part of the list.
-   * @param {function} cb - The callback to be removed.
    */
-  removeUpdateCallback (cb: Function) {
+  removeUpdateCallback (cb: () => void) {
     let index = this.updateCallbacks.findIndex((elem) => {
       return elem === cb;
     });
@@ -133,7 +117,6 @@ class SingleView implements ViewInterface {
 
   /**
    * Returns the zero-indexed number of the current page. This will always be zero.
-   * @returns {number}
    */
   getCurrentPage (): number {
     return 0;
@@ -141,7 +124,6 @@ class SingleView implements ViewInterface {
 
   /**
    * Returns the page URI.
-   * @returns {string}
    */
   getCurrentPageURI (): string {
     return this.pageURI;
@@ -208,7 +190,6 @@ class SingleView implements ViewInterface {
 
   /**
    * A human readable name for the page. Used for downloads.
-   * @returns {string}
    */
   getPageName (): string {
     return this.neonView.name;

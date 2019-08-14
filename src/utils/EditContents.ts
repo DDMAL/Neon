@@ -1,10 +1,7 @@
-/** @module utils/EditContents */
-
 /**
  * Contents of navbar menu after switching to edit mode.
- * @type {string}
  */
-export const navbarDropdownMenu =
+export const navbarDropdownMenu: string =
     "<div class='navbar-item has-dropdown is-hoverable'><a class='navbar-link'>File</a>" +
     "<div id='navbar-dropdown-options' class='navbar-dropdown'>" +
     "<a id='save' class='navbar-item'>Save</a>" +
@@ -14,16 +11,14 @@ export const navbarDropdownMenu =
 
 /**
  * Finalize option in the navbar for rodan
- * @type {string}
  */
-export const navbarFinalize =
+export const navbarFinalize: string =
     "<a id='finalize' class='navbar-item'> Finalize MEI </a>";
 
 /**
  * Contents of the undo/redo panel with buttons
- * @type {string}
  */
-export const undoRedoPanel =
+export const undoRedoPanel: string =
     "<div class='field has-addons buttons' style='overflow-x: auto;'>" +
     "<p class='control'>" +
     "<button class='button' id='undo'>Undo</button>" +

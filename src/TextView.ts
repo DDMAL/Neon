@@ -4,17 +4,16 @@ import { unselect } from './utils/SelectTools';
 import { updateHighlight } from './DisplayPanel/DisplayControls';
 import { TextViewInterface } from './Interfaces';
 
-/** @module TextView */
-
 /*
  * Class that manages getting the text for syllables in Neon from the mei file
  */
 class TextView implements TextViewInterface {
-  neonView: NeonView;
-  notificationSent: boolean;
+  private neonView: NeonView;
+  /** Whether or not the user has been notified about blank syllables. */
+  private notificationSent: boolean;
   /**
    * A constructor for a TextView.
-   * @param {NeonView} neonView = The NeonView parent.
+   * @param neonView - The calling [[NeonView]] for the instance.
    */
   constructor (neonView: NeonView) {
     this.neonView = neonView;
@@ -49,7 +48,7 @@ class TextView implements TextViewInterface {
   }
 
   /**
-  * set listeners on textview visibility checkbox
+  * Set listeners on textview visibility checkbox
   */
   setTextViewControls () {
     this.updateTextViewVisibility();
@@ -64,7 +63,7 @@ class TextView implements TextViewInterface {
   }
 
   /**
-   * update visibility of text bounding boxes
+   * Update visibility of text bounding boxes
    */
   updateBBoxViewVisibility () {
     if ((<HTMLInputElement>document.getElementById('displayBBox')).checked) {
@@ -100,7 +99,7 @@ class TextView implements TextViewInterface {
   }
 
   /**
-  * update the visibility of the textview box
+  * Update the visibility of the textview box
   * and add the event listeners to make sure the syl highlights when moused over
   */
   updateTextViewVisibility () {

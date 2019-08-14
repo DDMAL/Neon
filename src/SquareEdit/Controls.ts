@@ -10,7 +10,6 @@ import { NeumeEditInterface } from '../Interfaces';
 
 /**
  * Set listener on EditMode button.
- * @param {EditMode} editMode - The EditMode object.
  */
 export function initEditModeControls (editMode: NeumeEditInterface) {
   document.getElementById('edit_mode').addEventListener('click', function () {
@@ -22,13 +21,12 @@ export function initEditModeControls (editMode: NeumeEditInterface) {
 
 /**
  * Bind listeners to insert tabs.'
- * @param {InsertHandler} insertHandler - An InsertHandler to run the tasks.
  */
 export function bindInsertTabs (insertHandler: InsertHandler) {
-  var insertTabs = Array.from(document.getElementsByClassName('insertTab'));
-  var tabIds = insertTabs.map((tab) => { return tab.id; });
+  var insertTabs: Element[] = Array.from(document.getElementsByClassName('insertTab'));
+  var tabIds: string[] = insertTabs.map((tab) => { return tab.id; });
 
-  document.body.addEventListener('keydown', (evt) => {
+  document.body.addEventListener('keydown', (evt: KeyboardEvent) => {
     if (evt.code.match(/^Digit\d$/) && evt.shiftKey) {
       try {
         let index = Number(evt.code[evt.code.length - 1]) - 1;
@@ -61,7 +59,6 @@ export function bindInsertTabs (insertHandler: InsertHandler) {
 
 /**
  * Initialize Edit and Insert control panels.
- * @param {NeonView} neonView - The NeonView parent.
  */
 export function initInsertEditControls () {
   let toggleInsert = document.getElementById('toggleInsert');
@@ -91,8 +88,7 @@ export function initInsertEditControls () {
 
 /**
  * Activate a certain insert action.
- * @param {string} id - The ID of the insert action tab.
- * @param {InsertHandler} insertHandler - An InsertHandler object.
+ * @param id - The ID of the insert action tab.
  */
 function activate (id: string, insertHandler: InsertHandler) {
   document.getElementById(id).classList.add('is-active');
@@ -103,7 +99,7 @@ function activate (id: string, insertHandler: InsertHandler) {
 
 /**
  * Deactivate a certain insert action.
- * @param {string} type - A CSS selector for the action tab.
+ * @param type - A CSS selector for the action tab.
  */
 function deactivate (type: string) {
   var elList = document.querySelectorAll(type);
@@ -114,7 +110,6 @@ function deactivate (type: string) {
 
 /**
  * Bind listeners to insert tab elements.
- * @param {InsertHandler} insertHandler - An InsertHandler object.
  */
 function bindElements (insertHandler: InsertHandler) {
   var insertElements = Array.from(document.getElementsByClassName('insertel'));

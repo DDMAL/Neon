@@ -1,5 +1,3 @@
-/** @module SquareEdit/Grouping */
-
 import * as Contents from './Contents';
 import * as Warnings from '../Warnings';
 import * as Notification from '../utils/Notification';
@@ -8,7 +6,6 @@ import { unsetVirgaAction, unsetInclinatumAction, removeHandler, deleteButtonHan
 
 /**
  * The NeonView parent to access editor actions.
- * @type {NeonView}
  */
 var neonView: NeonView;
 
@@ -123,7 +120,7 @@ export function initGroupingListeners () {
   } catch (e) {}
 
   try {
-    document.getElementById('toggle-link').addEventListener('click', (evt: MouseEvent) => {
+    document.getElementById('toggle-link').addEventListener('click', () => {
       let elementIds = getIds();
       let chainAction = {
         'action': 'chain',
@@ -237,11 +234,11 @@ export function initGroupingListeners () {
 
 /**
  * Form and execute a group/ungroup action.
- * @param {string} action - The action to execute. Either "group" or "ungroup".
- * @param {string} groupType - The type of elements to group. Either "neume" or "nc".
- * @param {string[]} elementIds - The IDs of the elements.
+ * @param action - The action to execute. Either "group" or "ungroup".
+ * @param groupType - The type of elements to group. Either "neume" or "nc".
+ * @param elementIds - The IDs of the elements.
  */
-function groupingAction (action, groupType, elementIds) {
+function groupingAction (action: string, groupType: string, elementIds: string[]) {
   let editorAction = {
     'action': action,
     'param': {
@@ -281,7 +278,7 @@ function groupingAction (action, groupType, elementIds) {
 /**
  * Get the IDs of selected elements.
  */
-function getIds () {
+function getIds (): string[] {
   var ids = [];
   var elements = Array.from(document.getElementsByClassName('selected'));
   elements.forEach(el => {
@@ -293,7 +290,7 @@ function getIds () {
 /**
  * Get the IDs of the selected elements' children.
  */
-function getChildrenIds () {
+function getChildrenIds (): string[] {
   var childrenIds = [];
   var elements = Array.from(document.getElementsByClassName('selected'));
   elements.forEach(el => {

@@ -11,26 +11,26 @@ import * as Interfaces from './Interfaces';
  * NeonCore.
  */
 class NeonView {
+  /** The manifest describing what to load and where to find it. */
   manifest: NeonManifest;
+  /** Module that displays rendered MEI. */
   view: Interfaces.ViewInterface;
+  /** Name of the document loaded. */
   name: string;
+  /** Module that handles managing resources, rendering SVGs. */
   core: NeonCore;
+  /** Module that provides additional information on musical elements. */
   info: Interfaces.InfoInterface;
+  /** Module that allows editing of musical elements. */
   NeumeEdit: Interfaces.NeumeEditInterface;
+  /** Module that allows viewing of syllable text. */
   textView: Interfaces.TextViewInterface;
+  /** Module that allows editing of syllable text. */
   TextEdit: Interfaces.TextEditInterface;
 
 
   /**
    * Constructor for NeonView. Sets mode and passes constructors.
-   * @param {object} params
-   * @param {string} params.manifest - The contents of a Neon manifest.
-   * @param {object} params.View - Constructor for a View module
-   * @param {object} params.Display - Constructor for DisplayPanel module
-   * @param {object} params.Info - Constructor for InfoModule module
-   * @param {object} [params.NeumeEdit] - Constructor for NeumeEdit module
-   * @param {object} [params.TextView] - Constructor for TextView module
-   * @param {object} [params.TextEdit] - Constructor for TextEdit module
    */
   constructor (params: Interfaces.NeonViewParams) {
     setBody();
@@ -50,9 +50,9 @@ class NeonView {
   }
 
   /**
-   * setup edit modes
+   * Set up Neon for any provided editing modules.
    */
-  setupEdit(params) {
+  setupEdit(params: Interfaces.NeonViewParams): void {
     if (params.NeumeEdit !== undefined || (params.TextEdit !== undefined && params.TextView !== undefined)) {
       // Set up display for edit button
       prepareEditMode(this);
@@ -87,42 +87,37 @@ class NeonView {
   /**
    * Get the current page from the loaded view and then display the
    * most up to date SVG.
-   * @param {boolean} [delay=false] - whether or not to delay loading the page by 500ms. defaults to false
    */
-  updateForCurrentPage (delay: boolean = false) {
+  updateForCurrentPage (delay: boolean = false): void {
     let pageNo = this.view.getCurrentPage();
     this.view.changePage(pageNo, delay);
   }
 
   /**
-   * Same as updateForCurrentPage but returns a promise.
-   * @param {boolean} [delay=false] - whether or not to delay loading the page by 500ms. defaults to false
-   * @see NeonView.updateForCurrentPage
+   * Same as [[updateForCurrentPage]] but returns a promise.
    */
-  updateForCurrentPagePromise (delay: boolean = false) {
+  updateForCurrentPagePromise (delay: boolean = false): Promise<void> {
     let pageNo = this.view.getCurrentPage();
     return Promise.resolve(this.view.changePage(pageNo, delay));
   }
 
   /**
-   * Redo an action performed on the current page (if any)
-   * @returns {Promise} a promise that resolves to a success boolean
+   * Redo an action performed on the current page (if there is one).
    */
   redo (): Promise<boolean> {
     return this.core.redo(this.view.getCurrentPageURI());
   }
 
   /**
-   * Undo the last action performed on the current page (if any)
-   * @returns {Promise} a promise that reoslves to a success boolean
+   * Undo the last action performed on the current page (if there is one).
    */
   undo (): Promise<boolean> {
     return this.core.undo(this.view.getCurrentPageURI());
   }
 
   /**
-   * Get the mode Neon is in: viewer, insert, or edit.
-   * @returns {string}
+   * Get the mode Neon is in.
+   * @returns Value is "viewer", "insert", or "edit".
    */
   getUserMode (): string {
     if (this.NeumeEdit !== undefined) {
@@ -135,12 +130,9 @@ class NeonView {
   }
 
   /**
-   * Perform an editor action
-   * @param {object} action - The editor toolkit action object.
-   * @param {string} action.action - The name of the action to perform.
-   * @param {object|array} action.param - The parameters of the action(s)
-   * @param {string} pageURI - The URI of the page to perform the action on
-   * @returns {Promise} A promise that resolves to the result of the action.
+   * Attempt to perform an editor action.
+   * @param action - The editor toolkit action object.
+   * @param pageURI - The URI of the page to perform the action on
    */
   edit (action: Object, pageURI: string): Promise<boolean> {
     return this.core.edit(action, pageURI);
@@ -148,9 +140,8 @@ class NeonView {
 
   /**
    * Get the attributes for a specific musical element.
-   * @param {string} elementID - The unique ID of the element.
-   * @param {string} pageURI - The URI of the page the element is found on
-   * @returns {Promise} A promise that resolves to the available attributes.
+   * @param elementId - The unique ID of the musical element.
+   * @param pageURI - The URI of the page the element is found on.
    */
   getElementAttr (elementID: string, pageURI: string): Promise<any> {
     return this.core.getElementAttr(elementID, pageURI);
@@ -158,13 +149,12 @@ class NeonView {
 
   /**
    * Updates browser database and creates JSON-LD save file.
-   * @returns {Promise} A promise that resolves when the save action is finished.
+   * @returns The contents of this file.
    */
   export (): Promise<string | ArrayBuffer> {
-    // return this.core.updateDatabase();
     return (new Promise((resolve, reject) => {
       this.core.updateDatabase().then(() => {
-        this.manifest.mei_annotations = this.core.annotations;
+        this.manifest.mei_annotations = this.core.getAnnotations();
         this.manifest.timestamp = (new Date()).toISOString();
         let data = new window.Blob([JSON.stringify(this.manifest, null, 2)], { type: 'application/ld+json' });
         let reader = new FileReader();
@@ -178,7 +168,6 @@ class NeonView {
 
   /**
    * Save the current state to the browser database.
-   * @returns {Promise} A promise that resolves when the action is finished.
    */
   save (): Promise<void> {
     return this.core.updateDatabase();
@@ -186,18 +175,17 @@ class NeonView {
 
   /**
    * Deletes the local database of the loaded MEI file(s).
-   * @returns {Promise} A promise that resolves when the database is deleted.
    */
-  deleteDb (): PromiseLike<any> {
-    return this.core.db.destroy();
+  deleteDb (): Promise<void> {
+    return this.core.deleteDb();
   }
 
   /**
    * Get the page's MEI file encoded as a data URI.
-   * @param {number} pageNo - The zero-indexed page to encode.
-   * @returns {Promise} A promise that resolves to the URI.
+   * @param pageNo - The URI specifying the page.
+   * @returns A [Data URI](https://en.wikipedia.org/wiki/Data_URI_scheme).
    */
-  getPageURI (pageNo: string): Promise<string> {
+  getPageURI (pageNo?: string): Promise<string> {
     if (pageNo === undefined) {
       pageNo = this.view.getCurrentPageURI();
     }
@@ -210,8 +198,7 @@ class NeonView {
 
   /**
    * Get the page's MEI file as a string.
-   * @param {number} pageNo - The zero-indexed page to get.
-   * @returns {Promise} A promise that resolves to the string.
+   * @param pageNo - The identifying URI of the page.
    */
   getPageMEI (pageNo: string): Promise<string> {
     return this.core.getMEI(pageNo);
@@ -219,8 +206,7 @@ class NeonView {
 
   /**
    * Get the page's SVG.
-   * @param {number} pageNo - The zero-indexed page to get.
-   * @returns {Promise} A promise that resolves to the SVG.
+   * @param pageNo - The identifying URI of the page.
    */
   getPageSVG (pageNo: string): Promise<SVGSVGElement> {
     return this.core.getSVG(pageNo);

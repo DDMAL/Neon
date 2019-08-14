@@ -1,5 +1,3 @@
-/** @module SquareEdit/Contents */
-
 const PunctumIcon = require('../img/punctum.png');
 const VirgaIcon = require('../img/virga.png');
 const DiamondIcon = require('../img/diamond.png');
@@ -24,9 +22,8 @@ const Icons = require('../img/icons.svg');
 
 /**
  * HTML for each insert tab (neume, grouping, clef, system, and division).
- * @type {object}
  */
-export const insertTabHtml = {
+export const insertTabHtml: Object = {
   primitiveTab: "<p class='control'>" +
         "<button id='punctum' class='button insertel smallel' title='punctum'><img src='" + PunctumIcon + "' class='image'/></button></p>" +
         "<p class='control'>" +
@@ -72,9 +69,8 @@ export const insertTabHtml = {
 
 /**
  * Structure of insert panel with basic grouping tabs.
- * @type {string}
  */
-export const insertControlsPanel =
+export const insertControlsPanel: string =
     "<p class='panel-heading' id='insertMenu'>Insert" +
     "<svg class='icon is-pulled-right'><use id='toggleInsert' xlink:href='" + Icons + "#dropdown-down'></use></svg></p>" +
     "<div id='insertContents' style='overflow-y: hidden;'>" +
@@ -88,9 +84,8 @@ export const insertControlsPanel =
 
 /**
  * Contents of edit panel with buttons.
- * @type {string}
  */
-export const editControlsPanel =
+export const editControlsPanel: string =
     "<p class='panel-heading' id='editMenu'>Edit" +
     "<svg class='icon is-pulled-right'><use id='toggleEdit' xlink:href='" + Icons + "#dropdown-down'></use></svg></p>" +
     "<div id='editContents'>" +
@@ -112,9 +107,8 @@ export const editControlsPanel =
 
 /**
  * Contents of extra nc action menu.
- * @type {string}
  */
-export const ncActionContents =
+export const ncActionContents: string =
         '<label>Change Head Shape:&nbsp;</label>' +
         "<div id='drop_select' class='dropdown'>" +
         "<div class='dropdown-trigger'>" +
@@ -131,9 +125,8 @@ export const ncActionContents =
 
 /**
  * Contents of extra neume action menu.
- * @type {string}
  */
-export const neumeActionContents =
+export const neumeActionContents: string =
         '<label>Change Grouping:&nbsp;</label>' +
         "<div id='drop_select' class='dropdown'>" +
         "<div class='dropdown-trigger'>" +
@@ -163,9 +156,8 @@ export const neumeActionContents =
 
 /**
  * Contents of extra staff action menu.
- * @type {string}
  */
-export const staffActionContents =
+export const staffActionContents: string =
     '<label>Merge Systems:&nbsp;</label>' +
     "<div><p class='control'>" +
     "<button id='merge-systems' class='button'>Merge</button>" +
@@ -173,17 +165,15 @@ export const staffActionContents =
 
 /**
  * Contents of default action menu.
- * @type {string}
  */
-export const defaultActionContents =
+export const defaultActionContents: string =
     "<div><p class='control'>" +
     "<button class='button' id='delete'>Delete</button></p></div>";
 
 /**
  * Contents of custos action menu.
- * @type {string}
  */
-export const custosActionContents =
+export const custosActionContents: string =
     "<div><p class='control'>" +
     "<button class='button' id='delete'>Delete</button>" +
     "<button class='button' id='changeStaff'>Re-associate to nearest staff</button></p></div>";
@@ -200,9 +190,8 @@ export const splitActionContents =
 
 /**
  * Contents of extra clef action menu.
- * @type {string}
  */
-export const clefActionContents =
+export const clefActionContents: string =
     '<label>Change Clef Shape:&nbsp;</label>' +
     "<div id='drop_select' class='dropdown'>" +
     "<div class='dropdown-trigger'>" +
@@ -218,9 +207,8 @@ export const clefActionContents =
 
 /**
  * HTML for grouping selection menu.
- * @type {object}
  */
-export const groupingMenu = {
+export const groupingMenu: object = {
   'nc': "<div class='field is-grouped'>" +
         "<div><p class='control'>" +
         "<button class='button' id='groupNcs'>Group Neume Components</button>" +

@@ -9,12 +9,12 @@ import { TextEditInterface } from './Interfaces';
  * A Text editing module that works with the SingleView and DivaView modules
  */
 export default class TextEditMode implements TextEditInterface {
-  dragHandler: DragHandler;
-  neonView: NeonView;
+  private dragHandler: DragHandler;
+  private neonView: NeonView;
 
   /**
    * Constructor for a TextEdit
-   * @param {NeonView} neonView
+   * @param neonView - The calling [[NeonView]] for the instance.
    */
   constructor (neonView: NeonView) {
     this.neonView = neonView;
@@ -22,7 +22,7 @@ export default class TextEditMode implements TextEditInterface {
   }
 
   /**
-   * set listener on edit mode button
+   * Set listener on edit mode button to start editing.
    */
   initEditModeControls () {
     document.getElementById('edit_mode').addEventListener('click', () => {
@@ -34,7 +34,7 @@ export default class TextEditMode implements TextEditInterface {
   }
 
   /**
-  * set text to edit mode
+  * Set text to edit mode
   */
   initTextEdit () {
     let spans = document.getElementById('syl_text').querySelectorAll('p > span');
@@ -48,9 +48,9 @@ export default class TextEditMode implements TextEditInterface {
   }
 
   /**
-  * add the selectByRect button
-  * if neume edit mode is there, add it to the bar with the other select by buttons
-  * otherwise add an invisible button
+  * Add the selectByBBox button.
+  * If neume edit mode is there, add it to the bar with the other select by buttons.
+  * Otherwise add an invisible button
   * since the only edit mode is selectByRect in that case
   */
   initSelectByBBoxButton () {
@@ -99,7 +99,7 @@ export default class TextEditMode implements TextEditInterface {
   }
 
   /**
-   * initialize select by bbox mode
+   * Initialize select by bbox mode
    */
   addBBoxListeners () {
     if (document.getElementById('selByBBox').classList.contains('is-active')) {
@@ -145,8 +145,7 @@ export default class TextEditMode implements TextEditInterface {
 
 /**
  * Format a string for prompting the user.
- * @param {string} rawString
- * @returns {string}
+ * @param rawString - The unformatted string.
  */
 function formatRaw (rawString: string): string {
   let removeSymbol = /\u{25CA}/u;

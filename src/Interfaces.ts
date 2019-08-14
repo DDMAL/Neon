@@ -58,7 +58,6 @@ export interface InfoConstructable {
 }
 
 export interface InfoInterface {
-  neonView: NeonView;
   getContour (ncs: Iterable<SVGGraphicsElement>): Promise<string>;
   getPitches (ncs: Iterable<SVGGraphicsElement>): Promise<string>;
   pitchNameToNum (pname: string): number;

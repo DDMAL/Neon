@@ -2,12 +2,12 @@ import NeonView from '../NeonView';
 import * as d3 from 'd3';
 
 class DragHandler {
-  dragStartCoords: Array<number>;
-  dragEndCoords: Array<number>;
-  resetToAction: (selection: d3.Selection<d3.BaseType, {}, HTMLElement, any>, args: any[]) => void;
-  neonView: NeonView;
-  selector: string;
-  selection;
+  private dragStartCoords: Array<number>;
+  private dragEndCoords: Array<number>;
+  private resetToAction: (selection: d3.Selection<d3.BaseType, {}, HTMLElement, any>, args: any[]) => void;
+  readonly neonView: NeonView;
+  private selector: string;
+  private selection: Element[];
 
   constructor (neonView: NeonView, selector: string) {
     this.neonView = neonView;
@@ -97,10 +97,12 @@ class DragHandler {
     }
   }
 
+  /** Set the d3 action to use for [[reset]]. */
   resetTo (reset: (selection: d3.Selection<d3.BaseType, {}, HTMLElement, any>, args: any[]) => void) {
     this.resetToAction = reset;
   }
 
+  /** Reset to a previous d3 action for [[this.selector]]. */
   reset () {
     if (this.resetToAction !== undefined) {
       d3.select(this.selector).call(this.resetToAction);

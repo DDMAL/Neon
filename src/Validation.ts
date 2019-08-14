@@ -2,8 +2,12 @@
 
 // const schemaPromise = import('./validation/mei-all.rng');
 const schemaPromise = require('./validation/mei-all.rng');
-const Worker = require('./Worker.js');
-var worker, schema, statusField;
+const Worker: WorkerConstructable = require('./Worker.js');
+var worker: Worker, schema: { default: any }, statusField: HTMLSpanElement;
+
+interface WorkerConstructable {
+  new (): Worker;
+}
 
 /**
  * Add the validation information to the display and create the WebWorker
@@ -32,7 +36,7 @@ export async function init () {
  * Send the contents of an MEI file to the WebWorker for validation.
  * @param {string} meiData
  */
-export async function sendForValidation (meiData) {
+export async function sendForValidation (meiData: string) {
   if (statusField === undefined) {
     return;
   }
@@ -40,7 +44,7 @@ export async function sendForValidation (meiData) {
     schema = await schemaPromise;
   }
   statusField.textContent = 'checking...';
-  statusField.style = 'color:gray';
+  statusField.style.color = 'gray';
   worker.postMessage({
     mei: meiData,
     schema: schema.default
@@ -49,16 +53,14 @@ export async function sendForValidation (meiData) {
 
 /**
  * Update the UI with the validation results. Called when the WebWorker finishes validating.
- * @param {object} message - The message sent by the WebWorker.
- * @param {object} message.data - The errors object produced by XML.js
  */
-function updateUI (message) {
+function updateUI (message: { data: any }): void {
   let errors = message.data;
   if (errors === null) {
     statusField.textContent = 'VALID';
-    statusField.style = 'color:green';
+    statusField.style.color = 'green';
     for (let child of statusField.children) {
-      statusField.deleteChild(child);
+      child.remove();
     }
   } else {
     let log = '';
@@ -66,7 +68,7 @@ function updateUI (message) {
       log += line + '\n';
     });
     statusField.textContent = '';
-    statusField.style = 'color:red';
+    statusField.style.color = 'red';
     let link = document.createElement('a');
     link.setAttribute('href', 'data:text/plain;charset=utf-8,' +
       encodeURIComponent(log));
@@ -81,8 +83,8 @@ function updateUI (message) {
  */
 export function blankPage () {
   for (let child of statusField.children) {
-    statusField.deleteChild(child);
+    child.remove();
   }
   statusField.textContent = 'No MEI'
-  statusField.style = 'color:gray';
+  statusField.style.color = 'color:gray';
 }

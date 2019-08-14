@@ -17,26 +17,29 @@ interface CacheEntry {
  * the verovio toolkit, the cache, and undo/redo stacks.
  */
 class NeonCore {
-  verovioWrapper: VerovioWrapper;
-  undoStacks: Map<string, string[]>;
-  redoStacks: Map<string, string[]>;
-  neonCache: Map<string, CacheEntry>;
-  db: PouchDB.Database;
-  parser: DOMParser;
-  blankPages: Array<string>;
-  annotations: Annotation[];
-  manifest: NeonManifest;
-  lastPageLoaded: string;
+  /** Wrapper for the Verovio WebWorker. */
+  private verovioWrapper: VerovioWrapper;
+  /** Stacks of actions that can be undone per page. */
+  private undoStacks: Map<string, string[]>;
+  /** Stacks of actions that can be redone per page. */
+  private redoStacks: Map<string, string[]>;
+  /** Cache containing entries for each page. */
+  private neonCache: Map<string, CacheEntry>;
+  private db: PouchDB.Database;
+  private parser: DOMParser;
+  /** Pages known not to have any associated MEI. */
+  private blankPages: Array<string>;
+  /** A collection of W3 Web Annotations. */
+  private annotations: Annotation[];
+  private manifest: NeonManifest;
+  private lastPageLoaded: string;
+
+  getAnnotations () { return this.annotations; }
 
   /**
    * Constructor for NeonCore
-   * @param {object} manifest - The manifest to load.
    */
   constructor (manifest: NeonManifest) {
-    /**
-     * A wrapper for the Verovio Web Worker.
-     * @type {object}
-     */
     this.verovioWrapper = new VerovioWrapper();
     Validation.init();
 
@@ -52,10 +55,6 @@ class NeonCore {
      */
     this.redoStacks = new Map();
 
-    /**
-     * A cache mapping a page URI to a {@link CacheEntry}.
-     * @type {Map.<string, CacheEntry>}
-     */
     this.neonCache = new Map();
 
     this.parser = new DOMParser();
@@ -74,10 +73,9 @@ class NeonCore {
    * Initialize the PouchDb database based on the provided manifest.
    * If a newer version already exists in the database, this will
    * not update the database unless forced.
-   * @param {boolean} force - If a database update should be forced.
-   * @returns {boolean}
+   * @param force - If a database update should be forced.
    */
-  async initDb (force: boolean = false): Promise<any> {
+  async initDb (force: boolean = false): Promise<{}> {
     // Check for existing manifest
     let response = await new Promise((resolve, reject) => {
       this.db.get(this.manifest['@id']).catch(err => {
@@ -156,8 +154,7 @@ class NeonCore {
   /**
    * Load a page into the verovio toolkit. This will fetch the
    * page from the cache or from the database.
-   * @param {string} pageURI - The URI of the selected page.
-   * @returns {Promise} A promise that resolves to the cache entry.
+   * @param pageURI - The URI of the selected page.
    */
   loadPage (pageURI: string): Promise<CacheEntry> {
     return new Promise((resolve, reject) => {
@@ -205,10 +202,9 @@ class NeonCore {
 
   /**
    * Load data into the verovio toolkit and update the cache.
-   * @param {string} pageURI - The URI of the selected page.
-   * @param {string} data - The MEI of the page as a string.
-   * @param {boolean} [dirty] - If the cache entry should be marked as dirty. Defaults to false.
-   * @returns {Promise} promise that resolves when this action is done
+   * @param pageURI - The URI of the selected page.
+   * @param data - The MEI of the page as a string.
+   * @param dirty - If the cache entry should be marked as dirty.
    */
   loadData (pageURI: string, data: string, dirty: boolean = false): Promise<void> {
     Validation.sendForValidation(data);
@@ -249,9 +245,8 @@ class NeonCore {
   }
 
   /**
-   * Get the SVG for a specific page number.
-   * @param {string} pageURI - The URI of the selected page.
-   * @returns {Promise} A promise that resolves to the SVG.
+   * Get the SVG for a specific page.
+   * @param pageURI - The URI of the selected page.
    */
   getSVG (pageURI: string): Promise<SVGSVGElement> {
     return new Promise((resolve, reject) => {
@@ -262,9 +257,8 @@ class NeonCore {
   }
 
   /**
-   * Get the MEI for a specific page number.
-   * @param {string} pageURI - The URI of the selected page.
-   * @returns {Promise} A promise that resolves to the MEI as a string.
+   * Get the MEI for a specific page.
+   * @param pageURI - The URI of the selected page.
    */
   getMEI (pageURI: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -276,9 +270,8 @@ class NeonCore {
 
   /**
    * Get musical element attributes from the verovio toolkit.
-   * @param {string} elementId - The unique ID of the musical element.
-   * @param {string} pageURI - The URI of the selected page.
-   * @returns {Promise} A promise that resolves to the attributes in an object.
+   * @param elementId - The unique ID of the musical element.
+   * @param pageURI - The URI of the selected page.
    */
   getElementAttr (elementId: string, pageURI: string): Promise<Object> {
     return new Promise((resolve) => {
@@ -301,11 +294,8 @@ class NeonCore {
 
   /**
    * Perform an editor action on a specific page.
-   * @param {object} action - The editor toolkit action object.
-   * @param {string} action.action - The name of the action to perform.
-   * @param {object|array} action.param - The parameters of the action(s)
-   * @param {string} pageURI - The URI of the selected page.
-   * @returns {Promise} Resolves to boolean if the action succeeded or not.
+   * @param action - The editor toolkit action object.
+   * @param pageURI - The URI of the selected page.
    */
   edit (editorAction: Object, pageURI: string): Promise<boolean> {
     let promise: Promise<any>;
@@ -343,9 +333,8 @@ class NeonCore {
 
   /**
    * Update contents of the cache using information in verovio toolkit.
-   * @param {string} pageURI - Page to be updated in cache.
-   * @param {boolean} dirty - If the entry should be marked as dirty
-   * @returns {Promise}
+   * @param pageURI - Page to be updated in cache.
+   * @param dirty - If the entry should be marked as dirty
    */
   updateCache (pageURI: string, dirty: boolean): Promise<void> {
     return new Promise((resolve) => {
@@ -397,7 +386,7 @@ class NeonCore {
 
   /**
    * Get the edit info string from the verovio toolkit.
-   * @returns {Promise} Promise that resolves to info string
+   * @param pageURI - The URI of the page to get the edit info string from.
    */
   info (pageURI: string): Promise<string> {
     let promise: Promise<any>;
@@ -425,8 +414,8 @@ class NeonCore {
 
   /**
    * Undo the last action performed on a specific page.
-   * @param {string} pageURI - The URI of the selected page.
-   * @returns {Promise} If an action undone.
+   * @param pageURI - The URI of the selected page.
+   * @returns If the action was undone.
    */
   undo (pageURI: string): Promise<boolean> {
     return new Promise((resolve) => {
@@ -448,8 +437,8 @@ class NeonCore {
 
   /**
    * Redo the last action performed on a page.
-   * @param {string} pageURI - The zero-indexed page number.
-   * @returns {Promise} If an action was redone or not.
+   * @param pageURI - The page URI.
+   * @returns If the action was redone.
    */
   redo (pageURI: string): Promise<boolean> {
     return new Promise((resolve) => {
@@ -474,7 +463,7 @@ class NeonCore {
    * This is based on the data stored in the cache. To save time,
    * only entries marked as dirty will be updated.
    */
-  async updateDatabase () {
+  async updateDatabase (): Promise<void> {
     let updateTimestamp = false;
     for (let pair of this.neonCache) {
       let key = pair[0];
@@ -527,6 +516,11 @@ class NeonCore {
         console.error(err);
       });
     }
+  }
+
+  /** Completely remove the database. */
+  deleteDb (): Promise<void> {
+    return this.db.destroy();
   }
 }
 

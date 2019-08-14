@@ -7,7 +7,7 @@ import { InfoInterface } from './Interfaces';
  * Class that manages getting information for elements in Neon from Verovio.
  */
 class InfoModule implements InfoInterface {
-  neonView: NeonView;
+  private neonView: NeonView;
 
   /**
    * A constructor for an InfoModule.
@@ -36,7 +36,7 @@ class InfoModule implements InfoInterface {
   /**
    * Set listeners for the InfoModule.
    */
-  infoListeners () {
+  infoListeners (): void {
     try {
       document.getElementsByClassName('active-page')[0]
         .querySelectorAll('.neume,.custos,.clef')
@@ -49,7 +49,7 @@ class InfoModule implements InfoInterface {
   /**
    * Stop listeners for the InfoModule.
    */
-  stopListeners () {
+  stopListeners (): void {
     document.querySelectorAll('.neume,.custos,.clef').forEach(node => {
       node.removeEventListener('mouseover', this.updateInfo.bind(this));
     });
@@ -58,7 +58,7 @@ class InfoModule implements InfoInterface {
   /**
    * Restart listeners for the InfoModule.
    */
-  resetInfoListeners () {
+  resetInfoListeners (): void {
     this.stopListeners();
     this.infoListeners();
   }
@@ -67,7 +67,7 @@ class InfoModule implements InfoInterface {
    * Get updated info for the calling element based on its element type.
    * Makes calls to NeonCore to get the information necessary.
    */
-  async updateInfo (event: MouseEvent) {
+  async updateInfo (event: MouseEvent): Promise<void> {
   // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the <g> element
   // So we will simply return if ID does not exist for now
     let id = (<HTMLElement>event.currentTarget).id;
@@ -121,7 +121,8 @@ class InfoModule implements InfoInterface {
 
   /**
    * Get the individual pitches of a neume.
-   * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
+   * @param ncs - Neume components in the neume.
+   * @returns Space separated pitches of the neume components in order.
    */
   async getPitches (ncs: Iterable<SVGGraphicsElement>): Promise<string> {
     var pitches = '';
@@ -134,7 +135,7 @@ class InfoModule implements InfoInterface {
 
   /**
    * Get the contour of a neume.
-   * @param {array.<SVGGraphicsElement>} ncs - neume components in the neume.
+   * @param ncs - Neume components in the neume.
    */
   async getContour (ncs: Iterable<SVGGraphicsElement>): Promise<string> {
     var contour = '';
@@ -166,10 +167,10 @@ class InfoModule implements InfoInterface {
 
   /**
    * Show and update the info box.
-   * @param {string} title - The info box title.
-   * @param {string} body - The info box contents.
+   * @param title - The info box title.
+   * @param body - The info box contents.
    */
-  updateInfoModule (title: string, body: string) {
+  updateInfoModule (title: string, body: string): void {
     document.getElementsByClassName('message-header')[0].querySelector('p')
       .textContent = title;
     (<HTMLElement>document.getElementsByClassName('message-body')[0]).innerText = body;
@@ -180,9 +181,9 @@ class InfoModule implements InfoInterface {
   }
 
   /**
-   * Convert a pitch name (a-g) to a number (where c is 1, d is 2 and b is 7).
-   * @param {string} pname - The pitch name.
-   * @returns {number}
+   * Convert a pitch name (a-g) to a number (where c is 1, d is 2, ...and b is 7).
+   * @param pname - The pitch name.
+   * @returns
    */
   pitchNameToNum (pname: string): number {
     switch (pname) {
@@ -207,8 +208,7 @@ class InfoModule implements InfoInterface {
 
   /**
    * Find the contour of an neume grouping based on the grouping name.
-   * @param {string} value - the value name.
-   * @returns {string}
+   * @param value - The contour name.
    */
   getContourByValue (value: string): string {
     for (let [cont, v] of neumeGroups.entries()) {

@@ -1,10 +1,8 @@
-/** @module utils/Color */
-
 /**
- * Set a highlight by a different grouping. Either staff, syllable, or neume.
- * @param {string} grouping - The grouping name.
+ * Set a highlight by a different grouping.
+ * @param grouping - Either "staff", "syllable", or "neume".
  */
-export function setGroupingHighlight (grouping: string) {
+export function setGroupingHighlight (grouping: string): void {
   unsetGroupingHighlight();
   if (grouping === 'staff') {
     setStaffHighlight();
@@ -54,7 +52,7 @@ export function setGroupingHighlight (grouping: string) {
 /**
  * Unset highlight for all grouping types
  */
-export function unsetGroupingHighlight () {
+export function unsetGroupingHighlight (): void {
   unsetStaffHighlight();
   let highlighted = Array.from(document.getElementsByClassName('highlighted'))
     .filter((elem: HTMLElement) => !elem.parentElement.classList.contains('selected'));
@@ -84,7 +82,7 @@ export function unsetGroupingHighlight () {
 /**
  * Highlight each staff a different color.
  */
-export function setStaffHighlight () {
+export function setStaffHighlight (): void {
   let staves = <SVGGElement[]>Array.from(document.getElementsByClassName('staff'));
   for (var i = 0; i < staves.length; i++) {
     let staffColor = ColorPalette[i % ColorPalette.length];
@@ -95,16 +93,14 @@ export function setStaffHighlight () {
 /**
  * Remove the highlight from each staff.
  */
-export function unsetStaffHighlight () {
+export function unsetStaffHighlight (): void {
   unhighlight();
 }
 
 /**
  * Highlight a staff a certain color.
- * @param {SVGGElement} staff - The staff's SVG element.
- * @param {string} color - The color to highlight the staff.
  */
-export function highlight (staff: SVGGElement, color: string) {
+export function highlight (staff: SVGGElement, color: string): void {
   let children = Array.from(staff.children);
   children.forEach(child => {
     if (child.tagName === 'path') {
@@ -135,7 +131,7 @@ export function highlight (staff: SVGGElement, color: string) {
 
 /**
  * Remove the highlight from a staff.
- * @param {(SVGGElement)} staff - The staff's SVG element
+ * @param staff If undefined, the all staves are unhighlighted.
  */
 export function unhighlight (staff?: SVGGElement) {
   let children: NodeListOf<Element>;
@@ -171,13 +167,11 @@ export function unhighlight (staff?: SVGGElement) {
 }
 
 /**
- * Color palette from Figure 2 (Colors optimized for color-blind
+ * Adapted from color palette from Figure 2 (Colors optimized for color-blind
  * individuals) from
- * ["Points of view: Color blindness" by Bang Wong published in Nature Methods volume 8 on 27 May 2011]{@link https://www.nature.com/articles/nmeth.1618?WT.ec_id=NMETH-201106}
- * @type {string[]}
+ * ["Points of view: Color blindness" by Bang Wong published in Nature Methods volume 8 on 27 May 2011](https://www.nature.com/articles/nmeth.1618?WT.ec_id=NMETH-201106)
  */
 const ColorPalette: string[] = [
-//    "rgb(0,0,0)",
   'rgb(230, 159, 0)',
   'rgb(86, 180, 233)',
   'rgb(0, 158, 115)',

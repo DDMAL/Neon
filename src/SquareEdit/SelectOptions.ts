@@ -1,30 +1,27 @@
-/** @module SquareEdit/SelectOptions */
 import * as Contents from './Contents';
 import * as Grouping from './Grouping';
 import * as Notification from '../utils/Notification';
+import NeonView from '../NeonView';
 import { SplitHandler } from './StaffTools';
 
 /**
  * The NeonView parent to call editor actions.
- * @type {NeonView}
  */
-var neonView;
+var neonView: NeonView;
 
 /**
- * Initialize NeonView for this and {@link module:Grouping}
- * @param {NeonView} view - The parent NeonView.
+ * Initialize NeonView.
  */
-export function initNeonView (view) {
+export function initNeonView (view: NeonView): void {
   neonView = view;
   Grouping.initNeonView(view);
 }
 
 /**
- * Return aON action that unsets the inclinatum parameter of an nc.
- * @param {string} id - The id of the neume component.
- * @returns {object}
+ * Return an action that unsets the inclinatum parameter of an nc.
+ * @param id - The id of the neume component.
  */
-export function unsetInclinatumAction (id) {
+export function unsetInclinatumAction (id: string): object {
   return {
     'action': 'set',
     'param': {
@@ -36,11 +33,10 @@ export function unsetInclinatumAction (id) {
 }
 
 /**
- * Return aON action that unsets the virga parameter of an nc.
- * @param {string} id - The id of the neume component.
- * @returns {object}
+ * Return an action that unsets the virga parameter of an nc.
+ * @param id - The id of the neume component.
  */
-export function unsetVirgaAction (id) {
+export function unsetVirgaAction (id: string): object {
   return {
     'action': 'set',
     'param': {
@@ -52,7 +48,7 @@ export function unsetVirgaAction (id) {
 }
 
 /**
- * function to handle removing elements
+ * Function to handle removing elements
  */
 export function removeHandler () {
   let toRemove = [];
@@ -76,7 +72,7 @@ export function removeHandler () {
 }
 
 /**
- * function to handle re-associating elements to the nearest staff
+ * Function to handle re-associating elements to the nearest staff
  */
 export function changeStaffHandler() {
   let toChange = [];
@@ -100,10 +96,9 @@ export function changeStaffHandler() {
 }
 
 /**
- * Trigger the extra nc action menu.
- * @param {SVGGraphicsElement} nc - The last selected elements.
+ * Trigger the extra nc action menu for a selection.
  */
-export function triggerNcActions (nc) {
+export function triggerNcActions (nc: SVGGraphicsElement) {
   endOptionsSelection();
   try {
     let moreEdit = document.getElementById('moreEdit');
@@ -257,10 +252,9 @@ export function triggerSylActions () {
 }
 
 /**
- * Trigger extra clef actions.
- * @param {SVGGraphicsElement} clef - The clef that actions would be applied to.
+ * Trigger extra clef actions for a specific clef.
  */
-export function triggerClefActions (clef) {
+export function triggerClefActions (clef: SVGGraphicsElement) {
   endOptionsSelection();
   try {
     let moreEdit = document.getElementById('moreEdit');
@@ -320,9 +314,8 @@ export function triggerClefActions (clef) {
 
 /**
  * trigger extra custos actions.
- * @param {SVGGraphicsElement} custos - the custos that actions would be applied to
  */
-export function triggerCustosActions (custos) {
+export function triggerCustosActions () {
   endOptionsSelection();
   try {
     let moreEdit = document.getElementById('moreEdit');
@@ -448,11 +441,12 @@ export function endOptionsSelection () {
  * Initialize extra dropdown options.
  */
 function initOptionsListeners () {
-  document.getElementById('drop_select').addEventListener('click', function (evt) {
+  document.getElementById('drop_select').addEventListener('click', function () {
     this.classList.toggle('is-active');
   });
 }
 
-export function deleteButtonHandler (evt) {
+/** Event handler for delete button press. */
+export function deleteButtonHandler (evt: KeyboardEvent) {
   if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); evt.preventDefault(); }
 }

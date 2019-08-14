@@ -6,12 +6,12 @@ import {
 import { Resize } from './Resize';
 import NeonView from '../NeonView';
 import DragHandler from './DragHandler';
-import InfoModule from '../InfoModule';
+import { InfoInterface } from '../Interfaces';
 import ZoomHandler from '../SingleView/Zoom';
 
 import * as d3 from 'd3';
 
-var dragHandler: DragHandler, neonView: NeonView, info: InfoModule, zoomHandler: ZoomHandler;
+var dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 var strokeWidth = 7;
 
 export function setSelectStrokeWidth (width: number) {

@@ -1,5 +1,3 @@
-/** @module utils/Cursor */
-
 /**
  * Update the cursor to a crosshair.
  */
