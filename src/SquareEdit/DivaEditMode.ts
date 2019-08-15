@@ -16,7 +16,7 @@ class DivaEdit implements NeumeEditInterface {
     initEditModeControls(this);
   }
 
-  initEditMode () {
+  initEditMode (): void {
     this.dragHandler = new DragHandler(this.neonView, '.active-page > svg');
     this.insertHandler = new InsertHandler(this.neonView, '.active-page > svg');
     bindInsertTabs(this.insertHandler);
@@ -26,7 +26,7 @@ class DivaEdit implements NeumeEditInterface {
 
     SelectOptions.initNeonView(this.neonView);
     initInsertEditControls();
-    let editMenu = document.getElementById('editMenu');
+    const editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = '#ffc7c7';
     editMenu.style.fontWeight = 'bold';
 
@@ -53,7 +53,7 @@ class DivaEdit implements NeumeEditInterface {
     return 'viewer';
   }
 
-  setSelectListeners () {
+  setSelectListeners (): void {
     Select.clickSelect('.active-page > svg > svg, .active-page > svg > svg use, .active-page > svg > svg rect');
     Select.dragSelect('.active-page svg');
   }

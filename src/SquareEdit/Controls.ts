@@ -23,15 +23,15 @@ export function initEditModeControls (editMode: NeumeEditInterface) {
  * Bind listeners to insert tabs.'
  */
 export function bindInsertTabs (insertHandler: InsertHandler) {
-  var insertTabs: Element[] = Array.from(document.getElementsByClassName('insertTab'));
-  var tabIds: string[] = insertTabs.map((tab) => { return tab.id; });
+  const insertTabs: Element[] = Array.from(document.getElementsByClassName('insertTab'));
+  const tabIds: string[] = insertTabs.map((tab) => { return tab.id; });
 
   document.body.addEventListener('keydown', (evt: KeyboardEvent) => {
     if (evt.code.match(/^Digit\d$/) && evt.shiftKey) {
       try {
-        let index = Number(evt.code[evt.code.length - 1]) - 1;
-        let insertOptions = document.getElementsByClassName('insertel');
-        let selectedOption = insertOptions[index];
+        const index = Number(evt.code[evt.code.length - 1]) - 1;
+        const insertOptions = document.getElementsByClassName('insertel');
+        const selectedOption = insertOptions[index];
         deactivate('.insertel');
         insertHandler.insertDisabled();
         activate(selectedOption.id, insertHandler);
@@ -50,7 +50,7 @@ export function bindInsertTabs (insertHandler: InsertHandler) {
       document.getElementById('insert_data').innerHTML = Contents.insertTabHtml[tab];
       bindElements(insertHandler);
       deactivate('.insertel');
-      let firstOption = document.getElementsByClassName('insertel')[0];
+      const firstOption = document.getElementsByClassName('insertel')[0];
       activate(firstOption.id, insertHandler);
       Cursor.updateCursor();
     });
@@ -61,10 +61,10 @@ export function bindInsertTabs (insertHandler: InsertHandler) {
  * Initialize Edit and Insert control panels.
  */
 export function initInsertEditControls () {
-  let toggleInsert = document.getElementById('toggleInsert');
-  let toggleEdit = document.getElementById('toggleEdit');
-  let insertContents = document.getElementById('insertContents');
-  let editContents = document.getElementById('editContents');
+  const toggleInsert = document.getElementById('toggleInsert');
+  const toggleEdit = document.getElementById('toggleEdit');
+  const insertContents = document.getElementById('insertContents');
+  const editContents = document.getElementById('editContents');
   toggleInsert.addEventListener('click', () => {
     if (insertContents.style.display === 'none') {
       insertContents.style.display = '';
@@ -102,7 +102,7 @@ function activate (id: string, insertHandler: InsertHandler) {
  * @param type - A CSS selector for the action tab.
  */
 function deactivate (type: string) {
-  var elList = document.querySelectorAll(type);
+  const elList = document.querySelectorAll(type);
   elList.forEach(el => {
     el.classList.remove('is-active');
   });
@@ -112,8 +112,8 @@ function deactivate (type: string) {
  * Bind listeners to insert tab elements.
  */
 function bindElements (insertHandler: InsertHandler) {
-  var insertElements = Array.from(document.getElementsByClassName('insertel'));
-  var elementIds = insertElements.map(el => el.id);
+  const insertElements = Array.from(document.getElementsByClassName('insertel'));
+  const elementIds = insertElements.map(el => el.id);
   elementIds.forEach(el => {
     document.getElementById(el).addEventListener('click', () => {
       deactivate('.insertel');
@@ -127,10 +127,10 @@ function bindElements (insertHandler: InsertHandler) {
  * Set listeners on the buttons to change selection modes.
  */
 export function initSelectionButtons () {
-  let selBySyl = document.getElementById('selBySyl');
-  let selByNeume = document.getElementById('selByNeume');
-  let selByNc = document.getElementById('selByNc');
-  let selByStaff = document.getElementById('selByStaff');
+  const selBySyl = document.getElementById('selBySyl');
+  const selByNeume = document.getElementById('selByNeume');
+  const selByNc = document.getElementById('selByNc');
+  const selByStaff = document.getElementById('selByStaff');
 
   selBySyl.addEventListener('click', selectBySylHandler);
   document.body.addEventListener('keydown', (evt) => {

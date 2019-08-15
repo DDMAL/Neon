@@ -9,7 +9,6 @@ import * as SelectOptions from '../SquareEdit/SelectOptions';
 import * as d3 from 'd3';
 /**
  * Get the selection mode chosen by the user.
- * @returns {string|null}
  */
 export function getSelectionType (): string {
   const element = document.getElementsByClassName('sel-by is-active');
@@ -98,7 +97,6 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler): void
 
 /**
  * Select an nc.
- * @param el - The Neume Component element to select.
  */
 export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dragHandler: DragHandler): Promise<void> {
   if (!el.parentElement.classList.contains('selected')) {
@@ -129,8 +127,6 @@ export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dra
 
 /**
  * Check if neume component is part of a ligature
- * @param {SVGGraphicsElement} nc - The neume component to check.
- * @returns {boolean}
  */
 export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): Promise<boolean> {
   const attributes: any = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPageURI());
@@ -139,8 +135,6 @@ export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): P
 
 /**
  * Check if the elements have the same parent up two levels.
- * @param {Array<Element>} elements - The array of elements.
- * @returns {boolean} - If the elements share the same second level parent.
  */
 export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
   const tempElements = Array.from(elements);
@@ -157,8 +151,6 @@ export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
 
 /**
  * Get the bounding box of a staff based on its staff lines.
- * @param {SVGGElement} staff
- * @returns {object}
  */
 export function getStaffBBox (staff: SVGGElement): {ulx: number; uly: number; lrx: number; lry: number} {
   let ulx, uly, lrx, lry;
@@ -184,16 +176,16 @@ export function getStaffBBox (staff: SVGGElement): {ulx: number; uly: number; lr
 
 /**
  * select a boundingbox element
- * @param {SVGGElement} el - the bbox (sylTextRect) element in the DOM
- * @param {DragHandler} dragHandler - the drag handler in use
+ * @param el - the bbox (sylTextRect) element in the DOM
+ * @param dragHandler - the drag handler in use
  */
-export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, resizeHandler: any) {
+export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, resizeHandler: any): void {
   const bbox = el;
   const syl = bbox.closest('.syl');
   if (!syl.classList.contains('selected')) {
     syl.classList.add('selected');
     bbox.style.fill = '#d00';
-    const closest = <HTMLElement>el.closest('.syllable');
+    const closest = el.closest('.syllable') as HTMLElement;
     closest.style.fill = 'red';
     closest.classList.add('syllable-highlighted');
     if (resizeHandler !== undefined) {
@@ -216,9 +208,9 @@ export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, re
 
 /**
  * Select not neume elements.
- * @param {SVGGraphicsElement[]} notNeumes - An array of not neumes elements.
+ * @param notNeumes - An array of not neumes elements.
  */
-export function selectNn (notNeumes: SVGGraphicsElement[]) {
+export function selectNn (notNeumes: SVGGraphicsElement[]): boolean {
   if (notNeumes.length > 0) {
     notNeumes.forEach(nn => { select(nn); });
     return false;
@@ -229,10 +221,10 @@ export function selectNn (notNeumes: SVGGraphicsElement[]) {
 
 /**
  * Select a staff element.
- * @param {SVGGElement} staff - The staff element in the DOM.
- * @param {DragHandler} dragHandler - The drag handler in use.
+ * @param staff - The staff element in the DOM.
+ * @param dragHandler - The drag handler in use.
  */
-export function selectStaff (staff: SVGGElement, dragHandler: DragHandler) {
+export function selectStaff (staff: SVGGElement, dragHandler: DragHandler): void {
   if (!staff.classList.contains('selected')) {
     staff.classList.add('selected');
     Color.highlight(staff, '#d00');
@@ -242,12 +234,8 @@ export function selectStaff (staff: SVGGElement, dragHandler: DragHandler) {
 
 /**
  * Handle selecting an array of elements based on the selection type.
- * @param {SVGGraphicsElement[]} elements - The elements to select. Either <g> or <use>.
- * @param {NeonView} neonView
- * @param {InfoModule} info
- * @param {DragHandler} dragHandler
  */
-export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: NeonView, dragHandler: DragHandler) {
+export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: NeonView, dragHandler: DragHandler): Promise<void> {
   const selectionType = getSelectionType();
   unselect();
   if (elements.length === 0) {
@@ -310,7 +298,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
 
   /* Determine the context menu to display (if any) */
 
-  const groups: SVGGraphicsElement[] = <SVGGraphicsElement[]>Array.from(groupsToSelect.values());
+  const groups = Array.from(groupsToSelect.values()) as SVGGraphicsElement[];
 
   // Handle occurance of clef or custos
   if (containsClefOrCustos) {
@@ -375,8 +363,10 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
               const secondLayer = secondStaff.querySelector('.layer');
 
               // Check that the first staff has either syllable as the last syllable
-              const firstSyllableChildren = <HTMLElement[]>Array.from(firstLayer.children).filter((elem: HTMLElement) => elem.classList.contains('syllable'));
-              const secondSyllableChildren = <HTMLElement[]>Array.from(secondLayer.children).filter((elem: HTMLElement) => elem.classList.contains('syllable'));
+              const firstSyllableChildren = Array.from(firstLayer.children)
+                .filter((elem: HTMLElement) => elem.classList.contains('syllable')) as HTMLElement[];
+              const secondSyllableChildren = Array.from(secondLayer.children)
+                .filter((elem: HTMLElement) => elem.classList.contains('syllable')) as HTMLElement[];
               const lastSyllable = firstSyllableChildren[firstSyllableChildren.length - 1];
               const firstSyllable = secondSyllableChildren[0];
               if (lastSyllable.id === groups[0].id && firstSyllable.id === groups[1].id) {
@@ -430,16 +420,22 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
                 // Check that second neume component is lower than first.
                 // Note that the order in the list may not be the same as the
                 // order by x-position.
-                const orderFirstX = (<SVGUseElement>groups[0].children[0]).x.baseVal.value;
-                const orderSecondX = (<SVGUseElement>groups[1].children[0]).x.baseVal.value;
+                const orderFirstX = (groups[0].children[0] as SVGUseElement)
+                  .x.baseVal.value;
+                const orderSecondX = (groups[1].children[0] as SVGUseElement)
+                  .x.baseVal.value;
                 let posFirstY, posSecondY;
 
                 if (orderFirstX < orderSecondX) {
-                  posFirstY = (<SVGUseElement>groups[0].children[0]).y.baseVal.value;
-                  posSecondY = (<SVGUseElement>groups[1].children[0]).y.baseVal.value;
+                  posFirstY = (groups[0].children[0] as SVGUseElement)
+                    .y.baseVal.value;
+                  posSecondY = (groups[1].children[0] as SVGUseElement)
+                    .y.baseVal.value;
                 } else {
-                  posFirstY = (<SVGUseElement>groups[1].children[0]).y.baseVal.value;
-                  posSecondY = (<SVGUseElement>groups[0].children[0]).y.baseVal.value;
+                  posFirstY = (groups[1].children[0] as SVGUseElement)
+                    .y.baseVal.value;
+                  posSecondY = (groups[0].children[0] as SVGUseElement)
+                    .y.baseVal.value;
                 }
 
                 // Also ensure both components are marked or not marked as ligatures.

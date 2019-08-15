@@ -51,7 +51,9 @@ export interface TextViewConstructable {
   new (a: NeonView): TextViewInterface;
 }
 
-export interface TextViewInterface {}
+export interface TextViewInterface {
+  getSylText (): string;
+}
 
 export interface InfoConstructable {
   new (a: NeonView): InfoInterface;

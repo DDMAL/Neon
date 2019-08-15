@@ -5,18 +5,18 @@ et.register_namespace('xml', 'http://www.w3.org/XML/1998/namespace');
 et.register_namespace('', 'http://www.music-encoding.org/ns/mei');
 
 export function convertStaffToSb (staffBasedMei: string): string {
-  let meiTree = et.parse(staffBasedMei);
-  let meiTag = meiTree.getroot();
-  for (let section of meiTag.findall('.//section')) {
-    let newStaff = et.Element('staff', { 'n': '1' });
-    let container: any = et.SubElement(newStaff, 'layer');
+  const meiTree = et.parse(staffBasedMei);
+  const meiTag = meiTree.getroot();
+  for (const section of meiTag.findall('.//section')) {
+    const newStaff = et.Element('staff', { 'n': '1' });
+    const container: any = et.SubElement(newStaff, 'layer');
 
     container.set('n', '1');
 
-    for (let staff of section.getchildren()) {
-      for (let layer of staff.getchildren()) {
+    for (const staff of section.getchildren()) {
+      for (const layer of staff.getchildren()) {
         // Replace every staff + layer with a sb with the same facsimile info
-        let sb = et.Element('sb', {
+        const sb = et.Element('sb', {
           'n': staff.get('n'),
           'facs': staff.get('facs'),
           'xml:id': staff.get('xml:id')
@@ -36,7 +36,7 @@ export function convertStaffToSb (staffBasedMei: string): string {
         if (firstSyllable) {
           if (firstSyllable.get('follows')) {
             syllableId = firstSyllable.get('follows');
-            for (let syl of firstSyllable.findall('syl')) {
+            for (const syl of firstSyllable.findall('syl')) {
               firstSyllable.remove(syl);
             }
             layer.remove(firstSyllable);
@@ -48,7 +48,7 @@ export function convertStaffToSb (staffBasedMei: string): string {
         if (!firstSyllable) {
           container.append(sb);
         } else {
-          let syllable: any = container.find(
+          const syllable: any = container.find(
             './/*[@xml:id=\'' + syllableId + '\']'
           );
           syllable.append(sb);
@@ -57,80 +57,80 @@ export function convertStaffToSb (staffBasedMei: string): string {
         container._children = container._children.concat(layer.getchildren());
       }
     }
-    let sectionId = section.get('xml:id');
+    const sectionId = section.get('xml:id');
     section.clear();
     section.set('xml:id', sectionId);
     section.append(newStaff);
   }
 
-  return meiTree.write({ xml_declaration: true, indent: 4 });
+  return meiTree.write({ 'xml_declaration': true, indent: 4 });
 }
 
 export function convertSbToStaff (sbBasedMei: string): string {
-  let meiTree = et.parse(sbBasedMei);
-  let meiTag = meiTree.getroot();
+  const meiTree = et.parse(sbBasedMei);
+  const meiTag = meiTree.getroot();
 
-  for (let section of <any>meiTag.findall('.//section')) {
-    let staffStore = [];
-    for (let staff of section.getchildren()) {
-      for (let layer of staff.getchildren()) {
-        let sbIndexes = [];
-        for (let sb of layer.findall('sb')) {
+  for (const section of meiTag.findall('.//section') as any) {
+    const staffStore = [];
+    for (const staff of section.getchildren()) {
+      for (const layer of staff.getchildren()) {
+        const sbIndexes = [];
+        for (const sb of layer.findall('sb')) {
           sbIndexes.push(layer.getchildren().indexOf(sb));
         }
 
-        for (let [sbIndex, n] of zip(sbIndexes, [...Array(sbIndexes.length).keys()])) {
-          let sb = layer.getItem(sbIndex);
-          let newStaff = et.Element('staff', sb.attrib);
-          let container: any = et.Element('layer', { 'n': '1' });
+        for (const [sbIndex, n] of zip(sbIndexes, [...Array(sbIndexes.length).keys()])) {
+          const sb = layer.getItem(sbIndex);
+          const newStaff = et.Element('staff', sb.attrib);
+          const container: any = et.Element('layer', { 'n': '1' });
 
           // Check for custos
           for (let i = 0; i < sb.len(); i++) {
-            let custos = sb.getItem(0);
-            let lastStaff = staffStore[staffStore.length - 1];
+            const custos = sb.getItem(0);
+            const lastStaff = staffStore[staffStore.length - 1];
             lastStaff.getItem(lastStaff.len() - 1).append(custos);
           }
 
           // Get elements to add
-          let lastIndex = n + 1 === sbIndexes.length ? layer.len() : sbIndexes[n + 1];
+          const lastIndex = n + 1 === sbIndexes.length ? layer.len() : sbIndexes[n + 1];
           container._children = container._children.concat(layer.getSlice(sbIndex + 1, lastIndex));
           newStaff.append(container);
           staffStore.push(newStaff);
         }
       }
     }
-    let sectionId = section.get('xml:id');
+    const sectionId = section.get('xml:id');
     section.clear();
     section.set('xml:id', sectionId);
     section._children = section._children.concat(staffStore);
 
     // Handle sb in syllables
-    let stavesAdded = 0;
-    for (let [staff, staffIndex] of zip(section.getchildren(), [...Array(section.len()).keys()])) {
-      for (let layer of staff.getchildren()) {
-        for (let syllable of layer.findall('.//syllable')) {
-          let sb = syllable.find('sb');
+    const stavesAdded = 0;
+    for (const [staff, staffIndex] of zip(section.getchildren(), [...Array(section.len()).keys()])) {
+      for (const layer of staff.getchildren()) {
+        for (const syllable of layer.findall('.//syllable')) {
+          const sb = syllable.find('sb');
           if (!sb) {
             continue;
           }
-          let newStaff = et.Element('staff', sb.attrib);
-          let newLayer: any = et.SubElement(newStaff, 'layer');
+          const newStaff = et.Element('staff', sb.attrib);
+          const newLayer: any = et.SubElement(newStaff, 'layer');
           newLayer.set('n', '1');
 
-          let newSyllableId = uuid();
-          let newSyllable: any = et.SubElement(newLayer, 'syllable');
+          const newSyllableId = uuid();
+          const newSyllable: any = et.SubElement(newLayer, 'syllable');
           newSyllable.set('follows', syllable.get('xml:id'));
           newSyllable.set('xml:id', newSyllableId);
           syllable.set('precedes', newSyllableId);
           newSyllable._children = newSyllable._children.concat(syllable.getSlice(syllable.getchildren().indexOf(sb) + 1, syllable.len()));
 
-          let oldSyllableContent = syllable.getSlice(0, syllable.getchildren().indexOf(sb));
-          let syllableAttrib = syllable.attrib;
+          const oldSyllableContent = syllable.getSlice(0, syllable.getchildren().indexOf(sb));
+          const syllableAttrib = syllable.attrib;
 
           // Move remaining components to new staff.
           newLayer._children = newLayer._children.concat(layer.getSlice(layer.getchildren().indexOf(syllable) + 1, layer.len()));
-          let layerAttrib = layer.attrib;
-          let layerContent = layer.getSlice(0, layer.getchildren().indexOf(syllable) + 1);
+          const layerAttrib = layer.attrib;
+          const layerContent = layer.getSlice(0, layer.getchildren().indexOf(syllable) + 1);
           layer.clear();
           layer.attrib = layerAttrib;
           layer._children = layer._children.concat(layerContent);
@@ -149,11 +149,11 @@ export function convertSbToStaff (sbBasedMei: string): string {
     }
   }
 
-  return meiTree.write({ xml_declaration: true, indent: 4 });
+  return meiTree.write({ 'xml_declaration': true, indent: 4 });
 }
 
 function zip (array1: Array<any>, array2: Array<any>): Array<any> {
-  let result = [];
+  const result = [];
   for (let i = 0; i < (array1.length > array2.length ? array2.length : array1.length); i++) {
     result.push([array1[i], array2[i]]);
   }

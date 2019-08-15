@@ -155,7 +155,6 @@ class TextView implements TextViewInterface {
 
   /**
    * Get the syllable text of the loaded file
-   * @returns {string}
    */
   getSylText (): string {
     let lyrics = '';
