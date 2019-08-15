@@ -1,7 +1,7 @@
 /** @module DisplayPanel/DisplayControls */
 
 import * as Color from '../utils/Color';
-import Icons from '../img/icons.svg';
+const Icons = require('../img/icons.svg');
 import ZoomHandler from '../SingleView/Zoom';
 
 let lastGlyphOpacity: number, lastImageOpacity: number;
