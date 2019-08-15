@@ -41,7 +41,7 @@ class SingleView implements ViewInterface {
     this.bg.setAttribute('x', '0');
     this.bg.setAttribute('y', '0');
 
-    this.mei = <SVGSVGElement>document.createElementNS('http://www.w3.org/svg', 'svg');
+    this.mei = document.createElementNS('http://www.w3.org/svg', 'svg') as SVGSVGElement;
     this.mei.id = 'mei_output';
     this.mei.classList.add('neon-container', 'active-page');
 
@@ -63,13 +63,13 @@ class SingleView implements ViewInterface {
   /**
    * Update the SVG being displayed.
    */
-  updateSVG (svg: SVGSVGElement) {
+  updateSVG (svg: SVGSVGElement): void {
     this.group.replaceChild(svg, this.mei);
     this.mei = svg;
     this.mei.id = 'mei_output';
     this.mei.classList.add('neon-container', 'active-page');
-    let height = parseInt(this.mei.getAttribute('height'));
-    let width = parseInt(this.mei.getAttribute('width'));
+    const height = parseInt(this.mei.getAttribute('height'));
+    const width = parseInt(this.mei.getAttribute('width'));
 
     this.bg.setAttribute('height', height.toString());
     this.bg.setAttribute('width', width.toString());
@@ -83,23 +83,23 @@ class SingleView implements ViewInterface {
    * Change to a certain page
    * Since there is only one page, this is essentially a wrapper for updateSVG
    */
-  async changePage (_page: number, _delay: boolean = false) {
-    let svg = await this.neonView.getPageSVG(this.getCurrentPageURI());
+  async changePage (_page: number, _delay: boolean): Promise<void> {
+    const svg = await this.neonView.getPageSVG(this.getCurrentPageURI());
     this.updateSVG(svg);
   }
 
   /**
    * Add a callback to the list of those be called when the page updates.
    */
-  addUpdateCallback (cb: () => void) {
+  addUpdateCallback (cb: () => void): void {
     this.updateCallbacks.push(cb);
   }
 
   /**
    * Remove a callback from the list of callbacks if it is part of the list.
    */
-  removeUpdateCallback (cb: () => void) {
-    let index = this.updateCallbacks.findIndex((elem) => {
+  removeUpdateCallback (cb: () => void): void {
+    const index = this.updateCallbacks.findIndex((elem) => {
       return elem === cb;
     });
     if (index !== -1) {
@@ -110,7 +110,7 @@ class SingleView implements ViewInterface {
   /**
    * Reset the transformations that have been applied to the SVG upon update.
    */
-  resetTransformations () {
+  resetTransformations (): void {
     this.displayPanel.zoomHandler.restoreTransformation();
     setOpacityFromSlider();
   }
@@ -132,7 +132,7 @@ class SingleView implements ViewInterface {
   /**
    * Set event handlers for the view and display panel.
    */
-  setViewEventHandlers () {
+  setViewEventHandlers (): void {
     document.body.addEventListener('keydown', (evt) => {
       switch (evt.key) {
         case 'Shift':
@@ -179,9 +179,9 @@ class SingleView implements ViewInterface {
     });
     d3.select('#container').on('wheel', this.displayPanel.zoomHandler.scrollZoom.bind(this.displayPanel.zoomHandler), false);
     // Update height of container based on window
-    window.onresize = () => {
-      let newHeight = window.innerHeight;
-      let container = document.getElementById('container');
+    window.onresize = (): void => {
+      const newHeight = window.innerHeight;
+      const container = document.getElementById('container');
       if (newHeight > Number(container.getAttribute('height'))) {
         container.setAttribute('height', newHeight.toString());
       }
