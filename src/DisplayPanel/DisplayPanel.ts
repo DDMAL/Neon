@@ -1,5 +1,5 @@
 import * as DisplayControls from './DisplayControls';
-const Icons = require('../img/icons.svg');
+import Icons from '../img/icons.svg';
 import ZoomHandler from '../SingleView/Zoom';
 import { DisplayInterface, ViewInterface } from '../Interfaces';
 
