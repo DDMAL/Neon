@@ -15,7 +15,10 @@
     "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module",
-        "project": "./tsconfig.json"
+        "extends": "./tsconfig.json",
+        "include": [
+            "src/*.js"
+        ]
     },
     "rules": {
         "@typescript-eslint/indent": [
