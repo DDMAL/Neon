@@ -34,9 +34,9 @@ export function unselect (): void {
       selected.style.fill = '';
     }
   });
-  Array.from(document.getElementsByClassName('text-select')).forEach(el => {
-    el.setAttribute('color', '');
-    el.setAttribute('font-weight', '');
+  Array.from(document.getElementsByClassName('text-select')).forEach((el: SVGElement) => {
+    el.style.color = '';
+    el.style.fontWeight = '';
     el.classList.remove('text-select');
   });
   Array.from(document.getElementsByClassName('sylTextRect-display')).forEach((sylRect: HTMLElement) => {

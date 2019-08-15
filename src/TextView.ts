@@ -123,7 +123,7 @@ class TextView implements TextViewInterface {
             neume.classList.add('selected');
           });
           if (rect !== null) {
-            rect.setAttribute('fill', '#d00');
+            rect.style.fill = '#d00';
           }
           // syl.attr('fill', '#ffc7c7');
           // this.highlightBoundingBox(span);
@@ -136,7 +136,7 @@ class TextView implements TextViewInterface {
           });
           if (rect !== null) {
             if (syllable.style.fill !== 'rgb(0, 0, 0)') { // syllable.getAttributeNS('http://www.w3.org/2000/SVG', 'fill');
-              rect.setAttribute('fill', syllable.getAttribute('fill'));
+              rect.style.fill = syllable.getAttribute('fill');
             } else {
               rect.style.fill = 'blue';
             }
