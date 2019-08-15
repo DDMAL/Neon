@@ -20,93 +20,84 @@ const PointNames = {
   Left: 7
 };
 
-/**
- * Handle the resizing of the selected object.
- * @constructor
- * @param elementId - The ID of the element to resize.
- */
-function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler) {
-  let element = <SVGGElement><unknown>document.getElementById(elementId);
-  /**
-   * The upper-left x-coordinate of the element.
-   */
-  let ulx: number;
-  /**
-   * The upper-left y-coordinate of the element.
-   */
-  let uly: number;
-  /**
-   * The lower-right x-coordinate of the element.
-   */
-  let lrx: number;
-  /**
-   * The lower-right y-coordinate of the element.
-   */
-  let lry: number;
+/** Handle resizing of staves and text bounding boxes. */
+class Resize {
+  /** The element being resized. */
+  element: SVGGElement;
+  /** The upper-left x-coordinate of the element. */
+  ulx: number;
+  /** The upper-left y-coordinate of the element. */
+  uly: number;
+  /** The lower-right x-coordinate of the element. */
+  lrx: number;
+  /** The lower-right y-coordinate of the element. */
+  lry: number;
+  /** The skew of the bounding box in radians. */
+  skew: number;
 
-  /**
-   * The skew of the rect in radians.
-   */
-  let skew: number;
+  neonView: NeonView;
+  dragHandler: DragHandler;
 
-  let initialPoint: number[], initialUly: number, initialLry: number, whichSkewPoint: string,
-    initialY: number, initialRectY: number, polyLen: number, dy: number, initialSkew: number;
+  constructor (elementId: string, neonView: NeonView, dragHandler: DragHandler) {
+    this.element = document.getElementById(elementId) as unknown as SVGGElement;
+    this.neonView = neonView;
+    this.dragHandler = dragHandler;
+  }
 
-  /**
-   * Draw the initial rectangle around the element
-   * and add the listeners to support dragging to resize.
-   */
-  function drawInitialRect () {
-    if (element === null) return;
+  /** Draw the initial rectangle around the element and add resizing listeners. */
+  drawInitialRect (): void {
+    if (this.element === null) return;
 
-    // if it's a boundingbox just get the coordinates
-    if (element.classList.contains('syl')) {
-      const rect = element.querySelector('.sylTextRect-display');
+    // If it's a bounding box just get the coordinates.
+    if (this.element.classList.contains('syl')) {
+      const rect = this.element.querySelector('.sylTextRect-display');
       if (rect === null) {
         console.warn('Tried to draw resize rect for a sylTextRect that doesn\'t exist (or isn\'t displaying)');
         return;
       }
-      ulx = Number(rect.getAttribute('x'));
-      uly = Number(rect.getAttribute('y'));
-      lrx = +ulx + +rect.getAttribute('width');
-      lry = +uly + +rect.getAttribute('height');
+      this.ulx = Number(rect.getAttribute('x'));
+      this.uly = Number(rect.getAttribute('y'));
+      this.lrx = this.ulx + Number(rect.getAttribute('width'));
+      this.lry = this.uly + Number(rect.getAttribute('height'));
 
-      skew = 0;
+      this.skew = 0;
     }
 
-    // if it's a staff use the paths to get it's boundingbox
-    if (element.classList.contains('staff')) {
-      const bbox = getStaffBBox(element);
-      ulx = bbox.ulx;
-      uly = bbox.uly;
-      lrx = bbox.lrx;
-      lry = bbox.lry;
+    // Use paths to get bounding box in the case of a staff.
+    if (this.element.classList.contains('staff')) {
+      const bbox = getStaffBBox(this.element);
+      this.ulx = bbox.ulx;
+      this.uly = bbox.uly;
+      this.lrx = bbox.lrx;
+      this.lry = bbox.lry;
 
-      const segments: any = element.querySelector('path').pathSegList;
-      skew = Math.atan((segments[segments.length - 1].y - segments[0].y) /
-        (segments[segments.length - 1].x - segments[0].x));
+      const coordinates: number[] = this.element.querySelector('path')
+        .getAttribute('d')
+        .match(/\d+/g)
+        .map(element => Number(element));
+      this.skew = Math.atan((coordinates[3] - coordinates[1]) /
+        (coordinates[2] - coordinates[0]));
     }
 
     let whichPoint: string;
-
     const points: Array<Point> = [
-      { x: ulx, y: uly, name: PointNames.TopLeft },
-      { x: (ulx + lrx) / 2, y: uly + (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Top },
-      { x: lrx, y: uly + (lrx - ulx) * Math.sin(skew), name: PointNames.TopRight },
-      { x: lrx, y: (uly + lry + (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Right },
-      { x: lrx, y: lry, name: PointNames.BottomRight },
-      { x: (ulx + lrx) / 2, y: lry - (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Bottom },
-      { x: ulx, y: lry - (lrx - ulx) * Math.sin(skew), name: PointNames.BottomLeft },
-      { x: ulx, y: (uly + lry - (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Left }
+      { x: this.ulx, y: this.uly, name: PointNames.TopLeft },
+      { x: (this.ulx + this.lrx) / 2, y: this.uly + (this.lrx - this.ulx) / 2 * Math.sin(this.skew), name: PointNames.Top },
+      { x: this.lrx, y: this.uly + (this.lrx - this.ulx) * Math.sin(this.skew), name: PointNames.TopRight },
+      { x: this.lrx, y: (this.uly + this.lry + (this.lrx - this.ulx) * Math.sin(this.skew)) / 2, name: PointNames.Right },
+      { x: this.lrx, y: this.lry, name: PointNames.BottomRight },
+      { x: (this.ulx + this.lrx) / 2, y: this.lry - (this.lrx - this.ulx) / 2 * Math.sin(this.skew), name: PointNames.Bottom },
+      { x: this.ulx, y: this.lry - (this.lrx - this.ulx) * Math.sin(this.skew), name: PointNames.BottomLeft },
+      { x: this.ulx, y: (this.uly + this.lry - (this.lrx - this.ulx) * Math.sin(this.skew)) / 2, name: PointNames.Left }
     ];
 
-    polyLen = points[2].x - points[0].x;
+    const polyLen = points[2].x - points[0].x;
 
     const pointString = points.filter((_elem, index) => { return index % 2 === 0; })
       .map(elem => elem.x + ',' + elem.y)
       .join(' ');
 
-    d3.select('#' + element.id).append('polygon')
+    d3.select('#' + this.element.id).append('polygon')
       .attr('points', pointString)
       .attr('id', 'resizeRect')
       .attr('stroke', 'black')
@@ -117,7 +108,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
 
     for (const pointName in PointNames) {
       const point: Point = points[PointNames[pointName]];
-      d3.select(element.viewportElement).append('circle')
+      d3.select(this.element.viewportElement).append('circle')
         .attr('cx', point.x)
         .attr('cy', point.y)
         .attr('r', 25)
@@ -132,12 +123,13 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
     for (const name in PointNames) {
       d3.select('#p-' + name).filter('.resizePoint').call(
         d3.drag()
-          .on('start', () => { resizeStart(name); })
-          .on('drag', resizeDrag)
-          .on('end', resizeEnd.bind(this)));
+          .on('start', () => { resizeStart.bind(this)(name); })
+          .on('drag', resizeDrag.bind(this))
+          .on('end', resizeEnd.bind(this))
+      );
     }
 
-    if (element.classList.contains('staff')) {
+    if (this.element.classList.contains('staff')) {
       let x = points[3].x;
       let y = points[3].y;
       const pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
@@ -147,7 +139,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
       const pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
         (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
 
-      d3.select('#' + element.id).append('polygon')
+      d3.select('#' + this.element.id).append('polygon')
         .attr('points', pointStringRight)
         .attr('id', 'skewRight')
         .attr('stroke', 'black')
@@ -155,7 +147,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
         .attr('fill', '#0099ff')
         .attr('class', 'skewPoint');
 
-      d3.select('#' + element.id).append('polygon')
+      d3.select('#' + this.element.id).append('polygon')
         .attr('points', pointStringLeft)
         .attr('id', 'skewLeft')
         .attr('stroke', 'black')
@@ -165,168 +157,175 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
 
       d3.select('#skewLeft').call(
         d3.drag()
-          .on('start', () => { skewStart('skewLeft'); })
-          .on('drag', skewDragLeft)
-          .on('end', skewEnd));
+          .on('start', () => { skewStart.bind(this)('skewLeft'); })
+          .on('drag', skewDragLeft.bind(this))
+          .on('end', skewEnd.bind(this)));
 
       d3.select('#skewRight').call(
         d3.drag()
-          .on('start', () => { skewStart('skewRight'); })
-          .on('drag', skewDragRight)
-          .on('end', skewEnd));
+          .on('start', () => { skewStart.bind(this)('skewRight'); })
+          .on('drag', skewDragRight.bind(this))
+          .on('end', skewEnd.bind(this)));
     }
 
-    function skewStart (which: string) {
+    let whichSkewPoint: string,
+      initialRectY: number,
+      initialY: number,
+      initialSkew: number,
+      dy: number,
+      initialPoint: number[],
+      initialUly: number,
+      initialLry: number;
+
+    function skewStart (which: string): void {
       const polygon = d3.select('#' + which);
       const points = polygon.attr('points');
       whichSkewPoint = which;
       initialY = Number(points.split(' ')[0].split(',')[1]);
-      initialRectY = (which === 'skewRight' ? lry : uly);
-      initialSkew = skew;
+      initialRectY = (which === 'skewRight' ? this.lry : this.uly);
+      initialSkew = this.skew;
     }
 
-    function skewDragLeft () {
-      const currentY = d3.mouse(this)[1];
+    function skewDragLeft (): void {
+      const currentY = d3.mouse(d3.event.sourceEvent.target)[1];
       dy = currentY - initialY;
       const tempSkew = initialSkew - Math.atan(dy / polyLen);
       if (tempSkew > -0.2 && tempSkew < 0.2) {
-        uly = initialRectY + dy;
-        skew = tempSkew;
+        this.uly = initialRectY + dy;
+        this.skew = tempSkew;
       }
-      redraw();
+      this.redraw();
     }
 
-    function skewDragRight () {
-      const currentY = d3.mouse(this)[1];
+    function skewDragRight (): void {
+      const currentY = d3.mouse(d3.event.sourceEvent.target)[1];
       dy = currentY - initialY;
       const tempSkew = initialSkew + Math.atan(dy / polyLen);
       if (tempSkew > -0.2 && tempSkew < 0.2) {
-        skew = tempSkew;
-        lry = initialRectY + dy;
+        this.skew = tempSkew;
+        this.lry = initialRectY + dy;
       }
-      redraw();
+      this.redraw();
     }
 
-    function skewEnd () {
+    function skewEnd (): void {
       const editorAction = {
         'action': 'changeSkew',
         'param': {
-          'elementId': element.id,
+          'elementId': this.element.id,
           'dy': dy,
           'rightSide': (whichSkewPoint === 'skewRight')
         }
       };
-      neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
+      this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(async (result) => {
         if (result) {
-          await neonView.updateForCurrentPagePromise();
+          await this.neonView.updateForCurrentPagePromise();
         }
-        element = <SVGGElement><unknown>document.getElementById(elementId);
-        ulx = undefined;
-        uly = undefined;
-        lrx = undefined;
-        lry = undefined;
-        drawInitialRect();
-        if (element.classList.contains('syl')) {
-          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
+        this.element = document.getElementById(this.element.id);
+        this.ulx = undefined;
+        this.uly = undefined;
+        this.lrx = undefined;
+        this.lry = undefined;
+        this.drawInitialRect();
+        if (this.element.classList.contains('syl')) {
+          selectBBox(this.element.querySelector('.sylTextRect-display'), this.dragHandler, this);
         } else {
-          selectStaff(element, dragHandler);
+          selectStaff(this.element, this.dragHandler);
         }
       });
     }
 
-    function resizeStart (name: string) {
+    function resizeStart (name: string): void {
       whichPoint = name;
       const point = points.find(point => { return point.name === PointNames[name]; });
       initialPoint = [point.x, point.y];
-      initialUly = uly;
-      initialLry = lry;
+      initialUly = this.uly;
+      initialLry = this.lry;
     }
 
-    function resizeDrag () {
-      const currentPoint = d3.mouse(this);
+    function resizeDrag (): void {
+      const currentPoint = d3.mouse(d3.event.sourceEvent.target);
       switch (PointNames[whichPoint]) {
         case PointNames.TopLeft:
-          ulx = currentPoint[0];
-          uly = currentPoint[1];
+          this.ulx = currentPoint[0];
+          this.uly = currentPoint[1];
           break;
         case PointNames.Top:
-          uly = currentPoint[1] - (lrx - ulx) * Math.tan(skew) / 2;
+          this.uly = currentPoint[1] - (this.lrx - this.ulx) * Math.tan(this.skew) / 2;
           break;
         case PointNames.TopRight:
-          lrx = currentPoint[0];
-          uly = currentPoint[1] - (lrx - ulx) * Math.tan(skew);
+          this.lrx = currentPoint[0];
+          this.uly = currentPoint[1] - (this.lrx - this.ulx) * Math.tan(this.skew);
           break;
         case PointNames.Right:
-          lrx = currentPoint[0];
-          lry = initialLry + (currentPoint[0] - initialPoint[0]) * Math.tan(skew);
+          this.lrx = currentPoint[0];
+          this.lry = initialLry + (currentPoint[0] - initialPoint[0]) * Math.tan(this.skew);
           break;
         case PointNames.BottomRight:
-          lrx = currentPoint[0];
-          lry = currentPoint[1];
+          this.lrx = currentPoint[0];
+          this.lry = currentPoint[1];
           break;
         case PointNames.Bottom:
-          lry = currentPoint[1] + (lrx - ulx) * Math.tan(skew) / 2;
+          this.lry = currentPoint[1] + (this.lrx - this.ulx) * Math.tan(this.skew) / 2;
           break;
         case PointNames.BottomLeft:
-          ulx = currentPoint[0];
-          lry = currentPoint[1] + (lrx - ulx) * Math.tan(skew);
+          this.ulx = currentPoint[0];
+          this.lry = currentPoint[1] + (this.lrx - this.ulx) * Math.tan(this.skew);
           break;
         case PointNames.Left:
-          ulx = currentPoint[0];
-          uly = initialUly + (currentPoint[0] - initialPoint[0]) * Math.tan(skew);
+          this.ulx = currentPoint[0];
+          this.uly = initialUly + (currentPoint[0] - initialPoint[0]) * Math.tan(this.skew);
           break;
         default:
           console.error('Something that wasn\'t a side of the rectangle was dragged. This shouldn\'t happen.');
       }
-      redraw();
+      this.redraw();
     }
 
-    function resizeEnd () {
+    function resizeEnd (): void {
       const editorAction = {
         'action': 'resize',
         'param': {
-          'elementId': element.id,
-          'ulx': ulx,
-          'uly': uly,
-          'lrx': lrx,
-          'lry': lry
+          'elementId': this.element.id,
+          'ulx': this.ulx,
+          'uly': this.uly,
+          'lrx': this.lrx,
+          'lry': this.lry
         }
       };
-      neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
+      this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(async (result) => {
         if (result) {
-          await neonView.updateForCurrentPagePromise();
+          await this.neonView.updateForCurrentPagePromise();
         }
-        element = <SVGGElement><unknown>document.getElementById(elementId);
-        ulx = undefined;
-        uly = undefined;
-        lrx = undefined;
-        lry = undefined;
-        if (element.classList.contains('syl')) {
-          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
+        this.element = document.getElementById(this.element.id);
+        this.ulx = undefined;
+        this.uly = undefined;
+        this.lrx = undefined;
+        this.lry = undefined;
+        if (this.element.classList.contains('syl')) {
+          selectBBox(this.element.querySelector('.sylTextRect-display'), this.dragHandler, this);
         } else {
-          selectStaff(element, dragHandler);
+          selectStaff(this.element, this.dragHandler);
         }
         d3.selectAll('.resizePoint').remove();
         d3.selectAll('#resizeRect').remove();
         d3.selectAll('.skewPoint').remove();
-        drawInitialRect();
+        this.drawInitialRect();
       });
     }
   }
 
-  /**
-   * Redraw the rectangle with the new bounds
-   */
-  function redraw () {
+  /** Redraw the rectangle with new bounds. */
+  redraw (): void {
     const points: Point[] = [
-      { x: ulx, y: uly, name: PointNames.TopLeft },
-      { x: (ulx + lrx) / 2, y: uly + (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Top },
-      { x: lrx, y: uly + (lrx - ulx) * Math.sin(skew), name: PointNames.TopRight },
-      { x: lrx, y: (uly + lry + (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Right },
-      { x: lrx, y: lry, name: PointNames.BottomRight },
-      { x: (ulx + lrx) / 2, y: lry - (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Bottom },
-      { x: ulx, y: lry - (lrx - ulx) * Math.sin(skew), name: PointNames.BottomLeft },
-      { x: ulx, y: (uly + lry - (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Left }
+      { x: this.ulx, y: this.uly, name: PointNames.TopLeft },
+      { x: (this.ulx + this.lrx) / 2, y: this.uly + (this.lrx - this.ulx) / 2 * Math.sin(this.skew), name: PointNames.Top },
+      { x: this.lrx, y: this.uly + (this.lrx - this.ulx) * Math.sin(this.skew), name: PointNames.TopRight },
+      { x: this.lrx, y: (this.uly + this.lry + (this.lrx - this.ulx) * Math.sin(this.skew)) / 2, name: PointNames.Right },
+      { x: this.lrx, y: this.lry, name: PointNames.BottomRight },
+      { x: (this.ulx + this.lrx) / 2, y: this.lry - (this.lrx - this.ulx) / 2 * Math.sin(this.skew), name: PointNames.Bottom },
+      { x: this.ulx, y: this.lry - (this.lrx - this.ulx) * Math.sin(this.skew), name: PointNames.BottomLeft },
+      { x: this.ulx, y: (this.uly + this.lry - (this.lrx - this.ulx) * Math.sin(this.skew)) / 2, name: PointNames.Left }
     ];
 
     const pointString: string = points.filter((_elem, index) => { return index % 2 === 0; })
@@ -354,9 +353,5 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
     d3.select('#skewLeft').attr('points', pointStringLeft);
     d3.select('#skewRight').attr('points', pointStringRight);
   }
-
-  Resize.prototype.constructor = Resize;
-  Resize.prototype.drawInitialRect = drawInitialRect;
 }
-
 export { Resize };
