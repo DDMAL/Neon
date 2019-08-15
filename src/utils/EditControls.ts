@@ -6,11 +6,11 @@ import { convertStaffToSb } from './ConvertMei';
 /**
  * prepare the edit mode button
  */
-export function prepareEditMode (neonView: NeonView) {
-  let parent = document.getElementById('dropdown_toggle');
-  let editItem = document.createElement('a');
+export function prepareEditMode (neonView: NeonView): void {
+  const parent = document.getElementById('dropdown_toggle');
+  const editItem = document.createElement('a');
   editItem.classList.add('navbar-item');
-  let editButton = document.createElement('button');
+  const editButton = document.createElement('button');
   editButton.classList.add('button');
   editButton.id = 'edit_mode';
   editButton.textContent = 'Edit MEI';
@@ -26,18 +26,18 @@ export function prepareEditMode (neonView: NeonView) {
  * start the basic edit mode features
  * is called when the edit mode button is clicked
  */
-export function startEditMode (neonView: NeonView) {
-  let dropdownToggle = document.getElementById('dropdown_toggle');
+export function startEditMode (neonView: NeonView): void {
+  const dropdownToggle = document.getElementById('dropdown_toggle');
   dropdownToggle.innerHTML = navbarDropdownMenu;
-  let parent = document.getElementById('dropdown_toggle').parentElement;
+  const parent = document.getElementById('dropdown_toggle').parentElement;
   document.getElementById('dropdown_toggle').remove();
   parent.innerHTML = navbarDropdownMenu;
   document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;
   initNavbar(neonView);
   initUndoRedoPanel(neonView);
 
-  let selectionHighlight = document.createElement('a');
-  let divider = document.createElement('hr');
+  const selectionHighlight = document.createElement('a');
+  const divider = document.createElement('hr');
   divider.classList.add('dropdown-divider');
   selectionHighlight.classList.add('dropdown-item');
   selectionHighlight.id = 'highlight-selection';
@@ -49,7 +49,7 @@ export function startEditMode (neonView: NeonView) {
 /**
  * Set listener on switching EditMode button to File dropdown in the navbar.
  */
-export function initNavbar (neonView: NeonView) {
+export function initNavbar (neonView: NeonView): void {
   // setup navbar listeners
   document.getElementById('save').addEventListener('click', () => {
     neonView.save().then(() => {
@@ -66,8 +66,8 @@ export function initNavbar (neonView: NeonView) {
 
   document.getElementById('export').addEventListener('click', () => {
     neonView.export().then(manifest => {
-      let link: HTMLAnchorElement = document.createElement('a');
-      link.href = <string>manifest;
+      const link: HTMLAnchorElement = document.createElement('a');
+      link.href = manifest as string;
       link.download = neonView.name + '.jsonld';
       document.body.appendChild(link);
       link.click();
@@ -86,9 +86,9 @@ export function initNavbar (neonView: NeonView) {
   // Download link for MEI
   // Is an actual file with a valid URI except in local mode where it must be generated.
   document.getElementById('getmei').addEventListener('click', () => {
-    let uri = neonView.view.getCurrentPageURI();
+    const uri = neonView.view.getCurrentPageURI();
     neonView.getPageMEI(uri).then(mei => {
-      let data = 'data:application/mei+xml;base64,' + window.btoa(convertStaffToSb(mei));
+      const data = 'data:application/mei+xml;base64,' + window.btoa(convertStaffToSb(mei));
       document.getElementById('getmei').setAttribute('href', data);
       document.getElementById('getmei').setAttribute('download', neonView.view.getPageName() + '.mei');
     });
@@ -98,7 +98,7 @@ export function initNavbar (neonView: NeonView) {
 /**
  * Initialize the undo/redo panel
  */
-export function initUndoRedoPanel (neonView: NeonView) {
+export function initUndoRedoPanel (neonView: NeonView): void {
   document.getElementById('undo').addEventListener('click', undoHandler);
   document.body.addEventListener('keydown', (evt) => {
     if (evt.key === 'z' && (evt.ctrlKey || evt.metaKey)) {
@@ -116,7 +116,7 @@ export function initUndoRedoPanel (neonView: NeonView) {
   /**
    * Tries to undo an action and update the page if it succeeds.
    */
-  function undoHandler () {
+  function undoHandler (): void {
     neonView.undo().then((result: boolean) => {
       if (result) {
         neonView.updateForCurrentPage();
@@ -129,7 +129,7 @@ export function initUndoRedoPanel (neonView: NeonView) {
   /**
    * Tries to redo an action and update the page if it succeeds.
    */
-  function redoHandler () {
+  function redoHandler (): void {
     neonView.redo().then((result: boolean) => {
       if (result) {
         neonView.updateForCurrentPage();

@@ -3,11 +3,12 @@ import * as Grouping from './Grouping';
 import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
 import { SplitHandler } from './StaffTools';
+import { EditorAction } from '../Types';
 
 /**
  * The NeonView parent to call editor actions.
  */
-var neonView: NeonView;
+let neonView: NeonView;
 
 /**
  * Initialize NeonView.
@@ -50,9 +51,9 @@ export function unsetVirgaAction (id: string): object {
 /**
  * Function to handle removing elements
  */
-export function removeHandler () {
-  let toRemove = [];
-  var selected = Array.from(document.getElementsByClassName('selected'));
+export function removeHandler (): void {
+  const toRemove = [];
+  const selected = Array.from(document.getElementsByClassName('selected'));
   selected.forEach(elem => {
     toRemove.push(
       {
@@ -63,7 +64,7 @@ export function removeHandler () {
       }
     );
   });
-  let chainAction = {
+  const chainAction: EditorAction = {
     'action': 'chain',
     'param': toRemove
   };
@@ -74,9 +75,9 @@ export function removeHandler () {
 /**
  * Function to handle re-associating elements to the nearest staff
  */
-export function changeStaffHandler() {
-  let toChange = [];
-  var selected = Array.from(document.getElementsByClassName('selected'));
+export function changeStaffHandler(): void {
+  const toChange: EditorAction[] = [];
+  const selected = Array.from(document.getElementsByClassName('selected'));
   selected.forEach(elem => {
     toChange.push(
       {
@@ -87,7 +88,7 @@ export function changeStaffHandler() {
       }
     );
   });
-  let chainAction = {
+  const chainAction: EditorAction = {
     'action': 'chain',
     'param': toChange
   };
@@ -98,18 +99,18 @@ export function changeStaffHandler() {
 /**
  * Trigger the extra nc action menu for a selection.
  */
-export function triggerNcActions (nc: SVGGraphicsElement) {
+export function triggerNcActions (nc: SVGGraphicsElement): void {
   endOptionsSelection();
   try {
-    let moreEdit = document.getElementById('moreEdit');
+    const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
     moreEdit.innerHTML = Contents.ncActionContents;
   } catch (e) {}
 
   document.querySelector('#Punctum.dropdown-item')
     .addEventListener('click', () => {
-      let unsetInclinatum = unsetInclinatumAction(nc.id);
-      let unsetVirga = unsetVirgaAction(nc.id);
+      const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetVirga = unsetVirgaAction(nc.id);
       neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
           Notification.queueNotification('Shape Changed');
@@ -123,7 +124,7 @@ export function triggerNcActions (nc: SVGGraphicsElement) {
 
   document.querySelector('#Inclinatum.dropdown-item')
     .addEventListener('click', () => {
-      let setInclinatum = {
+      const setInclinatum = {
         'action': 'set',
         'param': {
           'elementId': nc.id,
@@ -144,8 +145,8 @@ export function triggerNcActions (nc: SVGGraphicsElement) {
 
   document.querySelector('#Virga.dropdown-item')
     .addEventListener('click', () => {
-      let unsetInclinatum = unsetInclinatumAction(nc.id);
-      let setVirga = {
+      const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const setVirga = {
         'action': 'set',
         'param': {
           'elementId': nc.id,
@@ -164,7 +165,7 @@ export function triggerNcActions (nc: SVGGraphicsElement) {
       });
     });
   try {
-    let del = document.getElementById('delete');
+    const del = document.getElementById('delete');
     del.removeEventListener('click', removeHandler);
     del.addEventListener('click', removeHandler);
   } catch (e) {}
@@ -176,14 +177,14 @@ export function triggerNcActions (nc: SVGGraphicsElement) {
 /**
  * Trigger extra neume actions.
  */
-export function triggerNeumeActions () {
+export function triggerNeumeActions (): void {
   endOptionsSelection();
   try {
-    let moreEdit = document.getElementById('moreEdit');
+    const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
     moreEdit.innerHTML = Contents.neumeActionContents;
   } catch (e) {}
-  var neume = document.querySelectorAll('.selected');
+  const neume = document.querySelectorAll('.selected');
   if (neume.length !== 1) {
     console.warn('More than one neume selected! Cannot trigger Neume ClickSelect actions.');
     return;
@@ -191,12 +192,12 @@ export function triggerNeumeActions () {
 
   document.querySelector('.grouping')
     .addEventListener('click', (e) => {
-      var contour = neonView.info.getContourByValue((<HTMLElement>e.target).id);
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
       triggerChangeGroup(contour);
     });
 
-  function triggerChangeGroup (contour) {
-    let changeGroupingAction = {
+  function triggerChangeGroup (contour): void {
+    const changeGroupingAction: EditorAction = {
       'action': 'changeGroup',
       'param': {
         'elementId': neume[0].id,
@@ -214,7 +215,7 @@ export function triggerNeumeActions () {
     });
   }
   try {
-    let del = document.getElementById('delete');
+    const del = document.getElementById('delete');
     del.removeEventListener('click', removeHandler);
     del.addEventListener('click', removeHandler);
   } catch (e) {}
@@ -227,22 +228,22 @@ export function triggerNeumeActions () {
 /**
  * Trigger extra syllable actions.
  */
-export function triggerSylActions () {
+export function triggerSylActions (): void {
   endOptionsSelection();
   try {
-    let moreEdit = document.getElementById('moreEdit');
+    const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
     moreEdit.innerHTML =
-      "<div><p class='control'>" +
-          "<button class='button' id='ungroupNeumes'>Ungroup</button></p></div>" +
-      "<div><p class='control'>" +
-          "<button class='button' id='delete'>Delete</button></p></div>" +
-      "<div><p class='control'>" +
-        "<button class='button' id='changeStaff'>Re-associate to nearest staff</button></p></div>";
+      '<div><p class=\'control\'>' +
+          '<button class=\'button\' id=\'ungroupNeumes\'>Ungroup</button></p></div>' +
+      '<div><p class=\'control\'>' +
+          '<button class=\'button\' id=\'delete\'>Delete</button></p></div>' +
+      '<div><p class=\'control\'>' +
+        '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
     document.getElementById('changeStaff').addEventListener('click', changeStaffHandler);
   } catch (e) {}
   try {
-    let del = document.getElementById('delete');
+    const del = document.getElementById('delete');
     del.removeEventListener('click', removeHandler);
     del.addEventListener('click', removeHandler);
   } catch (e) {}
@@ -254,16 +255,16 @@ export function triggerSylActions () {
 /**
  * Trigger extra clef actions for a specific clef.
  */
-export function triggerClefActions (clef: SVGGraphicsElement) {
+export function triggerClefActions (clef: SVGGraphicsElement): void {
   endOptionsSelection();
   try {
-    let moreEdit = document.getElementById('moreEdit');
+    const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
     moreEdit.innerHTML = Contents.clefActionContents;
   } catch (e) {}
   document.querySelector('#CClef.dropdown-item')
     .addEventListener('click', () => {
-      let setCClef = {
+      const setCClef: EditorAction = {
         'action': 'setClef',
         'param': {
           'elementId': clef.id,
@@ -282,7 +283,7 @@ export function triggerClefActions (clef: SVGGraphicsElement) {
     });
   document.querySelector('#FClef.dropdown-item')
     .addEventListener('click', () => {
-      let setFClef = {
+      const setFClef: EditorAction = {
         'action': 'setClef',
         'param': {
           'elementId': clef.id,
@@ -301,7 +302,7 @@ export function triggerClefActions (clef: SVGGraphicsElement) {
     });
 
   try {
-    let del = document.getElementById('delete');
+    const del = document.getElementById('delete');
     del.removeEventListener('click', removeHandler);
     del.addEventListener('click', removeHandler);
     document.getElementById('changeStaff').addEventListener('click', changeStaffHandler);
@@ -315,10 +316,10 @@ export function triggerClefActions (clef: SVGGraphicsElement) {
 /**
  * trigger extra custos actions.
  */
-export function triggerCustosActions () {
+export function triggerCustosActions (): void {
   endOptionsSelection();
   try {
-    let moreEdit = document.getElementById('moreEdit');
+    const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
     moreEdit.innerHTML += Contents.custosActionContents;
   } catch (e) {}
@@ -329,7 +330,7 @@ export function triggerCustosActions () {
   } catch (e) {}
 
   try {
-    let del = document.getElementById('delete');
+    const del = document.getElementById('delete');
     del.removeEventListener('click', removeHandler);
     del.addEventListener('click', removeHandler);
     document.body.addEventListener('keydown', deleteButtonHandler);
@@ -339,22 +340,22 @@ export function triggerCustosActions () {
 /**
  * Trigger extra staff actions.
  */
-export function triggerStaffActions () {
+export function triggerStaffActions (): void {
   endOptionsSelection();
   try {
-    let moreEdit = document.getElementById('moreEdit');
+    const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
     moreEdit.innerHTML = Contents.staffActionContents;
   } catch (e) {}
 
   document.getElementById('merge-systems')
     .addEventListener('click', () => {
-      let systems = document.querySelectorAll('.staff.selected');
-      let elementIds = [];
+      const systems = document.querySelectorAll('.staff.selected');
+      const elementIds = [];
       systems.forEach(staff => {
         elementIds.push(staff.id);
       });
-      let editorAction = {
+      const editorAction: EditorAction = {
         'action': 'merge',
         'param': {
           'elementIds': elementIds
@@ -372,7 +373,7 @@ export function triggerStaffActions () {
     });
 
   try {
-    let del = document.getElementById('delete');
+    const del = document.getElementById('delete');
     del.removeEventListener('click', removeHandler);
     del.addEventListener('click', removeHandler);
   } catch (e) {}
@@ -382,10 +383,10 @@ export function triggerStaffActions () {
 /**
  * Trigger split staff option
  */
-export function triggerSplitActions () {
+export function triggerSplitActions (): void {
   endOptionsSelection();
   try {
-    let moreEdit = document.getElementById('moreEdit');
+    const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
     moreEdit.innerHTML = Contents.splitActionContents;
   } catch (e) {}
@@ -393,13 +394,13 @@ export function triggerSplitActions () {
   // TODO add trigger for split action
   document.getElementById('split-system')
     .addEventListener('click', () => {
-      var split = new SplitHandler(neonView);
+      const split = new SplitHandler(neonView);
       split.startSplit();
       endOptionsSelection();
     });
 
   try {
-    let del = document.getElementById('delete');
+    const del = document.getElementById('delete');
     del.removeEventListener('click', removeHandler);
     del.addEventListener('click', removeHandler);
   } catch (e) {}
@@ -409,16 +410,16 @@ export function triggerSplitActions () {
 /**
  * Trigger default selection option.
  */
-export function triggerDefaultActions () {
+export function triggerDefaultActions (): void {
   endOptionsSelection();
   try {
-    let moreEdit = document.getElementById('moreEdit');
+    const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
     moreEdit.innerHTML = Contents.defaultActionContents;
   } catch (e) {}
 
   try {
-    let del = document.getElementById('delete');
+    const del = document.getElementById('delete');
     del.removeEventListener('click', removeHandler);
     del.addEventListener('click', removeHandler);
   } catch (e) {}
@@ -428,9 +429,9 @@ export function triggerDefaultActions () {
 /**
  * End the extra options menu.
  */
-export function endOptionsSelection () {
+export function endOptionsSelection (): void {
   try {
-    let moreEdit = document.getElementById('moreEdit');
+    const moreEdit = document.getElementById('moreEdit');
     moreEdit.innerHTML = '';
     moreEdit.classList.add('is-invisible');
   } catch (e) {}
@@ -440,13 +441,13 @@ export function endOptionsSelection () {
 /**
  * Initialize extra dropdown options.
  */
-function initOptionsListeners () {
+function initOptionsListeners (): void {
   document.getElementById('drop_select').addEventListener('click', function () {
     this.classList.toggle('is-active');
   });
 }
 
 /** Event handler for delete button press. */
-export function deleteButtonHandler (evt: KeyboardEvent) {
+export function deleteButtonHandler (evt: KeyboardEvent): void {
   if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); evt.preventDefault(); }
 }

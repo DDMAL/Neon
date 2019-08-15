@@ -2,7 +2,10 @@
 
 export type Attributes = { pname?: string; oct?: number; shape?: string; line?: number; ligated?: boolean };
 
-export type EditorAction = { action: string; param: object | EditorAction[] };
+export type EditorAction = {
+  action: string;
+  param: object | EditorAction[];
+};
 
 export type VerovioMessage = {
   action: string;

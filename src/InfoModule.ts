@@ -2,6 +2,7 @@
 
 import NeonView from './NeonView';
 import { InfoInterface } from './Interfaces';
+import { Attributes } from './Types';
 
 /**
  * Map of contours to neume names.
@@ -120,7 +121,7 @@ class InfoModule implements InfoInterface {
     const classRe = /neume|nc|clef|custos|staff/;
     const elementClass = element.getAttribute('class').match(classRe)[0];
     let body = '';
-    let attributes: object;
+    let attributes: Attributes;
 
     // Gets the pitches depending on element type and
     switch (elementClass) {
@@ -129,8 +130,8 @@ class InfoModule implements InfoInterface {
         const ncs = element.querySelectorAll('.nc') as NodeListOf<SVGGraphicsElement>;
         let contour = await this.getContour(ncs);
         if (contour === 'Clivis') {
-          const attr: object = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
-          if (attr['ligated']) {
+          const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
+          if (attr.ligated) {
             contour = 'Ligature';
           }
         }
@@ -164,7 +165,7 @@ class InfoModule implements InfoInterface {
   async getPitches (ncs: Iterable<SVGGraphicsElement>): Promise<string> {
     let pitches = '';
     for (const nc of ncs) {
-      const attributes: object = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
+      const attributes: Attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
       pitches += attributes['pname'] + attributes['oct'] + ' ';
     }
     return pitches;
@@ -176,9 +177,9 @@ class InfoModule implements InfoInterface {
    */
   async getContour (ncs: Iterable<SVGGraphicsElement>): Promise<string> {
     let contour = '';
-    let previous: object = null;
+    let previous: Attributes = null;
     for (const nc of ncs) {
-      const attributes: object = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
+      const attributes: Attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
       if (previous !== null) {
         if (previous['oct'] > attributes['oct']) {
           contour += 'd';

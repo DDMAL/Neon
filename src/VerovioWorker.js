@@ -1,6 +1,6 @@
 importScripts('./verovio-toolkit.js');
 
-var toolkit = new verovio.toolkit();
+const toolkit = new verovio.toolkit();
 toolkit.setOptions({
   format: 'mei',
   noFooter: 1,
@@ -14,15 +14,13 @@ toolkit.setOptions({
   useSkew: true
 });
 
-onmessage = handleNeonEvent;
-
 /**
  * Parse and respond to messages sent by NeonCore.
  * @param {MessageEvent} evt
  */
 function handleNeonEvent (evt) {
-  let data = evt.data;
-  let result = {
+  const data = evt.data;
+  const result = {
     id: data.id
   };
 
@@ -50,3 +48,5 @@ function handleNeonEvent (evt) {
   }
   postMessage(result);
 }
+
+onmessage = handleNeonEvent;

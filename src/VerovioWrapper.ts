@@ -1,3 +1,4 @@
+import { VerovioMessage } from './Types';
 const VerovioWorker: WorkerConstructable = require('./VerovioWorker.js');
 
 interface WorkerConstructable {
@@ -16,14 +17,14 @@ export default class VerovioWrapper {
   /**
    * Set an event listener onto the actual web worker.
    */
-  addEventListener (type: string, handler: EventListenerOrEventListenerObject) {
+  addEventListener (type: string, handler: EventListenerOrEventListenerObject): void {
     return this.verovioWorker.addEventListener(type, handler);
   }
 
   /**
    * Send a message to the actual web worker.
    */
-  postMessage (message: object) {
+  postMessage (message: VerovioMessage): void {
     return this.verovioWorker.postMessage(message);
   }
 }

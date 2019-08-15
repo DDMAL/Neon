@@ -4,7 +4,7 @@ import DragHandler from './DragHandler';
 
 import * as d3 from 'd3';
 
-type Point = { x: number, y: number, name: number };
+type Point = { x: number; y: number; name: number };
 
 /**
  * The points you can click and drag to resize
@@ -26,31 +26,31 @@ const PointNames = {
  * @param elementId - The ID of the element to resize.
  */
 function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler) {
-  var element = <SVGGElement><unknown>document.getElementById(elementId);
+  let element = <SVGGElement><unknown>document.getElementById(elementId);
   /**
    * The upper-left x-coordinate of the element.
    */
-  var ulx: number;
+  let ulx: number;
   /**
    * The upper-left y-coordinate of the element.
    */
-  var uly: number;
+  let uly: number;
   /**
    * The lower-right x-coordinate of the element.
    */
-  var lrx: number;
+  let lrx: number;
   /**
    * The lower-right y-coordinate of the element.
    */
-  var lry: number;
+  let lry: number;
 
   /**
    * The skew of the rect in radians.
    */
-  var skew: number;
+  let skew: number;
 
-  var initialPoint: number[], initialUly: number, initialLry: number, whichSkewPoint: string,
-      initialY: number, initialRectY: number, polyLen: number, dy: number, initialSkew: number;
+  let initialPoint: number[], initialUly: number, initialLry: number, whichSkewPoint: string,
+    initialY: number, initialRectY: number, polyLen: number, dy: number, initialSkew: number;
 
   /**
    * Draw the initial rectangle around the element
@@ -61,9 +61,9 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
 
     // if it's a boundingbox just get the coordinates
     if (element.classList.contains('syl')) {
-      let rect = element.querySelector('.sylTextRect-display');
+      const rect = element.querySelector('.sylTextRect-display');
       if (rect === null) {
-        console.warn("Tried to draw resize rect for a sylTextRect that doesn't exist (or isn't displaying)");
+        console.warn('Tried to draw resize rect for a sylTextRect that doesn\'t exist (or isn\'t displaying)');
         return;
       }
       ulx = Number(rect.getAttribute('x'));
@@ -76,20 +76,20 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
 
     // if it's a staff use the paths to get it's boundingbox
     if (element.classList.contains('staff')) {
-      var bbox = getStaffBBox(element);
+      const bbox = getStaffBBox(element);
       ulx = bbox.ulx;
       uly = bbox.uly;
       lrx = bbox.lrx;
       lry = bbox.lry;
 
-      let segments: any = element.querySelector('path').pathSegList;
+      const segments: any = element.querySelector('path').pathSegList;
       skew = Math.atan((segments[segments.length - 1].y - segments[0].y) /
         (segments[segments.length - 1].x - segments[0].x));
     }
 
-    var whichPoint: string;
+    let whichPoint: string;
 
-    var points: Array<Point> = [
+    const points: Array<Point> = [
       { x: ulx, y: uly, name: PointNames.TopLeft },
       { x: (ulx + lrx) / 2, y: uly + (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Top },
       { x: lrx, y: uly + (lrx - ulx) * Math.sin(skew), name: PointNames.TopRight },
@@ -102,7 +102,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
 
     polyLen = points[2].x - points[0].x;
 
-    let pointString = points.filter((_elem, index) => { return index % 2 === 0; })
+    const pointString = points.filter((_elem, index) => { return index % 2 === 0; })
       .map(elem => elem.x + ',' + elem.y)
       .join(' ');
 
@@ -115,8 +115,8 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
       .style('cursor', 'move')
       .style('stroke-dasharray', '20 10');
 
-    for (let pointName in PointNames) {
-      let point: Point = points[PointNames[pointName]];
+    for (const pointName in PointNames) {
+      const point: Point = points[PointNames[pointName]];
       d3.select(element.viewportElement).append('circle')
         .attr('cx', point.x)
         .attr('cy', point.y)
@@ -129,7 +129,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
     }
 
     // do it as a loop instead of selectAll so that you can easily know which point was
-    for (let name in PointNames) {
+    for (const name in PointNames) {
       d3.select('#p-' + name).filter('.resizePoint').call(
         d3.drag()
           .on('start', () => { resizeStart(name); })
@@ -140,11 +140,11 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
     if (element.classList.contains('staff')) {
       let x = points[3].x;
       let y = points[3].y;
-      let pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
+      const pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
         (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
       x = points[7].x;
       y = points[7].y;
-      let pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
+      const pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
         (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
 
       d3.select('#' + element.id).append('polygon')
@@ -177,8 +177,8 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
     }
 
     function skewStart (which: string) {
-      let polygon = d3.select('#' + which);
-      let points = polygon.attr('points');
+      const polygon = d3.select('#' + which);
+      const points = polygon.attr('points');
       whichSkewPoint = which;
       initialY = Number(points.split(' ')[0].split(',')[1]);
       initialRectY = (which === 'skewRight' ? lry : uly);
@@ -186,9 +186,9 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
     }
 
     function skewDragLeft () {
-      let currentY = d3.mouse(this)[1];
+      const currentY = d3.mouse(this)[1];
       dy = currentY - initialY;
-      let tempSkew = initialSkew - Math.atan(dy / polyLen);
+      const tempSkew = initialSkew - Math.atan(dy / polyLen);
       if (tempSkew > -0.2 && tempSkew < 0.2) {
         uly = initialRectY + dy;
         skew = tempSkew;
@@ -197,9 +197,9 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
     }
 
     function skewDragRight () {
-      let currentY = d3.mouse(this)[1];
+      const currentY = d3.mouse(this)[1];
       dy = currentY - initialY;
-      let tempSkew = initialSkew + Math.atan(dy / polyLen);
+      const tempSkew = initialSkew + Math.atan(dy / polyLen);
       if (tempSkew > -0.2 && tempSkew < 0.2) {
         skew = tempSkew;
         lry = initialRectY + dy;
@@ -208,7 +208,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
     }
 
     function skewEnd () {
-      let editorAction = {
+      const editorAction = {
         'action': 'changeSkew',
         'param': {
           'elementId': element.id,
@@ -236,14 +236,14 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
 
     function resizeStart (name: string) {
       whichPoint = name;
-      let point = points.find(point => { return point.name === PointNames[name]; });
+      const point = points.find(point => { return point.name === PointNames[name]; });
       initialPoint = [point.x, point.y];
       initialUly = uly;
       initialLry = lry;
     }
 
     function resizeDrag () {
-      let currentPoint = d3.mouse(this);
+      const currentPoint = d3.mouse(this);
       switch (PointNames[whichPoint]) {
         case PointNames.TopLeft:
           ulx = currentPoint[0];
@@ -276,13 +276,13 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
           uly = initialUly + (currentPoint[0] - initialPoint[0]) * Math.tan(skew);
           break;
         default:
-          console.error("Something that wasn't a side of the rectangle was dragged. This shouldn't happen.");
+          console.error('Something that wasn\'t a side of the rectangle was dragged. This shouldn\'t happen.');
       }
       redraw();
     }
 
     function resizeEnd () {
-      let editorAction = {
+      const editorAction = {
         'action': 'resize',
         'param': {
           'elementId': element.id,
@@ -318,7 +318,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
    * Redraw the rectangle with the new bounds
    */
   function redraw () {
-    var points: Point[] = [
+    const points: Point[] = [
       { x: ulx, y: uly, name: PointNames.TopLeft },
       { x: (ulx + lrx) / 2, y: uly + (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Top },
       { x: lrx, y: uly + (lrx - ulx) * Math.sin(skew), name: PointNames.TopRight },
@@ -329,14 +329,14 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
       { x: ulx, y: (uly + lry - (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Left }
     ];
 
-    let pointString: string = points.filter((_elem, index) => { return index % 2 === 0; })
+    const pointString: string = points.filter((_elem, index) => { return index % 2 === 0; })
       .map(elem => elem.x + ',' + elem.y)
       .join(' ');
 
     d3.select('#resizeRect').attr('points', pointString);
 
-    for (let pointName in PointNames) {
-      let point: Point = points[PointNames[pointName]];
+    for (const pointName in PointNames) {
+      const point: Point = points[PointNames[pointName]];
       d3.select('#p-' + pointName).filter('.resizePoint')
         .attr('cx', point.x)
         .attr('cy', point.y);
@@ -344,11 +344,11 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
 
     let x = points[3].x;
     let y = points[3].y;
-    let pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
+    const pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
       (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
     x = points[7].x;
     y = points[7].y;
-    let pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
+    const pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
       (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
 
     d3.select('#skewLeft').attr('points', pointStringLeft);

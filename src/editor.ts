@@ -9,15 +9,14 @@ import TextView from './TextView';
 import TextEditMode from './TextEditMode';
 import { NeonManifest } from './utils/NeonManifest';
 
-declare var manifestText: string;
+declare let manifestText: string;
 
-var view: NeonView;
-init();
+let view: NeonView;
 
-async function init () {
+async function init (): Promise<void> {
   if (manifestText !== '') {
-    let manifest: NeonManifest = JSON.parse(manifestText);
-    let params = {
+    const manifest: NeonManifest = JSON.parse(manifestText);
+    const params = {
       manifest: manifest,
       Display: DisplayPanel,
       Info: InfoModule,
@@ -26,7 +25,7 @@ async function init () {
       View: undefined,
       NeumeEdit: undefined
     };
-    let mediaType = await window.fetch(manifest.image).then(response => {
+    const mediaType = await window.fetch(manifest.image).then(response => {
       if (response.ok) {
         return response.headers.get('Content-Type');
       } else {
@@ -34,7 +33,7 @@ async function init () {
       }
     });
 
-    let singlePage = mediaType.match(/^image\/*/);
+    const singlePage = mediaType.match(/^image\/*/);
     params.View = singlePage ? SingleView : DivaView;
     params.NeumeEdit = singlePage ? SingleEditMode : DivaEdit;
 
@@ -42,3 +41,5 @@ async function init () {
     view.start();
   }
 }
+
+init();

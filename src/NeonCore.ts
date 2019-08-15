@@ -2,6 +2,7 @@ import { convertSbToStaff } from './utils/ConvertMei';
 import * as Validation from './Validation';
 import VerovioWrapper from './VerovioWrapper';
 import { NeonManifest, Annotation } from './utils/NeonManifest';
+import { Attributes, EditorAction, VerovioMessage } from './Types';
 import * as uuid from 'uuid/v4';
 
 import PouchDB from 'pouchdb';
@@ -221,7 +222,7 @@ class NeonCore {
      * promise it has access to the necessary resolve function.
      */
     return new Promise((resolve): void => {
-      const message = {
+      const message: VerovioMessage = {
         id: uuid(),
         action: 'renderData',
         mei: data
@@ -275,10 +276,10 @@ class NeonCore {
    * @param elementId - The unique ID of the musical element.
    * @param pageURI - The URI of the selected page.
    */
-  getElementAttr (elementId: string, pageURI: string): Promise<object> {
+  getElementAttr (elementId: string, pageURI: string): Promise<Attributes> {
     return new Promise((resolve): void => {
       this.loadPage(pageURI).then(() => {
-        const message = {
+        const message: VerovioMessage = {
           id: uuid(),
           action: 'getElementAttr',
           elementId: elementId
@@ -299,7 +300,7 @@ class NeonCore {
    * @param action - The editor toolkit action object.
    * @param pageURI - The URI of the selected page.
    */
-  edit (editorAction: object, pageURI: string): Promise<boolean> {
+  edit (editorAction: EditorAction, pageURI: string): Promise<boolean> {
     let promise: Promise<CacheEntry>;
     if (this.lastPageLoaded === pageURI) {
       promise = Promise.resolve(this.neonCache.get(pageURI));
@@ -309,7 +310,7 @@ class NeonCore {
     return new Promise((resolve): void => {
       promise.then(entry => {
         const currentMEI = entry.mei;
-        const message = {
+        const message: VerovioMessage = {
           id: uuid(),
           action: 'edit',
           editorAction: editorAction
@@ -343,7 +344,7 @@ class NeonCore {
       // Must get MEI and then get SVG then finish.
       let mei: string, svgText: string;
       const meiPromise = new Promise((resolve): void => {
-        const message = {
+        const message: VerovioMessage = {
           id: uuid(),
           action: 'getMEI'
         };
@@ -357,7 +358,7 @@ class NeonCore {
         this.verovioWrapper.postMessage(message);
       });
       const svgPromise = new Promise((resolve): void => {
-        const message = {
+        const message: VerovioMessage = {
           id: uuid(),
           action: 'renderToSVG'
         };
@@ -399,7 +400,7 @@ class NeonCore {
     }
     return new Promise((resolve): void => {
       promise.then(() => {
-        const message = {
+        const message: VerovioMessage = {
           id: uuid(),
           action: 'editInfo'
         };

@@ -1,12 +1,13 @@
 import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
+import { EditorAction } from '../Types';
 
 /**
  * Handler splitting a staff into two staves through Verovio.
  * @constructor
  */
-function SplitHandler (neonView: NeonView) {
-  function startSplit () {
+function SplitHandler (neonView: NeonView): void {
+  function startSplit (): void {
     splitDisable();
 
     document.body.addEventListener('click', handler);
@@ -19,7 +20,7 @@ function SplitHandler (neonView: NeonView) {
     Notification.queueNotification('Click Where to Split');
   }
 
-  function keydownListener (evt: KeyboardEvent) {
+  function keydownListener (evt: KeyboardEvent): void {
     if (evt.key === 'Escape') {
       splitDisable();
     } else if (evt.key === 'Shift') {
@@ -27,38 +28,38 @@ function SplitHandler (neonView: NeonView) {
     }
   }
 
-  function clickawayHandler (evt: MouseEvent) {
+  function clickawayHandler (evt: MouseEvent): void {
     console.log(evt);
-    if ((<HTMLElement>evt.target).closest('.active-page') === null) {
+    if ((evt.target as HTMLElement).closest('.active-page') === null) {
       splitDisable();
       document.body.removeEventListener('click', handler);
     }
   }
 
-  function resetHandler (evt: KeyboardEvent) {
+  function resetHandler (evt: KeyboardEvent): void {
     if (evt.key === 'Shift') {
       document.body.addEventListener('click', handler);
     }
   }
 
-  function handler (evt: MouseEvent) {
-    let id = document.querySelector('.selected').id;
+  function handler (evt: MouseEvent): void {
+    const id = document.querySelector('.selected').id;
 
-    var container = <SVGSVGElement>document.getElementsByClassName('active-page')[0]
-      .getElementsByClassName('definition-scale')[0];
-    var pt = container.createSVGPoint();
+    const container = document.getElementsByClassName('active-page')[0]
+      .getElementsByClassName('definition-scale')[0] as SVGSVGElement;
+    const pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
 
     // Transform to SVG coordinate system.
-    var transformMatrix = (<SVGGElement>container.getElementsByClassName('system')[0])
+    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGElement)
       .getScreenCTM().inverse();
-    var cursorPt = pt.matrixTransform(transformMatrix);
+    const cursorPt = pt.matrixTransform(transformMatrix);
     console.log(cursorPt.x);
     // Find staff point corresponds to if one exists
     // TODO
 
-    let editorAction = {
+    const editorAction: EditorAction = {
       'action': 'split',
       'param': {
         'elementId': id,
@@ -74,7 +75,7 @@ function SplitHandler (neonView: NeonView) {
     });
   }
 
-  function splitDisable () {
+  function splitDisable (): void {
     document.body.removeEventListener('keydown', keydownListener);
     document.body.removeEventListener('keyup', resetHandler);
     document.body.removeEventListener('click', clickawayHandler);

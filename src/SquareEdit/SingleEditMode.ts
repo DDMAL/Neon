@@ -27,7 +27,7 @@ class SingleEditMode implements NeumeEditInterface {
   /**
    * Initialize the start of edit mode when first leaving viewer mode.
    */
-  initEditMode () {
+  initEditMode (): void {
     this.dragHandler = new DragHandler(this.neonView, '#svg_group');
     this.insertHandler = new InsertHandler(this.neonView, '#svg_group');
     bindInsertTabs(this.insertHandler);
@@ -37,7 +37,7 @@ class SingleEditMode implements NeumeEditInterface {
 
     SelectOptions.initNeonView(this.neonView);
     initInsertEditControls();
-    let editMenu = document.getElementById('editMenu');
+    const editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = '#ffc7c7';
     editMenu.style.fontWeight = 'bold';
 
@@ -62,7 +62,7 @@ class SingleEditMode implements NeumeEditInterface {
     return 'viewer';
   }
 
-  setSelectListeners () {
+  setSelectListeners (): void {
     Select.clickSelect('#mei_output, #mei_output use, #mei_output rect');
     Select.dragSelect('#svg_group');
   }

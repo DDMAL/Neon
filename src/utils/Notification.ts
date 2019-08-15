@@ -1,19 +1,19 @@
 import * as uuid from 'uuid/v4';
 
-var notifications: Notification[] = new Array(0);
-var currentModeMessage: Notification = null;
-var notifying: boolean = false;
+const notifications: Notification[] = new Array(0);
+let currentModeMessage: Notification = null;
+let notifying = false;
 
 /**
  * Number of notifications to display at a time.
  */
-const NUMBER_TO_DISPLAY: number = 3;
+const NUMBER_TO_DISPLAY = 3;
 
 /**
  * Add a notification to the queue.
  */
 export function queueNotification (notification: string): void {
-  let notif = new Notification(notification);
+  const notif = new Notification(notification);
   notifications.push(notif);
   if (!notifying || document.getElementById('notification-content').querySelectorAll('.neon-notification').length < NUMBER_TO_DISPLAY) {
     startNotification();
@@ -26,7 +26,7 @@ export function queueNotification (notification: string): void {
 function startNotification (): void {
   if (notifications.length > 0) {
     notifying = true;
-    let currentNotification = notifications.pop();
+    const currentNotification = notifications.pop();
     displayNotification(currentNotification);
     currentNotification.setTimeoutId(window.setTimeout(clearOrShowNextNotification, 5000, currentNotification.getId()));
     document.getElementById(currentNotification.getId()).addEventListener('click', () => {
@@ -50,8 +50,8 @@ function displayNotification (notification: Notification): void {
       return;
     }
   }
-  let notificationContent = document.getElementById('notification-content');
-  notificationContent.innerHTML += "<div class='neon-notification' id='" + notification.getId() + "'>" + notification.message + '</div> ';
+  const notificationContent = document.getElementById('notification-content');
+  notificationContent.innerHTML += '<div class=\'neon-notification\' id=\'' + notification.getId() + '\'>' + notification.message + '</div> ';
   notificationContent.setAttribute('display', '');
   notification.display();
 }
@@ -94,12 +94,12 @@ class Notification {
   }
 
   /** Set the ID from setTimeout. */
-  setTimeoutId (id: number) {
+  setTimeoutId (id: number): void {
     this.timeoutID = Math.max(id, -1);
   }
 
   /** Display the Notification. */
-  display () {
+  display (): void {
     this.displayed = true;
   }
 

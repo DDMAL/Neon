@@ -1,5 +1,6 @@
 import * as Cursor from '../utils/Cursor';
 import NeonView from '../NeonView';
+import { EditorAction } from '../Types';
 import * as d3 from 'd3';
 
 /**
@@ -7,9 +8,9 @@ import * as d3 from 'd3';
  */
 class InsertHandler {
   type: string;
-  firstClick: boolean = true;
+  firstClick = true;
   coord: DOMPoint;
-  attributes: any;
+  attributes: object;
   selector: string;
   neonView: NeonView;
 
@@ -24,7 +25,7 @@ class InsertHandler {
    * @param buttonId - The ID of the button that was clicked.
    */
   insertActive (buttonId: string): void {
-    let alreadyInInsertMode = this.isInsertMode();
+    const alreadyInInsertMode = this.isInsertMode();
     switch (buttonId) {
       case 'punctum':
         this.type = 'nc';
@@ -45,7 +46,7 @@ class InsertHandler {
       case 'torculus':
       case 'porrectus':
       case 'pressus':
-        let contour = this.neonView.info.getContourByValue(
+        const contour = this.neonView.info.getContourByValue(
           buttonId.charAt(0).toUpperCase() + buttonId.slice(1)
         );
         this.type = 'grouping';
@@ -87,17 +88,17 @@ class InsertHandler {
 
     // Add 'return to edit mode' button
     if (!alreadyInInsertMode) {
-      let editModeButton = document.createElement('button');
+      const editModeButton = document.createElement('button');
       editModeButton.id = 'returnToEditMode';
       editModeButton.classList.add('button');
       editModeButton.innerHTML = 'Return to Edit Mode';
       document.getElementById('redo').parentNode.appendChild(editModeButton);
       editModeButton.addEventListener('click', this.insertDisabled);
     }
-    let editMenu = document.getElementById('editMenu');
+    const editMenu = document.getElementById('editMenu');
     editMenu.style.backgroundColor = 'whitesmoke';
     editMenu.style.fontWeight = '';
-    let insertMenu = document.getElementById('insertMenu');
+    const insertMenu = document.getElementById('insertMenu');
     insertMenu.style.backgroundColor = '#ffc7c7';
     insertMenu.style.fontWeight = 'bold';
   }
@@ -119,8 +120,8 @@ class InsertHandler {
     } catch (e) {
       console.debug(e);
     }
-    let editMenu = document.getElementById('editMenu');
-    let insertMenu = document.getElementById('insertMenu');
+    const editMenu = document.getElementById('editMenu');
+    const insertMenu = document.getElementById('insertMenu');
     editMenu.style.backgroundColor = '#ffc7c7';
     editMenu.style.fontWeight = 'bold';
     insertMenu.style.backgroundColor = 'whitesmoke';
@@ -132,7 +133,7 @@ class InsertHandler {
    * causing insert mode to end.
    */
   clickawayHandler = (function clickawayHandler (evt: MouseEvent): void {
-    let target = <HTMLElement>evt.target;
+    const target = evt.target as HTMLElement;
     if (target.closest('.active-page') === null &&
       target.closest('#insert_controls') === null &&
       target.closest('#svg_group') === null) {
@@ -151,7 +152,7 @@ class InsertHandler {
     if (evt.key === 'Shift') {
       document.querySelector(this.selector)
         .addEventListener('click', this.type === 'staff' ?
-        this.staffHandler : this.handler);
+          this.staffHandler : this.handler);
     }
   }).bind(this);
 
@@ -174,15 +175,15 @@ class InsertHandler {
    */
   handler = (function handler (evt: MouseEvent): void {
     console.debug(evt);
-    let container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
-    let pt = container.createSVGPoint();
+    const container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0] as SVGSVGElement;
+    const pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
     // Transform pt to SVG context
-    var transformMatrix = (<SVGGraphicsElement>container.getElementsByClassName('system')[0]).getScreenCTM();
-    var cursorpt = pt.matrixTransform(transformMatrix.inverse());
+    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGraphicsElement).getScreenCTM();
+    const cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
-    let editorAction = {
+    const editorAction: EditorAction = {
       'action': 'insert',
       'param': {
         'elementType': this.type,
@@ -208,12 +209,12 @@ class InsertHandler {
    * Event handler to insert a staff.
    */
   staffHandler = (function staffHandler (evt: MouseEvent): void {
-    let container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
-    let pt = container.createSVGPoint();
+    const container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0] as SVGSVGElement;
+    const pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
-    let transformMatrix = (<SVGGraphicsElement>container.getElementsByClassName('system')[0]).getScreenCTM();
-    let cursorpt = pt.matrixTransform(transformMatrix.inverse());
+    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGraphicsElement).getScreenCTM();
+    const cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
     if (this.firstClick) {
       this.coord = cursorpt;
@@ -224,7 +225,7 @@ class InsertHandler {
         .attr('fill', 'green');
       this.firstClick = false;
     } else {
-      var ul, lr;
+      let ul, lr;
       if (cursorpt.x < this.coord.x || cursorpt.y < this.coord.y) { // second point is not lr
         ul = cursorpt;
         lr = this.coord;
@@ -233,7 +234,7 @@ class InsertHandler {
         lr = cursorpt;
       }
       document.getElementById('staff-circle').remove();
-      let action = {
+      const action: EditorAction = {
         'action': 'insert',
         'param': {
           'elementType': 'staff',

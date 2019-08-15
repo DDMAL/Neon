@@ -3,9 +3,10 @@ const template = require('./template.html');
 declare const __LINK_LOCATION__: string;
 declare const __NEON_VERSION__: string;
 
-function setBody () {
+function setBody (): void {
   document.body.innerHTML = template;
-  (<HTMLAnchorElement>document.getElementById('home-link')).href = __LINK_LOCATION__;
+  (document.getElementById('home-link') as HTMLAnchorElement)
+    .href = __LINK_LOCATION__;
   document.getElementById('neon-version').textContent = __NEON_VERSION__;
 }
 

@@ -1,4 +1,5 @@
 import NeonView from '../NeonView';
+import { EditorAction } from '../Types';
 import * as d3 from 'd3';
 
 class DragHandler {
@@ -17,15 +18,15 @@ class DragHandler {
   /**
    * Initialize the dragging action and handler for selected elements.
    */
-  dragInit () {
+  dragInit (): void {
     // Adding listeners
-    var dragBehaviour = d3.drag()
+    const dragBehaviour = d3.drag()
       .on('start', dragStarted.bind(this))
       .on('drag', this.dragging.bind(this))
       .on('end', this.dragEnded.bind(this));
 
-    var activeNc = d3.selectAll('.selected');
-    var selection = Array.from(document.getElementsByClassName('selected'));
+    const activeNc = d3.selectAll('.selected');
+    const selection = Array.from(document.getElementsByClassName('selected'));
     this.selection = selection.concat(Array.from(document.getElementsByClassName('resizePoint')));
 
     this.dragStartCoords = new Array(activeNc.size());
@@ -34,8 +35,8 @@ class DragHandler {
     activeNc.call(dragBehaviour);
 
     // Drag effects
-    function dragStarted () {
-      let target = d3.event.sourceEvent.target;
+    function dragStarted (): void {
+      const target = d3.event.sourceEvent.target;
       this.dragStartCoords = d3.mouse(target);
       if (target.classList.contains('staff')) {
         d3.select(this.selector).call(dragBehaviour);
@@ -43,9 +44,9 @@ class DragHandler {
     }
   }
 
-  dragging () {
-    var relativeY = d3.event.y - this.dragStartCoords[1];
-    var relativeX = d3.event.x - this.dragStartCoords[0];
+  dragging (): void {
+    const relativeY = d3.event.y - this.dragStartCoords[1];
+    const relativeX = d3.event.x - this.dragStartCoords[0];
     this.selection.forEach((el) => {
       d3.select(el).attr('transform', function () {
         return 'translate(' + [relativeX, relativeY] + ')';
@@ -64,25 +65,25 @@ class DragHandler {
     }
   }
 
-  dragEnded () {
+  dragEnded (): void {
     this.dragEndCoords = [d3.event.x, d3.event.y];
-    let paramArray = [];
+    const paramArray = [];
     this.selection.filter((el: SVGElement) => !el.classList.contains('resizePoint')).forEach((el: SVGElement) => {
-      let id = (el.tagName === 'rect') ? el.closest('.syl').id : el.id;
-      let singleAction = { action: 'drag',
+      const id = (el.tagName === 'rect') ? el.closest('.syl').id : el.id;
+      const singleAction = { action: 'drag',
         param: { elementId: id,
           x: this.dragEndCoords[0] - this.dragStartCoords[0],
           y: (this.dragEndCoords[1] - this.dragStartCoords[1]) * -1 }
       };
       paramArray.push(singleAction);
     });
-    let editorAction = {
+    const editorAction: EditorAction = {
       'action': 'chain',
       'param': paramArray
     };
 
-    var xDiff = Math.abs(this.dragStartCoords[0] - this.dragEndCoords[0]);
-    var yDiff = Math.abs(this.dragStartCoords[1] - this.dragEndCoords[1]);
+    const xDiff = Math.abs(this.dragStartCoords[0] - this.dragEndCoords[0]);
+    const yDiff = Math.abs(this.dragStartCoords[1] - this.dragEndCoords[1]);
 
     if (xDiff > 5 || yDiff > 5) {
       this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(() => {
@@ -98,18 +99,18 @@ class DragHandler {
   }
 
   /** Set the d3 action to use for [[reset]]. */
-  resetTo (reset: (selection: d3.Selection<d3.BaseType, {}, HTMLElement, any>, args: any[]) => void) {
+  resetTo (reset: (selection: d3.Selection<d3.BaseType, {}, HTMLElement, any>, args: any[]) => void): void {
     this.resetToAction = reset;
   }
 
   /** Reset to a previous d3 action for [[this.selector]]. */
-  reset () {
+  reset (): void {
     if (this.resetToAction !== undefined) {
       d3.select(this.selector).call(this.resetToAction);
     }
   }
 
-  endOptionsSelection () {
+  endOptionsSelection (): void {
     try {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('moreEdit').classList.add('is-invisible');

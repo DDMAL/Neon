@@ -9,13 +9,13 @@ const validate = require('jsonschema').validate;
  * @param {string} manifestString - The Neon manifest as a string.
  */
 export function parseManifest (manifestString: NeonManifest): boolean {
-  let results = validate(manifestString, NeonSchema);
-  let instance = results.instance;
+  const results = validate(manifestString, NeonSchema);
+  const instance = results.instance;
   if (results.errors.length > 0) {
     console.error(results.errors);
     return false;
   }
-  let context = instance['@context'];
+  const context = instance['@context'];
   if ((context[0] === NeonContext[0]) &&
       (context[1]['schema'] === NeonContext[1]['schema']) &&
       (context[1]['title'] === NeonContext[1]['title']) &&
@@ -35,16 +35,16 @@ export function parseManifest (manifestString: NeonManifest): boolean {
 }
 
 export interface Annotation {
-  id: string,
-  type: string,
-  body: string,
-  target: string
+  id: string;
+  type: string;
+  body: string;
+  target: string;
 }
 
 export interface NeonManifest {
-  '@context': Array<any>,
-  title: string,
-  timestamp: string,
-  image: string,
-  mei_annotations: Annotation[]
+  '@context': Array<any>;
+  title: string;
+  timestamp: string;
+  image: string;
+  mei_annotations: Annotation[];
 }

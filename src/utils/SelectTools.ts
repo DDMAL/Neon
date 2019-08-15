@@ -1,5 +1,3 @@
-/** @module utils/SelectTools */
-
 import * as Color from './Color';
 import { updateHighlight } from '../DisplayPanel/DisplayControls';
 import * as Grouping from '../SquareEdit/Grouping';
@@ -14,7 +12,7 @@ import * as d3 from 'd3';
  * @returns {string|null}
  */
 export function getSelectionType (): string {
-  let element = document.getElementsByClassName('sel-by is-active');
+  const element = document.getElementsByClassName('sel-by is-active');
   if (element.length !== 0) {
     return element[0].id;
   } else {
@@ -26,7 +24,7 @@ export function getSelectionType (): string {
  * Unselect all selected elements and run undo any extra
  * actions.
  */
-export function unselect () {
+export function unselect (): void {
   document.querySelectorAll('.selected').forEach((selected: SVGGElement) => {
     selected.classList.remove('selected');
     if (selected.classList.contains('staff')) {
@@ -66,10 +64,8 @@ export function unselect () {
 
 /**
  * Generic select function.
- * @param {SVGGraphicsElement} el
- * @param {DragHandler} [dragHandler]
  */
-export function select (el: SVGGraphicsElement, dragHandler?: DragHandler) {
+export function select (el: SVGGraphicsElement, dragHandler?: DragHandler): void {
   if (el.classList.contains('staff')) {
     return selectStaff(el, dragHandler);
   }
@@ -82,14 +78,14 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler) {
         elem.style.fill = 'red';
       });
     }
-    var sylId;
+    let sylId;
     if (el.classList.contains('syllable')) {
       sylId = el.id;
     } else if (el.closest('.syllable') !== null) {
       sylId = el.closest('.syllable').id;
     }
     if (sylId !== undefined) {
-      let spans = document.querySelectorAll('span.' + sylId);
+      const spans = document.querySelectorAll('span.' + sylId);
       spans.forEach((span: HTMLElement) => {
         span.style.color = '#d00';
         span.style.fontWeight = 'bold';
@@ -102,21 +98,19 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler) {
 
 /**
  * Select an nc.
- * @param {SVGGraphicsElement} el - The nc element to select.
- * @param {DragHandler} dragHandler - An instantiated DragHandler.
- * @param {NeonView} neonView - The NeonView parent
+ * @param el - The Neume Component element to select.
  */
-export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dragHandler: DragHandler) {
+export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dragHandler: DragHandler): Promise<void> {
   if (!el.parentElement.classList.contains('selected')) {
-    var parent = <SVGGraphicsElement><unknown>el.parentElement;
+    const parent = el.parentElement as unknown as SVGGraphicsElement;
     unselect();
     select(parent);
     if (await isLigature(parent, neonView)) {
-      var prevNc = <SVGGraphicsElement><unknown>parent.previousSibling;
+      const prevNc = parent.previousSibling as unknown as SVGGraphicsElement;
       if (await isLigature(prevNc, neonView)) {
         select(prevNc);
       } else {
-        var nextNc = <SVGGraphicsElement><unknown>parent.nextSibling;
+        const nextNc = parent.nextSibling as unknown as SVGGraphicsElement;
         if (await isLigature(nextNc, neonView)) {
           select(nextNc);
         } else {
@@ -139,7 +133,7 @@ export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dra
  * @returns {boolean}
  */
 export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): Promise<boolean> {
-  var attributes: any = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPageURI());
+  const attributes: any = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPageURI());
   return (attributes.ligated === 'true');
 }
 
@@ -149,11 +143,11 @@ export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): P
  * @returns {boolean} - If the elements share the same second level parent.
  */
 export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
-  let tempElements = Array.from(elements);
-  let firstElement = tempElements.pop();
-  let secondParent = firstElement.parentElement.parentElement;
-  for (let element of tempElements) {
-    let secPar = element.parentElement.parentElement;
+  const tempElements = Array.from(elements);
+  const firstElement = tempElements.pop();
+  const secondParent = firstElement.parentElement.parentElement;
+  for (const element of tempElements) {
+    const secPar = element.parentElement.parentElement;
     if (secPar.id !== secondParent.id) {
       return false;
     }
@@ -166,10 +160,10 @@ export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
  * @param {SVGGElement} staff
  * @returns {object}
  */
-export function getStaffBBox (staff: SVGGElement): {ulx: number, uly: number, lrx: number, lry: number} {
+export function getStaffBBox (staff: SVGGElement): {ulx: number; uly: number; lrx: number; lry: number} {
   let ulx, uly, lrx, lry;
   staff.querySelectorAll('path').forEach(path => {
-    let segments: any = path.pathSegList;
+    const segments: any = path.pathSegList;
     if (uly === undefined || segments[0].y < uly) {
       uly = segments[0].y;
     }
@@ -192,12 +186,12 @@ export function getStaffBBox (staff: SVGGElement): {ulx: number, uly: number, lr
  * @param {DragHandler} dragHandler - the drag handler in use
  */
 export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, resizeHandler: any) {
-  let bbox = el;
-  let syl = bbox.closest('.syl');
+  const bbox = el;
+  const syl = bbox.closest('.syl');
   if (!syl.classList.contains('selected')) {
     syl.classList.add('selected');
     bbox.style.fill = '#d00';
-    let closest = <HTMLElement>el.closest('.syllable');
+    const closest = <HTMLElement>el.closest('.syllable');
     closest.style.fill = 'red';
     closest.classList.add('syllable-highlighted');
     if (resizeHandler !== undefined) {
@@ -206,9 +200,9 @@ export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, re
     if (dragHandler !== undefined) {
       dragHandler.dragInit();
     }
-    var sylId = el.closest('.syllable').id;
+    const sylId = el.closest('.syllable').id;
     if (sylId !== undefined) {
-      let span: HTMLSpanElement = document.querySelector('span.' + sylId);
+      const span: HTMLSpanElement = document.querySelector('span.' + sylId);
       if (span) {
         span.style.color = '#d00';
         span.style.fontWeight = 'bold';
@@ -252,7 +246,7 @@ export function selectStaff (staff: SVGGElement, dragHandler: DragHandler) {
  * @param {DragHandler} dragHandler
  */
 export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: NeonView, dragHandler: DragHandler) {
-  let selectionType = getSelectionType();
+  const selectionType = getSelectionType();
   unselect();
   if (elements.length === 0) {
     return;
@@ -284,8 +278,8 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
 
   // Get the groupings specified by selectionClass
   // that contain the provided elements to select.
-  let groupsToSelect = new Set();
-  for (let element of elements) {
+  const groupsToSelect = new Set();
+  for (const element of elements) {
     let grouping = element.closest(selectionClass);
     if (grouping === null) {
       // Check if we click-selected a clef or a custos
@@ -299,11 +293,11 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     groupsToSelect.add(grouping);
 
     // Check for precedes/follows
-    let follows = grouping.getAttribute('mei:follows');
+    const follows = grouping.getAttribute('mei:follows');
     if (follows) {
       groupsToSelect.add(document.getElementById(follows));
     }
-    let precedes = grouping.getAttribute('mei:precedes');
+    const precedes = grouping.getAttribute('mei:precedes');
     if (precedes) {
       groupsToSelect.add(document.getElementById(precedes));
     }
@@ -314,7 +308,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
 
   /* Determine the context menu to display (if any) */
 
-  let groups: SVGGraphicsElement[] = <SVGGraphicsElement[]>Array.from(groupsToSelect.values());
+  const groups: SVGGraphicsElement[] = <SVGGraphicsElement[]>Array.from(groupsToSelect.values());
 
   // Handle occurance of clef or custos
   if (containsClefOrCustos) {
@@ -334,13 +328,13 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       switch (groups.length) {
         case 1:
           SelectOptions.triggerSplitActions();
-          let resize = new Resize(groups[0].id, neonView, dragHandler);
+          const resize = new Resize(groups[0].id, neonView, dragHandler);
           resize.drawInitialRect();
           break;
         case 2:
-          let bb1 = getStaffBBox(groups[0]);
-          let bb2 = getStaffBBox(groups[1]);
-          let avgStaffHeight = (bb1.lry - bb1.uly + bb2.lry - bb2.uly) / 2;
+          const bb1 = getStaffBBox(groups[0]);
+          const bb2 = getStaffBBox(groups[1]);
+          const avgStaffHeight = (bb1.lry - bb1.uly + bb2.lry - bb2.uly) / 2;
           if (Math.abs(bb1.uly - bb2.uly) < avgStaffHeight) {
             SelectOptions.triggerStaffActions();
           } else {
@@ -366,23 +360,23 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
             Grouping.triggerGrouping('syl');
           } else {
             // Check if this *could* be a selection with a single logical syllable split by a staff break.
-            let staff0 = groups[0].closest('.staff');
-            let staff1 = groups[1].closest('.staff');
-            let staffChildren = Array.from(staff0.parentNode.children);
+            const staff0 = groups[0].closest('.staff');
+            const staff1 = groups[1].closest('.staff');
+            const staffChildren = Array.from(staff0.parentNode.children);
             // Check if these are adjacent staves (logically)
             if (Math.abs(staffChildren.indexOf(staff0) - staffChildren.indexOf(staff1)) === 1) {
               // Check if one syllable is the last in the first staff and the other is the first in the second.
               // Determine which staff is first.
-              let firstStaff = (staffChildren.indexOf(staff0) < staffChildren.indexOf(staff1)) ? staff0 : staff1;
-              let secondStaff = (firstStaff.id === staff0.id) ? staff1 : staff0;
-              let firstLayer = firstStaff.querySelector('.layer');
-              let secondLayer = secondStaff.querySelector('.layer');
+              const firstStaff = (staffChildren.indexOf(staff0) < staffChildren.indexOf(staff1)) ? staff0 : staff1;
+              const secondStaff = (firstStaff.id === staff0.id) ? staff1 : staff0;
+              const firstLayer = firstStaff.querySelector('.layer');
+              const secondLayer = secondStaff.querySelector('.layer');
 
               // Check that the first staff has either syllable as the last syllable
-              let firstSyllableChildren = <HTMLElement[]>Array.from(firstLayer.children).filter((elem: HTMLElement) => elem.classList.contains('syllable'));
-              let secondSyllableChildren = <HTMLElement[]>Array.from(secondLayer.children).filter((elem: HTMLElement) => elem.classList.contains('syllable'));
-              let lastSyllable = firstSyllableChildren[firstSyllableChildren.length - 1];
-              let firstSyllable = secondSyllableChildren[0];
+              const firstSyllableChildren = <HTMLElement[]>Array.from(firstLayer.children).filter((elem: HTMLElement) => elem.classList.contains('syllable'));
+              const secondSyllableChildren = <HTMLElement[]>Array.from(secondLayer.children).filter((elem: HTMLElement) => elem.classList.contains('syllable'));
+              const lastSyllable = firstSyllableChildren[firstSyllableChildren.length - 1];
+              const firstSyllable = secondSyllableChildren[0];
               if (lastSyllable.id === groups[0].id && firstSyllable.id === groups[1].id) {
                 Grouping.triggerGrouping('splitSyllable');
                 break;
@@ -428,14 +422,14 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
             // Check if this selection is a ligature or can be a ligature
             // Check if these neume components are part of the same neume
             if (groups[0].parentNode === groups[1].parentNode) {
-              let children = Array.from(groups[0].parentNode.children);
+              const children = Array.from(groups[0].parentNode.children);
               // Check that neume components are adjacent
               if (Math.abs(children.indexOf(groups[0]) - children.indexOf(groups[1])) === 1) {
                 // Check that second neume component is lower than first.
                 // Note that the order in the list may not be the same as the
                 // order by x-position.
-                let orderFirstX = (<SVGUseElement>groups[0].children[0]).x.baseVal.value;
-                let orderSecondX = (<SVGUseElement>groups[1].children[0]).x.baseVal.value;
+                const orderFirstX = (<SVGUseElement>groups[0].children[0]).x.baseVal.value;
+                const orderSecondX = (<SVGUseElement>groups[1].children[0]).x.baseVal.value;
                 let posFirstY, posSecondY;
 
                 if (orderFirstX < orderSecondX) {
@@ -447,8 +441,8 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
                 }
 
                 // Also ensure both components are marked or not marked as ligatures.
-                let isFirstLigature = await isLigature(groups[0], neonView);
-                let isSecondLigature = await isLigature(groups[1], neonView);
+                const isFirstLigature = await isLigature(groups[0], neonView);
+                const isSecondLigature = await isLigature(groups[1], neonView);
                 if ((posSecondY > posFirstY) && !(isFirstLigature !== isSecondLigature)) {
                   Grouping.triggerGrouping('ligature');
                   break;
@@ -471,7 +465,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     case 'selByBBox':
       switch (groups.length) {
         case 1:
-          let resize = new Resize(groups[0].closest('.syl').id, neonView, dragHandler);
+          const resize = new Resize(groups[0].closest('.syl').id, neonView, dragHandler);
           selectBBox(groups[0], dragHandler, resize);
           break;
         default:

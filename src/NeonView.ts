@@ -3,6 +3,7 @@ import NeonCore from './NeonCore';
 import { parseManifest, NeonManifest } from './utils/NeonManifest';
 import { prepareEditMode } from './utils/EditControls';
 import setBody from './utils/template/Template';
+import * as Types from './Types';
 import * as Interfaces from './Interfaces';
 
 
@@ -134,7 +135,7 @@ class NeonView {
    * @param action - The editor toolkit action object.
    * @param pageURI - The URI of the page to perform the action on
    */
-  edit (action: object, pageURI: string): Promise<boolean> {
+  edit (action: Types.EditorAction, pageURI: string): Promise<boolean> {
     return this.core.edit(action, pageURI);
   }
 
@@ -143,7 +144,7 @@ class NeonView {
    * @param elementId - The unique ID of the musical element.
    * @param pageURI - The URI of the page the element is found on.
    */
-  getElementAttr (elementID: string, pageURI: string): Promise<object> {
+  getElementAttr (elementID: string, pageURI: string): Promise<Types.Attributes> {
     return this.core.getElementAttr(elementID, pageURI);
   }
 

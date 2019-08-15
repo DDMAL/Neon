@@ -11,8 +11,8 @@ import ZoomHandler from '../SingleView/Zoom';
 
 import * as d3 from 'd3';
 
-var dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
-var strokeWidth = 7;
+let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
+let strokeWidth = 7;
 
 export function setSelectStrokeWidth (width: number) {
   strokeWidth = width;
@@ -40,7 +40,7 @@ function escapeKeyListener (evt: KeyboardEvent) {
 }
 
 function isSelByBBox () {
-  let selByBBox = document.getElementById('selByBBox');
+  const selByBBox = document.getElementById('selByBBox');
   if (selByBBox) {
     return selByBBox.classList.contains('is-active');
   }
@@ -78,7 +78,7 @@ export function clickSelect (selector: string) {
  */
 function clickHandler (evt: MouseEvent) {
   if (!neonView) return;
-  let mode = neonView.getUserMode();
+  const mode = neonView.getUserMode();
 
   // If in insert mode or panning is active from shift key
   if (mode === 'insert' || evt.shiftKey) { return; }
@@ -91,20 +91,20 @@ function clickHandler (evt: MouseEvent) {
       const secondLigatureHalf = /E9B[9ABC]/;
       if (this.getAttribute('xlink:href').match(secondLigatureHalf)) {
         // This is the second part of a ligature
-        let nc = this.closest('.nc');
-        let neume = this.closest('.neume');
-        let ncIndex = Array.from(neume.children).indexOf(nc);
-        let firstUse = neume.children[ncIndex - 1].children[0];
+        const nc = this.closest('.nc');
+        const neume = this.closest('.neume');
+        const ncIndex = Array.from(neume.children).indexOf(nc);
+        const firstUse = neume.children[ncIndex - 1].children[0];
         console.assert(firstUse.getAttribute('xlink:href').match(firstLigatureHalf), 'First glyph of ligature unexpected!');
         if (firstUse.closest('.selected') === null) {
           selection.unshift(firstUse);
         }
       } else if (this.getAttribute('xlink:href').match(firstLigatureHalf)) {
         // This is the first part of a ligature
-        let nc = this.closest('.nc');
-        let neume = this.closest('.neume');
-        let ncIndex = Array.from(neume.children).indexOf(nc);
-        let secondUse = neume.children[ncIndex + 1].children[0];
+        const nc = this.closest('.nc');
+        const neume = this.closest('.neume');
+        const ncIndex = Array.from(neume.children).indexOf(nc);
+        const secondUse = neume.children[ncIndex + 1].children[0];
         console.assert(secondUse.getAttribute('xlink:href').match(secondLigatureHalf), 'Second glyph of ligature unexpected!');
         if (secondUse.closest('.selected') === null) {
           selection.push(secondUse);
@@ -137,16 +137,16 @@ function clickHandler (evt: MouseEvent) {
     }
 
     // Check if the point is in a staff.
-    let container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
+    const container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
     let pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
-    let transformMatrix = (<SVGGraphicsElement>container.getElementsByClassName('system')[0]).getScreenCTM();
+    const transformMatrix = (<SVGGraphicsElement>container.getElementsByClassName('system')[0]).getScreenCTM();
     pt = pt.matrixTransform(transformMatrix.inverse());
 
-    let selectedStaves = Array.from(document.getElementsByClassName('staff'))
+    const selectedStaves = Array.from(document.getElementsByClassName('staff'))
       .filter((staff: SVGGElement) => {
-        let bbox = getStaffBBox(staff);
+        const bbox = getStaffBBox(staff);
         return (bbox.ulx < pt.x && pt.x < bbox.lrx) && (bbox.uly < pt.y && pt.y < bbox.lry);
       });
     if (selectedStaves.length !== 1) {
@@ -158,11 +158,11 @@ function clickHandler (evt: MouseEvent) {
     }
 
     // Select a staff
-    let staff = <SVGGElement>selectedStaves[0];
+    const staff = <SVGGElement>selectedStaves[0];
     if (!staff.classList.contains('selected')) {
       // Select previously unselected staff
       selectStaff(staff, dragHandler);
-      let resize = new Resize(staff.id, neonView, dragHandler);
+      const resize = new Resize(staff.id, neonView, dragHandler);
       resize.drawInitialRect();
       if (dragHandler) {
         dragHandler.dragInit();
@@ -188,15 +188,15 @@ function clickHandler (evt: MouseEvent) {
  * @param {string} selector - The CSS selector used to choose where listeners are applied.
  */
 export function dragSelect (selector: string) {
-  var initialX = 0;
-  var initialY = 0;
-  var panning = false;
-  var dragSelecting = false;
+  let initialX = 0;
+  let initialY = 0;
+  let panning = false;
+  let dragSelecting = false;
   // var canvas = d3.select('#svg_group');
   d3.selectAll(selector.replace('.active-page', '').trim())
     .on('.drag', null);
-  var canvas = d3.select(selector);
-  var dragSelectAction = d3.drag()
+  const canvas = d3.select(selector);
+  const dragSelectAction = d3.drag()
     .on('start', selStart)
     .on('drag', selecting)
     .on('end', selEnd);
@@ -207,14 +207,14 @@ export function dragSelect (selector: string) {
 
   function selStart () {
     if (!neonView) return;
-    let userMode = neonView.getUserMode();
+    const userMode = neonView.getUserMode();
     if (d3.event.sourceEvent.target.nodeName !== 'use' && userMode !== 'insert' && d3.event.sourceEvent.target.nodeName !== 'rect') {
       if (!d3.event.sourceEvent.shiftKey) { // If not holding down shift key to pan
         if (!document.getElementById('selByStaff').classList.contains('is-active') ||
           pointNotInStaff(d3.mouse(this))) {
           unselect();
           dragSelecting = true;
-          let initialP = d3.mouse(this);
+          const initialP = d3.mouse(this);
           initialX = initialP[0];
           initialY = initialP[1];
           initRect(initialX, initialY);
@@ -239,9 +239,9 @@ export function dragSelect (selector: string) {
    * @returns {boolean}
    */
   function pointNotInStaff (point: number[]): boolean {
-    let staves = Array.from(document.getElementsByClassName('staff'));
-    let filtered = staves.filter((staff: SVGGElement) => {
-      let box = getStaffBBox(staff);
+    const staves = Array.from(document.getElementsByClassName('staff'));
+    const filtered = staves.filter((staff: SVGGElement) => {
+      const box = getStaffBBox(staff);
       return (box.ulx < point[0] && point[0] < box.lrx) && (box.uly < point[1] && point[1] < box.lry);
     });
     return (filtered.length === 0);
@@ -249,14 +249,14 @@ export function dragSelect (selector: string) {
 
   function selecting () {
     if (!panning && dragSelecting) {
-      var currentPt = d3.mouse(this);
-      var curX = currentPt[0];
-      var curY = currentPt[1];
+      const currentPt = d3.mouse(this);
+      const curX = currentPt[0];
+      const curY = currentPt[1];
 
-      var newX = curX < initialX ? curX : initialX;
-      var newY = curY < initialY ? curY : initialY;
-      var width = curX < initialX ? initialX - curX : curX - initialX;
-      var height = curY < initialY ? initialY - curY : curY - initialY;
+      const newX = curX < initialX ? curX : initialX;
+      const newY = curY < initialY ? curY : initialY;
+      const width = curX < initialX ? initialX - curX : curX - initialX;
+      const height = curY < initialY ? initialY - curY : curY - initialY;
 
       updateRect(newX, newY, width, height);
     } else if (panning) {
@@ -268,27 +268,27 @@ export function dragSelect (selector: string) {
 
   function selEnd () {
     if (!panning && dragSelecting) {
-      var rx = parseInt(document.getElementById('selectRect').getAttribute('x'));
-      var ry = parseInt(document.getElementById('selectRect').getAttribute('y'));
-      var lx = parseInt(document.getElementById('selectRect').getAttribute('x')) +
+      const rx = parseInt(document.getElementById('selectRect').getAttribute('x'));
+      const ry = parseInt(document.getElementById('selectRect').getAttribute('y'));
+      const lx = parseInt(document.getElementById('selectRect').getAttribute('x')) +
         parseInt(document.getElementById('selectRect').getAttribute('width'));
-      var ly = parseInt(document.getElementById('selectRect').getAttribute('y')) +
+      const ly = parseInt(document.getElementById('selectRect').getAttribute('y')) +
         parseInt(document.getElementById('selectRect').getAttribute('height'));
       // Transform to the correct coordinate system
-      let node = <SVGSVGElement>canvas.node();
+      const node = <SVGSVGElement>canvas.node();
       let ul = node.createSVGPoint();
       ul.x = rx;
       ul.y = ry;
       let lr = node.createSVGPoint();
       lr.x = lx;
       lr.y = ly;
-      let transform = node.getScreenCTM().inverse()
+      const transform = node.getScreenCTM().inverse()
         .multiply((<SVGGraphicsElement>canvas.select('.system').node())
-        .getScreenCTM()).inverse();
+          .getScreenCTM()).inverse();
       ul = ul.matrixTransform(transform);
       lr = lr.matrixTransform(transform);
 
-      var nc;
+      let nc;
       if (document.getElementById('selByStaff').classList.contains('is-active')) {
         nc = document.querySelectorAll(selector + ' use, ' + selector + ' .staff');
       } else if (isSelByBBox()) {
@@ -296,10 +296,10 @@ export function dragSelect (selector: string) {
       } else {
         nc = document.querySelectorAll(selector + ' use');
       }
-      var els = Array.from(nc);
+      const els = Array.from(nc);
 
-      var elements = <SVGGraphicsElement[]>els.filter(function (d: SVGGraphicsElement) {
-        var ulx, uly, lrx, lry;
+      const elements = <SVGGraphicsElement[]>els.filter(function (d: SVGGraphicsElement) {
+        let ulx, uly, lrx, lry;
         if (isSelByBBox()) {
           ulx = Number(d.getAttribute('x'));
           uly = Number(d.getAttribute('y'));
@@ -307,14 +307,14 @@ export function dragSelect (selector: string) {
           lry = +uly + +(d.getAttribute('height').slice(0, -2));
           return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
         } else if (d.tagName === 'use') {
-          let box = (<SVGGElement>d.parentNode).getBBox();
+          const box = (<SVGGElement>d.parentNode).getBBox();
           ulx = box.x;
           uly = box.y;
           lrx = box.x + box.width;
           lry = box.y + box.height;
           return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
         } else {
-          let box = getStaffBBox(d);
+          const box = getStaffBBox(d);
           return !(((ul.x < box.ulx && lr.x < box.ulx) || (ul.x > box.lrx && lr.x > box.lrx)) || ((ul.y < box.uly && lr.y < box.uly) || (ul.y > box.lry && lr.y > box.lry)));
         }
       });
@@ -322,19 +322,19 @@ export function dragSelect (selector: string) {
       // Get other halves of ligatures if only one is selected
       elements.forEach((element: SVGElement) => {
         if (element.tagName === 'use' && element.getAttribute('xlink:href').match(/E9B[456789ABC]/)) {
-          let neume = element.closest('.neume');
-          let ncIndex = Array.from(neume.children).indexOf(element.closest('.nc'));
+          const neume = element.closest('.neume');
+          const ncIndex = Array.from(neume.children).indexOf(element.closest('.nc'));
           if (element.getAttribute('xlink:href').match(/E9B[45678]/)) {
             // Add second half of ligature to selected list if not already present
-            let secondNc = neume.children[ncIndex + 1];
-            let secondUse = secondNc.querySelector('use');
+            const secondNc = neume.children[ncIndex + 1];
+            const secondUse = secondNc.querySelector('use');
             if (elements.indexOf(secondUse) < 0) {
               elements.push(secondUse);
             }
           } else {
             // Add first half of ligature to selected list if not already present
-            let firstNc = neume.children[ncIndex - 1];
-            let firstUse = firstNc.querySelector('use');
+            const firstNc = neume.children[ncIndex - 1];
+            const firstUse = firstNc.querySelector('use');
             if (elements.indexOf(firstUse) < 0) {
               elements.push(firstUse);
             }
