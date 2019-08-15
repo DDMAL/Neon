@@ -2,8 +2,7 @@
 const NeonSchema = require('./manifest/NeonSchema.json');
 const NeonContext = require('./manifest/context.json');
 
-const validate = require('jsonschema').validate;
-
+import { validate } from 'jsonschema';
 /**
  * Check if the provided Neon manifest is parseable.
  * @param {string} manifestString - The Neon manifest as a string.
