@@ -104,7 +104,7 @@ export function highlight (staff: SVGGElement, color: string): void {
         try {
           rects = child.closest('.syllable').querySelectorAll('.sylTextRect-display');
         } catch (e) {
-          rects = new NodeList() as NodeListOf<Element>;
+          rects = [] as unknown as NodeListOf<Element>;
         }
       }
       rects.forEach(function (rect: HTMLElement) {
