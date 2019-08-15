@@ -20,11 +20,11 @@ class TextView implements TextViewInterface {
     this.notificationSent = false;
 
     // add checkbox to enable/disable the view
-    let block = document.getElementById('extensible-block');
-    let textLabel = document.createElement('label');
-    let bboxLabel = document.createElement('label');
-    let textButton = document.createElement('input');
-    let bboxButton = document.createElement('input');
+    const block = document.getElementById('extensible-block');
+    const textLabel = document.createElement('label');
+    const bboxLabel = document.createElement('label');
+    const textButton = document.createElement('input');
+    const bboxButton = document.createElement('input');
     textLabel.classList.add('checkbox');
     bboxLabel.classList.add('checkbox');
     textLabel.textContent = 'Display Text: ';
@@ -50,23 +50,23 @@ class TextView implements TextViewInterface {
   /**
   * Set listeners on textview visibility checkbox
   */
-  setTextViewControls () {
+  setTextViewControls (): void {
+    function textViewVis (): void { this.updateTextViewVisibility(); }
+    function bboxViewVis (): void { this.updateBBoxViewVisibility(); }
+
     this.updateTextViewVisibility();
     this.updateBBoxViewVisibility();
     document.getElementById('displayText')
       .addEventListener('click', textViewVis.bind(this));
     document.getElementById('displayBBox')
       .addEventListener('click', bboxViewVis.bind(this));
-
-    function textViewVis () { this.updateTextViewVisibility(); }
-    function bboxViewVis () { this.updateBBoxViewVisibility(); }
   }
 
   /**
    * Update visibility of text bounding boxes
    */
-  updateBBoxViewVisibility () {
-    if ((<HTMLInputElement>document.getElementById('displayBBox')).checked) {
+  updateBBoxViewVisibility (): void {
+    if ((document.getElementById('displayBBox')as HTMLInputElement).checked) {
       document.querySelectorAll('.sylTextRect').forEach(rect => {
         rect.classList.add('sylTextRect-display');
         rect.classList.remove('sylTextRect');
@@ -102,17 +102,17 @@ class TextView implements TextViewInterface {
   * Update the visibility of the textview box
   * and add the event listeners to make sure the syl highlights when moused over
   */
-  updateTextViewVisibility () {
-    if ((<HTMLInputElement>document.getElementById('displayText')).checked) {
-      let sylText = document.getElementById('syl_text');
+  updateTextViewVisibility (): void {
+    if ((document.getElementById('displayText') as HTMLInputElement).checked) {
+      const sylText = document.getElementById('syl_text');
       sylText.style.display = '';
       sylText.innerHTML = '<p>' + this.getSylText() + '</p>';
-      let spans = sylText.querySelectorAll('p > span');
+      const spans = sylText.querySelectorAll('p > span');
       spans.forEach(span => {
-        let syllable = document.getElementById(span.className);
-        let syl = syllable.querySelector('.syl');
-        let text = syl.querySelector('text');
-        let rect = syl.querySelector('rect');
+        const syllable = document.getElementById(span.className);
+        const syl = syllable.querySelector('.syl');
+        const text = syl.querySelector('text');
+        const rect = syl.querySelector('rect');
         if (text.classList.length === 0) {
           text.classList.add('text');
         }
@@ -158,13 +158,13 @@ class TextView implements TextViewInterface {
    * @returns {string}
    */
   getSylText (): string {
-    var lyrics = '';
-    let uniToDash = /\ue551/g;
-    let syllables = document.querySelectorAll('.active-page .syllable');
+    let lyrics = '';
+    const uniToDash = /\ue551/g;
+    const syllables = document.querySelectorAll('.active-page .syllable');
     syllables.forEach(syllable => {
       if (syllable.querySelector('.syl') !== null) {
-        let syl = syllable.querySelector('.syl');
-        lyrics += "<span class='" + syllable.id + "'>";
+        const syl = syllable.querySelector('.syl');
+        lyrics += '<span class=\'' + syllable.id + '\'>';
         if (syl.textContent.trim() === '') {
           lyrics += '&#x25CA; ';
         } else {
