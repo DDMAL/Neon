@@ -1,6 +1,5 @@
-/** @module utils/NeonManifest */
-const NeonSchema = require('./manifest/NeonSchema.json');
-const NeonContext = require('./manifest/context.json');
+import NeonSchema from './manifest/NeonSchema.json';
+import NeonContext from './manifest/context.json';
 
 import { validate } from 'jsonschema';
 /**
