@@ -163,18 +163,20 @@ export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
 export function getStaffBBox (staff: SVGGElement): {ulx: number; uly: number; lrx: number; lry: number} {
   let ulx, uly, lrx, lry;
   staff.querySelectorAll('path').forEach(path => {
-    const segments: any = path.pathSegList;
-    if (uly === undefined || segments[0].y < uly) {
-      uly = segments[0].y;
+    const coordinates: number[] = path.getAttribute('d')
+      .match(/\d+/g)
+      .map(element => Number(element));
+    if (uly === undefined || coordinates[1] < uly) {
+      uly = coordinates[1];
     }
-    if (ulx === undefined || segments[0].x < ulx) {
-      ulx = segments[0].x;
+    if (ulx === undefined || coordinates[0] < ulx) {
+      ulx = coordinates[0];
     }
-    if (lry === undefined || segments[segments.length - 1].y > lry) {
-      lry = segments[segments.length - 1].y;
+    if (lry === undefined || coordinates[3] > lry) {
+      lry = coordinates[3];
     }
-    if (lrx === undefined || segments[segments.length - 1].x > lrx) {
-      lrx = segments[segments.length - 1].x;
+    if (lrx === undefined || coordinates[2] > lrx) {
+      lrx = coordinates[2];
     }
   });
   return { 'ulx': ulx, 'uly': uly, 'lrx': lrx, 'lry': lry };
