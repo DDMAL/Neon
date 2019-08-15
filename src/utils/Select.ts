@@ -14,23 +14,21 @@ import * as d3 from 'd3';
 let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 let strokeWidth = 7;
 
-export function setSelectStrokeWidth (width: number) {
+export function setSelectStrokeWidth (width: number): void {
   strokeWidth = width;
 }
 
 /**
  * Set the objects for this module.
- * @param {NeonView} nv - The NeonView object
- * @param {DragHandler} dh - The drag handler object
  */
-export function setSelectHelperObjects (nv: NeonView, dh: DragHandler) {
+export function setSelectHelperObjects (nv: NeonView, dh: DragHandler): void {
   dragHandler = dh;
   neonView = nv;
   info = neonView.info;
   zoomHandler = neonView.view.zoomHandler;
 }
 
-function escapeKeyListener (evt: KeyboardEvent) {
+function escapeKeyListener (evt: KeyboardEvent): void {
   if (evt.key === 'Escape') {
     if (document.getElementsByClassName('selected').length > 0) {
       info.infoListeners();
@@ -39,7 +37,7 @@ function escapeKeyListener (evt: KeyboardEvent) {
   }
 }
 
-function isSelByBBox () {
+function isSelByBBox (): boolean {
   const selByBBox = document.getElementById('selByBBox');
   if (selByBBox) {
     return selByBBox.classList.contains('is-active');
@@ -47,13 +45,13 @@ function isSelByBBox () {
   return false;
 }
 
-function stopPropHandler (evt) { evt.stopPropagation(); }
+function stopPropHandler (evt): void { evt.stopPropagation(); }
 
 /**
  * Apply listeners for click selection.
- * @param {string} selector - The CSS selector used to choose where listeners are applied.
+ * @param selector - The CSS selector used to choose where listeners are applied.
  */
-export function clickSelect (selector: string) {
+export function clickSelect (selector: string): void {
   document.querySelectorAll(selector).forEach(sel => {
     sel.removeEventListener('mousedown', clickHandler);
     sel.addEventListener('mousedown', clickHandler);
@@ -74,9 +72,8 @@ export function clickSelect (selector: string) {
 
 /**
  * Handle click events related to element selection.
- * @param {object} evt
  */
-function clickHandler (evt: MouseEvent) {
+function clickHandler (evt: MouseEvent): void {
   if (!neonView) return;
   const mode = neonView.getUserMode();
 
@@ -118,11 +115,11 @@ function clickHandler (evt: MouseEvent) {
         dragHandler.dragInit();
       }
     }
-  } else if ((<HTMLElement>evt.target).tagName === 'rect' && getSelectionType() === 'selByBBox') {
+  } else if ((evt.target as HTMLElement).tagName === 'rect' && getSelectionType() === 'selByBBox') {
     if (this.closest('.selected') === null) {
-      let selection = <SVGGElement[]>[evt.target];
+      let selection = [evt.target] as SVGGElement[];
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
-        selection = selection.concat(<SVGGElement[]>Array.from(document.getElementsByClassName('selected')));
+        selection = selection.concat(Array.from(document.getElementsByClassName('selected')) as SVGGElement[]);
       }
       selectAll(selection, neonView, dragHandler);
       if (dragHandler) {
@@ -137,11 +134,11 @@ function clickHandler (evt: MouseEvent) {
     }
 
     // Check if the point is in a staff.
-    const container = <SVGSVGElement>document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0];
+    const container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0] as SVGSVGElement;
     let pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
-    const transformMatrix = (<SVGGraphicsElement>container.getElementsByClassName('system')[0]).getScreenCTM();
+    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGraphicsElement).getScreenCTM();
     pt = pt.matrixTransform(transformMatrix.inverse());
 
     const selectedStaves = Array.from(document.getElementsByClassName('staff'))
@@ -158,7 +155,7 @@ function clickHandler (evt: MouseEvent) {
     }
 
     // Select a staff
-    const staff = <SVGGElement>selectedStaves[0];
+    const staff = selectedStaves[0] as SVGGElement;
     if (!staff.classList.contains('selected')) {
       // Select previously unselected staff
       selectStaff(staff, dragHandler);
@@ -185,9 +182,9 @@ function clickHandler (evt: MouseEvent) {
 
 /**
  * Apply listeners for drag selection.
- * @param {string} selector - The CSS selector used to choose where listeners are applied.
+ * @param selector - The CSS selector used to choose where listeners are applied.
  */
-export function dragSelect (selector: string) {
+export function dragSelect (selector: string): void {
   let initialX = 0;
   let initialY = 0;
   let panning = false;
@@ -205,7 +202,7 @@ export function dragSelect (selector: string) {
     dragHandler.resetTo(dragSelectAction);
   }
 
-  function selStart () {
+  function selStart (): void {
     if (!neonView) return;
     const userMode = neonView.getUserMode();
     if (d3.event.sourceEvent.target.nodeName !== 'use' && userMode !== 'insert' && d3.event.sourceEvent.target.nodeName !== 'rect') {
@@ -235,8 +232,7 @@ export function dragSelect (selector: string) {
 
   /**
    * Check if a point is in the bounds of a staff element.
-   * @param {SVGPoint} point
-   * @returns {boolean}
+   * Skew is not taken into account.
    */
   function pointNotInStaff (point: number[]): boolean {
     const staves = Array.from(document.getElementsByClassName('staff'));
@@ -247,7 +243,7 @@ export function dragSelect (selector: string) {
     return (filtered.length === 0);
   }
 
-  function selecting () {
+  function selecting (): void {
     if (!panning && dragSelecting) {
       const currentPt = d3.mouse(this);
       const curX = currentPt[0];
@@ -266,7 +262,7 @@ export function dragSelect (selector: string) {
     }
   }
 
-  function selEnd () {
+  function selEnd (): void {
     if (!panning && dragSelecting) {
       const rx = parseInt(document.getElementById('selectRect').getAttribute('x'));
       const ry = parseInt(document.getElementById('selectRect').getAttribute('y'));
@@ -275,7 +271,7 @@ export function dragSelect (selector: string) {
       const ly = parseInt(document.getElementById('selectRect').getAttribute('y')) +
         parseInt(document.getElementById('selectRect').getAttribute('height'));
       // Transform to the correct coordinate system
-      const node = <SVGSVGElement>canvas.node();
+      const node = canvas.node() as SVGSVGElement;
       let ul = node.createSVGPoint();
       ul.x = rx;
       ul.y = ry;
@@ -283,7 +279,7 @@ export function dragSelect (selector: string) {
       lr.x = lx;
       lr.y = ly;
       const transform = node.getScreenCTM().inverse()
-        .multiply((<SVGGraphicsElement>canvas.select('.system').node())
+        .multiply((canvas.select('.system').node() as SVGGraphicsElement)
           .getScreenCTM()).inverse();
       ul = ul.matrixTransform(transform);
       lr = lr.matrixTransform(transform);
@@ -298,7 +294,7 @@ export function dragSelect (selector: string) {
       }
       const els = Array.from(nc);
 
-      const elements = <SVGGraphicsElement[]>els.filter(function (d: SVGGraphicsElement) {
+      const elements = els.filter(function (d: SVGGraphicsElement): boolean {
         let ulx, uly, lrx, lry;
         if (isSelByBBox()) {
           ulx = Number(d.getAttribute('x'));
@@ -307,7 +303,7 @@ export function dragSelect (selector: string) {
           lry = +uly + +(d.getAttribute('height').slice(0, -2));
           return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
         } else if (d.tagName === 'use') {
-          const box = (<SVGGElement>d.parentNode).getBBox();
+          const box = (d.parentNode as SVGGElement).getBBox();
           ulx = box.x;
           uly = box.y;
           lrx = box.x + box.width;
@@ -317,7 +313,7 @@ export function dragSelect (selector: string) {
           const box = getStaffBBox(d);
           return !(((ul.x < box.ulx && lr.x < box.ulx) || (ul.x > box.lrx && lr.x > box.lrx)) || ((ul.y < box.uly && lr.y < box.uly) || (ul.y > box.lry && lr.y > box.lry)));
         }
-      });
+      }) as SVGGraphicsElement[];
 
       // Get other halves of ligatures if only one is selected
       elements.forEach((element: SVGElement) => {
@@ -354,10 +350,10 @@ export function dragSelect (selector: string) {
 
   /**
      * Create an initial dragging rectangle.
-     * @param {number} ulx - The upper left x-position of the new rectangle.
-     * @param {number} uly - The upper left y-position of the new rectangle.
+     * @param ulx - The upper left x-position of the new rectangle.
+     * @param uly - The upper left y-position of the new rectangle.
      */
-  function initRect (ulx: number, uly: number) {
+  function initRect (ulx: number, uly: number): void {
     canvas.append('rect')
       .attr('x', ulx)
       .attr('y', uly)
@@ -371,12 +367,12 @@ export function dragSelect (selector: string) {
 
   /**
      * Update the dragging rectangle.
-     * @param {number} newX - The new ulx.
-     * @param {number} newY - The new uly.
-     * @param {number} currentWidth - The width of the rectangle in pixels.
-     * @param {number} currentHeight - The height of the rectangle in pixels.
+     * @param newX - The new ulx.
+     * @param newY - The new uly.
+     * @param currentWidth - The width of the rectangle in pixels.
+     * @param currentHeight - The height of the rectangle in pixels.
      */
-  function updateRect (newX: number, newY: number, currentWidth: number, currentHeight: number) {
+  function updateRect (newX: number, newY: number, currentWidth: number, currentHeight: number): void {
     d3.select('#selectRect')
       .attr('x', newX)
       .attr('y', newY)
