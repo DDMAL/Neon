@@ -2,47 +2,36 @@ import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
 import { EditorAction } from '../Types';
 
-/**
- * Handler splitting a staff into two staves through Verovio.
- * @constructor
- */
-function SplitHandler (neonView: NeonView): void {
-  function startSplit (): void {
-    splitDisable();
+/** Handle splitting a staff into two staves through Verovio. */
+export class SplitHandler {
+  readonly neonView: NeonView;
 
-    document.body.addEventListener('click', handler);
+  constructor (neonView: NeonView) {
+    this.neonView = neonView;
+  }
+
+  startSplit (): void {
+    this.splitDisable();
+
+    document.body.addEventListener('click', this.handler);
 
     // Handle keypresses
-    document.body.addEventListener('keydown', keydownListener);
-    document.body.addEventListener('keyup', resetHandler);
-    document.body.addEventListener('click', clickawayHandler);
+    document.body.addEventListener('keydown', this.keydownListener);
+    document.body.addEventListener('keyup', this.resetHandler);
+    document.body.addEventListener('click', this.clickawayHandler);
 
     Notification.queueNotification('Click Where to Split');
   }
 
-  function keydownListener (evt: KeyboardEvent): void {
-    if (evt.key === 'Escape') {
-      splitDisable();
-    } else if (evt.key === 'Shift') {
-      document.body.removeEventListener('click', handler);
-    }
+  splitDisable (): void {
+    document.body.removeEventListener('keydown', this.keydownListener);
+    document.body.removeEventListener('keyup', this.resetHandler);
+    document.body.removeEventListener('click', this.clickawayHandler);
+    document.body.removeEventListener('click', this.handler);
   }
 
-  function clickawayHandler (evt: MouseEvent): void {
-    console.log(evt);
-    if ((evt.target as HTMLElement).closest('.active-page') === null) {
-      splitDisable();
-      document.body.removeEventListener('click', handler);
-    }
-  }
-
-  function resetHandler (evt: KeyboardEvent): void {
-    if (evt.key === 'Shift') {
-      document.body.addEventListener('click', handler);
-    }
-  }
-
-  function handler (evt: MouseEvent): void {
+  /** Handle input to split a staff. */
+  handler = ((evt: MouseEvent): void => {
     const id = document.querySelector('.selected').id;
 
     const container = document.getElementsByClassName('active-page')[0]
@@ -55,7 +44,6 @@ function SplitHandler (neonView: NeonView): void {
     const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGElement)
       .getScreenCTM().inverse();
     const cursorPt = pt.matrixTransform(transformMatrix);
-    console.log(cursorPt.x);
     // Find staff point corresponds to if one exists
     // TODO
 
@@ -67,23 +55,36 @@ function SplitHandler (neonView: NeonView): void {
       }
     };
 
-    neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
+    this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(async (result) => {
       if (result) {
-        await neonView.updateForCurrentPagePromise();
+        await this.neonView.updateForCurrentPagePromise();
       }
-      splitDisable();
+      this.splitDisable();
     });
-  }
+  }).bind(this);
 
-  function splitDisable (): void {
-    document.body.removeEventListener('keydown', keydownListener);
-    document.body.removeEventListener('keyup', resetHandler);
-    document.body.removeEventListener('click', clickawayHandler);
-    document.body.removeEventListener('click', handler);
-  }
+  /** Exits split on Escape press, disables on Shift. */
+  keydownListener = ((evt: KeyboardEvent): void => {
+    if (evt.key === 'Escape') {
+      this.splitDisable();
+    } else if (evt.key === 'Shift') {
+      document.body.removeEventListener('click', this.handler);
+    }
+  }).bind(this);
 
-  SplitHandler.prototype.constructor = SplitHandler;
-  SplitHandler.prototype.startSplit = startSplit;
+  /** Exit split if user clicks off of active page. */
+  clickawayHandler = ((evt: MouseEvent): void => {
+    const target = evt.target as HTMLElement;
+    if (target.closest('.active-page') === null) {
+      this.splitDisable();
+      document.body.removeEventListener('click', this.handler);
+    }
+  }).bind(this);
+
+  /** Called to reapply the event listener if necessary. */
+  resetHandler = ((evt: KeyboardEvent): void => {
+    if (evt.key === 'Shift') {
+      document.body.addEventListener('click', this.handler);
+    }
+  }).bind(this);
 }
-
-export { SplitHandler };
