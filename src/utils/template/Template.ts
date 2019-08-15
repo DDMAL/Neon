@@ -1,4 +1,4 @@
-import template from './template.html';
+const template = require('./template.html');
 
 declare const __LINK_LOCATION__: string;
 declare const __NEON_VERSION__: string;
