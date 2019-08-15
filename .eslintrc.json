@@ -35,6 +35,9 @@
             "always"
         ],
         "@typescript-eslint/no-var-requires": 1,
+        "@typescript-eslint/no-use-before-define": [
+            "warn"
+        ],
         "@typescript-eslint/no-unused-vars": [
             "error",
             {
