@@ -48,7 +48,7 @@ export interface TextEditInterface {
 }
 
 export interface TextViewConstructable {
-  new (a: NeonView): TextViewInterface
+  new (a: NeonView): TextViewInterface;
 }
 
 export interface TextViewInterface {}
@@ -69,16 +69,12 @@ export interface InfoInterface {
   updateInfo (evt: MouseEvent): Promise<void>;
 }
 
-export interface SimpleConstructable {
-  new (a: NeonView): any;
-}
-
 export interface NeonViewParams {
-  manifest: NeonManifest,
-  View: ViewConstructable,
-  Display: DisplayConstructable,
-  Info: InfoConstructable,
-  NeumeEdit?: NeumeEditConstructable,
-  TextView?: TextViewConstructable,
-  TextEdit?: TextEditConstructable
+  manifest: NeonManifest;
+  View: ViewConstructable;
+  Display: DisplayConstructable;
+  Info: InfoConstructable;
+  NeumeEdit?: NeumeEditConstructable;
+  TextView?: TextViewConstructable;
+  TextEdit?: TextEditConstructable;
 }
