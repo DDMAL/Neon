@@ -77,9 +77,12 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       lrx = bbox.lrx;
       lry = bbox.lry;
 
-      const segments: any = element.querySelector('path').pathSegList;
-      skew = Math.atan((segments[segments.length - 1].y - segments[0].y) /
-        (segments[segments.length - 1].x - segments[0].x));
+      const coordinates: number[] = element.querySelector('path')
+        .getAttribute('d')
+        .match(/\d+/g)
+        .map(element => Number(element));
+      skew = Math.atan((coordinates[3] - coordinates[1]) /
+        (coordinates[2] - coordinates[0]));
     }
 
     let whichPoint: string;
