@@ -92,11 +92,15 @@ export function unsetGroupingHighlight (): void {
  */
 export function highlight (staff: SVGGElement, color: string): void {
   const children = Array.from(staff.children);
-  children.forEach(child => {
+  for (var i = 0; i < children.length; i++) {
+    let child = children[i];
+    console.log(child.classList);
     if (child.tagName === 'path') {
       child.setAttribute('stroke', color);
     } else if (child.classList.contains('resizePoint') || child.id === 'resizeRect' || child.classList.contains('skewPoint')) {
       return;
+    } else if (child.classList.contains('layer')) {
+      Array.from(child.children).forEach(cchild => { children.push(cchild); });
     } else {
       child.setAttribute('fill', color);
       let rects = child.querySelectorAll('.sylTextRect-display');
@@ -116,7 +120,7 @@ export function highlight (staff: SVGGElement, color: string): void {
       });
     }
     child.classList.add('highlighted');
-  });
+  }
 }
 
 /**
