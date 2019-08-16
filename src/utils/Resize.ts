@@ -188,9 +188,10 @@ class Resize {
 
     function skewDragLeft (): void {
       const currentY = d3.mouse(d3.event.sourceEvent.target)[1];
-      dy = currentY - initialY;
-      const tempSkew = initialSkew - Math.atan(dy / polyLen);
+      const temp = currentY - initialY;
+      const tempSkew = initialSkew - Math.atan(temp / polyLen);
       if (tempSkew > -0.2 && tempSkew < 0.2) {
+        dy = temp
         this.uly = initialRectY + dy;
         this.skew = tempSkew;
       }
@@ -199,9 +200,10 @@ class Resize {
 
     function skewDragRight (): void {
       const currentY = d3.mouse(d3.event.sourceEvent.target)[1];
-      dy = currentY - initialY;
-      const tempSkew = initialSkew + Math.atan(dy / polyLen);
+      const temp = currentY - initialY;
+      const tempSkew = initialSkew + Math.atan(temp / polyLen);
       if (tempSkew > -0.2 && tempSkew < 0.2) {
+        dy = temp;
         this.skew = tempSkew;
         this.lry = initialRectY + dy;
       }
