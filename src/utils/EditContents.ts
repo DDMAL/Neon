@@ -1,13 +1,25 @@
 /**
  * Contents of navbar menu after switching to edit mode.
  */
-export const navbarDropdownMenu: string =
-    '<div class=\'navbar-item has-dropdown is-hoverable\'><a class=\'navbar-link\'>File</a>' +
-    '<div id=\'navbar-dropdown-options\' class=\'navbar-dropdown\'>' +
-    '<a id=\'save\' class=\'navbar-item\'>Save</a>' +
-    '<a id=\'export\' class=\'navbar-item\'>Save and Export to File</a>' +
-    '<a id=\'getmei\' class=\'navbar-item\' href=\'\' download=\'\'> Download MEI </a>' +
-    '<a id=\'revert\' class=\'navbar-item\'> Revert </a>';
+export const navbarDropdownMenu: HTMLDivElement = document.createElement('div');
+navbarDropdownMenu.classList.add('navbar-item', 'has-dropdown', 'is-hoverable');
+const fileLink = document.createElement('a');
+fileLink.classList.add('navbar-link');
+fileLink.textContent = 'File';
+const navbarContents = document.createElement('div');
+navbarContents.classList.add('navbar-dropdown');
+navbarContents.id = 'navbar-dropdown-options';
+const contents = [['save', 'Save'], ['export', 'Save and Export to File'],
+  ['getmei', 'Download MEI'], ['revert', 'Revert']];
+contents.forEach(content => {
+  const item = document.createElement('a');
+  item.id = content[0];
+  item.classList.add('navbar-item');
+  item.textContent = content[1];
+  navbarContents.appendChild(item);
+});
+navbarDropdownMenu.appendChild(fileLink);
+navbarDropdownMenu.appendChild(navbarContents);
 
 /**
  * Finalize option in the navbar for rodan
