@@ -3,7 +3,7 @@
 import {
   unselect, getStaffBBox, selectStaff, selectAll, getSelectionType
 } from './SelectTools';
-import { Resize } from './Resize';
+import { resize } from './Resize';
 import NeonView from '../NeonView';
 import DragHandler from './DragHandler';
 import { InfoInterface } from '../Interfaces';
@@ -159,8 +159,7 @@ function clickHandler (evt: MouseEvent): void {
     if (!staff.classList.contains('selected')) {
       // Select previously unselected staff
       selectStaff(staff, dragHandler);
-      const resize = new Resize(staff.id, neonView, dragHandler);
-      resize.drawInitialRect();
+      resize(staff, neonView, dragHandler);
       if (dragHandler) {
         dragHandler.dragInit();
       }

@@ -20,13 +20,7 @@ const PointNames = {
   Left: 7
 };
 
-/**
- * Handle the resizing of the selected object.
- * @constructor
- * @param elementId - The ID of the element to resize.
- */
-function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler) {
-  let element = <SVGGElement><unknown>document.getElementById(elementId);
+export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHandler: DragHandler): void {
   /**
    * The upper-left x-coordinate of the element.
    */
@@ -52,11 +46,12 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
   let initialPoint: number[], initialUly: number, initialLry: number, whichSkewPoint: string,
     initialY: number, initialRectY: number, polyLen: number, dy: number, initialSkew: number;
 
+  drawInitialRect();
   /**
    * Draw the initial rectangle around the element
    * and add the listeners to support dragging to resize.
    */
-  function drawInitialRect () {
+  function drawInitialRect (): void {
     if (element === null) return;
 
     // if it's a boundingbox just get the coordinates
@@ -176,7 +171,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
           .on('end', skewEnd));
     }
 
-    function skewStart (which: string) {
+    function skewStart (which: string): void {
       const polygon = d3.select('#' + which);
       const points = polygon.attr('points');
       whichSkewPoint = which;
@@ -185,7 +180,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
       initialSkew = skew;
     }
 
-    function skewDragLeft () {
+    function skewDragLeft (): void {
       const currentY = d3.mouse(this)[1];
       dy = currentY - initialY;
       const tempSkew = initialSkew - Math.atan(dy / polyLen);
@@ -196,7 +191,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
       redraw();
     }
 
-    function skewDragRight () {
+    function skewDragRight (): void {
       const currentY = d3.mouse(this)[1];
       dy = currentY - initialY;
       const tempSkew = initialSkew + Math.atan(dy / polyLen);
@@ -207,7 +202,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
       redraw();
     }
 
-    function skewEnd () {
+    function skewEnd (): void {
       const editorAction = {
         'action': 'changeSkew',
         'param': {
@@ -220,7 +215,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
         if (result) {
           await neonView.updateForCurrentPagePromise();
         }
-        element = <SVGGElement><unknown>document.getElementById(elementId);
+        element = document.getElementById(element.id) as unknown as SVGGraphicsElement;
         ulx = undefined;
         uly = undefined;
         lrx = undefined;
@@ -234,7 +229,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
       });
     }
 
-    function resizeStart (name: string) {
+    function resizeStart (name: string): void {
       whichPoint = name;
       const point = points.find(point => { return point.name === PointNames[name]; });
       initialPoint = [point.x, point.y];
@@ -242,7 +237,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
       initialLry = lry;
     }
 
-    function resizeDrag () {
+    function resizeDrag (): void {
       const currentPoint = d3.mouse(this);
       switch (PointNames[whichPoint]) {
         case PointNames.TopLeft:
@@ -281,7 +276,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
       redraw();
     }
 
-    function resizeEnd () {
+    function resizeEnd (): void {
       const editorAction = {
         'action': 'resize',
         'param': {
@@ -296,7 +291,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
         if (result) {
           await neonView.updateForCurrentPagePromise();
         }
-        element = <SVGGElement><unknown>document.getElementById(elementId);
+        element = document.getElementById(element.id) as unknown as SVGGraphicsElement;
         ulx = undefined;
         uly = undefined;
         lrx = undefined;
@@ -317,7 +312,7 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
   /**
    * Redraw the rectangle with the new bounds
    */
-  function redraw () {
+  function redraw (): void {
     const points: Point[] = [
       { x: ulx, y: uly, name: PointNames.TopLeft },
       { x: (ulx + lrx) / 2, y: uly + (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Top },
@@ -354,9 +349,4 @@ function Resize (elementId: string, neonView: NeonView, dragHandler: DragHandler
     d3.select('#skewLeft').attr('points', pointStringLeft);
     d3.select('#skewRight').attr('points', pointStringRight);
   }
-
-  Resize.prototype.constructor = Resize;
-  Resize.prototype.drawInitialRect = drawInitialRect;
 }
-
-export { Resize };

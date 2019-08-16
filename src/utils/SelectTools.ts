@@ -1,7 +1,8 @@
 import * as Color from './Color';
 import { updateHighlight } from '../DisplayPanel/DisplayControls';
 import * as Grouping from '../SquareEdit/Grouping';
-import { Resize } from './Resize';
+import { resize } from './Resize';
+import { Attributes } from '../Types';
 import NeonView from '../NeonView';
 import DragHandler from './DragHandler';
 import * as SelectOptions from '../SquareEdit/SelectOptions';
@@ -129,8 +130,8 @@ export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dra
  * Check if neume component is part of a ligature
  */
 export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): Promise<boolean> {
-  const attributes: any = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPageURI());
-  return (attributes.ligated === 'true');
+  const attributes: Attributes = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPageURI());
+  return (attributes.ligated);
 }
 
 /**
@@ -179,7 +180,7 @@ export function getStaffBBox (staff: SVGGElement): {ulx: number; uly: number; lr
  * @param el - the bbox (sylTextRect) element in the DOM
  * @param dragHandler - the drag handler in use
  */
-export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, resizeHandler: any): void {
+export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, neonView: NeonView): void {
   const bbox = el;
   const syl = bbox.closest('.syl');
   if (!syl.classList.contains('selected')) {
@@ -188,8 +189,8 @@ export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, re
     const closest = el.closest('.syllable') as HTMLElement;
     closest.style.fill = 'red';
     closest.classList.add('syllable-highlighted');
-    if (resizeHandler !== undefined) {
-      resizeHandler.drawInitialRect();
+    if (neonView !== undefined ){
+      resize(syl as SVGGraphicsElement, neonView, dragHandler);
     }
     if (dragHandler !== undefined) {
       dragHandler.dragInit();
@@ -319,8 +320,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       switch (groups.length) {
         case 1:
           SelectOptions.triggerSplitActions();
-          const resize = new Resize(groups[0].id, neonView, dragHandler);
-          resize.drawInitialRect();
+          resize(groups[0], neonView, dragHandler);
           break;
         case 2:
           const bb1 = getStaffBBox(groups[0]);
@@ -464,8 +464,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     case 'selByBBox':
       switch (groups.length) {
         case 1:
-          const resize = new Resize(groups[0].closest('.syl').id, neonView, dragHandler);
-          selectBBox(groups[0], dragHandler, resize);
+          selectBBox(groups[0], dragHandler, neonView);
           break;
         default:
           groups.forEach(g => selectBBox(g, dragHandler, undefined));
