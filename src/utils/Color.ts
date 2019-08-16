@@ -94,7 +94,6 @@ export function highlight (staff: SVGGElement, color: string): void {
   const children = Array.from(staff.children);
   for (var i = 0; i < children.length; i++) {
     let child = children[i];
-    console.log(child.classList);
     if (child.tagName === 'path') {
       child.setAttribute('stroke', color);
     } else if (child.classList.contains('resizePoint') || child.id === 'resizeRect' || child.classList.contains('skewPoint')) {
