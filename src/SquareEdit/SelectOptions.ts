@@ -394,9 +394,15 @@ export function triggerSplitActions (): void {
   // TODO add trigger for split action
   document.getElementById('split-system')
     .addEventListener('click', () => {
-      const split = new SplitHandler(neonView);
-      split.startSplit();
-      endOptionsSelection();
+      const staff = document.querySelector('.staff.selected') as SVGGElement;
+      if (staff !== null) {
+        const split = new SplitHandler(neonView, staff);
+        split.startSplit();
+        endOptionsSelection();
+      } else {
+        console.error('No staff was selected!');
+        endOptionsSelection();
+      }
     });
 
   try {

@@ -5,9 +5,11 @@ import { EditorAction } from '../Types';
 /** Handle splitting a staff into two staves through Verovio. */
 export class SplitHandler {
   readonly neonView: NeonView;
+  readonly staff: SVGGElement;
 
-  constructor (neonView: NeonView) {
+  constructor (neonView: NeonView, staff: SVGGElement) {
     this.neonView = neonView;
+    this.staff = staff;
   }
 
   startSplit (): void {
@@ -32,10 +34,9 @@ export class SplitHandler {
 
   /** Handle input to split a staff. */
   handler = ((evt: MouseEvent): void => {
-    const id = document.querySelector('.selected').id;
+    const id = this.staff.id;
 
-    const container = document.getElementsByClassName('active-page')[0]
-      .getElementsByClassName('definition-scale')[0] as SVGSVGElement;
+    const container = this.staff.closest('.definition-scale') as SVGSVGElement;
     const pt = container.createSVGPoint();
     pt.x = evt.clientX;
     pt.y = evt.clientY;
