@@ -227,6 +227,7 @@ export function selectNn (notNeumes: SVGGraphicsElement[]): boolean {
 export function selectStaff (staff: SVGGElement, dragHandler: DragHandler): void {
   if (!staff.classList.contains('selected')) {
     staff.classList.add('selected');
+    Color.unhighlight(staff);
     Color.highlight(staff, '#d00');
     dragHandler.dragInit();
   }
