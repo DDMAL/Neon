@@ -100,7 +100,8 @@ export function highlight (staff: SVGGElement, color: string): void {
       return;
     } else if (child.classList.contains('layer')) {
       Array.from(child.children).forEach(cchild => { children.push(cchild); });
-    } else if (document.getElementsByClassName('highlight-selected')[0].id === 'highlight-neume'
+    } else if (document.getElementsByClassName('highlight-selected').length && 
+      document.getElementsByClassName('highlight-selected')[0].id === 'highlight-neume'
       && child.classList.contains('syllable')) {
       Array.from(child.children).filter(el => el.classList.contains('neume')).forEach(cchild => { children.push(cchild); });
     } else {
