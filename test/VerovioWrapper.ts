@@ -1,9 +1,12 @@
-const verovio = require('verovio-dev');
+import { VerovioMessage, VerovioResponse } from '../src/Types';
+import * as verovio from 'verovio-dev';
 
 /**
  * Wrapper to be used during tests when Web Workers are not available.
  */
 export default class VerovioWrapper {
+  toolkit;
+  handler: (evt: MessageEvent) => void;
   constructor () {
     this.toolkit = new verovio.toolkit();
     this.toolkit.setOptions({
@@ -25,7 +28,7 @@ export default class VerovioWrapper {
    * @param {string} type - The event to listen to, which is ignored.
    * @param {function} handler - The handler that will be saved.
    */
-  addEventListener (type, handler) {
+  addEventListener (_type: string, handler: (MessageEvent) => void): void {
     this.handler = handler;
   }
 
@@ -33,16 +36,16 @@ export default class VerovioWrapper {
    * Fake sending a message and call the handler with the message here.
    * @param {object} message
    */
-  postMessage (message) {
-    let data = this.handleNeonEvent(message);
-    let evt = {
+  postMessage (message: VerovioMessage): void {
+    const data = this.handleNeonEvent(message);
+    const evt = {
       data: data,
       target: {
-        removeEventListener: () => {}
+        removeEventListener: (): void => {}
       }
     };
 
-    this.handler(evt);
+    this.handler(evt as unknown as MessageEvent);
   }
 
   /**
@@ -50,8 +53,8 @@ export default class VerovioWrapper {
    * @param {object} data - The content of the message.
    * @returns {object}
    */
-  handleNeonEvent (data) {
-    let result = {
+  handleNeonEvent (data: VerovioMessage): VerovioResponse {
+    const result: VerovioResponse = {
       id: data.id
     };
 
