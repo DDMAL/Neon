@@ -1,21 +1,5 @@
 {
-    "@context": [
-        "http://www.w3.org/ns/anno.jsonld",
-        {
-            "schema": "http://schema.org/",
-            "title": "schema:name",
-            "timestamp": "schema:dateModified",
-            "image": {
-                "@id": "schema:image",
-                "@type": "@id"
-            },
-            "mei_annotations": {
-                "@id": "Annotation",
-                "@type": "@id",
-                "@container": "@list"
-            }
-        }
-    ],
+    "@context": "https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld",
     "@id": "/uploads/manifests/test.jsonld",
     "title": "Neon View Test Manifest",
     "timestamp": "2019-06-27T16:49:39-0400",
