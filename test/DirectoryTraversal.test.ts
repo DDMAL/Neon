@@ -1,8 +1,8 @@
 /* eslint-env jest */
 
-const fs = require('fs');
-const request = require('request');
-const path = require('path');
+import * as fs from 'fs';
+import * as request from 'request';
+import * as path from 'path';
 
 const url = 'http://localhost:8080/';
 const toTest = '../../test/test.txt';
@@ -21,7 +21,7 @@ afterAll(() => {
 
 describe('Check root', () => {
   test('Encode URI', done => {
-    request(url + encodeURIComponent(toTest), (error, response, body) => {
+    request(url + encodeURIComponent(toTest), (error, response, _body) => {
       if (error) throw error;
       expect(response.statusCode).not.toBe(200);
       done();
@@ -29,8 +29,8 @@ describe('Check root', () => {
   });
 
   test('2e and 2f', done => {
-    let replace = toTest.replace(/\./g, '%2e').replace(/\//g, '%2f');
-    request(url + replace, (error, response, body) => {
+    const replace = toTest.replace(/\./g, '%2e').replace(/\//g, '%2f');
+    request(url + replace, (error, response, _body) => {
       if (error) throw error;
       expect(response.statusCode).not.toBe(200);
       done();
@@ -38,8 +38,8 @@ describe('Check root', () => {
   });
 
   test('UTF-8 encoding', done => {
-    let replace = toTest.replace(/\//g, '%c0%af');
-    request(url + replace, (error, response, body) => {
+    const replace = toTest.replace(/\//g, '%c0%af');
+    request(url + replace, (error, response, _body) => {
       if (error) throw error;
       expect(response.statusCode).not.toBe(200);
       done();
@@ -51,7 +51,7 @@ describe('Check /edit/:filename', () => {
   const testUrl = url + 'edit/';
 
   test('Encode URI', done => {
-    request(testUrl + encodeURIComponent(toTest), (error, response, body) => {
+    request(testUrl + encodeURIComponent(toTest), (error, response, _body) => {
       if (error) throw error;
       expect(response.statusCode).not.toBe(200);
       done();
@@ -59,8 +59,8 @@ describe('Check /edit/:filename', () => {
   });
 
   test('2e and 2f', done => {
-    let replace = toTest.replace(/\./g, '%2e').replace(/\//g, '%2f');
-    request(testUrl + replace, (error, response, body) => {
+    const replace = toTest.replace(/\./g, '%2e').replace(/\//g, '%2f');
+    request(testUrl + replace, (error, response, _body) => {
       if (error) throw error;
       expect(response.statusCode).not.toBe(200);
       done();
@@ -68,8 +68,8 @@ describe('Check /edit/:filename', () => {
   });
 
   test('UTF-8 encoding', done => {
-    let replace = toTest.replace(/\//g, '%c0%af');
-    request(testUrl + replace, (error, response, body) => {
+    const replace = toTest.replace(/\//g, '%c0%af');
+    request(testUrl + replace, (error, response, _body) => {
       if (error) throw error;
       expect(response.statusCode).not.toBe(200);
       done();
@@ -81,7 +81,7 @@ describe('Check /delete/:filename', () => {
   const testUrl = url + 'delete/';
 
   test('Encode URI', done => {
-    request(testUrl + encodeURIComponent(toTest), (error, response, body) => {
+    request(testUrl + encodeURIComponent(toTest), (error, response, _body) => {
       if (error) {
         throw error;
       }
@@ -91,8 +91,8 @@ describe('Check /delete/:filename', () => {
   });
 
   test('2e and 2f', done => {
-    let replace = toTest.replace(/\./g, '%2e').replace(/\//g, '%2f');
-    request(testUrl + replace, (error, response, body) => {
+    const replace = toTest.replace(/\./g, '%2e').replace(/\//g, '%2f');
+    request(testUrl + replace, (error, response, _body) => {
       if (error) {
         throw error;
       }
@@ -102,8 +102,8 @@ describe('Check /delete/:filename', () => {
   });
 
   test('UTF-8 encoding', done => {
-    let replace = toTest.replace(/\//g, '%c0%af');
-    request(testUrl + replace, (error, response, body) => {
+    const replace = toTest.replace(/\//g, '%c0%af');
+    request(testUrl + replace, (error, response, _body) => {
       if (error) throw error;
       expect(response.statusCode).not.toBe(200);
       done();
@@ -115,7 +115,7 @@ describe('Check /upload/mei/:file', () => {
   const testUrl = url + 'upload/mei/';
 
   test('Encode URI', done => {
-    request({ method: 'PUT', uri: testUrl + encodeURIComponent(toTest), body: 'test' }, (error, response, body) => {
+    request({ method: 'PUT', uri: testUrl + encodeURIComponent(toTest), body: 'test' }, (error, response, _body) => {
       if (error) {
         throw error;
       }
@@ -125,8 +125,8 @@ describe('Check /upload/mei/:file', () => {
   });
 
   test('2e and 2f', done => {
-    let replace = toTest.replace(/\./g, '%2e').replace(/\//g, '%2f');
-    request({ method: 'PUT', uri: testUrl + replace, body: 'test' }, (error, response, body) => {
+    const replace = toTest.replace(/\./g, '%2e').replace(/\//g, '%2f');
+    request({ method: 'PUT', uri: testUrl + replace, body: 'test' }, (error, response, _body) => {
       if (error) {
         throw error;
       }
@@ -136,8 +136,8 @@ describe('Check /upload/mei/:file', () => {
   });
 
   test('UTF-8 encoding', done => {
-    let replace = toTest.replace(/\//g, '%c0%af');
-    request({ method: 'PUT', uri: testUrl + replace, body: 'test' }, (error, response, body) => {
+    const replace = toTest.replace(/\//g, '%c0%af');
+    request({ method: 'PUT', uri: testUrl + replace, body: 'test' }, (error, response, _body) => {
       if (error) throw error;
       expect(response.statusCode).not.toBe(200);
       done();
