@@ -26,6 +26,7 @@ export type WebAnnotation = {
 
 export type NeonManifest = {
   '@context': Array<string | object> | string;
+  '@id': string;
   title: string;
   timestamp: string;
   image: string;

@@ -1,53 +1,53 @@
 /* eslint-env jest */
 import NeonCore from '../src/NeonCore';
+import { EditorAction, NeonManifest } from '../src/Types';
+
+import { mocked } from 'ts-jest/utils';
 
 jest.mock('pouchdb');
 
-const fs = require('fs');
+import * as fs from 'fs';
 
 const pathToMei = './test/resources/newtest.mei';
 const pathToPNG = './test/resources/test.png';
-const pathToContext = './src/utils/manifest/context.json';
-var mei = {};
+const meiData = fs.readFileSync(pathToMei).toString();
+const data = 'data:application/mei+xml;base64' + window.btoa(meiData);
+
+const mei: NeonManifest = {
+  '@context': 'https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld',
+  '@id': 'example:test',
+  'title': 'Neon Core Test',
+  'timestamp': (new Date()).toISOString(),
+  'image': pathToPNG,
+  'mei_annotations': [
+    {
+      'id': 'example:test-annotation',
+      'type': 'Annotation',
+      'body': data,
+      'target': pathToPNG
+    }
+  ]
+};
 
 beforeAll(() => {
-  let meiData = fs.readFileSync(pathToMei).toString();
-  // Fetch API not present in JSDOM; mock it.
-  window.fetch = jest.fn(data => {
+  window.fetch = mocked((_i, _o) => {
     return Promise.resolve({
       ok: true,
-      text: () => { return Promise.resolve(meiData); }
-    });
-  });
-  let data = 'data:application/mei+xml;base64' + window.btoa(meiData);
-  let context = JSON.parse(fs.readFileSync(pathToContext).toString());
-  console.log(context);
-  mei = {
-    '@context': context,
-    '@id': 'example:test',
-    'title': 'Neon Core Test',
-    'timestamp': (new Date()).toISOString(),
-    'image': pathToPNG,
-    'mei_annotations': [
-      {
-        'id': 'example:test-annotation',
-        'type': 'Annotation',
-        'body': data,
-        'target': pathToPNG
-      }
-    ]
-  };
+      text: (): Promise<string> => { return Promise.resolve(meiData); }
+    } as Response);
+  }, true);
 });
 
 afterAll(async () => {
-  let neon = new NeonCore(mei);
-  await neon.db.destroy();
+  console.log(mei);
+  const neon = new NeonCore(mei);
+  await neon.deleteDb();
 });
 
 test('Test failing editor action', async () => {
-  let neon = new NeonCore(mei);
+  const neon = new NeonCore(mei);
   await neon.initDb();
-  let editorAction = {
+  const editorAction = {
     'action': 'setText',
     'param': {
       'elementId': null,
@@ -58,13 +58,13 @@ test('Test failing editor action', async () => {
 });
 
 describe('Test textEdit module functions', () => {
-  test("Test 'SetText' function", async () => {
-    let neon = new NeonCore(mei);
+  test('Test \'SetText\' function', async () => {
+    const neon = new NeonCore(mei);
     await neon.initDb();
     let svg = await neon.getSVG(pathToPNG);
     let syl = svg.getElementById('m-b24ba821-788e-4904-b611-448b30d2cc15').textContent.trim();
     expect(syl).toBe('mi');
-    let editorAction = {
+    const editorAction = {
       'action': 'setText',
       'param': {
         'elementId': 'm-ca34b59d-7c2a-411c-8be5-c24e0fbe1ed4',
@@ -78,7 +78,7 @@ describe('Test textEdit module functions', () => {
   });
 
   test('Test grouping and ungrouping with bounding boxes', async () => {
-    let neon = new NeonCore(mei);
+    const neon = new NeonCore(mei);
     await neon.initDb();
     let svg = await neon.getSVG(pathToPNG);
 
@@ -101,9 +101,9 @@ describe('Test textEdit module functions', () => {
       }
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-    let info = (await neon.info(pathToPNG)).uuid;
+    let info = (await neon.info(pathToPNG))['uuid'];
     svg = await neon.getSVG(pathToPNG);
-    let groupedRect = svg.getElementById(info).children[0].children[1];
+    const groupedRect = svg.getElementById(info).children[0].children[1];
     expect(groupedRect.getAttribute('width')).toBe('642');
 
     // ungrouping test
@@ -117,7 +117,7 @@ describe('Test textEdit module functions', () => {
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     info = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
-    let arr = info.uuid;
+    const arr = info['uuid'];
     rect1 = svg.getElementById(arr[0]).children[0].children[1];
     rect2 = svg.getElementById(arr[1]).children[1].children[1];
     expect(rect1.getAttribute('width')).toBe('642');
@@ -125,17 +125,17 @@ describe('Test textEdit module functions', () => {
   });
 
   test('Test bbox resizing', async () => {
-    let neon = new NeonCore(mei);
+    const neon = new NeonCore(mei);
     await neon.initDb();
     let svg = await neon.getSVG(pathToPNG);
-    let syl = svg.getElementById('m-9d333590-b8a3-44f6-8e1b-b72b80dfd3b5');
+    const syl = svg.getElementById('m-9d333590-b8a3-44f6-8e1b-b72b80dfd3b5');
     let bbox = syl.children[1];
     expect(bbox.getAttribute('class')).toBe('sylTextRect');
-    let initX = parseInt(bbox.getAttribute('x'));
-    let initY = parseInt(bbox.getAttribute('y'));
+    const initX = parseInt(bbox.getAttribute('x'));
+    const initY = parseInt(bbox.getAttribute('y'));
 
     // try resizing by an arbitrary amount and make sure that it actually moved by that amount
-    let editorAction = {
+    const editorAction = {
       'action': 'resize',
       'param': {
         'elementId': syl.getAttribute('id'),
@@ -153,17 +153,17 @@ describe('Test textEdit module functions', () => {
   });
 
   test('Test bbox dragging', async () => {
-    let neon = new NeonCore(mei);
+    const neon = new NeonCore(mei);
     await neon.initDb();
     let svg = await neon.getSVG(pathToPNG);
-    let syl = svg.getElementById('m-4929be85-acef-4b69-ba82-f329a3c17b33').children[1];
+    const syl = svg.getElementById('m-4929be85-acef-4b69-ba82-f329a3c17b33').children[1];
     let bbox = syl.children[1];
     expect(bbox.getAttribute('class')).toBe('sylTextRect');
-    let initX = parseInt(bbox.getAttribute('x'));
-    let initY = parseInt(bbox.getAttribute('y'));
+    const initX = parseInt(bbox.getAttribute('x'));
+    const initY = parseInt(bbox.getAttribute('y'));
 
     // again just moving by an arbitrary amount
-    let editorAction = {
+    const editorAction = {
       'action': 'drag',
       'param': {
         'elementId': syl.getAttribute('id'),
@@ -179,11 +179,11 @@ describe('Test textEdit module functions', () => {
   });
 
   test('Test bbox insert behavior', async () => {
-    let neon = new NeonCore(mei);
+    const neon = new NeonCore(mei);
     await neon.initDb();
 
     // again just arbitrary coordinates
-    let editorAction = {
+    const editorAction = {
       'action': 'insert',
       'param': {
         'elementType': 'nc',
@@ -193,32 +193,32 @@ describe('Test textEdit module functions', () => {
       }
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-    let svg = await neon.getSVG(pathToPNG);
-    let info = await neon.info(pathToPNG);
-    let nc = svg.getElementById(info.uuid);
+    const svg = await neon.getSVG(pathToPNG);
+    const info = await neon.info(pathToPNG);
+    const nc = svg.getElementById(info['uuid']);
     expect(nc.getAttribute('class')).toBe('nc');
-    let syllable = nc.parentElement.parentElement;
+    const syllable = nc.parentElement.parentElement;
     expect(syllable.getAttribute('class')).toBe('syllable');
-    let bbox = syllable.children[1].children[1];
+    const bbox = syllable.children[1].children[1];
     expect(bbox.getAttribute('class')).toBe('sylTextRect');
   });
 });
 
-test("Test 'getElementAttr' function", async () => {
-  let neon = new NeonCore(mei);
+test('Test \'getElementAttr\' function', async () => {
+  const neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG); // for some reason verovio can't recognize the ids if this isn't done
-  let atts = await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG);
+  const atts = await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG);
   expect(atts['pname']).toBe('a');
   expect(atts['oct']).toBe('2');
 });
 
-test("Test 'drag' action, neume", async () => {
-  let neon = new NeonCore(mei);
+test('Test \'drag\' action, neume', async () => {
+  const neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
-  let originalAtts = await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG);
-  let editorAction = {
+  const originalAtts = await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG);
+  const editorAction = {
     'action': 'drag',
     'param': {
       'elementId': 'm-044e7093-895e-4a78-bbda-7f1779a896d4',
@@ -227,7 +227,7 @@ test("Test 'drag' action, neume", async () => {
     }
   };
   await neon.edit(editorAction, pathToPNG);
-  let newAtts = await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG);
+  const newAtts = await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG);
 
   expect(originalAtts['pname']).toBe('a');
   expect(originalAtts['oct']).toBe('2');
@@ -237,11 +237,11 @@ test("Test 'drag' action, neume", async () => {
 });
 
 describe('Test insert editor action', () => {
-  test("Test 'insert' action, punctum", async () => {
-    let neon = new NeonCore(mei);
+  test('Test \'insert\' action, punctum', async () => {
+    const neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
-    let editorAction = {
+    const editorAction = {
       'action': 'insert',
       'param': {
         'elementType': 'nc',
@@ -251,16 +251,16 @@ describe('Test insert editor action', () => {
       }
     };
     await neon.edit(editorAction, pathToPNG);
-    let insertAtts = await neon.getElementAttr((await neon.info(pathToPNG)).uuid, pathToPNG);
+    const insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['uuid'], pathToPNG);
     expect(insertAtts['pname']).toBe('e');
     expect(insertAtts['oct']).toBe('3');
   });
 
-  test("Test 'insert' action, clef", async () => {
-    let neon = new NeonCore(mei);
+  test('Test \'insert\' action, clef', async () => {
+    const neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
-    let editorAction = {
+    const editorAction = {
       'action': 'insert',
       'param': {
         'elementType': 'clef',
@@ -273,16 +273,16 @@ describe('Test insert editor action', () => {
       }
     };
     await neon.edit(editorAction, pathToPNG);
-    let insertAtts = await neon.getElementAttr((await neon.info(pathToPNG)).uuid, pathToPNG);
+    const insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['uuid'], pathToPNG);
     expect(insertAtts['shape']).toBe('C');
     expect(insertAtts['line']).toBe('3');
   });
 
-  test("Test 'insert' action, custos", async () => {
-    let neon = new NeonCore(mei);
+  test('Test \'insert\' action, custos', async () => {
+    const neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
-    let editorAction = {
+    const editorAction = {
       'action': 'insert',
       'param': {
         'elementType': 'custos',
@@ -292,15 +292,15 @@ describe('Test insert editor action', () => {
       }
     };
     await neon.edit(editorAction, pathToPNG);
-    let insertAtts = await neon.getElementAttr((await neon.info(pathToPNG)).uuid, pathToPNG);
+    const insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['uuid'], pathToPNG);
     expect(insertAtts.pname).toBe('c');
     expect(insertAtts.oct).toBe('3');
   });
-  test("Test 'insert' action, nc", async () => {
-    let neon = new NeonCore(mei);
+  test('Test \'insert\' action, nc', async () => {
+    const neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
-    let editorAction = {
+    const editorAction = {
       'action': 'insert',
       'param': {
         'elementType': 'nc',
@@ -310,18 +310,18 @@ describe('Test insert editor action', () => {
       }
     };
     await neon.edit(editorAction, pathToPNG);
-    let insertAtts = await neon.getElementAttr((await neon.info(pathToPNG)).uuid, pathToPNG);
+    const insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['uuid'], pathToPNG);
     expect(insertAtts.pname).toBe('d');
     expect(insertAtts.oct).toBe('3');
   });
 });
 
-describe("Test 'group and ungroup' functions", () => {
-  test("Test 'group/ungroup' functions, nc, syllable", async () => {
-    let neon = new NeonCore(mei);
+describe('Test \'group and ungroup\' functions', () => {
+  test('Test \'group/ungroup\' functions, nc, syllable', async () => {
+    const neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
-    let editorAction = {
+    const editorAction = {
       'action': 'group',
       'param': {
         'groupType': 'neume',
@@ -329,7 +329,7 @@ describe("Test 'group and ungroup' functions", () => {
       }
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-    let editorAction2 = {
+    const editorAction2 = {
       'action': 'group',
       'param': {
         'groupType': 'nc',
@@ -338,7 +338,7 @@ describe("Test 'group and ungroup' functions", () => {
     };
     expect(await neon.edit(editorAction2, pathToPNG)).toBeTruthy();
 
-    let editorAction3 = {
+    const editorAction3 = {
       'action': 'ungroup',
       'param': {
         'groupType': 'nc',
@@ -346,7 +346,7 @@ describe("Test 'group and ungroup' functions", () => {
       }
     };
     expect(await neon.edit(editorAction3, pathToPNG)).toBeTruthy();
-    let editorAction4 = {
+    const editorAction4 = {
       'action': 'ungroup',
       'param': {
         'groupType': 'neume',
@@ -356,8 +356,8 @@ describe("Test 'group and ungroup' functions", () => {
     expect(await neon.edit(editorAction4, pathToPNG)).toBeTruthy();
   });
 
-  test("Test 'group/ungroup' functions, neume with multiple fullParents", async () => {
-    let neon = new NeonCore(mei);
+  test('Test \'group/ungroup\' functions, neume with multiple fullParents', async () => {
+    const neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
 
@@ -383,7 +383,7 @@ describe("Test 'group and ungroup' functions", () => {
     svg = await neon.getSVG(pathToPNG);
     syl = svg.getElementById('m-432f94f2-3089-4767-b099-2b0573e55e99').textContent.trim();
     expect(syl).toBe('hello');
-    let editorAction2 = {
+    const editorAction2 = {
       'action': 'group',
       'param': {
         'groupType': 'neume',
@@ -391,12 +391,12 @@ describe("Test 'group and ungroup' functions", () => {
       }
     };
     expect(await neon.edit(editorAction2, pathToPNG)).toBeTruthy();
-    let info = await neon.info(pathToPNG);
+    const info = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
-    syl = svg.getElementById(info.uuid).textContent.trim().replace(/\s/g, '');
+    syl = svg.getElementById(info['uuid']).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('world!hello');
 
-    let editorAction3 = {
+    const editorAction3 = {
       'action': 'ungroup',
       'param': {
         'groupType': 'neume',
@@ -404,17 +404,17 @@ describe("Test 'group and ungroup' functions", () => {
       }
     };
     expect(await neon.edit(editorAction3, pathToPNG)).toBeTruthy();
-    let info2 = await neon.info(pathToPNG);
+    const info2 = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
-    let array = info2.uuid;
+    const array = info2['uuid'];
     syl = svg.getElementById(array[0]).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('world!hello');
     syl = svg.getElementById(array[1]).textContent.trim();
     expect(syl).toBe('');
   });
 
-  test("Test 'group/ungroup' functions, neueme with one fullParent", async () => {
-    let neon = new NeonCore(mei);
+  test('Test \'group/ungroup\' functions, neueme with one fullParent', async () => {
+    const neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
     let setupSetText = {
@@ -443,7 +443,7 @@ describe("Test 'group and ungroup' functions", () => {
     syl = svg.getElementById('syllable-0000000338767184').textContent.trim();
     expect(syl).toBe('world');
 
-    let editorAction = {
+    const editorAction = {
       'action': 'group',
       'param': {
         'groupType': 'neume',
@@ -451,14 +451,14 @@ describe("Test 'group and ungroup' functions", () => {
       }
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-    let info = await neon.info(pathToPNG);
+    const info = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
-    syl = svg.getElementById(info.uuid).textContent.trim().replace(/\s/g, '');
+    syl = svg.getElementById(info['uuid']).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('world');
     syl = svg.getElementById('syllable-0000001585962296').textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('hello');
 
-    let ungroupAction = {
+    const ungroupAction = {
       'action': 'ungroup',
       'param': {
         'groupType': 'neume',
@@ -466,8 +466,8 @@ describe("Test 'group and ungroup' functions", () => {
       }
     };
     expect(await neon.edit(ungroupAction, pathToPNG)).toBeTruthy();
-    let ungroupInfo = await neon.info(pathToPNG);
-    let array = ungroupInfo.uuid;
+    const ungroupInfo = await neon.info(pathToPNG);
+    const array = ungroupInfo['uuid'];
     svg = await neon.getSVG(pathToPNG);
     syl = svg.getElementById(array[0]).textContent.trim().replace(/\s/g, '');
     expect(syl).toBe('world');
@@ -475,12 +475,12 @@ describe("Test 'group and ungroup' functions", () => {
     expect(syl).toBe('');
   });
 
-  test("Test 'group/ungroup' functions, neume with no fullParents", async () => {
-    let neon = new NeonCore(mei);
+  test('Test \'group/ungroup\' functions, neume with no fullParents', async () => {
+    const neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
     let svg = await neon.getSVG(pathToPNG);
-    let setupName1 = {
+    const setupName1 = {
       'action': 'setText',
       'param': {
         'elementId': 'syllable-0000001585962296',
@@ -492,7 +492,7 @@ describe("Test 'group and ungroup' functions", () => {
     let syl = svg.getElementById('syllable-0000001585962296').textContent.trim();
     expect(syl).toBe('hello');
 
-    let setupName2 = {
+    const setupName2 = {
       'action': 'setText',
       'param': {
         'elementId': 'syllable-0000000338767184',
@@ -504,7 +504,7 @@ describe("Test 'group and ungroup' functions", () => {
     syl = svg.getElementById('syllable-0000000338767184').textContent.trim();
     expect(syl).toBe('world');
 
-    let setupGroup2 = {
+    const setupGroup2 = {
       'action': 'group',
       'param': {
         'groupType': 'neume',
@@ -512,9 +512,9 @@ describe("Test 'group and ungroup' functions", () => {
       }
     };
     expect(await neon.edit(setupGroup2, pathToPNG)).toBeTruthy();
-    let mergedSyl = await neon.info(pathToPNG);
+    const mergedSyl = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
-    syl = svg.getElementById(mergedSyl.uuid).textContent.trim();
+    syl = svg.getElementById(mergedSyl['uuid']).textContent.trim();
     expect(syl).toBe('');
 
     syl = svg.getElementById('syllable-0000001585962296').textContent.trim();
@@ -525,27 +525,27 @@ describe("Test 'group and ungroup' functions", () => {
   });
 });
 
-test("Test 'remove' action", async () => {
-  let neon = new NeonCore(mei);
+test('Test \'remove\' action', async () => {
+  const neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
-  let editorAction = {
+  const editorAction = {
     'action': 'remove',
     'param': {
       'elementId': 'nc-0000001205387746'
     }
   };
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-  let atts = await neon.getElementAttr('nc-0000001205387746', pathToPNG);
+  const atts = await neon.getElementAttr('nc-0000001205387746', pathToPNG);
   expect(atts).toStrictEqual({});
 });
 
 describe('Test clef reassociation', () => {
   test('Test Syllable dragging', async () => {
-    let neon = new NeonCore(mei);
+    const neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
-    let insertAction = {
+    const insertAction = {
       'action': 'insert',
       'param': {
         'elementType': 'clef',
@@ -558,9 +558,9 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
-    let originalAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
+    const originalAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(originalAtts['pname']).toBe('f');
-    let dragAction = {
+    const dragAction = {
       'action': 'drag',
       'param': {
         'elementId': 'm-9d477450-8ea4-4042-b4d0-a688ab4aa50b',
@@ -569,14 +569,14 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(dragAction, pathToPNG)).toBeTruthy();
-    let newAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
+    const newAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(newAtts['pname']).toBe('c');
   });
   test('Test neume dragging', async () => {
-    let neon = new NeonCore(mei);
+    const neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
-    let insertAction = {
+    const insertAction = {
       'action': 'insert',
       'param': {
         'elementType': 'clef',
@@ -589,9 +589,9 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
-    let originalAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
+    const originalAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(originalAtts['pname']).toBe('f');
-    let dragAction = {
+    const dragAction = {
       'action': 'drag',
       'param': {
         'elementId': 'm-6897205e-78df-4745-9249-9fb2bbdd5c2b',
@@ -600,16 +600,16 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(dragAction, pathToPNG)).toBeTruthy();
-    let newAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
+    const newAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(newAtts['pname']).toBe('c');
   });
   test('Test clef inserting and deleting', async () => {
-    let neon = new NeonCore(mei);
+    const neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
-    let originalAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
+    const originalAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(originalAtts['pname']).toBe('c');
-    let insertAction = {
+    const insertAction = {
       'action': 'insert',
       'param': {
         'elementType': 'clef',
@@ -622,24 +622,24 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
-    let clefId = (await neon.info(pathToPNG)).uuid;
-    let newAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
+    const clefId = (await neon.info(pathToPNG))['uuid'];
+    const newAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(newAtts['pname']).toBe('f');
-    let deleteAction = {
+    const deleteAction = {
       'action': 'remove',
       'param': {
         'elementId': clefId
       }
     };
     expect(await neon.edit(deleteAction, pathToPNG)).toBeTruthy();
-    let lastAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
+    const lastAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(lastAtts['pname']).toBe('c');
   });
   test('Test clef dragging case 1', async () => {
-    let neon = new NeonCore(mei);
+    const neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
-    let insertAction = {
+    const insertAction = {
       'action': 'insert',
       'param': {
         'elementType': 'clef',
@@ -652,12 +652,12 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
-    let firstClefId = (await neon.info(pathToPNG)).uuid;
-    let newBeforeAtts = await neon.getElementAttr('m-ddacb1cc-ce38-4fd3-91c0-1843c581e5c8', pathToPNG);
-    let sameBeforeAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
+    const firstClefId = (await neon.info(pathToPNG))['uuid'];
+    const newBeforeAtts = await neon.getElementAttr('m-ddacb1cc-ce38-4fd3-91c0-1843c581e5c8', pathToPNG);
+    const sameBeforeAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(newBeforeAtts['pname']).toBe('c');
     expect(sameBeforeAtts['pname']).toBe('f');
-    let dragAction = {
+    const dragAction = {
       'action': 'drag',
       'param': {
         'elementId': firstClefId,
@@ -666,16 +666,16 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(dragAction, pathToPNG)).toBeTruthy();
-    let newAfterAtts = await neon.getElementAttr('m-ddacb1cc-ce38-4fd3-91c0-1843c581e5c8', pathToPNG);
-    let sameAfterAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
+    const newAfterAtts = await neon.getElementAttr('m-ddacb1cc-ce38-4fd3-91c0-1843c581e5c8', pathToPNG);
+    const sameAfterAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(newAfterAtts['pname']).toBe('a');
     expect(sameAfterAtts['pname']).toBe('a');
   });
   test('Test clef dragging case 2', async () => {
-    let neon = new NeonCore(mei);
+    const neon = new NeonCore(mei);
     await neon.initDb();
     await neon.getSVG(pathToPNG);
-    let firstInsert = {
+    const firstInsert = {
       'action': 'insert',
       'param': {
         'elementType': 'clef',
@@ -688,7 +688,7 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(firstInsert, pathToPNG)).toBeTruthy();
-    let secondInsert = {
+    const secondInsert = {
       'action': 'insert',
       'param': {
         'elementType': 'clef',
@@ -701,12 +701,12 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(secondInsert, pathToPNG)).toBeTruthy();
-    let secondClefId = (await neon.info(pathToPNG)).uuid;
-    let firstBeforeAtts = await neon.getElementAttr('m-75c52573-311d-4bfc-adaf-3f6e8013aab2', pathToPNG);
-    let secondBeforeAtts = await neon.getElementAttr('m-1dac2d79-7ac3-4859-bb35-c945c419d867', pathToPNG);
+    const secondClefId = (await neon.info(pathToPNG))['uuid'];
+    const firstBeforeAtts = await neon.getElementAttr('m-75c52573-311d-4bfc-adaf-3f6e8013aab2', pathToPNG);
+    const secondBeforeAtts = await neon.getElementAttr('m-1dac2d79-7ac3-4859-bb35-c945c419d867', pathToPNG);
     expect(firstBeforeAtts['pname']).toBe('e');
     expect(secondBeforeAtts['pname']).toBe('d');
-    let dragAction = {
+    const dragAction = {
       'action': 'drag',
       'param': {
         'elementId': secondClefId,
@@ -715,22 +715,22 @@ describe('Test clef reassociation', () => {
       }
     };
     expect(await neon.edit(dragAction, pathToPNG)).toBeTruthy();
-    let firstAfterAtts = await neon.getElementAttr('m-11ffd2df-ed2a-4e20-919e-31e2602b9c19', pathToPNG);
-    let secondAfterAtts = await neon.getElementAttr('m-22468132-4135-4fe5-a425-37c22201144e', pathToPNG);
+    const firstAfterAtts = await neon.getElementAttr('m-11ffd2df-ed2a-4e20-919e-31e2602b9c19', pathToPNG);
+    const secondAfterAtts = await neon.getElementAttr('m-22468132-4135-4fe5-a425-37c22201144e', pathToPNG);
     expect(firstAfterAtts['pname']).toBe('c');
     expect(secondAfterAtts['pname']).toBe('a');
   });
 });
 
 test('Test undo and redo', async () => {
-  let neon = new NeonCore(mei);
+  const neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
   // Should not be able to undo or redo now
   expect(await neon.undo(pathToPNG)).toBeFalsy();
   expect(await neon.redo(pathToPNG)).toBeFalsy();
 
-  let editorAction = {
+  const editorAction = {
     'action': 'drag',
     'param': {
       'elementId': 'm-e43924c3-fd16-4664-8bd0-9e5b73659844',
@@ -752,10 +752,10 @@ test('Test undo and redo', async () => {
 });
 
 test('Test chain action', async () => {
-  let neon = new NeonCore(mei);
+  const neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
-  let editorAction = {
+  const editorAction = {
     'action': 'chain',
     'param': [
       {
@@ -778,20 +778,20 @@ test('Test chain action', async () => {
     ]
   };
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-  let dragAtts = await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG);
-  let insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['1'].uuid, pathToPNG);
+  const dragAtts = await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG);
+  const insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['1'].uuid, pathToPNG);
   expect(dragAtts.pname).toBe('b');
   expect(dragAtts.oct).toBe('2');
   expect(insertAtts.pname).toBe('e');
   expect(insertAtts.oct).toBe('3');
 });
 
-test("Test 'set' action", async () => {
-  let neon = new NeonCore(mei);
+test('Test \'set\' action', async () => {
+  const neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
   expect(await await neon.getElementAttr('m-71c06e82-7558-42d9-96ab-40fb50b74e2c', pathToPNG)).toEqual({ pname: 'g', oct: '2' });
-  let setAction = {
+  const setAction = {
     'action': 'set',
     'param': {
       'elementId': 'm-71c06e82-7558-42d9-96ab-40fb50b74e2c',
@@ -803,11 +803,11 @@ test("Test 'set' action", async () => {
   expect(await await neon.getElementAttr('m-71c06e82-7558-42d9-96ab-40fb50b74e2c', pathToPNG)).toEqual({ pname: 'g', oct: '2', tilt: 'n' });
 });
 
-test("Test 'split' action", async () => {
-  let neon = new NeonCore(mei);
+test('Test \'split\' action', async () => {
+  const neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
-  let editorAction = {
+  const editorAction = {
     'action': 'split',
     'param': {
       'elementId': 'm-8beed2bc-3d4f-4456-ab50-c13c47a51525',
@@ -815,16 +815,16 @@ test("Test 'split' action", async () => {
     }
   };
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-  let newId = (await neon.info(pathToPNG)).uuid;
+  const newId = (await neon.info(pathToPNG))['uuid'];
   expect(await neon.getElementAttr(newId, pathToPNG)).toEqual({ n: '15' });
 });
 
-test("Test 'change skew' action", async () => {
-  let neon = new NeonCore(mei);
+test('Test \'change skew\' action', async () => {
+  const neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
   const id = 'm-8beed2bc-3d4f-4456-ab50-c13c47a51525';
-  let editorAction = {
+  const editorAction = {
     'action': 'changeSkew',
     'param': {
       'elementId': id,
@@ -833,21 +833,21 @@ test("Test 'change skew' action", async () => {
     }
   };
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-  let skew = (await neon.info(pathToPNG)).skew;
+  const skew = (await neon.info(pathToPNG))['skew'];
   expect(Math.round(skew)).toBe(-35);
 });
 
-test("Test 'change staff association' action", async () => {
-  let neon = new NeonCore(mei);
+test('Test \'change staff association\' action', async () => {
+  const neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
   let svg = await neon.getSVG(pathToPNG);
-  let staff = svg.getElementById('m-d0411b11-f0be-42ff-9bf6-255740eb3b94').parentElement.parentElement
+  let staff = svg.getElementById('m-d0411b11-f0be-42ff-9bf6-255740eb3b94').parentElement.parentElement;
   expect(staff.id).toBe('m-8beed2bc-3d4f-4456-ab50-c13c47a51525');
-  let editorAction = {
+  let editorAction: EditorAction = {
     'action': 'drag',
     'param': {
-      'elementId': "m-d0411b11-f0be-42ff-9bf6-255740eb3b94",
+      'elementId': 'm-d0411b11-f0be-42ff-9bf6-255740eb3b94',
       'x': 0,
       'y': -500
     }
