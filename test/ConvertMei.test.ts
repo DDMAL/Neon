@@ -1,13 +1,13 @@
 /* eslint-env jest */
 
-const ConvertMei = require('../src/utils/ConvertMei');
+import * as ConvertMei from '../src/utils/ConvertMei';
 
-const fs = require('fs');
-const et = require('elementtree');
+import * as fs from 'fs';
+import * as et from 'elementtree';
 
 jest.mock('uuid/v4');
 
-var originalTest, sbKey, staffKey;
+let originalTest, sbKey, staffKey;
 
 beforeAll(() => {
   originalTest = fs.readFileSync('./test/resources/test.mei').toString();
@@ -16,13 +16,13 @@ beforeAll(() => {
 });
 
 test('Verify results of \'convertStaffToSb\'', () => {
-  let result = ConvertMei.convertStaffToSb(originalTest);
-  let parsedKey = et.parse(sbKey).write({ xml_declaration: true, indent: 4 });
+  const result = ConvertMei.convertStaffToSb(originalTest);
+  const parsedKey = et.parse(sbKey).write({ xml_declaration: true, indent: 4 });
   expect(result).toBe(parsedKey);
 });
 
 test('Verify results of \'convertSbToStaff\'', () => {
-  let result = ConvertMei.convertSbToStaff(sbKey);
-  let parsedKey = et.parse(staffKey).write({ xml_declaration: true, indent: 4 });
+  const result = ConvertMei.convertSbToStaff(sbKey);
+  const parsedKey = et.parse(staffKey).write({ xml_declaration: true, indent: 4 });
   expect(result).toBe(parsedKey);
 });
