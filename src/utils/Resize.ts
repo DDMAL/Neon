@@ -4,6 +4,10 @@ import DragHandler from './DragHandler';
 
 import * as d3 from 'd3';
 
+/**
+ * Resize a staff or a syllable text bounding box.
+ * For staves, this also supports adjusting the skew.
+ */
 type Point = { x: number; y: number; name: number };
 
 /**
