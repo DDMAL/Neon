@@ -5,7 +5,7 @@
     <script src="./pretty.js"></script>
     <script src="//cdn.jsdelivr.net/npm/pouchdb@7.0.0/dist/pouchdb.min.js"></script>
   </head>
-  <body>
+  <body style="overflow: auto;">
     <form action="./editor.html" id="page-form" method="get" style="margin:5% auto 0;width: 15em;">
       <div class="field">
         <label for="page-selector" class="label">Select a Page:&nbsp;</label>
@@ -44,6 +44,22 @@
       <div class="control">
         <button type="submit" class="button">Load</button>
         <button type="button" class="button" id="remove-button">Remove</button>
+      </div>
+    </form>
+
+    <form id="generate-storage-form" style="margin: 5% auto 0; width: 15em;">
+      <div class="field">
+        <label class="label" for="upload-mei">Add MEI Neume File:&nbsp;</label>
+        <div class="select">
+          <input type="file" required accept="application/mei+xml" id="upload-mei">
+        </div>
+        <label class="label" for="upload-bg">Add Background Image:&nbsp;</label>
+        <div class="select">
+          <input type="file" required accept="image/png, image/jpeg" id="upload-bg">
+        </div>
+      </div>
+      <div class="control">
+        <button type="submit" class="button">Upload and Generate Manifest</button>
       </div>
     </form>
 
