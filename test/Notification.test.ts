@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-const Notification = require('../src/utils/Notification');
+import * as Notification from '../src/utils/Notification';
 
 beforeEach(() => {
   document.body.innerHTML =
@@ -30,7 +30,7 @@ test('Ensure maximum number of notifications is not exceeded', () => {
   expect(document.getElementsByClassName('neon-notification').length).toBe(3);
 });
 
-test("Ensure at most one 'Mode' notification appears", () => {
+test('Ensure at most one \'Mode\' notification appears', () => {
   expect(document.getElementsByClassName('neon-notification').length).toBe(0);
   Notification.queueNotification('Edit Mode');
   expect(document.getElementsByClassName('neon-notification')[0].innerHTML).toBe('Edit Mode');
