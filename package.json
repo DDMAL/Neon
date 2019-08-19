@@ -42,8 +42,8 @@
             "<rootDir>/node_modules/"
         ],
         "moduleNameMapper": {
-            "Validation": "<rootDir>/test/SubstituteValidation.js",
-            "VerovioWrapper": "<rootDir>/test/VerovioWrapper.js"
+            "Validation": "<rootDir>/test/SubstituteValidation.ts",
+            "VerovioWrapper": "<rootDir>/test/VerovioWrapper.ts"
         },
         "preset": "ts-jest/presets/js-with-ts"
     },

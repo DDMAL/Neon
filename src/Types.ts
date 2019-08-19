@@ -17,6 +17,15 @@ export type VerovioMessage = {
   editorAction?: EditorAction;
 };
 
+export type VerovioResponse = {
+  id: string;
+  svg?: string;
+  attributes?: Attributes;
+  result?: boolean;
+  mei?: string;
+  info?: object;
+};
+
 export type WebAnnotation = {
   id: string;
   type: string;
