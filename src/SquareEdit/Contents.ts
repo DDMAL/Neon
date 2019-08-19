@@ -1,23 +1,23 @@
-const PunctumIcon = require('../img/punctum.png');
-const VirgaIcon = require('../img/virga.png');
-const DiamondIcon = require('../img/diamond.png');
+import * as PunctumIcon from '../img/punctum.png';
+import * as VirgaIcon from '../img/virga.png';
+import * as DiamondIcon from '../img/diamond.png';
 // const WhitePunctumIcon = require()"./img/white_punct.png";
 // const QuilismaIcon = require()"./img/quilisma.png";
-const CustosIcon = require('../img/custos.png');
-const CClefIcon = require('../img/cClef.png');
-const FClefIcon = require('../img/fClef.png');
-const StaffIcon = require('../img/staff.png');
+import * as CustosIcon from '../img/custos.png';
+import * as CClefIcon from '../img/cClef.png';
+import * as FClefIcon from '../img/fClef.png';
+import * as StaffIcon from '../img/staff.png';
 // const SmallDivIcon = require()"./img/smallDiv.png";
 // const MinorDivIcon = require()"./img/minorDiv.png";
 // const MajorDivIcon = require()"./img/majorDiv.png";
 // const FinalDivIcon = require()"./img/finalDiv.png";
-const PesIcon = require('../img/pes.png');
-const ClivisIcon = require('../img/clivis.png');
-const ScandicusIcon = require('../img/scandicus.png');
-const ClimacusIcon = require('../img/climacus.png');
-const TorculusIcon = require('../img/torculus.png');
-const PorrectusIcon = require('../img/porrectus.png');
-const PressusIcon = require('../img/pressus.png');
+import * as PesIcon from '../img/pes.png';
+import * as ClivisIcon from '../img/clivis.png';
+import * as ScandicusIcon from '../img/scandicus.png';
+import * as ClimacusIcon from '../img/climacus.png';
+import * as TorculusIcon from '../img/torculus.png';
+import * as PorrectusIcon from '../img/porrectus.png';
+import * as PressusIcon from '../img/pressus.png';
 import * as Icons from '../img/icons.svg';
 
 /**
