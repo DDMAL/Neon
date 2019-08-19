@@ -14,7 +14,7 @@ const meiUpload = path.join(__base, 'public', 'uploads', 'mei');
 const imgUpload = path.join(__base, 'public', 'uploads', 'img');
 const iiifUpload = path.join(__base, 'public', 'uploads', 'iiif');
 const iiifPublicPath = path.join('/', 'uploads', 'iiif');
-const neonContext = JSON.parse(fs.readFileSync(path.join(__base, 'src', 'utils', 'manifest', 'context.json')).toString());
+const neonContext = 'https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld';
 
 const allowedPattern = /^[-_\.,\d\w ]+$/;
 const consequtivePeriods = /\.{2,}/;
