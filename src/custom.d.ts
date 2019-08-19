@@ -12,3 +12,8 @@ declare module '*.svg' {
   const path: string;
   export default path;
 }
+
+declare module '*.html' {
+  const contents: string;
+  export default contents;
+}

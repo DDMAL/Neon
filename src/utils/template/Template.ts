@@ -1,10 +1,10 @@
-const template = require('./template.html');
+import * as template from './template.html';
 
 declare const __LINK_LOCATION__: string;
 declare const __NEON_VERSION__: string;
 
 function setBody (): void {
-  document.body.innerHTML = template;
+  document.body.innerHTML = template.toString();
   (document.getElementById('home-link') as HTMLAnchorElement)
     .href = __LINK_LOCATION__;
   document.getElementById('neon-version').textContent = __NEON_VERSION__;
