@@ -10,6 +10,8 @@ import TextEditMode from '../src/TextEditMode.js';
 
 import PouchDb from 'pouchdb';
 
+import PouchDB from 'pouchdb';
+
 let name = getGetParam('manifest');
 let manifestLocation = 'manifests/' + name + '.jsonld';
 let storage = getGetParam('storage');
@@ -50,7 +52,7 @@ if (name) {
     view.start();
   });
 } else {
-  let db = new PouchDb('Neon-User-Storage');
+  let db = new PouchDB('Neon-User-Storage');
   db.getAttachment(storage, 'manifest').then(blob => {
     return new window.Response(blob).json();
   }).then(async manifest => {
