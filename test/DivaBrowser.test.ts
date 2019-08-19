@@ -1,19 +1,19 @@
 /* eslint-env jest */
-const fs = require('fs-extra');
-const { Builder, By, until } = require('selenium-webdriver');
-const { Preferences, Type, Level } = require('selenium-webdriver/lib/logging');
-const firefox = require('selenium-webdriver/firefox');
-const chrome = require('selenium-webdriver/chrome');
+import * as fs from 'fs-extra';
+import { Builder, By, until } from 'selenium-webdriver';
+import { Preferences, Type, Level } from 'selenium-webdriver/lib/logging';
+import * as firefox from 'selenium-webdriver/firefox';
+import * as chrome from 'selenium-webdriver/chrome';
 
 const uploadPath = './public/uploads/iiif/';
 const editUrl = 'http://localhost:8080/edit/test/diva-test';
 
-var browserNames = ['firefox', 'chrome'];
+const browserNames = ['firefox', 'chrome'];
 if (require('os').platform() === 'darwin') {
   browserNames.push('safari');
 }
 
-jest.setTimeout('15000');
+jest.setTimeout(15000);
 
 beforeAll(() => {
   // Link test folder
@@ -25,15 +25,15 @@ afterAll(() => {
 });
 
 describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
-  var browser;
+  let browser;
 
   beforeAll(async () => {
-    let prefs = new Preferences();
+    const prefs = new Preferences();
     prefs.setLevel(Type.BROWSER, Level.ALL);
 
     browser = await new Builder()
       .forBrowser(title)
-      .setFirefoxOptions(new firefox.Options().headless())
+      .setFirefoxOptions((new firefox.Options() as firefox.Options & { headless (): firefox.Options }).headless())
       .setChromeOptions(new chrome.Options().headless().windowSize({ width: 1280, height: 800 }))
       .setLoggingPrefs(prefs)
       .build();
@@ -51,7 +51,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       }).then(() => {
         browser.quit();
         done();
-      })
+      });
     } else {
       browser.quit();
       done();
@@ -118,9 +118,9 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
     test('Check Glyph Opacity', async () => {
       // Set opacity to 0
       await browser.executeScript(() => { document.getElementById('opacitySlider').scrollIntoView(true); });
-      let glyphOpacitySlider = await browser.findElement(By.id('opacitySlider'));
-      let rect = await glyphOpacitySlider.getRect();
-      await browser.actions().dragAndDrop(glyphOpacitySlider, { x: -1 * parseInt(rect.width / 2), y: 0 }).perform();
+      const glyphOpacitySlider = await browser.findElement(By.id('opacitySlider'));
+      const rect = await glyphOpacitySlider.getRect();
+      await browser.actions().dragAndDrop(glyphOpacitySlider, { x: -1 * Math.round(rect.width / 2), y: 0 }).perform();
       let opacityText = await browser.findElement(By.id('opacityOutput')).getText();
       expect(opacityText).toBe('0');
       await browser.wait(until.elementLocated(By.className('neon-container')), 10000);
@@ -128,7 +128,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       expect(containerStyle).toContain('opacity: 0;');
 
       // Reset opacity to 1
-      let opacityButton = await browser.findElement(By.id('reset-opacity'));
+      const opacityButton = await browser.findElement(By.id('reset-opacity'));
       await browser.actions().click(opacityButton).perform();
       opacityText = await browser.findElement(By.id('opacityOutput')).getText();
       containerStyle = await browser.findElement(By.className('neon-container')).getAttribute('style');
@@ -138,8 +138,8 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
 
     test('Check Image Opacity', async () => {
       // Set opacity to 0
-      let imageOpacitySlider = await browser.findElement(By.id('bgOpacitySlider'));
-      let rect = await imageOpacitySlider.getRect();
+      const imageOpacitySlider = await browser.findElement(By.id('bgOpacitySlider'));
+      const rect = await imageOpacitySlider.getRect();
       await browser.actions().dragAndDrop(imageOpacitySlider, { x: -1 * parseInt(rect.width), y: 0 }).perform();
       let opacityText = await browser.findElement(By.id('bgOpacityOutput')).getText();
       let canvasStyle = await browser.findElement(By.className('diva-viewer-canvas')).getAttribute('style');
@@ -147,7 +147,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       expect(canvasStyle).toContain('opacity: 0;');
 
       // Reset opacity to 1
-      let opacityButton = await browser.findElement(By.id('reset-bg-opacity'));
+      const opacityButton = await browser.findElement(By.id('reset-bg-opacity'));
       await browser.actions().click(opacityButton).perform();
       opacityText = await browser.findElement(By.id('bgOpacityOutput')).getText();
       canvasStyle = await browser.findElement(By.className('diva-viewer-canvas')).getAttribute('style');
@@ -159,8 +159,8 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       await browser.executeScript(() => { document.getElementById('highlight-button').click(); });
       await browser.executeScript(() => { document.getElementById('highlight-syllable').click(); });
       await browser.wait(until.elementLocated(By.className('syllable')), 10000);
-      let someSyllable = await browser.findElement(By.className('syllable'));
-      let syllableClasses = await someSyllable.getAttribute('class');
+      const someSyllable = await browser.findElement(By.className('syllable'));
+      const syllableClasses = await someSyllable.getAttribute('class');
       expect(syllableClasses).toContain('highlighted');
     });
   });
@@ -169,8 +169,8 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
     test('Test scrolling to new active page', async () => {
       // Verify that the first page is active.
       await browser.wait(until.elementLocated(By.id('neon-container-0')), 10000);
-      let containerZero = await browser.findElement(By.id('neon-container-0'));
-      let containerZeroClass = await containerZero.getAttribute('class');
+      const containerZero = await browser.findElement(By.id('neon-container-0'));
+      const containerZeroClass = await containerZero.getAttribute('class');
       expect(containerZeroClass).toContain('active-page');
 
       // Change page and verify that active page changes
@@ -178,27 +178,27 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       await browser.executeScript(() => { document.getElementById('diva-1-viewport').scrollBy(0, 1000); });
       // Wait for load
       await browser.wait(until.elementLocated(By.id('neon-container-1')), 2000);
-      let containerOneClass = await browser.findElement(By.id('neon-container-1')).getAttribute('class');
+      const containerOneClass = await browser.findElement(By.id('neon-container-1')).getAttribute('class');
       expect(containerOneClass).toContain('active-page');
     });
 
     test('Test diva.js zoom', async () => {
       // Zoom in
-      let zoomInButton = await browser.findElement(By.id('diva-1-zoom-in-button'));
+      const zoomInButton = await browser.findElement(By.id('diva-1-zoom-in-button'));
       await browser.wait(until.elementLocated(By.className('neon-container')), 10000);
-      let activeContainer = await browser.findElement(By.className('neon-container'));
-      let initialSize = await activeContainer.getRect();
+      const activeContainer = await browser.findElement(By.className('neon-container'));
+      const initialSize = await activeContainer.getRect();
       await browser.actions().click(zoomInButton).perform();
       // wait until active container is visible
       await browser.wait(async () => {
-        let style = await activeContainer.getAttribute('style');
+        const style = await activeContainer.getAttribute('style');
         return style.match(/display: none;/);
       }, 1500);
       await browser.wait(async () => {
-        let style = await activeContainer.getAttribute('style');
+        const style = await activeContainer.getAttribute('style');
         return !style.match(/display: none;/);
       }, 1500);
-      let zoomedSize = await activeContainer.getRect();
+      const zoomedSize = await activeContainer.getRect();
       await browser.sleep(3000);
       expect(zoomedSize.height).toBeGreaterThan(initialSize.height);
       expect(zoomedSize.width).toBeGreaterThan(initialSize.width);
