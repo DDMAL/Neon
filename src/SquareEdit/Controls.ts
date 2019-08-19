@@ -3,7 +3,7 @@
 import * as Contents from './Contents';
 import * as Cursor from '../utils/Cursor';
 import { setGroupingHighlight } from '../utils/Color';
-const Icons = require('../img/icons.svg');
+import * as Icons from '../img/icons.svg';
 import { unselect } from '../utils/SelectTools';
 import InsertHandler from './InsertHandler';
 import { NeumeEditInterface } from '../Interfaces';

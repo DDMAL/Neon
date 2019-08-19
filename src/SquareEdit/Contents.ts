@@ -18,7 +18,7 @@ const ClimacusIcon = require('../img/climacus.png');
 const TorculusIcon = require('../img/torculus.png');
 const PorrectusIcon = require('../img/porrectus.png');
 const PressusIcon = require('../img/pressus.png');
-const Icons = require('../img/icons.svg');
+import * as Icons from '../img/icons.svg';
 
 /**
  * HTML for each insert tab (neume, grouping, clef, system, and division).
