@@ -7,7 +7,7 @@ import SingleEditMode from './SquareEdit/SingleEditMode';
 import InfoModule from './InfoModule';
 import TextView from './TextView';
 import TextEditMode from './TextEditMode';
-import { NeonManifest } from './utils/NeonManifest';
+import { NeonManifest } from './Types';
 
 declare let manifestText: string;
 

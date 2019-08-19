@@ -1,4 +1,4 @@
-import { NeonManifest } from './utils/NeonManifest';
+import { NeonManifest } from './Types';
 import NeonView from './NeonView';
 import ZoomHandler from './SingleView/Zoom';
 

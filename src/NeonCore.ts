@@ -1,8 +1,7 @@
 import { convertSbToStaff } from './utils/ConvertMei';
 import * as Validation from './Validation';
 import VerovioWrapper from './VerovioWrapper';
-import { NeonManifest, Annotation } from './utils/NeonManifest';
-import { Attributes, EditorAction, VerovioMessage } from './Types';
+import { WebAnnotation, Attributes, EditorAction, NeonManifest, VerovioMessage } from './Types';
 import * as uuid from 'uuid/v4';
 
 import PouchDB from 'pouchdb';
@@ -31,11 +30,11 @@ class NeonCore {
   /** Pages known not to have any associated MEI. */
   private blankPages: Array<string>;
   /** A collection of W3 Web Annotations. */
-  private annotations: Annotation[];
+  private annotations: WebAnnotation[];
   private manifest: NeonManifest;
   private lastPageLoaded: string;
 
-  getAnnotations (): Annotation[] { return this.annotations; }
+  getAnnotations (): WebAnnotation[] { return this.annotations; }
 
   /**
    * Constructor for NeonCore
@@ -78,7 +77,7 @@ class NeonCore {
    */
   async initDb (force = false): Promise<{}> {
     // Check for existing manifest
-    type DbAnnotation = PouchDB.Core.IdMeta & PouchDB.Core.GetMeta & Annotation;
+    type DbAnnotation = PouchDB.Core.IdMeta & PouchDB.Core.GetMeta & WebAnnotation;
     type Doc = PouchDB.Core.IdMeta & PouchDB.Core.GetMeta & { timestamp: string; annotations: string[]};
     const response = await new Promise<{}>((resolve, reject): void => {
       this.db.get(this.manifest['@id']).catch(err => {
