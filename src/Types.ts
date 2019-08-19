@@ -16,3 +16,18 @@ export type VerovioMessage = {
   elementId?: string;
   editorAction?: EditorAction;
 };
+
+export type WebAnnotation = {
+  id: string;
+  type: string;
+  body: string;
+  target: string;
+};
+
+export type NeonManifest = {
+  '@context': Array<string | object> | string;
+  title: string;
+  timestamp: string;
+  image: string;
+  mei_annotations: WebAnnotation[];
+};

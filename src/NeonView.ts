@@ -1,6 +1,6 @@
 import NeonCore from './NeonCore';
 
-import { parseManifest, NeonManifest } from './utils/NeonManifest';
+import { parseManifest } from './utils/NeonManifest';
 import { prepareEditMode } from './utils/EditControls';
 import setBody from './utils/template/Template';
 import * as Types from './Types';
@@ -13,7 +13,7 @@ import * as Interfaces from './Interfaces';
  */
 class NeonView {
   /** The manifest describing what to load and where to find it. */
-  manifest: NeonManifest;
+  manifest: Types.NeonManifest;
   /** Module that displays rendered MEI. */
   view: Interfaces.ViewInterface;
   /** Name of the document loaded. */

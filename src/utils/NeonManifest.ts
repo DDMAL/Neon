@@ -1,4 +1,4 @@
-/** @module utils/NeonManifest */
+import { NeonManifest } from '../Types';
 const NeonSchema = require('./manifest/NeonSchema.json');
 const NeonContext = require('./manifest/context.json');
 
@@ -34,19 +34,4 @@ export function parseManifest (manifestString: NeonManifest): boolean {
     console.error(NeonContext);
     return false;
   }
-}
-
-export interface Annotation {
-  id: string;
-  type: string;
-  body: string;
-  target: string;
-}
-
-export interface NeonManifest {
-  '@context': Array<any>;
-  title: string;
-  timestamp: string;
-  image: string;
-  mei_annotations: Annotation[];
 }
