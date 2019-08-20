@@ -24,7 +24,7 @@ afterAll(() => {
   fs.removeSync(uploadPath + 'test');
 });
 
-describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
+describe.each(browserNames)('Tests on %s', (title) => {
   let browser;
 
   beforeAll(async () => {
@@ -66,47 +66,55 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
   });
 
   describe('Boundingbox selecting', () => {
-    /*
     test('Select syl bbox', async () => {
+      await browser.wait(until.elementLocated(By.css('.active-page > svg')), 10000);
       await browser.wait(until.elementLocated(By.id('displayBBox')), 10000);
-      let displayButton = await browser.findElement(By.id('displayBBox'));
-      // safari webdriver was not cooperating, so some things have to be done slightly differently in safari:
-      if (title !== 'safari') {
-        await browser.actions().click(displayButton).perform();
+      await browser.executeScript(() => { document.getElementById('displayBBox').click(); });
+      await browser.wait(until.elementLocated(By.id('edit_mode')), 3000);
+      const editMode = await browser.findElement(By.id('edit_mode'));
+      if (await editMode.isDisplayed()) {
+        await browser.executeScript(() => {
+          document.getElementById('edit_mode').click();
+        });
       } else {
-        await browser.executeScript(() => { document.getElementById('displayBBox').click(); });
+        await browser.executeScript(() => {
+          document.getElementById('burgerMenu').click();
+          document.getElementById('edit_mode').click();
+          document.getElementById('burgerMenu').click();
+        });
       }
-
-      await browser.wait(until.elementLocated(By.id('edit_mode')), 10000);
-      let editButton = await browser.findElement(By.id('edit_mode'));
-      if (title !== 'safari') {
-        await browser.actions().click(editButton).perform();
-      } else {
-        await browser.executeScript(() => { document.getElementById('edit_mode').click(); });
-        await browser.executeScript(() => { document.getElementById('selByBBox').scrollIntoView(true); });
-      }
-
-      await browser.wait(until.elementLocated(By.id('selByBBox')), 10000);
-      let selButton = await browser.findElement(By.id('selByBBox'));
-      await browser.actions().click(selButton).perform();
-      await browser.executeScript(() => { (document.getElementById('selByBBox')).dispatchEvent(new window.Event('mousedown')); });
-
-      await browser.wait(until.elementLocated(By.className('sylTextRect-display')), 10000);
       await browser.executeScript(() => {
-        console.log(document.getElementById('m-bc67f558-4736-49d0-bc71-8e05c72bc46e'));
-        console.log(document.getElementById('m-bc67f558-4736-49d0-bc71-8e05c72bc46e').children[1]);
-        (document.getElementById('m-bc67f558-4736-49d0-bc71-8e05c72bc46e').children[1]).dispatchEvent(new window.Event('mousedown'));
+        document.getElementById('selByBBox').scrollIntoView(true);
+        document.getElementById('selByBBox').click();
       });
 
+      await browser.wait(until.elementLocated(By.className('sylTextRect-display')), 5000);
+      const rect = await browser.findElement(By.className('sylTextRect-display'));
+      expect(rect).not.toBeNull();
+      if (title === 'safari') {
+        await browser.executeScript(() => {
+          const rect = document.getElementsByClassName('sylTextRect-display')[0];
+          rect.dispatchEvent(new MouseEvent('mousedown'));
+        });
+      } else {
+        await browser.actions().click(rect).perform();
+      }
+
       await browser.wait(until.elementLocated(By.id('resizeRect')), 10000);
-      let resizeRectCount = (await browser.findElements(By.id('resizeRect'))).length;
+      const resizeRectCount = (await browser.findElements(By.id('resizeRect'))).length;
       expect(resizeRectCount).toBe(1);
-      let sylSelectedCount = (await browser.findElements(By.className('syl selected'))).length;
+      const sylSelectedCount = (await browser.findElements(By.className('syl selected'))).length;
       expect(sylSelectedCount).toBe(1);
 
-      await browser.actions().click(selButton).perform();
+      if (title === 'safari') {
+        await browser.executeScript(() => {
+          document.getElementById('displayBBox').dispatchEvent(new MouseEvent('click'));
+        });
+      } else {
+        const displayBBoxInput = await browser.findElement(By.id('displayBBox'));
+        await browser.actions().click(displayBBoxInput).perform();
+      }
     });
-    */
   });
 
   describe('Check Display Panel', () => {
@@ -177,7 +185,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
       // scroll
       await browser.executeScript(() => { document.getElementById('diva-1-viewport').scrollBy(0, 1000); });
       // Wait for load
-      await browser.wait(until.elementLocated(By.id('neon-container-1')), 2000);
+      await browser.wait(until.elementLocated(By.id('neon-container-1')), 5000);
       const containerOneClass = await browser.findElement(By.id('neon-container-1')).getAttribute('class');
       expect(containerOneClass).toContain('active-page');
     });
