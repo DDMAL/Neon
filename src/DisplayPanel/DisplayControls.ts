@@ -255,7 +255,7 @@ export function updateHighlight (): void {
  */
 function setBurgerControls () {
   document.getElementById('burgerMenu').addEventListener('click', () => {
-    this.classList.toggle('is-active');
+    document.getElementById('burgerMenu').classList.toggle('is-active');
     document.getElementById('navMenu').classList.toggle('is-active');
   });
 }
