@@ -33,7 +33,7 @@ describe.each(['firefox', 'chrome', 'safari'])('Tests on %s', (title) => {
 
     browser = await new Builder()
       .forBrowser(title)
-      .setFirefoxOptions((new firefox.Options() as firefox.Options & { headless (): firefox.Options }).headless())
+      .setFirefoxOptions(new firefox.Options().headless())
       .setChromeOptions(new chrome.Options().headless().windowSize({ width: 1280, height: 800 }))
       .setLoggingPrefs(prefs)
       .build();
