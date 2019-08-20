@@ -235,16 +235,6 @@ describe.each(browserNames)('Tests on %s', (title) => {
       expect(imgStyle).toContain('opacity: 1;');
     });
 
-    /* test('Check Text Controls', async () => {
-      var syl = await browser.findElement(By.id('syl_text')).getAttribute('style');
-      expect(syl).toContain('display: none;');
-      var textCheck = await browser.findElement(By.id('displayText'));
-      const actions = browser.actions();
-      await actions.click(textCheck).perform();
-      syl = await browser.findElement(By.id('syl_text')).getAttribute('style');
-      expect(syl).not.toContain('display: none;');
-    }); */
-
     /// TEST EDIT MODE ///
     describe('Edit Mode', () => {
       describe('Selection', () => {
