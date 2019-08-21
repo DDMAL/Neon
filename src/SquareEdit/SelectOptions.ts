@@ -405,6 +405,33 @@ export function triggerSplitActions (): void {
       }
     });
 
+  document.getElementById('reset-skew')
+    .addEventListener('click', () => {
+      const staff = document.querySelector('.staff.selected') as SVGElement;
+      const rect = staff.querySelector('#resizeRect');
+      const co = rect.getAttribute('points').split(' ');
+      let dy = parseInt(co[0].split(',')[1]) - parseInt(co[1].split(',')[1]);
+      if (staff !== null) {
+        const editorAction: EditorAction = {
+          'action': 'changeSkew',
+          'param': {
+            'elementId': staff.id,
+            'dy': dy,
+            'rightSide': true
+          }
+        };
+        neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
+          if (result) {
+            await neonView.updateForCurrentPagePromise();
+          }
+        });
+        endOptionsSelection();
+      } else {
+        console.error('No staff was selected');
+        endOptionsSelection();
+      }
+    });
+
   try {
     const del = document.getElementById('delete');
     del.removeEventListener('click', removeHandler);

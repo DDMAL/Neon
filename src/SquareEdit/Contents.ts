@@ -186,6 +186,7 @@ export const splitActionContents: string=
     '<label>Split System:&nbsp;</label>' +
     '<div><p class=\'control\'>' +
     '<button id=\'split-system\' class=\'button\'>Split</button>' +
+    '<button id=\'reset-skew\' class=\'button\'>Reset Skew</button>' +
     '<button class=\'button\' id=\'delete\'>Delete</button></p></div>';
 
 /**
