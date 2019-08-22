@@ -32,11 +32,9 @@ export function prepareEditMode (neonView) {
  * @param {NeonView} neonView
  */
 export function startEditMode (neonView) {
-  $('#dropdown_toggle').empty();
-  $('#dropdown_toggle').append(navbarDropdownMenu);
   let parent = document.getElementById('dropdown_toggle').parentNode;
   document.getElementById('dropdown_toggle').remove();
-  parent.innerHTML = navbarDropdownMenu;
+  parent.prepend(navbarDropdownMenu);
   $('#undoRedo_controls').append(undoRedoPanel);
   initNavbar(neonView);
   initUndoRedoPanel(neonView);
