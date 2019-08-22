@@ -828,13 +828,13 @@ test('Test \'change skew\' action', async () => {
     'action': 'changeSkew',
     'param': {
       'elementId': id,
-      'dy': 1000,
+      'dy': 500,
       'rightSide': true
     }
   };
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
   const skew = (await neon.info(pathToPNG))['skew'];
-  expect(Math.round(skew)).toBe(-35);
+  expect(Math.round(skew)).toBe(-19);
 });
 
 test('Test \'change staff association\' action', async () => {

@@ -322,18 +322,8 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
           SelectOptions.triggerSplitActions();
           resize(groups[0], neonView, dragHandler);
           break;
-        case 2:
-          const bb1 = getStaffBBox(groups[0]);
-          const bb2 = getStaffBBox(groups[1]);
-          const avgStaffHeight = (bb1.lry - bb1.uly + bb2.lry - bb2.uly) / 2;
-          if (Math.abs(bb1.uly - bb2.uly) < avgStaffHeight) {
-            SelectOptions.triggerStaffActions();
-          } else {
-            SelectOptions.triggerDefaultActions();
-          }
-          break;
         default:
-          SelectOptions.triggerDefaultActions();
+          SelectOptions.triggerStaffActions();
       }
       break;
 

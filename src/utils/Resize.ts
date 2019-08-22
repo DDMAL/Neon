@@ -189,9 +189,10 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
 
     function skewDragLeft (): void {
       const currentY = d3.mouse(this)[1];
-      dy = currentY - initialY;
-      const tempSkew = initialSkew - Math.atan(dy / polyLen);
+      const temp = currentY - initialY;
+      const tempSkew = initialSkew - Math.atan(temp / polyLen);
       if (tempSkew > -0.2 && tempSkew < 0.2) {
+        dy = temp
         uly = initialRectY + dy;
         skew = tempSkew;
       }
@@ -200,9 +201,10 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
 
     function skewDragRight (): void {
       const currentY = d3.mouse(this)[1];
-      dy = currentY - initialY;
-      const tempSkew = initialSkew + Math.atan(dy / polyLen);
+      const temp = currentY - initialY;
+      const tempSkew = initialSkew + Math.atan(temp / polyLen);
       if (tempSkew > -0.2 && tempSkew < 0.2) {
+        dy = temp
         skew = tempSkew;
         lry = initialRectY + dy;
       }
