@@ -66,8 +66,7 @@ class DragHandler {
   }
 
   dragEnded (): void {
-    const target = d3.event.sourceEvent.target;
-    this.dragEndCoords = d3.mouse(target);
+    this.dragEndCoords = [d3.event.x, d3.event.y];
     const paramArray = [];
     this.selection.filter((el: SVGElement) => !el.classList.contains('resizePoint')).forEach((el: SVGElement) => {
       const id = (el.tagName === 'rect') ? el.closest('.syl').id : el.id;
