@@ -17,7 +17,8 @@ contents.forEach(content => {
   const item = document.createElement('a');
   item.id = content[0];
   item.classList.add('navbar-item');
-  item.textContent.add('navbar-item');
+  item.classList.add('navbar-item');
+  item.textContent = content[1];
   navbarContents.appendChild(item);
 });
 navbarDropdownMenu.appendChild(fileLink);
