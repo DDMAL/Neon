@@ -1,0 +1,85 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    position: absolute;
+    overflow: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: repeat(8, 1fr);
+}
+
+form {
+    margin: auto;
+}
+
+header {
+    height: 100%;
+    grid-row: 1 / 3;
+    grid-column: 1 / 4;
+    text-align: center;
+    align-self: end;
+    background-color: cornflowerblue;
+}
+
+header h1 {
+    padding-top: 5%;
+    font-size: 5rem;
+    font-weight: 600;
+    line-height: 1.125;
+    color: white;
+}
+
+header h2 {
+    font-weight: normal;
+    color: white;
+}
+
+.section-label {
+    text-align: center;
+    font-size: large;
+    align-self: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+#sample-label {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+#user-label {
+    grid-column: 2;
+    grid-row: 5;
+}
+
+#page-form {
+    grid-row: 4;
+    grid-column: 1 / 3;
+}
+
+#manifest-form {
+    grid-row: 4;
+    grid-column: 2 / 4;
+}
+
+#user-form {
+    grid-row: 6;
+    grid-column: 1;
+    margin-right: 0px;
+}
+
+#generate-storage-form {
+    grid-row: 6;
+    grid-column: 2;
+}
+
+#add-storage-form {
+    grid-row: 6;
+    grid-column: 3;
+    margin-left: 0px;
+}
+
+footer {
+    grid-column: 1 / 4;
+    grid-row: 8;
+}
