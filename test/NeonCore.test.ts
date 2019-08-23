@@ -837,30 +837,68 @@ test('Test \'change skew\' action', async () => {
   expect(Math.round(skew)).toBe(-19);
 });
 
-test('Test \'change staff association\' action', async () => {
-  const neon = new NeonCore(mei);
-  await neon.initDb();
-  await neon.getSVG(pathToPNG);
-  let svg = await neon.getSVG(pathToPNG);
-  let staff = svg.getElementById('m-d0411b11-f0be-42ff-9bf6-255740eb3b94').parentElement.parentElement;
-  expect(staff.id).toBe('m-8beed2bc-3d4f-4456-ab50-c13c47a51525');
-  let editorAction: EditorAction = {
-    'action': 'drag',
-    'param': {
-      'elementId': 'm-d0411b11-f0be-42ff-9bf6-255740eb3b94',
-      'x': 0,
-      'y': -500
-    }
-  };
-  expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-  editorAction = {
-    'action': 'changeStaff',
-    'param': {
-      'elementId': 'm-d0411b11-f0be-42ff-9bf6-255740eb3b94'
-    }
-  };
-  expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
-  svg = await neon.getSVG(pathToPNG);
-  staff = svg.getElementById('m-d0411b11-f0be-42ff-9bf6-255740eb3b94').parentElement.parentElement;
-  expect(staff.id).toBe('m-932e7223-76e8-4517-abba-fdbbf2cea050');
+describe('Test changeStaff function', () => {
+  test('Test \'change staff association\' action', async () => {
+    const neon = new NeonCore(mei);
+    await neon.initDb();
+    await neon.getSVG(pathToPNG);
+    let svg = await neon.getSVG(pathToPNG);
+    let staff = svg.getElementById('m-d0411b11-f0be-42ff-9bf6-255740eb3b94').parentElement.parentElement;
+    expect(staff.id).toBe('m-8beed2bc-3d4f-4456-ab50-c13c47a51525');
+    let editorAction: EditorAction = {
+      'action': 'drag',
+      'param': {
+        'elementId': 'm-d0411b11-f0be-42ff-9bf6-255740eb3b94',
+        'x': 0,
+        'y': -500
+      }
+    };
+    expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+    editorAction = {
+      'action': 'changeStaff',
+      'param': {
+        'elementId': 'm-d0411b11-f0be-42ff-9bf6-255740eb3b94'
+      }
+    };
+    expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+    svg = await neon.getSVG(pathToPNG);
+    staff = svg.getElementById('m-d0411b11-f0be-42ff-9bf6-255740eb3b94').parentElement.parentElement;
+    expect(staff.id).toBe('m-932e7223-76e8-4517-abba-fdbbf2cea050');
+  });
+  test('test pitch changing for changeStaff with clef', async() => {
+    const neon = new NeonCore(mei);
+    await neon.initDb();
+    let svg = await neon.getSVG(pathToPNG);
+    let attr = await neon.getElementAttr('m-d0411b11-f0be-42ff-9bf6-255740eb3b94', pathToPNG);
+    expect(attr.shape).toBe('C');
+    expect(attr.line).toBe('3');
+    let neumeAttr = await neon.getElementAttr('m-f1e3ae8a-fd2c-4e8f-a1c6-46822fe57b76', pathToPNG);
+    expect(neumeAttr.pname).toBe('e');
+    expect(neumeAttr.oct).toBe('2');
+    let editorAction: EditorAction = {
+      'action': 'drag',
+      'param': {
+        'elementId': 'm-d0411b11-f0be-42ff-9bf6-255740eb3b94',
+        'x': 55,
+        'y': -550
+      }
+    };
+    expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+    attr = await neon.getElementAttr('m-d0411b11-f0be-42ff-9bf6-255740eb3b94', pathToPNG);
+    expect(attr.shape).toBe('C');
+    expect(attr.line).toBe('-5');
+    editorAction = {
+      'action': 'changeStaff',
+      'param': {
+        'elementId': 'm-d0411b11-f0be-42ff-9bf6-255740eb3b94'
+      }
+    };
+    expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
+    attr = await neon.getElementAttr('m-d0411b11-f0be-42ff-9bf6-255740eb3b94', pathToPNG);
+    expect(attr.shape).toBe('C');
+    expect(attr.line).toBe('1');
+    neumeAttr = await neon.getElementAttr('m-f1e3ae8a-fd2c-4e8f-a1c6-46822fe57b76', pathToPNG);
+    expect(neumeAttr.pname).toBe('d');
+    expect(neumeAttr.oct).toBe('3');
+  });
 });
