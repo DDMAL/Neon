@@ -182,7 +182,7 @@ export function initGroupingListeners (): void {
         const syllable1 = document.getElementById(elementIds[1]);
         const staff0 = syllable0.closest('.staff');
         const staff1 = syllable1.closest('.staff');
-        const staffChildren = Array.from(staff0.parentNode.children).filter(elem => elem.classList.contains('staff'));
+        const staffChildren = Array.from(staff0.parentElement.children).filter((elem: HTMLElement) => elem.classList.contains('staff'));
 
         let firstSyllable, secondSyllable;
         // Determine first syllable comes first by staff
@@ -267,7 +267,7 @@ function groupingAction (action: string, groupType: string, elementIds: string[]
 
     // Prompt user to confirm if Neon does not re cognize contour
     if (groupType === 'nc') {
-      const neumeParent = document.getElementById(elementIds[0]).parentNode;
+      const neumeParent = document.getElementById(elementIds[0]).parentElement;
       const ncs = Array.from(neumeParent.children) as SVGGraphicsElement[];
       const contour = neonView.info.getContour(ncs);
       if (contour === undefined) {

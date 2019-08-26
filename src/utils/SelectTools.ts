@@ -343,7 +343,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
             // Check if this *could* be a selection with a single logical syllable split by a staff break.
             const staff0 = groups[0].closest('.staff');
             const staff1 = groups[1].closest('.staff');
-            const staffChildren = Array.from(staff0.parentNode.children);
+            const staffChildren = Array.from(staff0.parentElement.children);
             // Check if these are adjacent staves (logically)
             if (Math.abs(staffChildren.indexOf(staff0) - staffChildren.indexOf(staff1)) === 1) {
               // Check if one syllable is the last in the first staff and the other is the first in the second.
@@ -404,8 +404,8 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
           if (sharedSecondLevelParent(groups)) {
             // Check if this selection is a ligature or can be a ligature
             // Check if these neume components are part of the same neume
-            if (groups[0].parentNode === groups[1].parentNode) {
-              const children = Array.from(groups[0].parentNode.children);
+            if (groups[0].parentElement === groups[1].parentElement) {
+              const children = Array.from(groups[0].parentElement.children);
               // Check that neume components are adjacent
               if (Math.abs(children.indexOf(groups[0]) - children.indexOf(groups[1])) === 1) {
                 // Check that second neume component is lower than first.

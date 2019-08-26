@@ -27,7 +27,7 @@ export function prepareEditMode (neonView: NeonView): void {
  * is called when the edit mode button is clicked
  */
 export function startEditMode (neonView: NeonView): void {
-  const parent = document.getElementById('dropdown_toggle').parentElement;
+  const parent: HTMLElement = document.getElementById('dropdown_toggle').parentElement;
   document.getElementById('dropdown_toggle').remove();
   parent.prepend(navbarDropdownMenu);
   document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;

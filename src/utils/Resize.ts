@@ -192,7 +192,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       const temp = currentY - initialY;
       const tempSkew = initialSkew - Math.atan(temp / polyLen);
       if (tempSkew > -0.2 && tempSkew < 0.2) {
-        dy = temp
+        dy = temp;
         uly = initialRectY + dy;
         skew = tempSkew;
       }
@@ -204,7 +204,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       const temp = currentY - initialY;
       const tempSkew = initialSkew + Math.atan(temp / polyLen);
       if (tempSkew > -0.2 && tempSkew < 0.2) {
-        dy = temp
+        dy = temp;
         skew = tempSkew;
         lry = initialRectY + dy;
       }
