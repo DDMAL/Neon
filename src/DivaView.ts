@@ -89,7 +89,11 @@ class DivaView implements ViewInterface {
       elem.classList.remove('active-page');
     });
     for (const page of pageIndexes) {
-      window.setTimeout(checkAndLoad.bind(this), (delay ? this.loadDelay : 0), page);
+      if (delay) {
+        window.setTimeout(checkAndLoad.bind(this), (this.loadDelay), page);
+      } else {
+        checkAndLoad.bind(this)(page);
+      }
     }
   }
 
