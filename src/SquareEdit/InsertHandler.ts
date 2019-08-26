@@ -259,12 +259,8 @@ class InsertHandler {
    * Remove the insert listeners while not leaving insert mode entirely.
    */
   removeInsertClickHandlers = (function removeInsertClickHandlers (): void {
-    try {
-      document.querySelector(this.selector).removeEventListener('click', this.staffHandler);
-      document.querySelector(this.selector).removeEventListener('click', this.handler);
-    } catch (e) {
-      // console.debug(e);
-    }
+    document.querySelector(this.selector).removeEventListener('click', this.staffHandler);
+    document.querySelector(this.selector).removeEventListener('click', this.handler);
   }).bind(this);
 
   isInsertMode (): boolean {
