@@ -118,7 +118,7 @@ class InsertHandler {
     try {
       document.getElementById('returnToEditMode').remove();
     } catch (e) {
-      console.debug(e);
+      // console.debug(e);
     }
     const editMenu = document.getElementById('editMenu');
     const insertMenu = document.getElementById('insertMenu');
@@ -174,7 +174,7 @@ class InsertHandler {
    * Event handler for clicking to insert any element except a staff.
    */
   handler = (function handler (evt: MouseEvent): void {
-    console.debug(evt);
+    evt.stopPropagation();
     const container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0] as SVGSVGElement;
     const pt = container.createSVGPoint();
     pt.x = evt.clientX;
@@ -201,7 +201,9 @@ class InsertHandler {
     }
 
     this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(() => {
-      this.neonView.updateForCurrentPage();
+      return this.neonView.updateForCurrentPagePromise();
+    }).then(() => {
+      document.querySelector(this.selector).addEventListener('click', this.handler);
     });
   }).bind(this);
 
@@ -257,8 +259,12 @@ class InsertHandler {
    * Remove the insert listeners while not leaving insert mode entirely.
    */
   removeInsertClickHandlers = (function removeInsertClickHandlers (): void {
-    document.querySelector(this.selector).removeEventListener('click', this.staffHandler);
-    document.querySelector(this.selector).removeEventListener('click', this.handler);
+    try {
+      document.querySelector(this.selector).removeEventListener('click', this.staffHandler);
+      document.querySelector(this.selector).removeEventListener('click', this.handler);
+    } catch (e) {
+      // console.debug(e);
+    }
   }).bind(this);
 
   isInsertMode (): boolean {
