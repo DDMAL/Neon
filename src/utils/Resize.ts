@@ -305,15 +305,15 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         uly = undefined;
         lrx = undefined;
         lry = undefined;
+        d3.selectAll('.resizePoint').remove();
+        d3.selectAll('#resizeRect').remove();
+        d3.selectAll('.skewPoint').remove();
+        drawInitialRect();
         if (element.classList.contains('syl')) {
           selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
         } else {
           selectStaff(element, dragHandler);
         }
-        d3.selectAll('.resizePoint').remove();
-        d3.selectAll('#resizeRect').remove();
-        d3.selectAll('.skewPoint').remove();
-        drawInitialRect();
       });
     }
   }
