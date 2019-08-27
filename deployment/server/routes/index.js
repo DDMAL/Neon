@@ -9,10 +9,10 @@ const uuidv4 = require('uuid/v4');
 var router = express.Router();
 const __base = '';
 
-const manifestUpload = path.join(__base, 'public', 'uploads', 'manifests');
-const meiUpload = path.join(__base, 'public', 'uploads', 'mei');
-const imgUpload = path.join(__base, 'public', 'uploads', 'img');
-const iiifUpload = path.join(__base, 'public', 'uploads', 'iiif');
+const manifestUpload = path.join(__base, 'deployment', 'public', 'uploads', 'manifests');
+const meiUpload = path.join(__base, 'deployment', 'public', 'uploads', 'mei');
+const imgUpload = path.join(__base, 'deployment', 'public', 'uploads', 'img');
+const iiifUpload = path.join(__base, 'deployment', 'public', 'uploads', 'iiif');
 const iiifPublicPath = path.join('/', 'uploads', 'iiif');
 const neonContext = 'https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld';
 
@@ -141,8 +141,8 @@ router.route('/delete/:filename')
         let meiPath = manifest.mei_annotations[0].body.split('/');
         try {
           fs.unlinkSync(path.join(manifestUpload, req.params.filename));
-          fs.unlinkSync(path.join('public', ...imagePath));
-          fs.unlinkSync(path.join('public', ...meiPath));
+          fs.unlinkSync(path.join('deployment', 'public', ...imagePath));
+          fs.unlinkSync(path.join('deployment', 'public', ...meiPath));
         } catch (e) {
           console.error(e);
           return res.sendStatus(500);

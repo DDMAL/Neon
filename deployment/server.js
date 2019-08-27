@@ -41,7 +41,7 @@ app.set('view engine', 'pug');
 //=============
 // Static Files
 //=============
-app.use(express.static('public'));
+app.use(express.static('deployment/public'));
 
 app.listen(8080);
 
