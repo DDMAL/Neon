@@ -1,4 +1,4 @@
-const xmllint = require('./validation/xmllint.js');
+const xmllint = require('../assets/js/xmllint.js');
 
 onmessage = (event) => {
   const results = xmllint.validateXML({

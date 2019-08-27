@@ -33,7 +33,7 @@
     "scripts": {
         "start:dev": "nodemon deployment/server.js",
         "start": "nodemon server.js",
-        "build": "./setup-verovio && webpack --config webpack.config.js && cp ./src/style.css ./deployment/public/style.css",
+        "build": "./setup-verovio && webpack --config webpack.config.js && cp ./assets/style.css ./deployment/public/style.css",
         "test": "jest --silent",
         "doc": "typedoc --out ./doc --mode modules --exclude '**/verovio-dev/**/*' ./src",
         "pages": "./setup-verovio && webpack --config webpack.pages-config.js && cp -R public/verovio-toolkit.js public/diva-v6.0.1 pages/manifests dist/ && cp pages/static/* dist/ && cp src/style.css dist/"

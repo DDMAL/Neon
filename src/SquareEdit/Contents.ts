@@ -1,24 +1,24 @@
-import * as PunctumIcon from '../img/punctum.png';
-import * as VirgaIcon from '../img/virga.png';
-import * as DiamondIcon from '../img/diamond.png';
+import * as PunctumIcon from '../../assets/img/punctum.png';
+import * as VirgaIcon from '../../assets/img/virga.png';
+import * as DiamondIcon from '../../assets/img/diamond.png';
 // const WhitePunctumIcon = require()"./img/white_punct.png";
 // const QuilismaIcon = require()"./img/quilisma.png";
-import * as CustosIcon from '../img/custos.png';
-import * as CClefIcon from '../img/cClef.png';
-import * as FClefIcon from '../img/fClef.png';
-import * as StaffIcon from '../img/staff.png';
+import * as CustosIcon from '../../assets/img/custos.png';
+import * as CClefIcon from '../../assets/img/cClef.png';
+import * as FClefIcon from '../../assets/img/fClef.png';
+import * as StaffIcon from '../../assets/img/staff.png';
 // const SmallDivIcon = require()"./img/smallDiv.png";
 // const MinorDivIcon = require()"./img/minorDiv.png";
 // const MajorDivIcon = require()"./img/majorDiv.png";
 // const FinalDivIcon = require()"./img/finalDiv.png";
-import * as PesIcon from '../img/pes.png';
-import * as ClivisIcon from '../img/clivis.png';
-import * as ScandicusIcon from '../img/scandicus.png';
-import * as ClimacusIcon from '../img/climacus.png';
-import * as TorculusIcon from '../img/torculus.png';
-import * as PorrectusIcon from '../img/porrectus.png';
-import * as PressusIcon from '../img/pressus.png';
-import * as Icons from '../img/icons.svg';
+import * as PesIcon from '../../assets/img/pes.png';
+import * as ClivisIcon from '../../assets/img/clivis.png';
+import * as ScandicusIcon from '../../assets/img/scandicus.png';
+import * as ClimacusIcon from '../../assets/img/climacus.png';
+import * as TorculusIcon from '../../assets/img/torculus.png';
+import * as PorrectusIcon from '../../assets/img/porrectus.png';
+import * as PressusIcon from '../../assets/img/pressus.png';
+import * as Icons from '../../assets/img/icons.svg';
 
 /**
  * HTML for each insert tab (neume, grouping, clef, system, and division).

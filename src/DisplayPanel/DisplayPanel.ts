@@ -1,5 +1,5 @@
 import * as DisplayControls from './DisplayControls';
-import * as Icons from '../img/icons.svg';
+import * as Icons from '../../assets/img/icons.svg';
 import ZoomHandler from '../SingleView/Zoom';
 import { DisplayInterface, ViewInterface } from '../Interfaces';
 

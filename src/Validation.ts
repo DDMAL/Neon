@@ -1,5 +1,5 @@
 // const schemaPromise = import('./validation/mei-all.rng');
-const schemaPromise = require('./validation/mei-all.rng');
+const schemaPromise = require('../assets/mei-all.rng');
 const Worker: WorkerConstructable = require('./Worker.js');
 let worker: Worker, schema: { default: string[] }, statusField: HTMLSpanElement;
 
