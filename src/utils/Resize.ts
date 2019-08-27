@@ -108,8 +108,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       .map(elem => elem.x + ',' + elem.y)
       .join(' ');
 
-    d3.select('#' + element.
-      id).append('polygon')
+    d3.select('#' + element.id).append('polygon')
       .attr('points', pointString)
       .attr('id', 'resizeRect')
       .attr('stroke', 'black')
