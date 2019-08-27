@@ -8,8 +8,8 @@ let commitHash = childProcess.execSync('git rev-parse --short HEAD').toString();
 module.exports = {
   mode: 'production',
   entry: {
-    editor: './pages/editor.js',
-    index: './pages/index.js',
+    editor: './deployment/pages/editor.js',
+    index: './deployment/pages/index.js',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
