@@ -31,6 +31,7 @@
         "url": "https://github.com/DDMAL/Neon/issues"
     },
     "scripts": {
+        "start:dev": "nodemon deployment/server.js",
         "start": "nodemon server.js",
         "build": "./setup-verovio && webpack --config webpack.config.js && cp ./src/style.css ./public/style.css",
         "test": "jest --silent",
