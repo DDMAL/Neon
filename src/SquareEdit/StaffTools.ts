@@ -15,7 +15,7 @@ export class SplitHandler {
   startSplit (): void {
     this.splitDisable();
 
-    document.body.addEventListener('click', this.handler);
+    document.body.addEventListener('click', this.handler, { capture: true });
 
     // Handle keypresses
     document.body.addEventListener('keydown', this.keydownListener);
@@ -29,7 +29,7 @@ export class SplitHandler {
     document.body.removeEventListener('keydown', this.keydownListener);
     document.body.removeEventListener('keyup', this.resetHandler);
     document.body.removeEventListener('click', this.clickawayHandler);
-    document.body.removeEventListener('click', this.handler);
+    document.body.removeEventListener('click', this.handler, { capture: true });
   }
 
   /** Handle input to split a staff. */
@@ -69,7 +69,7 @@ export class SplitHandler {
     if (evt.key === 'Escape') {
       this.splitDisable();
     } else if (evt.key === 'Shift') {
-      document.body.removeEventListener('click', this.handler);
+      document.body.removeEventListener('click', this.handler, { capture: true });
     }
   }).bind(this);
 
@@ -78,14 +78,14 @@ export class SplitHandler {
     const target = evt.target as HTMLElement;
     if (target.closest('.active-page') === null) {
       this.splitDisable();
-      document.body.removeEventListener('click', this.handler);
+      document.body.removeEventListener('click', this.handler, { capture: true });
     }
   }).bind(this);
 
   /** Called to reapply the event listener if necessary. */
   resetHandler = ((evt: KeyboardEvent): void => {
     if (evt.key === 'Shift') {
-      document.body.addEventListener('click', this.handler);
+      document.body.addEventListener('click', this.handler, { capture: true });
     }
   }).bind(this);
 }
