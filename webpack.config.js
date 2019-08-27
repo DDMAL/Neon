@@ -11,7 +11,7 @@ module.exports = {
     editor: './src/editor.ts',
   },
   output: {
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, 'deployment', 'public'),
     publicPath: '/',
     filename: '[name].js'
   },
