@@ -52,7 +52,7 @@ function displayNotification (notification: Notification): void {
   }
   const notificationContent = document.getElementById('notification-content');
   notificationContent.innerHTML += '<div class=\'neon-notification\' id=\'' + notification.getId() + '\'>' + notification.message + '</div> ';
-  notificationContent.setAttribute('display', '');
+  notificationContent.style.display = '';
   notification.display();
 }
 
@@ -68,7 +68,7 @@ function clearOrShowNextNotification (currentId: string): void {
   if (notifications.length > 0) {
     startNotification();
   } else if (document.querySelectorAll('.neon-notification').length === 0) {
-    document.getElementById('notification-content').setAttribute('display', 'none');
+    document.getElementById('notification-content').style.display = 'none';
     notifying = false;
   }
 }

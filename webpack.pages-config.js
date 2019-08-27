@@ -10,7 +10,6 @@ module.exports = {
   entry: {
     editor: './pages/editor.js',
     index: './pages/index.js',
-    pretty: './src/pretty.ts'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),

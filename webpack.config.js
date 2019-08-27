@@ -9,7 +9,6 @@ module.exports = {
   mode: 'production',
   entry: {
     editor: './src/editor.ts',
-    pretty: './src/pretty.ts'
   },
   output: {
     path: path.resolve(__dirname, 'public'),
