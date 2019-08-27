@@ -36,6 +36,7 @@ app.use('/', routes);
 // Templating Engine
 //=====================
 
+app.set('views', 'deployment/views');
 app.set('view engine', 'pug');
 
 //=============
