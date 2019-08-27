@@ -17,7 +17,7 @@ function startInfoVisibility (): void {
   document.getElementById('neume_info').innerHTML =
     '<article class=\'message\'><div class=\'message-header\'><p></p></div>' +
       '<div class=\'message-body\'></div>';
-  document.getElementById('neume_info').classList.add('is-invisible');
+  document.getElementById('neume_info').setAttribute('style', 'display: none');
 }
 
 /**
@@ -26,9 +26,9 @@ function startInfoVisibility (): void {
 function updateInfoVisibility (): void {
   const neumeInfo = document.getElementById('neume_info');
   if ((document.getElementById('displayInfo') as HTMLInputElement).checked) {
-    neumeInfo.classList.remove('is-invisible');
+    neumeInfo.setAttribute('style', '');
   } else {
-    neumeInfo.classList.add('is-invisible');
+    neumeInfo.setAttribute('style', 'display: none');
   }
 }
 
