@@ -3,7 +3,6 @@
 import * as Contents from './Contents';
 import * as Cursor from '../utils/Cursor';
 import { setGroupingHighlight } from '../utils/Color';
-import * as Icons from '../../assets/img/icons.svg';
 import { unselect } from '../utils/SelectTools';
 import InsertHandler from './InsertHandler';
 import { NeumeEditInterface } from '../Interfaces';
@@ -68,20 +67,20 @@ export function initInsertEditControls () {
   toggleInsert.addEventListener('click', () => {
     if (insertContents.style.display === 'none') {
       insertContents.style.display = '';
-      toggleInsert.setAttribute('xlink:href', Icons + '#dropdown-down');
+      toggleInsert.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
     } else {
       insertContents.style.display = 'none';
-      toggleInsert.setAttribute('xlink:href', Icons + '#dropdown-side');
+      toggleInsert.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-side');
     }
   });
 
   toggleEdit.addEventListener('click', () => {
     if (editContents.style.display === 'none') {
       editContents.style.display = '';
-      toggleEdit.setAttribute('xlink:href', Icons + '#dropdown-down');
+      toggleEdit.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
     } else {
       editContents.style.display = 'none';
-      toggleEdit.setAttribute('xlink:href', Icons + '#dropdown-side');
+      toggleEdit.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-side');
     }
   });
 }

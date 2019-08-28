@@ -78,7 +78,8 @@ module.exports = {
     new HardSourceWebpackPlugin(),
     new webpack.DefinePlugin({
       __LINK_LOCATION__: JSON.stringify('/'),
-      __NEON_VERSION__: JSON.stringify('Commit ' + commitHash)
+      __NEON_VERSION__: JSON.stringify('Commit ' + commitHash),
+      __ASSET_PREFIX__: JSON.stringify('/')
     })
   ]
 };

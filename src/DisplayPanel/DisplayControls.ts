@@ -1,7 +1,6 @@
 /** @module DisplayPanel/DisplayControls */
 
 import * as Color from '../utils/Color';
-import * as Icons from '../../assets/img/icons.svg';
 import ZoomHandler from '../SingleView/Zoom';
 
 let lastGlyphOpacity: number, lastImageOpacity: number;
@@ -23,10 +22,10 @@ export function initDisplayControls (meiClassName: string, background: string): 
   toggleDisplay.addEventListener('click', () => {
     if (displayContents.style.display === 'none') {
       displayContents.style.display = '';
-      toggleDisplay.setAttribute('xlink:href', Icons + '#dropdown-down');
+      toggleDisplay.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
     } else {
       displayContents.style.display = 'none';
-      toggleDisplay.setAttribute('xlink:href', Icons + '#dropdown-side');
+      toggleDisplay.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-side');
     }
   });
 }

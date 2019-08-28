@@ -1,8 +1,5 @@
 import * as template from '../../../assets/template.html';
 
-declare const __LINK_LOCATION__: string;
-declare const __NEON_VERSION__: string;
-
 function setBody (): void {
   document.body.innerHTML = template.toString();
   (document.getElementById('home-link') as HTMLAnchorElement)

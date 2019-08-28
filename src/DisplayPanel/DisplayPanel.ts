@@ -1,5 +1,4 @@
 import * as DisplayControls from './DisplayControls';
-import * as Icons from '../../assets/img/icons.svg';
 import ZoomHandler from '../SingleView/Zoom';
 import { DisplayInterface, ViewInterface } from '../Interfaces';
 
@@ -11,7 +10,7 @@ import { DisplayInterface, ViewInterface } from '../Interfaces';
 function displayControlsPanel (handleZoom: ZoomHandler): string {
   let contents =
   '<p class=\'panel-heading\' id=\'displayHeader\'>Display' +
-  '<svg class=\'icon is-pulled-right\'><use id=\'toggleDisplay\' xlink:href=\'' + Icons + '#dropdown-down\'></use></svg></p>' +
+  '<svg class=\'icon is-pulled-right\'><use id=\'toggleDisplay\' xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></p>' +
   '<div id=\'displayContents\'>';
   if (handleZoom !== undefined) {
     contents +=
@@ -30,7 +29,7 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
   '<div class=\'dropdown\' id=\'highlight-dropdown\'><div class=\'dropdown-trigger\'>' +
   '<button class=\'button\' id=\'highlight-button\' aria-haspopup=\'true\' aria-controls=\'highlight-menu\' style=\'width: auto\'>' +
   '<span>Highlight</span><span id=\'highlight-type\'>&nbsp;- Off</span>' +
-  '<svg class=\'icon\'><use id=\'toggleDisplay\' xlink:href=\'' + Icons + '#dropdown-down\'></use>' +
+  '<svg class=\'icon\'><use id=\'toggleDisplay\' xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use>' +
   '</svg></button></div><div class=\'dropdown-menu\' id=\'highlight-menu\' role=\'menu\'>' +
   '<div class=\'dropdown-content\'><a class=\'dropdown-item\' id=\'highlight-staff\'>Staff</a>' +
   '<a class=\'dropdown-item\' id=\'highlight-syllable\'>Syllable</a>' +
