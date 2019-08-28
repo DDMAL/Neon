@@ -1,4 +1,4 @@
-importScripts('./verovio-toolkit.js');
+importScripts('./assets/js/verovio-toolkit.js');
 
 const toolkit = new verovio.toolkit();
 toolkit.setOptions({
