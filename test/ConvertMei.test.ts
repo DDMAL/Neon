@@ -5,7 +5,11 @@ import * as ConvertMei from '../src/utils/ConvertMei';
 import * as fs from 'fs';
 import * as et from 'elementtree';
 
-jest.mock('uuid/v4');
+jest.mock('../src/utils/random', () => ({
+  uuidv4: (): string => {
+    return '06ac61aa-e700-44d9-8000-199d8e778c9f';
+  }
+}));
 
 let originalTest, sbKey, staffKey;
 
@@ -17,12 +21,12 @@ beforeAll(() => {
 
 test('Verify results of \'convertStaffToSb\'', () => {
   const result = ConvertMei.convertStaffToSb(originalTest);
-  const parsedKey = et.parse(sbKey).write({ xml_declaration: true, indent: 4 });
+  const parsedKey = et.parse(sbKey).write({ 'xml_declaration': true, indent: 4 });
   expect(result).toBe(parsedKey);
 });
 
 test('Verify results of \'convertSbToStaff\'', () => {
   const result = ConvertMei.convertSbToStaff(sbKey);
-  const parsedKey = et.parse(staffKey).write({ xml_declaration: true, indent: 4 });
+  const parsedKey = et.parse(staffKey).write({ 'xml_declaration': true, indent: 4 });
   expect(result).toBe(parsedKey);
 });

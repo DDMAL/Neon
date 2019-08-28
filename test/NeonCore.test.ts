@@ -868,7 +868,7 @@ describe('Test changeStaff function', () => {
   test('test pitch changing for changeStaff with clef', async() => {
     const neon = new NeonCore(mei);
     await neon.initDb();
-    let svg = await neon.getSVG(pathToPNG);
+    await neon.getSVG(pathToPNG);
     let attr = await neon.getElementAttr('m-d0411b11-f0be-42ff-9bf6-255740eb3b94', pathToPNG);
     expect(attr.shape).toBe('C');
     expect(attr.line).toBe('3');
