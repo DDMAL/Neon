@@ -1,13 +1,13 @@
-import NeonView from './NeonView';
-import DisplayPanel from './DisplayPanel/DisplayPanel';
-import DivaView from './DivaView';
-import DivaEdit from './SquareEdit/DivaEditMode';
-import SingleView from './SingleView/SingleView';
-import SingleEditMode from './SquareEdit/SingleEditMode';
-import InfoModule from './InfoModule';
-import TextView from './TextView';
-import TextEditMode from './TextEditMode';
-import { NeonManifest } from './Types';
+import NeonView from '../../src/NeonView';
+import DisplayPanel from '../../src/DisplayPanel/DisplayPanel';
+import DivaView from '../../src/DivaView';
+import DivaEdit from '../../src/SquareEdit/DivaEditMode';
+import SingleView from '../../src/SingleView/SingleView';
+import SingleEditMode from '../../src/SquareEdit/SingleEditMode';
+import InfoModule from '../../src/InfoModule';
+import TextView from '../../src/TextView';
+import TextEditMode from '../../src/TextEditMode';
+import { NeonManifest } from '../../src/Types';
 
 declare let manifestText: string;
 

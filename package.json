@@ -32,8 +32,8 @@
     },
     "scripts": {
         "start:dev": "nodemon deployment/server.js",
-        "start": "nodemon server.js",
-        "build": "./setup-verovio && webpack --config webpack.config.js && rm -rf deployment/public/assets && cp -R assets deployment/public",
+        "bundle:dev": "./setup-verovio && rm -rf dist/Neon && webpack --config webpack.config.js && cp -R assets dist/Neon",
+        "build:dev": "yarn run bundle:dev && cp -R dist/Neon deployment/public/",
         "test": "jest --silent",
         "doc": "typedoc --out ./doc --mode modules --exclude '**/verovio-dev/**/*' ./src",
         "pages": "./setup-verovio && webpack --config webpack.pages-config.js && cp -R public/verovio-toolkit.js public/diva-v6.0.1 pages/manifests dist/ && cp pages/static/* dist/ && cp src/style.css dist/"

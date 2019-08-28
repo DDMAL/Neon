@@ -12,7 +12,7 @@ module.exports = {
     index: './deployment/pages/index.js',
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'dist', 'Neon-gh'),
     filename: '[name].js'
   },
   node: {
@@ -68,7 +68,10 @@ module.exports = {
       {
         test: /Worker\.js$/,
         use: [
-          'worker-loader'
+          {
+            loader: 'worker-loader',
+            options: { publicPath: '/Neon-gh/' }
+          }
         ]
       },
       {
