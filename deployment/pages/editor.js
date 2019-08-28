@@ -1,12 +1,12 @@
-import NeonView from '../src/NeonView';
-import DisplayPanel from '../src/DisplayPanel/DisplayPanel';
-import DivaView from '../src/DivaView';
-import SingleView from '../src/SingleView/SingleView';
-import DivaEdit from '../src/SquareEdit/DivaEditMode';
-import SingleEditMode from '../src/SquareEdit/SingleEditMode';
-import InfoModule from '../src/InfoModule';
-import TextView from '../src/TextView';
-import TextEditMode from '../src/TextEditMode';
+import NeonView from '../../src/NeonView';
+import DisplayPanel from '../../src/DisplayPanel/DisplayPanel';
+import DivaView from '../../src/DivaView';
+import SingleView from '../../src/SingleView/SingleView';
+import DivaEdit from '../../src/SquareEdit/DivaEditMode';
+import SingleEditMode from '../../src/SquareEdit/SingleEditMode';
+import InfoModule from '../../src/InfoModule';
+import TextView from '../../src/TextView';
+import TextEditMode from '../../src/TextEditMode';
 
 import PouchDB from 'pouchdb';
 
@@ -22,7 +22,14 @@ if (name) {
       throw new Error(response.statusText);
     }
   }).then(async text => {
-    let manifest = JSON.parse(text);
+    let manifest;
+    try {
+      manifest = JSON.parse(text);
+    } catch (e) {
+      console.error(e);
+      console.debug(text);
+      return;
+    }
     let params = {
       manifest: manifest,
       Display: DisplayPanel,

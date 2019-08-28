@@ -9,7 +9,6 @@ module.exports = {
   mode: 'production',
   entry: {
     editor: './deployment/pages/editor.js',
-    index: './deployment/pages/index.js',
   },
   output: {
     path: path.resolve(__dirname, 'dist', 'Neon-gh'),
@@ -70,7 +69,7 @@ module.exports = {
         use: [
           {
             loader: 'worker-loader',
-            options: { publicPath: '/Neon-gh/' }
+            options: { publicPath: '/Neon/Neon-gh/' }
           }
         ]
       },
@@ -94,7 +93,7 @@ module.exports = {
     new webpack.DefinePlugin({
       __LINK_LOCATION__: JSON.stringify('https://ddmal.music.mcgill.ca/Neon'),
       __NEON_VERSION__: JSON.stringify('Commit ' + commitHash),
-      __ASSET_PREFIX__: JSON.stringify('./')
+      __ASSET_PREFIX__: JSON.stringify('/Neon/Neon-gh/')
     })
   ]
 };
