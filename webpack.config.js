@@ -29,43 +29,12 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader'
-        ]
-      },
-      {
-        test: /\.(png|svg)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-              outputPath: './img/'
-            }
-          }
-        ]
-      },
-      {
-        test: /\.rng$/,
-        use: [
-          'raw-loader'
-        ]
-      },
-      {
         test: /Worker\.js$/,
         use: [
           {
             loader: 'worker-loader',
             options: { publicPath: '/Neon/' }
           }
-        ]
-      },
-      {
-        test: /\.html$/,
-        use: [
-          'html-loader'
         ]
       }
     ]
