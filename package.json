@@ -32,11 +32,11 @@
     },
     "scripts": {
         "start:dev": "nodemon deployment/server.js",
-        "bundle:dev": "./setup-verovio && rm -rf dist/Neon && webpack --config webpack.config.js && cp -R assets dist/Neon",
+        "bundle:dev": "./setup-verovio && rm -rf dist/Neon && webpack --config webpack.config.js && cp -R assets src/workers dist/Neon",
         "build:dev": "yarn run bundle:dev && cp -R dist/Neon deployment/public/",
         "test": "jest --silent",
         "doc": "typedoc --out ./doc --mode modules ./src",
-        "bundle:pages": "./setup-verovio && rm -rf dist/Neon-gh && webpack --config webpack.pages-config.js && cp -R assets dist/Neon-gh"
+        "bundle:pages": "./setup-verovio && rm -rf dist/Neon-gh && webpack --config webpack.pages-config.js && cp -R assets src/workers dist/Neon-gh"
     },
     "jest": {
         "testPathIgnorePatterns": [

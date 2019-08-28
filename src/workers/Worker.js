@@ -1,4 +1,4 @@
-importScripts(__ASSET_PREFIX__ + 'assets/js/xmllint.js');
+importScripts('../assets/js/xmllint.js');
 
 onmessage = (event) => {
   const results = xmllint.validateXML({
