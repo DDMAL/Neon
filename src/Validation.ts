@@ -1,7 +1,6 @@
-// const schemaPromise = import('./validation/mei-all.rng');
-const schemaPromise = require('../assets/mei-all.rng');
+const schemaResponse = fetch(__ASSET_PREFIX__ + 'assets/mei-all.rng');
 const Worker: WorkerConstructable = require('./Worker.js');
-let worker: Worker, schema: { default: string[] }, statusField: HTMLSpanElement;
+let worker: Worker, schema: string, statusField: HTMLSpanElement;
 
 interface WorkerConstructable {
   new (): Worker;
@@ -66,13 +65,14 @@ export async function sendForValidation (meiData: string): Promise<void> {
     return;
   }
   if (schema === undefined) {
-    schema = await schemaPromise;
+    const response = await schemaResponse;
+    schema = await response.text();
   }
   statusField.textContent = 'checking...';
   statusField.style.color = 'gray';
   worker.postMessage({
     mei: meiData,
-    schema: schema.default
+    schema: schema
   });
 }
 
