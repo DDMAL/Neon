@@ -45,6 +45,22 @@ getAllDocuments().then(response => {
   console.error(err);
 });
 
+const actionForms = document.querySelectorAll('#page-form,#manifest-form,#user-form');
+
+function setAction () {
+  console.log('change');
+  actionForms.forEach(form => {
+    if (document.getElementById('radio-stable').checked) {
+      form.setAttribute('action', './editor.html');
+    } else {
+      form.setAttribute('action', './editor-testing.html');
+    }
+  });
+}
+
+document.getElementById('radio-stable').addEventListener('change', setAction);
+document.getElementById('radio-testing').addEventListener('change', setAction);
+
 document.getElementById('generate-storage-form').onsubmit = (evt) => {
   evt.preventDefault();
   if (evt.target.checkValidity()) {
