@@ -1,6 +1,7 @@
 import { NeonManifest } from './Types';
 import NeonView from './NeonView';
 import ZoomHandler from './SingleView/Zoom';
+import DragHandler from './utils/DragHandler';
 
 export interface DisplayConstructable {
   new (a: ViewInterface, b: string, c: string, d?: ZoomHandler): DisplayInterface;
@@ -36,6 +37,7 @@ export interface NeumeEditInterface {
   initEditMode (): void;
   getUserMode (): string;
   setSelectListeners (): void;
+  dragHandler: DragHandler;
 }
 
 export interface TextEditConstructable {
