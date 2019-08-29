@@ -50,7 +50,7 @@ const actionForms = document.querySelectorAll('#page-form,#manifest-form,#user-f
 function setAction () {
   console.log('change');
   actionForms.forEach(form => {
-    if (document.getElementById('radio-stable').checked) {
+    if (!document.getElementById('version-checkbox').checked) {
       form.setAttribute('action', './editor.html');
     } else {
       form.setAttribute('action', './editor-testing.html');
@@ -58,8 +58,7 @@ function setAction () {
   });
 }
 
-document.getElementById('radio-stable').addEventListener('change', setAction);
-document.getElementById('radio-testing').addEventListener('change', setAction);
+document.getElementById('version-checkbox').addEventListener('change', setAction);
 
 document.getElementById('generate-storage-form').onsubmit = (evt) => {
   evt.preventDefault();
