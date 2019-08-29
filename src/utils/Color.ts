@@ -25,7 +25,7 @@ export function unhighlight (staff?: SVGGElement): void {
     children = document.querySelectorAll(':not(.selected) .highlighted');
   }
   children.forEach(elem => {
-    if (elem.tagName === 'path') {
+    if (elem.tagName === 'path' && !elem.closest('.staff').classList.contains('selected')) {
       elem.setAttribute('stroke', '#000000');
     } else {
       elem.removeAttribute('fill');
@@ -38,7 +38,9 @@ export function unhighlight (staff?: SVGGElement): void {
         }
       }
       rects.forEach(function (rect: HTMLElement) {
-        if (rect.closest('.syllable').classList.contains('selected')) {
+        if (rect.closest('.syllable').classList.contains('selected') || 
+            rect.closest('.staff').classList.contains('selected') ||
+            rect.closest('.syl').classList.contains('selected')) {
           rect.style.fill = 'red';
         } else {
           rect.style.fill = 'blue';
@@ -73,7 +75,7 @@ export function unsetGroupingHighlight (): void {
       }
     }
     rects.forEach(function (rect: HTMLElement) {
-      if (rect.closest('.syllable').classList.contains('selected')) {
+      if (rect.closest('.syllable').classList.contains('selected') || rect.closest('.syl').classList.contains('selected')) {
         rect.style.fill = 'red';
       } else {
         rect.style.fill = 'blue';
@@ -115,8 +117,9 @@ export function highlight (staff: SVGGElement, color: string): void {
         }
       }
       rects.forEach(function (rect: HTMLElement) {
-        const syllable = rect.closest('.syllable');
-        if (!syllable.classList.contains('selected')) {
+        if (!(rect.closest('.syllable').classList.contains('selected') ||
+              rect.closest('.syl').classList.contains('selected') ||
+              rect.closest('.staff').classList.contains('selected'))) {
           rect.style.fill = color;
           rect.classList.add('highlighted');
         }
@@ -171,6 +174,11 @@ export function setGroupingHighlight (grouping: string): void {
       groups[i].setAttribute('fill', groupColor);
       const rects = groups[i].querySelectorAll('.sylTextRect-display') as NodeListOf<HTMLElement>;
       rects.forEach(function (rect) {
+        if (rect.closest('.syl').classList.contains('selected') || 
+            rect.closest('.syllable').classList.contains('selected') ||
+            rect.closest('.staff').classList.contains('selected')) {
+          return;
+        }
         rect.style.fill = groupColor;
       });
       groups[i].classList.add('highlighted');

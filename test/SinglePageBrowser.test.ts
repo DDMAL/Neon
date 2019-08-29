@@ -149,6 +149,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
     test('Syl BBox highlighting features', async () => {
       await browser.executeScript(() => { document.getElementById('highlight-button').dispatchEvent(new Event('click')); });
       await browser.executeScript(() => { document.getElementById('highlight-syllable').dispatchEvent(new Event('click')); });
+      await browser.executeScript(() => { document.getElementsByClassName('sylTextRect-display')[3].dispatchEvent(new Event('mousedown')); });
       const colorCount = (await browser.findElements(By.css('.sylTextRect-display[style="fill: rgb(86, 180, 233);"]'))).length;
       expect(colorCount).toBeGreaterThan(0);
 

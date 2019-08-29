@@ -167,22 +167,23 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
 
       d3.select('#skewLeft').call(
         d3.drag()
-          .on('start', () => { skewStart('skewLeft'); })
+          .on('start', skewStart)
           .on('drag', skewDragLeft)
           .on('end', skewEnd));
 
       d3.select('#skewRight').call(
         d3.drag()
-          .on('start', () => { skewStart('skewRight'); })
+          .on('start', skewStart)
           .on('drag', skewDragRight)
           .on('end', skewEnd));
     }
 
-    function skewStart (which: string): void {
+    function skewStart (): void {
+      let which = d3.event.sourceEvent.target.id;
       const polygon = d3.select('#' + which);
       const points = polygon.attr('points');
       whichSkewPoint = which;
-      initialY = Number(points.split(' ')[0].split(',')[1]);
+      initialY = d3.mouse(this)[1];
       initialRectY = (which === 'skewRight' ? lry : uly);
       initialSkew = skew;
     }
@@ -212,6 +213,9 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
     }
 
     function skewEnd (): void {
+      if (dy === undefined) {
+        dy = 0;
+      }
       const editorAction = {
         'action': 'changeSkew',
         'param': {
@@ -229,6 +233,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         uly = undefined;
         lrx = undefined;
         lry = undefined;
+        dy = undefined;
         drawInitialRect();
         if (element.classList.contains('syl')) {
           selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
@@ -305,15 +310,15 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         uly = undefined;
         lrx = undefined;
         lry = undefined;
+        d3.selectAll('.resizePoint').remove();
+        d3.selectAll('#resizeRect').remove();
+        d3.selectAll('.skewPoint').remove();
+        drawInitialRect();
         if (element.classList.contains('syl')) {
           selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
         } else {
           selectStaff(element, dragHandler);
         }
-        d3.selectAll('.resizePoint').remove();
-        d3.selectAll('#resizeRect').remove();
-        d3.selectAll('.skewPoint').remove();
-        drawInitialRect();
       });
     }
   }

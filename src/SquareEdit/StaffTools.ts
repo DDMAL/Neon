@@ -1,6 +1,8 @@
 import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
 import { EditorAction } from '../Types';
+import { selectAll } from '../utils/SelectTools';
+import DragHandler from '../utils/DragHandler';
 
 /** Handle splitting a staff into two staves through Verovio. */
 export class SplitHandler {
@@ -59,8 +61,11 @@ export class SplitHandler {
     this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(async (result) => {
       if (result) {
         await this.neonView.updateForCurrentPagePromise();
+        Notification.queueNotification('Split action successful');
       }
+      let dragHandler = new DragHandler(this.neonView, '.staff');
       this.splitDisable();
+      selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
     });
   }).bind(this);
 
