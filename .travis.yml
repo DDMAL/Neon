@@ -17,9 +17,9 @@ install:
   - yarn install
 script:
   - export NODE_OPTIONS=--max_old_space_size=8192
-  - yarn build:dev
+  - yarn build
   - yarn upgrade verovio-dev
-  - yarn start:dev &
+  - yarn start &
   - yarn test
 notifications:
   email: false
