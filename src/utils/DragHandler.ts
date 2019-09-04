@@ -4,11 +4,12 @@ import * as d3 from 'd3';
 
 class DragHandler {
   private dragStartCoords: Array<number>;
-  private dragEndCoords: Array<number>;
   private resetToAction: (selection: d3.Selection<d3.BaseType, {}, HTMLElement, any>, args: any[]) => void;
   readonly neonView: NeonView;
   private selector: string;
   private selection: Element[];
+  private dx: number;
+  private dy: number;
 
   constructor (neonView: NeonView, selector: string) {
     this.neonView = neonView;
@@ -30,14 +31,15 @@ class DragHandler {
     this.selection = selection.concat(Array.from(document.getElementsByClassName('resizePoint')));
 
     this.dragStartCoords = new Array(activeNc.size());
-    this.dragEndCoords = new Array(activeNc.size());
 
     activeNc.call(dragBehaviour);
 
     // Drag effects
     function dragStarted (): void {
+      this.dragStartCoords = [d3.event.x, d3.event.y];
+      this.dx = 0;
+      this.dy = 0;
       const target = d3.event.sourceEvent.target;
-      this.dragStartCoords = d3.mouse(target);
       if (target.classList.contains('staff')) {
         d3.select(this.selector).call(dragBehaviour);
       }
@@ -47,6 +49,8 @@ class DragHandler {
   dragging (): void {
     const relativeY = d3.event.y - this.dragStartCoords[1];
     const relativeX = d3.event.x - this.dragStartCoords[0];
+    this.dx = d3.event.x - this.dragStartCoords[0];
+    this.dy = d3.event.y - this.dragStartCoords[1];
     this.selection.forEach((el) => {
       d3.select(el).attr('transform', function () {
         return 'translate(' + [relativeX, relativeY] + ')';
@@ -66,14 +70,13 @@ class DragHandler {
   }
 
   dragEnded (): void {
-    this.dragEndCoords = [d3.event.x, d3.event.y];
     const paramArray = [];
     this.selection.filter((el: SVGElement) => !el.classList.contains('resizePoint')).forEach((el: SVGElement) => {
       const id = (el.tagName === 'rect') ? el.closest('.syl').id : el.id;
       const singleAction = { action: 'drag',
         param: { elementId: id,
-          x: this.dragEndCoords[0] - this.dragStartCoords[0],
-          y: (this.dragEndCoords[1] - this.dragStartCoords[1]) * -1 }
+          x: this.dx,
+          y: (this.dy) * -1 }
       };
       paramArray.push(singleAction);
     });
@@ -82,8 +85,8 @@ class DragHandler {
       'param': paramArray
     };
 
-    const xDiff = Math.abs(this.dragStartCoords[0] - this.dragEndCoords[0]);
-    const yDiff = Math.abs(this.dragStartCoords[1] - this.dragEndCoords[1]);
+    const xDiff = Math.abs(this.dx);
+    const yDiff = Math.abs(this.dy);
 
     if (xDiff > 5 || yDiff > 5) {
       this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(() => {
