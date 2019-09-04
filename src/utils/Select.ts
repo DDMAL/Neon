@@ -144,7 +144,21 @@ function clickHandler (evt: MouseEvent): void {
     const selectedStaves = Array.from(document.getElementsByClassName('staff'))
       .filter((staff: SVGGElement) => {
         const bbox = getStaffBBox(staff);
-        return (bbox.ulx < pt.x && pt.x < bbox.lrx) && (bbox.uly < pt.y && pt.y < bbox.lry);
+        let ulx = bbox.ulx;
+        let uly = bbox.uly;
+        let lrx = bbox.lrx;
+        let lry = bbox.lry;
+
+        const coordinates: number[] = staff.querySelector('path')
+          .getAttribute('d')
+          .match(/\d+/g)
+          .map(element => Number(element));
+        let skew = Math.atan((coordinates[3] - coordinates[1]) /
+          (coordinates[2] - coordinates[0]));
+
+        return (pt.x > ulx && pt.x < lrx) && 
+          (pt.y > (uly + (pt.x - ulx) * Math.tan(skew))) && 
+          (pt.y < (lry - (lrx - pt.x) * Math.tan(skew)));
       });
     if (selectedStaves.length !== 1) {
       if (document.getElementsByClassName('selected').length > 0) {
@@ -233,11 +247,25 @@ export function dragSelect (selector: string): void {
    * Check if a point is in the bounds of a staff element.
    * Skew is not taken into account.
    */
-  function pointNotInStaff (point: number[]): boolean {
+  function pointNotInStaff (pt: number[]): boolean {
     const staves = Array.from(document.getElementsByClassName('staff'));
     const filtered = staves.filter((staff: SVGGElement) => {
-      const box = getStaffBBox(staff);
-      return (box.ulx < point[0] && point[0] < box.lrx) && (box.uly < point[1] && point[1] < box.lry);
+      const bbox = getStaffBBox(staff);
+        let ulx = bbox.ulx;
+        let uly = bbox.uly;
+        let lrx = bbox.lrx;
+        let lry = bbox.lry;
+
+        const coordinates: number[] = staff.querySelector('path')
+          .getAttribute('d')
+          .match(/\d+/g)
+          .map(element => Number(element));
+        let skew = Math.atan((coordinates[3] - coordinates[1]) /
+          (coordinates[2] - coordinates[0]));
+
+        return (pt[0] > ulx && pt[0] < lrx) && 
+          (pt[1] > (uly + (pt[0] - ulx) * Math.tan(skew))) && 
+          (pt[1] < (lry - (lrx - pt[0]) * Math.tan(skew)));
     });
     return (filtered.length === 0);
   }
