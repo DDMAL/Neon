@@ -63,8 +63,7 @@ export class SplitHandler {
         await this.neonView.updateForCurrentPagePromise();
         Notification.queueNotification('Split action successful');
       }
-      let dragHandler = this.neonView.NeumeEdit.dragHandler;
-      console.log(dragHandler);
+      let dragHandler = new DragHandler(this.neonView, '.staff');
       this.splitDisable();
       selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
     });
