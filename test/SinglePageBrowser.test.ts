@@ -1,6 +1,6 @@
 /* eslint-env jest */
 const pathToResources = './test/resources/';
-const pathToUploads = './public/uploads/';
+const pathToUploads = './deployment/public/uploads/';
 const editUrl = 'http://localhost:8080/edit/test.jsonld';
 
 import * as fs from 'fs';

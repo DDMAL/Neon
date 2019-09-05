@@ -2,7 +2,7 @@ import { convertSbToStaff } from './utils/ConvertMei';
 import * as Validation from './Validation';
 import VerovioWrapper from './VerovioWrapper';
 import { WebAnnotation, Attributes, EditorAction, NeonManifest, VerovioMessage } from './Types';
-import * as uuid from 'uuid/v4';
+import { uuidv4 } from './utils/random';
 
 import PouchDB from 'pouchdb';
 
@@ -222,7 +222,7 @@ class NeonCore {
      */
     return new Promise((resolve): void => {
       const message: VerovioMessage = {
-        id: uuid(),
+        id: uuidv4(),
         action: 'renderData',
         mei: data
       };
@@ -279,7 +279,7 @@ class NeonCore {
     return new Promise((resolve): void => {
       this.loadPage(pageURI).then(() => {
         const message: VerovioMessage = {
-          id: uuid(),
+          id: uuidv4(),
           action: 'getElementAttr',
           elementId: elementId
         };
@@ -310,7 +310,7 @@ class NeonCore {
       promise.then(entry => {
         const currentMEI = entry.mei;
         const message: VerovioMessage = {
-          id: uuid(),
+          id: uuidv4(),
           action: 'edit',
           editorAction: editorAction
         };
@@ -344,7 +344,7 @@ class NeonCore {
       let mei: string, svgText: string;
       const meiPromise = new Promise((resolve): void => {
         const message: VerovioMessage = {
-          id: uuid(),
+          id: uuidv4(),
           action: 'getMEI'
         };
         this.verovioWrapper.addEventListener('message', function handle (evt: MessageEvent) {
@@ -358,7 +358,7 @@ class NeonCore {
       });
       const svgPromise = new Promise((resolve): void => {
         const message: VerovioMessage = {
-          id: uuid(),
+          id: uuidv4(),
           action: 'renderToSVG'
         };
         this.verovioWrapper.addEventListener('message', function handle (evt: MessageEvent) {
@@ -400,7 +400,7 @@ class NeonCore {
     return new Promise((resolve): void => {
       promise.then(() => {
         const message: VerovioMessage = {
-          id: uuid(),
+          id: uuidv4(),
           action: 'editInfo'
         };
         this.verovioWrapper.addEventListener('message', function handle (evt: MessageEvent) {

@@ -1,11 +1,5 @@
-// const schemaPromise = import('./validation/mei-all.rng');
-const schemaPromise = require('./validation/mei-all.rng');
-const Worker: WorkerConstructable = require('./Worker.js');
-let worker: Worker, schema: { default: string[] }, statusField: HTMLSpanElement;
-
-interface WorkerConstructable {
-  new (): Worker;
-}
+const schemaResponse = fetch(__ASSET_PREFIX__ + 'assets/mei-all.rng');
+let worker: Worker, schema: string, statusField: HTMLSpanElement;
 
 /**
  * Update the UI with the validation results. Called when the WebWorker finishes validating.
@@ -52,7 +46,7 @@ export async function init (): Promise<void> {
     panelBlock.appendChild(pNotif);
     displayContents.appendChild(panelBlock);
     statusField = document.getElementById('validation_status');
-    worker = new Worker();
+    worker = new Worker(__ASSET_PREFIX__ + 'workers/Worker.js');
     worker.onmessage = updateUI;
   }
 }
@@ -66,13 +60,14 @@ export async function sendForValidation (meiData: string): Promise<void> {
     return;
   }
   if (schema === undefined) {
-    schema = await schemaPromise;
+    const response = await schemaResponse;
+    schema = await response.text();
   }
   statusField.textContent = 'checking...';
   statusField.style.color = 'gray';
   worker.postMessage({
     mei: meiData,
-    schema: schema.default
+    schema: schema
   });
 }
 

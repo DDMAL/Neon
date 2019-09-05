@@ -1,70 +1,48 @@
-import * as PunctumIcon from '../img/punctum.png';
-import * as VirgaIcon from '../img/virga.png';
-import * as DiamondIcon from '../img/diamond.png';
-// const WhitePunctumIcon = require()"./img/white_punct.png";
-// const QuilismaIcon = require()"./img/quilisma.png";
-import * as CustosIcon from '../img/custos.png';
-import * as CClefIcon from '../img/cClef.png';
-import * as FClefIcon from '../img/fClef.png';
-import * as StaffIcon from '../img/staff.png';
-// const SmallDivIcon = require()"./img/smallDiv.png";
-// const MinorDivIcon = require()"./img/minorDiv.png";
-// const MajorDivIcon = require()"./img/majorDiv.png";
-// const FinalDivIcon = require()"./img/finalDiv.png";
-import * as PesIcon from '../img/pes.png';
-import * as ClivisIcon from '../img/clivis.png';
-import * as ScandicusIcon from '../img/scandicus.png';
-import * as ClimacusIcon from '../img/climacus.png';
-import * as TorculusIcon from '../img/torculus.png';
-import * as PorrectusIcon from '../img/porrectus.png';
-import * as PressusIcon from '../img/pressus.png';
-import * as Icons from '../img/icons.svg';
-
 /**
  * HTML for each insert tab (neume, grouping, clef, system, and division).
  */
 export const insertTabHtml: Record<string, string> = {
   primitiveTab: '<p class=\'control\'>' +
-        '<button id=\'punctum\' class=\'button insertel smallel\' title=\'punctum\'><img src=\'' + PunctumIcon + '\' class=\'image\'/></button></p>' +
+        '<button id=\'punctum\' class=\'button insertel smallel\' title=\'punctum\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/punctum.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'virga\' class=\'button insertel smallel\' title=\'virga\'><img src=\'' + VirgaIcon + '\' class=\'image\'/></button></p>' +
+        '<button id=\'virga\' class=\'button insertel smallel\' title=\'virga\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/virga.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'diamond\' class=\'button insertel smallel\' title=\'inclinatum\'><img src=\'' + DiamondIcon + '\' class=\'image\'/></button></p>' +
+        '<button id=\'diamond\' class=\'button insertel smallel\' title=\'inclinatum\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/diamond.png' + '\' class=\'image\'/></button></p>' +
   /*  "<p class='control'>" +
-        "<button id='white_punct' class='button insertel smallel' title='white punctum'><img src='" + WhitePunctumIcon + "' class='image'/></button></p>" +
+        "<button id='white_punct' class='button insertel smallel' title='white punctum'><img src='" + White__ASSET_PREFIX__ + 'assets/img/punctum.png' + "' class='image'/></button></p>" +
         "<p class='control'>" +
-        "<button id='quilisma' class='button insertel smallel' title='quilisma'><img src='" + QuilismaIcon + "' class='image'/></button></p>" + */
+        "<button id='quilisma' class='button insertel smallel' title='quilisma'><img src='" + __ASSET_PREFIX__ + 'assets/img/quilisma.png' + "' class='image'/></button></p>" + */
         '<p class=\'control\'>' +
-        '<button id=\'custos\' class=\'button insertel smallel\' title=\'custos\'><img src=\'' + CustosIcon + '\' class=\'image\'/></button></p>' +
+        '<button id=\'custos\' class=\'button insertel smallel\' title=\'custos\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/custos.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'cClef\' class=\'button insertel smallel\' title=\' C Clef\'><img src=\'' + CClefIcon + '\' class=\'image\' /></button></p>' +
+        '<button id=\'cClef\' class=\'button insertel smallel\' title=\' C Clef\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/cClef.png' + '\' class=\'image\' /></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'fClef\' class=\'button insertel smallel\' title=\'F Clef\'><img src=\'' + FClefIcon + '\' class=\'image\'/></button></p>',
+        '<button id=\'fClef\' class=\'button insertel smallel\' title=\'F Clef\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/fClef.png' + '\' class=\'image\'/></button></p>',
   groupingTab: '<p class=\'control\'>' +
-        '<button id=\'pes\' class=\'button insertel smallel\' title=\'pes\'><img src=\'' + PesIcon + '\' class=\'image\'/></button></p>' +
+        '<button id=\'pes\' class=\'button insertel smallel\' title=\'pes\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/pes.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'clivis\' class=\'button insertel smallel\' title=\'clivis\'><img src=\'' + ClivisIcon + '\' class=\'image\'/></button></p>' +
+        '<button id=\'clivis\' class=\'button insertel smallel\' title=\'clivis\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/clivis.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'scandicus\' class=\'button insertel smallel\' title=\'scandicus\'><img src=\'' + ScandicusIcon + '\' class=\'image\'/></button></p>' +
+        '<button id=\'scandicus\' class=\'button insertel smallel\' title=\'scandicus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/scandicus.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'climacus\' class=\'button insertel smallel\' title=\'climacus\'><img src=\'' + ClimacusIcon + '\' class=\'image\'/></button></p>' +
+        '<button id=\'climacus\' class=\'button insertel smallel\' title=\'climacus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/climacus.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'torculus\' class=\'button insertel smallel\' title=\'toculus\'><img src=\'' + TorculusIcon + '\' class=\'image\'/></button></p>' +
+        '<button id=\'torculus\' class=\'button insertel smallel\' title=\'toculus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/torculus.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'porrectus\' class=\'button insertel smallel\' title=\'porrectus\'><img src=\'' + PorrectusIcon + '\' class=\'image\'/></button></p>' +
+        '<button id=\'porrectus\' class=\'button insertel smallel\' title=\'porrectus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/porrectus.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'pressus\' class=\'button insertel smallel\' title=\'pressus\'><img src=\'' + PressusIcon + '\' class=\'image\'/></button></p>',
+        '<button id=\'pressus\' class=\'button insertel smallel\' title=\'pressus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/pressus.png' + '\' class=\'image\'/></button></p>',
   systemTab: '<p class=\'control\'>' +
-        '<button id=\'staff\' class=\'button insertel longel\' title=\'system\'><img src=\'' + StaffIcon + '\' class=\'image\' /></button></p>' +
+        '<button id=\'staff\' class=\'button insertel longel\' title=\'system\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/staff.png' + '\' class=\'image\' /></button></p>' +
         '<p>Click upper left and lower right corners of new staff.</p>'
   // divisionTab: "<p class='control'>" +
-  //     "<button id='smallDiv' class='button insertel tallel'><img src='" + SmallDivIcon + "' class='image'/></button></p>" +
+  //     "<button id='smallDiv' class='button insertel tallel'><img src='" + __ASSET_PREFIX__ + 'assets/img/smalldiv.png' + "' class='image'/></button></p>" +
   //     "<p class='control'>" +
-  //     "<button id='minorDiv' class='button insertel tallel'><img src='" + MinorDivIcon +"' class='image'/></button></p>" +
+  //     "<button id='minorDiv' class='button insertel tallel'><img src='" + __ASSET_PREFIX__ + 'assets/img/minordiv.png' +"' class='image'/></button></p>" +
   //     "<p class='control'>" +
-  //     "<button id='majorDiv' class='button insertel tallel'><img src='" + MajorDivIcon + "' class='image'/></button></p>" +
+  //     "<button id='majorDiv' class='button insertel tallel'><img src='" + __ASSET_PREFIX__ + 'assets/img/majordiv.png' + "' class='image'/></button></p>" +
   //     "<p class='control'>" +
-  //     "<button id='finalDiv' class='button insertel tallel'><img src='" + FinalDivIcon + "' class='image'/></button></p>"
+  //     "<button id='finalDiv' class='button insertel tallel'><img src='" + __ASSET_PREFIX__ + 'assets/img/finaldiv.png' + "' class='image'/></button></p>"
 };
 
 /**
@@ -72,7 +50,7 @@ export const insertTabHtml: Record<string, string> = {
  */
 export const insertControlsPanel: string =
     '<p class=\'panel-heading\' id=\'insertMenu\'>Insert' +
-    '<svg class=\'icon is-pulled-right\'><use id=\'toggleInsert\' xlink:href=\'' + Icons + '#dropdown-down\'></use></svg></p>' +
+    '<svg class=\'icon is-pulled-right\'><use id=\'toggleInsert\' xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></p>' +
     '<div id=\'insertContents\' style=\'overflow-y: hidden;\'>' +
     '<p class=\'panel-tabs\'>' +
     '<a id=\'primitiveTab\' class=\'insertTab\'>Primitive Elements</a>' +
@@ -87,7 +65,7 @@ export const insertControlsPanel: string =
  */
 export const editControlsPanel: string =
     '<p class=\'panel-heading\' id=\'editMenu\'>Edit' +
-    '<svg class=\'icon is-pulled-right\'><use id=\'toggleEdit\' xlink:href=\'' + Icons + '#dropdown-down\'></use></svg></p>' +
+    '<svg class=\'icon is-pulled-right\'><use id=\'toggleEdit\' xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></p>' +
     '<div id=\'editContents\'>' +
     '<a class=\'panel-block\'>' +
     '<label>Select By:&nbsp;</label>' +
@@ -114,7 +92,7 @@ export const ncActionContents: string =
         '<div class=\'dropdown-trigger\'>' +
         '<button id=\'select-options\' class=\'button\' aria-haspopup=\'true\' aria-controls=\'dropdown-menu\'>' +
         '<span>Head Shapes</span>' +
-        '<svg class=\'icon\'><use xlink:href=\'' + Icons + '#dropdown-down\'></use></svg></button></div>' +
+        '<svg class=\'icon\'><use xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></button></div>' +
         '<div class=\'dropdown-menu\' id=\'dropdown-menu\' role=\'menu\'>' +
         '<div class=\'dropdown-content\'>' +
         '<a id=\'Punctum\' class=\'dropdown-item\'>Punctum</a>' +
@@ -132,7 +110,7 @@ export const neumeActionContents: string =
         '<div class=\'dropdown-trigger\'>' +
         '<button id=\'select-options\' class=\'button\' aria-haspopup=\'true\' aria-controls=\'dropdown-menu\'>' +
         '<span>Groupings</span>' +
-        '<svg class=\'icon\'><use xlink:href=\'' + Icons + '#dropdown-down\'></use></svg></button></div>' +
+        '<svg class=\'icon\'><use xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></button></div>' +
         '<div class=\'dropdown-menu\' id=\'dropdown-menu\' role=\'menu\'>' +
         '<div class=\'dropdown-content scrollable-dropdown\'>' +
         '<a id=\'Pes\' class=\'dropdown-item grouping\'>Pes</a>' +
@@ -198,7 +176,7 @@ export const clefActionContents: string =
     '<div class=\'dropdown-trigger\'>' +
     '<button id=\'select-options\' class=\'button\' aria-haspopup=\'true\' aria-controls=\'dropdown-menu\'>' +
     '<span>Clef Shapes</span>' +
-    '<svg class=\'icon\'><use xlink:href=\'' + Icons + '#dropdown-down\'></use></svg></button></div>' +
+    '<svg class=\'icon\'><use xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></button></div>' +
     '<div class=\'dropdown-menu\' id=\'dropdown-menu\' role=\'menu\'>' +
     '<div class=\'dropdown-content\'>' +
     '<a id=\'CClef\' class=\'dropdown-item\'>C Clef</a>' +

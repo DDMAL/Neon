@@ -29,25 +29,19 @@ class NeonView {
   /** Module that allows editing of syllable text. */
   TextEdit: Interfaces.TextEditInterface;
 
+  params: Interfaces.NeonViewParams;
+
 
   /**
    * Constructor for NeonView. Sets mode and passes constructors.
    */
   constructor (params: Interfaces.NeonViewParams) {
-    setBody();
-
     if (!parseManifest(params.manifest)) {
       console.error('Unable to parse the manifest');
     }
+
+    this.params = params;
     this.manifest = params.manifest;
-
-    this.view = new params.View(this, params.Display, params.manifest.image);
-    this.name = params.manifest.title;
-
-    this.core = new NeonCore(params.manifest);
-    this.info = new params.Info(this);
-
-    window.setTimeout(this.setupEdit.bind(this), 2000, params);
   }
 
   /**
@@ -82,7 +76,18 @@ class NeonView {
         this.updateForCurrentPage();
       }
     }); */
-    this.core.initDb().then(() => { this.updateForCurrentPage(true); });
+    setBody().then(() => {
+      this.view = new this.params.View(this, this.params.Display, this.manifest.image);
+      this.name = this.manifest.title;
+
+      this.core = new NeonCore(this.manifest);
+      this.info = new this.params.Info(this);
+
+      window.setTimeout(this.setupEdit.bind(this), 2000, this.params);
+      return this.core.initDb();
+    }).then(() => {
+      this.updateForCurrentPage(true);
+    });
   }
 
   /**

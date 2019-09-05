@@ -1,9 +1,5 @@
 import { VerovioMessage } from './Types';
-const VerovioWorker: WorkerConstructable = require('./VerovioWorker.js');
 
-interface WorkerConstructable {
-  new (): Worker;
-}
 
 /**
  * A wrapper around the verovio web worker to permit mocking in tests.
@@ -11,7 +7,7 @@ interface WorkerConstructable {
 export default class VerovioWrapper {
   verovioWorker: Worker;
   constructor () {
-    this.verovioWorker = new VerovioWorker();
+    this.verovioWorker = new Worker(__ASSET_PREFIX__ + 'workers/VerovioWorker.js');
   }
 
   /**
