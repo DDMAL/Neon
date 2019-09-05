@@ -2,10 +2,12 @@
   <meta charset="UTF-8">
   <head>
     <title>Neon</title>
-    <script src="./pretty.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css" integrity="sha256-vK3UTo/8wHbaUn+dTQD0X6dzidqc5l7gczvH+Bnowwk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="./Neon-gh/assets/style.css"/>
     <link rel="stylesheet" href="./index.css"/>
     <script src="//cdn.jsdelivr.net/npm/pouchdb@7.0.0/dist/pouchdb.min.js"></script>
-    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule="" src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
   </head>
   <body>
     <header>
@@ -89,6 +91,16 @@
         <button type="submit" class="button">Submit</button>
       </div>
     </form>
+
+    <div class="control" id="version-selector">
+      <label>
+        <input type="checkbox" id="version-checkbox"/>
+        Try new experimental features
+      </label>
+      <span class="icon has-features-info">
+        <ion-icon name="information-circle-outline" title="Neon defaults to its most stable version (master branch). When selected, Neon is built with its newer, but less tested, features (develop branch)"></ion-icon>
+      </span>
+    </div>
 
     <footer>
       <div class="content has-text-centered">
