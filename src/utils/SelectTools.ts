@@ -152,13 +152,18 @@ export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
 
 /**
  * Get the bounding box of a staff based on its staff lines.
+ * Skew is included in radians.
  */
-export function getStaffBBox (staff: SVGGElement): {ulx: number; uly: number; lrx: number; lry: number} {
-  let ulx, uly, lrx, lry;
+export function getStaffBBox (staff: SVGGElement): {ulx: number; uly: number; lrx: number; lry: number; skew: number} {
+  let ulx, uly, lrx, lry, skew;
   staff.querySelectorAll('path').forEach(path => {
     const coordinates: number[] = path.getAttribute('d')
       .match(/\d+/g)
       .map(element => Number(element));
+    if (skew === undefined) {
+      skew = Math.atan((coordinates[3] - coordinates[1]) /
+        (coordinates[2] - coordinates[0]));
+    }
     if (uly === undefined || coordinates[1] < uly) {
       uly = coordinates[1];
     }
@@ -172,7 +177,7 @@ export function getStaffBBox (staff: SVGGElement): {ulx: number; uly: number; lr
       lrx = coordinates[2];
     }
   });
-  return { 'ulx': ulx, 'uly': uly, 'lrx': lrx, 'lry': lry };
+  return { 'ulx': ulx, 'uly': uly, 'lrx': lrx, 'lry': lry, 'skew': skew };
 }
 
 /**
