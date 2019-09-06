@@ -148,28 +148,24 @@ function clickHandler (evt: MouseEvent): void {
         let uly = bbox.uly;
         let lrx = bbox.lrx;
         let lry = bbox.lry;
-
-        const coordinates: number[] = staff.querySelector('path')
-          .getAttribute('d')
-          .match(/\d+/g)
-          .map(element => Number(element));
-        let skew = Math.atan((coordinates[3] - coordinates[1]) /
-          (coordinates[2] - coordinates[0]));
+        let skew = bbox.skew;
 
         return (pt.x > ulx && pt.x < lrx) && 
           (pt.y > (uly + (pt.x - ulx) * Math.tan(skew))) && 
           (pt.y < (lry - (lrx - pt.x) * Math.tan(skew)));
       });
-    if (selectedStaves.length !== 1) {
-      if (document.getElementsByClassName('selected').length > 0) {
-        info.infoListeners();
-      }
-      unselect();
+
+    unselect();
+    if (selectedStaves.length == 0) {
       return;
     }
-
+    
     // Select a staff
     const staff = selectedStaves[0] as SVGGElement;
+    let bbox = getStaffBBox(staff);
+    console.log('hiiii');
+    console.log(pt);
+    console.log(bbox);
     if (!staff.classList.contains('selected')) {
       // Select previously unselected staff
       selectStaff(staff, dragHandler);
@@ -255,13 +251,7 @@ export function dragSelect (selector: string): void {
         let uly = bbox.uly;
         let lrx = bbox.lrx;
         let lry = bbox.lry;
-
-        const coordinates: number[] = staff.querySelector('path')
-          .getAttribute('d')
-          .match(/\d+/g)
-          .map(element => Number(element));
-        let skew = Math.atan((coordinates[3] - coordinates[1]) /
-          (coordinates[2] - coordinates[0]));
+        let skew = bbox.skew;
 
         return (pt[0] > ulx && pt[0] < lrx) && 
           (pt[1] > (uly + (pt[0] - ulx) * Math.tan(skew))) && 
