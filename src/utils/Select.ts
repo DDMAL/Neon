@@ -163,9 +163,6 @@ function clickHandler (evt: MouseEvent): void {
     // Select a staff
     const staff = selectedStaves[0] as SVGGElement;
     let bbox = getStaffBBox(staff);
-    console.log('hiiii');
-    console.log(pt);
-    console.log(bbox);
     if (!staff.classList.contains('selected')) {
       // Select previously unselected staff
       selectStaff(staff, dragHandler);
@@ -328,7 +325,12 @@ export function dragSelect (selector: string): void {
           return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
         } else {
           const box = getStaffBBox(d);
-          return !(((ul.x < box.ulx && lr.x < box.ulx) || (ul.x > box.lrx && lr.x > box.lrx)) || ((ul.y < box.uly && lr.y < box.uly) || (ul.y > box.lry && lr.y > box.lry)));
+          return !((ul.x < box.ulx && lr.x < box.ulx) || 
+                  (ul.x > box.lrx && lr.x > box.lrx) || 
+                  (ul.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.skew)) && 
+                    lr.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.skew))) || 
+                  (ul.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.skew)) && 
+                    lr.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.skew))));
         }
       }) as SVGGraphicsElement[];
 
