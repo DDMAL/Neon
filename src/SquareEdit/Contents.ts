@@ -149,6 +149,15 @@ export const defaultActionContents: string =
     '<button class=\'button\' id=\'delete\'>Delete</button></p></div>';
 
 /**
+ * Contents of default action menu when selecting by syllable
+ * Same as above except includes re-associate to nearest staff
+ */
+ export const defaultSylActionContents: string =
+    '<div><p class=\'control\'>' +
+    '<button class=\'button\' id=\'delete\'>Delete</button>' +
+    '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
+    
+/**
  * Contents of custos action menu.
  */
 export const custosActionContents: string =

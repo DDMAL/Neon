@@ -440,6 +440,30 @@ export function triggerSplitActions (): void {
   document.body.addEventListener('keydown', deleteButtonHandler);
 }
 
+/** 
+ * trigger default actions when selecting by syl
+ */
+export function triggerDefaultSylActions (): void {
+  endOptionsSelection();
+  try {
+    const moreEdit = document.getElementById('moreEdit');
+    moreEdit.classList.remove('is-invisible');
+    moreEdit.innerHTML = Contents.defaultSylActionContents;
+  } catch (e) {}
+
+  try {
+    const del = document.getElementById('delete');
+    del.removeEventListener('click', removeHandler);
+    del.addEventListener('click', removeHandler);
+  } catch (e) {}
+  document.body.addEventListener('keydown', deleteButtonHandler);
+  try {
+    const changeStaff = document.getElementById('changeStaff');
+    changeStaff.removeEventListener('click', changeStaffHandler);
+    changeStaff.addEventListener('click', changeStaffHandler);
+  } catch(e) {}
+}
+
 /**
  * Trigger default selection option.
  */
