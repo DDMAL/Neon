@@ -63,7 +63,7 @@ class SingleEditMode implements NeumeEditInterface {
   }
 
   setSelectListeners (): void {
-    Select.clickSelect('#mei_output, #mei_output use, #mei_output rect');
+    Select.clickSelect('#svg_group, #svg_group use, #svg_group rect');
     Select.dragSelect('#svg_group');
   }
 }
