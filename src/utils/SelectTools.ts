@@ -315,7 +315,11 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     } else if (groupsToSelect.size === 1 && groups[0].classList.contains('custos')) {
       SelectOptions.triggerCustosActions();
     } else {
-      SelectOptions.triggerDefaultActions();
+      if (selectionType == 'selBySyl') {
+        SelectOptions.triggerDefaultSylActions();
+      } else {
+        SelectOptions.triggerDefaultActions();
+      }
     }
     return;
   }
@@ -373,14 +377,14 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
                 break;
               }
             }
-            SelectOptions.triggerDefaultActions();
+            SelectOptions.triggerDefaultSylActions();
           }
           break;
         default:
           if (sharedSecondLevelParent(groups)) {
             Grouping.triggerGrouping('syl');
           } else {
-            SelectOptions.triggerDefaultActions();
+            SelectOptions.triggerDefaultSylActions();
           }
       }
       break;
