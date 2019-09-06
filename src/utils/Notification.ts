@@ -1,4 +1,4 @@
-import * as uuid from 'uuid/v4';
+import { uuidv4 } from './random';
 
 const notifications: Notification[] = new Array(0);
 let currentModeMessage: Notification = null;
@@ -88,7 +88,7 @@ class Notification {
   constructor (message: string) {
     this.message = message;
     this.displayed = false;
-    this.id = uuid();
+    this.id = uuidv4();
     this.isModeMessage = message.search('Mode') !== -1;
     this.timeoutID = -1;
   }

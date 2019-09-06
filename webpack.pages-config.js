@@ -8,11 +8,10 @@ let commitHash = childProcess.execSync('git rev-parse --short HEAD').toString();
 module.exports = {
   mode: 'production',
   entry: {
-    editor: './pages/editor.js',
-    index: './pages/index.js',
+    editor: './deployment/pages/editor.js',
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'dist', 'Neon-gh'),
     filename: '[name].js'
   },
   node: {
@@ -29,52 +28,12 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader'
-        ]
-      },
-      {
-        test: /\.(png|svg)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-              outputPath: './img/'
-            }
-          }
-        ]
-      },
-      {
-        test: /\.mei$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-              outputPath: './mei/'
-            }
-          }
-        ]
-      },
-      {
-        test: /\.rng$/,
-        use: [
-          'raw-loader'
-        ]
-      },
-      {
         test: /Worker\.js$/,
         use: [
-          'worker-loader'
-        ]
-      },
-      {
-        test: /\.html$/,
-        use: [
-          'html-loader'
+          {
+            loader: 'worker-loader',
+            options: { publicPath: '/Neon/Neon-gh/' }
+          }
         ]
       }
     ]
@@ -90,7 +49,8 @@ module.exports = {
     new HardSourceWebpackPlugin(),
     new webpack.DefinePlugin({
       __LINK_LOCATION__: JSON.stringify('https://ddmal.music.mcgill.ca/Neon'),
-      __NEON_VERSION__: JSON.stringify('Commit ' + commitHash)
+      __NEON_VERSION__: JSON.stringify('Commit ' + commitHash),
+      __ASSET_PREFIX__: JSON.stringify('/Neon/Neon-gh/')
     })
   ]
 };

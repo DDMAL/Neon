@@ -1,5 +1,5 @@
 import * as et from 'elementtree';
-import * as uuid from 'uuid/v4';
+import { uuidv4 } from './random';
 
 et.register_namespace('xml', 'http://www.w3.org/XML/1998/namespace');
 et.register_namespace('', 'http://www.music-encoding.org/ns/mei');
@@ -117,7 +117,7 @@ export function convertSbToStaff (sbBasedMei: string): string {
           const newLayer: any = et.SubElement(newStaff, 'layer');
           newLayer.set('n', '1');
 
-          const newSyllableId = uuid();
+          const newSyllableId = uuidv4();
           const newSyllable: any = et.SubElement(newLayer, 'syllable');
           newSyllable.set('follows', syllable.get('xml:id'));
           newSyllable.set('xml:id', newSyllableId);

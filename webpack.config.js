@@ -8,10 +8,10 @@ let commitHash = childProcess.execSync('git rev-parse --short HEAD').toString();
 module.exports = {
   mode: 'production',
   entry: {
-    editor: './src/editor.ts',
+    editor: './deployment/server/editor.ts',
   },
   output: {
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, 'dist', 'Neon'),
     publicPath: '/',
     filename: '[name].js'
   },
@@ -29,40 +29,12 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader'
-        ]
-      },
-      {
-        test: /\.(png|svg)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-              outputPath: './img/'
-            }
-          }
-        ]
-      },
-      {
-        test: /\.rng$/,
-        use: [
-          'raw-loader'
-        ]
-      },
-      {
         test: /Worker\.js$/,
         use: [
-          'worker-loader'
-        ]
-      },
-      {
-        test: /\.html$/,
-        use: [
-          'html-loader'
+          {
+            loader: 'worker-loader',
+            options: { publicPath: '/Neon/' }
+          }
         ]
       }
     ]
@@ -78,7 +50,8 @@ module.exports = {
     new HardSourceWebpackPlugin(),
     new webpack.DefinePlugin({
       __LINK_LOCATION__: JSON.stringify('/'),
-      __NEON_VERSION__: JSON.stringify('Commit ' + commitHash)
+      __NEON_VERSION__: JSON.stringify('Commit ' + commitHash),
+      __ASSET_PREFIX__: JSON.stringify('/Neon/')
     })
   ]
 };

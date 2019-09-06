@@ -127,7 +127,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/537b6b1/src/SquareEdit/StaffTools.ts#L8">SquareEdit/StaffTools.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/SquareEdit/StaffTools.ts#L8">SquareEdit/StaffTools.ts:8</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -149,10 +149,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="clickawayhandler" class="tsd-anchor"></a>
 					<h3>clickaway<wbr>Handler</h3>
-					<div class="tsd-signature tsd-kind-icon">clickaway<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;((evt: MouseEvent): void &#x3D;&gt; {const target &#x3D; evt.target as HTMLElement;if (target.closest(&#x27;.active-page&#x27;) &#x3D;&#x3D;&#x3D; null) {this.splitDisable();document.body.removeEventListener(&#x27;click&#x27;, this.handler);}}).bind(this)</span></div>
+					<div class="tsd-signature tsd-kind-icon">clickaway<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;((evt: MouseEvent): void &#x3D;&gt; {const target &#x3D; evt.target as HTMLElement;if (target.closest(&#x27;.active-page&#x27;) &#x3D;&#x3D;&#x3D; null) {this.splitDisable();document.body.removeEventListener(&#x27;click&#x27;, this.handler, { capture: true });}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/537b6b1/src/SquareEdit/StaffTools.ts#L77">SquareEdit/StaffTools.ts:77</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/SquareEdit/StaffTools.ts#L77">SquareEdit/StaffTools.ts:77</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -167,7 +167,7 @@
 					<div class="tsd-signature tsd-kind-icon">handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;((evt: MouseEvent): void &#x3D;&gt; {const id &#x3D; this.staff.id;const container &#x3D; this.staff.closest(&#x27;.definition-scale&#x27;) as SVGSVGElement;const pt &#x3D; container.createSVGPoint();pt.x &#x3D; evt.clientX;pt.y &#x3D; evt.clientY;// Transform to SVG coordinate system.const transformMatrix &#x3D; (container.getElementsByClassName(&#x27;system&#x27;)[0] as SVGGElement).getScreenCTM().inverse();const cursorPt &#x3D; pt.matrixTransform(transformMatrix);// Find staff point corresponds to if one exists// TODOconst editorAction: EditorAction &#x3D; {&#x27;action&#x27;: &#x27;split&#x27;,&#x27;param&#x27;: {&#x27;elementId&#x27;: id,&#x27;x&#x27;: cursorPt.x}};this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(async (result) &#x3D;&gt; {if (result) {await this.neonView.updateForCurrentPagePromise();}this.splitDisable();});}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/537b6b1/src/SquareEdit/StaffTools.ts#L36">SquareEdit/StaffTools.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/SquareEdit/StaffTools.ts#L36">SquareEdit/StaffTools.ts:36</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -179,10 +179,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="keydownlistener" class="tsd-anchor"></a>
 					<h3>keydown<wbr>Listener</h3>
-					<div class="tsd-signature tsd-kind-icon">keydown<wbr>Listener<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;((evt: KeyboardEvent): void &#x3D;&gt; {if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Escape&#x27;) {this.splitDisable();} else if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Shift&#x27;) {document.body.removeEventListener(&#x27;click&#x27;, this.handler);}}).bind(this)</span></div>
+					<div class="tsd-signature tsd-kind-icon">keydown<wbr>Listener<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;((evt: KeyboardEvent): void &#x3D;&gt; {if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Escape&#x27;) {this.splitDisable();} else if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Shift&#x27;) {document.body.removeEventListener(&#x27;click&#x27;, this.handler, { capture: true });}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/537b6b1/src/SquareEdit/StaffTools.ts#L68">SquareEdit/StaffTools.ts:68</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/SquareEdit/StaffTools.ts#L68">SquareEdit/StaffTools.ts:68</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -197,17 +197,17 @@
 					<div class="tsd-signature tsd-kind-icon">neon<wbr>View<span class="tsd-signature-symbol">:</span> <a href="_neonview_.neonview.html" class="tsd-signature-type">NeonView</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/537b6b1/src/SquareEdit/StaffTools.ts#L7">SquareEdit/StaffTools.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/SquareEdit/StaffTools.ts#L7">SquareEdit/StaffTools.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="resethandler" class="tsd-anchor"></a>
 					<h3>reset<wbr>Handler</h3>
-					<div class="tsd-signature tsd-kind-icon">reset<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;((evt: KeyboardEvent): void &#x3D;&gt; {if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Shift&#x27;) {document.body.addEventListener(&#x27;click&#x27;, this.handler);}}).bind(this)</span></div>
+					<div class="tsd-signature tsd-kind-icon">reset<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;((evt: KeyboardEvent): void &#x3D;&gt; {if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Shift&#x27;) {document.body.addEventListener(&#x27;click&#x27;, this.handler, { capture: true });}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/537b6b1/src/SquareEdit/StaffTools.ts#L86">SquareEdit/StaffTools.ts:86</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/SquareEdit/StaffTools.ts#L86">SquareEdit/StaffTools.ts:86</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -222,7 +222,7 @@
 					<div class="tsd-signature tsd-kind-icon">staff<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">SVGGElement</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/537b6b1/src/SquareEdit/StaffTools.ts#L8">SquareEdit/StaffTools.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/SquareEdit/StaffTools.ts#L8">SquareEdit/StaffTools.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -239,7 +239,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/537b6b1/src/SquareEdit/StaffTools.ts#L28">SquareEdit/StaffTools.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/SquareEdit/StaffTools.ts#L28">SquareEdit/StaffTools.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -256,7 +256,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/537b6b1/src/SquareEdit/StaffTools.ts#L15">SquareEdit/StaffTools.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/SquareEdit/StaffTools.ts#L15">SquareEdit/StaffTools.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>

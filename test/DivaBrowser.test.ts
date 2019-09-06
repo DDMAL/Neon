@@ -5,7 +5,7 @@ import { Preferences, Type, Level } from 'selenium-webdriver/lib/logging';
 import * as firefox from 'selenium-webdriver/firefox';
 import * as chrome from 'selenium-webdriver/chrome';
 
-const uploadPath = './public/uploads/iiif/';
+const uploadPath = './deployment/public/uploads/iiif/';
 const editUrl = 'http://localhost:8080/edit/test/diva-test';
 
 const browserNames = ['firefox', 'chrome'];
