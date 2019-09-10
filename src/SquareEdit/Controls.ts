@@ -1,7 +1,6 @@
 /** @module SquareEdit/Controls */
 
 import * as Contents from './Contents';
-import * as Cursor from '../utils/Cursor';
 import { setGroupingHighlight } from '../utils/Color';
 import { unselect } from '../utils/SelectTools';
 import InsertHandler from './InsertHandler';
@@ -34,7 +33,6 @@ export function bindInsertTabs (insertHandler: InsertHandler) {
         deactivate('.insertel');
         insertHandler.insertDisabled();
         activate(selectedOption.id, insertHandler);
-        Cursor.updateCursor();
       } catch (e) {
         console.debug(e);
       }
@@ -45,13 +43,11 @@ export function bindInsertTabs (insertHandler: InsertHandler) {
     document.getElementById(tab).addEventListener('click', () => {
       deactivate('.insertTab');
       activate(tab, insertHandler);
-      Cursor.resetCursor();
       document.getElementById('insert_data').innerHTML = Contents.insertTabHtml[tab];
       bindElements(insertHandler);
       deactivate('.insertel');
       const firstOption = document.getElementsByClassName('insertel')[0];
       activate(firstOption.id, insertHandler);
-      Cursor.updateCursor();
     });
   });
 }
@@ -117,7 +113,6 @@ function bindElements (insertHandler: InsertHandler) {
     document.getElementById(el).addEventListener('click', () => {
       deactivate('.insertel');
       activate(el, insertHandler);
-      Cursor.updateCursor();
     });
   });
 }
