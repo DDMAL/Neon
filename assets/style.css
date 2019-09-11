@@ -40,6 +40,11 @@ body {
     cursor: default;
 }
 
+#moreEdit {
+    overflow: auto;
+    padding: 1;
+}
+
 .item {
     order: 1;
 }
