@@ -36,6 +36,15 @@ body {
     display: flex;
 }
 
+.diva-inner {
+    cursor: default;
+}
+
+#moreEdit {
+    overflow: auto;
+    padding: 1;
+}
+
 .item {
     order: 1;
 }

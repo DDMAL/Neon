@@ -66,6 +66,10 @@ export class SplitHandler {
       let dragHandler = new DragHandler(this.neonView, '.staff');
       this.splitDisable();
       selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
+      try {
+        document.getElementById('moreEdit').innerHTML = '';
+        document.getElementById('moreEdit').classList.add('is-invisible');
+      } catch (e) {}
     });
   }).bind(this);
 

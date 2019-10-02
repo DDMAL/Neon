@@ -317,7 +317,10 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         if (element.classList.contains('syl')) {
           selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
         } else {
-          selectStaff(element, dragHandler);
+          try {
+            document.getElementById('moreEdit').innerHTML = '';
+            document.getElementById('moreEdit').classList.add('is-invisible');
+          } catch (e) {}
         }
       });
     }

@@ -182,6 +182,7 @@ export const splitActionContents: string=
 export const clefActionContents: string =
     '<label>Change Clef Shape:&nbsp;</label>' +
     '<div id=\'drop_select\' class=\'dropdown\'>' +
+    '<div class=\'field has-addons buttons\' style=\'overflow-x: auto;\'>' +
     '<div class=\'dropdown-trigger\'>' +
     '<button id=\'select-options\' class=\'button\' aria-haspopup=\'true\' aria-controls=\'dropdown-menu\'>' +
     '<span>Clef Shapes</span>' +
@@ -191,7 +192,7 @@ export const clefActionContents: string =
     '<a id=\'CClef\' class=\'dropdown-item\'>C Clef</a>' +
     '<a id=\'FClef\' class=\'dropdown-item\'>F Clef</a></div></div>' +
     '<button class=\'button\' id=\'delete\'>Delete</button>' +
-    '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></div>';
+    '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></div></div>';
 
 /**
  * HTML for grouping selection menu.

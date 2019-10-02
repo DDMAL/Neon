@@ -1,4 +1,3 @@
-import * as Cursor from '../utils/Cursor';
 import NeonView from '../NeonView';
 import { EditorAction } from '../Types';
 import * as d3 from 'd3';
@@ -114,7 +113,6 @@ class InsertHandler {
     document.body.removeEventListener('click', this.clickawayHandler);
     document.querySelector('.insertel.is-active').classList.remove('is-active');
     this.firstClick = true;
-    Cursor.resetCursor();
     try {
       document.getElementById('returnToEditMode').remove();
     } catch (e) {

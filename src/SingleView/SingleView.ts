@@ -1,5 +1,4 @@
 import { updateHighlight, setOpacityFromSlider } from '../DisplayPanel/DisplayControls';
-import * as Cursor from '../utils/Cursor';
 import NeonView from '../NeonView';
 import DisplayPanel from '../DisplayPanel/DisplayPanel';
 import ZoomHandler from './Zoom';
@@ -141,7 +140,6 @@ class SingleView implements ViewInterface {
             d3.drag().on('start', this.displayPanel.zoomHandler.startDrag.bind(this.displayPanel.zoomHandler))
               .on('drag', this.displayPanel.zoomHandler.dragging.bind(this.displayPanel.zoomHandler))
           );
-          Cursor.updateCursorTo('grab');
           break;
         case 'h':
           document.getElementById('mei_output').setAttribute('visibility', 'hidden');
@@ -153,12 +151,8 @@ class SingleView implements ViewInterface {
       switch (evt.key) {
         case 'Shift':
           d3.select('#svg_group').on('.drag', null);
-          Cursor.updateCursorTo('');
           if (this.neonView.getUserMode() !== 'viewer') {
             this.neonView.NeumeEdit.setSelectListeners();
-          }
-          if (this.neonView.getUserMode() === 'insert') {
-            Cursor.updateCursor();
           }
           break;
         case 'h':
