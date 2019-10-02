@@ -260,7 +260,12 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.clefActionContents;
+    moreEdit.innerHTML = Contents.custosActionContents;
+  } catch (e) {}
+  try {
+    const extraEdit = document.getElementById('extraEdit');
+    extraEdit.classList.remove('is-invisible');
+    extraEdit.innerHTML = Contents.clefActionContents;
   } catch (e) {}
   document.querySelector('#CClef.dropdown-item')
     .addEventListener('click', () => {

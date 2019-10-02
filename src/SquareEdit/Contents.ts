@@ -81,6 +81,7 @@ export const editControlsPanel: string =
     '<div class=\'field is-grouped buttons\'>' +
     '<p class=\'control\'>' +
     '<a id=\'moreEdit\' class=\'panel-block is-invisible\'>' +
+    '<a id=\'extraEdit\' class=\'panel-block is-invisible\'>' +
     '<a id=\'neumeEdit\' class=\'panel-block is-invisible\'></div>';
 
 /**
@@ -182,17 +183,14 @@ export const splitActionContents: string=
 export const clefActionContents: string =
     '<label>Change Clef Shape:&nbsp;</label>' +
     '<div id=\'drop_select\' class=\'dropdown\'>' +
-    '<div class=\'field has-addons buttons\' style=\'overflow-x: auto;\'>' +
-    '<div class=\'dropdown-trigger\'>' +
+    '<div class=\'dropdown-trigger\'overflow=\'auto\'>' +
     '<button id=\'select-options\' class=\'button\' aria-haspopup=\'true\' aria-controls=\'dropdown-menu\'>' +
     '<span>Clef Shapes</span>' +
     '<svg class=\'icon\'><use xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></button></div>' +
     '<div class=\'dropdown-menu\' id=\'dropdown-menu\' role=\'menu\'>' +
     '<div class=\'dropdown-content\'>' +
     '<a id=\'CClef\' class=\'dropdown-item\'>C Clef</a>' +
-    '<a id=\'FClef\' class=\'dropdown-item\'>F Clef</a></div></div>' +
-    '<button class=\'button\' id=\'delete\'>Delete</button>' +
-    '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></div></div>';
+    '<a id=\'FClef\' class=\'dropdown-item\'>F Clef</a></div></div></div></div>';
 
 /**
  * HTML for grouping selection menu.
