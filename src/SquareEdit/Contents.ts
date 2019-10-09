@@ -82,6 +82,12 @@ export const editControlsPanel: string =
     '<p class=\'control\'>' +
     '<a id=\'moreEdit\' class=\'panel-block is-invisible\'>' +
     '<a id=\'extraEdit\' class=\'panel-block is-invisible\'>' +
+    /*
+     * The extraEdit panel is added for edit options that have dropdown menus
+     * Like the Neume and Clef menus
+     * This is done because the moreEdit menu needs to have overflow for cases where it has lots of buttons
+     * But overflow ruins dropdown menus
+     */
     '<a id=\'neumeEdit\' class=\'panel-block is-invisible\'></div>';
 
 /**
@@ -99,8 +105,7 @@ export const ncActionContents: string =
         '<a id=\'Punctum\' class=\'dropdown-item\'>Punctum</a>' +
         '<a id=\'Virga\' class=\'dropdown-item\'>Virga</a>' +
         '<a id=\'Inclinatum\' class=\'dropdown-item\'>Inclinatum</a></div></div></div>' +
-        '<p class=\'control\'>' +
-        '<button class=\'button\' id=\'delete\'>Delete</button></p></div>';
+        '<p class=\'control\'></p></div>';
 
 /**
  * Contents of extra neume action menu.
@@ -130,8 +135,7 @@ export const neumeActionContents: string =
         '<a id=\'Pressus\' class=\'dropdown-item grouping\'>Pressus</a>' +
         '</div></div></div>' +
         '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'ungroupNcs\'>Ungroup</button>' +
-        '<button class=\'button\' id=\'delete\'>Delete</button></p></div>';
+        '<button class=\'button\' id=\'ungroupNcs\'>Ungroup</button></p></div>';
 
 /**
  * Contents of extra staff action menu.

@@ -104,9 +104,13 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.ncActionContents;
+    moreEdit.innerHTML = Contents.custosActionContents;
   } catch (e) {}
-
+  try {
+    const extraEdit = document.getElementById('extraEdit');
+    extraEdit.classList.remove('is-invisible');
+    extraEdit.innerHTML = Contents.ncActionContents;
+  } catch (e) {}
   document.querySelector('#Punctum.dropdown-item')
     .addEventListener('click', () => {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
@@ -182,7 +186,12 @@ export function triggerNeumeActions (): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.neumeActionContents;
+    moreEdit.innerHTML = Contents.custosActionContents;
+  } catch (e) {}
+  try {
+    const extraEdit = document.getElementById('extraEdit');
+    extraEdit.classList.remove('is-invisible');
+    extraEdit.innerHTML = Contents.neumeActionContents;
   } catch (e) {}
   const neume = document.querySelectorAll('.selected');
   if (neume.length !== 1) {
@@ -260,6 +269,7 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
+    // custos contents is just the delete button
     moreEdit.innerHTML = Contents.custosActionContents;
   } catch (e) {}
   try {
