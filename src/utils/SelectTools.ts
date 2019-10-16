@@ -59,6 +59,8 @@ export function unselect (): void {
   } else {
     SelectOptions.endOptionsSelection();
   }
+  document.getElementById('extraEdit').innerHTML = '';
+  document.getElementById('extraEdit').classList.add('is-invisible');
   updateHighlight();
 }
 

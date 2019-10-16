@@ -81,6 +81,13 @@ export const editControlsPanel: string =
     '<div class=\'field is-grouped buttons\'>' +
     '<p class=\'control\'>' +
     '<a id=\'moreEdit\' class=\'panel-block is-invisible\'>' +
+    '<a id=\'extraEdit\' class=\'panel-block is-invisible\'>' +
+    /*
+     * The extraEdit panel is added for edit options that have dropdown menus
+     * Like the Neume and Clef menus
+     * This is done because the moreEdit menu needs to have overflow for cases where it has lots of buttons
+     * But overflow ruins dropdown menus
+     */
     '<a id=\'neumeEdit\' class=\'panel-block is-invisible\'></div>';
 
 /**
@@ -98,8 +105,7 @@ export const ncActionContents: string =
         '<a id=\'Punctum\' class=\'dropdown-item\'>Punctum</a>' +
         '<a id=\'Virga\' class=\'dropdown-item\'>Virga</a>' +
         '<a id=\'Inclinatum\' class=\'dropdown-item\'>Inclinatum</a></div></div></div>' +
-        '<p class=\'control\'>' +
-        '<button class=\'button\' id=\'delete\'>Delete</button></p></div>';
+        '<p class=\'control\'></p></div>';
 
 /**
  * Contents of extra neume action menu.
@@ -129,8 +135,7 @@ export const neumeActionContents: string =
         '<a id=\'Pressus\' class=\'dropdown-item grouping\'>Pressus</a>' +
         '</div></div></div>' +
         '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'ungroupNcs\'>Ungroup</button>' +
-        '<button class=\'button\' id=\'delete\'>Delete</button></p></div>';
+        '<button class=\'button\' id=\'ungroupNcs\'>Ungroup</button></p></div>';
 
 /**
  * Contents of extra staff action menu.
@@ -182,17 +187,14 @@ export const splitActionContents: string=
 export const clefActionContents: string =
     '<label>Change Clef Shape:&nbsp;</label>' +
     '<div id=\'drop_select\' class=\'dropdown\'>' +
-    '<div class=\'field has-addons buttons\' style=\'overflow-x: auto;\'>' +
-    '<div class=\'dropdown-trigger\'>' +
+    '<div class=\'dropdown-trigger\'overflow=\'auto\'>' +
     '<button id=\'select-options\' class=\'button\' aria-haspopup=\'true\' aria-controls=\'dropdown-menu\'>' +
     '<span>Clef Shapes</span>' +
     '<svg class=\'icon\'><use xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></button></div>' +
     '<div class=\'dropdown-menu\' id=\'dropdown-menu\' role=\'menu\'>' +
     '<div class=\'dropdown-content\'>' +
     '<a id=\'CClef\' class=\'dropdown-item\'>C Clef</a>' +
-    '<a id=\'FClef\' class=\'dropdown-item\'>F Clef</a></div></div>' +
-    '<button class=\'button\' id=\'delete\'>Delete</button>' +
-    '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></div></div>';
+    '<a id=\'FClef\' class=\'dropdown-item\'>F Clef</a></div></div></div></div>';
 
 /**
  * HTML for grouping selection menu.

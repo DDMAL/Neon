@@ -158,6 +158,8 @@ export function initSelectionButtons () {
     if (!selBySyl.classList.contains('is-active')) {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
+      document.getElementById('extraEdit').innerHTML = '';
+      document.getElementById('extraEdit').classList.add('is-invisible');
       selBySyl.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');
@@ -177,6 +179,8 @@ export function initSelectionButtons () {
     if (!selByNeume.classList.contains('is-active')) {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
+      document.getElementById('extraEdit').innerHTML = '';
+      document.getElementById('extraEdit').classList.add('is-invisible');
       selByNeume.classList.add('is-active');
       selByNc.classList.remove('is-active');
       selBySyl.classList.remove('is-active');
@@ -196,6 +200,8 @@ export function initSelectionButtons () {
     if (!selByNc.classList.contains('is-active')) {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
+      document.getElementById('extraEdit').innerHTML = '';
+      document.getElementById('extraEdit').classList.add('is-invisible');
       selByNc.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selBySyl.classList.remove('is-active');
@@ -215,6 +221,8 @@ export function initSelectionButtons () {
     if (!selByStaff.classList.contains('is-active')) {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
+      document.getElementById('extraEdit').innerHTML = '';
+      document.getElementById('extraEdit').classList.add('is-invisible');
       selByStaff.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');

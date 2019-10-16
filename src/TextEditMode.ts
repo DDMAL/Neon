@@ -19,6 +19,8 @@ function selBySylListener (): void {
     unselect();
     try {
       document.getElementById('moreEdit').innerHTML = '';
+      document.getElementById('extraEdit').innerHTML = '';
+      document.getElementById('extraEdit').classList.add('is-invisible');
     } catch (e) {}
     document.getElementById('selByBBox').classList.add('is-active');
     try {
