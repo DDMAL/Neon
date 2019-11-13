@@ -118,8 +118,24 @@ function clickHandler (evt: MouseEvent): void {
     else {
       let selection = [];
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
-        // hardcoded for now... should be fixed later
-        let remove = [this.closest('.syllable'), this.closest('.neume'), this.closest('.nc'), this.closest('.staff')];
+        // determine which selection mode we're in
+        const temp = document.querySelector('.sel-by.is-active').id;
+        let mode = '';
+        switch (temp) {
+          case 'selByStaff':
+            mode = '.staff';
+            break;
+          case 'selByNeume':
+            mode = '.neume';
+            break;
+          case 'selByNc':
+            mode = '.nc';
+            break;
+          default:
+            mode = '.syllable'
+            break;
+        }
+        let remove = [this.closest(mode)];
         selection = Array.from(document.getElementsByClassName('selected'));
         selection = selection.filter( (el) => {
           return !remove.includes(el);
