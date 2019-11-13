@@ -116,15 +116,14 @@ function clickHandler (evt: MouseEvent): void {
       }
     }
     else {
-      console.log(this);
       let selection = [];
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
+        // hardcoded for now... should be fixed later
+        let remove = [this.closest('.syllable'), this.closest('.neume'), this.closest('.nc'), this.closest('.staff')];
         selection = Array.from(document.getElementsByClassName('selected'));
-        console.log(selection);
         selection = selection.filter( (el) => {
-          el === this;
+          return !remove.includes(el);
         });
-        console.log(selection);
         selectAll(selection, neonView, dragHandler);
         if (dragHandler) {
           dragHandler.dragInit();
