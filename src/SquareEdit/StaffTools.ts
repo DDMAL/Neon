@@ -60,7 +60,8 @@ export class SplitHandler {
 
     this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(async (result) => {
       if (result) {
-        await this.neonView.updateForCurrentPagePromise();
+        // this returns a promise which itself returns a promise... so await await :)
+        await await this.neonView.updateForCurrentPagePromise(); 
         Notification.queueNotification('Split action successful');
       }
       let dragHandler = new DragHandler(this.neonView, '.staff');
