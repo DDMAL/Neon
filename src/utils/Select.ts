@@ -115,6 +115,22 @@ function clickHandler (evt: MouseEvent): void {
         dragHandler.dragInit();
       }
     }
+    else {
+      console.log(this);
+      let selection = [];
+      if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
+        selection = Array.from(document.getElementsByClassName('selected'));
+        console.log(selection);
+        selection = selection.filter( (el) => {
+          el === this;
+        });
+        console.log(selection);
+        selectAll(selection, neonView, dragHandler);
+        if (dragHandler) {
+          dragHandler.dragInit();
+        }
+      }
+    }
   } else if ((evt.target as HTMLElement).tagName === 'rect' && getSelectionType() === 'selByBBox') {
     if (this.closest('.selected') === null) {
       let selection = [evt.target] as SVGGElement[];
