@@ -226,7 +226,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       };
       neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
         if (result) {
-          await neonView.updateForCurrentPagePromise();
+          await neonView.updateForCurrentPage();
         }
         element = document.getElementById(element.id) as unknown as SVGGraphicsElement;
         ulx = undefined;
@@ -303,7 +303,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       };
       neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
         if (result) {
-          await neonView.updateForCurrentPagePromise();
+          await neonView.updateForCurrentPage();
         }
         element = document.getElementById(element.id) as unknown as SVGGraphicsElement;
         ulx = undefined;

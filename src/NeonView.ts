@@ -94,17 +94,9 @@ class NeonView {
    * Get the current page from the loaded view and then display the
    * most up to date SVG.
    */
-  updateForCurrentPage (delay = false): void {
+  updateForCurrentPage (delay = false): Promise<void> {
     const pageNo = this.view.getCurrentPage();
-    this.view.changePage(pageNo, delay);
-  }
-
-  /**
-   * Same as [[updateForCurrentPage]] but returns a promise.
-   */
-  updateForCurrentPagePromise (delay = false): Promise<void> {
-    const pageNo = this.view.getCurrentPage();
-    return Promise.resolve(this.view.changePage(pageNo, delay));
+    return this.view.changePage(pageNo, delay);
   }
 
   /**
