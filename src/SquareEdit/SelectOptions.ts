@@ -437,7 +437,7 @@ export function triggerSplitActions (): void {
         };
         neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
           if (result) {
-            await neonView.updateForCurrentPagePromise();
+            await neonView.updateForCurrentPage();
           }
         });
         endOptionsSelection();
@@ -455,7 +455,7 @@ export function triggerSplitActions (): void {
   document.body.addEventListener('keydown', deleteButtonHandler);
 }
 
-/** 
+/**
  * trigger default actions when selecting by syl
  */
 export function triggerDefaultSylActions (): void {

@@ -199,7 +199,7 @@ class InsertHandler {
     }
 
     this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(() => {
-      return this.neonView.updateForCurrentPagePromise();
+      return this.neonView.updateForCurrentPage();
     }).then(() => {
       document.querySelector(this.selector).addEventListener('click', this.handler);
     });
