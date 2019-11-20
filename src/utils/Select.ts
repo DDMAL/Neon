@@ -151,10 +151,35 @@ function clickHandler (evt: MouseEvent): void {
       let selection = [evt.target] as SVGGElement[];
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
         selection = selection.concat(Array.from(document.getElementsByClassName('selected')) as SVGGElement[]);
+        selection = selection.map( (el) => {
+          if (el.tagName == 'rect') {
+            return el;
+          }
+          return el.querySelector('.sylTextRect-Display');
+        });
       }
       selectAll(selection, neonView, dragHandler);
       if (dragHandler) {
         dragHandler.dragInit();
+      }
+    } else {
+      let selection = [];
+      if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
+        let remove = [this];
+        selection = Array.from(document.getElementsByClassName('selected'));
+        selection = selection.map( (el) => {
+          if (el.tagName == 'rect') {
+            return el;
+          }
+          return el.querySelector('.sylTextRect-Display');
+        });
+        selection = selection.filter( (el) => {
+          return !remove.includes(el);
+        });
+        selectAll(selection, neonView, dragHandler);
+        if (dragHandler) {
+          dragHandler.dragInit();
+        }
       }
     }
   } else {
