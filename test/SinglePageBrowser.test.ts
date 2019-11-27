@@ -143,7 +143,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
       const selected = await browser.findElements(By.css('g.syl.selected'));
       expect(selected.length).toBeGreaterThan(0);
       const resizeRects = await browser.findElements(By.id('resizeRect'));
-      expect(resizeRects.length).toBe(0);
+      expect(resizeRects.length).toBe(selected.length === 1 ? 1: 0);
     });
 
     test('Syl BBox highlighting features', async () => {
