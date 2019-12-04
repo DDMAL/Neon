@@ -12,7 +12,7 @@ import * as chrome from 'selenium-webdriver/chrome';
 
 const browserNames = ['firefox', 'chrome'];
 if (require('os').platform() === 'darwin') {
-  browserNames.push('safari');
+  // browserNames.push('safari');
 }
 
 jest.setTimeout(20000);
@@ -146,19 +146,39 @@ describe.each(browserNames)('Tests on %s', (title) => {
       expect(resizeRects.length).toBe(selected.length === 1 ? 1: 0);
     });
 
-    test('Syl BBox highlighting features', async () => {
+    /*test('Syl BBox highlighting features', async () => {
       await browser.executeScript(() => { document.getElementById('highlight-button').dispatchEvent(new Event('click')); });
       await browser.executeScript(() => { document.getElementById('highlight-syllable').dispatchEvent(new Event('click')); });
       await browser.executeScript(() => { document.getElementsByClassName('sylTextRect-display')[3].dispatchEvent(new Event('mousedown')); });
       const colorCount = (await browser.findElements(By.css('.sylTextRect-display[style="fill: rgb(86, 180, 233);"]'))).length;
       expect(colorCount).toBeGreaterThan(0);
 
-      await browser.executeScript(() => { document.getElementsByClassName('sylTextRect-display')[0].dispatchEvent(new Event('mousedown')); });
+      await browser.executeScript(() => { document.getElementsByClassName('sylTextRect-display')[2].dispatchEvent(new Event('mousedown')); });
       const newColorCount = (await browser.findElements(By.css('.sylTextRect-display[style="fill: rgb(86, 180, 233);"]'))).length;
       expect(newColorCount).toBe(colorCount - 1);
       const canvas = await browser.findElement(By.id('svg_group'));
       const actions = browser.actions();
       await actions.move({ origin: canvas }).press().release().perform();
+    });*/
+
+    test('Syl BBox highlighting features', async () => {
+      // Turn on syllable highlighting
+      await browser.executeScript(() => { document.getElementById('highlight-button').dispatchEvent(new Event('click')); });
+      await browser.executeScript(() => { document.getElementById('highlight-syllable').dispatchEvent(new Event('click')); });
+      // Get some highlighted bbox
+      const bbox = await browser.findElement(By.className('sylTextRect-display'));
+      let bboxColor = await bbox.getCssValue('fill');
+      const syllable = await bbox.findElement(By.xpath('./../..'));
+      const syllableColor = await syllable.getCssValue('fill');
+      expect(bboxColor).toEqual(syllableColor);
+
+      // Check that it's red when highlighted
+      const sylId = await bbox.findElement(By.xpath('./..')).getAttribute('id');
+      console.log(sylId);
+      await browser.executeScript((id) => { document.getElementById(id).getElementsByTagName('rect')[0].dispatchEvent(new Event('mousedown')); }, sylId);
+      await browser.wait(until.elementLocated(By.className('resizePoint')), 2000);
+      bboxColor = await browser.findElement(By.id(sylId)).findElement(By.tagName('rect')).getCssValue('fill');
+      expect(bboxColor).toEqual('rgb(221, 0, 0)');
     });
 
     test('Test selecting neumes while in bbox selecting mode', async () => {
