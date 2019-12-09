@@ -144,6 +144,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
       expect(selected.length).toBeGreaterThan(0);
       const resizeRects = await browser.findElements(By.id('resizeRect'));
       expect(resizeRects.length).toBe(selected.length === 1 ? 1: 0);
+      await actions.move({ origin: canvas }).press().release().perform();
     });
 
     /*test('Syl BBox highlighting features', async () => {
@@ -175,8 +176,10 @@ describe.each(browserNames)('Tests on %s', (title) => {
       // Check that it's red when highlighted
       const sylId = await bbox.findElement(By.xpath('./..')).getAttribute('id');
       console.log(sylId);
-      await browser.executeScript((id) => { document.getElementById(id).getElementsByTagName('rect')[0].dispatchEvent(new Event('mousedown')); }, sylId);
-      await browser.wait(until.elementLocated(By.className('resizePoint')), 4000);
+      const syl = await browser.findElement(By.id(sylId));
+      const rect = await syl.findElement(By.tagName('rect'));
+      await browser.actions().click(rect).perform();
+      await browser.wait(until.elementLocated(By.id('p-TopLeft')), 2000);
       bboxColor = await browser.findElement(By.id(sylId)).findElement(By.tagName('rect')).getCssValue('fill');
       expect(bboxColor).toEqual('rgb(221, 0, 0)');
 
