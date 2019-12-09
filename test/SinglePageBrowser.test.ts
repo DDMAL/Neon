@@ -176,9 +176,13 @@ describe.each(browserNames)('Tests on %s', (title) => {
       const sylId = await bbox.findElement(By.xpath('./..')).getAttribute('id');
       console.log(sylId);
       await browser.executeScript((id) => { document.getElementById(id).getElementsByTagName('rect')[0].dispatchEvent(new Event('mousedown')); }, sylId);
-      await browser.wait(until.elementLocated(By.className('resizePoint')), 2000);
+      await browser.wait(until.elementLocated(By.className('resizePoint')), 4000);
       bboxColor = await browser.findElement(By.id(sylId)).findElement(By.tagName('rect')).getCssValue('fill');
       expect(bboxColor).toEqual('rgb(221, 0, 0)');
+
+      const canvas = await browser.findElement(By.id('svg_group'));
+      const actions = browser.actions();
+      await actions.move({ origin: canvas }).press().release().perform();
     });
 
     test('Test selecting neumes while in bbox selecting mode', async () => {
