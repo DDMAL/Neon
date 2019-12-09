@@ -111,7 +111,10 @@ class InsertHandler {
     document.body.removeEventListener('keydown', this.keydownListener);
     document.body.removeEventListener('keyup', this.resetInsertHandler);
     document.body.removeEventListener('click', this.clickawayHandler);
-    document.querySelector('.insertel.is-active').classList.remove('is-active');
+    const selected = document.querySelector('.insertel.is-active');
+    if (selected !== null) {
+      selected.classList.remove('is-active');
+    }
     this.firstClick = true;
     try {
       document.getElementById('returnToEditMode').remove();
