@@ -40,7 +40,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
     browser = await new Builder()
       .forBrowser(title)
       .setFirefoxOptions(new firefox.Options().headless())
-      .setChromeOptions(new chrome.Options().windowSize({ width: 1280, height: 800 }))
+      .setChromeOptions(new chrome.Options().headless().windowSize({ width: 1280, height: 800 }))
       .setLoggingPrefs(prefs)
       .build();
     await browser.get(editUrl);
@@ -173,6 +173,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
 
       // Check that it's red when highlighted
       const sylId = await bbox.findElement(By.xpath('./..')).getAttribute('id');
+      await browser.sleep(2000);
       await browser.executeScript((id) => { document.getElementById(id).getElementsByTagName('rect')[0].dispatchEvent(new Event('mousedown')); }, sylId);
       await browser.wait(until.elementLocated(By.className('resizePoint')), 10000);
       bboxColor = await browser.findElement(By.id(sylId)).findElement(By.tagName('rect')).getCssValue('fill');
@@ -180,6 +181,9 @@ describe.each(browserNames)('Tests on %s', (title) => {
 
       const actions = browser.actions();
       await actions.sendKeys(Key.ESCAPE).perform();
+      await browser.wait(async () => {
+        return (await browser.findElements(By.className('selected'))).length === 0;
+      }, 2000);
     });
 
     test('Test selecting neumes while in bbox selecting mode', async () => {
