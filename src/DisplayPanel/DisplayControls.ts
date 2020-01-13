@@ -19,7 +19,7 @@ export function initDisplayControls (meiClassName: string, background: string): 
   const displayContents = document.getElementById('displayContents');
   const toggleDisplay = document.getElementById('toggleDisplay');
 
-  toggleDisplay.addEventListener('click', () => {
+  toggleDisplay.parentElement.addEventListener('click', () => {
     if (displayContents.style.display === 'none') {
       displayContents.style.display = '';
       toggleDisplay.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');

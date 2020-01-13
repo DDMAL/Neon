@@ -60,7 +60,7 @@ export function initInsertEditControls () {
   const toggleEdit = document.getElementById('toggleEdit');
   const insertContents = document.getElementById('insertContents');
   const editContents = document.getElementById('editContents');
-  toggleInsert.addEventListener('click', () => {
+  toggleInsert.parentElement.addEventListener('click', () => {
     if (insertContents.style.display === 'none') {
       insertContents.style.display = '';
       toggleInsert.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
@@ -70,7 +70,7 @@ export function initInsertEditControls () {
     }
   });
 
-  toggleEdit.addEventListener('click', () => {
+  toggleEdit.parentElement.addEventListener('click', () => {
     if (editContents.style.display === 'none') {
       editContents.style.display = '';
       toggleEdit.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
