@@ -12,7 +12,7 @@ import * as chrome from 'selenium-webdriver/chrome';
 
 const browserNames = ['firefox', 'chrome'];
 if (require('os').platform() === 'darwin') {
-  // browserNames.push('safari');
+  browserNames.push('safari');
 }
 
 jest.setTimeout(20000);
