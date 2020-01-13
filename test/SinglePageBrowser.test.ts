@@ -74,14 +74,14 @@ describe.each(browserNames)('Tests on %s', (title) => {
       const neumeID = 'm-07ad2140-4fa1-45d4-af47-6733add00825';
       await browser.wait(until.elementLocated(By.id(neumeID)), 10000); // Wait ten seconds for elements to appear
       await browser.executeScript(() => { document.getElementById('displayInfo').click(); });
-      await browser.wait(until.elementLocated(By.className('message-body')), 5000);
+      await browser.wait(until.elementLocated(By.className('message-body')), 10000);
       await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new Event('mouseover')); }, neumeID);
-      await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new Event('mouseleave')); }, neumeID);
+      // await browser.executeScript((neumeID) => { document.getElementById(neumeID).dispatchEvent(new Event('mouseleave')); }, neumeID);
       const body = await browser.findElement(By.className('message-body'));
-      await browser.wait(until.elementIsVisible(body), 5000);
+      await browser.wait(until.elementIsVisible(body), 10000);
 
-      await browser.wait(until.elementTextContains(body, 'Clivis'), 5000);
-      await browser.wait(until.elementTextContains(body, 'A2 G2'), 5000);
+      await browser.wait(until.elementTextContains(body, 'Clivis'), 10000);
+      await browser.wait(until.elementTextContains(body, 'A2 G2'), 10000);
     });
 
     test('Check Info Box Clef', async () => {
@@ -129,9 +129,8 @@ describe.each(browserNames)('Tests on %s', (title) => {
       expect(resizeRectCount).toBe(1);
       const sylSelectedCount = (await browser.findElements(By.className('syl selected'))).length;
       expect(sylSelectedCount).toBe(1);
-      const canvas = await browser.findElement(By.id('svg_group'));
       const actions = browser.actions();
-      await actions.move({ origin: canvas }).press().release().perform();
+      await actions.sendKeys(Key.ESCAPE).perform();
     });
 
     test('Drag selecting BBoxes', async () => {
@@ -159,7 +158,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
       expect(newColorCount).toBe(colorCount - 1);
       const canvas = await browser.findElement(By.id('svg_group'));
       const actions = browser.actions();
-      await actions.move({ origin: canvas }).press().release().perform();
+      await actions.sendKeys(Key.ESCAPE).perform();
     });*/
 
     test('Syl BBox highlighting features', async () => {
@@ -175,17 +174,17 @@ describe.each(browserNames)('Tests on %s', (title) => {
 
       // Check that it's red when highlighted
       const sylId = await bbox.findElement(By.xpath('./..')).getAttribute('id');
-      console.log(sylId);
-      const syl = await browser.findElement(By.id(sylId));
-      const rect = await syl.findElement(By.tagName('rect'));
-      await browser.actions().click(rect).perform();
-      await browser.wait(until.elementLocated(By.id('p-TopLeft')), 2000);
+      await browser.sleep(2000);
+      await browser.executeScript((id) => { document.getElementById(id).getElementsByTagName('rect')[0].dispatchEvent(new Event('mousedown')); }, sylId);
+      await browser.wait(until.elementLocated(By.className('resizePoint')), 10000);
       bboxColor = await browser.findElement(By.id(sylId)).findElement(By.tagName('rect')).getCssValue('fill');
       expect(bboxColor).toEqual('rgb(221, 0, 0)');
 
-      const canvas = await browser.findElement(By.id('svg_group'));
       const actions = browser.actions();
-      await actions.move({ origin: canvas }).press().release().perform();
+      await actions.sendKeys(Key.ESCAPE).perform();
+      await browser.wait(async () => {
+        return (await browser.findElements(By.className('selected'))).length === 0;
+      }, 2000);
     });
 
     test('Test selecting neumes while in bbox selecting mode', async () => {
@@ -201,7 +200,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
       expect(goodSelCount).toBeGreaterThan(0);
       const badSelCount = (await browser.findElements(By.css('.selected:not(.syl)'))).length;
       expect(badSelCount).toBe(0);
-      await actions.move({ origin: canvas }).press().release().perform();
+      await actions.sendKeys(Key.ESCAPE).perform();
     });
   });
 
@@ -286,7 +285,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
           await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new Event('mousedown')); }, (await nc.getAttribute('id')));
           const ncClass = await nc.getAttribute('class');
           expect(ncClass).toBe('nc selected');
-          await actions.click().perform();
+          await actions.sendKeys(Key.ESCAPE).perform();
         });
 
         test('Click select syllable', async () => {
@@ -300,7 +299,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
           await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new Event('mousedown')); }, (await sylNc.getAttribute('id')));
           const sylClass = await syl.getAttribute('class');
           expect(sylClass).toBe('syllable selected');
-          await actions.click().perform();
+          await actions.sendKeys(Key.ESCAPE).perform();
         });
 
         test('Click select split syllable', async () => {
@@ -316,7 +315,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
           const secondHalfClass = await secondHalf.getAttribute('class');
           expect(firstHalfClass).toBe('syllable selected');
           expect(secondHalfClass).toBe('syllable selected');
-          await actions.click().perform();
+          await actions.sendKeys(Key.ESCAPE).perform();
         });
 
         test('Click select neume', async () => {
@@ -330,7 +329,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
           await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new Event('mousedown')); }, (await neumeNc.getAttribute('id')));
           const neumeClass = await neume.getAttribute('class');
           expect(neumeClass).toBe('neume selected');
-          await actions.click().perform();
+          await actions.sendKeys(Key.ESCAPE).perform();
         });
 
         test('Click select staff', async () => {
@@ -345,7 +344,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
           await browser.executeScript((id) => { document.getElementById(id).children[0].dispatchEvent(new Event('mousedown')); }, await nc.getAttribute('id'));
           const staffClass = await staff.getAttribute('class');
           expect(staffClass).toBe('staff selected');
-          await actions.click().perform();
+          await actions.sendKeys(Key.ESCAPE).perform();
         });
       });
 
