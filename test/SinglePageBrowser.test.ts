@@ -11,10 +11,11 @@ import * as firefox from 'selenium-webdriver/firefox';
 import * as chrome from 'selenium-webdriver/chrome';
 
 const browserNames = ['firefox', 'chrome'];
+/* Safari webdriver not working properly as of v13.0.4
 if (require('os').platform() === 'darwin') {
   browserNames.push('safari');
 }
-
+*/
 jest.setTimeout(20000);
 
 beforeAll(async () => {
