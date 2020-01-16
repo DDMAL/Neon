@@ -3,8 +3,8 @@ importScripts('../assets/js/verovio-toolkit.js');
 const toolkit = new verovio.toolkit();
 toolkit.setOptions({
   format: 'mei',
-  noFooter: 1,
-  noHeader: 1,
+  footer: 'none',
+  header: 'none',
   pageMarginLeft: 0,
   pageMarginTop: 0,
   font: 'Bravura',
