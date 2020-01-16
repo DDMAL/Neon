@@ -67,7 +67,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
 
   describe('Boundingbox selecting', () => {
     test('Select syl bbox', async () => {
-      await browser.wait(until.elementLocated(By.css('.active-page > svg')), 10000);
+      await browser.wait(until.elementLocated(By.css('.active-page > svg')), 15000);
       await browser.wait(until.elementLocated(By.id('displayBBox')), 10000);
       await browser.executeScript(() => { document.getElementById('displayBBox').click(); });
       await browser.wait(until.elementLocated(By.id('edit_mode')), 3000);
