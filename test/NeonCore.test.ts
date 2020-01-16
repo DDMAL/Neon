@@ -39,7 +39,6 @@ beforeAll(() => {
 });
 
 afterAll(async () => {
-  console.log(mei);
   const neon = new NeonCore(mei);
   await neon.deleteDb();
 });
@@ -89,8 +88,10 @@ describe('Test textEdit module functions', () => {
      * although in these lines and the others like it
      * it's really just about trying stuff until you get the correct element
      */
-    let rect1 = svg.getElementById('m-ca34b59d-7c2a-411c-8be5-c24e0fbe1ed4').children[1].children[1];
-    let rect2 = svg.getElementById('m-432f94f2-3089-4767-b099-2b0573e55e99').children[1].children[1];
+    let rect1 = svg.getElementById('m-ca34b59d-7c2a-411c-8be5-c24e0fbe1ed4').getElementsByTagName('rect')[0];
+    let rect2 = svg.getElementById('m-432f94f2-3089-4767-b099-2b0573e55e99').getElementsByTagName('rect')[0];
+    // let rect1 = svg.getElementById('m-ca34b59d-7c2a-411c-8be5-c24e0fbe1ed4').children[1].children[1];
+    // let rect2 = svg.getElementById('m-432f94f2-3089-4767-b099-2b0573e55e99').children[1].children[1];
     expect(rect1.getAttribute('width')).toBe('259');
     expect(rect2.getAttribute('width')).toBe('310');
     let editorAction = {
@@ -103,7 +104,7 @@ describe('Test textEdit module functions', () => {
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     let info = (await neon.info(pathToPNG))['uuid'];
     svg = await neon.getSVG(pathToPNG);
-    const groupedRect = svg.getElementById(info).children[0].children[1];
+    const groupedRect = svg.getElementById(info).getElementsByTagName('rect')[0];
     expect(groupedRect.getAttribute('width')).toBe('642');
 
     // ungrouping test
@@ -117,9 +118,13 @@ describe('Test textEdit module functions', () => {
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     info = await neon.info(pathToPNG);
     svg = await neon.getSVG(pathToPNG);
+    console.log('Info: ' + info);
     const arr = info['uuid'];
-    rect1 = svg.getElementById(arr[0]).children[0].children[1];
-    rect2 = svg.getElementById(arr[1]).children[1].children[1];
+    //console.log('Arr: ' + arr);
+    rect1 = svg.getElementById(arr[0]).getElementsByTagName('rect')[0];
+    rect2 = svg.getElementById(arr[1]).getElementsByTagName('rect')[0];
+    //rect1 = svg.getElementById(arr[0]).children[0].children[1] as SVGRectElement;
+    //rect2 = svg.getElementById(arr[1]).children[1].children[1] as SVGRectElement;
     expect(rect1.getAttribute('width')).toBe('642');
     expect(rect2.getAttribute('width')).toBe('155');
   });

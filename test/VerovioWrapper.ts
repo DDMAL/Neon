@@ -11,8 +11,8 @@ export default class VerovioWrapper {
     this.toolkit = new verovio.toolkit();
     this.toolkit.setOptions({
       format: 'mei',
-      noFooter: 1,
-      noHeader: 1,
+      footer: 'none',
+      header: 'none',
       pageMarginLeft: 0,
       pageMarginTop: 0,
       font: 'Bravura',
