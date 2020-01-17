@@ -15,7 +15,78 @@ function copyAttributes(src: Element, dst: Element): void {
 }
 
 export function convertStaffToSb(staffBasedMei: string): string {
-  return '';
+  const parser = new DOMParser();
+  const serializer = new XMLSerializer();
+  const meiDoc = parser.parseFromString(staffBasedMei, 'text/xml');
+  const mei = meiDoc.documentElement;
+
+  const precedesSyllables: Set<Element> = new Set();
+
+  for (const section of mei.getElementsByTagName('section')) {
+    const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
+    const newLayer = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'layer');
+    newStaff.setAttribute('n', '1');
+    newLayer.setAttribute('n', '1');
+    newStaff.appendChild(newLayer);
+
+    const staves = Array.from(section.getElementsByTagName('staff'));
+
+    for (const staff of staves) {
+      const layer = staff.getElementsByTagName('layer')[0];
+
+      const sb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'sb');
+      sb.setAttribute('n', staff.getAttribute('n'));
+      sb.setAttribute('facs', staff.getAttribute('facs'));
+      sb.setAttribute('xml:id', staff.getAttribute('xml:id'));
+
+      // Handle custos
+      if ((newLayer.lastElementChild !== null) &&
+        (newLayer.lastElementChild.tagName === 'custos')) {
+        sb.appendChild(newLayer.lastElementChild);
+      }
+
+      // Insert sb either as last child of layer or in the last syllable
+      const lastElement = newLayer.lastElementChild;
+      if ((lastElement !== null) && (lastElement.tagName === 'syllable') && lastElement.hasAttribute('precedes')) {
+        lastElement.appendChild(sb);
+      }
+      else {
+        newLayer.appendChild(sb);
+      }
+
+      // Handle split syllables
+      for (const precedes of precedesSyllables) {
+        const followsId = precedes.getAttribute('precedes');
+        const followsSyllable = Array.from(layer.getElementsByTagName('syllable'))
+          .filter(syllable => { return syllable.getAttribute('xml:id') === followsId; })
+          .pop();
+        if (followsSyllable !== undefined) {
+          // Check for preceeding clef
+          if (followsSyllable.previousElementSibling.tagName === 'clef') {
+            precedes.append(followsSyllable.previousElementSibling);
+          }
+          while (followsSyllable.firstChild !== null) {
+            precedes.append(followsSyllable.firstChild);
+          }
+          followsSyllable.remove();
+          precedes.removeAttribute('precedes');
+          precedesSyllables.delete(precedes);
+        }
+      }
+
+      // Add remaining elements of layer to newLayer
+      while (layer.firstElementChild !== null) {
+        if (layer.firstElementChild.hasAttribute('precedes')) {
+          precedesSyllables.add(layer.firstElementChild);
+        }
+        newLayer.appendChild(layer.firstElementChild);
+      }
+      staff.remove();
+    }
+    section.appendChild(newStaff);
+  }
+
+  return serializer.serializeToString(meiDoc);
 }
 
 export function convertSbToStaff(sbBasedMei: string): string {
@@ -58,6 +129,11 @@ export function convertSbToStaff(sbBasedMei: string): string {
 
             origSyllable.insertAdjacentElement('afterend', sb);
             sb.insertAdjacentElement('afterend', newSyllable);
+
+            // Move any clef in newSyllable out of it
+            for (const clef of newSyllable.getElementsByTagName('clef')) {
+              newSyllable.insertAdjacentElement('beforebegin', clef);
+            }
           }
         }
       }
