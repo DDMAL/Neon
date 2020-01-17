@@ -142,10 +142,8 @@ export function convertSbToStaff(sbBasedMei: string): string {
       for (const sb of layer.getElementsByTagName('sb')) {
         sbInfo.push(sb.getAttribute('xml:id'));
       }
-      console.log(sbInfo);
 
       for (let i = 0; i < sbInfo.length; i++) {
-        console.log('i = ' + i);
         const currentSb = Array.from(layer.getElementsByTagName('sb'))
           .filter(el => { return el.getAttribute('xml:id') === sbInfo[i]; })[0];
         const nextSb = (i === sbInfo.length - 1) ? undefined :
