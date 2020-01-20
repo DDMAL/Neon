@@ -40,7 +40,8 @@
     },
     "jest": {
         "testPathIgnorePatterns": [
-            "<rootDir>/node_modules/"
+            "<rootDir>/node_modules/",
+            "<rootDir>/test/ConvertMei.test.ts"
         ],
         "moduleNameMapper": {
             "Validation": "<rootDir>/test/SubstituteValidation.ts",
