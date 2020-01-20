@@ -3,7 +3,6 @@
 import * as ConvertMei from '../src/utils/ConvertMei';
 
 import * as fs from 'fs';
-import * as et from 'elementtree';
 
 jest.mock('../src/utils/random', () => ({
   uuidv4: (): string => {
