@@ -25,15 +25,18 @@ async function init (): Promise<void> {
       View: undefined,
       NeumeEdit: undefined
     };
-    const mediaType = await window.fetch(manifest.image).then(response => {
-      if (response.ok) {
-        return response.headers.get('Content-Type');
-      } else {
-        throw new Error(response.statusText);
-      }
-    });
+    let singlePage: boolean;
+    switch (manifest.mei_annotations.length) {
+      case 0:
+        throw new Error('Cannot load Neon without any MEI files!');
+        break;
+      case 1:
+        singlePage = true;
+        break;
+      default:
+        singlePage = false;
+    }
 
-    const singlePage = mediaType.match(/^image\/*/);
     params.View = singlePage ? SingleView : DivaView;
     params.NeumeEdit = singlePage ? SingleEditMode : DivaEdit;
 
