@@ -36,9 +36,24 @@ class SingleView implements ViewInterface {
     this.bg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
     this.bg.id = 'bgimg';
     this.bg.classList.add('background');
-    this.bg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', image);
     this.bg.setAttribute('x', '0');
     this.bg.setAttribute('y', '0');
+
+    const reader = new FileReader();
+    fetch(image).then(result => {
+      if (result.ok) {
+        reader.addEventListener('load', () => {
+          this.bg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', reader.result.toString());
+          const bbox = this.bg.getBBox();
+          if (!this.group.hasAttribute('viewBox')) {
+            this.group.setAttribute('viewBox', '0 0 ' + bbox.width.toString() + ' ' + bbox.height.toString());
+          }
+        });
+        return result.blob();
+      }
+    }).then(blob => {
+      reader.readAsDataURL(blob);
+    });
 
     this.mei = document.createElementNS('http://www.w3.org/svg', 'svg') as SVGSVGElement;
     this.mei.id = 'mei_output';
