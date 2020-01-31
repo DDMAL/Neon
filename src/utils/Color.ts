@@ -127,6 +127,25 @@ export function highlight (staff: SVGGElement, color: string): void {
     }
     child.classList.add('highlighted');
   }
+  let width, height;
+  try {
+    width = Number(document.querySelector('#mei_output').getAttribute('width').split('px')[0]);
+    height = Number(document.querySelector('#mei_output').getAttribute('height').split('px')[0]);
+  } catch (e) {
+    console.debug(e);
+  }
+  let stroke: string;
+  if (width !== undefined && height !== undefined) {
+    // idk looks good :')
+    stroke = (width*height/1000000).toString();
+  }
+  else {
+    stroke = '30px';
+  }
+  staff.querySelectorAll('.nc, .custos, .clef').forEach(el => { 
+    el.setAttribute('stroke', 'black'); 
+    el.setAttribute('stroke-width', '30px'); 
+  });
 }
 
 /**
@@ -194,4 +213,8 @@ export function setGroupingHighlight (grouping: string): void {
       groups[i].classList.remove('highlighted');
     }
   }
+  document.querySelectorAll('.nc, .custos, .clef').forEach(el => {
+    el.setAttribute('stroke', 'black'); 
+    el.setAttribute('stroke-width', '30px'); 
+  });
 }
