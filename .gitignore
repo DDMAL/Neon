@@ -11,3 +11,9 @@
 /dist
 .DS_Store
 .awcache
+
+# For Yarn 2 (not zero-install)
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.pnp.*

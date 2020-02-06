@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const childProcess = require('child_process');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const PnpWebpackPlugin = require('pnp-webpack-plugin')
 
 let commitHash = childProcess.execSync('git rev-parse --short HEAD').toString();
 
@@ -23,7 +24,7 @@ module.exports = {
       {
         test: /\.tsx?$/,
         use: [
-          'awesome-typescript-loader'
+          require.resolve('awesome-typescript-loader')
         ],
         exclude: /node_modules/
       },
@@ -31,7 +32,7 @@ module.exports = {
         test: /Worker\.js$/,
         use: [
           {
-            loader: 'worker-loader',
+            loader: require.resolve('worker-loader'),
             options: { publicPath: '/Neon/Neon-gh/' }
           }
         ]
@@ -39,7 +40,15 @@ module.exports = {
     ]
   },
   resolve: {
+    plugins: [
+      PnpWebpackPlugin
+    ],
     extensions: [ '.ts', '.js' ]
+  },
+  resolveLoader: {
+    plugins: [
+      PnpWebpackPlugin.moduleLoader(module)
+    ]
   },
   externals: {
     'verovio-dev': 'verovio',

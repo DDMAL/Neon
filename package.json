@@ -51,6 +51,7 @@
         "testEnvironment": "jest-environment-jsdom-fourteen"
     },
     "dependencies": {
+        "@types/node": "^13.7.0",
         "d3": "^5.11.0",
         "jsonschema": "^1.2.4",
         "pouchdb": "^7.1.1"
@@ -68,6 +69,7 @@
         "@typescript-eslint/eslint-plugin": "^2.0.0",
         "@typescript-eslint/parser": "^2.0.0",
         "awesome-typescript-loader": "^5.2.1",
+        "body-parser": "^1.19.0",
         "bulma": "^0.7.1",
         "bulma-extensions": "^6.2.7",
         "bulma-slider": "^2.0.0",
@@ -79,6 +81,7 @@
         "jest-environment-jsdom-fourteen": "^1.0.1",
         "multer": "^1.4.2",
         "nodemon": "^1.19.1",
+        "pnp-webpack-plugin": "^1.6.0",
         "pouchdb-memory": "^6.0.0",
         "pug": "^2.0.4",
         "request": "^2.88.0",
@@ -86,11 +89,11 @@
         "source-map": "^0.7.3",
         "ts-jest": "^24.0.2",
         "typedoc": "^0.15.0",
-        "typescript": "^3.6.2",
+        "typescript": "^3.7.5",
         "uuid": "^3.3.3",
         "verovio-dev": "file:./verovio-util/verovio-dev",
-        "webpack": "^4.12.0",
-        "webpack-command": "^0.4.2",
+        "webpack": "^4.41.5",
+        "webpack-command": "^0.5.0",
         "worker-loader": "^2.0.0"
     }
 }
