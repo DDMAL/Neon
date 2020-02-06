@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>DragHandler | Neon</title>
+	<title>DragHandler | Neon - vdevelop</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">Neon</a>
+					<a href="../index.html" class="title">Neon - vdevelop</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -90,8 +90,9 @@
 						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported"><a href="_utils_draghandler_.draghandler.html#dragendcoords" class="tsd-kind-icon">drag<wbr>End<wbr>Coords</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported"><a href="_utils_draghandler_.draghandler.html#dragstartcoords" class="tsd-kind-icon">drag<wbr>Start<wbr>Coords</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported"><a href="_utils_draghandler_.draghandler.html#dx" class="tsd-kind-icon">dx</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported"><a href="_utils_draghandler_.draghandler.html#dy" class="tsd-kind-icon">dy</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-not-exported"><a href="_utils_draghandler_.draghandler.html#neonview" class="tsd-kind-icon">neon<wbr>View</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported"><a href="_utils_draghandler_.draghandler.html#resettoaction" class="tsd-kind-icon">reset<wbr>ToAction</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported"><a href="_utils_draghandler_.draghandler.html#selection" class="tsd-kind-icon">selection</a></li>
@@ -124,7 +125,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/DragHandler.ts#L11">utils/DragHandler.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L12">utils/DragHandler.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -144,22 +145,32 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported">
-					<a name="dragendcoords" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> drag<wbr>End<wbr>Coords</h3>
-					<div class="tsd-signature tsd-kind-icon">drag<wbr>End<wbr>Coords<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/DragHandler.ts#L7">utils/DragHandler.ts:7</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported">
 					<a name="dragstartcoords" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> drag<wbr>Start<wbr>Coords</h3>
 					<div class="tsd-signature tsd-kind-icon">drag<wbr>Start<wbr>Coords<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/DragHandler.ts#L6">utils/DragHandler.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L6">utils/DragHandler.ts:6</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported">
+					<a name="dx" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> dx</h3>
+					<div class="tsd-signature tsd-kind-icon">dx<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L11">utils/DragHandler.ts:11</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported">
+					<a name="dy" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> dy</h3>
+					<div class="tsd-signature tsd-kind-icon">dy<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L12">utils/DragHandler.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -169,7 +180,7 @@
 					<div class="tsd-signature tsd-kind-icon">neon<wbr>View<span class="tsd-signature-symbol">:</span> <a href="_neonview_.neonview.html" class="tsd-signature-type">NeonView</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/DragHandler.ts#L9">utils/DragHandler.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L8">utils/DragHandler.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -179,7 +190,7 @@
 					<div class="tsd-signature tsd-kind-icon">reset<wbr>ToAction<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/DragHandler.ts#L8">utils/DragHandler.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L7">utils/DragHandler.ts:7</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -213,7 +224,7 @@
 					<div class="tsd-signature tsd-kind-icon">selection<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/DragHandler.ts#L11">utils/DragHandler.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L10">utils/DragHandler.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -223,7 +234,7 @@
 					<div class="tsd-signature tsd-kind-icon">selector<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/DragHandler.ts#L10">utils/DragHandler.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L9">utils/DragHandler.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -240,7 +251,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/DragHandler.ts#L68">utils/DragHandler.ts:68</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L72">utils/DragHandler.ts:72</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -257,7 +268,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/DragHandler.ts#L21">utils/DragHandler.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L22">utils/DragHandler.ts:22</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -279,7 +290,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/DragHandler.ts#L47">utils/DragHandler.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L49">utils/DragHandler.ts:49</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -296,7 +307,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/DragHandler.ts#L113">utils/DragHandler.ts:113</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L116">utils/DragHandler.ts:116</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -313,7 +324,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/DragHandler.ts#L107">utils/DragHandler.ts:107</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L110">utils/DragHandler.ts:110</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -335,7 +346,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/DragHandler.ts#L102">utils/DragHandler.ts:102</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/c49b4d4/src/utils/DragHandler.ts#L105">utils/DragHandler.ts:105</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -383,7 +394,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_utils_draghandler_.html">"utils/<wbr>Drag<wbr>Handler"</a>
+						<a href="../modules/_utils_draghandler_.html">&quot;utils/<wbr>Drag<wbr>Handler&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -398,10 +409,13 @@
 								<a href="_utils_draghandler_.draghandler.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported">
-								<a href="_utils_draghandler_.draghandler.html#dragendcoords" class="tsd-kind-icon">drag<wbr>End<wbr>Coords</a>
+								<a href="_utils_draghandler_.draghandler.html#dragstartcoords" class="tsd-kind-icon">drag<wbr>Start<wbr>Coords</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported">
-								<a href="_utils_draghandler_.draghandler.html#dragstartcoords" class="tsd-kind-icon">drag<wbr>Start<wbr>Coords</a>
+								<a href="_utils_draghandler_.draghandler.html#dx" class="tsd-kind-icon">dx</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported">
+								<a href="_utils_draghandler_.draghandler.html#dy" class="tsd-kind-icon">dy</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-not-exported">
 								<a href="_utils_draghandler_.draghandler.html#neonview" class="tsd-kind-icon">neon<wbr>View</a>
