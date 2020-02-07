@@ -87,6 +87,7 @@ export function unsetGroupingHighlight (): void {
       rect.classList.remove('highlighted');
     });
   });
+  Array.from(document.getElementsByClassName('selected')).forEach((el) => {el.setAttribute('fill', '');});
 }
 
 /**
