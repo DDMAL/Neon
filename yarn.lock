@@ -1561,6 +1561,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "Neon@workspace:."
   dependencies:
+    "@jest/types": ^25.1.0
     "@types/d3": ^5.7.2
     "@types/elementtree": ^0.1.0
     "@types/fs-extra": ^8.0.0
@@ -12539,7 +12540,7 @@ typescript@^3.7.5:
 "verovio-dev@file:./verovio-util/verovio-dev::locator=Neon%40workspace%3A.":
   version: 2.2.0-4
   resolution: "verovio-dev@file:./verovio-util/verovio-dev::locator=Neon%40workspace%3A."
-  checksum: 5fb059dcfcd3dd9e6968bd2be4b1daa6cc8629e99e8df6bac7aa41813dd90db708c5e5f32cc2ccee1124c97e409d3ce0da1817ea39646effa6069e145a31e022
+  checksum: cf57785efda96c3b3df037927ea53901492807672f4f8dca439a3eae17cd2eded0be66ef37b6c8acde7a3ed00fc7f27375e7ab6aa6d7489195c68dbb2f490f46
   languageName: node
   linkType: hard
 
