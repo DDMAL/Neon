@@ -1,6 +1,6 @@
-Neon (develop)
+Neon v4.0.2
 =====
-[![Build_Status](https://travis-ci.org/DDMAL/Neon.svg?branch=develop)](https://travis-ci.org/DDMAL/Neon)
+[![Build_Status](https://travis-ci.org/DDMAL/Neon.svg?branch=master)](https://travis-ci.org/DDMAL/Neon)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
 

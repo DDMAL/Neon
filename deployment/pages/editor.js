@@ -10,6 +10,8 @@ import TextEditMode from '../../src/TextEditMode';
 
 import PouchDB from 'pouchdb';
 
+import PouchDB from 'pouchdb';
+
 let name = getGetParam('manifest');
 let manifestLocation = 'manifests/' + name + '.jsonld';
 let storage = getGetParam('storage');
