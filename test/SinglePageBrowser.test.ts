@@ -270,6 +270,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
           const canvas = await browser.findElement(By.id('svg_group'));
           const actions = browser.actions();
           await actions.move({ origin: canvas }).press().move({ x: 200, y: 200 }).perform();
+          await browser.wait(until.elementLocated(By.id('selectRect')), 10000);
           await browser.findElement(By.id('selectRect'));
           await actions.release().perform();
           await browser.findElement(By.className('selected'));
