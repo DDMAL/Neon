@@ -52,7 +52,7 @@ export function unselect (): void {
 
   d3.selectAll('#resizeRect').remove();
   d3.selectAll('.resizePoint').remove();
-  d3.selectAll('.skewPoint').remove();
+  d3.selectAll('.rotatePoint').remove();
 
   if (!document.getElementById('selByStaff').classList.contains('is-active')) {
     Grouping.endGroupingSelection();
@@ -154,32 +154,33 @@ export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
 
 /**
  * Get the bounding box of a staff based on its staff lines.
- * Skew is included in radians.
+ * Rotate is included in radians.
  */
-export function getStaffBBox (staff: SVGGElement): {ulx: number; uly: number; lrx: number; lry: number; skew: number} {
-  let ulx, uly, lrx, lry, skew;
+export function getStaffBBox (staff: SVGGElement): {ulx: number; uly: number; lrx: number; lry: number; rotate: number} {
+  let ulx, uly, lrx, lry, rotate;
   staff.querySelectorAll('path').forEach(path => {
     const coordinates: number[] = path.getAttribute('d')
       .match(/\d+/g)
       .map(element => Number(element));
-    if (skew === undefined) {
-      skew = Math.atan((coordinates[3] - coordinates[1]) /
+    if (rotate === undefined) {
+      rotate = Math.atan((coordinates[3] - coordinates[1]) /
         (coordinates[2] - coordinates[0]));
     }
-    if (uly === undefined || coordinates[1] < uly) {
-      uly = coordinates[1];
+
+    if (uly === undefined || Math.min(coordinates[1], coordinates[3]) < uly) {
+      uly = Math.min(coordinates[1], coordinates[3]);
     }
     if (ulx === undefined || coordinates[0] < ulx) {
       ulx = coordinates[0];
     }
-    if (lry === undefined || coordinates[3] > lry) {
-      lry = coordinates[3];
+    if (lry === undefined || Math.max(coordinates[1], coordinates[3]) > lry) {
+      lry = Math.max(coordinates[1], coordinates[3]);
     }
     if (lrx === undefined || coordinates[2] > lrx) {
       lrx = coordinates[2];
     }
   });
-  return { 'ulx': ulx, 'uly': uly, 'lrx': lrx, 'lry': lry, 'skew': skew };
+  return { 'ulx': ulx, 'uly': uly, 'lrx': lrx, 'lry': lry, 'rotate': rotate };
 }
 
 /**

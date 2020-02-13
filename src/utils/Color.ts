@@ -99,7 +99,7 @@ export function highlight (staff: SVGGElement, color: string): void {
     let child = children[i];
     if (child.tagName === 'path') {
       child.setAttribute('stroke', color);
-    } else if (child.classList.contains('resizePoint') || child.id === 'resizeRect' || child.classList.contains('skewPoint')) {
+    } else if (child.classList.contains('resizePoint') || child.id === 'resizeRect' || child.classList.contains('rotatePoint')) {
       return;
     } else if (child.classList.contains('layer')) {
       Array.from(child.children).forEach(cchild => { children.push(cchild); });

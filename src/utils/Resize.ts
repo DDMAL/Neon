@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 
 /**
  * Resize a staff or a syllable text bounding box.
- * For staves, this also supports adjusting the skew.
+ * For staves, this also supports adjusting the rotate.
  */
 type Point = { x: number; y: number; name: number };
 
@@ -23,6 +23,40 @@ const PointNames = {
   BottomLeft: 6,
   Left: 7
 };
+
+function GetPoints(ulx: number, uly: number, lrx: number, lry: number, rotate: number): Point[] {
+  // Note that arc functions return an angle x in [-pi/2, pi/2].
+  let points: Array<Point>;
+  // ul is ulx, uly, lr is lrx, lry
+  if (rotate >= 0) {
+    points = [
+      { x: ulx, y: uly, name: PointNames.TopLeft },
+      { x: (ulx + lrx) / 2, y: uly + (lrx - ulx) / 2 * Math.sin(rotate), name: PointNames.Top },
+      { x: lrx, y: uly + (lrx - ulx) * Math.sin(rotate), name: PointNames.TopRight },
+      { x: lrx, y: (uly + lry + (lrx - ulx) * Math.sin(rotate)) / 2, name: PointNames.Right },
+      { x: lrx, y: lry, name: PointNames.BottomRight },
+      { x: (ulx + lrx) / 2, y: lry - (lrx - ulx) / 2 * Math.sin(rotate), name: PointNames.Bottom },
+      { x: ulx, y: lry - (lrx - ulx) * Math.sin(rotate), name: PointNames.BottomLeft },
+      { x: ulx, y: (uly + lry - (lrx - ulx) * Math.sin(rotate)) / 2, name: PointNames.Left }
+    ];
+  }
+  // Not that
+  else {
+    const a = (lrx - ulx) * Math.tan(Math.abs(rotate));
+    const b = lry - uly - a;
+    points = [
+      { x: ulx, y: uly + a, name: PointNames.TopLeft },
+      { x: (ulx + lrx) / 2, y: uly + a / 2, name: PointNames.Top },
+      { x: lrx, y: uly, name: PointNames.TopRight },
+      { x: lrx, y: uly + b / 2, name: PointNames.Right },
+      { x: lrx, y: uly + b, name: PointNames.BottomRight },
+      { x: (ulx + lrx) / 2, y: lry - a / 2, name: PointNames.Bottom },
+      { x: ulx, y: lry, name: PointNames.BottomLeft },
+      { x: ulx, y: lry - b / 2, name: PointNames.Left }
+    ];
+  }
+  return points;
+}
 
 export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHandler: DragHandler): void {
   /**
@@ -43,12 +77,12 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
   let lry: number;
 
   /**
-   * The skew of the rect in radians.
+   * The rotate of the rect in radians.
    */
-  let skew: number;
+  let rotate: number;
 
-  let initialPoint: number[], initialUly: number, initialLry: number, whichSkewPoint: string,
-    initialY: number, initialRectY: number, polyLen: number, dy: number, initialSkew: number;
+  let initialPoint: number[], initialUly: number, initialLry: number, whichRotatePoint: string,
+    initialY: number, initialRectY: number, polyLen: number, dy: number, initialRotate: number;
 
   drawInitialRect();
   /**
@@ -70,7 +104,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       lrx = +ulx + +rect.getAttribute('width');
       lry = +uly + +rect.getAttribute('height');
 
-      skew = 0;
+      rotate = 0;
     }
 
     // if it's a staff use the paths to get it's boundingbox
@@ -85,22 +119,13 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         .getAttribute('d')
         .match(/\d+/g)
         .map(element => Number(element));
-      skew = Math.atan((coordinates[3] - coordinates[1]) /
+      rotate = Math.atan((coordinates[3] - coordinates[1]) /
         (coordinates[2] - coordinates[0]));
     }
 
     let whichPoint: string;
 
-    const points: Array<Point> = [
-      { x: ulx, y: uly, name: PointNames.TopLeft },
-      { x: (ulx + lrx) / 2, y: uly + (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Top },
-      { x: lrx, y: uly + (lrx - ulx) * Math.sin(skew), name: PointNames.TopRight },
-      { x: lrx, y: (uly + lry + (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Right },
-      { x: lrx, y: lry, name: PointNames.BottomRight },
-      { x: (ulx + lrx) / 2, y: lry - (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Bottom },
-      { x: ulx, y: lry - (lrx - ulx) * Math.sin(skew), name: PointNames.BottomLeft },
-      { x: ulx, y: (uly + lry - (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Left }
-    ];
+    const points = GetPoints(ulx, uly, lrx, lry, rotate);
 
     polyLen = points[2].x - points[0].x;
 
@@ -151,77 +176,95 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
 
       d3.select('#' + element.id).append('polygon')
         .attr('points', pointStringRight)
-        .attr('id', 'skewRight')
+        .attr('id', 'rotateRight')
         .attr('stroke', 'black')
         .attr('stroke-width', 7)
         .attr('fill', '#0099ff')
-        .attr('class', 'skewPoint');
+        .attr('class', 'rotatePoint');
 
       d3.select('#' + element.id).append('polygon')
         .attr('points', pointStringLeft)
-        .attr('id', 'skewLeft')
+        .attr('id', 'rotateLeft')
         .attr('stroke', 'black')
         .attr('stroke-width', 7)
         .attr('fill', '#0099ff')
-        .attr('class', 'skewPoint');
+        .attr('class', 'rotatePoint');
 
-      d3.select('#skewLeft').call(
+      d3.select('#rotateLeft').call(
         d3.drag()
-          .on('start', skewStart)
-          .on('drag', skewDragLeft)
-          .on('end', skewEnd));
+          .on('start', rotateStart)
+          .on('drag', rotateDragLeft)
+          .on('end', rotateEnd));
 
-      d3.select('#skewRight').call(
+      d3.select('#rotateRight').call(
         d3.drag()
-          .on('start', skewStart)
-          .on('drag', skewDragRight)
-          .on('end', skewEnd));
+          .on('start', rotateStart)
+          .on('drag', rotateDragRight)
+          .on('end', rotateEnd));
     }
 
-    function skewStart (): void {
+    function rotateStart (): void {
       let which = d3.event.sourceEvent.target.id;
       const polygon = d3.select('#' + which);
       const points = polygon.attr('points');
-      whichSkewPoint = which;
+      whichRotatePoint = which;
       initialY = d3.mouse(this)[1];
-      initialRectY = (which === 'skewRight' ? lry : uly);
-      initialSkew = skew;
+      initialLry = lry;
+      initialUly = uly;
+      initialRectY = (which === 'rotateRight' ? lry : uly);
+      initialRotate = rotate;
     }
 
-    function skewDragLeft (): void {
+    function rotateDragLeft (): void {
       const currentY = d3.mouse(this)[1];
       const temp = currentY - initialY;
-      const tempSkew = initialSkew - Math.atan(temp / polyLen);
-      if (tempSkew > -0.2 && tempSkew < 0.2) {
+      const tempRotate = initialRotate - Math.atan(temp / polyLen);
+      if (tempRotate > -0.2 && tempRotate < 0.2) {
         dy = temp;
         uly = initialRectY + dy;
-        skew = tempSkew;
+        rotate = tempRotate;
+        if (rotate >= 0) {
+          uly = dy + points.filter(point => point.name === PointNames.TopLeft)[0].y;
+          lry = points.filter(point => point.name === PointNames.BottomRight)[0].y;
+        } else {
+          uly = points.filter(point => point.name === PointNames.TopRight)[0].y;
+          lry = dy + points.filter(point => point.name === PointNames.BottomLeft)[0].y;
+        }
       }
       redraw();
     }
 
-    function skewDragRight (): void {
+    function rotateDragRight (): void {
       const currentY = d3.mouse(this)[1];
       const temp = currentY - initialY;
-      const tempSkew = initialSkew + Math.atan(temp / polyLen);
-      if (tempSkew > -0.2 && tempSkew < 0.2) {
+      const tempRotate = initialRotate + Math.atan(temp / polyLen);
+      if (tempRotate > -0.2 && tempRotate < 0.2) {
         dy = temp;
-        skew = tempSkew;
-        lry = initialRectY + dy;
+        rotate = tempRotate;
+        if (rotate >= 0 ) {
+          lry = dy + points.filter(point => point.name === PointNames.BottomRight)[0].y;
+          uly = points.filter(point => point.name === PointNames.TopLeft)[0].y;
+        } else {
+          uly = dy + points.filter(point => point.name === PointNames.TopRight)[0].y;
+          lry = points.filter(point => point.name === PointNames.BottomLeft)[0].y;
+        }
       }
       redraw();
     }
 
-    function skewEnd (): void {
+    function rotateEnd (): void {
       if (dy === undefined) {
         dy = 0;
       }
       const editorAction = {
-        'action': 'changeSkew',
+        'action': 'resizeRotate',
         'param': {
           'elementId': element.id,
-          'dy': dy,
-          'rightSide': (whichSkewPoint === 'skewRight')
+          'ulx': ulx,
+          'uly': uly,
+          'lrx': lrx,
+          'lry': lry,
+          'rotate': rotate * 180 / Math.PI
         }
       };
       neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
@@ -259,30 +302,30 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
           uly = currentPoint[1];
           break;
         case PointNames.Top:
-          uly = currentPoint[1] - (lrx - ulx) * Math.tan(skew) / 2;
+          uly = currentPoint[1] - (lrx - ulx) * Math.tan(rotate) / 2;
           break;
         case PointNames.TopRight:
           lrx = currentPoint[0];
-          uly = currentPoint[1] - (lrx - ulx) * Math.tan(skew);
+          uly = currentPoint[1] - (lrx - ulx) * Math.tan(rotate);
           break;
         case PointNames.Right:
           lrx = currentPoint[0];
-          lry = initialLry + (currentPoint[0] - initialPoint[0]) * Math.tan(skew);
+          lry = initialLry + (currentPoint[0] - initialPoint[0]) * Math.tan(rotate);
           break;
         case PointNames.BottomRight:
           lrx = currentPoint[0];
           lry = currentPoint[1];
           break;
         case PointNames.Bottom:
-          lry = currentPoint[1] + (lrx - ulx) * Math.tan(skew) / 2;
+          lry = currentPoint[1] + (lrx - ulx) * Math.tan(rotate) / 2;
           break;
         case PointNames.BottomLeft:
           ulx = currentPoint[0];
-          lry = currentPoint[1] + (lrx - ulx) * Math.tan(skew);
+          lry = currentPoint[1] + (lrx - ulx) * Math.tan(rotate);
           break;
         case PointNames.Left:
           ulx = currentPoint[0];
-          uly = initialUly + (currentPoint[0] - initialPoint[0]) * Math.tan(skew);
+          uly = initialUly + (currentPoint[0] - initialPoint[0]) * Math.tan(rotate);
           break;
         default:
           console.error('Something that wasn\'t a side of the rectangle was dragged. This shouldn\'t happen.');
@@ -312,7 +355,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         lry = undefined;
         d3.selectAll('.resizePoint').remove();
         d3.selectAll('#resizeRect').remove();
-        d3.selectAll('.skewPoint').remove();
+        d3.selectAll('.rotatePoint').remove();
         drawInitialRect();
         if (element.classList.contains('syl')) {
           selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
@@ -330,16 +373,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
    * Redraw the rectangle with the new bounds
    */
   function redraw (): void {
-    const points: Point[] = [
-      { x: ulx, y: uly, name: PointNames.TopLeft },
-      { x: (ulx + lrx) / 2, y: uly + (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Top },
-      { x: lrx, y: uly + (lrx - ulx) * Math.sin(skew), name: PointNames.TopRight },
-      { x: lrx, y: (uly + lry + (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Right },
-      { x: lrx, y: lry, name: PointNames.BottomRight },
-      { x: (ulx + lrx) / 2, y: lry - (lrx - ulx) / 2 * Math.sin(skew), name: PointNames.Bottom },
-      { x: ulx, y: lry - (lrx - ulx) * Math.sin(skew), name: PointNames.BottomLeft },
-      { x: ulx, y: (uly + lry - (lrx - ulx) * Math.sin(skew)) / 2, name: PointNames.Left }
-    ];
+    const points: Point[] = GetPoints(ulx, uly, lrx, lry, rotate);
 
     const pointString: string = points.filter((_elem, index) => { return index % 2 === 0; })
       .map(elem => elem.x + ',' + elem.y)
@@ -363,7 +397,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
     const pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
       (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
 
-    d3.select('#skewLeft').attr('points', pointStringLeft);
-    d3.select('#skewRight').attr('points', pointStringRight);
+    d3.select('#rotateLeft').attr('points', pointStringLeft);
+    d3.select('#rotateRight').attr('points', pointStringRight);
   }
 }

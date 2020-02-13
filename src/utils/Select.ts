@@ -204,11 +204,11 @@ function clickHandler (evt: MouseEvent): void {
         let uly = bbox.uly;
         let lrx = bbox.lrx;
         let lry = bbox.lry;
-        let skew = bbox.skew;
+        let rotate = bbox.rotate;
 
         return (pt.x > ulx && pt.x < lrx) && 
-          (pt.y > (uly + (pt.x - ulx) * Math.tan(skew))) && 
-          (pt.y < (lry - (lrx - pt.x) * Math.tan(skew)));
+          (pt.y > (uly + (pt.x - ulx) * Math.tan(rotate))) && 
+          (pt.y < (lry - (lrx - pt.x) * Math.tan(rotate)));
       });
 
     unselect();
@@ -294,7 +294,7 @@ export function dragSelect (selector: string): void {
 
   /**
    * Check if a point is in the bounds of a staff element.
-   * Skew is not taken into account.
+   * Rotate is not taken into account.
    */
   function pointNotInStaff (pt: number[]): boolean {
     const staves = Array.from(document.getElementsByClassName('staff'));
@@ -304,11 +304,11 @@ export function dragSelect (selector: string): void {
         let uly = bbox.uly;
         let lrx = bbox.lrx;
         let lry = bbox.lry;
-        let skew = bbox.skew;
+        let rotate = bbox.rotate;
 
         return (pt[0] > ulx && pt[0] < lrx) && 
-          (pt[1] > (uly + (pt[0] - ulx) * Math.tan(skew))) && 
-          (pt[1] < (lry - (lrx - pt[0]) * Math.tan(skew)));
+          (pt[1] > (uly + (pt[0] - ulx) * Math.tan(rotate))) && 
+          (pt[1] < (lry - (lrx - pt[0]) * Math.tan(rotate)));
     });
     return (filtered.length === 0);
   }
@@ -383,10 +383,10 @@ export function dragSelect (selector: string): void {
           const box = getStaffBBox(d);
           return !((ul.x < box.ulx && lr.x < box.ulx) || 
                   (ul.x > box.lrx && lr.x > box.lrx) || 
-                  (ul.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.skew)) && 
-                    lr.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.skew))) || 
-                  (ul.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.skew)) && 
-                    lr.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.skew))));
+                  (ul.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate)) && 
+                    lr.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate))) || 
+                  (ul.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.rotate)) && 
+                    lr.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.rotate))));
         }
       }) as SVGGraphicsElement[];
 
