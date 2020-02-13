@@ -58,11 +58,12 @@ export function convertStaffToSb(staffBasedMei: string): string {
       for (const precedes of precedesSyllables) {
         const followsId = precedes.getAttribute('precedes');
         const followsSyllable = Array.from(layer.getElementsByTagName('syllable'))
-          .filter(syllable => { return syllable.getAttribute('xml:id') === followsId; })
+          .filter(syllable => { return '#' + syllable.getAttribute('xml:id') === followsId; })
           .pop();
         if (followsSyllable !== undefined) {
           // Check for preceeding clef
-          if (followsSyllable.previousElementSibling.tagName === 'clef') {
+          if ((followsSyllable.previousElementSibling !== null) &&
+          (followsSyllable.previousElementSibling.tagName === 'clef')) {
             precedes.append(followsSyllable.previousElementSibling);
           }
           while (followsSyllable.firstChild !== null) {
@@ -115,8 +116,8 @@ export function convertSbToStaff(sbBasedMei: string): string {
             // We need to split the syllable here
             const newSyllable = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'syllable');
             newSyllable.setAttribute('xml:id', 'm-' + uuidv4());
-            newSyllable.setAttribute('follows', origSyllable.getAttribute('xml:id'));
-            origSyllable.setAttribute('precedes', newSyllable.getAttribute('xml:id'));
+            newSyllable.setAttribute('follows', '#' + origSyllable.getAttribute('xml:id'));
+            origSyllable.setAttribute('precedes', '#' + newSyllable.getAttribute('xml:id'));
 
             const childArray = Array.from(origSyllable.children);
             const sbIndex = childArray.indexOf(sb);

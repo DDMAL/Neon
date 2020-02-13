@@ -199,7 +199,7 @@ export function initGroupingListeners (): void {
           'param': {
             'elementId': firstSyllable.id,
             'attrType': 'precedes',
-            'attrValue': secondSyllable.id
+            'attrValue': '#' + secondSyllable.id
           }
         });
         param.push({
@@ -207,7 +207,7 @@ export function initGroupingListeners (): void {
           'param': {
             'elementId': secondSyllable.id,
             'attrType': 'follows',
-            'attrValue': firstSyllable.id
+            'attrValue': '#' + firstSyllable.id
           }
         });
         // Delete syl on second syllable

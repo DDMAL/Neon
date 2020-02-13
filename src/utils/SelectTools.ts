@@ -294,11 +294,11 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     // Check for precedes/follows
     const follows = grouping.getAttribute('mei:follows');
     if (follows) {
-      groupsToSelect.add(document.getElementById(follows));
+      groupsToSelect.add(document.getElementById(follows.slice(1)));
     }
     const precedes = grouping.getAttribute('mei:precedes');
     if (precedes) {
-      groupsToSelect.add(document.getElementById(precedes));
+      groupsToSelect.add(document.getElementById(precedes.slice(1)));
     }
   }
 
@@ -346,7 +346,8 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
           break;
         case 2:
           // Check if this is a linked syllable split by a staff break
-          if ((groups[0].getAttribute('mei:follows') === groups[1].id) || (groups[0].getAttribute('mei:precedes') === groups[1].id)) {
+          if ((groups[0].getAttribute('mei:follows') === '#' + groups[1].id) ||
+          (groups[0].getAttribute('mei:precedes') === '#' + groups[1].id)) {
             Grouping.triggerGrouping('splitSyllable');
           } else if (sharedSecondLevelParent(groups)) {
             Grouping.triggerGrouping('syl');
