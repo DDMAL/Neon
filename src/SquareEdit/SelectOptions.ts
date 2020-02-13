@@ -420,7 +420,7 @@ export function triggerSplitActions (): void {
       }
     });
 
-  document.getElementById('reset-skew')
+  document.getElementById('reset-rotate')
     .addEventListener('click', () => {
       const staff = document.querySelector('.staff.selected') as SVGElement;
       const rect = staff.querySelector('#resizeRect');
@@ -428,7 +428,7 @@ export function triggerSplitActions (): void {
       let dy = parseInt(co[0].split(',')[1]) - parseInt(co[1].split(',')[1]);
       if (staff !== null) {
         const editorAction: EditorAction = {
-          'action': 'changeSkew',
+          'action': 'changeRotate',
           'param': {
             'elementId': staff.id,
             'dy': dy,
