@@ -40,17 +40,20 @@ export function convertStaffToSb(staffBasedMei: string): string {
       sb.setAttribute('xml:id', staff.getAttribute('xml:id'));
 
       // Handle custos
+      let custos: Element = undefined;
       if ((newLayer.lastElementChild !== null) &&
         (newLayer.lastElementChild.tagName === 'custos')) {
-        sb.appendChild(newLayer.lastElementChild);
+        custos = newLayer.removeChild(newLayer.lastElementChild);
       }
 
       // Insert sb either as last child of layer or in the last syllable
       const lastElement = newLayer.lastElementChild;
       if ((lastElement !== null) && (lastElement.tagName === 'syllable') && lastElement.hasAttribute('precedes')) {
+        if (custos !== undefined) lastElement.appendChild(custos);
         lastElement.appendChild(sb);
       }
       else {
+        if (custos !== undefined) newLayer.appendChild(custos);
         newLayer.appendChild(sb);
       }
 
@@ -130,6 +133,11 @@ export function convertSbToStaff(sbBasedMei: string): string {
 
             origSyllable.insertAdjacentElement('afterend', sb);
             sb.insertAdjacentElement('afterend', newSyllable);
+
+            // Move any custos in origSyllable out of it
+            for (const custos of origSyllable.getElementsByTagName('custos')) {
+              origSyllable.insertAdjacentElement('afterend', custos);
+            }
 
             // Move any clef in newSyllable out of it
             for (const clef of newSyllable.getElementsByTagName('clef')) {
