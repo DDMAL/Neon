@@ -2,7 +2,6 @@ Neon (develop)
 =====
 [![Build_Status](https://travis-ci.org/DDMAL/Neon.svg?branch=develop)](https://travis-ci.org/DDMAL/Neon)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
 
 **N**eume **E**ditor **ON**line.
 
@@ -60,4 +59,4 @@ Then you can run the tests locally using `yarn test`. We use [jest](https://face
 Verovio
 -------
 
-Verovio is present as an npm package under `src/verovio-dev` with the name `verovio-dev`. Its contents come from the `emscripten/npm-dev` folder in a Verovio project folder.
+Verovio is present as an npm package under `verovio-util/verovio-dev` with the name `verovio-dev`. Its contents come from the `emscripten/npm-dev` folder in a Verovio project folder.
