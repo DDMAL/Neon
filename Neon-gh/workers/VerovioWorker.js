@@ -11,7 +11,7 @@ toolkit.setOptions({
   useFacsimile: true,
   createDefaultSyl: true,
   createDefaultSylBBox: true,
-  useSkew: true
+  useRotate: true
 });
 
 /**
