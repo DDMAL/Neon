@@ -126,7 +126,7 @@ describe('Test textEdit module functions', () => {
     //rect1 = svg.getElementById(arr[0]).children[0].children[1] as SVGRectElement;
     //rect2 = svg.getElementById(arr[1]).children[1].children[1] as SVGRectElement;
     expect(rect1.getAttribute('width')).toBe('642');
-    expect(rect2.getAttribute('width')).toBe('155');
+    expect(rect2.getAttribute('width')).toBe('228');
   });
 
   test('Test bbox resizing', async () => {
@@ -228,7 +228,7 @@ test('Test \'drag\' action, neume', async () => {
     'param': {
       'elementId': 'm-044e7093-895e-4a78-bbda-7f1779a896d4',
       'x': 2,
-      'y': 34
+      'y': 50
     }
   };
   await neon.edit(editorAction, pathToPNG);
@@ -257,7 +257,7 @@ describe('Test insert editor action', () => {
     };
     await neon.edit(editorAction, pathToPNG);
     const insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['uuid'], pathToPNG);
-    expect(insertAtts['pname']).toBe('e');
+    expect(insertAtts['pname']).toBe('d');
     expect(insertAtts['oct']).toBe('3');
   });
 
@@ -280,7 +280,7 @@ describe('Test insert editor action', () => {
     await neon.edit(editorAction, pathToPNG);
     const insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['uuid'], pathToPNG);
     expect(insertAtts['shape']).toBe('C');
-    expect(insertAtts['line']).toBe('3');
+    expect(insertAtts['line']).toBe('4');
   });
 
   test('Test \'insert\' action, custos', async () => {
@@ -298,7 +298,7 @@ describe('Test insert editor action', () => {
     };
     await neon.edit(editorAction, pathToPNG);
     const insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['uuid'], pathToPNG);
-    expect(insertAtts.pname).toBe('c');
+    expect(insertAtts.pname).toBe('e');
     expect(insertAtts.oct).toBe('3');
   });
   test('Test \'insert\' action, nc', async () => {
@@ -316,7 +316,7 @@ describe('Test insert editor action', () => {
     };
     await neon.edit(editorAction, pathToPNG);
     const insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['uuid'], pathToPNG);
-    expect(insertAtts.pname).toBe('d');
+    expect(insertAtts.pname).toBe('e');
     expect(insertAtts.oct).toBe('3');
   });
 });
@@ -564,7 +564,7 @@ describe('Test clef reassociation', () => {
     };
     expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
     const originalAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
-    expect(originalAtts['pname']).toBe('f');
+    expect(originalAtts['pname']).toBe('d');
     const dragAction = {
       'action': 'drag',
       'param': {
@@ -595,7 +595,7 @@ describe('Test clef reassociation', () => {
     };
     expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
     const originalAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
-    expect(originalAtts['pname']).toBe('f');
+    expect(originalAtts['pname']).toBe('d');
     const dragAction = {
       'action': 'drag',
       'param': {
@@ -629,7 +629,7 @@ describe('Test clef reassociation', () => {
     expect(await neon.edit(insertAction, pathToPNG)).toBeTruthy();
     const clefId = (await neon.info(pathToPNG))['uuid'];
     const newAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
-    expect(newAtts['pname']).toBe('f');
+    expect(newAtts['pname']).toBe('d');
     const deleteAction = {
       'action': 'remove',
       'param': {
@@ -661,20 +661,20 @@ describe('Test clef reassociation', () => {
     const newBeforeAtts = await neon.getElementAttr('m-ddacb1cc-ce38-4fd3-91c0-1843c581e5c8', pathToPNG);
     const sameBeforeAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
     expect(newBeforeAtts['pname']).toBe('c');
-    expect(sameBeforeAtts['pname']).toBe('f');
+    expect(sameBeforeAtts['pname']).toBe('d');
     const dragAction = {
       'action': 'drag',
       'param': {
         'elementId': firstClefId,
         'x': -600,
-        'y': -64
+        'y': -80
       }
     };
     expect(await neon.edit(dragAction, pathToPNG)).toBeTruthy();
     const newAfterAtts = await neon.getElementAttr('m-ddacb1cc-ce38-4fd3-91c0-1843c581e5c8', pathToPNG);
     const sameAfterAtts = await neon.getElementAttr('m-814f9fd0-5cb5-4868-a8e6-ca6b8088bfb8', pathToPNG);
-    expect(newAfterAtts['pname']).toBe('a');
-    expect(sameAfterAtts['pname']).toBe('a');
+    expect(newAfterAtts['pname']).toBe('d');
+    expect(sameAfterAtts['pname']).toBe('d');
   });
   test('Test clef dragging case 2', async () => {
     const neon = new NeonCore(mei);
@@ -709,7 +709,7 @@ describe('Test clef reassociation', () => {
     const secondClefId = (await neon.info(pathToPNG))['uuid'];
     const firstBeforeAtts = await neon.getElementAttr('m-75c52573-311d-4bfc-adaf-3f6e8013aab2', pathToPNG);
     const secondBeforeAtts = await neon.getElementAttr('m-1dac2d79-7ac3-4859-bb35-c945c419d867', pathToPNG);
-    expect(firstBeforeAtts['pname']).toBe('e');
+    expect(firstBeforeAtts['pname']).toBe('c');
     expect(secondBeforeAtts['pname']).toBe('d');
     const dragAction = {
       'action': 'drag',
@@ -740,7 +740,7 @@ test('Test undo and redo', async () => {
     'param': {
       'elementId': 'm-e43924c3-fd16-4664-8bd0-9e5b73659844',
       'x': 2,
-      'y': 34
+      'y': 50
     }
   };
     // Ensure the editor is working
@@ -768,7 +768,7 @@ test('Test chain action', async () => {
         'param': {
           'elementId': 'm-044e7093-895e-4a78-bbda-7f1779a896d4',
           'x': 2,
-          'y': 34
+          'y': 50
         }
       },
       {
@@ -787,7 +787,7 @@ test('Test chain action', async () => {
   const insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['1'].uuid, pathToPNG);
   expect(dragAtts.pname).toBe('b');
   expect(dragAtts.oct).toBe('2');
-  expect(insertAtts.pname).toBe('e');
+  expect(insertAtts.pname).toBe('d');
   expect(insertAtts.oct).toBe('3');
 });
 
@@ -824,6 +824,7 @@ test('Test \'split\' action', async () => {
   expect(await neon.getElementAttr(newId, pathToPNG)).toEqual({ n: '15' });
 });
 
+/* This action no longer exists
 test('Test \'change skew\' action', async () => {
   const neon = new NeonCore(mei);
   await neon.initDb();
@@ -841,6 +842,7 @@ test('Test \'change skew\' action', async () => {
   const skew = (await neon.info(pathToPNG))['skew'];
   expect(Math.round(skew)).toBe(-8);
 });
+*/
 
 describe('Test changeStaff function', () => {
   test('Test \'change staff association\' action', async () => {
@@ -855,7 +857,7 @@ describe('Test changeStaff function', () => {
       'param': {
         'elementId': 'm-d0411b11-f0be-42ff-9bf6-255740eb3b94',
         'x': 0,
-        'y': -500
+        'y': -300
       }
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
@@ -885,13 +887,13 @@ describe('Test changeStaff function', () => {
       'param': {
         'elementId': 'm-d0411b11-f0be-42ff-9bf6-255740eb3b94',
         'x': 55,
-        'y': -550
+        'y': -350
       }
     };
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     attr = await neon.getElementAttr('m-d0411b11-f0be-42ff-9bf6-255740eb3b94', pathToPNG);
     expect(attr.shape).toBe('C');
-    expect(attr.line).toBe('-5');
+    expect(attr.line).toBe('1');
     editorAction = {
       'action': 'changeStaff',
       'param': {
@@ -901,9 +903,9 @@ describe('Test changeStaff function', () => {
     expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
     attr = await neon.getElementAttr('m-d0411b11-f0be-42ff-9bf6-255740eb3b94', pathToPNG);
     expect(attr.shape).toBe('C');
-    expect(attr.line).toBe('1');
+    expect(attr.line).toBe('3');
     neumeAttr = await neon.getElementAttr('m-f1e3ae8a-fd2c-4e8f-a1c6-46822fe57b76', pathToPNG);
-    expect(neumeAttr.pname).toBe('d');
-    expect(neumeAttr.oct).toBe('3');
+    expect(neumeAttr.pname).toBe('g');
+    expect(neumeAttr.oct).toBe('2');
   });
 });
