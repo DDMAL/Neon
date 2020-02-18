@@ -324,7 +324,7 @@ class NeonCore {
               this.redoStacks.set(pageURI, []);
             }
             evt.target.removeEventListener('message', handle);
-            this.updateCache(pageURI).then(() => { resolve(evt.data.result); });
+            this.updateCache(pageURI, true).then(() => { resolve(evt.data.result); });
           }
         }
         this.verovioWrapper.addEventListener('message', handle.bind(this));
