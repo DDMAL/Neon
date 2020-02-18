@@ -316,7 +316,7 @@ describe('Test insert editor action', () => {
     };
     await neon.edit(editorAction, pathToPNG);
     const insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['uuid'], pathToPNG);
-    expect(insertAtts.pname).toBe('e');
+    expect(insertAtts.pname).toBe('d');
     expect(insertAtts.oct).toBe('3');
   });
 });
