@@ -316,7 +316,7 @@ describe('Test insert editor action', () => {
     };
     await neon.edit(editorAction, pathToPNG);
     const insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['uuid'], pathToPNG);
-    expect(insertAtts.pname).toBe('d');
+    expect(insertAtts.pname).toBe('c');
     expect(insertAtts.oct).toBe('3');
   });
 });
@@ -824,7 +824,8 @@ test('Test \'split\' action', async () => {
   expect(await neon.getElementAttr(newId, pathToPNG)).toEqual({ n: '15' });
 });
 
-test('Test \'change skew\' action', async () => {
+// Change skew action no longer exists
+test.skip('Test \'change skew\' action', async () => {
   const neon = new NeonCore(mei);
   await neon.initDb();
   await neon.getSVG(pathToPNG);
