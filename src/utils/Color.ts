@@ -38,7 +38,7 @@ export function unhighlight (staff?: SVGGElement): void {
         }
       }
       rects.forEach(function (rect: HTMLElement) {
-        if (rect.closest('.syllable').classList.contains('selected') || 
+        if (rect.closest('.syllable').classList.contains('selected') ||
             rect.closest('.staff').classList.contains('selected') ||
             rect.closest('.syl').classList.contains('selected')) {
           rect.style.fill = 'red';
@@ -95,15 +95,15 @@ export function unsetGroupingHighlight (): void {
  */
 export function highlight (staff: SVGGElement, color: string): void {
   const children = Array.from(staff.children);
-  for (var i = 0; i < children.length; i++) {
-    let child = children[i];
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
     if (child.tagName === 'path') {
       child.setAttribute('stroke', color);
     } else if (child.classList.contains('resizePoint') || child.id === 'resizeRect' || child.classList.contains('rotatePoint')) {
       return;
     } else if (child.classList.contains('layer')) {
       Array.from(child.children).forEach(cchild => { children.push(cchild); });
-    } else if (document.getElementsByClassName('highlight-selected').length && 
+    } else if (document.getElementsByClassName('highlight-selected').length &&
       document.getElementsByClassName('highlight-selected')[0].id === 'highlight-neume'
       && child.classList.contains('syllable')) {
       Array.from(child.children).filter(el => el.classList.contains('neume')).forEach(cchild => { children.push(cchild); });
@@ -143,9 +143,9 @@ export function highlight (staff: SVGGElement, color: string): void {
   else {
     stroke = '30px';
   }
-  staff.querySelectorAll('.nc, .custos, .clef').forEach(el => { 
-    el.setAttribute('stroke', 'black'); 
-    el.setAttribute('stroke-width', '30px'); 
+  staff.querySelectorAll('.nc, .custos, .clef').forEach(el => {
+    el.setAttribute('stroke', 'black');
+    el.setAttribute('stroke-width', '30px');
   });
 }
 
@@ -194,7 +194,7 @@ export function setGroupingHighlight (grouping: string): void {
       groups[i].setAttribute('fill', groupColor);
       const rects = groups[i].querySelectorAll('.sylTextRect-display') as NodeListOf<HTMLElement>;
       rects.forEach(function (rect) {
-        if (rect.closest('.syl').classList.contains('selected') || 
+        if (rect.closest('.syl').classList.contains('selected') ||
             rect.closest('.syllable').classList.contains('selected') ||
             rect.closest('.staff').classList.contains('selected')) {
           return;
@@ -215,7 +215,7 @@ export function setGroupingHighlight (grouping: string): void {
     }
   }
   document.querySelectorAll('.nc, .custos, .clef').forEach(el => {
-    el.setAttribute('stroke', 'black'); 
-    el.setAttribute('stroke-width', '30px'); 
+    el.setAttribute('stroke', 'black');
+    el.setAttribute('stroke-width', '30px');
   });
 }

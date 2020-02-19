@@ -19,10 +19,10 @@ export function initNeonView (view: NeonView): void {
 }
 
 /**
- * Return an action that unsets the inclinatum parameter of an nc.
  * @param id - The id of the neume component.
+ * @returns An action that unsets the inclinatum parameter of a neume component.
  */
-export function unsetInclinatumAction (id: string): object {
+export function unsetInclinatumAction (id: string): EditorAction {
   return {
     'action': 'set',
     'param': {
@@ -34,10 +34,10 @@ export function unsetInclinatumAction (id: string): object {
 }
 
 /**
- * Return an action that unsets the virga parameter of an nc.
  * @param id - The id of the neume component.
+ * @returns An action that unsets the virga parameter of a neume component.
  */
-export function unsetVirgaAction (id: string): object {
+export function unsetVirgaAction (id: string): EditorAction {
   return {
     'action': 'set',
     'param': {
@@ -263,6 +263,7 @@ export function triggerSylActions (): void {
 
 /**
  * Trigger extra clef actions for a specific clef.
+ * @param clef - The clef on which to trigger additional actions.
  */
 export function triggerClefActions (clef: SVGGraphicsElement): void {
   endOptionsSelection();
@@ -329,7 +330,7 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
 }
 
 /**
- * trigger extra custos actions.
+ * Trigger extra custos actions.
  */
 export function triggerCustosActions (): void {
   endOptionsSelection();
@@ -425,7 +426,7 @@ export function triggerSplitActions (): void {
       const staff = document.querySelector('.staff.selected') as SVGElement;
       const rect = staff.querySelector('#resizeRect');
       const co = rect.getAttribute('points').split(' ');
-      let dy = parseInt(co[0].split(',')[1]) - parseInt(co[1].split(',')[1]);
+      const dy = parseInt(co[0].split(',')[1]) - parseInt(co[1].split(',')[1]);
       if (staff !== null) {
         const editorAction: EditorAction = {
           'action': 'changeRotate',
@@ -456,7 +457,7 @@ export function triggerSplitActions (): void {
 }
 
 /**
- * trigger default actions when selecting by syl
+ * Trigger default actions when selecting by syl
  */
 export function triggerDefaultSylActions (): void {
   endOptionsSelection();

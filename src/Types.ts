@@ -26,6 +26,7 @@ export type VerovioResponse = {
   info?: object;
 };
 
+/** Modeled after the [W3 Web Annotation Data Model.](https://www.w3.org/TR/annotation-model/) */
 export type WebAnnotation = {
   id: string;
   type: string;
@@ -33,6 +34,7 @@ export type WebAnnotation = {
   target: string;
 };
 
+/** Required fields in the JSON-LD Neon manifest. */
 export type NeonManifest = {
   '@context': Array<string | object> | string;
   '@id': string;

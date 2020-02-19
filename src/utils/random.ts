@@ -1,3 +1,8 @@
+/**
+ * Formats raw UUID data into the proper string format.
+ * @param data - Raw UUID data.
+ * @returns Formatted UUID string.
+ */
 function uint8ToUuid (data: Uint8Array): string {
   if (data.length !== 16) {
     return '';
@@ -14,6 +19,9 @@ function uint8ToUuid (data: Uint8Array): string {
     '-' + data.slice(10).reduce(cb, '');
 }
 
+/**
+ * @returns A [version 4 UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier#Version_4_(random)).
+ */
 export function uuidv4 (): string {
   // Check for crypto API
   if (window.crypto === undefined) {

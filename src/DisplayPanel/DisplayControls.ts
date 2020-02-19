@@ -32,6 +32,7 @@ export function initDisplayControls (meiClassName: string, background: string): 
 
 /**
  * Set zoom control listener for button and slider
+ * @param zoomHandler - A [[ZoomHandler]] is only necessary in Single Page mode as diva.js handles zooming otherwise.
  */
 export function setZoomControls (zoomHandler?: ZoomHandler): void {
   if (zoomHandler === undefined) {
@@ -77,6 +78,7 @@ export function setZoomControls (zoomHandler?: ZoomHandler): void {
 
 /**
  * Set rendered MEI opacity button and slider listeners.
+ * @param meiClassName - Class that contains the rendered MEI.
  */
 function setOpacityControls (meiClassName: string): void {
   lastGlyphOpacity = 100;
@@ -111,6 +113,7 @@ function setOpacityControls (meiClassName: string): void {
 
 /**
  * Update MEI opacity to value from the slider.
+ * @param meiClassName - Class that contains the rendered MEI.
  */
 export function setOpacityFromSlider (meiClassName?: string): void {
   const opacityOutput = document.getElementById('opacityOutput') as HTMLOutputElement;
@@ -124,6 +127,7 @@ export function setOpacityFromSlider (meiClassName?: string): void {
 
 /**
  * Set background image opacity button and slider listeners.
+ * @param background - The background image selector.
  */
 function setBackgroundOpacityControls (background: string): void {
   lastImageOpacity = 100;
@@ -254,7 +258,7 @@ export function updateHighlight (): void {
 /**
  * Set listener on burger menu for smaller screens.
  */
-function setBurgerControls () {
+function setBurgerControls (): void {
   document.getElementById('burgerMenu').addEventListener('click', () => {
     document.getElementById('burgerMenu').classList.toggle('is-active');
     document.getElementById('navMenu').classList.toggle('is-active');
@@ -264,7 +268,7 @@ function setBurgerControls () {
 /**
  * Clickaway listener for the highlight dropdown.
  */
-function highlightClickaway () {
+function highlightClickaway (): void {
   document.body.removeEventListener('click', highlightClickaway);
   document.getElementById('highlight-dropdown').classList.remove('is-active');
 }

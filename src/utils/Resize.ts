@@ -81,7 +81,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
    */
   let rotate: number;
 
-  let initialPoint: number[], initialUly: number, initialLry: number, whichRotatePoint: string,
+  let initialPoint: number[], initialUly: number, initialLry: number,
     initialY: number, initialRectY: number, polyLen: number, dy: number, initialRotate: number;
 
   drawInitialRect();
@@ -204,10 +204,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
     }
 
     function rotateStart (): void {
-      let which = d3.event.sourceEvent.target.id;
-      const polygon = d3.select('#' + which);
-      const points = polygon.attr('points');
-      whichRotatePoint = which;
+      const which = d3.event.sourceEvent.target.id;
       initialY = d3.mouse(this)[1];
       initialLry = lry;
       initialUly = uly;

@@ -13,6 +13,10 @@ class InsertHandler {
   selector: string;
   neonView: NeonView;
 
+  /**
+   * @param neonView - NeonView parent.
+   * @param sel - The CSS selector to apply insert listeners to.
+   */
   constructor (neonView: NeonView, sel: string) {
     this.neonView = neonView;
     this.selector = sel;

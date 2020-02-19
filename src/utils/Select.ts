@@ -14,6 +14,10 @@ import * as d3 from 'd3';
 let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 let strokeWidth = 7;
 
+/**
+ * Set stroke width on drag select box.
+ * @param width - Stroke width in pixels.
+ */
 export function setSelectStrokeWidth (width: number): void {
   strokeWidth = width;
 }
@@ -132,10 +136,10 @@ function clickHandler (evt: MouseEvent): void {
             mode = '.nc';
             break;
           default:
-            mode = '.syllable'
+            mode = '.syllable';
             break;
         }
-        let remove = [this.closest(mode)];
+        const remove = [this.closest(mode)];
         selection = Array.from(document.getElementsByClassName('selected'));
         selection = selection.filter( (el) => {
           return !remove.includes(el);
@@ -165,7 +169,7 @@ function clickHandler (evt: MouseEvent): void {
     } else {
       let selection = [];
       if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
-        let remove = [this];
+        const remove = [this];
         selection = Array.from(document.getElementsByClassName('selected'));
         selection = selection.map( (el) => {
           if (el.tagName == 'rect') {
@@ -200,14 +204,14 @@ function clickHandler (evt: MouseEvent): void {
     const selectedStaves = Array.from(document.getElementsByClassName('staff'))
       .filter((staff: SVGGElement) => {
         const bbox = getStaffBBox(staff);
-        let ulx = bbox.ulx;
-        let uly = bbox.uly;
-        let lrx = bbox.lrx;
-        let lry = bbox.lry;
-        let rotate = bbox.rotate;
+        const ulx = bbox.ulx;
+        const uly = bbox.uly;
+        const lrx = bbox.lrx;
+        const lry = bbox.lry;
+        const rotate = bbox.rotate;
 
-        return (pt.x > ulx && pt.x < lrx) && 
-          (pt.y > (uly + (pt.x - ulx) * Math.tan(rotate))) && 
+        return (pt.x > ulx && pt.x < lrx) &&
+          (pt.y > (uly + (pt.x - ulx) * Math.tan(rotate))) &&
           (pt.y < (lry - (lrx - pt.x) * Math.tan(rotate)));
       });
 
@@ -215,10 +219,9 @@ function clickHandler (evt: MouseEvent): void {
     if (selectedStaves.length == 0) {
       return;
     }
-    
+
     // Select a staff
     const staff = selectedStaves[0] as SVGGElement;
-    let bbox = getStaffBBox(staff);
     if (!staff.classList.contains('selected')) {
       // Select previously unselected staff
       selectStaff(staff, dragHandler);
@@ -300,15 +303,15 @@ export function dragSelect (selector: string): void {
     const staves = Array.from(document.getElementsByClassName('staff'));
     const filtered = staves.filter((staff: SVGGElement) => {
       const bbox = getStaffBBox(staff);
-        let ulx = bbox.ulx;
-        let uly = bbox.uly;
-        let lrx = bbox.lrx;
-        let lry = bbox.lry;
-        let rotate = bbox.rotate;
+      const ulx = bbox.ulx;
+      const uly = bbox.uly;
+      const lrx = bbox.lrx;
+      const lry = bbox.lry;
+      const rotate = bbox.rotate;
 
-        return (pt[0] > ulx && pt[0] < lrx) && 
-          (pt[1] > (uly + (pt[0] - ulx) * Math.tan(rotate))) && 
-          (pt[1] < (lry - (lrx - pt[0]) * Math.tan(rotate)));
+      return (pt[0] > ulx && pt[0] < lrx) &&
+        (pt[1] > (uly + (pt[0] - ulx) * Math.tan(rotate))) &&
+        (pt[1] < (lry - (lrx - pt[0]) * Math.tan(rotate)));
     });
     return (filtered.length === 0);
   }
@@ -381,11 +384,11 @@ export function dragSelect (selector: string): void {
           return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
         } else {
           const box = getStaffBBox(d);
-          return !((ul.x < box.ulx && lr.x < box.ulx) || 
-                  (ul.x > box.lrx && lr.x > box.lrx) || 
-                  (ul.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate)) && 
-                    lr.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate))) || 
-                  (ul.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.rotate)) && 
+          return !((ul.x < box.ulx && lr.x < box.ulx) ||
+                  (ul.x > box.lrx && lr.x > box.lrx) ||
+                  (ul.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate)) &&
+                    lr.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate))) ||
+                  (ul.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.rotate)) &&
                     lr.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.rotate))));
         }
       }) as SVGGraphicsElement[];
