@@ -1,5 +1,6 @@
 /*eslint-env jest*/
 
-var PouchDB = require('pouchdb-memory');
-
+let PouchDB = require('pouchdb-core');
+PouchDB.plugin(require('pouchdb-adapter-memory'));
+PouchDB.preferredAdapters = PouchDB.preferredAdapters.reverse();
 module.exports = { default: PouchDB };
