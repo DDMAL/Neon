@@ -1,13 +1,8 @@
 language: node_js
-node_js: 10
-env:
-  - NODE_OPTIONS=--max_old_space_size=2048
+node_js: stable
 os: osx
-osx_image: xcode10.2
+osx_image: xcode11.3
 if: (branch = master OR branch = develop)
-cache:
-  directories:
-    - $HOME/Library/Caches/Homebrew
 addons:
   firefox: latest
   chrome: stable
@@ -21,6 +16,7 @@ install:
   - sudo safaridriver --enable
   - yarn install
 script:
+  - export NODE_OPTIONS=--max_old_space_size=8192
   - yarn build
   - yarn upgrade verovio-dev
   - yarn start &
