@@ -19,7 +19,7 @@ export default class VerovioWrapper {
       useFacsimile: true,
       createDefaultSyl: true,
       createDefaultSylBBox: true,
-      useSkew: true
+      useRotate: true
     });
   }
 
