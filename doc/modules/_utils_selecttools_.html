@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;utils/SelectTools&quot; | Neon</title>
+	<title>&quot;utils/SelectTools&quot; | Neon - vdevelop</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">Neon</a>
+					<a href="../index.html" class="title">Neon - vdevelop</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -101,15 +101,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/SelectTools.ts#L14">utils/SelectTools.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a2a5e44/src/utils/SelectTools.ts#L14">utils/SelectTools.ts:14</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Get the selection mode chosen by the user.</p>
-								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<p>The selection mode chosen by the user.</p>
 						</li>
 					</ul>
 				</section>
@@ -123,12 +121,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/SelectTools.ts#L156">utils/SelectTools.ts:156</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a2a5e44/src/utils/SelectTools.ts#L165">utils/SelectTools.ts:165</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get the bounding box of a staff based on its staff lines.</p>
+									<p>Get the bounding box of a staff based on its staff lines.
+									Rotate is included in radians.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -144,6 +143,9 @@
 								</li>
 								<li class="tsd-parameter">
 									<h5>lry<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>rotate<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
 								</li>
 								<li class="tsd-parameter">
 									<h5>ulx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
@@ -165,24 +167,28 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/SelectTools.ts#L132">utils/SelectTools.ts:132</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a2a5e44/src/utils/SelectTools.ts#L139">utils/SelectTools.ts:139</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Check if neume component is part of a ligature</p>
-								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>nc: <span class="tsd-signature-type">SVGGraphicsElement</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The neume component.</p>
+									</div>
 								</li>
 								<li>
 									<h5>neonView: <a href="../classes/_neonview_.neonview.html" class="tsd-signature-type">NeonView</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The <a href="../classes/_neonview_.neonview.html">NeonView</a> for this instance.</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>True if the neume component is part of a ligature.</p>
 						</li>
 					</ul>
 				</section>
@@ -196,7 +202,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/SelectTools.ts#L68">utils/SelectTools.ts:68</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a2a5e44/src/utils/SelectTools.ts#L72">utils/SelectTools.ts:72</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -208,9 +214,15 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>el: <span class="tsd-signature-type">SVGGraphicsElement</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Element to select.</p>
+									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> dragHandler: <a href="../classes/_utils_draghandler_.draghandler.html" class="tsd-signature-type">DragHandler</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Only used for staves.</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -227,7 +239,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/SelectTools.ts#L240">utils/SelectTools.ts:240</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a2a5e44/src/utils/SelectTools.ts#L254">utils/SelectTools.ts:254</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -261,7 +273,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/SelectTools.ts#L183">utils/SelectTools.ts:183</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a2a5e44/src/utils/SelectTools.ts#L197">utils/SelectTools.ts:197</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -301,7 +313,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/SelectTools.ts#L102">utils/SelectTools.ts:102</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a2a5e44/src/utils/SelectTools.ts#L107">utils/SelectTools.ts:107</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -313,6 +325,9 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>el: <span class="tsd-signature-type">SVGGraphicsElement</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The neume component.</p>
+									</div>
 								</li>
 								<li>
 									<h5>neonView: <a href="../classes/_neonview_.neonview.html" class="tsd-signature-type">NeonView</a></h5>
@@ -335,7 +350,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/SelectTools.ts#L214">utils/SelectTools.ts:214</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a2a5e44/src/utils/SelectTools.ts#L228">utils/SelectTools.ts:228</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -366,7 +381,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/SelectTools.ts#L228">utils/SelectTools.ts:228</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a2a5e44/src/utils/SelectTools.ts#L242">utils/SelectTools.ts:242</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -403,21 +418,22 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/SelectTools.ts#L140">utils/SelectTools.ts:140</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a2a5e44/src/utils/SelectTools.ts#L148">utils/SelectTools.ts:148</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Check if the elements have the same parent up two levels.</p>
-								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>elements: <span class="tsd-signature-type">SVGElement</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The elements to compare.</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							<p>True if the elements have the same parent up two levels, otherwise false.</p>
 						</li>
 					</ul>
 				</section>
@@ -431,7 +447,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/3557534/src/utils/SelectTools.ts#L27">utils/SelectTools.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a2a5e44/src/utils/SelectTools.ts#L27">utils/SelectTools.ts:27</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -453,7 +469,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="_utils_selecttools_.html">"utils/<wbr>Select<wbr>Tools"</a>
+						<a href="_utils_selecttools_.html">&quot;utils/<wbr>Select<wbr>Tools&quot;</a>
 					</li>
 				</ul>
 			</nav>
