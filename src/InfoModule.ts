@@ -73,6 +73,7 @@ class InfoModule implements InfoInterface {
 
   /**
    * Set listeners for the InfoModule.
+   * Trigger action on mouseover of specific musical element classes.
    */
   infoListeners (): void {
     try {
@@ -221,7 +222,7 @@ class InfoModule implements InfoInterface {
   /**
    * Convert a pitch name (a-g) to a number (where c is 1, d is 2, ...and b is 7).
    * @param pname - The pitch name.
-   * @returns
+   * @returns Equivalent pitch name as a number from 1 to 7.
    */
   pitchNameToNum (pname: string): number {
     switch (pname) {
@@ -247,6 +248,7 @@ class InfoModule implements InfoInterface {
   /**
    * Find the contour of an neume grouping based on the grouping name.
    * @param value - The contour name.
+   * @returns Best guess name of the neume shape.
    */
   getContourByValue (value: string): string {
     for (const [cont, v] of neumeGroups.entries()) {

@@ -12,7 +12,6 @@ let neonView: NeonView;
 
 /**
  * Set the neonView member.
- * @param {NeonView} view
  */
 export function initNeonView (view: NeonView): void {
   neonView = view;
@@ -20,7 +19,7 @@ export function initNeonView (view: NeonView): void {
 
 /**
  * Trigger the grouping selection menu.
- * @param {string} type - The grouping type: nc, neume, syl, ligatureNc, or ligature
+ * @param type - The grouping type: nc, neume, syl, ligatureNc, or ligature
  */
 export function triggerGrouping (type: string): void {
   const moreEdit = document.getElementById('moreEdit');
@@ -279,7 +278,7 @@ function groupingAction (action: string, groupType: string, elementIds: string[]
 }
 
 /**
- * Get the IDs of selected elements.
+ * @returns The IDs of selected elements.
  */
 function getIds (): string[] {
   const ids = [];
@@ -291,7 +290,7 @@ function getIds (): string[] {
 }
 
 /**
- * Get the IDs of the selected elements' children.
+ * @returns The IDs of the selected elements' children.
  */
 function getChildrenIds (): string[] {
   const childrenIds = [];

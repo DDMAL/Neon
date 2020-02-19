@@ -9,11 +9,17 @@ export class SplitHandler {
   readonly neonView: NeonView;
   readonly staff: SVGGElement;
 
+  /**
+   * @param staff - The staff that will be modified.
+   */
   constructor (neonView: NeonView, staff: SVGGElement) {
     this.neonView = neonView;
     this.staff = staff;
   }
 
+  /**
+   * First part of the split action.
+   */
   startSplit (): void {
     this.splitDisable();
 
@@ -60,10 +66,10 @@ export class SplitHandler {
 
     this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(async (result) => {
       if (result) {
-        await this.neonView.updateForCurrentPage(); 
+        await this.neonView.updateForCurrentPage();
         Notification.queueNotification('Split action successful');
       }
-      let dragHandler = new DragHandler(this.neonView, '.staff');
+      const dragHandler = new DragHandler(this.neonView, '.staff');
       this.splitDisable();
       selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
       try {

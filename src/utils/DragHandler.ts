@@ -11,6 +11,9 @@ class DragHandler {
   private dx: number;
   private dy: number;
 
+  /**
+   * @param selector - CSS selector of element to apply drag handler to.
+   */
   constructor (neonView: NeonView, selector: string) {
     this.neonView = neonView;
     this.selector = selector;

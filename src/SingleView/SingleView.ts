@@ -76,6 +76,7 @@ class SingleView implements ViewInterface {
 
   /**
    * Update the SVG being displayed.
+   * @param svg - New rendered SVG to use.
    */
   updateSVG (svg: SVGSVGElement): void {
     this.group.replaceChild(svg, this.mei);
@@ -104,6 +105,7 @@ class SingleView implements ViewInterface {
 
   /**
    * Add a callback to the list of those be called when the page updates.
+   * @param cb - The callback function.
    */
   addUpdateCallback (cb: () => void): void {
     this.updateCallbacks.push(cb);
@@ -111,6 +113,7 @@ class SingleView implements ViewInterface {
 
   /**
    * Remove a callback from the list of callbacks if it is part of the list.
+   * @param cb - The callback function.
    */
   removeUpdateCallback (cb: () => void): void {
     const index = this.updateCallbacks.findIndex((elem) => {
@@ -130,14 +133,14 @@ class SingleView implements ViewInterface {
   }
 
   /**
-   * Returns the zero-indexed number of the current page. This will always be zero.
+   * @returns The zero-indexed number of the current page. This will always be zero.
    */
   getCurrentPage (): number {
     return 0;
   }
 
   /**
-   * Returns the page URI.
+   * @returns The URI of the page.
    */
   getCurrentPageURI (): string {
     return this.pageURI;
@@ -198,7 +201,7 @@ class SingleView implements ViewInterface {
   }
 
   /**
-   * A human readable name for the page. Used for downloads.
+   * @returns A human readable name for the page. Used for downloads.
    */
   getPageName (): string {
     return this.neonView.name;

@@ -11,6 +11,7 @@ const NUMBER_TO_DISPLAY = 3;
 
 /**
  * Add a notification to the queue.
+ * @param notification - Notification content.
  */
 export function queueNotification (notification: string): void {
   const notif = new Notification(notification);
@@ -38,6 +39,7 @@ function startNotification (): void {
 
 /**
  * Display a notification.
+ * @param notification - Notification to display.
  */
 function displayNotification (notification: Notification): void {
   if (notification.isModeMessage) {
@@ -84,6 +86,7 @@ class Notification {
   timeoutID: number;
   /**
    * Create a new notification.
+   * @param message - Notification content.
    */
   constructor (message: string) {
     this.message = message;
@@ -104,7 +107,7 @@ class Notification {
   }
 
   /**
-   * Get the UUID for this notification
+   * @returns The UUID for this notification.
    */
   getId (): string {
     return this.id;

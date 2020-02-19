@@ -9,6 +9,10 @@ export class ViewBox {
   imageHeight: number;
   imageWidth: number;
 
+  /**
+   * @param imageWidth - Width of the contained image.
+   * @param imageHeight - Height of the contained image.
+   */
   constructor (imageWidth: number, imageHeight: number) {
     this.a = 0;
     this.b = 0;
@@ -19,6 +23,13 @@ export class ViewBox {
     this.imageHeight = imageHeight;
   }
 
+  /**
+   * Set values of the viewBox manually.
+   * @param w - First value.
+   * @param x - Second value.
+   * @param y - Third value.
+   * @param z - Fourth value.
+   */
   set (w: number, x: number, y: number, z: number): void {
     this.a = w;
     this.b = x;
@@ -26,11 +37,13 @@ export class ViewBox {
     this.d = z;
   }
 
+  /** @returns Value for the viewBox parameter. */
   get (): string {
     return this.a.toString() + ' ' + this.b.toString() + ' ' +
       this.c + ' ' + this.d;
   }
 
+  /** @param k - Factor to zoom to. */
   zoomTo (k: number): void {
     const zoomHeight = (this.imageHeight / k);
     const zoomWidth = (this.imageWidth / k);
@@ -39,10 +52,16 @@ export class ViewBox {
     this.d = zoomHeight;
   }
 
+  /** @returns Current zoom factor. */
   getZoom (): number {
     return this.imageWidth / this.c;
   }
 
+  /**
+   * Translate viewport.
+   * @param xDiff - Amount to shift on x-axis.
+   * @param yDiff - Amount to shift on y-axis.
+   */
   translate (xDiff: number, yDiff: number): void {
     this.a += xDiff;
     this.b += yDiff;
@@ -55,7 +74,7 @@ export class ZoomHandler {
   matrix: DOMMatrix;
 
   /**
-   * reset the zoom and pan of the SVG viewbox
+   * Reset the zoom and pan of the SVG viewbox
    */
   resetZoomAndPan (): void {
     const bgimg = document.getElementById('bgimg') as HTMLImageElement;
@@ -65,7 +84,7 @@ export class ZoomHandler {
   }
 
   /**
-   * Zoom to a certain factor.
+   * @param k - Factor to zoom to.
    */
   zoomTo (k: number): void {
     this.getViewBox();
@@ -75,7 +94,9 @@ export class ZoomHandler {
 
   /**
    * Translate the view box by relative coordinates.
-   */
+  * @param xDiff - Amount to shift on x-axis.
+  * @param yDiff - Amount to shift on y-axis.
+  */
   translate (xDiff: number, yDiff: number): void {
     this.getViewBox();
     this.viewBox.translate(xDiff, yDiff);

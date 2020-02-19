@@ -11,16 +11,20 @@ declare let Diva: any;
  */
 class DivaView implements ViewInterface {
   readonly neonView: NeonView;
+  /** Callbacks that run whenever the display updates. */
   private updateCallbacks: Array<() => void>;
   divaReady: boolean;
+  /** The diva.js instance. */
   private diva: any;
+  /** Map zero-index page numbers to the actual URI/IRI identifier. */
   private indexMap: Map<number, string>;
   private displayPanel: DisplayPanel;
+  /** Time to wait after a page becomes active before loading it. In milliseconds. */
   private loadDelay: number;
   zoomHandler: ZoomHandler;
 
   /**
-   * @param manifest - Link to the IIIF manifest.
+   * @param manifest - URI/IRI to the IIIF manifest.
    */
   constructor (neonView: NeonView, Display: DisplayConstructable, manifest: string) {
     this.neonView = neonView;
@@ -98,14 +102,14 @@ class DivaView implements ViewInterface {
   }
 
   /**
-   * Get the active page in the diva.js viewer.
+   * @returns Active zero-indexed page in the diva.js viewer.
    */
   getCurrentPage (): number {
     return this.diva.getActivePageIndex();
   }
 
   /**
-   * Get the active page URI in the diva.js viewer.
+   * @returns The active page URI in the diva.js viewer.
    */
   getCurrentPageURI (): string {
     return this.indexMap.get(this.getCurrentPage());
@@ -133,6 +137,7 @@ class DivaView implements ViewInterface {
 
   /**
    * Update the SVG being displayed for the specified page.
+   * @param svg - The SVG of the page to update to.
    * @param pageNo - The zero-indexed page number.
    */
   updateSVG (svg: SVGSVGElement, pageNo: number): void {
@@ -179,6 +184,7 @@ class DivaView implements ViewInterface {
 
   /**
    * Add a callback function that will be run whenever an SVG is updated.
+   * @param cb - The callback function.
    */
   addUpdateCallback (cb: () => void): void {
     this.updateCallbacks.push(cb);
@@ -186,6 +192,7 @@ class DivaView implements ViewInterface {
 
   /**
    * Remove a callback function previously added to the list of functions to call.
+   * @param cb - The callback function.
    */
   removeUpdateCallback (cb: () => void): void {
     const index = this.updateCallbacks.findIndex((elem) => {
@@ -237,7 +244,7 @@ class DivaView implements ViewInterface {
   }
 
   /**
-   * Get the name of the active page/canvas combined with the manuscript name.
+   * @returns The name of the active page/canvas combined with the manuscript name.
    */
   getPageName (): string {
     const manuscriptName = this.diva.settings.manifest.itemTitle;

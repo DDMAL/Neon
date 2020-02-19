@@ -9,7 +9,7 @@ import * as SelectOptions from '../SquareEdit/SelectOptions';
 
 import * as d3 from 'd3';
 /**
- * Get the selection mode chosen by the user.
+ * @returns The selection mode chosen by the user.
  */
 export function getSelectionType (): string {
   const element = document.getElementsByClassName('sel-by is-active');
@@ -66,6 +66,8 @@ export function unselect (): void {
 
 /**
  * Generic select function.
+ * @param el - Element to select.
+ * @param dragHandler - Only used for staves.
  */
 export function select (el: SVGGraphicsElement, dragHandler?: DragHandler): void {
   if (el.classList.contains('staff')) {
@@ -100,6 +102,7 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler): void
 
 /**
  * Select an nc.
+ * @param el - The neume component.
  */
 export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dragHandler: DragHandler): Promise<void> {
   if (!el.parentElement.classList.contains('selected')) {
@@ -129,7 +132,9 @@ export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dra
 }
 
 /**
- * Check if neume component is part of a ligature
+ * @param nc - The neume component.
+ * @param neonView - The [[NeonView]] for this instance.
+ * @returns True if the neume component is part of a ligature.
  */
 export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): Promise<boolean> {
   const attributes: Attributes = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPageURI());
@@ -137,7 +142,8 @@ export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): P
 }
 
 /**
- * Check if the elements have the same parent up two levels.
+ * @param elements - The elements to compare.
+ * @returns True if the elements have the same parent up two levels, otherwise false.
  */
 export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
   const tempElements = Array.from(elements);

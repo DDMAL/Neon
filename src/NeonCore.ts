@@ -6,6 +6,11 @@ import { uuidv4 } from './utils/random';
 
 import PouchDB from 'pouchdb';
 
+/**
+ * A cache is used to keep track of what has happened
+ * across multiple pages in a manuscript without having
+ * to make many calls to the PouchhDb database.
+ */
 interface CacheEntry {
   dirty: boolean;
   mei: string;
@@ -160,12 +165,14 @@ class NeonCore {
    */
   loadPage (pageURI: string): Promise<CacheEntry> {
     return new Promise((resolve, reject): void => {
+      // Was this already the loaded page?
       if (this.lastPageLoaded === pageURI && this.neonCache.has(pageURI)) {
         resolve(this.neonCache.get(pageURI));
       } else if (this.neonCache.has(pageURI)) {
         this.loadData(pageURI, this.neonCache.get(pageURI).mei).then(() => {
           resolve(this.neonCache.get(pageURI));
         });
+      // Do we know this page has no MEI content?
       } else if (this.blankPages.includes(pageURI)) {
         Validation.blankPage();
         const e = new Error('No MEI file for page ' + pageURI);
@@ -195,6 +202,8 @@ class NeonCore {
             reject(err);
           });
         } else {
+          // If no annotation was found treat the page as
+          // being blank
           Validation.blankPage();
           this.blankPages.push(pageURI);
         }
@@ -474,7 +483,11 @@ class NeonCore {
       if (value.dirty) {
         updateTimestamp = true;
         const index = this.annotations.findIndex(elem => { return elem.target === key; });
-        // try to update server with PUT (if applicable
+        // try to update server with PUT request (if applicable)
+        // this is simpler than expecting a specific API on the server
+        // and using POST requests, although that would be better if there
+        // is ever a dedicated public server for Neon! At time of writing,
+        // only dev/testing server accepts PUT requests.
         // only attempt if not a data URI
         let uri: string;
         if (!this.annotations[index].body.match(/^data:/)) {
