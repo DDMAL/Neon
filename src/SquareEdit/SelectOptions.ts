@@ -4,6 +4,7 @@ import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
 import { SplitHandler } from './StaffTools';
 import { EditorAction } from '../Types';
+import { getStaffBBox } from '../utils/SelectTools';
 
 /**
  * The NeonView parent to call editor actions.
@@ -427,13 +428,18 @@ export function triggerSplitActions (): void {
       const rect = staff.querySelector('#resizeRect');
       const co = rect.getAttribute('points').split(' ');
       const dy = parseInt(co[0].split(',')[1]) - parseInt(co[1].split(',')[1]);
+      let points = getStaffBBox(staff as SVGGElement);
+      let y_change = Math.tan(points.rotate)*(points.lrx - points.ulx);
       if (staff !== null) {
         const editorAction: EditorAction = {
-          'action': 'changeRotate',
+          'action': 'resizeRotate',
           'param': {
             'elementId': staff.id,
-            'dy': dy,
-            'rightSide': true
+            "ulx": points.ulx,
+            "uly": points.rotate > 0 ? points.uly + y_change/2 : points.uly - y_change/2,
+            "lrx": points.lrx,
+            "lry": points.rotate > 0 ? points.lry - y_change/2 : points.lry + y_change/2,
+            "rotate": 0
           }
         };
         neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
