@@ -266,7 +266,11 @@ describe.each(browserNames)('Tests on %s', (title) => {
     /// TEST EDIT MODE ///
     describe('Edit Mode', () => {
       describe('Selection', () => {
-        test.skip('Test drag selection', async () => {
+        test('Test drag selection', async () => {
+          if (title === 'firefox') {
+            // Weird issues with dragging rect in Firefox.
+            return;
+          }
           const canvas = await browser.findElement(By.id('svg_group'));
           const actions = browser.actions();
           await actions.move({ origin: canvas }).press().move({ x: 200, y: 200 }).perform();
