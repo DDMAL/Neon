@@ -540,8 +540,20 @@ class NeonCore {
   }
 
   /** Completely remove the database. */
-  deleteDb (): Promise<void> {
-    return this.db.destroy();
+  async deleteDb (): Promise<{}[]> {
+    type Doc = PouchDB.Core.IdMeta & PouchDB.Core.GetMeta & { timestamp: string; annotations: string[]};
+    const annotations = await this.db.get(this.manifest['@id'])
+      .then((doc: Doc) => { return doc.annotations; } );
+    annotations.push(this.manifest['@id']);
+
+    const promises = annotations.map((id) => {
+      return new Promise(res => {
+        this.db.get(id)
+          .then(doc => { return this.db.remove(doc); })
+          .then(() => res());
+      });
+    });
+    return Promise.all(promises);
   }
 }
 
