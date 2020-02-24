@@ -111,18 +111,23 @@ class NeonCore {
           if (!force) {
             // Fill annotations list with db annotations
             this.annotations = [];
-            doc.annotations.forEach(async (id: string) => {
-              await this.db.get(id).then((annotation: DbAnnotation) => {
-                this.annotations.push({
-                  id: annotation._id,
-                  type: 'Annotation',
-                  body: annotation.body,
-                  target: annotation.target
+            const promises = doc.annotations.map((id: string) => {
+              return new Promise((res) => {
+                this.db.get(id).then((annotation: DbAnnotation) => {
+                  this.annotations.push({
+                    id: annotation._id,
+                    type: 'Annotation',
+                    body: annotation.body,
+                    target: annotation.target
+                  });
+                  res();
+                }).catch(err => {
+                  console.error(err);
+                  res();
                 });
-              }).catch(err => {
-                console.error(err);
               });
             });
+            await Promise.all(promises);
             return resolve(false);
           }
         }

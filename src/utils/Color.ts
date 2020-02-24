@@ -130,8 +130,8 @@ export function highlight (staff: SVGGElement, color: string): void {
   }
   let width, height;
   try {
-    width = Number(document.querySelector('#mei_output').getAttribute('width').split('px')[0]);
-    height = Number(document.querySelector('#mei_output').getAttribute('height').split('px')[0]);
+    width = Number(document.querySelector('.active-page').querySelector('svg').getAttribute('width').split('px')[0]);
+    height = Number(document.querySelector('.active-page').querySelector('svg').getAttribute('height').split('px')[0]);
   } catch (e) {
     console.debug(e);
   }
@@ -145,7 +145,7 @@ export function highlight (staff: SVGGElement, color: string): void {
   }
   staff.querySelectorAll('.nc, .custos, .clef').forEach(el => {
     el.setAttribute('stroke', 'black');
-    el.setAttribute('stroke-width', '30px');
+    el.setAttribute('stroke-width', stroke);
   });
 }
 
