@@ -106,7 +106,15 @@ class NeonCore {
       }).then(async (doc: Doc) => {
         // Check if doc timestamp is newer than manifest
         const docTime = (new Date(doc.timestamp)).getTime();
-        const manTime = (new Date(this.manifest.timestamp)).getTime();
+        // Format timestamp to specific ISO 8601 variant because
+        // Safari requires timezone offsets to be +/-HH:MM and fails on
+        // the equally valid +/-HHMM. This doesn't need to be applied to
+        // the browser generated timestamp since that always generates a
+        // timestamp in UTC with the Z ending.
+        const timeZoneRegexp = /(.+[-+]\d\d)(\d\d)$/;
+        const manTime = (timeZoneRegexp.test(this.manifest.timestamp)) ?
+          (new Date(this.manifest.timestamp.replace(timeZoneRegexp, '$1:$2'))).getTime()
+          : (new Date(this.manifest.timestamp)).getTime();
         if (docTime > manTime) {
           if (!force) {
             // Fill annotations list with db annotations
