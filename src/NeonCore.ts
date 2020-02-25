@@ -111,7 +111,7 @@ class NeonCore {
         // the equally valid +/-HHMM. This doesn't need to be applied to
         // the browser generated timestamp since that always generates a
         // timestamp in UTC with the Z ending.
-        const timeZoneRegexp = /(.+[-+]\d\d)(\d\d)$/;
+        const timeZoneRegexp = /(.+[-+\u2212]\d\d)(\d\d)$/;
         const manTime = (timeZoneRegexp.test(this.manifest.timestamp)) ?
           (new Date(this.manifest.timestamp.replace(timeZoneRegexp, '$1:$2'))).getTime()
           : (new Date(this.manifest.timestamp)).getTime();
