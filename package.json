@@ -52,7 +52,8 @@
     "dependencies": {
         "d3": "^5.11.0",
         "jsonschema": "^1.2.4",
-        "pouchdb": "^7.1.1"
+        "pouchdb": "^7.1.1",
+        "verovio-dev": "./verovio-util/verovio-dev"
     },
     "devDependencies": {
         "@types/d3": "^5.7.2",
@@ -87,7 +88,6 @@
         "typedoc": "^0.15.0",
         "typescript": "^3.6.2",
         "uuid": "^3.3.3",
-        "verovio-dev": "file:./verovio-util/verovio-dev",
         "webpack": "^4.12.0",
         "webpack-command": "^0.4.2",
         "worker-loader": "^2.0.0"
