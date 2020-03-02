@@ -106,25 +106,39 @@ export function convertSbToStaff(sbBasedMei: string): string {
     for (const staff of originalStaves) {
       const layer = staff.getElementsByTagName('layer')[0];
       // First pass: get all sb elements as direct children of layer
-      for (const sb of layer.getElementsByTagName('sb')) {
+      const sbArray = Array.from(layer.getElementsByTagName('sb'));
+      for (const sb of sbArray) {
         if (sb.parentElement.tagName !== 'layer') {
           const origSyllable: Element = sb.parentElement;
-          if (origSyllable.firstChild.isEqualNode(sb)) {
-            layer.insertBefore(sb, origSyllable);
+          let neumeBehind = false, neumeAhead = false;
+          const childArray = Array.from(origSyllable.children);
+          const sbIndex = childArray.indexOf(sb);
+          for (const neume of origSyllable.getElementsByTagName('neume')) {
+            const ind = childArray.indexOf(neume);
+            if (ind < sbIndex) {
+              neumeBehind = true;
+            }
+            else if (ind > sbIndex) {
+              neumeAhead = true;
+            }
           }
-          else if (origSyllable.lastChild.isEqualNode(sb)) {
+
+          if (!neumeBehind && neumeAhead) {
+            origSyllable.insertAdjacentElement('beforebegin', sb);
+          }
+          else if (neumeBehind && !neumeAhead) {
             origSyllable.insertAdjacentElement('afterend', sb);
           }
-          else {
-            // We need to split the syllable here
+          else if (neumeBehind && neumeAhead){
+            // We may need to split the syllable here
             const newSyllable = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'syllable');
             newSyllable.setAttribute('xml:id', 'm-' + uuidv4());
             newSyllable.setAttribute('follows', '#' + origSyllable.getAttribute('xml:id'));
             origSyllable.setAttribute('precedes', '#' + newSyllable.getAttribute('xml:id'));
 
-            const childArray = Array.from(origSyllable.children);
             const sbIndex = childArray.indexOf(sb);
-            for (const child of origSyllable.children) {
+
+            for (const child of childArray) {
               const index = childArray.indexOf(child);
               if (index > sbIndex) {
                 newSyllable.appendChild(child);
@@ -144,21 +158,17 @@ export function convertSbToStaff(sbBasedMei: string): string {
               newSyllable.insertAdjacentElement('beforebegin', clef);
             }
           }
+          else {
+            console.warn('NONE BEHIND NONE AHEAD');
+            console.debug(origSyllable);
+          }
         }
       }
 
-      const sbInfo: Array<string> = [];
-      for (const sb of layer.getElementsByTagName('sb')) {
-        sbInfo.push(sb.getAttribute('xml:id'));
-      }
-
-      for (let i = 0; i < sbInfo.length; i++) {
-        const currentSb = Array.from(layer.getElementsByTagName('sb'))
-          .filter(el => { return el.getAttribute('xml:id') === sbInfo[i]; })[0];
-        const nextSb = (i === sbInfo.length - 1) ? undefined :
-          Array.from(layer.getElementsByTagName('sb')).filter(el => {
-            return el.getAttribute('xml:id') === sbInfo[i + 1];
-          })[0];
+      const sbs = Array.from(layer.getElementsByTagName('sb'));
+      for (let i = 0; i < sbs.length; i++) {
+        const currentSb = sbs[i];
+        const nextSb = (sbs.length > i + 1) ? sbs[i + 1] : undefined;
 
         const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
         copyAttributes(currentSb, newStaff);
@@ -179,6 +189,17 @@ export function convertSbToStaff(sbBasedMei: string): string {
       staff.remove();
     }
   }
+
+  // Second pass on all syllables to handle clefs and custos that might remain
+  for (const syllable of mei.querySelectorAll('syllable')) {
+    for (const clef of syllable.querySelectorAll('clef')) {
+      syllable.insertAdjacentElement('beforebegin', clef);
+    }
+    for (const custos of syllable.querySelectorAll('custos')) {
+      syllable.insertAdjacentElement('afterend', custos);
+    }
+  }
+
   const serializer = new XMLSerializer();
   return serializer.serializeToString(meiDoc);
 }
