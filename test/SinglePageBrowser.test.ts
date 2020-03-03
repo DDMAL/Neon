@@ -119,7 +119,7 @@ describe.each(browserNames)('Tests on %s', (title) => {
 
     test('Default BBox adding', async () => {
       const syls = (await browser.findElements(By.className('syl')));
-      expect(syls.length).toBe(189);
+      expect(syls.length).toBe(188);
       const bboxes = (await browser.findElements(By.className('sylTextRect-display')));
       expect(bboxes.length).toBe(188);
     });
