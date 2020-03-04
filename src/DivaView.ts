@@ -2,8 +2,7 @@ import NeonView from './NeonView';
 import DisplayPanel from './DisplayPanel/DisplayPanel';
 import { DisplayConstructable, ViewInterface } from './Interfaces';
 import ZoomHandler from './SingleView/Zoom';
-
-declare let Diva: any;
+import Diva from 'diva.js';
 
 /**
  * View module that uses the diva.js viewer to render the pages of a IIIF manifests
@@ -15,7 +14,7 @@ class DivaView implements ViewInterface {
   private updateCallbacks: Array<() => void>;
   divaReady: boolean;
   /** The diva.js instance. */
-  private diva: any;
+  private diva: Diva;
   /** Map zero-index page numbers to the actual URI/IRI identifier. */
   private indexMap: Map<number, string>;
   private displayPanel: DisplayPanel;
