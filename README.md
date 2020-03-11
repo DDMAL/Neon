@@ -1,7 +1,8 @@
 Neon v4.1.0
 =====
 [![Build_Status](https://travis-ci.org/DDMAL/Neon.svg?branch=master)](https://travis-ci.org/DDMAL/Neon)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/github/license/DDMAL/Neon)](https://opensource.org/licenses/MIT)
+![Dependency Status](https://img.shields.io/david/DDMAL/Neon)
 
 **N**eume **E**ditor **ON**line.
 
