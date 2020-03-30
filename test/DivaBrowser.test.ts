@@ -10,7 +10,7 @@ const editUrl = 'http://localhost:8080/edit/test/diva-test';
 
 const browserNames = ['firefox', 'chrome'];
 if (require('os').platform() === 'darwin') {
-  browserNames.push('safari');
+  // browserNames.push('safari');
 }
 
 jest.setTimeout(15000);
