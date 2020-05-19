@@ -1,4 +1,5 @@
 import { uuidv4 } from './random';
+import * as vkbeautify from 'vkbeautify';
 
 export function zip<T> (array1: Array<T>, array2: Array<T>): Array<T> {
   const result = [];
@@ -90,7 +91,7 @@ export function convertStaffToSb(staffBasedMei: string): string {
     section.appendChild(newStaff);
   }
 
-  return serializer.serializeToString(meiDoc);
+  return vkbeautify.xml(serializer.serializeToString(meiDoc));
 }
 
 export function convertSbToStaff(sbBasedMei: string): string {
@@ -201,5 +202,5 @@ export function convertSbToStaff(sbBasedMei: string): string {
   }
 
   const serializer = new XMLSerializer();
-  return serializer.serializeToString(meiDoc);
+  return vkbeautify.xml(serializer.serializeToString(meiDoc));
 }
