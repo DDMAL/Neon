@@ -2,7 +2,7 @@ importScripts('../assets/js/verovio-toolkit.js');
 
 const toolkit = new verovio.toolkit();
 toolkit.setOptions({
-  format: 'mei',
+  from: 'mei',
   footer: 'none',
   header: 'none',
   pageMarginLeft: 0,
