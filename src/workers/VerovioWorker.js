@@ -58,7 +58,6 @@ var Module = {
     console.debug("READY");
     onmessage = handleNeonEvent;
     for (const message of backlog) {
-      console.log("Handling message...");
       handleNeonEvent(message);
     }
   }
@@ -67,7 +66,6 @@ var Module = {
 importScripts('../assets/js/verovio-toolkit.js');
 
 function tempHandler (evt) {
-  console.debug("Adding to backlog.");
   backlog.push(evt);
 }
 
