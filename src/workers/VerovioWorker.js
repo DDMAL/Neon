@@ -1,18 +1,5 @@
-importScripts('../assets/js/verovio-toolkit.js');
-
-const toolkit = new verovio.toolkit();
-toolkit.setOptions({
-  from: 'mei',
-  footer: 'none',
-  header: 'none',
-  pageMarginLeft: 0,
-  pageMarginTop: 0,
-  font: 'Bravura',
-  useFacsimile: true,
-  createDefaultSyl: true,
-  createDefaultSylBBox: true,
-  useRotate: true
-});
+let toolkit;
+const backlog = [];
 
 /**
  * Parse and respond to messages sent by NeonCore.
@@ -49,4 +36,36 @@ function handleNeonEvent (evt) {
   postMessage(result);
 }
 
-onmessage = handleNeonEvent;
+var Module = {
+  onRuntimeInitialized: () => {
+
+    toolkit = new verovio.toolkit();
+    toolkit.setOptions({
+      from: 'mei',
+      footer: 'none',
+      header: 'none',
+      pageMarginLeft: 0,
+      pageMarginTop: 0,
+      font: 'Bravura',
+      useFacsimile: true,
+      createDefaultSyl: true,
+      createDefaultSylBBox: true,
+      useRotate: true
+    });
+    console.debug("READY");
+    onmessage = handleNeonEvent;
+    for (const message of backlog) {
+      console.log("Handling message...");
+      handleNeonEvent(message);
+    }
+  }
+};
+
+importScripts('../assets/js/verovio-toolkit.js');
+
+function tempHandler (evt) {
+  console.debug("Adding to backlog.");
+  backlog.push(evt);
+}
+
+onmessage = tempHandler;
