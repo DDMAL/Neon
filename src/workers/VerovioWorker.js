@@ -22,7 +22,10 @@ function handleNeonEvent (evt) {
       result.result = toolkit.edit(data.editorAction);
       break;
     case 'getMEI':
-      result.mei = toolkit.getMEI(0, true);
+      result.mei = toolkit.getMEI({
+        pageNo: 0,
+        scoreBased: true
+      });
       break;
     case 'editInfo':
       result.info = toolkit.editInfo();
