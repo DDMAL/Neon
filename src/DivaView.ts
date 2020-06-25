@@ -3,7 +3,7 @@ import DisplayPanel from './DisplayPanel/DisplayPanel';
 import { DisplayConstructable, ViewInterface } from './Interfaces';
 import ZoomHandler from './SingleView/Zoom';
 
-declare let Diva: any;
+import Diva from 'diva.js';
 
 /**
  * View module that uses the diva.js viewer to render the pages of a IIIF manifests
@@ -15,7 +15,7 @@ class DivaView implements ViewInterface {
   private updateCallbacks: Array<() => void>;
   divaReady: boolean;
   /** The diva.js instance. */
-  private diva: any;
+  private diva: Diva;
   /** Map zero-index page numbers to the actual URI/IRI identifier. */
   private indexMap: Map<number, string>;
   private displayPanel: DisplayPanel;
@@ -163,8 +163,8 @@ class DivaView implements ViewInterface {
       container.removeChild(container.firstChild);
     }
 
-    svg.setAttribute('width', dimensions.width);
-    svg.setAttribute('height', dimensions.height);
+    svg.setAttribute('width', dimensions.width.toString());
+    svg.setAttribute('height', dimensions.height.toString());
     container.style.position = 'absolute';
     container.style.top = `${offset.top}px`;
     container.style.left = `${offset.left - parseInt(marginLeft)}px`;
