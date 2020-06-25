@@ -51,9 +51,6 @@ var Module = {
       pageMarginTop: 0,
       font: 'Bravura',
       useFacsimile: true,
-      createDefaultSyl: true,
-      createDefaultSylBBox: true,
-      useRotate: true
     });
     console.debug("READY");
     onmessage = handleNeonEvent;
