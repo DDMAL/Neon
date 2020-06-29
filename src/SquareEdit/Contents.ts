@@ -3,37 +3,37 @@
  */
 export const insertTabHtml: Record<string, string> = {
   primitiveTab: '<p class=\'control\'>' +
-        '<button id=\'punctum\' class=\'button insertel smallel\' title=\'punctum\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/punctum.png' + '\' class=\'image\'/></button></p>' +
+        '<button id=\'punctum\' class=\'button insertel smallel\' aria-label=\'punctum\' title=\'punctum\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/punctum.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'virga\' class=\'button insertel smallel\' title=\'virga\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/virga.png' + '\' class=\'image\'/></button></p>' +
+        '<button id=\'virga\' class=\'button insertel smallel\' aria-label=\'virga\' title=\'virga\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/virga.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'diamond\' class=\'button insertel smallel\' title=\'inclinatum\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/diamond.png' + '\' class=\'image\'/></button></p>' +
+        '<button id=\'diamond\' class=\'button insertel smallel\' aria-label=\'inclinatum\' title=\'inclinatum\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/diamond.png' + '\' class=\'image\'/></button></p>' +
   /*  "<p class='control'>" +
         "<button id='white_punct' class='button insertel smallel' title='white punctum'><img src='" + White__ASSET_PREFIX__ + 'assets/img/punctum.png' + "' class='image'/></button></p>" +
         "<p class='control'>" +
         "<button id='quilisma' class='button insertel smallel' title='quilisma'><img src='" + __ASSET_PREFIX__ + 'assets/img/quilisma.png' + "' class='image'/></button></p>" + */
         '<p class=\'control\'>' +
-        '<button id=\'custos\' class=\'button insertel smallel\' title=\'custos\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/custos.png' + '\' class=\'image\'/></button></p>' +
+        '<button id=\'custos\' class=\'button insertel smallel\' aria-label=\'custos\' title=\'custos\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/custos.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'cClef\' class=\'button insertel smallel\' title=\' C Clef\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/cClef.png' + '\' class=\'image\' /></button></p>' +
+        '<button id=\'cClef\' class=\'button insertel smallel\' aria-label=\'C Clef\' title=\' C Clef\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/cClef.png' + '\' class=\'image\' /></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'fClef\' class=\'button insertel smallel\' title=\'F Clef\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/fClef.png' + '\' class=\'image\'/></button></p>',
+        '<button id=\'fClef\' class=\'button insertel smallel\' aria-label=\'F Clef\' title=\'F Clef\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/fClef.png' + '\' class=\'image\'/></button></p>',
   groupingTab: '<p class=\'control\'>' +
-        '<button id=\'pes\' class=\'button insertel smallel\' title=\'pes\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/pes.png' + '\' class=\'image\'/></button></p>' +
+        '<button id=\'pes\' class=\'button insertel smallel\' aria-label=\'pes\' title=\'pes\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/pes.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'clivis\' class=\'button insertel smallel\' title=\'clivis\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/clivis.png' + '\' class=\'image\'/></button></p>' +
+        '<button id=\'clivis\' class=\'button insertel smallel\' aria-label=\'clivis\' title=\'clivis\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/clivis.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'scandicus\' class=\'button insertel smallel\' title=\'scandicus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/scandicus.png' + '\' class=\'image\'/></button></p>' +
+        '<button id=\'scandicus\' class=\'button insertel smallel\' aria-label=\'scandicus\' title=\'scandicus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/scandicus.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'climacus\' class=\'button insertel smallel\' title=\'climacus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/climacus.png' + '\' class=\'image\'/></button></p>' +
+        '<button id=\'climacus\' class=\'button insertel smallel\' aria-label=\'climacus\' title=\'climacus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/climacus.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'torculus\' class=\'button insertel smallel\' title=\'toculus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/torculus.png' + '\' class=\'image\'/></button></p>' +
+        '<button id=\'torculus\' class=\'button insertel smallel\' aria-label=\'toculus\' title=\'toculus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/torculus.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'porrectus\' class=\'button insertel smallel\' title=\'porrectus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/porrectus.png' + '\' class=\'image\'/></button></p>' +
+        '<button id=\'porrectus\' class=\'button insertel smallel\' aria-label=\'porrectus\' title=\'porrectus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/porrectus.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'pressus\' class=\'button insertel smallel\' title=\'pressus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/pressus.png' + '\' class=\'image\'/></button></p>',
+        '<button id=\'pressus\' class=\'button insertel smallel\' aria-label=\'pressus\' title=\'pressus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/pressus.png' + '\' class=\'image\'/></button></p>',
   systemTab: '<p class=\'control\'>' +
-        '<button id=\'staff\' class=\'button insertel longel\' title=\'system\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/staff.png' + '\' class=\'image\' /></button></p>' +
+        '<button id=\'staff\' class=\'button insertel longel\' aria-label=\'system\' title=\'system\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/staff.png' + '\' class=\'image\' /></button></p>' +
         '<p>Click upper left and lower right corners of new staff.</p>'
   // divisionTab: "<p class='control'>" +
   //     "<button id='smallDiv' class='button insertel tallel'><img src='" + __ASSET_PREFIX__ + 'assets/img/smalldiv.png' + "' class='image'/></button></p>" +
@@ -157,7 +157,7 @@ export const defaultActionContents: string =
  * Contents of default action menu when selecting by syllable
  * Same as above except includes re-associate to nearest staff
  */
- export const defaultSylActionContents: string =
+export const defaultSylActionContents: string =
     '<div><p class=\'control\'>' +
     '<button class=\'button\' id=\'delete\'>Delete</button>' +
     '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
