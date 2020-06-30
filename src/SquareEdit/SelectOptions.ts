@@ -56,6 +56,9 @@ export function removeHandler (): void {
   const toRemove = [];
   const selected = Array.from(document.getElementsByClassName('selected'));
   selected.forEach(elem => {
+    if (elem.classList.contains('syl')) {
+      elem = elem.closest('.syllable');
+    }
     toRemove.push(
       {
         'action': 'remove',
