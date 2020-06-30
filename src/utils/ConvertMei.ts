@@ -99,6 +99,14 @@ export function convertSbToStaff(sbBasedMei: string): string {
   const meiDoc = parser.parseFromString(sbBasedMei, 'text/xml');
   const mei = meiDoc.documentElement;
 
+  // Delete all syllables that lack a neume (i.e. only syl)
+  const syllables = Array.from(mei.getElementsByTagName('syllable'));
+  for (const syllable of syllables) {
+    if (syllable.getElementsByTagName('neume').length === 0) {
+      syllable.remove();
+    }
+  }
+
   // Go section by section just in case
   for (const section of mei.getElementsByTagName('section')) {
     // In case there are multiple staves here we want to preserve those
