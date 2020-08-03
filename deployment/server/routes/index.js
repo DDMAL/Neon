@@ -4,7 +4,7 @@ var fs = require('fs-extra');
 var multer = require('multer');
 const request = require('request');
 const path = require('path');
-const uuidv4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 
 var router = express.Router();
 const __base = '';
