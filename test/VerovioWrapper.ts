@@ -10,16 +10,13 @@ export default class VerovioWrapper {
   constructor () {
     this.toolkit = new verovio.toolkit();
     this.toolkit.setOptions({
-      format: 'mei',
+      from: 'mei',
       footer: 'none',
       header: 'none',
       pageMarginLeft: 0,
       pageMarginTop: 0,
       font: 'Bravura',
       useFacsimile: true,
-      createDefaultSyl: true,
-      createDefaultSylBBox: true,
-      useRotate: true
     });
   }
 
@@ -69,7 +66,10 @@ export default class VerovioWrapper {
         result.result = this.toolkit.edit(data.editorAction);
         break;
       case 'getMEI':
-        result.mei = this.toolkit.getMEI(0, true);
+        result.mei = this.toolkit.getMEI({
+          pageNo: 0,
+          scoreBased: true
+        });
         break;
       case 'editInfo':
         result.info = this.toolkit.editInfo();

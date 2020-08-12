@@ -129,15 +129,16 @@ export function highlight (staff: SVGGElement, color: string): void {
     child.classList.add('highlighted');
   }
   let width, height;
-  try {
+  /*try {
     width = Number(document.querySelector('.active-page').querySelector('svg').getAttribute('width').split('px')[0]);
     height = Number(document.querySelector('.active-page').querySelector('svg').getAttribute('height').split('px')[0]);
   } catch (e) {
     console.debug(e);
-  }
+  }*/
   let stroke: string;
   if (width !== undefined && height !== undefined) {
     // idk looks good :')
+    // TODO find a better way of calculating this as this actually doesn't work as well as 30px
     stroke = (width*height/1000000).toString();
   }
   else {

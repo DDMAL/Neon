@@ -474,6 +474,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       switch (groups.length) {
         case 1:
           selectBBox(groups[0], dragHandler, neonView);
+          SelectOptions.triggerDefaultActions();
           break;
         default:
           groups.forEach(g => selectBBox(g, dragHandler, undefined));

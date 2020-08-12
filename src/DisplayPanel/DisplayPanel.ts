@@ -15,15 +15,15 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
   if (handleZoom !== undefined) {
     contents +=
     '<a class=\'panel-block has-text-centered\'><button class=\'button\' id=\'reset-zoom\'>Zoom</button>' +
-    '<input class=\'slider is-fullwidth\' id=\'zoomSlider\' step=\'5\' min=\'25\' max=\'400\' value=\'100\' type=\'range\'/>' +
+    '<input aria-labelledby=\'reset-zoom\' class=\'slider is-fullwidth\' id=\'zoomSlider\' step=\'5\' min=\'25\' max=\'400\' value=\'100\' type=\'range\'/>' +
     '<output id=\'zoomOutput\' for=\'zoomSlider\'>100</output></a>';
   }
   contents +=
   '<a class=\'panel-block has-text-centered\'><button class=\'button\' id=\'reset-opacity\'>Glyph Opacity</button>' +
-  '<input class=\'slider is-fullwidth\' id=\'opacitySlider\' step=\'5\' min=\'0\' max=\'100\' value=\'100\' type=\'range\'/>' +
+  '<input aria-labelledby=\'reset-opacity\' class=\'slider is-fullwidth\' id=\'opacitySlider\' step=\'5\' min=\'0\' max=\'100\' value=\'100\' type=\'range\'/>' +
   '<output id=\'opacityOutput\' for=\'opacitySlider\'>100</output></a>' +
   '<a class=\'panel-block has-text-centered\'><button class=\'button\' id=\'reset-bg-opacity\'>Image Opacity</button>' +
-  '<input class=\'slider is-fullwidth\' id=\'bgOpacitySlider\' step=\'5\' min=\'0\' max=\'100\' value=\'100\' type=\'range\'/>' +
+  '<input aria-labelledby=\'reset-bg-opacity\' class=\'slider is-fullwidth\' id=\'bgOpacitySlider\' step=\'5\' min=\'0\' max=\'100\' value=\'100\' type=\'range\'/>' +
   '<output id=\'bgOpacityOutput\' for=\'bgOpacitySlider\'>100</output></a>' +
   '<div class=\'panel-block\' id=\'extensible-block\'>' +
   '<div class=\'dropdown\' id=\'highlight-dropdown\'><div class=\'dropdown-trigger\'>' +
@@ -31,10 +31,10 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
   '<span>Highlight</span><span id=\'highlight-type\'>&nbsp;- Off</span>' +
   '<svg class=\'icon\'><use id=\'toggleDisplay\' xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use>' +
   '</svg></button></div><div class=\'dropdown-menu\' id=\'highlight-menu\' role=\'menu\'>' +
-  '<div class=\'dropdown-content\'><a class=\'dropdown-item\' id=\'highlight-staff\'>Staff</a>' +
-  '<a class=\'dropdown-item\' id=\'highlight-syllable\'>Syllable</a>' +
-  '<a class=\'dropdown-item\' id=\'highlight-neume\'>Neume</a><hr class=\'dropdown-divider\'/>' +
-  '<a class=\'dropdown-item\' id=\'highlight-none\'>None</a></div></div></div></div></div>';
+  '<div class=\'dropdown-content\'><a aria-role=\'menuitem\' class=\'dropdown-item\' id=\'highlight-staff\'>Staff</a>' +
+  '<a aria-role=\'menuitem\' class=\'dropdown-item\' id=\'highlight-syllable\'>Syllable</a>' +
+  '<a aria-role=\'menuitem\' class=\'dropdown-item\' id=\'highlight-neume\'>Neume</a><hr class=\'dropdown-divider\'/>' +
+  '<a aria-role=\'menuitem\' class=\'dropdown-item\' id=\'highlight-none\'>None</a></div></div></div></div></div>';
   return contents;
 }
 

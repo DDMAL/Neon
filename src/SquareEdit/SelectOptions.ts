@@ -56,6 +56,9 @@ export function removeHandler (): void {
   const toRemove = [];
   const selected = Array.from(document.getElementsByClassName('selected'));
   selected.forEach(elem => {
+    if (elem.classList.contains('syl')) {
+      elem = elem.closest('.syllable');
+    }
     toRemove.push(
       {
         'action': 'remove',
@@ -105,7 +108,7 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.custosActionContents;
+    moreEdit.innerHTML = Contents.defaultActionContents;
   } catch (e) {}
   try {
     const extraEdit = document.getElementById('extraEdit');
@@ -187,7 +190,7 @@ export function triggerNeumeActions (): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.custosActionContents;
+    moreEdit.innerHTML = Contents.defaultActionContents;
   } catch (e) {}
   try {
     const extraEdit = document.getElementById('extraEdit');
@@ -251,7 +254,7 @@ export function triggerSylActions (): void {
       '<div><p class=\'control\'>' +
         '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
     document.getElementById('changeStaff').addEventListener('click', changeStaffHandler);
-  } catch (e) {}
+  } catch (e) { console.debug(e); }
   try {
     const del = document.getElementById('delete');
     del.removeEventListener('click', removeHandler);
@@ -323,7 +326,7 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
     del.removeEventListener('click', removeHandler);
     del.addEventListener('click', removeHandler);
     document.getElementById('changeStaff').addEventListener('click', changeStaffHandler);
-  } catch (e) {}
+  } catch (e) {console.debug(e);}
   document.body.addEventListener('keydown', deleteButtonHandler);
 
 
@@ -344,7 +347,7 @@ export function triggerCustosActions (): void {
   try {
     document.getElementById('changeStaff')
       .addEventListener('click', changeStaffHandler);
-  } catch (e) {}
+  } catch (e) {console.debug(e);}
 
   try {
     const del = document.getElementById('delete');
@@ -483,7 +486,7 @@ export function triggerDefaultSylActions (): void {
     const changeStaff = document.getElementById('changeStaff');
     changeStaff.removeEventListener('click', changeStaffHandler);
     changeStaff.addEventListener('click', changeStaffHandler);
-  } catch(e) {}
+  } catch(e) {console.debug(e);}
 }
 
 /**

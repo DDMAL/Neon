@@ -174,7 +174,7 @@ class NeonView {
   /**
    * Deletes the local database of the loaded MEI file(s).
    */
-  deleteDb (): Promise<void> {
+  deleteDb (): Promise<{}[]> {
     return this.core.deleteDb();
   }
 
