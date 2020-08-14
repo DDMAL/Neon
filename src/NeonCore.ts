@@ -373,6 +373,7 @@ class NeonCore {
           if (evt.data.id === message.id) {
             mei = evt.data.mei;
             evt.target.removeEventListener('message', handle);
+            Validation.sendForValidation(mei);
             resolve();
           }
         });
