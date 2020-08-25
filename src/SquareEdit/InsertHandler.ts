@@ -76,13 +76,15 @@ class InsertHandler {
     }
 
     this.removeInsertClickHandlers();
-    if (this.type === 'staff') {
-      document.querySelector(this.selector)
-        .addEventListener('click', this.staffHandler);
-    } else {
-      document.querySelector(this.selector)
-        .addEventListener('click', this.handler);
-    }
+    try {
+      if (this.type === 'staff') {
+        document.querySelector(this.selector)
+          .addEventListener('click', this.staffHandler);
+      } else {
+        document.querySelector(this.selector)
+          .addEventListener('click', this.handler);
+      }
+    } catch (e) {}
 
     // Disable edit mode listeners
     document.body.addEventListener('keydown', this.keydownListener);
@@ -264,8 +266,10 @@ class InsertHandler {
    * Remove the insert listeners while not leaving insert mode entirely.
    */
   removeInsertClickHandlers = (function removeInsertClickHandlers (): void {
-    document.querySelector(this.selector).removeEventListener('click', this.staffHandler);
-    document.querySelector(this.selector).removeEventListener('click', this.handler);
+    try {
+      document.querySelector(this.selector).removeEventListener('click', this.staffHandler);
+      document.querySelector(this.selector).removeEventListener('click', this.handler);
+    } catch (e) {}
   }).bind(this);
 
   isInsertMode (): boolean {
