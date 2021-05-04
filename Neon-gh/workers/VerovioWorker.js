@@ -44,7 +44,7 @@ var Module = {
 
     toolkit = new verovio.toolkit();
     toolkit.setOptions({
-      from: 'mei',
+      inputFrom: 'mei',
       footer: 'none',
       header: 'none',
       pageMarginLeft: 0,
