@@ -2,7 +2,7 @@ language: node_js
 node_js: stable
 os: osx
 osx_image: xcode11.3
-if: (branch = master OR branch = develop)
+if: (branch = master)
 addons:
   firefox: latest
   chrome: stable
