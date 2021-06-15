@@ -106,8 +106,11 @@ function setOpacityControls (meiClassName: string): void {
   function inputChangeOpacity (): void {
     opacityOutput.value = opacitySlider.value;
     lastGlyphOpacity = Number(opacitySlider.value);
-    (document.querySelector('.' + meiClassName) as HTMLElement)
-      .style.opacity = (Number(opacityOutput.value) / 100.0).toString();
+    try {
+      ((document.querySelectorAll('.' + meiClassName)) as NodeListOf<HTMLElement>).forEach(g => {
+        g.style.opacity = (Number(opacityOutput.value) / 100.0).toString();
+      });
+    } catch (e) {}
   }
 }
 
