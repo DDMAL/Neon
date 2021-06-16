@@ -80,8 +80,10 @@ export function removeHandler (): void {
  * Function to handle re-associating elements to the nearest staff
  */
 export function changeStaffHandler(): void {
+  console.log('Staff Change 1');
   const toChange: EditorAction[] = [];
   const selected = Array.from(document.getElementsByClassName('selected'));
+  console.log('Staff Change 2');
   selected.forEach(elem => {
     toChange.push(
       {
@@ -96,6 +98,7 @@ export function changeStaffHandler(): void {
     'action': 'chain',
     'param': toChange
   };
+  console.log('Staff Change 3');
   endOptionsSelection();
   neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then(() => { neonView.updateForCurrentPage(); });
 }
