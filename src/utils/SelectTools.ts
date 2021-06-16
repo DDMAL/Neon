@@ -388,13 +388,16 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
               }
             }
             SelectOptions.triggerDefaultSylActions();
+            SelectOptions.triggerSylActions();
           }
           break;
         default:
           if (sharedSecondLevelParent(groups)) {
             Grouping.triggerGrouping('syl');
+            SelectOptions.triggerSylActions();
           } else {
             SelectOptions.triggerDefaultSylActions();
+            SelectOptions.triggerSylActions();
           }
       }
       break;
