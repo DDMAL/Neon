@@ -1,4 +1,4 @@
-import { updateHighlight } from '../DisplayPanel/DisplayControls';
+import { updateHighlight, setOpacityFromSlider } from '../DisplayPanel/DisplayControls';
 import NeonView from '../NeonView';
 import DisplayPanel from '../DisplayPanel/DisplayPanel';
 import ZoomHandler from './Zoom';
@@ -129,7 +129,7 @@ class SingleView implements ViewInterface {
    */
   resetTransformations (): void {
     this.displayPanel.zoomHandler.restoreTransformation();
-    // setOpacityFromSlider();
+    setOpacityFromSlider();
   }
 
   /**

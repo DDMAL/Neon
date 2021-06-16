@@ -106,27 +106,25 @@ function setOpacityControls (meiClassName: string): void {
   function inputChangeOpacity (): void {
     opacityOutput.value = opacitySlider.value;
     lastGlyphOpacity = Number(opacitySlider.value);
-    try {
-      ((document.querySelectorAll('.' + meiClassName)) as NodeListOf<HTMLElement>).forEach(g => {
-        g.style.opacity = (Number(opacityOutput.value) / 100.0).toString();
-      });
-    } catch (e) {}
+    setOpacityFromSlider(meiClassName)
   }
 }
 
-// /**
-//  * Update MEI opacity to value from the slider.
-//  * @param meiClassName - Class that contains the rendered MEI.
-//  */
-// export function setOpacityFromSlider (meiClassName?: string): void {
-//   const opacityOutput = document.getElementById('opacityOutput') as HTMLOutputElement;
-//   opacityOutput.value = (document.getElementById('opacitySlider') as HTMLInputElement).value;
-//   try {
-//     ((document.querySelectorAll('.' + meiClassName)) as NodeListOf<HTMLElement>).forEach(g => {
-//       g.style.opacity = (Number(opacityOutput.value) / 100.0).toString();
-//     });
-//   } catch (e) {}
-// }
+/**
+ * Update MEI opacity to value from the slider.
+ * @param meiClassName - Class that contains the rendered MEI.
+ */
+export function setOpacityFromSlider (meiClassName?: string): void {
+  const opacityOutput = document.getElementById('opacityOutput') as HTMLOutputElement;
+  opacityOutput.value = (document.getElementById('opacitySlider') as HTMLInputElement).value;
+  try {
+    ((document.querySelectorAll('.' + meiClassName)) as NodeListOf<HTMLElement>).forEach(g => {
+      g.style.opacity = (Number(opacityOutput.value) / 100.0).toString();
+    });
+  } catch (e) {
+    console.warn("Unable to properly set opacity to pages")
+  }
+}
 
 /**
  * Set background image opacity button and slider listeners.
