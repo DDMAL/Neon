@@ -106,8 +106,7 @@ function setOpacityControls (meiClassName: string): void {
   function inputChangeOpacity (): void {
     opacityOutput.value = opacitySlider.value;
     lastGlyphOpacity = Number(opacitySlider.value);
-    (document.querySelector('.' + meiClassName) as HTMLElement)
-      .style.opacity = (Number(opacityOutput.value) / 100.0).toString();
+    setOpacityFromSlider(meiClassName)
   }
 }
 
@@ -122,7 +121,9 @@ export function setOpacityFromSlider (meiClassName?: string): void {
     ((document.querySelectorAll('.' + meiClassName)) as NodeListOf<HTMLElement>).forEach(g => {
       g.style.opacity = (Number(opacityOutput.value) / 100.0).toString();
     });
-  } catch (e) {}
+  } catch (e) {
+    console.warn("Unable to properly set opacity to pages")
+  }
 }
 
 /**
