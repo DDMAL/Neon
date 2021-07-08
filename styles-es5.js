@@ -527,11 +527,11 @@
     /***/
     function _(module, exports, __webpack_require__) {
       __webpack_require__(
-      /*! /Users/jregimbal/Documents/neon-index/node_modules/@angular/material/prebuilt-themes/indigo-pink.css */
+      /*! /Users/gabrielle/Desktop/DDMAL_summer2021/neon-index/node_modules/@angular/material/prebuilt-themes/indigo-pink.css */
       "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css");
 
       module.exports = __webpack_require__(
-      /*! /Users/jregimbal/Documents/neon-index/src/styles.css */
+      /*! /Users/gabrielle/Desktop/DDMAL_summer2021/neon-index/src/styles.css */
       "./src/styles.css");
       /***/
     }
