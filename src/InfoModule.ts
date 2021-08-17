@@ -148,7 +148,15 @@ class InfoModule implements InfoInterface {
         break;
       case 'accid':
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
-        body += 'Type: ' + (attributes['accid']).toUpperCase();
+        let type = '';
+        if ((attributes['accid']).toUpperCase() == 'F'){
+          type = "Flat";
+        }
+        else if((attributes['accid']).toUpperCase() == 'N'){
+          type = "Natural";
+        }
+        body += 'Accid Type: ' + type;
+        break;
       case 'clef':
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         body += 'Shape: ' + attributes['shape'] + '\r\n' +
