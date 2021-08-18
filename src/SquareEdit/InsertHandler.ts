@@ -40,7 +40,7 @@ class InsertHandler {
         break;
       case 'virga':
         this.type = 'nc';
-        this.attributes = { 'tilt': 'n' };
+        this.attributes = { 'tilt': 's' };
         break;
       case 'pes':
       case 'clivis':
