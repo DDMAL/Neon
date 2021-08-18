@@ -42,6 +42,10 @@ class InsertHandler {
         this.type = 'nc';
         this.attributes = { 'tilt': 's' };
         break;
+      case 'liquescent':
+        this.type = 'nc';
+        this.attributes = null;
+        break;
       case 'pes':
       case 'clivis':
       case 'scandicus':

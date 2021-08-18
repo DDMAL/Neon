@@ -17,7 +17,9 @@ export const insertTabHtml: Record<string, string> = {
         '<p class=\'control\'>' +
         '<button id=\'cClef\' class=\'button insertel smallel\' aria-label=\'C Clef\' title=\' C Clef\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/cClef.png' + '\' class=\'image\' /></button></p>' +
         '<p class=\'control\'>' +
-        '<button id=\'fClef\' class=\'button insertel smallel\' aria-label=\'F Clef\' title=\'F Clef\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/fClef.png' + '\' class=\'image\'/></button></p>',
+        '<button id=\'fClef\' class=\'button insertel smallel\' aria-label=\'F Clef\' title=\'F Clef\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/fClef.png' + '\' class=\'image\'/></button></p>'+
+        '<p class=\'control\'>' +
+        '<button id=\'liquescent\' class=\'button insertel smallel\' aria-label=\'Liquescent\' title=\'Liquescent\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/liquescent.png' + '\' class=\'image\'/></button></p>',
   groupingTab: '<p class=\'control\'>' +
         '<button id=\'pes\' class=\'button insertel smallel\' aria-label=\'pes\' title=\'pes\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/pes.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
