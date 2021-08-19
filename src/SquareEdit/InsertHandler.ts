@@ -45,7 +45,7 @@ class InsertHandler {
       //there are multiple possible liquescent combinations
       case 'liquescent':
         this.type = 'nc';
-        this.attributes = {'tilt': 's', 'curve': 'a'};
+        this.attributes = { 'curve': 'a'};
         break;
       case 'pes':
       case 'clivis':
