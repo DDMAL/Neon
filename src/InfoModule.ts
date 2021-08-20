@@ -138,15 +138,14 @@ class InfoModule implements InfoInterface {
         }
         else if (ncs.length === 1){
           const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
-          if (element.querySelectorAll('.liquescent') as NodeListOf<SVGGraphicsElement>){
+          let ncFirst = ncs[0];
+          if (ncFirst.hasChildNodes()){
             let pitches = await this.getPitches(ncs);
             pitches = pitches.trim().toUpperCase();
             body = 'Shape: liquescent' + '\r\n' +
                 'Pitch(es): ' + pitches;
             break;
           }
-          // else if (attr.l){
-          // }
         }
         let pitches = await this.getPitches(ncs);
 
