@@ -119,7 +119,7 @@ class InfoModule implements InfoInterface {
     }
 
     const element = document.getElementById(id);
-    const classRe = /neume|nc|clef|custos|staff/;
+    const classRe = /neume|nc|clef|custos|staff|liquescent/;
     const elementClass = element.getAttribute('class').match(classRe)[0];
     let body = '';
     let attributes: Attributes;
@@ -135,6 +135,18 @@ class InfoModule implements InfoInterface {
           if (attr.ligated) {
             contour = 'Ligature';
           }
+        }
+        else if (ncs.length === 1){
+          const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
+          if (element.querySelectorAll('.liquescent') as NodeListOf<SVGGraphicsElement>){
+            let pitches = await this.getPitches(ncs);
+            pitches = pitches.trim().toUpperCase();
+            body = 'Shape: liquescent' + '\r\n' +
+                'Pitch(es): ' + pitches;
+            break;
+          }
+          // else if (attr.l){
+          // }
         }
         let pitches = await this.getPitches(ncs);
 
