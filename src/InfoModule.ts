@@ -132,7 +132,7 @@ class InfoModule implements InfoInterface {
         const ncs = element.querySelectorAll('.nc') as NodeListOf<SVGGraphicsElement>;
         if (ncs.length === 1){
           const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
-          if (attr.curve === 'a'){
+          if (attr.curve === 'a' || attr.curve === 'c'){
             let pitches = await this.getPitches(ncs);
 
             pitches = pitches.trim().toUpperCase();
