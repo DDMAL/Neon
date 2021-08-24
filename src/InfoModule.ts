@@ -3,6 +3,7 @@
 import NeonView from './NeonView';
 import { InfoInterface } from './Interfaces';
 import { Attributes } from './Types';
+import { quickselect } from 'd3-array';
 
 /**
  * Map of contours to neume names.
@@ -129,22 +130,41 @@ class InfoModule implements InfoInterface {
       case 'neume':
         // Select neume components of selected neume
         const ncs = element.querySelectorAll('.nc') as NodeListOf<SVGGraphicsElement>;
+        //const lqs = element.querySelectorAll('.liquescent') as NodeListOf<SVGGraphicsElement>;
+        // try {
+        //   throw new Error(lqs.length.toString());
+        // }
+        // catch(e) {
+        //   console.log(e);
+        // }
+
+        for(let i =0; i<ncs.length; i++){
+          try {
+            throw new Error(ncs[i].firstChild.nodeName + ncs[i].firstChild.nodeType.toString + ncs[i].firstChild.nodeValue);
+          }
+          catch(e) {
+            console.log(e);
+          }
+            if(ncs[i].hasChildNodes() === true && ncs[i].children.length === 1
+            && ncs[i].firstChild.nodeValue == "liquescent"){
+              try {
+                throw new Error("error");
+              }
+              catch(e) {
+                console.log(e);
+              }
+              let pitches = await this.getPitches(ncs);
+              pitches = pitches.trim().toUpperCase();
+              body = 'Shape: liquescent' + '\r\n' +
+                  'Pitch(es): ' + pitches;
+              break;
+            }
+        }
         let contour = await this.getContour(ncs);
         if (contour === 'Clivis') {
           const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
           if (attr.ligated) {
             contour = 'Ligature';
-          }
-        }
-        else if (ncs.length === 1){
-          const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
-          let ncFirst = ncs[0];
-          if (ncFirst.hasChildNodes()){
-            let pitches = await this.getPitches(ncs);
-            pitches = pitches.trim().toUpperCase();
-            body = 'Shape: liquescent' + '\r\n' +
-                'Pitch(es): ' + pitches;
-            break;
           }
         }
         let pitches = await this.getPitches(ncs);
