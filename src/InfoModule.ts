@@ -144,6 +144,25 @@ class InfoModule implements InfoInterface {
         }
 
         let contour = await this.getContour(ncs);
+        if (ncs.length === 1){
+          const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
+          if(attr.tilt === 's'){
+            let pitches = await this.getPitches(ncs);
+
+            pitches = pitches.trim().toUpperCase();
+            body = 'Shape: Virga \r\n'  +
+                    'Pitch(es): ' + pitches;
+            break;
+          }
+          else if(attr.tilt === 'n'){
+            let pitches = await this.getPitches(ncs);
+
+            pitches = pitches.trim().toUpperCase();
+            body = 'Shape: Reversed Virga \r\n'  +
+                    'Pitch(es): ' + pitches;
+            break;
+          }
+        }
         if (contour === 'Clivis') {
           const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
           if (attr.ligated) {
