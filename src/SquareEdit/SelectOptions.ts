@@ -50,6 +50,21 @@ export function unsetVirgaAction (id: string): EditorAction {
 }
 
 /**
+ * @param id - The id of the neume component.
+ * @returns An action that unsets the reversed virga parameter of a neume component.
+ */
+ export function unsetVirgaReversedAction (id: string): EditorAction {
+  return {
+    'action': 'set',
+    'param': {
+      'elementId': id,
+      'attrType': 'tilt',
+      'attrValue': ''
+    }
+  };
+}
+
+/**
  * Function to handle removing elements
  */
 export function removeHandler (): void {
@@ -119,7 +134,8 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
     .addEventListener('click', () => {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
       const unsetVirga = unsetVirgaAction(nc.id);
-      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
+      const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
+      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, unsetVirgaReversed ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
           Notification.queueNotification('Shape Changed');
         } else {
