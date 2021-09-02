@@ -58,7 +58,7 @@ export function unsetVirgaAction (id: string): EditorAction {
     'action': 'set',
     'param': {
       'elementId': id,
-      'attrType': 'tilt',
+      'attrType': 'curve',
       'attrValue': ''
     }
   };
@@ -73,7 +73,7 @@ export function unsetVirgaAction (id: string): EditorAction {
     'action': 'set',
     'param': {
       'elementId': id,
-      'attrType': 'tilt',
+      'attrType': 'curve',
       'attrValue': ''
     }
   };
