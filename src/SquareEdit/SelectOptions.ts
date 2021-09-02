@@ -50,6 +50,21 @@ export function unsetVirgaAction (id: string): EditorAction {
 }
 
 /**
+ * @param id - The id of the neume component.
+ * @returns An action that unsets the reversed virga parameter of a neume component.
+ */
+ export function unsetVirgaReversedAction (id: string): EditorAction {
+  return {
+    'action': 'set',
+    'param': {
+      'elementId': id,
+      'attrType': 'tilt',
+      'attrValue': ''
+    }
+  };
+}
+
+/**
  * Function to handle removing elements
  */
 export function removeHandler (): void {
@@ -119,7 +134,8 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
     .addEventListener('click', () => {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
       const unsetVirga = unsetVirgaAction(nc.id);
-      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
+      const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
+      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, unsetVirgaReversed ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
           Notification.queueNotification('Shape Changed');
         } else {
@@ -154,15 +170,16 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
   document.querySelector('#Virga.dropdown-item')
     .addEventListener('click', () => {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
       const setVirga = {
         'action': 'set',
         'param': {
           'elementId': nc.id,
           'attrType': 'tilt',
-          'attrValue': 'n'
+          'attrValue': 's'
         }
       };
-      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, setVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
+      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirgaReversed, setVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
           Notification.queueNotification('Shape Changed');
         } else {
@@ -172,6 +189,30 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
         neonView.updateForCurrentPage();
       });
     });
+
+    document.querySelector('#VirgaReversed.dropdown-item')
+    .addEventListener('click', () => {
+      const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetVirga = unsetVirgaAction(nc.id);
+      const setVirgaReversed = {
+        'action': 'set',
+        'param': {
+          'elementId': nc.id,
+          'attrType': 'tilt',
+          'attrValue': 'n'
+        }
+      };
+      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, setVirgaReversed ] }, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Shape Changed');
+        } else {
+          Notification.queueNotification('Shape Change Failed');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
+    });
+
   try {
     const del = document.getElementById('delete');
     del.removeEventListener('click', removeHandler);
