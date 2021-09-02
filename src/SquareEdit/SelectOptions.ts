@@ -228,6 +228,31 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       });
     });
 
+    document.querySelector('#VirgaReversed.dropdown-item')
+    .addEventListener('click', () => {
+      const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetVirga = unsetVirgaAction(nc.id);
+      const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
+      const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
+      const setVirgaReversed = {
+        'action': 'set',
+        'param': {
+          'elementId': nc.id,
+          'attrType': 'tilt',
+          'attrValue': 'n'
+        }
+      };
+      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, unsetLiquescentClockwise, unsetLiquescentAnticlockwise, setVirgaReversed ] }, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Shape Changed');
+        } else {
+          Notification.queueNotification('Shape Change Failed');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
+    });
+
   document.querySelector('#LiquescentClockwise.dropdown-item')
   .addEventListener('click', () => {
     const unsetInclinatum = unsetInclinatumAction(nc.id);
