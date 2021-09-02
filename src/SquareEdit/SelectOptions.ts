@@ -65,6 +65,36 @@ export function unsetVirgaAction (id: string): EditorAction {
 }
 
 /**
+ * @param id - The id of the neume component.
+ * @returns An action that unsets the liquescent_clockwise parameter of a neume component.
+ */
+ export function unsetLiquescentClockwiseAction (id: string): EditorAction {
+  return {
+    'action': 'set',
+    'param': {
+      'elementId': id,
+      'attrType': 'curve',
+      'attrValue': ''
+    }
+  };
+}
+
+/**
+ * @param id - The id of the neume component.
+ * @returns An action that unsets the liquescent_anticlockwise parameter of a neume component.
+ */
+ export function unsetLiquescentAnticlockwiseAction (id: string): EditorAction {
+  return {
+    'action': 'set',
+    'param': {
+      'elementId': id,
+      'attrType': 'curve',
+      'attrValue': ''
+    }
+  };
+}
+
+/**
  * Function to handle removing elements
  */
 export function removeHandler (): void {
@@ -135,7 +165,9 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
       const unsetVirga = unsetVirgaAction(nc.id);
       const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
-      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, unsetVirgaReversed ] }, neonView.view.getCurrentPageURI()).then((result) => {
+      const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
+      const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
+      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentClockwise, unsetLiquescentAnticlockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
           Notification.queueNotification('Shape Changed');
         } else {
@@ -148,6 +180,10 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
 
   document.querySelector('#Inclinatum.dropdown-item')
     .addEventListener('click', () => {
+      const unsetVirga = unsetVirgaAction(nc.id);
+      const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
+      const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
+      const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
       const setInclinatum = {
         'action': 'set',
         'param': {
@@ -156,7 +192,7 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
           'attrValue': 'se'
         }
       };
-      neonView.edit(setInclinatum, neonView.view.getCurrentPageURI()).then((result) => {
+      neonView.edit({ 'action': 'chain', 'param': [ unsetVirga, unsetVirgaReversed, unsetLiquescentClockwise, unsetLiquescentAnticlockwise, setInclinatum ] } , neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
           Notification.queueNotification('Shape Changed');
         } else {
@@ -169,8 +205,10 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
 
   document.querySelector('#Virga.dropdown-item')
     .addEventListener('click', () => {
-      const unsetInclinatum = unsetInclinatumAction(nc.id);
       const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
+      const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
+      const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
       const setVirga = {
         'action': 'set',
         'param': {
@@ -179,7 +217,7 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
           'attrValue': 's'
         }
       };
-      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirgaReversed, setVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
+      neonView.edit({ 'action': 'chain', 'param': [ unsetVirgaReversed, unsetInclinatum, unsetLiquescentClockwise, unsetLiquescentAnticlockwise, setVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
           Notification.queueNotification('Shape Changed');
         } else {
@@ -194,6 +232,8 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
     .addEventListener('click', () => {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
       const unsetVirga = unsetVirgaAction(nc.id);
+      const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
+      const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
       const setVirgaReversed = {
         'action': 'set',
         'param': {
@@ -202,7 +242,7 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
           'attrValue': 'n'
         }
       };
-      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, setVirgaReversed ] }, neonView.view.getCurrentPageURI()).then((result) => {
+      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, unsetLiquescentClockwise, unsetLiquescentAnticlockwise, setVirgaReversed ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
           Notification.queueNotification('Shape Changed');
         } else {
@@ -212,6 +252,56 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
         neonView.updateForCurrentPage();
       });
     });
+
+  document.querySelector('#LiquescentClockwise.dropdown-item')
+  .addEventListener('click', () => {
+    const unsetInclinatum = unsetInclinatumAction(nc.id);
+    const unsetVirga = unsetVirgaAction(nc.id);
+    const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
+    const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
+    const setLiquescentClockwise = {
+      'action': 'set',
+      'param': {
+        'elementId': nc.id,
+        'attrType': 'curve',
+        'attrValue': 'c'
+      }
+    };
+    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentAnticlockwise, setLiquescentClockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
+      if (result) {
+        Notification.queueNotification('Shape Changed');
+      } else {
+        Notification.queueNotification('Shape Change Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
+  });  
+
+  document.querySelector('#LiquescentAnticlockwise.dropdown-item')
+  .addEventListener('click', () => {
+    const unsetInclinatum = unsetInclinatumAction(nc.id);
+    const unsetVirga = unsetVirgaAction(nc.id);
+    const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
+    const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
+    const setLiquescentAnticlockwise = {
+      'action': 'set',
+      'param': {
+        'elementId': nc.id,
+        'attrType': 'curve',
+        'attrValue': 'a'
+      }
+    };
+    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentClockwise, setLiquescentAnticlockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
+      if (result) {
+        Notification.queueNotification('Shape Changed');
+      } else {
+        Notification.queueNotification('Shape Change Failed');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage();
+    });
+  });  
 
   try {
     const del = document.getElementById('delete');

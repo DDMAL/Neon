@@ -109,8 +109,10 @@ export const ncActionContents: string =
         '<div class=\'dropdown-menu\' id=\'dropdown-menu\' role=\'menu\'>' +
         '<div class=\'dropdown-content\'>' +
         '<a id=\'Punctum\' class=\'dropdown-item\'>Punctum</a>' +
-        '<a id=\'Virga\' class=\'dropdown-item\'>Virga</a>' +
+        '<a id=\'Virga\' class=\'dropdown-item\'>Virga</a>' + 
         '<a id=\'VirgaReversed\' class=\'dropdown-item\'>Reversed Virga</a>' +
+        '<a id=\'LiquescentClockwise\' class=\'dropdown-item\'>Liquescent C</a>' +
+        '<a id=\'LiquescentAnticlockwise\' class=\'dropdown-item\'>Liquescent A</a>' +
         '<a id=\'Inclinatum\' class=\'dropdown-item\'>Inclinatum</a></div></div></div>' +
         '<p class=\'control\'></p></div>';
 
