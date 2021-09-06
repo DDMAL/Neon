@@ -59,8 +59,8 @@ export function removeHandler (): void {
     if (elem.classList.contains('syl')) {
       elem = elem.closest('.syllable');
     }
-    if (elem.classList.contains('layer')) {
-      elem = elem.closest('.layer');
+    if (elem.classList.contains('accid')) {
+      elem = elem.closest('.accid');
     }
     toRemove.push(
       {

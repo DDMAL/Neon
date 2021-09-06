@@ -121,7 +121,7 @@ export function highlight(staff: SVGGElement, color: string): void {
         if (!(rect.closest('.syllable').classList.contains('selected') ||
           rect.closest('.syl').classList.contains('selected') ||
           rect.closest('.staff').classList.contains('selected') ||
-          rect.closest('.layer').classList.contains('selected'))) {
+          rect.closest('.accid').classList.contains('selected'))) {
           rect.style.fill = color;
           rect.classList.add('highlighted');
         }
@@ -182,7 +182,7 @@ export function setGroupingHighlight(grouping: string): void {
         grouping = 'staff';
         break;
       case 'selByLayerElement':
-        grouping = 'layer'
+        grouping = 'accid'
       default:
         grouping = 'neume';
         break;
@@ -201,7 +201,7 @@ export function setGroupingHighlight(grouping: string): void {
         if (rect.closest('.syl').classList.contains('selected') ||
           rect.closest('.syllable').classList.contains('selected') ||
           rect.closest('.staff').classList.contains('selected') ||
-          rect.closest('.layer').classList.contains('selected')) {
+          rect.closest('.accid').classList.contains('selected')) {
           return;
         }
         rect.style.fill = groupColor;

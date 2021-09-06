@@ -266,7 +266,7 @@ export function initSelectionButtons () {
       } catch (e) {}
       try {
         if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
-          setGroupingHighlight('layer');
+          setGroupingHighlight('accid');
         }
       } catch (e) {}
     }

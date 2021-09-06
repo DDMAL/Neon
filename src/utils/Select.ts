@@ -136,7 +136,7 @@ function clickHandler (evt: MouseEvent): void {
             mode = '.nc';
             break;
           case 'selByLayerElement':
-            mode = '.layer';
+            mode = '.accid';
             break;
           default:
             mode = '.syllable';
