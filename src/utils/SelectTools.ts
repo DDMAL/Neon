@@ -73,6 +73,9 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler): void
   if (el.classList.contains('staff')) {
     return selectStaff(el, dragHandler);
   }
+  if (el.classList.contains('layer')) {
+    return selectLayerElement(el, dragHandler);
+  }
   if (!el.classList.contains('selected') && !el.classList.contains('sylTextRect') &&
       !el.classList.contains('sylTextRect-display')) {
     el.classList.add('selected');
@@ -249,6 +252,20 @@ export function selectStaff (staff: SVGGElement, dragHandler: DragHandler): void
 }
 
 /**
+ * Select a layer element.
+ * @param layerElement - The layer element in the DOM.
+ * @param dragHandler - The drag handler in use.
+ */
+ export function selectLayerElement (layerElement: SVGGElement, dragHandler: DragHandler): void {
+  if (!layerElement.classList.contains('selected')) {
+    layerElement.classList.add('selected');
+    Color.unhighlight(layerElement);
+    Color.highlight(layerElement, '#d00');
+    dragHandler.dragInit();
+  }
+}
+
+/**
  * Handle selecting an array of elements based on the selection type.
  */
 export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: NeonView, dragHandler: DragHandler): Promise<void> {
@@ -276,6 +293,9 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       break;
     case 'selByBBox':
       selectionClass = '.sylTextRect-display';
+      break;
+    case 'selByLayerElement':
+      selectionClass = '.accid';
       break;
     default:
       console.error('Unknown selection type ' + selectionType);
@@ -343,6 +363,10 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
         default:
           SelectOptions.triggerStaffActions();
       }
+      break;
+
+    case 'selByLayerElement':
+      SelectOptions.triggerLayerElementActions();
       break;
 
     case 'selBySyl':
