@@ -125,6 +125,7 @@ export function initSelectionButtons () {
   const selByNeume = document.getElementById('selByNeume');
   const selByNc = document.getElementById('selByNc');
   const selByStaff = document.getElementById('selByStaff');
+  const selByLayerElement = document.getElementById('selByLayerElement');
 
   selBySyl.addEventListener('click', selectBySylHandler);
   document.body.addEventListener('keydown', (evt) => {
@@ -154,6 +155,13 @@ export function initSelectionButtons () {
     }
   });
 
+  selByLayerElement.addEventListener('click', selByLayerElementHandler);
+  document.body.addEventListener('keydown', (evt) => {
+    if (evt.key === '5') {
+      selByLayerElementHandler();
+    }
+  });
+
   function selectBySylHandler () {
     if (!selBySyl.classList.contains('is-active')) {
       unselect();
@@ -164,6 +172,7 @@ export function initSelectionButtons () {
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');
       selByStaff.classList.remove('is-active');
+      selByLayerElement.classList.remove('is-active');
       try {
         document.getElementById('selByBBox').classList.remove('is-active');
       } catch (e) {}
@@ -185,6 +194,7 @@ export function initSelectionButtons () {
       selByNc.classList.remove('is-active');
       selBySyl.classList.remove('is-active');
       selByStaff.classList.remove('is-active');
+      selByLayerElement.classList.remove('is-active');
       try {
         document.getElementById('selByBBox').classList.remove('is-active');
       } catch (e) {}
@@ -206,6 +216,7 @@ export function initSelectionButtons () {
       selByNeume.classList.remove('is-active');
       selBySyl.classList.remove('is-active');
       selByStaff.classList.remove('is-active');
+      selByLayerElement.classList.remove('is-active');
       try {
         document.getElementById('selByBBox').classList.remove('is-active');
       } catch (e) {}
@@ -227,12 +238,35 @@ export function initSelectionButtons () {
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');
       selBySyl.classList.remove('is-active');
+      selByLayerElement.classList.remove('is-active');
       try {
         document.getElementById('selByBBox').classList.remove('is-active');
       } catch (e) {}
       try {
         if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
           setGroupingHighlight('staff');
+        }
+      } catch (e) {}
+    }
+  }
+
+  function selByLayerElementHandler () {
+    if (!selByLayerElement.classList.contains('is-active')) {
+      unselect();
+      document.getElementById('moreEdit').innerHTML = '';
+      document.getElementById('extraEdit').innerHTML = '';
+      document.getElementById('extraEdit').classList.add('is-invisible');
+      selByLayerElement.classList.add('is-active');
+      selByNeume.classList.remove('is-active');
+      selByNc.classList.remove('is-active');
+      selByStaff.classList.remove('is-active');
+      selBySyl.classList.remove('is-active');
+      try {
+        document.getElementById('selByBBox').classList.remove('is-active');
+      } catch (e) {}
+      try {
+        if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
+          setGroupingHighlight('layer');
         }
       } catch (e) {}
     }
