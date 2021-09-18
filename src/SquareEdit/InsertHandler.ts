@@ -36,9 +36,22 @@ class InsertHandler {
         break;
       case 'diamond':
         this.type = 'nc';
-        this.attributes = { 'tilt': 'se' };
+        this.attributes = { 'tilt': 'se'};
         break;
       case 'virga':
+        this.type = 'nc';
+        this.attributes = { 'tilt': 's'};
+        break;
+      //there are multiple possible liquescent combinations
+      case 'liquescentA':
+        this.type = 'nc';
+        this.attributes = { 'curve': 'a'};
+        break;
+      case 'liquescentC':
+        this.type = 'nc';
+        this.attributes = { 'curve': 'c'};
+        break;
+      case 'virgaReversed':
         this.type = 'nc';
         this.attributes = { 'tilt': 'n' };
         break;

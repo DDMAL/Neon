@@ -3,6 +3,7 @@
 import NeonView from './NeonView';
 import { InfoInterface } from './Interfaces';
 import { Attributes } from './Types';
+import { quickselect } from 'd3-array';
 
 /**
  * Map of contours to neume names.
@@ -119,7 +120,7 @@ class InfoModule implements InfoInterface {
     }
 
     const element = document.getElementById(id);
-    const classRe = /neume|nc|clef|custos|staff|accid/;
+    const classRe = /neume|nc|clef|custos|staff|liquescent|accid/;
     const elementClass = element.getAttribute('class').match(classRe)[0];
     let body = '';
     let attributes: Attributes;
@@ -129,7 +130,39 @@ class InfoModule implements InfoInterface {
       case 'neume':
         // Select neume components of selected neume
         const ncs = element.querySelectorAll('.nc') as NodeListOf<SVGGraphicsElement>;
+        if (ncs.length === 1){
+          const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
+          if (attr.curve === 'a' || attr.curve === 'c'){
+            let pitches = await this.getPitches(ncs);
+
+            pitches = pitches.trim().toUpperCase();
+            body = 'Shape: Liquescent' + '\r\n' +
+                    'Pitch(es): ' + pitches;
+            break;
+          }
+
+        }
+
         let contour = await this.getContour(ncs);
+        if (ncs.length === 1){
+          const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
+          if(attr.tilt === 's'){
+            let pitches = await this.getPitches(ncs);
+
+            pitches = pitches.trim().toUpperCase();
+            body = 'Shape: Virga \r\n'  +
+                    'Pitch(es): ' + pitches;
+            break;
+          }
+          else if(attr.tilt === 'n'){
+            let pitches = await this.getPitches(ncs);
+
+            pitches = pitches.trim().toUpperCase();
+            body = 'Shape: Reversed Virga \r\n'  +
+                    'Pitch(es): ' + pitches;
+            break;
+          }
+        }
         if (contour === 'Clivis') {
           const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
           if (attr.ligated) {

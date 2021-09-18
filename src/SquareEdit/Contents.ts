@@ -22,6 +22,11 @@ export const insertTabHtml: Record<string, string> = {
         '<button id=\'flat\' class=\'button insertel smallel\' aria-label=\'Flat\' title=\'Flat\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/accidFlat.png' + '\' class=\'image\'/></button></p>'+
         '<p class=\'control\'>' +
         '<button id=\'natural\' class=\'button insertel smallel\' aria-label=\'Natural\' title=\'Natural\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/accidNatural.png' + '\' class=\'image\'/></button></p>',
+        '<button id=\'liquescentA\' class=\'button insertel smallel\' aria-label=\'Liquescent A\' title=\'Liquescent A\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/liquescentA.png' + '\' class=\'image\'/></button></p>'+
+        '<p class=\'control\'>' +
+        '<button id=\'liquescentC\' class=\'button insertel smallel\' aria-label=\'Liquescent C\' title=\'Liquescent C\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/liquescentC.png' + '\' class=\'image\'/></button></p>'+
+        '<p class=\'control\'>' +
+        '<button id=\'virgaReversed\' class=\'button insertel smallel\' aria-label=\'Reversed Virga\' title=\'Reversed Virga\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/virga_reversed.png' + '\' class=\'image\'/></button></p>' ,
   groupingTab: '<p class=\'control\'>' +
         '<button id=\'pes\' class=\'button insertel smallel\' aria-label=\'pes\' title=\'pes\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/pes.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
@@ -109,7 +114,10 @@ export const ncActionContents: string =
         '<div class=\'dropdown-menu\' id=\'dropdown-menu\' role=\'menu\'>' +
         '<div class=\'dropdown-content\'>' +
         '<a id=\'Punctum\' class=\'dropdown-item\'>Punctum</a>' +
-        '<a id=\'Virga\' class=\'dropdown-item\'>Virga</a>' +
+        '<a id=\'Virga\' class=\'dropdown-item\'>Virga</a>' + 
+        '<a id=\'VirgaReversed\' class=\'dropdown-item\'>Reversed Virga</a>' +
+        '<a id=\'LiquescentClockwise\' class=\'dropdown-item\'>Liquescent C</a>' +
+        '<a id=\'LiquescentAnticlockwise\' class=\'dropdown-item\'>Liquescent A</a>' +
         '<a id=\'Inclinatum\' class=\'dropdown-item\'>Inclinatum</a></div></div></div>' +
         '<p class=\'control\'></p></div>';
 
