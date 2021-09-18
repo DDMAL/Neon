@@ -1,7 +1,7 @@
 /** @module utils/Select */
 
 import {
-  unselect, getStaffBBox, selectStaff, selectAll, getSelectionType
+  unselect, getStaffBBox, selectStaff, selectLayerElement,selectAll, getSelectionType
 } from './SelectTools';
 import { resize } from './Resize';
 import NeonView from '../NeonView';
@@ -134,6 +134,9 @@ function clickHandler (evt: MouseEvent): void {
             break;
           case 'selByNc':
             mode = '.nc';
+            break;
+          case 'selByLayerElement':
+            mode = '.accid';
             break;
           default:
             mode = '.syllable';

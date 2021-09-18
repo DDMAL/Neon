@@ -7,6 +7,8 @@ export const insertTabHtml: Record<string, string> = {
         '<p class=\'control\'>' +
         '<button id=\'virga\' class=\'button insertel smallel\' aria-label=\'virga\' title=\'virga\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/virga.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
+        '<button id=\'virgaReversed\' class=\'button insertel smallel\' aria-label=\'Reversed Virga\' title=\'Reversed Virga\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/virga_reversed.png' + '\' class=\'image\'/></button></p>' +
+        '<p class=\'control\'>' +
         '<button id=\'diamond\' class=\'button insertel smallel\' aria-label=\'inclinatum\' title=\'inclinatum\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/diamond.png' + '\' class=\'image\'/></button></p>' +
   /*  "<p class='control'>" +
         "<button id='white_punct' class='button insertel smallel' title='white punctum'><img src='" + White__ASSET_PREFIX__ + 'assets/img/punctum.png' + "' class='image'/></button></p>" +
@@ -23,7 +25,9 @@ export const insertTabHtml: Record<string, string> = {
         '<p class=\'control\'>' +
         '<button id=\'liquescentC\' class=\'button insertel smallel\' aria-label=\'Liquescent C\' title=\'Liquescent C\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/liquescentC.png' + '\' class=\'image\'/></button></p>'+
         '<p class=\'control\'>' +
-        '<button id=\'virgaReversed\' class=\'button insertel smallel\' aria-label=\'Reversed Virga\' title=\'Reversed Virga\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/virga_reversed.png' + '\' class=\'image\'/></button></p>' ,
+        '<button id=\'flat\' class=\'button insertel smallel\' aria-label=\'Flat\' title=\'Flat\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/accidFlat.png' + '\' class=\'image\'/></button></p>'+
+        '<p class=\'control\'>' +
+        '<button id=\'natural\' class=\'button insertel smallel\' aria-label=\'Natural\' title=\'Natural\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/accidNatural.png' + '\' class=\'image\'/></button></p>',
   groupingTab: '<p class=\'control\'>' +
         '<button id=\'pes\' class=\'button insertel smallel\' aria-label=\'pes\' title=\'pes\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/pes.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
@@ -83,7 +87,9 @@ export const editControlsPanel: string =
     '<p class=\'control\'>' +
     '<button class=\'button sel-by\' id=\'selByNc\'>Neume Component</button></p>' +
     '<p class=\'control\'>' +
-    '<button class=\'button sel-by\' id=\'selByStaff\'>Staff</button></p></div></a>' +
+    '<button class=\'button sel-by\' id=\'selByStaff\'>Staff</button></p>' +
+    '<p class=\'control\'>' +
+    '<button class=\'button sel-by\' id=\'selByLayerElement\'>Layer Element</button></p></div></a>' +
     '<div class=\'field is-grouped buttons\'>' +
     '<p class=\'control\'>' +
     '<a id=\'moreEdit\' class=\'panel-block is-invisible\'>' +

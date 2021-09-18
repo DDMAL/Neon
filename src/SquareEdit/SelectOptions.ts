@@ -104,6 +104,9 @@ export function removeHandler (): void {
     if (elem.classList.contains('syl')) {
       elem = elem.closest('.syllable');
     }
+    if (elem.classList.contains('accid')) {
+      elem = elem.closest('.accid');
+    }
     toRemove.push(
       {
         'action': 'remove',
@@ -143,6 +146,27 @@ export function changeStaffHandler(): void {
   };
   endOptionsSelection();
   neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then(() => { neonView.updateForCurrentPage(); });
+}
+
+/**
+ * Trigger the extra layer element action menu for a selection.
+ */
+ export function triggerLayerElementActions (): void {
+  endOptionsSelection();
+  try {
+    const moreEdit = document.getElementById('moreEdit');
+    moreEdit.classList.remove('is-invisible');
+    moreEdit.innerHTML = Contents.defaultActionContents;
+  } catch (e) {}
+
+  try {
+    const del = document.getElementById('delete');
+    del.removeEventListener('click', removeHandler);
+    del.addEventListener('click', removeHandler);
+  } catch (e) {}
+  document.body.addEventListener('keydown', deleteButtonHandler);
+
+  initOptionsListeners();
 }
 
 /**

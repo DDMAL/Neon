@@ -81,6 +81,14 @@ class InsertHandler {
         this.type = 'staff';
         this.attributes = null;
         break;
+      case 'flat':
+        this.type = 'accid';
+        this.attributes = { 'accid': 'f' };
+        break;
+      case 'natural':
+        this.type = 'accid';
+        this.attributes = { 'accid': 'n' };
+        break;
       default:
         this.type = '';
         this.attributes = null;

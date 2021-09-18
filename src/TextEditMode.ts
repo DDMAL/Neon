@@ -28,6 +28,7 @@ function selBySylListener (): void {
       document.getElementById('selByNeume').classList.remove('is-active');
       document.getElementById('selByStaff').classList.remove('is-active');
       document.getElementById('selBySyl').classList.remove('is-active');
+      document.getElementById('selByLayerElement').classList.remove('is-active');
     } catch (e) {}
     try {
       if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
@@ -108,7 +109,7 @@ export default class TextEditMode implements TextEditInterface {
       block.appendChild(p);
       button.addEventListener('click', selBySylListener.bind(this));
       document.body.addEventListener('keydown', (evt) => {
-        if (evt.key === '5') {
+        if (evt.key === '6') {
           if (document.getElementById('selByBBox').style.display === '') {
             selBySylListener.bind(this)();
           }
