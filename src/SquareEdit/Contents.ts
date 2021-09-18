@@ -21,7 +21,8 @@ export const insertTabHtml: Record<string, string> = {
         '<p class=\'control\'>' +
         '<button id=\'flat\' class=\'button insertel smallel\' aria-label=\'Flat\' title=\'Flat\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/accidFlat.png' + '\' class=\'image\'/></button></p>'+
         '<p class=\'control\'>' +
-        '<button id=\'natural\' class=\'button insertel smallel\' aria-label=\'Natural\' title=\'Natural\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/accidNatural.png' + '\' class=\'image\'/></button></p>',
+        '<button id=\'natural\' class=\'button insertel smallel\' aria-label=\'Natural\' title=\'Natural\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/accidNatural.png' + '\' class=\'image\'/></button></p>'+
+        '<p class=\'control\'>' +
         '<button id=\'liquescentA\' class=\'button insertel smallel\' aria-label=\'Liquescent A\' title=\'Liquescent A\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/liquescentA.png' + '\' class=\'image\'/></button></p>'+
         '<p class=\'control\'>' +
         '<button id=\'liquescentC\' class=\'button insertel smallel\' aria-label=\'Liquescent C\' title=\'Liquescent C\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/liquescentC.png' + '\' class=\'image\'/></button></p>'+
