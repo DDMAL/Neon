@@ -403,7 +403,7 @@ export function triggerSylActions (): void {
     moreEdit.classList.remove('is-invisible');
     moreEdit.innerHTML =
       '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'mergeSyls\'>Merge Syllables</button>' +
+        '<button class=\'button\' id=\'mergeSyls\'>Merge Syllables</button></p></div>' +
       '<div><p class=\'control\'>' +
           '<button class=\'button\' id=\'ungroupNeumes\'>Ungroup</button></p></div>' +
       '<div><p class=\'control\'>' +
