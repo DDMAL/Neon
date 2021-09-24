@@ -120,8 +120,9 @@ export function highlight(staff: SVGGElement, color: string): void {
       rects.forEach(function (rect: HTMLElement) {
         if (!(rect.closest('.syllable').classList.contains('selected') ||
           rect.closest('.syl').classList.contains('selected') ||
-          rect.closest('.staff').classList.contains('selected') ||
-          rect.closest('.accid').classList.contains('selected'))) {
+          rect.closest('.staff').classList.contains('selected')
+          // rect.closest('.accid').classList.contains('selected')
+          )) {
           rect.style.fill = color;
           rect.classList.add('highlighted');
         }
@@ -200,8 +201,9 @@ export function setGroupingHighlight(grouping: string): void {
       rects.forEach(function (rect) {
         if (rect.closest('.syl').classList.contains('selected') ||
           rect.closest('.syllable').classList.contains('selected') ||
-          rect.closest('.staff').classList.contains('selected') ||
-          rect.closest('.accid').classList.contains('selected')) {
+          rect.closest('.staff').classList.contains('selected')
+          // rect.closest('.accid').classList.contains('selected')
+        ) {
           return;
         }
         rect.style.fill = groupColor;
