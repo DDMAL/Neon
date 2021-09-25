@@ -10,8 +10,8 @@ import { quickselect } from 'd3-array';
  */
 const neumeGroups = new Map(
   [['', 'Punctum'], ['u', 'Pes'], ['d', 'Clivis'], ['uu', 'Scandicus'], ['ud', 'Torculus'], ['du', 'Porrectus'], ['s', 'Distropha'], ['ss', 'Tristopha'],
-    ['sd', 'Pressus'], ['dd', 'Climacus'], ['ddu', 'Climacus resupinus'], ['udu', 'Torculus resupinus'], ['dud', 'Porrectus flexus'],
-    ['udd', 'Pes subpunctis'], ['uud', 'Scandicus flexus'], ['uudd', 'Scandicus subpunctis'], ['dudd', 'Porrectus subpunctis']]
+    ['sd', 'Pressus'], ['dd', 'Climacus'], ['ddu', 'ClimacusResupinus'], ['udu', 'TorculusResupinus'], ['dud', 'PorrectusFlexus'],
+    ['udd', 'PesSubpunctis'], ['uud', 'ScandicusFlexus'], ['uudd', 'ScandicusSubpunctis'], ['dudd', 'PorrectusSubpunctis']]
 );
 
 function startInfoVisibility (): void {

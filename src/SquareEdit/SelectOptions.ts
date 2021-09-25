@@ -363,11 +363,11 @@ export function triggerNeumeActions (): void {
     const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
     triggerChangeGroup(contour); 
   }); 
-  // document.querySelector('#Pes subpunctis.dropdown-item')
-  // .addEventListener('click', (e) => {
-  //   const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-  //   triggerChangeGroup(contour); 
-  // }); 
+  document.querySelector('#PesSubpunctis.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
   document.querySelector('#Clivis.dropdown-item')
   .addEventListener('click', (e) => {
     const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
