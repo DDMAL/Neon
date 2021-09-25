@@ -295,6 +295,7 @@ class InfoModule implements InfoInterface {
    * @returns Best guess name of the neume shape.
    */
   getContourByValue (value: string): string {
+    
     for (const [cont, v] of neumeGroups.entries()) {
       if (v === value) {
         return cont;
