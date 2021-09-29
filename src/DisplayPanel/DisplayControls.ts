@@ -166,6 +166,7 @@ export function setHighlightControls (): void {
   const highlightStaff = document.getElementById('highlight-staff');
   const highlightSyllable = document.getElementById('highlight-syllable');
   const highlightNeume = document.getElementById('highlight-neume');
+  const highlightLayerElement = document.getElementById('highlight-layerElement');
   const highlightNone = document.getElementById('highlight-none');
   const highlightType = document.getElementById('highlight-type');
 
@@ -200,6 +201,15 @@ export function setHighlightControls (): void {
         highlightNeume.classList.add('highlight-selected');
         highlightType.textContent = ' - Neume';
         Color.setGroupingHighlight('neume');
+      });
+      highlightLayerElement.addEventListener('click', () => {
+        highlightDropdown.classList.remove('is-active');
+        document.querySelectorAll('.highlight-selected').forEach(elem => {
+          elem.classList.remove('highlight-selected');
+        });
+        highlightLayerElement.classList.add('highlight-selected');
+        highlightType.textContent = ' - LayerElement';
+        Color.setGroupingHighlight('accid');
       });
       highlightNone.addEventListener('click', () => {
         highlightDropdown.classList.remove('is-active');
@@ -247,6 +257,9 @@ export function updateHighlight (): void {
       break;
     case 'highlight-neume':
       Color.setGroupingHighlight('neume');
+      break;
+    case 'highlight-layerElement':
+      Color.setGroupingHighlight('accid');
       break;
     case 'highlight-selection':
       Color.setGroupingHighlight('selection');
