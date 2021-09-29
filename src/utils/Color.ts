@@ -40,7 +40,9 @@ export function unhighlight(staff?: SVGGElement): void {
       rects.forEach(function (rect: HTMLElement) {
         if (rect.closest('.syllable').classList.contains('selected') ||
           rect.closest('.staff').classList.contains('selected') ||
-          rect.closest('.syl').classList.contains('selected')) {
+          rect.closest('.syl').classList.contains('selected')
+          // rect.closest('.layer').classList.contains('selected')
+          ){
           rect.style.fill = 'red';
         } else {
           rect.style.fill = 'blue';
@@ -75,7 +77,9 @@ export function unsetGroupingHighlight(): void {
       }
     }
     rects.forEach(function (rect: HTMLElement) {
-      if (rect.closest('.syllable').classList.contains('selected') || rect.closest('.syl').classList.contains('selected')) {
+      if (rect.closest('.syllable').classList.contains('selected') || 
+      rect.closest('.syl').classList.contains('selected')
+      ){
         rect.style.fill = 'red';
       } else {
         rect.style.fill = 'blue';
@@ -121,7 +125,7 @@ export function highlight(staff: SVGGElement, color: string): void {
         if (!(rect.closest('.syllable').classList.contains('selected') ||
           rect.closest('.syl').classList.contains('selected') ||
           rect.closest('.staff').classList.contains('selected')
-          // rect.closest('.accid').classList.contains('selected')
+          // rect.closest('.layer').classList.contains('selected')
           )) {
           rect.style.fill = color;
           rect.classList.add('highlighted');
@@ -165,7 +169,7 @@ export function setStaffHighlight(): void {
 
 /**
  * Set a highlight by a different grouping.
- * @param grouping - Either "staff", "syllable", or "neume".
+ * @param grouping - Either "staff", "syllable", "neume", or "layer".
  */
 export function setGroupingHighlight(grouping: string): void {
   unsetGroupingHighlight();
@@ -183,7 +187,9 @@ export function setGroupingHighlight(grouping: string): void {
         grouping = 'staff';
         break;
       case 'selByLayerElement':
-        grouping = 'accid'
+        grouping = 'accid';
+        break;
+      case 'selByNeume':
       default:
         grouping = 'neume';
         break;
@@ -202,7 +208,7 @@ export function setGroupingHighlight(grouping: string): void {
         if (rect.closest('.syl').classList.contains('selected') ||
           rect.closest('.syllable').classList.contains('selected') ||
           rect.closest('.staff').classList.contains('selected')
-          // rect.closest('.accid').classList.contains('selected')
+          // rect.closest('.layer').classList.contains('selected')
         ) {
           return;
         }
