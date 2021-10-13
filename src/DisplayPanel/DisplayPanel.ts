@@ -33,7 +33,8 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
   '</svg></button></div><div class=\'dropdown-menu\' id=\'highlight-menu\' role=\'menu\'>' +
   '<div class=\'dropdown-content\'><a aria-role=\'menuitem\' class=\'dropdown-item\' id=\'highlight-staff\'>Staff</a>' +
   '<a aria-role=\'menuitem\' class=\'dropdown-item\' id=\'highlight-syllable\'>Syllable</a>' +
-  '<a aria-role=\'menuitem\' class=\'dropdown-item\' id=\'highlight-neume\'>Neume</a><hr class=\'dropdown-divider\'/>' +
+  '<a aria-role=\'menuitem\' class=\'dropdown-item\' id=\'highlight-neume\'>Neume</a>' +
+  '<a aria-role=\'menuitem\' class=\'dropdown-item\' id=\'highlight-layerElement\'>LayerElement</a><hr class=\'dropdown-divider\'/>' +
   '<a aria-role=\'menuitem\' class=\'dropdown-item\' id=\'highlight-none\'>None</a></div></div></div></div></div>';
   return contents;
 }
