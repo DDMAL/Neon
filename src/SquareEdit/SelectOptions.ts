@@ -352,17 +352,82 @@ export function triggerNeumeActions (): void {
     extraEdit.classList.remove('is-invisible');
     extraEdit.innerHTML = Contents.neumeActionContents;
   } catch (e) {}
-  const neume = document.querySelectorAll('.selected');
+    const neume = document.querySelectorAll('.selected');
   if (neume.length !== 1) {
     console.warn('More than one neume selected! Cannot trigger Neume ClickSelect actions.');
     return;
   }
 
-  document.querySelector('.grouping')
-    .addEventListener('click', (e) => {
-      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-      triggerChangeGroup(contour);
-    });
+  document.querySelector('#Pes.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
+  document.querySelector('#PesSubpunctis.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
+  document.querySelector('#Clivis.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
+  document.querySelector('#Scandicus.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
+  document.querySelector('#ScandicusFlexus.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
+  document.querySelector('#ScandicusSubpunctis.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
+  document.querySelector('#Climacus.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
+  document.querySelector('#ClimacusResupinus.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
+  document.querySelector('#Torculus.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
+  document.querySelector('#TorculusResupinus.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
+  document.querySelector('#Porrectus.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
+  document.querySelector('#PorrectusFlexus.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
+  document.querySelector('#PorrectusSubpunctis.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
+  document.querySelector('#Pressus.dropdown-item')
+  .addEventListener('click', (e) => {
+    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+    triggerChangeGroup(contour); 
+  }); 
 
   function triggerChangeGroup (contour): void {
     const changeGroupingAction: EditorAction = {
