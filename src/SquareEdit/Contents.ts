@@ -23,7 +23,9 @@ export const insertTabHtml: Record<string, string> = {
         '<p class=\'control\'>' +
         '<button id=\'liquescentC\' class=\'button insertel smallel\' aria-label=\'Liquescent C\' title=\'Liquescent C\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/liquescentC.png' + '\' class=\'image\'/></button></p>'+
         '<p class=\'control\'>' +
-        '<button id=\'virgaReversed\' class=\'button insertel smallel\' aria-label=\'Reversed Virga\' title=\'Reversed Virga\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/virga_reversed.png' + '\' class=\'image\'/></button></p>' ,
+        '<button id=\'virgaReversed\' class=\'button insertel smallel\' aria-label=\'Reversed Virga\' title=\'Reversed Virga\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/virga_reversed.png' + '\' class=\'image\'/></button></p>'+
+        '<p class=\'control\'>' +
+        '<button id=\'divLine\' class=\'button insertel smallel\' aria-label=\'DivLine\' title=\'DivLine\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/divisio.png' + '\' class=\'image\'/></button></p>' ,
   groupingTab: '<p class=\'control\'>' +
         '<button id=\'pes\' class=\'button insertel smallel\' aria-label=\'pes\' title=\'pes\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/pes.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
