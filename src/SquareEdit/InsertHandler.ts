@@ -77,6 +77,10 @@ class InsertHandler {
         this.type = 'custos';
         this.attributes = null;
         break;
+      case 'divline':
+        this.type = 'divline';
+        this.attributes = null;
+        break;
       case 'staff':
         this.type = 'staff';
         this.attributes = null;

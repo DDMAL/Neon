@@ -144,7 +144,7 @@ export function highlight (staff: SVGGElement, color: string): void {
   else {
     stroke = '30px';
   }
-  staff.querySelectorAll('.nc, .custos, .clef').forEach(el => {
+  staff.querySelectorAll('.nc, .custos, .clef, .divline').forEach(el => {
     el.setAttribute('stroke', 'black');
     el.setAttribute('stroke-width', stroke);
   });
@@ -215,7 +215,7 @@ export function setGroupingHighlight (grouping: string): void {
       groups[i].classList.remove('highlighted');
     }
   }
-  document.querySelectorAll('.nc, .custos, .clef').forEach(el => {
+  document.querySelectorAll('.nc, .custos, .clef, .divline').forEach(el => {
     el.setAttribute('stroke', 'black');
     el.setAttribute('stroke-width', '30px');
   });
