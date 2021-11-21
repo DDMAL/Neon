@@ -324,7 +324,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     } else if (groupsToSelect.size === 1 && groups[0].classList.contains('custos')) {
       SelectOptions.triggerCustosActions();
     } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divline')) {
-      SelectOptions.triggerDefaultActions();
+      SelectOptions.triggerDivLineActions();
     }else {
       if (selectionType == 'selBySyl') {
         SelectOptions.triggerDefaultSylActions();

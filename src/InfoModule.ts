@@ -186,7 +186,7 @@ class InfoModule implements InfoInterface {
         break;
       case 'divline':
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
-        body += 'DivLine form: '+ attributes['form'];
+        body += 'DivLine type: ' + attributes['form'];
         break;
       default:
         body += 'nothing';
