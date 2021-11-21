@@ -489,30 +489,6 @@ export function triggerCustosActions (): void {
 }
 
 /**
- * Trigger extra divline actions.
- */
- export function triggerDivLineActions (): void {
-  endOptionsSelection();
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML += Contents.divlineActionContents;
-  } catch (e) {}
-
-  try {
-    document.getElementById('changeStaff')
-      .addEventListener('click', changeStaffHandler);
-  } catch (e) {console.debug(e);}
-
-  try {
-    const del = document.getElementById('delete');
-    del.removeEventListener('click', removeHandler);
-    del.addEventListener('click', removeHandler);
-    document.body.addEventListener('keydown', deleteButtonHandler);
-  } catch (e) {}
-}
-
-/**
  * Trigger extra staff actions.
  */
 export function triggerStaffActions (): void {
