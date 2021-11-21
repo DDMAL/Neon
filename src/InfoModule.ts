@@ -79,7 +79,7 @@ class InfoModule implements InfoInterface {
   infoListeners (): void {
     try {
       document.getElementsByClassName('active-page')[0]
-        .querySelectorAll('.neume,.custos,.clef,.accid')
+        .querySelectorAll('.neume,.custos,.clef,.accid,.divline')
         .forEach(node => {
           node.addEventListener('mouseover', this.updateInfo.bind(this));
         });
@@ -90,7 +90,7 @@ class InfoModule implements InfoInterface {
    * Stop listeners for the InfoModule.
    */
   stopListeners (): void {
-    document.querySelectorAll('.neume,.custos,.clef,.accid').forEach(node => {
+    document.querySelectorAll('.neume,.custos,.clef,.accid,.divline').forEach(node => {
       node.removeEventListener('mouseover', this.updateInfo.bind(this));
     });
   }
@@ -120,7 +120,7 @@ class InfoModule implements InfoInterface {
     }
 
     const element = document.getElementById(id);
-    const classRe = /neume|nc|clef|custos|staff|liquescent|accid/;
+    const classRe = /neume|nc|clef|custos|staff|liquescent|accid|divline/;
     const elementClass = element.getAttribute('class').match(classRe)[0];
     let body = '';
     let attributes: Attributes;
@@ -194,6 +194,10 @@ class InfoModule implements InfoInterface {
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         body += 'Shape: ' + attributes['shape'] + '\r\n' +
                 'Line: ' + attributes['line'];
+        break;
+      case 'divline':
+        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
+        body += 'DivLine type: ' + attributes['form'];
         break;
       default:
         body += 'nothing';

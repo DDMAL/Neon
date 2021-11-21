@@ -1,6 +1,6 @@
 /** Type definitions for Neon */
 
-export type Attributes = { pname?: string; oct?: number; shape?: string; line?: number; ligated?: boolean; curve?: string; tilt?: string };
+export type Attributes = { pname?: string; oct?: number; shape?: string; line?: number; ligated?: boolean; curve?: string; tilt?: string; form?: string };
 
 /** An editing action sent to verovio as described [here](https://github.com/DDMAL/Neon/wiki/Toolkit-Actions). */
 export type EditorAction = {

@@ -28,6 +28,9 @@ export const insertTabHtml: Record<string, string> = {
         '<button id=\'flat\' class=\'button insertel smallel\' aria-label=\'Flat\' title=\'Flat\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/accidFlat.png' + '\' class=\'image\'/></button></p>'+
         '<p class=\'control\'>' +
         '<button id=\'natural\' class=\'button insertel smallel\' aria-label=\'Natural\' title=\'Natural\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/accidNatural.png' + '\' class=\'image\'/></button></p>',
+        '<button id=\'virgaReversed\' class=\'button insertel smallel\' aria-label=\'Reversed Virga\' title=\'Reversed Virga\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/virga_reversed.png' + '\' class=\'image\'/></button></p>'+
+        '<p class=\'control\'>' +
+        '<button id=\'divlineMaxima\' class=\'button insertel smallel\' aria-label=\'DivLine Maxima\' title=\'DivLine Maxima\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/divisio.png' + '\' class=\'image\'/></button></p>' ,
   groupingTab: '<p class=\'control\'>' +
         '<button id=\'pes\' class=\'button insertel smallel\' aria-label=\'pes\' title=\'pes\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/pes.png' + '\' class=\'image\'/></button></p>' +
         '<p class=\'control\'>' +
@@ -184,6 +187,14 @@ export const custosActionContents: string =
     '<div><p class=\'control\'>' +
     '<button class=\'button\' id=\'delete\'>Delete</button>' +
     '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
+
+/**
+ * Contents of divline action menu.
+ */
+export const divlineActionContents: string =
+'<div><p class=\'control\'>' +
+'<button class=\'button\' id=\'delete\'>Delete</button>' +
+'<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
 
 /**
  * Contents of split action menu.
