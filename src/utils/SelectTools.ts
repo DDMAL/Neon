@@ -309,7 +309,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     let grouping = element.closest(selectionClass);
     if (grouping === null) {
       // Check if we click-selected a clef or a custos or an accid or a divline
-      grouping = element.closest('.clef, .custos, .divline');
+      grouping = element.closest('.clef, .custos, .accid, .divline');
       if (grouping === null) {
         console.warn('Element ' + element.id + ' is not part of specified group and is not a clef or custos or accid or divline.');
         continue;
@@ -343,8 +343,10 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       SelectOptions.triggerClefActions(groups[0]);
     } else if (groupsToSelect.size === 1 && groups[0].classList.contains('custos')) {
       SelectOptions.triggerCustosActions();
+    } else if (groupsToSelect.size === 1 && groups[0].classList.contains('accid')) {
+      SelectOptions.triggerAccidOrDivLineActions();
     } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divline')) {
-      SelectOptions.triggerDivLineActions();
+      SelectOptions.triggerAccidOrDivLineActions();
     }else {
       if (selectionType == 'selBySyl') {
         SelectOptions.triggerDefaultSylActions();

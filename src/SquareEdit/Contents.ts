@@ -190,9 +190,9 @@ export const custosActionContents: string =
     '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
 
 /**
- * Contents of divline action menu.
+ * Contents of accid or divline action menu.
  */
-export const divlineActionContents: string =
+export const accidOrDivlineActionContents: string =
 '<div><p class=\'control\'>' +
 '<button class=\'button\' id=\'delete\'>Delete</button>' +
 '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
