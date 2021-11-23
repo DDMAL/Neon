@@ -107,6 +107,9 @@ export function removeHandler (): void {
     if (elem.classList.contains('accid')) {
       elem = elem.closest('.accid');
     }
+    if (elem.classList.contains('divline')) {
+      elem = elem.closest('.divline');
+    }
     toRemove.push(
       {
         'action': 'remove',
@@ -580,14 +583,14 @@ export function triggerCustosActions (): void {
 }
 
 /**
- * Trigger extra divline actions.
+ * Trigger extra accid or divline actions.
  */
- export function triggerDivLineActions (): void {
+ export function triggerAccidOrDivLineActions (): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML += Contents.divlineActionContents;
+    moreEdit.innerHTML += Contents.accidOrDivlineActionContents;
   } catch (e) {}
 
   try {

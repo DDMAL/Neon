@@ -77,7 +77,7 @@ class InsertHandler {
         this.type = 'custos';
         this.attributes = null;
         break;
-        case 'divlineMaxima':
+      case 'divlineMaxima':
         this.type = 'divline';
         this.attributes = { 'form': 'maxima' };
         break;
