@@ -308,10 +308,10 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
   for (const element of elements) {
     let grouping = element.closest(selectionClass);
     if (grouping === null) {
-      // Check if we click-selected a clef or a custos or an accid or a divline
-      grouping = element.closest('.clef, .custos, .accid, .divline');
+      // Check if we click-selected a clef or a custos or an accid or a divLine
+      grouping = element.closest('.clef, .custos, .accid, .divLine');
       if (grouping === null) {
-        console.warn('Element ' + element.id + ' is not part of specified group and is not a clef or custos or accid or divline.');
+        console.warn('Element ' + element.id + ' is not part of specified group and is not a clef or custos or accid or divLine.');
         continue;
       }
       containsClefOrCustosOrAccidOrDivLine = containsClefOrCustosOrAccidOrDivLine || true;
@@ -336,7 +336,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
 
   const groups = Array.from(groupsToSelect.values()) as SVGGraphicsElement[];
 
-  // Handle occurance of clef or custos or accid or divline
+  // Handle occurance of clef or custos or accid or divLine
   if (containsClefOrCustosOrAccidOrDivLine) {
     // A context menu will only be displayed if there is a single clef
     if (groupsToSelect.size === 1 && groups[0].classList.contains('clef')) {
@@ -345,7 +345,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       SelectOptions.triggerCustosActions();
     } else if (groupsToSelect.size === 1 && groups[0].classList.contains('accid')) {
       SelectOptions.triggerAccidOrDivLineActions();
-    } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divline')) {
+    } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divLine')) {
       SelectOptions.triggerAccidOrDivLineActions();
     }else {
       if (selectionType == 'selBySyl') {
