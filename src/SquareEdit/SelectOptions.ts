@@ -107,8 +107,8 @@ export function removeHandler (): void {
     if (elem.classList.contains('accid')) {
       elem = elem.closest('.accid');
     }
-    if (elem.classList.contains('divline')) {
-      elem = elem.closest('.divline');
+    if (elem.classList.contains('divLine')) {
+      elem = elem.closest('.divLine');
     }
     toRemove.push(
       {
@@ -583,7 +583,7 @@ export function triggerCustosActions (): void {
 }
 
 /**
- * Trigger extra accid or divline actions.
+ * Trigger extra accid or divLine actions.
  */
  export function triggerAccidOrDivLineActions (): void {
   endOptionsSelection();
