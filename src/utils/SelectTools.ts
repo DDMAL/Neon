@@ -247,6 +247,7 @@ export function selectStaff (staff: SVGGElement, dragHandler: DragHandler): void
     staff.classList.add('selected');
     Color.unhighlight(staff);
     Color.highlight(staff, '#d00');
+    SelectOptions.triggerSplitActions();
     dragHandler.dragInit();
   }
 }
