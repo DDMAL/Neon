@@ -481,9 +481,9 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
                 }
 
                 // Also ensure both components are marked or not marked as ligatures.
-                const isFirstLigature = await isLigature(groups[0], neonView);
-                const isSecondLigature = await isLigature(groups[1], neonView);
-                if ((posSecondY > posFirstY) && !(isFirstLigature !== isSecondLigature)) {
+                // const isFirstLigature = await isLigature(groups[0], neonView);
+                // const isSecondLigature = await isLigature(groups[1], neonView);
+                if (posSecondY > posFirstY) {
                   Grouping.triggerGrouping('ligature');
                   break;
                 }
