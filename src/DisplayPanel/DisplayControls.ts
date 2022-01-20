@@ -209,7 +209,7 @@ export function setHighlightControls (): void {
         });
         highlightLayerElement.classList.add('highlight-selected');
         highlightType.textContent = ' - LayerElement';
-        Color.setGroupingHighlight('accid');
+        Color.setGroupingHighlight('layer');
       });
       highlightNone.addEventListener('click', () => {
         highlightDropdown.classList.remove('is-active');
@@ -259,7 +259,7 @@ export function updateHighlight (): void {
       Color.setGroupingHighlight('neume');
       break;
     case 'highlight-layerElement':
-      Color.setGroupingHighlight('accid');
+      Color.setGroupingHighlight('layer');
       break;
     case 'highlight-selection':
       Color.setGroupingHighlight('selection');

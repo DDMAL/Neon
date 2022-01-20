@@ -166,10 +166,8 @@ export function changeStaffHandler(): void {
     const del = document.getElementById('delete');
     del.removeEventListener('click', removeHandler);
     del.addEventListener('click', removeHandler);
+    document.body.addEventListener('keydown', deleteButtonHandler);
   } catch (e) {}
-  document.body.addEventListener('keydown', deleteButtonHandler);
-
-  initOptionsListeners();
 }
 
 /**
