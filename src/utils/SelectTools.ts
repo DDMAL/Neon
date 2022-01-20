@@ -296,7 +296,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       selectionClass = '.sylTextRect-display';
       break;
     case 'selByLayerElement':
-      selectionClass = '.accid';
+      selectionClass = '.clef, .custos, .accid, .divLine';
       break;
     default:
       console.error('Unknown selection type ' + selectionType);

@@ -187,7 +187,7 @@ export function setGroupingHighlight(grouping: string): void {
         grouping = 'staff';
         break;
       case 'selByLayerElement':
-        grouping = 'accid';
+        grouping = 'layer';
         break;
       case 'selByNeume':
       default:
@@ -197,8 +197,15 @@ export function setGroupingHighlight(grouping: string): void {
     setGroupingHighlight(grouping);
     return;
   }
+  let groups;
 
-  const groups = document.getElementsByClassName(grouping) as HTMLCollectionOf<HTMLElement>;
+  if (grouping == 'layer') {
+    groups = document.querySelectorAll(".accid, .clef, .custos, .divLine");
+  }
+  else {
+    groups = document.getElementsByClassName(grouping) as HTMLCollectionOf<HTMLElement>;
+  }
+
   for (let i = 0; i < groups.length; i++) {
     const groupColor = ColorPalette[i % ColorPalette.length];
     if ((groups[i].closest('.selected') === null) && !groups[i].classList.contains('selected')) {
