@@ -154,21 +154,21 @@ export function changeStaffHandler(): void {
 /**
  * Trigger the extra layer element action menu for a selection.
  */
- export function triggerLayerElementActions (): void {
-  endOptionsSelection();
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.defaultActionContents;
-  } catch (e) {}
+//  export function triggerLayerElementActions (): void {
+//   endOptionsSelection();
+//   try {
+//     const moreEdit = document.getElementById('moreEdit');
+//     moreEdit.classList.remove('is-invisible');
+//     moreEdit.innerHTML = Contents.defaultActionContents;
+//   } catch (e) {}
 
-  try {
-    const del = document.getElementById('delete');
-    del.removeEventListener('click', removeHandler);
-    del.addEventListener('click', removeHandler);
-    document.body.addEventListener('keydown', deleteButtonHandler);
-  } catch (e) {}
-}
+//   try {
+//     const del = document.getElementById('delete');
+//     del.removeEventListener('click', removeHandler);
+//     del.addEventListener('click', removeHandler);
+//     document.body.addEventListener('keydown', deleteButtonHandler);
+//   } catch (e) {}
+// }
 
 /**
  * Trigger the extra nc action menu for a selection.

@@ -371,7 +371,17 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       break;
 
     case 'selByLayerElement':
-      SelectOptions.triggerLayerElementActions();
+      if (groupsToSelect.size === 1 && groups[0].classList.contains('clef')) {
+        SelectOptions.triggerClefActions(groups[0]);
+      } else if (groupsToSelect.size === 1 && groups[0].classList.contains('custos')) {
+        SelectOptions.triggerCustosActions();
+      } else if (groupsToSelect.size === 1 && groups[0].classList.contains('accid')) {
+        SelectOptions.triggerAccidOrDivLineActions();
+      } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divLine')) {
+        SelectOptions.triggerAccidOrDivLineActions();
+      }else {
+          SelectOptions.triggerDefaultActions();
+      }
       break;
 
     case 'selBySyl':
