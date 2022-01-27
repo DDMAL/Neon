@@ -257,7 +257,7 @@ export function selectStaff (staff: SVGGElement, dragHandler: DragHandler): void
  * @param layerElement - The layer element in the DOM.
  * @param dragHandler - The drag handler in use.
  */
- export function selectLayerElement (layerElement: SVGGElement, dragHandler: DragHandler): void {
+export function selectLayerElement (layerElement: SVGGElement, dragHandler: DragHandler): void {
   if (!layerElement.classList.contains('selected')) {
     layerElement.classList.add('selected');
     Color.unhighlight(layerElement);
@@ -345,9 +345,9 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     } else if (groupsToSelect.size === 1 && groups[0].classList.contains('custos')) {
       SelectOptions.triggerCustosActions();
     } else if (groupsToSelect.size === 1 && groups[0].classList.contains('accid')) {
-      SelectOptions.triggerAccidOrDivLineActions();
+      SelectOptions.triggerAccidActions(groups[0]);
     } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divLine')) {
-      SelectOptions.triggerAccidOrDivLineActions();
+      SelectOptions.triggerDivLineActions();
     }else {
       if (selectionType == 'selBySyl') {
         SelectOptions.triggerDefaultSylActions();
@@ -376,11 +376,11 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       } else if (groupsToSelect.size === 1 && groups[0].classList.contains('custos')) {
         SelectOptions.triggerCustosActions();
       } else if (groupsToSelect.size === 1 && groups[0].classList.contains('accid')) {
-        SelectOptions.triggerAccidOrDivLineActions();
+        SelectOptions.triggerAccidActions(groups[0]);
       } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divLine')) {
-        SelectOptions.triggerAccidOrDivLineActions();
+        SelectOptions.triggerDivLineActions();
       }else {
-          SelectOptions.triggerDefaultActions();
+        SelectOptions.triggerDefaultActions();
       }
       break;
 

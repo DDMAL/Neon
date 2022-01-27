@@ -505,6 +505,12 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
     extraEdit.classList.remove('is-invisible');
     extraEdit.innerHTML = Contents.clefActionContents;
   } catch (e) {}
+
+  try {
+    document.getElementById('changeStaff')
+      .addEventListener('click', changeStaffHandler);
+  } catch (e) {console.debug(e);}
+  
   document.querySelector('#CClef.dropdown-item')
     .addEventListener('click', () => {
       const setCClef: EditorAction = {
@@ -581,14 +587,87 @@ export function triggerCustosActions (): void {
 }
 
 /**
- * Trigger extra accid or divLine actions.
+ * Trigger extra accid actions.
  */
- export function triggerAccidOrDivLineActions (): void {
+export function triggerAccidActions (accid: SVGGraphicsElement): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML += Contents.accidOrDivlineActionContents;
+    moreEdit.innerHTML += Contents.divlineActionContents;
+  } catch (e) {}
+
+  try {
+    const extraEdit = document.getElementById('extraEdit');
+    extraEdit.classList.remove('is-invisible');
+    extraEdit.innerHTML = Contents.accidActionContents;
+  } catch (e) {}
+
+  try {
+    document.getElementById('changeStaff')
+      .addEventListener('click', changeStaffHandler);
+  } catch (e) {console.debug(e);}
+
+  document.querySelector('#ChangeToFlat.dropdown-item')
+    .addEventListener('click', () => {
+      const changeToFlat: EditorAction = {
+        'action': 'set',
+        'param': {
+          'elementId': accid.id,
+          'attrType': 'accid',
+          'attrValue': 'f'
+        }
+      };
+      neonView.edit(changeToFlat, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Shape Changed');
+        } else {
+          Notification.queueNotification('Shape Change Failed');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
+    });
+  document.querySelector('#ChangeToNatural.dropdown-item')
+    .addEventListener('click', () => {
+      const changeToNatural: EditorAction = {
+        'action': 'set',
+        'param': {
+          'elementId': accid.id,
+          'attrType': 'accid',
+          'attrValue': 'n'
+        }
+      };
+      neonView.edit(changeToNatural, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Shape Changed');
+        } else {
+          Notification.queueNotification('Shape Change Failed');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
+    });
+
+  try {
+    const del = document.getElementById('delete');
+    del.removeEventListener('click', removeHandler);
+    del.addEventListener('click', removeHandler);
+    document.body.addEventListener('keydown', deleteButtonHandler);
+  } catch (e) {}
+
+  initOptionsListeners();
+}
+
+/**
+ * Trigger extra accid or divLine actions.
+ */
+ export function triggerDivLineActions (): void {
+  endOptionsSelection();
+  try {
+    const moreEdit = document.getElementById('moreEdit');
+    moreEdit.classList.remove('is-invisible');
+    moreEdit.innerHTML += Contents.divlineActionContents;
   } catch (e) {}
 
   try {

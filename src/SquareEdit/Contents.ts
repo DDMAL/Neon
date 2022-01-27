@@ -190,12 +190,27 @@ export const custosActionContents: string =
     '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
 
 /**
- * Contents of accid or divLine action menu.
+ * Contents of divLine action menu.
  */
-export const accidOrDivlineActionContents: string =
-'<div><p class=\'control\'>' +
-'<button class=\'button\' id=\'delete\'>Delete</button>' +
-'<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
+export const divlineActionContents: string =
+    '<div><p class=\'control\'>' +
+    '<button class=\'button\' id=\'delete\'>Delete</button>' +
+    '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
+
+/**
+ * Contents of accid action menu.
+ */
+export const accidActionContents: string =
+    '<label>Change Accid Shape:&nbsp;</label>' +
+    '<div id=\'drop_select\' class=\'dropdown\'>' +
+    '<div class=\'dropdown-trigger\'overflow=\'auto\'>' +
+    '<button id=\'select-options\' class=\'button\' aria-haspopup=\'true\' aria-controls=\'dropdown-menu\'>' +
+    '<span>Accid Shapes</span>' +
+    '<svg class=\'icon\'><use xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></button></div>' +
+    '<div class=\'dropdown-menu\' id=\'dropdown-menu\' role=\'menu\'>' +
+    '<div class=\'dropdown-content\'>' +
+    '<a id=\'ChangeToFlat\' class=\'dropdown-item\'>Flat</a>' +
+    '<a id=\'ChangeToNatural\' class=\'dropdown-item\'>Natural</a></div></div></div></div>';
 
 /**
  * Contents of split action menu.
