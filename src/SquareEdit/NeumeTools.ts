@@ -25,12 +25,6 @@ export class SplitNeumeHandler {
   startSplit (): void {
     this.splitDisable();
 
-    // change selection type to selByNc
-    // const selByNeume = document.querySelector('.sel-by.is-active');
-    // selByNeume.classList.remove('is-active');
-    // const selByNc = document.getElementById('selByNc');
-    // selByNc.classList.add('is-active');
-
     document.body.addEventListener('click', this.handler, { capture: true });
 
     // Handle keypresses
