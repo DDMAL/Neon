@@ -127,6 +127,14 @@ export const ncActionContents: string =
         '<p class=\'control\'></p></div>';
 
 /**
+ * Contents of basic neume action menu.
+ */
+ export const defaultNeumeActionContents: string =
+ '<div><p class=\'control\'>' +
+ '<button class=\'button\' id=\'delete\'>Delete</button>' + 
+ '<button class=\'button\' id=\'split-neume\'>Split Neumes</button></p></div>';
+
+/**
  * Contents of extra neume action menu.
  */
 export const neumeActionContents: string =

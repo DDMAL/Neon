@@ -5,7 +5,7 @@ import { selectAll } from '../utils/SelectTools';
 import DragHandler from '../utils/DragHandler';
 
 /** Handle splitting a staff into two staves through Verovio. */
-export class SplitHandler {
+export class SplitStaffHandler {
   readonly neonView: NeonView;
   readonly staff: SVGGElement;
 

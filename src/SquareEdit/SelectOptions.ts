@@ -2,7 +2,8 @@ import * as Contents from './Contents';
 import * as Grouping from './Grouping';
 import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
-import { SplitHandler } from './StaffTools';
+import { SplitStaffHandler } from './StaffTools';
+import { SplitNeumeHandler } from './NeumeTools';
 import { EditorAction } from '../Types';
 import { getStaffBBox } from '../utils/SelectTools';
 
@@ -346,7 +347,7 @@ export function triggerNeumeActions (): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.defaultActionContents;
+    moreEdit.innerHTML = Contents.defaultNeumeActionContents;
   } catch (e) {}
   try {
     const extraEdit = document.getElementById('extraEdit');
@@ -358,6 +359,20 @@ export function triggerNeumeActions (): void {
     console.warn('More than one neume selected! Cannot trigger Neume ClickSelect actions.');
     return;
   }
+
+  // TODO add trigger for split action
+  document.getElementById('split-neume')
+    .addEventListener('click', () => {
+      const neume = document.querySelector('.neume.selected') as SVGGElement;
+      if (neume !== null) {
+        const split = new SplitNeumeHandler(neonView, neume);
+        split.startSplit();
+        endOptionsSelection();
+      } else {
+        console.error('No staff was selected!');
+        endOptionsSelection();
+      }
+    });
 
   document.querySelector('#Pes.dropdown-item')
   .addEventListener('click', (e) => {
@@ -742,7 +757,7 @@ export function triggerSplitActions (): void {
     .addEventListener('click', () => {
       const staff = document.querySelector('.staff.selected') as SVGGElement;
       if (staff !== null) {
-        const split = new SplitHandler(neonView, staff);
+        const split = new SplitStaffHandler(neonView, staff);
         split.startSplit();
         endOptionsSelection();
       } else {
