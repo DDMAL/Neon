@@ -5,6 +5,7 @@ import { selectAll, getSelectionType, unselect, isLigature } from '../utils/Sele
 import DragHandler from '../utils/DragHandler';
 import { clickSelect } from '../utils/Select';
 import { addConsoleHandler } from 'selenium-webdriver/lib/logging';
+import { updateHighlight } from '../DisplayPanel/DisplayControls';
 
 /** Handle splitting a neume into two neumes through Verovio. */
 export class SplitNeumeHandler {
@@ -63,14 +64,19 @@ export class SplitNeumeHandler {
       if (result) {
         await this.neonView.updateForCurrentPage();
         Notification.queueNotification('Split action successful');
+      } 
+      else {
+        await this.neonView.updateForCurrentPage();
+        Notification.queueNotification('Split action failed');
       }
-      const dragHandler = new DragHandler(this.neonView, '.neume');
+      // this.neonView.updateForCurrentPage();
+      // const dragHandler = new DragHandler(this.neonView, '.neume');
       this.splitDisable();
-      selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
-      try {
-        document.getElementById('moreEdit').innerHTML = '';
-        document.getElementById('moreEdit').classList.add('is-invisible');
-      } catch (e) {}
+      // selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
+      // try {
+      //   document.getElementById('moreEdit').innerHTML = '';
+      //   document.getElementById('moreEdit').classList.add('is-invisible');
+      // } catch (e) {}
     });
   }).bind(this);
 
