@@ -390,7 +390,8 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
           // TODO change context if it is only a neume/nc.
           SelectOptions.triggerSylActions();
           break;
-        case 2:
+        // case 2:
+        default:
           // Check if this is a linked syllable split by a staff break
           if ((groups[0].getAttribute('mei:follows') === '#' + groups[1].id) ||
           (groups[0].getAttribute('mei:precedes') === '#' + groups[1].id)) {
@@ -429,15 +430,15 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
             SelectOptions.triggerDefaultSylActions();
             SelectOptions.triggerSylActions();
           }
-          break;
-        default:
-          if (sharedSecondLevelParent(groups)) {
-            Grouping.triggerGrouping('syl');
-            SelectOptions.triggerSylActions();
-          } else {
-            SelectOptions.triggerDefaultSylActions();
-            SelectOptions.triggerSylActions();
-          }
+          // break;
+        // default:
+          // if (sharedSecondLevelParent(groups)) {
+          //   Grouping.triggerGrouping('syl');
+          //   SelectOptions.triggerSylActions();
+          // } else {
+          //   SelectOptions.triggerDefaultSylActions();
+          //   SelectOptions.triggerSylActions();
+          // }
       }
       break;
 

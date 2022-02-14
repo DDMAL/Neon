@@ -106,7 +106,7 @@ function setOpacityControls (meiClassName: string): void {
   function inputChangeOpacity (): void {
     opacityOutput.value = opacitySlider.value;
     lastGlyphOpacity = Number(opacitySlider.value);
-    setOpacityFromSlider(meiClassName)
+    setOpacityFromSlider(meiClassName);
   }
 }
 
@@ -122,7 +122,7 @@ export function setOpacityFromSlider (meiClassName?: string): void {
       g.style.opacity = (Number(opacityOutput.value) / 100.0).toString();
     });
   } catch (e) {
-    console.warn("Unable to properly set opacity to pages")
+    console.warn("Unable to properly set opacity to pages");
   }
 }
 
