@@ -1,20 +1,23 @@
 import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
-import { EditorAction } from '../Types';
-import { selectAll } from '../utils/SelectTools';
+import { Attributes, EditorAction } from '../Types';
+import { selectAll, getSelectionType, unselect, isLigature } from '../utils/SelectTools';
 import DragHandler from '../utils/DragHandler';
+import { clickSelect } from '../utils/Select';
+import { addConsoleHandler } from 'selenium-webdriver/lib/logging';
+import { updateHighlight } from '../DisplayPanel/DisplayControls';
 
-/** Handle splitting a staff into two staves through Verovio. */
-export class SplitStaffHandler {
+/** Handle splitting a neume into two neumes through Verovio. */
+export class SplitNeumeHandler {
   readonly neonView: NeonView;
-  readonly staff: SVGGElement;
+  readonly neume: SVGGElement;
 
   /**
-   * @param staff - The staff that will be modified.
+   * @param neume - The neume that will be modified.
    */
-  constructor (neonView: NeonView, staff: SVGGElement) {
+  constructor (neonView: NeonView, neume: SVGGElement) {
     this.neonView = neonView;
-    this.staff = staff;
+    this.neume = neume;
   }
 
   /**
@@ -30,7 +33,7 @@ export class SplitStaffHandler {
     document.body.addEventListener('keyup', this.resetHandler);
     document.body.addEventListener('click', this.clickawayHandler);
 
-    Notification.queueNotification('Click Where to Split');
+    Notification.queueNotification('Click The Beginning of The Second Neume');
   }
 
   splitDisable (): void {
@@ -40,27 +43,20 @@ export class SplitStaffHandler {
     document.body.removeEventListener('click', this.handler, { capture: true });
   }
 
-  /** Handle input to split a staff. */
+  /** Handle input to split a neume. */
   handler = ((evt: MouseEvent): void => {
-    const id = this.staff.id;
+    const id = this.neume.id;
 
-    const container = this.staff.closest('.definition-scale') as SVGSVGElement;
-    const pt = container.createSVGPoint();
-    pt.x = evt.clientX;
-    pt.y = evt.clientY;
-
-    // Transform to SVG coordinate system.
-    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGElement)
-      .getScreenCTM().inverse();
-    const cursorPt = pt.matrixTransform(transformMatrix);
-    // Find staff point corresponds to if one exists
-    // TODO
+    // unselect();
+    
+    const nc = (evt.target as SVGGElement).parentElement;
+    const ncId = nc.id;
 
     const editorAction: EditorAction = {
-      'action': 'split',
+      'action': 'splitNeume',
       'param': {
         'elementId': id,
-        'x': cursorPt.x
+        'ncId': ncId
       }
     };
 
@@ -68,14 +64,19 @@ export class SplitStaffHandler {
       if (result) {
         await this.neonView.updateForCurrentPage();
         Notification.queueNotification('Split action successful');
+      } 
+      else {
+        await this.neonView.updateForCurrentPage();
+        Notification.queueNotification('Split action failed');
       }
-      const dragHandler = new DragHandler(this.neonView, '.staff');
+      // this.neonView.updateForCurrentPage();
+      // const dragHandler = new DragHandler(this.neonView, '.neume');
       this.splitDisable();
-      selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
-      try {
-        document.getElementById('moreEdit').innerHTML = '';
-        document.getElementById('moreEdit').classList.add('is-invisible');
-      } catch (e) {}
+      // selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
+      // try {
+      //   document.getElementById('moreEdit').innerHTML = '';
+      //   document.getElementById('moreEdit').classList.add('is-invisible');
+      // } catch (e) {}
     });
   }).bind(this);
 
