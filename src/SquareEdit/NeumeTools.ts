@@ -1,11 +1,6 @@
 import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
-import { Attributes, EditorAction } from '../Types';
-import { selectAll, getSelectionType, unselect, isLigature } from '../utils/SelectTools';
-import DragHandler from '../utils/DragHandler';
-import { clickSelect } from '../utils/Select';
-import { addConsoleHandler } from 'selenium-webdriver/lib/logging';
-import { updateHighlight } from '../DisplayPanel/DisplayControls';
+import { EditorAction } from '../Types';
 
 /** Handle splitting a neume into two neumes through Verovio. */
 export class SplitNeumeHandler {
