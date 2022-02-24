@@ -203,6 +203,7 @@ export const custosActionContents: string =
 export const divlineActionContents: string =
     '<div><p class=\'control\'>' +
     '<button class=\'button\' id=\'delete\'>Delete</button>' +
+    '<button class=\'button\' id=\'insertToSyllable\'>Insert to nearest syllable</button>' + '<br />'+
     '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
 
 /**
