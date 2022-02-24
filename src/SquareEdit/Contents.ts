@@ -209,11 +209,11 @@ export const divlineActionContents: string =
  * Contents of accid action menu.
  */
 export const accidActionContents: string =
-    '<label>Change Accid Shape:&nbsp;</label>' +
+    '<label>Change Accidental:&nbsp;</label>' +
     '<div id=\'drop_select\' class=\'dropdown\'>' +
     '<div class=\'dropdown-trigger\'overflow=\'auto\'>' +
     '<button id=\'select-options\' class=\'button\' aria-haspopup=\'true\' aria-controls=\'dropdown-menu\'>' +
-    '<span>Accid Shapes</span>' +
+    '<span>Shapes</span>' +
     '<svg class=\'icon\'><use xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></button></div>' +
     '<div class=\'dropdown-menu\' id=\'dropdown-menu\' role=\'menu\'>' +
     '<div class=\'dropdown-content\'>' +
