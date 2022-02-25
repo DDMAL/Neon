@@ -278,6 +278,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
 
   let selectionClass;
   let containsClefOrCustosOrAccidOrDivLine = false;
+  let containsNc = false;
 
   switch (selectionType) {
     case 'selBySyl':
@@ -316,6 +317,8 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
         continue;
       }
       containsClefOrCustosOrAccidOrDivLine = containsClefOrCustosOrAccidOrDivLine || true;
+    } else {
+      containsNc = containsNc || true;
     }
     groupsToSelect.add(grouping);
 
@@ -338,7 +341,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
   const groups = Array.from(groupsToSelect.values()) as SVGGraphicsElement[];
 
   // Handle occurance of clef or custos or accid or divLine
-  if (containsClefOrCustosOrAccidOrDivLine) {
+  if (containsClefOrCustosOrAccidOrDivLine && !containsNc) {
     // A context menu will only be displayed if there is a single clef
     if (groupsToSelect.size === 1 && groups[0].classList.contains('clef')) {
       SelectOptions.triggerClefActions(groups[0]);

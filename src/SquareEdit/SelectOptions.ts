@@ -153,6 +153,38 @@ export function changeStaffHandler(): void {
 }
 
 /**
+ * Function to handle inserting divisio or accidental into nearest syllable
+ */
+export function insertToSyllableHandler(): void {
+  // const toInsert = [];
+  const toInsert: EditorAction[] = [];
+  const selected = Array.from(document.getElementsByClassName('selected'));
+  selected.forEach(elem => {
+    toInsert.push(
+      {
+        'action': 'insertToSyllable',
+        'param': {
+          'elementId': elem.id
+        }
+      }
+    );
+  });
+  const chainAction: EditorAction = {
+    'action': 'chain',
+    'param': toInsert
+  };
+  neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => { 
+    if (result) {
+      Notification.queueNotification('Insert Success');
+    } else {
+      Notification.queueNotification('Insert Failed XoX');
+    }
+    endOptionsSelection();
+    neonView.updateForCurrentPage(); 
+  });
+}
+
+/**
  * Trigger the extra layer element action menu for a selection.
  */
 //  export function triggerLayerElementActions (): void {
@@ -623,6 +655,11 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
       .addEventListener('click', changeStaffHandler);
   } catch (e) {console.debug(e);}
 
+  try {
+    document.getElementById('insertToSyllable')
+      .addEventListener('click', insertToSyllableHandler);
+  } catch (e) {console.debug(e);}
+
   document.querySelector('#ChangeToFlat.dropdown-item')
     .addEventListener('click', () => {
       const changeToFlat: EditorAction = {
@@ -677,7 +714,7 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
 /**
  * Trigger extra accid or divLine actions.
  */
- export function triggerDivLineActions (): void {
+export function triggerDivLineActions (): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');
@@ -696,6 +733,11 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
     del.addEventListener('click', removeHandler);
     document.body.addEventListener('keydown', deleteButtonHandler);
   } catch (e) {}
+
+  try {
+    document.getElementById('insertToSyllable')
+      .addEventListener('click', insertToSyllableHandler);
+  } catch (e) {console.debug(e);}
 }
 
 /**

@@ -296,6 +296,9 @@ function getChildrenIds (): string[] {
   const childrenIds = [];
   const elements = Array.from(document.getElementsByClassName('selected'));
   elements.forEach(el => {
+    if (el.classList.contains('divLine') || el.classList.contains('accid')) {
+      return;
+    }
     const children = Array.from(el.children);
     children.forEach(ch => {
       childrenIds.push(ch.id);
