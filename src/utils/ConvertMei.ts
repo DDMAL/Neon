@@ -48,42 +48,42 @@ export function convertStaffToSb(staffBasedMei: string): string {
       }
 
       // Insert sb either as last child of layer or in the last syllable
-      const lastElement = newLayer.lastElementChild;
-      if ((lastElement !== null) && (lastElement.tagName === 'syllable') && lastElement.hasAttribute('precedes')) {
-        if (custos !== undefined) lastElement.appendChild(custos);
-        lastElement.appendChild(sb);
-      }
-      else {
-        if (custos !== undefined) newLayer.appendChild(custos);
-        newLayer.appendChild(sb);
-      }
+      // const lastElement = newLayer.lastElementChild;
+      // if ((lastElement !== null) && (lastElement.tagName === 'syllable') && lastElement.hasAttribute('precedes')) {
+      //   if (custos !== undefined) lastElement.appendChild(custos);
+      //   lastElement.appendChild(sb);
+      // }
+      // else {
+      if (custos !== undefined) newLayer.appendChild(custos);
+      newLayer.appendChild(sb);
+      // }
 
       // Handle split syllables
-      for (const precedes of precedesSyllables) {
-        const followsId = precedes.getAttribute('precedes');
-        const followsSyllable = Array.from(layer.getElementsByTagName('syllable'))
-          .filter(syllable => { return '#' + syllable.getAttribute('xml:id') === followsId; })
-          .pop();
-        if (followsSyllable !== undefined) {
-          // Check for preceeding clef
-          if ((followsSyllable.previousElementSibling !== null) &&
-          (followsSyllable.previousElementSibling.tagName === 'clef')) {
-            precedes.append(followsSyllable.previousElementSibling);
-          }
-          while (followsSyllable.firstChild !== null) {
-            precedes.append(followsSyllable.firstChild);
-          }
-          followsSyllable.remove();
-          precedes.removeAttribute('precedes');
-          precedesSyllables.delete(precedes);
-        }
-      }
+      // for (const precedes of precedesSyllables) {
+      //   const followsId = precedes.getAttribute('precedes');
+      //   const followsSyllable = Array.from(layer.getElementsByTagName('syllable'))
+      //     .filter(syllable => { return '#' + syllable.getAttribute('xml:id') === followsId; })
+      //     .pop();
+      //   if (followsSyllable !== undefined) {
+      //     // Check for preceeding clef
+      //     if ((followsSyllable.previousElementSibling !== null) &&
+      //     (followsSyllable.previousElementSibling.tagName === 'clef')) {
+      //       precedes.append(followsSyllable.previousElementSibling);
+      //     }
+      //     while (followsSyllable.firstChild !== null) {
+      //       precedes.append(followsSyllable.firstChild);
+      //     }
+      //     followsSyllable.remove();
+      //     precedes.removeAttribute('precedes');
+      //     precedesSyllables.delete(precedes);
+      //   }
+      // }
 
       // Add remaining elements of layer to newLayer
       while (layer.firstElementChild !== null) {
-        if (layer.firstElementChild.hasAttribute('precedes')) {
-          precedesSyllables.add(layer.firstElementChild);
-        }
+        // if (layer.firstElementChild.hasAttribute('precedes')) {
+        //   precedesSyllables.add(layer.firstElementChild);
+        // }
         newLayer.appendChild(layer.firstElementChild);
       }
       staff.remove();
@@ -206,6 +206,30 @@ export function convertSbToStaff(sbBasedMei: string): string {
     }
     for (const custos of syllable.querySelectorAll('custos')) {
       syllable.insertAdjacentElement('afterend', custos);
+    }
+
+    // Check syllables that contains @precedes or @follows
+    // Update syllable arrays for each syllable
+    let newSyllables = Array.from(mei.getElementsByTagName('syllable'));
+    // For each toggle-linked syllable
+    // Set @precedes and @follows to make sure pointing to the correct syllable
+    if (syllable.hasAttribute('precedes')) {
+      const syllableIdx = newSyllables.indexOf(syllable);
+      if (syllableIdx >= 0) {
+        const nextSyllable = newSyllables[syllableIdx+1];
+        if (nextSyllable !== null) {
+          nextSyllable.setAttribute('follows', '#' + syllable.getAttribute('xml:id'));
+        }
+      }
+    }
+    else if (syllable.hasAttribute('follows')) {
+      const syllableIdx = newSyllables.indexOf(syllable);
+      if (syllableIdx > 0) {
+        const prevSyllable = newSyllables[syllableIdx-1];
+        if (prevSyllable !== null) {
+          prevSyllable.setAttribute('precedes', '#' + syllable.getAttribute('xml:id'));
+        }
+      }
     }
   }
 
