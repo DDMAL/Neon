@@ -21,7 +21,7 @@ export function convertStaffToSb(staffBasedMei: string): string {
   const meiDoc = parser.parseFromString(staffBasedMei, 'text/xml');
   const mei = meiDoc.documentElement;
 
-  const precedesSyllables: Set<Element> = new Set();
+  // const precedesSyllables: Set<Element> = new Set();
 
   for (const section of mei.getElementsByTagName('section')) {
     const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');

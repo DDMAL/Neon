@@ -126,7 +126,7 @@ export function highlight(staff: SVGGElement, color: string): void {
           rect.closest('.syl').classList.contains('selected') ||
           rect.closest('.staff').classList.contains('selected')
           // rect.closest('.layer').classList.contains('selected')
-          )) {
+        )) {
           rect.style.fill = color;
           rect.classList.add('highlighted');
         }
