@@ -92,7 +92,8 @@ export function initGroupingListeners (): void {
         isLigature = true;
       } else {
         isLigature = false;
-        const chainAction: EditorAction = { 'action': 'chain',
+        const chainAction: EditorAction = { 
+          'action': 'chain',
           'param': [
             unsetInclinatumAction(elementIds[0]), unsetVirgaAction(elementIds[0]),
             unsetInclinatumAction(elementIds[1]), unsetVirgaAction(elementIds[1])
