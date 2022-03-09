@@ -86,26 +86,11 @@ export function initGroupingListeners (): void {
   try {
     document.getElementById('toggle-ligature').addEventListener('click', async () => {
       const elementIds = getIds();
-      let isLigature;
-      const ligatureRegex = /#E99[016]/;
-      if (!ligatureRegex.test(document.getElementById(elementIds[0]).children[0].getAttribute('xlink:href'))) { // SMUFL codes for ligature glyphs
-        isLigature = true;
-      } else {
-        isLigature = false;
-        const chainAction: EditorAction = { 
-          'action': 'chain',
-          'param': [
-            unsetInclinatumAction(elementIds[0]), unsetVirgaAction(elementIds[0]),
-            unsetInclinatumAction(elementIds[1]), unsetVirgaAction(elementIds[1])
-          ] };
-        await neonView.edit(chainAction, neonView.view.getCurrentPageURI());
-      }
-
+      
       const editorAction: EditorAction = {
         'action': 'toggleLigature',
         'param': {
-          'elementIds': elementIds,
-          'isLigature': isLigature.toString()
+          'elementIds': elementIds
         }
       };
       neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
