@@ -100,12 +100,12 @@ export function convertSbToStaff(sbBasedMei: string): string {
   const mei = meiDoc.documentElement;
 
   // Delete all neumes that lack a nc
-  const neumes = Array.from(mei.getElementsByTagName('neume'));
-  for (const neume of neumes) {
-    if (neume.getElementsByTagName('nc').length === 0) {
-      neume.remove();
-    }
-  }
+  // const neumes = Array.from(mei.getElementsByTagName('neume'));
+  // for (const neume of neumes) {
+  //   if (neume.getElementsByTagName('nc').length === 0) {
+  //     neume.remove();
+  //   }
+  // }
 
   // Delete all syllables that lack a neume (i.e. only syl)
   const syllables = Array.from(mei.getElementsByTagName('syllable'));
