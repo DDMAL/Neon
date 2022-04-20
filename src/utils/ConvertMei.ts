@@ -1,5 +1,7 @@
 import { uuidv4 } from './random';
 import * as vkbeautify from 'vkbeautify';
+import * as Notification from '../utils/Notification';
+import { get } from 'selenium-webdriver/http';
 
 export function zip<T> (array1: Array<T>, array2: Array<T>): Array<T> {
   const result = [];
@@ -225,8 +227,20 @@ export function convertSbToStaff(sbBasedMei: string): string {
       const syllableIdx = newSyllables.indexOf(syllable);
       if (syllableIdx >= 0) {
         const nextSyllable = newSyllables[syllableIdx+1];
-        if (nextSyllable !== null) {
-          nextSyllable.setAttribute('follows', '#' + syllable.getAttribute('xml:id'));
+        if (nextSyllable) {
+          if (nextSyllable.hasAttribute('follows')) {
+            if (nextSyllable.getAttribute('follows') != '#' + syllable.getAttribute('xml:id')) {
+              const sylText = getSyllableText(syllable);
+              Notification.queueNotification('Wrong @follows value for toggle-linked syllable: ' + sylText);
+            }
+          }
+          else {
+            const sylText = getSyllableText(syllable);
+            Notification.queueNotification('No @follows value found for toggle-linked syllable: ' + sylText);
+          }
+        }
+        else {
+          Notification.queueNotification('No syllables found after @precedes');
         }
       }
     }
@@ -234,8 +248,17 @@ export function convertSbToStaff(sbBasedMei: string): string {
       const syllableIdx = newSyllables.indexOf(syllable);
       if (syllableIdx > 0) {
         const prevSyllable = newSyllables[syllableIdx-1];
-        if (prevSyllable !== null) {
-          prevSyllable.setAttribute('precedes', '#' + syllable.getAttribute('xml:id'));
+        if (prevSyllable) {
+          if (prevSyllable.hasAttribute('precedes')) {
+            if (prevSyllable.getAttribute('precedes') != '#' + syllable.getAttribute('xml:id')) {
+              const sylText = getSyllableText(prevSyllable);
+              Notification.queueNotification('Wrong @precedes value for toggle-linked syllable: ' + sylText);
+            }
+          }
+          else {
+            const sylText = getSyllableText(prevSyllable);
+            Notification.queueNotification('No @precedes value found for toggle-linked syllable: ' + sylText);
+          }
         }
       }
     }
@@ -243,4 +266,17 @@ export function convertSbToStaff(sbBasedMei: string): string {
 
   const serializer = new XMLSerializer();
   return vkbeautify.xml(serializer.serializeToString(meiDoc));
+}
+
+export function getSyllableText (syllable: Element) {
+  const syl = syllable.getElementsByTagName('syl')[0].childNodes[0];
+  let sylText;
+  if (syl) {
+    sylText = syl.nodeValue;
+  }
+  else {
+    sylText = 'null';
+  }
+
+  return sylText;
 }
