@@ -1,7 +1,6 @@
 import { uuidv4 } from './random';
 import * as vkbeautify from 'vkbeautify';
 import * as Notification from '../utils/Notification';
-import { get } from 'selenium-webdriver/http';
 
 export function zip<T> (array1: Array<T>, array2: Array<T>): Array<T> {
   const result = [];
