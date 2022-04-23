@@ -100,19 +100,19 @@ export function convertSbToStaff(sbBasedMei: string): string {
   const meiDoc = parser.parseFromString(sbBasedMei, 'text/xml');
   const mei = meiDoc.documentElement;
 
-  // Delete all neumes that lack a nc
-  // const neumes = Array.from(mei.getElementsByTagName('neume'));
-  // for (const neume of neumes) {
-  //   if (neume.getElementsByTagName('nc').length === 0) {
-  //     neume.remove();
-  //   }
-  // }
+  // Check neume without neume component
+  const neumes = Array.from(mei.getElementsByTagName('neume'));
+  for (const neume of neumes) {
+    if (neume.getElementsByTagName('nc').length === 0) {
+      Notification.queueNotification('This file contains a neume without neume component!');
+    }
+  }
 
-  // Delete all syllables that lack a neume (i.e. only syl)
+  // Check syllable without neume 
   const syllables = Array.from(mei.getElementsByTagName('syllable'));
   for (const syllable of syllables) {
     if (syllable.getElementsByTagName('neume').length === 0) {
-      syllable.remove();
+      Notification.queueNotification('This file contains a syllable without neume!');
     }
   }
 
