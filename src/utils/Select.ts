@@ -10,6 +10,7 @@ import { InfoInterface } from '../Interfaces';
 import ZoomHandler from '../SingleView/Zoom';
 
 import * as d3 from 'd3';
+import { HTMLSVGElement } from '../Types';
 
 let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 let strokeWidth = 7;
@@ -41,6 +42,36 @@ function escapeKeyListener (evt: KeyboardEvent): void {
   }
 }
 
+function arrowKeyListener (evt: KeyboardEvent): void {
+  if (getSelectionType() !== 'selByBBox')
+    return;
+
+  if (evt.key === 'ArrowLeft') {
+    console.log('left pressed');
+
+    const width = (document.getElementById('mei_output') as HTMLSVGElement).width.baseVal.value;
+
+    // Sort BBoxes by coordinates by flattening the 2D plane to 1D
+    function sortByCoords(a: SVGRectElement, b: SVGRectElement): number {
+      const aVal = a.x.baseVal.value + width * a.y.baseVal.value;
+      const bVal = b.x.baseVal.value + width * b.y.baseVal.value;
+
+      return aVal - bVal;
+    }
+
+    const bboxes = Array.from(document.querySelectorAll('.sylTextRect-display'));
+    bboxes.sort(sortByCoords);
+
+    const selectedSyl = document.querySelector('.selected').querySelector('.sylTextRect-display');
+    const ind = bboxes.indexOf(selectedSyl);
+
+    unselect();
+    selectAll([bboxes[ind - 1] as SVGGraphicsElement], neonView, dragHandler);
+  } else if (evt.key === 'ArrowRight') {
+    console.log('right');
+  }
+}
+
 function isSelByBBox (): boolean {
   const selByBBox = document.getElementById('selByBBox');
   if (selByBBox) {
@@ -49,7 +80,7 @@ function isSelByBBox (): boolean {
   return false;
 }
 
-function stopPropHandler (evt): void { evt.stopPropagation(); }
+function stopPropHandler (evt: Event): void { evt.stopPropagation(); }
 
 /**
  * Apply listeners for click selection.
@@ -64,6 +95,9 @@ export function clickSelect (selector: string): void {
   // Click away listeners
   document.body.removeEventListener('keydown', escapeKeyListener);
   document.body.addEventListener('keydown', escapeKeyListener);
+
+  document.body.removeEventListener('keydown', arrowKeyListener);
+  document.body.addEventListener('keydown', arrowKeyListener);
 
   document.getElementById('container')
     .addEventListener('contextmenu', (evt) => { evt.preventDefault(); });
