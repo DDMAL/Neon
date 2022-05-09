@@ -43,3 +43,9 @@ export type NeonManifest = {
   image: string;
   mei_annotations: WebAnnotation[];
 };
+
+/** An <svg> element from any DOM queries */
+export type HTMLSVGElement = HTMLElement & SVGSVGElement;
+
+/** "Selection By" type */
+export type SelectionType = 'selByStaff' | 'selByNeume' | 'selByNc' | 'selByLayerElement' | 'selBySyl' | 'selByBBox' | 'selByLayerElement';
