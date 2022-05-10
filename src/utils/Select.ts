@@ -46,37 +46,23 @@ function arrowKeyListener (evt: KeyboardEvent): void {
   if (getSelectionType() !== 'selByBBox' || (evt.key !== 'ArrowLeft' && evt.key !== 'ArrowRight'))
     return;
 
-  // Find the position of the currently selected BBox in the list of all BBoxes
-  const width = (document.getElementById('mei_output') as HTMLSVGElement).width.baseVal.value;
+  const selected = document.querySelector('.syllable-highlighted');
+  const syllables = Array.from(document.querySelectorAll('.syllable'));
 
-  // Sort BBoxes by coordinates by flattening the 2D plane to 1D
-  function sortByCoords(a: SVGRectElement, b: SVGRectElement): number {
-    const aVal = a.x.baseVal.value + width * a.y.baseVal.value;
-    const bVal = b.x.baseVal.value + width * b.y.baseVal.value;
+  // not all syllables have BBoxes; we must filter them out
+  const bboxSyllables = syllables.filter(syl => syl.querySelector('.sylTextRect-display') !== null);
+  const ind = bboxSyllables.indexOf(selected);
 
-    return aVal - bVal;
-  }
+  if (evt.key === 'ArrowLeft' && ind > 0) {
+    unselect();
 
-  const bboxes = Array.from(document.querySelectorAll('.sylTextRect-display'));
-  bboxes.sort(sortByCoords);
+    const bbox = bboxSyllables[ind - 1].querySelector('.sylTextRect-display');
+    selectAll([bbox as SVGGraphicsElement], neonView, dragHandler);
+  } else if (evt.key === 'ArrowRight' && ind < bboxSyllables.length - 1) {
+    unselect();
 
-  const selectedSyl = document.querySelector('.selected').querySelector('.sylTextRect-display');
-  const ind = bboxes.indexOf(selectedSyl);
-
-  if (evt.key === 'ArrowLeft') {
-    // console.log('left pressed');
-
-    if (ind !== 0) {
-      unselect();
-      selectAll([bboxes[ind - 1] as SVGGraphicsElement], neonView, dragHandler);
-    }
-  } else if (evt.key === 'ArrowRight') {
-    // console.log('right');
-
-    if (ind !== bboxes.length - 1) {
-      unselect();
-      selectAll([bboxes[ind + 1] as SVGGraphicsElement], neonView, dragHandler);
-    }
+    const bbox = bboxSyllables[ind + 1].querySelector('.sylTextRect-display');
+    selectAll([bbox as SVGGraphicsElement], neonView, dragHandler);
   }
 }
 
