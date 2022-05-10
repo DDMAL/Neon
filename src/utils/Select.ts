@@ -91,32 +91,6 @@ function isSelByBBox (): boolean {
 function stopPropHandler (evt: Event): void { evt.stopPropagation(); }
 
 /**
- * Apply listeners for click selection.
- * @param selector - The CSS selector used to choose where listeners are applied.
- */
-export function clickSelect (selector: string): void {
-  document.querySelectorAll(selector).forEach(sel => {
-    sel.removeEventListener('mousedown', clickHandler);
-    sel.addEventListener('mousedown', clickHandler);
-  });
-
-  // Click away listeners
-  document.body.removeEventListener('keydown', escapeKeyListener);
-  document.body.addEventListener('keydown', escapeKeyListener);
-
-  document.body.removeEventListener('keydown', arrowKeyListener);
-  document.body.addEventListener('keydown', arrowKeyListener);
-
-  document.getElementById('container')
-    .addEventListener('contextmenu', (evt) => { evt.preventDefault(); });
-
-  document.querySelectorAll('use,rect,#moreEdit').forEach(sel => {
-    sel.removeEventListener('click', stopPropHandler);
-    sel.addEventListener('click', stopPropHandler);
-  });
-}
-
-/**
  * Handle click events related to element selection.
  */
 function clickHandler (evt: MouseEvent): void {
@@ -289,6 +263,33 @@ function clickHandler (evt: MouseEvent): void {
     }));
   }
 }
+
+/**
+ * Apply listeners for click selection.
+ * @param selector - The CSS selector used to choose where listeners are applied.
+ */
+export function clickSelect (selector: string): void {
+  document.querySelectorAll(selector).forEach(sel => {
+    sel.removeEventListener('mousedown', clickHandler);
+    sel.addEventListener('mousedown', clickHandler);
+  });
+
+  // Click away listeners
+  document.body.removeEventListener('keydown', escapeKeyListener);
+  document.body.addEventListener('keydown', escapeKeyListener);
+
+  document.body.removeEventListener('keydown', arrowKeyListener);
+  document.body.addEventListener('keydown', arrowKeyListener);
+
+  document.getElementById('container')
+    .addEventListener('contextmenu', (evt) => { evt.preventDefault(); });
+
+  document.querySelectorAll('use,rect,#moreEdit').forEach(sel => {
+    sel.removeEventListener('click', stopPropHandler);
+    sel.addEventListener('click', stopPropHandler);
+  });
+}
+
 
 /**
  * Apply listeners for drag selection.

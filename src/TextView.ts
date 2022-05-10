@@ -66,7 +66,7 @@ class TextView implements TextViewInterface {
    * Update visibility of text bounding boxes
    */
   updateBBoxViewVisibility (): void {
-    if ((document.getElementById('displayBBox')as HTMLInputElement).checked) {
+    if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
       document.querySelectorAll('.sylTextRect').forEach(rect => {
         rect.classList.add('sylTextRect-display');
         rect.classList.remove('sylTextRect');

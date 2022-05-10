@@ -152,6 +152,7 @@ class SingleView implements ViewInterface {
   setViewEventHandlers (): void {
     document.body.addEventListener('keydown', (evt) => {
       switch (evt.key) {
+        // Shift: allow dragging the display
         case 'Shift':
           d3.select('#svg_group').on('.drag', null);
           d3.select('#svg_group').call(
@@ -159,6 +160,7 @@ class SingleView implements ViewInterface {
               .on('drag', this.displayPanel.zoomHandler.dragging.bind(this.displayPanel.zoomHandler))
           );
           break;
+        // h: hide MEI output
         case 'h':
           document.getElementById('mei_output').setAttribute('visibility', 'hidden');
           break;
