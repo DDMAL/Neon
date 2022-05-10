@@ -476,29 +476,27 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
                 // Check that second neume component is lower than first.
                 // Note that the order in the list may not be the same as the
                 // order by x-position.
-                const orderFirstX = (groups[0].children[0] as SVGUseElement)
-                  .x.baseVal.value;
-                const orderSecondX = (groups[1].children[0] as SVGUseElement)
-                  .x.baseVal.value;
-                let posFirstY, posSecondY;
+                let x0 = (groups[0].children[0] as SVGUseElement).x.baseVal.value;
+                let x1 = (groups[1].children[0] as SVGUseElement).x.baseVal.value;
+                let y0 = (groups[0].children[0] as SVGUseElement).y.baseVal.value;
+                let y1 = (groups[1].children[0] as SVGUseElement).y.baseVal.value;
 
-                if (orderFirstX < orderSecondX) {
-                  posFirstY = (groups[0].children[0] as SVGUseElement)
-                    .y.baseVal.value;
-                  posSecondY = (groups[1].children[0] as SVGUseElement)
-                    .y.baseVal.value;
-                } else {
-                  posFirstY = (groups[1].children[0] as SVGUseElement)
-                    .y.baseVal.value;
-                  posSecondY = (groups[0].children[0] as SVGUseElement)
-                    .y.baseVal.value;
+                // console.log(groups[0].children[0], groups[1].children[0])
+                // console.log('1st: ', x0, y0)
+                // console.log('2nd: ', x1, y1)
+                // console.log(groups)
+
+                // Nc's stacked on each other can only be one of 2 cases: 1) ligature, 2) podatus/pes
+                // In either case, order by lower pitch first - (as selecting by bounds gets the ligature first)
+                if (x0 === x1) {
+                  if (y0 < y1) {
+                    [groups[0], groups[1]] = [groups[1], groups[0]];
+                    [y0, y1] = [y1, y0];
+                  }
                 }
-
-                // Also ensure both components are marked or not marked as ligatures.
-                // const isFirstLigature = await isLigature(groups[0], neonView);
-                // const isSecondLigature = await isLigature(groups[1], neonView);
-                if (posSecondY > posFirstY) {
-                  Grouping.triggerGrouping('ligature');
+                // if stacked nc's/ligature (identical x), or descending nc's (y descends)
+                if (x0 === x1 || y0 < y1) {
+                  Grouping.triggerGrouping('ligature'); 
                   break;
                 }
               }
