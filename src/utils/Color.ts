@@ -1,3 +1,5 @@
+import { GroupingType } from '../Types';
+
 /**
  * Adapted from color palette from Figure 2 (Colors optimized for color-blind
  * individuals) from
@@ -42,7 +44,7 @@ export function unhighlight(staff?: SVGGElement): void {
           rect.closest('.staff').classList.contains('selected') ||
           rect.closest('.syl').classList.contains('selected')
           // rect.closest('.layer').classList.contains('selected')
-          ){
+        ){
           rect.style.fill = 'red';
         } else {
           rect.style.fill = 'blue';
@@ -169,9 +171,9 @@ export function setStaffHighlight(): void {
 
 /**
  * Set a highlight by a different grouping.
- * @param grouping - Either "staff", "syllable", "neume", or "layer".
+ * @param grouping - Either "staff", "syllable", "neume", "selection", or "layer".
  */
-export function setGroupingHighlight(grouping: string): void {
+export function setGroupingHighlight(grouping: GroupingType): void {
   unsetGroupingHighlight();
   if (grouping === 'staff') {
     setStaffHighlight();
@@ -200,7 +202,7 @@ export function setGroupingHighlight(grouping: string): void {
   let groups;
 
   if (grouping == 'layer') {
-    groups = document.querySelectorAll(".accid, .clef, .custos, .divLine");
+    groups = document.querySelectorAll('.accid, .clef, .custos, .divLine');
   }
   else {
     groups = document.getElementsByClassName(grouping) as HTMLCollectionOf<HTMLElement>;

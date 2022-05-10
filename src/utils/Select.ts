@@ -1,7 +1,7 @@
 /** @module utils/Select */
 
 import {
-  unselect, getStaffBBox, selectStaff, selectLayerElement, selectAll, getSelectionType
+  unselect, getStaffBBox, selectStaff, selectAll, getSelectionType
 } from './SelectTools';
 import { resize } from './Resize';
 import NeonView from '../NeonView';
