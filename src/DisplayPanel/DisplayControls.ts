@@ -2,33 +2,9 @@
 
 import * as Color from '../utils/Color';
 import ZoomHandler from '../SingleView/Zoom';
+import { Grouping } from '../Types';
 
 let lastGlyphOpacity: number, lastImageOpacity: number;
-
-/**
- * Initialize listeners and controls for display panel.
- * @param {string} meiClassName - The class used to signifiy the MEI element(s).
- * @param {string} background - The class used to signify the background.
- */
-export function initDisplayControls (meiClassName: string, background: string): void {
-  setOpacityControls(meiClassName);
-  setBackgroundOpacityControls(background);
-  setHighlightControls();
-  setBurgerControls();
-
-  const displayContents = document.getElementById('displayContents');
-  const toggleDisplay = document.getElementById('toggleDisplay');
-
-  toggleDisplay.parentElement.addEventListener('click', () => {
-    if (displayContents.style.display === 'none') {
-      displayContents.style.display = '';
-      toggleDisplay.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
-    } else {
-      displayContents.style.display = 'none';
-      toggleDisplay.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-side');
-    }
-  });
-}
 
 /**
  * Set zoom control listener for button and slider
@@ -48,13 +24,13 @@ export function setZoomControls (zoomHandler?: ZoomHandler): void {
     zoomHandler.resetZoomAndPan();
   });
 
-  zoomSlider.addEventListener('input', inputChangeHandler);
-  zoomSlider.addEventListener('change', inputChangeHandler);
-
   function inputChangeHandler (): void {
     zoomOutput.value = zoomSlider.value;
     zoomHandler.zoomTo(Number(zoomOutput.value) / 100.0);
   }
+
+  zoomSlider.addEventListener('input', inputChangeHandler);
+  zoomSlider.addEventListener('change', inputChangeHandler);
 
   document.body.addEventListener('keydown', (evt) => {
     const currentZoom = parseInt(zoomOutput.value);
@@ -74,6 +50,22 @@ export function setZoomControls (zoomHandler?: ZoomHandler): void {
       zoomHandler.resetZoomAndPan();
     }
   });
+}
+
+/**
+ * Update MEI opacity to value from the slider.
+ * @param meiClassName - Class that contains the rendered MEI.
+ */
+export function setOpacityFromSlider (meiClassName?: string): void {
+  const opacityOutput = document.getElementById('opacityOutput') as HTMLOutputElement;
+  opacityOutput.value = (document.getElementById('opacitySlider') as HTMLInputElement).value;
+  try {
+    ((document.querySelectorAll('.' + meiClassName)) as NodeListOf<HTMLElement>).forEach(g => {
+      g.style.opacity = (Number(opacityOutput.value) / 100.0).toString();
+    });
+  } catch (e) {
+    console.warn('Unable to properly set opacity to pages');
+  }
 }
 
 /**
@@ -100,30 +92,15 @@ function setOpacityControls (meiClassName: string): void {
     opacityOutput.value = String(Math.round(newOpacity * 100));
   });
 
-  opacitySlider.addEventListener('input', inputChangeOpacity);
-  opacitySlider.addEventListener('change', inputChangeOpacity);
-
   function inputChangeOpacity (): void {
     opacityOutput.value = opacitySlider.value;
     lastGlyphOpacity = Number(opacitySlider.value);
     setOpacityFromSlider(meiClassName);
   }
-}
 
-/**
- * Update MEI opacity to value from the slider.
- * @param meiClassName - Class that contains the rendered MEI.
- */
-export function setOpacityFromSlider (meiClassName?: string): void {
-  const opacityOutput = document.getElementById('opacityOutput') as HTMLOutputElement;
-  opacityOutput.value = (document.getElementById('opacitySlider') as HTMLInputElement).value;
-  try {
-    ((document.querySelectorAll('.' + meiClassName)) as NodeListOf<HTMLElement>).forEach(g => {
-      g.style.opacity = (Number(opacityOutput.value) / 100.0).toString();
-    });
-  } catch (e) {
-    console.warn("Unable to properly set opacity to pages");
-  }
+  opacitySlider.addEventListener('input', inputChangeOpacity);
+  opacitySlider.addEventListener('change', inputChangeOpacity);
+
 }
 
 /**
@@ -147,84 +124,124 @@ function setBackgroundOpacityControls (background: string): void {
     bgOpacityOutput.value = String(Math.round(newOpacity * 100));
   });
 
-  bgOpacitySlider.addEventListener('input', bgInputChangeHandler);
-  bgOpacitySlider.addEventListener('change', bgInputChangeHandler);
-
   function bgInputChangeHandler (): void {
     bgOpacityOutput.value = bgOpacitySlider.value;
     lastImageOpacity = Number(bgOpacitySlider.value);
     (document.getElementsByClassName(background)[0] as HTMLElement)
       .style.opacity = (Number(bgOpacityOutput.value) / 100.0).toString();
   }
+
+  bgOpacitySlider.addEventListener('input', bgInputChangeHandler);
+  bgOpacitySlider.addEventListener('change', bgInputChangeHandler);
+
+}
+
+/**
+ * Update highlight dropdown option + display
+ * @param id - The DOM element's id as `highlight-${id}`
+ * @param grouping - Grouping
+ * @param display - Text displayed on dropdown select
+ */
+function updateHighlightOption (id: string, grouping: Grouping, display: string): void {
+  const option = document.getElementById(`highlight-${id}`);
+  const dropdown = document.getElementById('highlight-dropdown');
+  const highlightType = document.getElementById('highlight-type');
+
+  dropdown.classList.remove('is-active');
+  document.querySelectorAll('.highlight-selected').forEach(elem => {
+    elem.classList.remove('highlight-selected');
+  });
+
+  if (id === 'none') {
+    highlightType.textContent = ' - Off';
+    Color.unsetGroupingHighlight();
+    return;
+  }
+
+  option.classList.add('highlight-selected');
+  highlightType.textContent = ` - ${display}`;
+  Color.setGroupingHighlight(grouping);
+}
+
+/**
+ * Set click listener for each highlight dropdown option
+ * @param id - The DOM element's id as `highlight-${id}`
+ * @param grouping - Grouping
+ * @param display - Text displayed on dropdown select
+ */
+function setHighlightOption (id: string, grouping: Grouping, display: string): void {
+  const option = document.getElementById(`highlight-${id}`);
+  option.addEventListener('click', () => {
+    updateHighlightOption(id, grouping, display);
+  });
+}
+
+/**
+ * Clickaway listener for the highlight dropdown.
+ */
+function highlightClickaway (): void {
+  document.body.removeEventListener('click', highlightClickaway);
+  document.getElementById('highlight-dropdown').classList.remove('is-active');
 }
 
 /**
  * Set listener on staff highlighting checkbox.
  */
 export function setHighlightControls (): void {
-  const highlightDropdown = document.getElementById('highlight-dropdown');
-  const highlightStaff = document.getElementById('highlight-staff');
-  const highlightSyllable = document.getElementById('highlight-syllable');
-  const highlightNeume = document.getElementById('highlight-neume');
-  const highlightLayerElement = document.getElementById('highlight-layerElement');
-  const highlightNone = document.getElementById('highlight-none');
-  const highlightType = document.getElementById('highlight-type');
+  const dropdown = document.getElementById('highlight-dropdown');
 
   document.getElementById('highlight-button').addEventListener('click', (evt) => {
     evt.stopPropagation();
-    highlightDropdown.classList.toggle('is-active');
-    if (highlightDropdown.classList.contains('is-active')) {
+    dropdown.classList.toggle('is-active');
+    if (dropdown.classList.contains('is-active')) {
       document.body.addEventListener('click', highlightClickaway);
-      highlightStaff.addEventListener('click', () => {
-        highlightDropdown.classList.remove('is-active');
-        document.querySelectorAll('.highlight-selected').forEach(elem => {
-          elem.classList.remove('highlight-selected');
-        });
-        highlightStaff.classList.add('highlight-selected');
-        highlightType.textContent = ' - Staff';
-        Color.setGroupingHighlight('staff');
-      });
-      highlightSyllable.addEventListener('click', () => {
-        highlightDropdown.classList.remove('is-active');
-        document.querySelectorAll('.highlight-selected').forEach(elem => {
-          elem.classList.remove('highlight-selected');
-        });
-        highlightSyllable.classList.add('highlight-selected');
-        highlightType.textContent = ' - Syllable';
-        Color.setGroupingHighlight('syllable');
-      });
-      highlightNeume.addEventListener('click', () => {
-        highlightDropdown.classList.remove('is-active');
-        document.querySelectorAll('.highlight-selected').forEach(elem => {
-          elem.classList.remove('highlight-selected');
-        });
-        highlightNeume.classList.add('highlight-selected');
-        highlightType.textContent = ' - Neume';
-        Color.setGroupingHighlight('neume');
-      });
-      highlightLayerElement.addEventListener('click', () => {
-        highlightDropdown.classList.remove('is-active');
-        document.querySelectorAll('.highlight-selected').forEach(elem => {
-          elem.classList.remove('highlight-selected');
-        });
-        highlightLayerElement.classList.add('highlight-selected');
-        highlightType.textContent = ' - LayerElement';
-        Color.setGroupingHighlight('layer');
-      });
-      highlightNone.addEventListener('click', () => {
-        highlightDropdown.classList.remove('is-active');
-        document.querySelectorAll('.highlight-selected').forEach(elem => {
-          elem.classList.remove('highlight-selected');
-        });
-        highlightType.textContent = ' - Off';
-        Color.unsetGroupingHighlight();
-      });
+
+      setHighlightOption('staff', 'staff', 'Staff');
+      setHighlightOption('syllable', 'syllable', 'Syllable');
+      setHighlightOption('neume', 'neume', 'Neume');
+      setHighlightOption('layerElement', 'layer', 'LayerElement');
+      setHighlightOption('none', 'none', 'Off');
+      // setHighlightOption('selection', 'selection', 'Selection');
     } else {
       document.body.removeEventListener('click', highlightClickaway);
     }
   });
 }
 
+/**
+  * Set listener on key shortcuts for switching between highlights
+  * 
+  * The current plan is to use the keys q, w, e, r, t, and y
+  */
+function setHighlightKeyControls (): void {
+  document.body.addEventListener('keydown', (evt) => {
+    switch (evt.key) {
+      case 'q':
+        console.log('hello???');
+        updateHighlightOption('staff', 'staff', 'Staff');
+        break;
+      case 'w':
+        updateHighlightOption('syllable', 'syllable', 'Syllable');
+        break;
+      case 'e':
+        updateHighlightOption('neume', 'neume', 'Neume');
+        break;
+      case 'r':
+        updateHighlightOption('layerElement', 'layer', 'LayerElement');
+        break;
+      case 't':
+        updateHighlightOption('selection', 'selection', 'Selection');
+        break;
+      case 'y':
+        updateHighlightOption('none', 'none', 'highlight-none');
+        break;
+    }
+  });
+}
+
+
+
+// Why does this exist separately?
 export function setHighlightSelectionControls (): void {
   const highlightSelection = document.getElementById('highlight-selection');
   highlightSelection.addEventListener('click', () => {
@@ -237,6 +254,9 @@ export function setHighlightSelectionControls (): void {
     Color.setGroupingHighlight('selection');
   });
 }
+
+
+
 
 /**
  * Reset the highlight for different types based on the 'highlight-selected' class in the DOM.
@@ -280,9 +300,28 @@ function setBurgerControls (): void {
 }
 
 /**
- * Clickaway listener for the highlight dropdown.
+ * Initialize listeners and controls for display panel.
+ * @param {string} meiClassName - The class used to signifiy the MEI element(s).
+ * @param {string} background - The class used to signify the background.
  */
-function highlightClickaway (): void {
-  document.body.removeEventListener('click', highlightClickaway);
-  document.getElementById('highlight-dropdown').classList.remove('is-active');
+export function initDisplayControls (meiClassName: string, background: string): void {
+  setOpacityControls(meiClassName);
+  setBackgroundOpacityControls(background);
+  setHighlightControls();
+  setBurgerControls();
+  setHighlightKeyControls();
+
+  const displayContents = document.getElementById('displayContents');
+  const toggleDisplay = document.getElementById('toggleDisplay');
+
+  toggleDisplay.parentElement.addEventListener('click', () => {
+    if (displayContents.style.display === 'none') {
+      displayContents.style.display = '';
+      toggleDisplay.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
+    } else {
+      displayContents.style.display = 'none';
+      toggleDisplay.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-side');
+    }
+  });
 }
+
