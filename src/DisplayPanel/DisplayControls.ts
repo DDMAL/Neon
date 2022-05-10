@@ -217,7 +217,6 @@ function setHighlightKeyControls (): void {
   document.body.addEventListener('keydown', (evt) => {
     switch (evt.key) {
       case 'q':
-        console.log('hello???');
         updateHighlightOption('staff', 'staff', 'Staff');
         break;
       case 'w':
