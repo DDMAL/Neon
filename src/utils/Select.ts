@@ -43,32 +43,40 @@ function escapeKeyListener (evt: KeyboardEvent): void {
 }
 
 function arrowKeyListener (evt: KeyboardEvent): void {
-  if (getSelectionType() !== 'selByBBox')
+  if (getSelectionType() !== 'selByBBox' || (evt.key !== 'ArrowLeft' && evt.key !== 'ArrowRight'))
     return;
 
+  // Find the position of the currently selected BBox in the list of all BBoxes
+  const width = (document.getElementById('mei_output') as HTMLSVGElement).width.baseVal.value;
+
+  // Sort BBoxes by coordinates by flattening the 2D plane to 1D
+  function sortByCoords(a: SVGRectElement, b: SVGRectElement): number {
+    const aVal = a.x.baseVal.value + width * a.y.baseVal.value;
+    const bVal = b.x.baseVal.value + width * b.y.baseVal.value;
+
+    return aVal - bVal;
+  }
+
+  const bboxes = Array.from(document.querySelectorAll('.sylTextRect-display'));
+  bboxes.sort(sortByCoords);
+
+  const selectedSyl = document.querySelector('.selected').querySelector('.sylTextRect-display');
+  const ind = bboxes.indexOf(selectedSyl);
+
   if (evt.key === 'ArrowLeft') {
-    console.log('left pressed');
+    // console.log('left pressed');
 
-    const width = (document.getElementById('mei_output') as HTMLSVGElement).width.baseVal.value;
-
-    // Sort BBoxes by coordinates by flattening the 2D plane to 1D
-    function sortByCoords(a: SVGRectElement, b: SVGRectElement): number {
-      const aVal = a.x.baseVal.value + width * a.y.baseVal.value;
-      const bVal = b.x.baseVal.value + width * b.y.baseVal.value;
-
-      return aVal - bVal;
+    if (ind !== 0) {
+      unselect();
+      selectAll([bboxes[ind - 1] as SVGGraphicsElement], neonView, dragHandler);
     }
-
-    const bboxes = Array.from(document.querySelectorAll('.sylTextRect-display'));
-    bboxes.sort(sortByCoords);
-
-    const selectedSyl = document.querySelector('.selected').querySelector('.sylTextRect-display');
-    const ind = bboxes.indexOf(selectedSyl);
-
-    unselect();
-    selectAll([bboxes[ind - 1] as SVGGraphicsElement], neonView, dragHandler);
   } else if (evt.key === 'ArrowRight') {
-    console.log('right');
+    // console.log('right');
+
+    if (ind !== bboxes.length - 1) {
+      unselect();
+      selectAll([bboxes[ind + 1] as SVGGraphicsElement], neonView, dragHandler);
+    }
   }
 }
 
