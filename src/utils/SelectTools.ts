@@ -21,6 +21,29 @@ export function getSelectionType (): SelectionType {
 }
 
 /**
+ * Check if selected elements can be grouped or not
+ * @returns true if grouped, false otherwise
+ */
+ export function canBeGrouped (elements: Array<SVGGraphicsElement>): boolean {
+  const groups = Array.from(elements.values()) as SVGGraphicsElement[];
+
+  switch (groups.length) {
+    case 1:
+      // cannot group if only 1 element is selected
+      return false;
+      break;
+    default:
+      // can group if more than 1 element is selected
+      // Note: is this true? Might need to add more checks for Ncs etc.
+      if (sharedSecondLevelParent(groups)) {
+        return true;
+      } else {
+        return false
+      }
+  }
+}
+
+/**
  * Unselect all selected elements and run undo any extra
  * actions.
  */

@@ -226,55 +226,45 @@ export function initGroupingListeners (): void {
 }
 
 /**
- * Grouping keybinding event listener
+ * Grouping/Ungrouping keybinding event listener
  */
- export const groupingKeyBindingsListener = function(e) {
+const groupingKeyBindingsListener = function(e) {
 
-  console.log(SelectTools.getSelectionType());
-
-  console.log('initializing keybinding events');
-
+  // if grouping keybinding is pressed
   if (e.key === "g") {
+    // get selected elements to check if they can be groupeds
+    const elements = Array.from(document.querySelectorAll('.selected')) as SVGGraphicsElement[];
 
-    // group syls
-    if (document.getElementById('mergeSyls')) {
-      console.log('mergeSyls');
+    // group/ingroup syls
+    if (SelectTools.getSelectionType() === 'selBySyl') {
       const elementIds = getChildrenIds().filter(e =>
         document.getElementById(e).classList.contains('neume')
       );
-      groupingAction('group', 'neume', elementIds);      
-    }
-
-    // group neumes
-    if (document.getElementById('groupNeumes')) {
-      console.log('groupNeumes');
-      const elementIds = getIds();
       groupingAction('group', 'neume', elementIds);
     }
-
-    // group Ncs
-    if (document.getElementById('groupNcs')) {
-      console.log('groupNcs');
-      const elementIds = getIds();
-      groupingAction('group', 'nc', elementIds);
+    // group/ungroup neumes
+    if (SelectTools.getSelectionType() === 'selByNeume') {
+      if (SelectTools.canBeGrouped(elements)) { // can be grouped?
+        const elementIds = getIds();
+        groupingAction('group', 'neume', elementIds);
+      } else {
+        const elementIds = getChildrenIds();
+        groupingAction('ungroup', 'nc', elementIds);
+      }
     }
-
-    // ungroup neumes
-    if (document.getElementById('ungroupNeumes')) {
-      console.log('ungroupNeumes');
-      const elementIds = getIds();
-      groupingAction('ungroup', 'neume', elementIds);
-    }
-
-    // ungroup Ncs
-    if (document.getElementById('ungroupNcs')) {
-      console.log('ungroupNcs');
-      const elementIds = getIds();
-      groupingAction('ungroup', 'nc', elementIds);
+    // group/ungroup Ncs
+    if (SelectTools.getSelectionType() === 'selByNc') {
+      if (SelectTools.canBeGrouped(elements)) { // can be grouped?
+        const elementIds = getIds();
+        groupingAction('group', 'nc', elementIds);
+      } else {
+        const elementIds = getChildrenIds();
+        groupingAction('ungroup', 'nc', elementIds);
+      }
     }
   }
+}
 
- }
 
 /**
  * Form and execute a group/ungroup action.
@@ -348,5 +338,3 @@ function getChildrenIds (): string[] {
   });
   return childrenIds;
 }
-
-
