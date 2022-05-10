@@ -1,6 +1,7 @@
 import * as Contents from './Contents';
 import * as Warnings from '../Warnings';
 import * as Notification from '../utils/Notification';
+import * as SelectTools from '../utils/SelectTools';
 import NeonView from '../NeonView';
 import { EditorAction } from '../Types';
 import { unsetVirgaAction, unsetInclinatumAction, removeHandler, deleteButtonHandler } from './SelectOptions';
@@ -46,6 +47,9 @@ export function initGroupingListeners (): void {
   del.removeEventListener('click', removeHandler);
   del.addEventListener('click', removeHandler);
   document.body.addEventListener('keydown', deleteButtonHandler);
+
+  document.body.removeEventListener('keydown', groupingKeyBindingsListener);
+  document.body.addEventListener('keydown', groupingKeyBindingsListener);
   try {
     document.getElementById('mergeSyls').addEventListener('click', () => {
       const elementIds = getChildrenIds().filter(e =>
@@ -56,6 +60,7 @@ export function initGroupingListeners (): void {
   } catch (e) {}
 
   try {
+
     document.getElementById('groupNeumes').addEventListener('click', () => {
       const elementIds = getIds();
       groupingAction('group', 'neume', elementIds);
@@ -221,6 +226,57 @@ export function initGroupingListeners (): void {
 }
 
 /**
+ * Grouping keybinding event listener
+ */
+ export const groupingKeyBindingsListener = function(e) {
+
+  console.log(SelectTools.getSelectionType());
+
+  console.log('initializing keybinding events');
+
+  if (e.key === "g") {
+
+    // group syls
+    if (document.getElementById('mergeSyls')) {
+      console.log('mergeSyls');
+      const elementIds = getChildrenIds().filter(e =>
+        document.getElementById(e).classList.contains('neume')
+      );
+      groupingAction('group', 'neume', elementIds);      
+    }
+
+    // group neumes
+    if (document.getElementById('groupNeumes')) {
+      console.log('groupNeumes');
+      const elementIds = getIds();
+      groupingAction('group', 'neume', elementIds);
+    }
+
+    // group Ncs
+    if (document.getElementById('groupNcs')) {
+      console.log('groupNcs');
+      const elementIds = getIds();
+      groupingAction('group', 'nc', elementIds);
+    }
+
+    // ungroup neumes
+    if (document.getElementById('ungroupNeumes')) {
+      console.log('ungroupNeumes');
+      const elementIds = getIds();
+      groupingAction('ungroup', 'neume', elementIds);
+    }
+
+    // ungroup Ncs
+    if (document.getElementById('ungroupNcs')) {
+      console.log('ungroupNcs');
+      const elementIds = getIds();
+      groupingAction('ungroup', 'nc', elementIds);
+    }
+  }
+
+ }
+
+/**
  * Form and execute a group/ungroup action.
  * @param action - The action to execute. Either "group" or "ungroup".
  * @param groupType - The type of elements to group. Either "neume" or "nc".
@@ -292,3 +348,5 @@ function getChildrenIds (): string[] {
   });
   return childrenIds;
 }
+
+
