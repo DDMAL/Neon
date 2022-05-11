@@ -9,7 +9,7 @@ class InsertHandler {
   type: string;
   firstClick = true;
   coord: DOMPoint;
-  attributes: object;
+  attributes: Record<string, string>;
   selector: string;
   neonView: NeonView;
 

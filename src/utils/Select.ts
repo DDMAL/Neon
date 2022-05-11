@@ -10,6 +10,7 @@ import { InfoInterface } from '../Interfaces';
 import ZoomHandler from '../SingleView/Zoom';
 
 import * as d3 from 'd3';
+import TextEditMode from '../TextEditMode';
 
 let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 let strokeWidth = 7;
@@ -63,6 +64,14 @@ function arrowKeyListener (evt: KeyboardEvent): void {
     const bbox = bboxSyllables[ind + 1].querySelector('.sylTextRect-display');
     selectAll([bbox as SVGGraphicsElement], neonView, dragHandler);
   }
+}
+
+function enterListener (evt: KeyboardEvent): void {
+  if (getSelectionType() !== 'selByBBox' || evt.key !== 'Enter')
+    return;
+
+  const selected = document.querySelector('.syllable-highlighted');
+  const span = document.querySelector('span.' + selected.id);
 }
 
 function isSelByBBox (): boolean {
@@ -266,6 +275,9 @@ export function clickSelect (selector: string): void {
   document.body.removeEventListener('keydown', arrowKeyListener);
   document.body.addEventListener('keydown', arrowKeyListener);
 
+  document.body.removeEventListener('keydown', enterListener);
+  document.body.addEventListener('keydown', enterListener);
+
   document.getElementById('container')
     .addEventListener('contextmenu', (evt) => { evt.preventDefault(); });
 
@@ -286,16 +298,45 @@ export function dragSelect (selector: string): void {
   let panning = false;
   let dragSelecting = false;
   // var canvas = d3.select('#svg_group');
-  d3.selectAll(selector.replace('.active-page', '').trim())
-    .on('.drag', null);
+
+  /**
+   * Check if a point is in the bounds of a staff element.
+   * Rotate is not taken into account.
+   */
+  function pointNotInStaff (pt: number[]): boolean {
+    const staves = Array.from(document.getElementsByClassName('staff'));
+    const filtered = staves.filter((staff: SVGGElement) => {
+      const bbox = getStaffBBox(staff);
+      const ulx = bbox.ulx;
+      const uly = bbox.uly;
+      const lrx = bbox.lrx;
+      const lry = bbox.lry;
+      const rotate = bbox.rotate;
+
+      return (pt[0] > ulx && pt[0] < lrx) &&
+        (pt[1] > (uly + (pt[0] - ulx) * Math.tan(rotate))) &&
+        (pt[1] < (lry - (lrx - pt[0]) * Math.tan(rotate)));
+    });
+    return (filtered.length === 0);
+  }
+
   const canvas = d3.select(selector);
-  const dragSelectAction = d3.drag()
-    .on('start', selStart)
-    .on('drag', selecting)
-    .on('end', selEnd);
-  canvas.call(dragSelectAction);
-  if (dragHandler) {
-    dragHandler.resetTo(dragSelectAction);
+
+  /**
+     * Create an initial dragging rectangle.
+     * @param ulx - The upper left x-position of the new rectangle.
+     * @param uly - The upper left y-position of the new rectangle.
+     */
+  function initRect (ulx: number, uly: number): void {
+    canvas.append('rect')
+      .attr('x', ulx)
+      .attr('y', uly)
+      .attr('width', 0)
+      .attr('height', 0)
+      .attr('id', 'selectRect')
+      .attr('stroke', 'black')
+      .attr('stroke-width', strokeWidth)
+      .attr('fill', 'none');
   }
 
   function selStart (): void {
@@ -327,24 +368,18 @@ export function dragSelect (selector: string): void {
   }
 
   /**
-   * Check if a point is in the bounds of a staff element.
-   * Rotate is not taken into account.
-   */
-  function pointNotInStaff (pt: number[]): boolean {
-    const staves = Array.from(document.getElementsByClassName('staff'));
-    const filtered = staves.filter((staff: SVGGElement) => {
-      const bbox = getStaffBBox(staff);
-      const ulx = bbox.ulx;
-      const uly = bbox.uly;
-      const lrx = bbox.lrx;
-      const lry = bbox.lry;
-      const rotate = bbox.rotate;
-
-      return (pt[0] > ulx && pt[0] < lrx) &&
-        (pt[1] > (uly + (pt[0] - ulx) * Math.tan(rotate))) &&
-        (pt[1] < (lry - (lrx - pt[0]) * Math.tan(rotate)));
-    });
-    return (filtered.length === 0);
+     * Update the dragging rectangle.
+     * @param newX - The new ulx.
+     * @param newY - The new uly.
+     * @param currentWidth - The width of the rectangle in pixels.
+     * @param currentHeight - The height of the rectangle in pixels.
+     */
+  function updateRect (newX: number, newY: number, currentWidth: number, currentHeight: number): void {
+    d3.select('#selectRect')
+      .attr('x', newX)
+      .attr('y', newY)
+      .attr('width', currentWidth)
+      .attr('height', currentHeight);
   }
 
   function selecting (): void {
@@ -457,35 +492,14 @@ export function dragSelect (selector: string): void {
     panning = false;
   }
 
-  /**
-     * Create an initial dragging rectangle.
-     * @param ulx - The upper left x-position of the new rectangle.
-     * @param uly - The upper left y-position of the new rectangle.
-     */
-  function initRect (ulx: number, uly: number): void {
-    canvas.append('rect')
-      .attr('x', ulx)
-      .attr('y', uly)
-      .attr('width', 0)
-      .attr('height', 0)
-      .attr('id', 'selectRect')
-      .attr('stroke', 'black')
-      .attr('stroke-width', strokeWidth)
-      .attr('fill', 'none');
-  }
-
-  /**
-     * Update the dragging rectangle.
-     * @param newX - The new ulx.
-     * @param newY - The new uly.
-     * @param currentWidth - The width of the rectangle in pixels.
-     * @param currentHeight - The height of the rectangle in pixels.
-     */
-  function updateRect (newX: number, newY: number, currentWidth: number, currentHeight: number): void {
-    d3.select('#selectRect')
-      .attr('x', newX)
-      .attr('y', newY)
-      .attr('width', currentWidth)
-      .attr('height', currentHeight);
+  d3.selectAll(selector.replace('.active-page', '').trim())
+    .on('.drag', null);
+  const dragSelectAction = d3.drag()
+    .on('start', selStart)
+    .on('drag', selecting)
+    .on('end', selEnd);
+  canvas.call(dragSelectAction);
+  if (dragHandler) {
+    dragHandler.resetTo(dragSelectAction);
   }
 }
