@@ -8,6 +8,7 @@ import DragHandler from './DragHandler';
 import * as SelectOptions from '../SquareEdit/SelectOptions';
 
 import * as d3 from 'd3';
+import { setSelectHelperObjects } from './Select';
 /**
  * @returns The selection mode chosen by the user.
  */
@@ -275,7 +276,6 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
   if (elements.length === 0) {
     return;
   }
-
   let selectionClass;
   let containsClefOrCustosOrAccidOrDivLine = false;
   let containsNc = false;
@@ -332,7 +332,6 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       groupsToSelect.add(document.getElementById(precedes.slice(1)));
     }
   }
-
   // Select the elements
   groupsToSelect.forEach((group: SVGGraphicsElement) => { select(group, dragHandler); });
 
@@ -433,7 +432,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
             SelectOptions.triggerDefaultSylActions();
             SelectOptions.triggerSylActions();
           }
-          // break;
+          // break
         // default:
           // if (sharedSecondLevelParent(groups)) {
           //   Grouping.triggerGrouping('syl');
@@ -476,26 +475,27 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
                 // Check that second neume component is lower than first.
                 // Note that the order in the list may not be the same as the
                 // order by x-position.
-                let x0 = (groups[0].children[0] as SVGUseElement).x.baseVal.value;
-                let x1 = (groups[1].children[0] as SVGUseElement).x.baseVal.value;
-                let y0 = (groups[0].children[0] as SVGUseElement).y.baseVal.value;
-                let y1 = (groups[1].children[0] as SVGUseElement).y.baseVal.value;
 
-                // console.log(groups[0].children[0], groups[1].children[0])
-                // console.log('1st: ', x0, y0)
-                // console.log('2nd: ', x1, y1)
-                // console.log(groups)
+                console.log('groups: ', groups);
+                
+                let firstNeumeComponent = (groups[0].children[0] as SVGUseElement);
+                let secondNeumeComponent = (groups[1].children[0] as SVGUseElement);
+
+                let firstNeumeComponentX  = firstNeumeComponent.x.baseVal.value;
+                let secondNeumeComponentX = secondNeumeComponent.x.baseVal.value;
+                let firstNeumeComponentY  = firstNeumeComponent.y.baseVal.value;
+                let secondNeumeComponentY = secondNeumeComponent.y.baseVal.value;
 
                 // Nc's stacked on each other can only be one of 2 cases: 1) ligature, 2) podatus/pes
                 // In either case, order by lower pitch first - (as selecting by bounds gets the ligature first)
-                if (x0 === x1) {
-                  if (y0 < y1) {
+                if (firstNeumeComponentX === secondNeumeComponentX) {
+                  if (firstNeumeComponentY < secondNeumeComponentY) {
                     [groups[0], groups[1]] = [groups[1], groups[0]];
-                    [y0, y1] = [y1, y0];
+                    [firstNeumeComponentY, secondNeumeComponentY] = [secondNeumeComponentY, firstNeumeComponentY];
                   }
                 }
                 // if stacked nc's/ligature (identical x), or descending nc's (y descends)
-                if (x0 === x1 || y0 < y1) {
+                if (firstNeumeComponentX === secondNeumeComponentX || firstNeumeComponentY < secondNeumeComponentY) {
                   Grouping.triggerGrouping('ligature'); 
                   break;
                 }
