@@ -25,6 +25,7 @@ class DragHandler {
   dragInit (): void {
     // Adding listeners
     const dragBehaviour = d3.drag()
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       .on('start', dragStarted.bind(this))
       .on('drag', this.dragging.bind(this))
       .on('end', this.dragEnded.bind(this));
@@ -84,8 +85,8 @@ class DragHandler {
       paramArray.push(singleAction);
     });
     const editorAction: EditorAction = {
-      'action': 'chain',
-      'param': paramArray
+      action: 'chain',
+      param: paramArray
     };
 
     const xDiff = Math.abs(this.dx);
