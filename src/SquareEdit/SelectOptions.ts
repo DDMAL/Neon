@@ -521,7 +521,6 @@ export function triggerNeumeActions (): void {
   document.body.addEventListener('keydown', deleteButtonHandler);
 
   initOptionsListeners();
-  Grouping.initGroupingListeners();
 }
 
 /**
@@ -758,6 +757,7 @@ export function triggerDivLineActions (): void {
   } catch (e) {console.debug(e);}
 }
 
+
 /**
  * Trigger extra staff actions.
  */
@@ -771,26 +771,7 @@ export function triggerStaffActions (): void {
 
   document.getElementById('merge-systems')
     .addEventListener('click', () => {
-      const systems = document.querySelectorAll('.staff.selected');
-      const elementIds = [];
-      systems.forEach(staff => {
-        elementIds.push(staff.id);
-      });
-      const editorAction: EditorAction = {
-        action: 'merge',
-        param: {
-          elementIds: elementIds
-        }
-      };
-      neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
-        if (result) {
-          Notification.queueNotification('Staff Merged');
-          endOptionsSelection();
-          neonView.updateForCurrentPage();
-        } else {
-          Notification.queueNotification('Merge Failed');
-        }
-      });
+      Grouping.mergeStaves();
     });
 
   try {
@@ -799,6 +780,21 @@ export function triggerStaffActions (): void {
     del.addEventListener('click', removeHandler);
   } catch (e) {}
   document.body.addEventListener('keydown', deleteButtonHandler);
+}
+
+/**
+ * Enter staff splitting mode
+ */
+export function triggerStaffSplitMode (): void {
+  const staff = document.querySelector('.staff.selected') as SVGGElement;
+  if (staff !== null) {
+    const split = new SplitStaffHandler(neonView, staff);
+    split.startSplit();
+    endOptionsSelection();
+  } else {
+    console.error('No staff was selected!');
+    endOptionsSelection();
+  }
 }
 
 /**
@@ -815,15 +811,7 @@ export function triggerSplitActions (): void {
   // TODO add trigger for split action
   document.getElementById('split-system')
     .addEventListener('click', () => {
-      const staff = document.querySelector('.staff.selected') as SVGGElement;
-      if (staff !== null) {
-        const split = new SplitStaffHandler(neonView, staff);
-        split.startSplit();
-        endOptionsSelection();
-      } else {
-        console.error('No staff was selected!');
-        endOptionsSelection();
-      }
+      triggerStaffSplitMode();
     });
 
   document.getElementById('reset-rotate')

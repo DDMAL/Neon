@@ -160,6 +160,7 @@ export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dra
       console.warn('No action triggered!');
     }
     dragHandler.dragInit();
+    Grouping.initGroupingListeners();
   }
 }
 
@@ -529,4 +530,5 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     default:
       console.error('Unknown selection type. This should not have occurred.');
   }
+  Grouping.initGroupingListeners();
 }
