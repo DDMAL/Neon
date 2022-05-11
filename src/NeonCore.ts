@@ -80,11 +80,11 @@ class NeonCore {
    * not update the database unless forced.
    * @param force - If a database update should be forced.
    */
-  async initDb (force = false): Promise<{}> {
+  async initDb (force = false): Promise<boolean> {
     // Check for existing manifest
     type DbAnnotation = PouchDB.Core.IdMeta & PouchDB.Core.GetMeta & WebAnnotation;
     type Doc = PouchDB.Core.IdMeta & PouchDB.Core.GetMeta & { timestamp: string; annotations: string[]};
-    const response = await new Promise<{}>((resolve, reject): void => {
+    const response = await new Promise<boolean>((resolve, reject): void => {
       this.db.get(this.manifest['@id']).catch(err => {
         if (err.name === 'not_found') {
           // This is a new document.
@@ -549,14 +549,14 @@ class NeonCore {
   }
 
   /** Completely remove the database. */
-  async deleteDb (): Promise<{}[]> {
+  async deleteDb (): Promise<void[]> {
     type Doc = PouchDB.Core.IdMeta & PouchDB.Core.GetMeta & { timestamp: string; annotations: string[]};
     const annotations = await this.db.get(this.manifest['@id'])
       .then((doc: Doc) => { return doc.annotations; } );
     annotations.push(this.manifest['@id']);
 
     const promises = annotations.map((id) => {
-      return new Promise(res => {
+      return new Promise<void>(res => {
         this.db.get(id)
           .then(doc => { return this.db.remove(doc); })
           .then(() => res());

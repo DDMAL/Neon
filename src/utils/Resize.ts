@@ -3,6 +3,7 @@ import NeonView from '../NeonView';
 import DragHandler from './DragHandler';
 
 import * as d3 from 'd3';
+import { EditorAction, ResizeAction } from '../Types';
 
 /**
  * Resize a staff or a syllable text bounding box.
@@ -234,7 +235,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
     }
 
     function resizeEnd (): void {
-      const editorAction = {
+      const editorAction: ResizeAction = {
         action: 'resize',
         param: {
           elementId: element.id,
@@ -329,7 +330,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       if (dy === undefined) {
         dy = 0;
       }
-      const editorAction = {
+      const editorAction: EditorAction = {
         action: 'resizeRotate',
         param: {
           elementId: element.id,

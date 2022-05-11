@@ -2,6 +2,7 @@ import * as Notification from './Notification';
 import NeonView from '../NeonView';
 import { navbarDropdownFileMenu, navbarDropdownMEIActionsMenu, undoRedoPanel } from './EditContents';
 import { convertStaffToSb } from './ConvertMei';
+import { EditorAction } from '../Types';
 
 /**
  * Set listener on switching EditMode button to File dropdown in the navbar.
@@ -57,11 +58,11 @@ export function initNavbar (neonView: NeonView): void {
 
       // Check for syllables without neumes
       let hasEmptySyllables = false;
-      let removeSyllableActions = [];
+      const removeSyllableActions = [];
       for (const syllable of syllables) {
         // if empty syllable found, create action object for removing it
         if (syllable.getElementsByTagName('neume').length === 0) {
-          let toRemove = {
+          const toRemove: EditorAction = {
             action: 'remove',
             param: {
               elementId: syllable.getAttribute('xml:id')
@@ -79,7 +80,7 @@ export function initNavbar (neonView: NeonView): void {
       }
       else {
         // create "chain action" object
-        const chainRemoveAction = {
+        const chainRemoveAction: EditorAction = {
           action: 'chain',
           param: removeSyllableActions
         };
@@ -111,11 +112,11 @@ export function initNavbar (neonView: NeonView): void {
 
       // Check for neumes without neume components
       let hasEmptyNeumes = false;
-      let removeNeumeActions = [];
+      const removeNeumeActions = [];
       for (const neume of neumes) {
         // if empty neume found, create action object for removing it
         if (neume.getElementsByTagName('nc').length === 0) {
-          let toRemove = {
+          const toRemove: EditorAction = {
             action: 'remove',
             param: {
               elementId: neume.getAttribute('xml:id')
@@ -133,7 +134,7 @@ export function initNavbar (neonView: NeonView): void {
       }
       else {
         // create "chain action" object
-        const chainRemoveAction = {
+        const chainRemoveAction: EditorAction = {
           action: 'chain',
           param: removeNeumeActions,
         };

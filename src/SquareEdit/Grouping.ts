@@ -4,7 +4,7 @@ import * as Notification from '../utils/Notification';
 import * as SelectTools from '../utils/SelectTools';
 import * as SelectOptions from '../SquareEdit/SelectOptions';
 import NeonView from '../NeonView';
-import { EditorAction } from '../Types';
+import { EditorAction, ToggleLigatureAction } from '../Types';
 import { removeHandler, deleteButtonHandler } from './SelectOptions';
 
 
@@ -26,7 +26,7 @@ export function initNeonView (view: NeonView): void {
  * Check if selected elements can be grouped or not
  * @returns true if grouped, false otherwise
  */
- export function isGroupable (selectionType: string, elements: Array<SVGGraphicsElement>): boolean {
+export function isGroupable (selectionType: string, elements: Array<SVGGraphicsElement>): boolean {
   const groups = Array.from(elements.values()) as SVGGraphicsElement[];
 
   switch (groups.length) {
@@ -48,16 +48,16 @@ export function initNeonView (view: NeonView): void {
 /**
  * Merge selected staves
  */
- export function mergeStaves (): void {
+export function mergeStaves (): void {
   const systems = document.querySelectorAll('.staff.selected');
   const elementIds = [];
   systems.forEach(staff => {
     elementIds.push(staff.id);
   });
   const editorAction: EditorAction = {
-    'action': 'merge',
-    'param': {
-      'elementIds': elementIds
+    action: 'merge',
+    param: {
+      elementIds: elementIds
     }
   };
   neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
@@ -147,7 +147,7 @@ export function initGroupingListeners (): void {
     document.getElementById('toggle-ligature').addEventListener('click', async () => {
       const elementIds = getIds();
       
-      const editorAction: EditorAction = {
+      const editorAction: ToggleLigatureAction = {
         action: 'toggleLigature',
         param: {
           elementIds: elementIds
@@ -348,7 +348,7 @@ const keydownListener = function(e) {
  * @param groupType - The type of elements to group. Either "neume" or "nc".
  * @param elementIds - The IDs of the elements.
  */
-function groupingAction (action: string, groupType: string, elementIds: string[]): void {
+function groupingAction (action: 'group' | 'ungroup', groupType: 'neume' | 'nc', elementIds: string[]): void {
   const editorAction: EditorAction = {
     action: action,
     param: {

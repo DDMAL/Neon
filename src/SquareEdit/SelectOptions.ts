@@ -4,7 +4,7 @@ import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
 import { SplitStaffHandler } from './StaffTools';
 import { SplitNeumeHandler } from './NeumeTools';
-import { EditorAction } from '../Types';
+import { ChainAction, ChangeStaffAction, EditorAction, RemoveAction, SetAction, SetClefAction } from '../Types';
 import { getStaffBBox } from '../utils/SelectTools';
 
 /**
@@ -24,7 +24,7 @@ export function initNeonView (view: NeonView): void {
  * @param id - The id of the neume component.
  * @returns An action that unsets the inclinatum parameter of a neume component.
  */
-export function unsetInclinatumAction (id: string): EditorAction {
+export function unsetInclinatumAction (id: string): SetAction {
   return {
     action: 'set',
     param: {
@@ -39,7 +39,7 @@ export function unsetInclinatumAction (id: string): EditorAction {
  * @param id - The id of the neume component.
  * @returns An action that unsets the virga parameter of a neume component.
  */
-export function unsetVirgaAction (id: string): EditorAction {
+export function unsetVirgaAction (id: string): SetAction {
   return {
     action: 'set',
     param: {
@@ -54,7 +54,7 @@ export function unsetVirgaAction (id: string): EditorAction {
  * @param id - The id of the neume component.
  * @returns An action that unsets the reversed virga parameter of a neume component.
  */
-export function unsetVirgaReversedAction (id: string): EditorAction {
+export function unsetVirgaReversedAction (id: string): SetAction {
   return {
     action: 'set',
     param: {
@@ -69,7 +69,7 @@ export function unsetVirgaReversedAction (id: string): EditorAction {
  * @param id - The id of the neume component.
  * @returns An action that unsets the liquescent_clockwise parameter of a neume component.
  */
-export function unsetLiquescentClockwiseAction (id: string): EditorAction {
+export function unsetLiquescentClockwiseAction (id: string): SetAction {
   return {
     action: 'set',
     param: {
@@ -84,7 +84,7 @@ export function unsetLiquescentClockwiseAction (id: string): EditorAction {
  * @param id - The id of the neume component.
  * @returns An action that unsets the liquescent_anticlockwise parameter of a neume component.
  */
-export function unsetLiquescentAnticlockwiseAction (id: string): EditorAction {
+export function unsetLiquescentAnticlockwiseAction (id: string): SetAction {
   return {
     action: 'set',
     param: {
@@ -117,7 +117,7 @@ export function endOptionsSelection (): void {
  * Function to handle removing elements
  */
 export function removeHandler (): void {
-  const toRemove = [];
+  const toRemove: RemoveAction[] = [];
   const selected = Array.from(document.getElementsByClassName('selected'));
   selected.forEach(elem => {
     if (elem.classList.contains('syl')) {
@@ -138,7 +138,7 @@ export function removeHandler (): void {
       }
     );
   });
-  const chainAction: EditorAction = {
+  const chainAction: ChainAction = {
     action: 'chain',
     param: toRemove
   };
@@ -150,7 +150,7 @@ export function removeHandler (): void {
  * Function to handle re-associating elements to the nearest staff
  */
 export function changeStaffHandler(): void {
-  const toChange: EditorAction[] = [];
+  const toChange: ChangeStaffAction[] = [];
   const selected = Array.from(document.getElementsByClassName('selected'));
   selected.forEach(elem => {
     toChange.push(
@@ -187,7 +187,7 @@ export function insertToSyllableHandler(): void {
       }
     );
   });
-  const chainAction: EditorAction = {
+  const chainAction: ChainAction = {
     action: 'chain',
     param: toInsert
   };
@@ -260,7 +260,7 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
-      const setInclinatum = {
+      const setInclinatum: SetAction = {
         action: 'set',
         param: {
           elementId: nc.id,
@@ -285,7 +285,7 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
-      const setVirga = {
+      const setVirga: SetAction = {
         action: 'set',
         param: {
           elementId: nc.id,
@@ -310,7 +310,7 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       const unsetVirga = unsetVirgaAction(nc.id);
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
-      const setVirgaReversed = {
+      const setVirgaReversed: SetAction = {
         action: 'set',
         param: {
           elementId: nc.id,
@@ -335,7 +335,7 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       const unsetVirga = unsetVirgaAction(nc.id);
       const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
-      const setLiquescentClockwise = {
+      const setLiquescentClockwise: SetAction = {
         action: 'set',
         param: {
           elementId: nc.id,
@@ -360,7 +360,7 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       const unsetVirga = unsetVirgaAction(nc.id);
       const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
-      const setLiquescentAnticlockwise = {
+      const setLiquescentAnticlockwise: SetAction = {
         action: 'set',
         param: {
           elementId: nc.id,
@@ -495,7 +495,7 @@ export function triggerNeumeActions (): void {
       triggerChangeGroup(contour); 
     }); 
 
-  function triggerChangeGroup (contour): void {
+  function triggerChangeGroup (contour: string): void {
     const changeGroupingAction: EditorAction = {
       action: 'changeGroup',
       param: {
@@ -575,7 +575,7 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
   
   document.querySelector('#CClef.dropdown-item')
     .addEventListener('click', () => {
-      const setCClef: EditorAction = {
+      const setCClef: SetClefAction = {
         action: 'setClef',
         param: {
           elementId: clef.id,
@@ -594,7 +594,7 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
     });
   document.querySelector('#FClef.dropdown-item')
     .addEventListener('click', () => {
-      const setFClef: EditorAction = {
+      const setFClef: SetClefAction = {
         action: 'setClef',
         param: {
           elementId: clef.id,
@@ -677,7 +677,7 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
 
   document.querySelector('#ChangeToFlat.dropdown-item')
     .addEventListener('click', () => {
-      const changeToFlat: EditorAction = {
+      const changeToFlat: SetAction = {
         action: 'set',
         param: {
           elementId: accid.id,
