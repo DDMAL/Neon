@@ -9,7 +9,7 @@ import { NeumeEditInterface } from '../Interfaces';
 /**
  * Set listener on EditMode button.
  */
-export function initEditModeControls (editMode: NeumeEditInterface) {
+export function initEditModeControls (editMode: NeumeEditInterface): void {
   document.getElementById('edit_mode').addEventListener('click', function () {
     document.getElementById('insert_controls').innerHTML += Contents.insertControlsPanel;
     document.getElementById('edit_controls').innerHTML += Contents.editControlsPanel;
@@ -20,7 +20,7 @@ export function initEditModeControls (editMode: NeumeEditInterface) {
 /**
  * Bind listeners to insert tabs.'
  */
-export function bindInsertTabs (insertHandler: InsertHandler) {
+export function bindInsertTabs (insertHandler: InsertHandler): void {
   const insertTabs: Element[] = Array.from(document.getElementsByClassName('insertTab'));
   const tabIds: string[] = insertTabs.map((tab) => { return tab.id; });
 
@@ -55,7 +55,7 @@ export function bindInsertTabs (insertHandler: InsertHandler) {
 /**
  * Initialize Edit and Insert control panels.
  */
-export function initInsertEditControls () {
+export function initInsertEditControls (): void {
   const toggleInsert = document.getElementById('toggleInsert');
   const toggleEdit = document.getElementById('toggleEdit');
   const insertContents = document.getElementById('insertContents');
@@ -120,7 +120,7 @@ function bindElements (insertHandler: InsertHandler) {
 /**
  * Set listeners on the buttons to change selection modes.
  */
-export function initSelectionButtons () {
+export function initSelectionButtons (): void {
   const selBySyl = document.getElementById('selBySyl');
   const selByNeume = document.getElementById('selByNeume');
   const selByNc = document.getElementById('selByNc');

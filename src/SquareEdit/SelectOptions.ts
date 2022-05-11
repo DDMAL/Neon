@@ -26,11 +26,11 @@ export function initNeonView (view: NeonView): void {
  */
 export function unsetInclinatumAction (id: string): EditorAction {
   return {
-    'action': 'set',
-    'param': {
-      'elementId': id,
-      'attrType': 'tilt',
-      'attrValue': ''
+    action: 'set',
+    param: {
+      elementId: id,
+      attrType: 'tilt',
+      attrValue: ''
     }
   };
 }
@@ -41,11 +41,11 @@ export function unsetInclinatumAction (id: string): EditorAction {
  */
 export function unsetVirgaAction (id: string): EditorAction {
   return {
-    'action': 'set',
-    'param': {
-      'elementId': id,
-      'attrType': 'tilt',
-      'attrValue': ''
+    action: 'set',
+    param: {
+      elementId: id,
+      attrType: 'tilt',
+      attrValue: ''
     }
   };
 }
@@ -54,13 +54,13 @@ export function unsetVirgaAction (id: string): EditorAction {
  * @param id - The id of the neume component.
  * @returns An action that unsets the reversed virga parameter of a neume component.
  */
- export function unsetVirgaReversedAction (id: string): EditorAction {
+export function unsetVirgaReversedAction (id: string): EditorAction {
   return {
-    'action': 'set',
-    'param': {
-      'elementId': id,
-      'attrType': 'tilt',
-      'attrValue': ''
+    action: 'set',
+    param: {
+      elementId: id,
+      attrType: 'tilt',
+      attrValue: ''
     }
   };
 }
@@ -69,13 +69,13 @@ export function unsetVirgaAction (id: string): EditorAction {
  * @param id - The id of the neume component.
  * @returns An action that unsets the liquescent_clockwise parameter of a neume component.
  */
- export function unsetLiquescentClockwiseAction (id: string): EditorAction {
+export function unsetLiquescentClockwiseAction (id: string): EditorAction {
   return {
-    'action': 'set',
-    'param': {
-      'elementId': id,
-      'attrType': 'curve',
-      'attrValue': ''
+    action: 'set',
+    param: {
+      elementId: id,
+      attrType: 'curve',
+      attrValue: ''
     }
   };
 }
@@ -84,16 +84,34 @@ export function unsetVirgaAction (id: string): EditorAction {
  * @param id - The id of the neume component.
  * @returns An action that unsets the liquescent_anticlockwise parameter of a neume component.
  */
- export function unsetLiquescentAnticlockwiseAction (id: string): EditorAction {
+export function unsetLiquescentAnticlockwiseAction (id: string): EditorAction {
   return {
-    'action': 'set',
-    'param': {
-      'elementId': id,
-      'attrType': 'curve',
-      'attrValue': ''
+    action: 'set',
+    param: {
+      elementId: id,
+      attrType: 'curve',
+      attrValue: ''
     }
   };
 }
+
+/** Event handler for delete button press. */
+export function deleteButtonHandler (evt: KeyboardEvent): void {
+  if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); evt.preventDefault(); }
+}
+
+/**
+ * End the extra options menu.
+ */
+export function endOptionsSelection (): void {
+  try {
+    const moreEdit = document.getElementById('moreEdit');
+    moreEdit.innerHTML = '';
+    moreEdit.classList.add('is-invisible');
+  } catch (e) {}
+  document.body.removeEventListener('keydown', deleteButtonHandler);
+}
+
 
 /**
  * Function to handle removing elements
@@ -113,16 +131,16 @@ export function removeHandler (): void {
     }
     toRemove.push(
       {
-        'action': 'remove',
-        'param': {
-          'elementId': elem.id
+        action: 'remove',
+        param: {
+          elementId: elem.id
         }
       }
     );
   });
   const chainAction: EditorAction = {
-    'action': 'chain',
-    'param': toRemove
+    action: 'chain',
+    param: toRemove
   };
   endOptionsSelection();
   neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then(() => { neonView.updateForCurrentPage(); });
@@ -137,16 +155,16 @@ export function changeStaffHandler(): void {
   selected.forEach(elem => {
     toChange.push(
       {
-        'action': 'changeStaff',
-        'param': {
-          'elementId': elem.id
+        action: 'changeStaff',
+        param: {
+          elementId: elem.id
         }
       }
     );
   });
   const chainAction: EditorAction = {
-    'action': 'chain',
-    'param': toChange
+    action: 'chain',
+    param: toChange
   };
   endOptionsSelection();
   neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then(() => { neonView.updateForCurrentPage(); });
@@ -162,16 +180,16 @@ export function insertToSyllableHandler(): void {
   selected.forEach(elem => {
     toInsert.push(
       {
-        'action': 'insertToSyllable',
-        'param': {
-          'elementId': elem.id
+        action: 'insertToSyllable',
+        param: {
+          elementId: elem.id
         }
       }
     );
   });
   const chainAction: EditorAction = {
-    'action': 'chain',
-    'param': toInsert
+    action: 'chain',
+    param: toInsert
   };
   neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => { 
     if (result) {
@@ -225,7 +243,7 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
-      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentClockwise, unsetLiquescentAnticlockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
+      neonView.edit({ action: 'chain', param: [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentClockwise, unsetLiquescentAnticlockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
           Notification.queueNotification('Shape Changed');
         } else {
@@ -243,14 +261,14 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
       const setInclinatum = {
-        'action': 'set',
-        'param': {
-          'elementId': nc.id,
-          'attrType': 'tilt',
-          'attrValue': 'se'
+        action: 'set',
+        param: {
+          elementId: nc.id,
+          attrType: 'tilt',
+          attrValue: 'se'
         }
       };
-      neonView.edit({ 'action': 'chain', 'param': [ unsetVirga, unsetVirgaReversed, unsetLiquescentClockwise, unsetLiquescentAnticlockwise, setInclinatum ] } , neonView.view.getCurrentPageURI()).then((result) => {
+      neonView.edit({ action: 'chain', param: [ unsetVirga, unsetVirgaReversed, unsetLiquescentClockwise, unsetLiquescentAnticlockwise, setInclinatum ] } , neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
           Notification.queueNotification('Shape Changed');
         } else {
@@ -268,14 +286,14 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
       const setVirga = {
-        'action': 'set',
-        'param': {
-          'elementId': nc.id,
-          'attrType': 'tilt',
-          'attrValue': 's'
+        action: 'set',
+        param: {
+          elementId: nc.id,
+          attrType: 'tilt',
+          attrValue: 's'
         }
       };
-      neonView.edit({ 'action': 'chain', 'param': [ unsetVirgaReversed, unsetInclinatum, unsetLiquescentClockwise, unsetLiquescentAnticlockwise, setVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
+      neonView.edit({ action: 'chain', param: [ unsetVirgaReversed, unsetInclinatum, unsetLiquescentClockwise, unsetLiquescentAnticlockwise, setVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
           Notification.queueNotification('Shape Changed');
         } else {
@@ -286,21 +304,21 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       });
     });
 
-    document.querySelector('#VirgaReversed.dropdown-item')
+  document.querySelector('#VirgaReversed.dropdown-item')
     .addEventListener('click', () => {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
       const unsetVirga = unsetVirgaAction(nc.id);
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
       const setVirgaReversed = {
-        'action': 'set',
-        'param': {
-          'elementId': nc.id,
-          'attrType': 'tilt',
-          'attrValue': 'n'
+        action: 'set',
+        param: {
+          elementId: nc.id,
+          attrType: 'tilt',
+          attrValue: 'n'
         }
       };
-      neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, unsetLiquescentClockwise, unsetLiquescentAnticlockwise, setVirgaReversed ] }, neonView.view.getCurrentPageURI()).then((result) => {
+      neonView.edit({ action: 'chain', param: [ unsetInclinatum, unsetVirga, unsetLiquescentClockwise, unsetLiquescentAnticlockwise, setVirgaReversed ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
           Notification.queueNotification('Shape Changed');
         } else {
@@ -312,54 +330,54 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
     });
 
   document.querySelector('#LiquescentClockwise.dropdown-item')
-  .addEventListener('click', () => {
-    const unsetInclinatum = unsetInclinatumAction(nc.id);
-    const unsetVirga = unsetVirgaAction(nc.id);
-    const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
-    const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
-    const setLiquescentClockwise = {
-      'action': 'set',
-      'param': {
-        'elementId': nc.id,
-        'attrType': 'curve',
-        'attrValue': 'c'
-      }
-    };
-    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentAnticlockwise, setLiquescentClockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
-      if (result) {
-        Notification.queueNotification('Shape Changed');
-      } else {
-        Notification.queueNotification('Shape Change Failed');
-      }
-      endOptionsSelection();
-      neonView.updateForCurrentPage();
-    });
-  });  
+    .addEventListener('click', () => {
+      const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetVirga = unsetVirgaAction(nc.id);
+      const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
+      const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
+      const setLiquescentClockwise = {
+        action: 'set',
+        param: {
+          elementId: nc.id,
+          attrType: 'curve',
+          attrValue: 'c'
+        }
+      };
+      neonView.edit({ action: 'chain', param: [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentAnticlockwise, setLiquescentClockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Shape Changed');
+        } else {
+          Notification.queueNotification('Shape Change Failed');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
+    });  
 
   document.querySelector('#LiquescentAnticlockwise.dropdown-item')
-  .addEventListener('click', () => {
-    const unsetInclinatum = unsetInclinatumAction(nc.id);
-    const unsetVirga = unsetVirgaAction(nc.id);
-    const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
-    const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
-    const setLiquescentAnticlockwise = {
-      'action': 'set',
-      'param': {
-        'elementId': nc.id,
-        'attrType': 'curve',
-        'attrValue': 'a'
-      }
-    };
-    neonView.edit({ 'action': 'chain', 'param': [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentClockwise, setLiquescentAnticlockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
-      if (result) {
-        Notification.queueNotification('Shape Changed');
-      } else {
-        Notification.queueNotification('Shape Change Failed');
-      }
-      endOptionsSelection();
-      neonView.updateForCurrentPage();
-    });
-  });  
+    .addEventListener('click', () => {
+      const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetVirga = unsetVirgaAction(nc.id);
+      const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
+      const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
+      const setLiquescentAnticlockwise = {
+        action: 'set',
+        param: {
+          elementId: nc.id,
+          attrType: 'curve',
+          attrValue: 'a'
+        }
+      };
+      neonView.edit({ action: 'chain', param: [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentClockwise, setLiquescentAnticlockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Shape Changed');
+        } else {
+          Notification.queueNotification('Shape Change Failed');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
+    });  
 
   try {
     const del = document.getElementById('delete');
@@ -386,7 +404,7 @@ export function triggerNeumeActions (): void {
     extraEdit.classList.remove('is-invisible');
     extraEdit.innerHTML = Contents.neumeActionContents;
   } catch (e) {}
-    const neume = document.querySelectorAll('.selected');
+  const neume = document.querySelectorAll('.selected');
   if (neume.length !== 1) {
     console.warn('More than one neume selected! Cannot trigger Neume ClickSelect actions.');
     return;
@@ -407,82 +425,82 @@ export function triggerNeumeActions (): void {
     });
 
   document.querySelector('#Pes.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
   document.querySelector('#PesSubpunctis.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
   document.querySelector('#Clivis.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
   document.querySelector('#Scandicus.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
   document.querySelector('#ScandicusFlexus.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
   document.querySelector('#ScandicusSubpunctis.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
   document.querySelector('#Climacus.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
   document.querySelector('#ClimacusResupinus.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
   document.querySelector('#Torculus.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
   document.querySelector('#TorculusResupinus.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
   document.querySelector('#Porrectus.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
   document.querySelector('#PorrectusFlexus.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
   document.querySelector('#PorrectusSubpunctis.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
   document.querySelector('#Pressus.dropdown-item')
-  .addEventListener('click', (e) => {
-    const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
-    triggerChangeGroup(contour); 
-  }); 
+    .addEventListener('click', (e) => {
+      const contour = neonView.info.getContourByValue((e.target as HTMLElement).id);
+      triggerChangeGroup(contour); 
+    }); 
 
   function triggerChangeGroup (contour): void {
     const changeGroupingAction: EditorAction = {
-      'action': 'changeGroup',
-      'param': {
-        'elementId': neume[0].id,
-        'contour': contour
+      action: 'changeGroup',
+      param: {
+        elementId: neume[0].id,
+        contour: contour
       }
     };
     neonView.edit(changeGroupingAction, neonView.view.getCurrentPageURI()).then((result) => {
@@ -561,10 +579,10 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
   document.querySelector('#CClef.dropdown-item')
     .addEventListener('click', () => {
       const setCClef: EditorAction = {
-        'action': 'setClef',
-        'param': {
-          'elementId': clef.id,
-          'shape': 'C'
+        action: 'setClef',
+        param: {
+          elementId: clef.id,
+          shape: 'C'
         }
       };
       neonView.edit(setCClef, neonView.view.getCurrentPageURI()).then((result) => {
@@ -580,10 +598,10 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
   document.querySelector('#FClef.dropdown-item')
     .addEventListener('click', () => {
       const setFClef: EditorAction = {
-        'action': 'setClef',
-        'param': {
-          'elementId': clef.id,
-          'shape': 'F'
+        action: 'setClef',
+        param: {
+          elementId: clef.id,
+          shape: 'F'
         }
       };
       neonView.edit(setFClef, neonView.view.getCurrentPageURI()).then((result) => {
@@ -663,11 +681,11 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
   document.querySelector('#ChangeToFlat.dropdown-item')
     .addEventListener('click', () => {
       const changeToFlat: EditorAction = {
-        'action': 'set',
-        'param': {
-          'elementId': accid.id,
-          'attrType': 'accid',
-          'attrValue': 'f'
+        action: 'set',
+        param: {
+          elementId: accid.id,
+          attrType: 'accid',
+          attrValue: 'f'
         }
       };
       neonView.edit(changeToFlat, neonView.view.getCurrentPageURI()).then((result) => {
@@ -683,11 +701,11 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
   document.querySelector('#ChangeToNatural.dropdown-item')
     .addEventListener('click', () => {
       const changeToNatural: EditorAction = {
-        'action': 'set',
-        'param': {
-          'elementId': accid.id,
-          'attrType': 'accid',
-          'attrValue': 'n'
+        action: 'set',
+        param: {
+          elementId: accid.id,
+          attrType: 'accid',
+          attrValue: 'n'
         }
       };
       neonView.edit(changeToNatural, neonView.view.getCurrentPageURI()).then((result) => {
@@ -759,9 +777,9 @@ export function triggerStaffActions (): void {
         elementIds.push(staff.id);
       });
       const editorAction: EditorAction = {
-        'action': 'merge',
-        'param': {
-          'elementIds': elementIds
+        action: 'merge',
+        param: {
+          elementIds: elementIds
         }
       };
       neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
@@ -811,21 +829,22 @@ export function triggerSplitActions (): void {
   document.getElementById('reset-rotate')
     .addEventListener('click', () => {
       const staff = document.querySelector('.staff.selected') as SVGElement;
-      const rect = staff.querySelector('#resizeRect');
-      const co = rect.getAttribute('points').split(' ');
-      const dy = parseInt(co[0].split(',')[1]) - parseInt(co[1].split(',')[1]);
-      let points = getStaffBBox(staff as SVGGElement);
-      let y_change = Math.tan(points.rotate)*(points.lrx - points.ulx);
+      // Unused variables:
+      // const rect = staff.querySelector('#resizeRect');
+      // const co = rect.getAttribute('points').split(' ');
+      // const dy = parseInt(co[0].split(',')[1]) - parseInt(co[1].split(',')[1]);
+      const points = getStaffBBox(staff as SVGGElement);
+      const y_change = Math.tan(points.rotate)*(points.lrx - points.ulx);
       if (staff !== null) {
         const editorAction: EditorAction = {
-          'action': 'resizeRotate',
-          'param': {
-            'elementId': staff.id,
-            "ulx": points.ulx,
-            "uly": points.rotate > 0 ? points.uly + y_change/2 : points.uly - y_change/2,
-            "lrx": points.lrx,
-            "lry": points.rotate > 0 ? points.lry - y_change/2 : points.lry + y_change/2,
-            "rotate": 0
+          action: 'resizeRotate',
+          param: {
+            elementId: staff.id,
+            ulx: points.ulx,
+            uly: points.rotate > 0 ? points.uly + y_change/2 : points.uly - y_change/2,
+            lrx: points.lrx,
+            lry: points.rotate > 0 ? points.lry - y_change/2 : points.lry + y_change/2,
+            rotate: 0
           }
         };
         neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
@@ -892,27 +911,10 @@ export function triggerDefaultActions (): void {
 }
 
 /**
- * End the extra options menu.
- */
-export function endOptionsSelection (): void {
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.innerHTML = '';
-    moreEdit.classList.add('is-invisible');
-  } catch (e) {}
-  document.body.removeEventListener('keydown', deleteButtonHandler);
-}
-
-/**
  * Initialize extra dropdown options.
  */
 function initOptionsListeners (): void {
   document.getElementById('drop_select').addEventListener('click', function () {
     this.classList.toggle('is-active');
   });
-}
-
-/** Event handler for delete button press. */
-export function deleteButtonHandler (evt: KeyboardEvent): void {
-  if (evt.key === 'd' || evt.key === 'Backspace') { removeHandler(); evt.preventDefault(); }
 }

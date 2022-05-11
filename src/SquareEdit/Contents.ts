@@ -129,7 +129,7 @@ export const ncActionContents: string =
 /**
  * Contents of basic neume action menu.
  */
- export const defaultNeumeActionContents: string =
+export const defaultNeumeActionContents: string =
  '<div><p class=\'control\'>' +
  '<button class=\'button\' id=\'delete\'>Delete</button>' + 
  '<button class=\'button\' id=\'split-neume\'>Split Neumes</button></p></div>';
@@ -250,31 +250,31 @@ export const clefActionContents: string =
 /**
  * HTML for grouping selection menu.
  */
-export const groupingMenu: object = {
-  'nc': '<div class=\'field is-grouped\'>' +
+export const groupingMenu = {
+  nc: '<div class=\'field is-grouped\'>' +
         '<div><p class=\'control\'>' +
         '<button class=\'button\' id=\'groupNcs\'>Group Neume Components</button>' +
         '<button class=\'button\' id=\'delete\'>Delete</button></p></div>',
-  'neume': '<div class=\'field is-grouped\'>' +
+  neume: '<div class=\'field is-grouped\'>' +
         '<div><p class=\'control\'>' +
         '<button class=\'button\' id=\'groupNeumes\'>Group Neumes</button>' +
         '<button class=\'button\' id=\'delete\'>Delete</button></p></div>',
-  'syl': '<div class=\'field is-grouped\'>' +
+  syl: '<div class=\'field is-grouped\'>' +
         '<div><p class=\'control\'>' +
         '<button class=\'button\' id=\'mergeSyls\'>Merge Syllables</button>' +
         '<button class=\'button\' id=\'delete\'>Delete</button>' +
         '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>',
-  'ligatureNc': '<div class=\'field is-grouped\'>' +
+  ligatureNc: '<div class=\'field is-grouped\'>' +
         '<div><p class=\'control\'>' +
         '<button class=\'button\' id=\'groupNcs\'>Group Neume Components</button></p></div>' +
         '<div><p class=\'control\'>' +
         '<button class=\'button\' id=\'toggle-ligature\'>Toggle Ligature</button>' +
         '<button class=\'button\' id=\'delete\'>Delete</button></p></div></div>',
-  'ligature': '<div class=\'field is-grouped\'>' +
+  ligature: '<div class=\'field is-grouped\'>' +
         '<div><p class=\'control\'>' +
         '<button class=\'button\' id=\'toggle-ligature\'>Toggle Ligature</button>' +
         '<button class=\'button\' id=\'delete\'>Delete</button></p></div></div>',
-  'splitSyllable': '<div class=\'field is-grouped\'>' +
+  splitSyllable: '<div class=\'field is-grouped\'>' +
         '<div><p class=\'control\'>' +
         '<button class=\'button\' id=\'toggle-link\'>Toggle Linked Syllables</button>' +
         '<button class=\'button\' id=\'delete\'>Delete</button></p></div></div>'

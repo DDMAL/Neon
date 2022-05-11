@@ -95,6 +95,19 @@ export function convertStaffToSb(staffBasedMei: string): string {
   return vkbeautify.xml(serializer.serializeToString(meiDoc));
 }
 
+export function getSyllableText (syllable: Element): string {
+  const syl = syllable.getElementsByTagName('syl')[0].childNodes[0];
+  let sylText: string;
+  if (syl) {
+    sylText = syl.nodeValue;
+  }
+  else {
+    sylText = 'null';
+  }
+
+  return sylText;
+}
+
 export function convertSbToStaff(sbBasedMei: string): string {
   const parser = new DOMParser();
   const meiDoc = parser.parseFromString(sbBasedMei, 'text/xml');
@@ -219,7 +232,7 @@ export function convertSbToStaff(sbBasedMei: string): string {
 
     // Check syllables that contains @precedes or @follows
     // Update syllable arrays for each syllable
-    let newSyllables = Array.from(mei.getElementsByTagName('syllable'));
+    const newSyllables = Array.from(mei.getElementsByTagName('syllable'));
     // For each toggle-linked syllable
     // Set @precedes and @follows to make sure pointing to the correct syllable
     if (syllable.hasAttribute('precedes')) {
@@ -267,15 +280,3 @@ export function convertSbToStaff(sbBasedMei: string): string {
   return vkbeautify.xml(serializer.serializeToString(meiDoc));
 }
 
-export function getSyllableText (syllable: Element) {
-  const syl = syllable.getElementsByTagName('syl')[0].childNodes[0];
-  let sylText;
-  if (syl) {
-    sylText = syl.nodeValue;
-  }
-  else {
-    sylText = 'null';
-  }
-
-  return sylText;
-}
