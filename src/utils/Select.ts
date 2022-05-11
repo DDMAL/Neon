@@ -41,6 +41,29 @@ function escapeKeyListener (evt: KeyboardEvent): void {
   }
 }
 
+// ENTER KEY: when a BBox is selected, pressing enter will
+//   trigger the edit syllable text function.
+function enterKeyListener (evt: KeyboardEvent): void {
+  // check if 'enter' is pressed with the correct conditions
+  if (getSelectionType() !== 'selByBBox'
+    || !(document.getElementById('displayText') as HTMLInputElement).checked
+    || evt.key !== 'Enter'
+  )
+    return;
+
+  const selected = document.querySelector('.syllable-highlighted');
+
+  // check if there is a syllable selected
+  if (selected) {
+    const span = document.querySelector('span.' + selected.id) as HTMLElement;
+
+    // we simulate a click because the method `updateSylText()` is only
+    // accessible inside TextEditMode; the span has an event listener for
+    // clicks.
+    span.click();
+  }
+}
+
 function isSelByBBox (): boolean {
   const selByBBox = document.getElementById('selByBBox');
   if (selByBBox) {
@@ -49,7 +72,33 @@ function isSelByBBox (): boolean {
   return false;
 }
 
-function stopPropHandler (evt): void { evt.stopPropagation(); }
+function stopPropHandler (evt: Event): void { evt.stopPropagation(); }
+
+/**
+ * Apply listeners for click selection.
+ * @param selector - The CSS selector used to choose where listeners are applied.
+ */
+export function clickSelect (selector: string): void {
+  document.querySelectorAll(selector).forEach(sel => {
+    sel.removeEventListener('mousedown', clickHandler);
+    sel.addEventListener('mousedown', clickHandler);
+  });
+
+  // Click away listeners
+  document.body.removeEventListener('keydown', escapeKeyListener);
+  document.body.addEventListener('keydown', escapeKeyListener);
+
+  document.body.removeEventListener('keydown', enterKeyListener);
+  document.body.addEventListener('keydown', enterKeyListener);
+
+  document.getElementById('container')
+    .addEventListener('contextmenu', (evt) => { evt.preventDefault(); });
+
+  document.querySelectorAll('use,rect,#moreEdit').forEach(sel => {
+    sel.removeEventListener('click', stopPropHandler);
+    sel.addEventListener('click', stopPropHandler);
+  });
+}
 
 /**
  * Handle click events related to element selection.
@@ -225,29 +274,6 @@ function clickHandler (evt: MouseEvent): void {
   }
 }
 
-/**
- * Apply listeners for click selection.
- * @param selector - The CSS selector used to choose where listeners are applied.
- */
-export function clickSelect (selector: string): void {
-  document.querySelectorAll(selector).forEach(sel => {
-    sel.removeEventListener('mousedown', clickHandler);
-    sel.addEventListener('mousedown', clickHandler);
-  });
-
-  // Click away listeners
-  document.body.removeEventListener('keydown', escapeKeyListener);
-  document.body.addEventListener('keydown', escapeKeyListener);
-
-  document.getElementById('container')
-    .addEventListener('contextmenu', (evt) => { evt.preventDefault(); });
-
-  document.querySelectorAll('use,rect,#moreEdit').forEach(sel => {
-    sel.removeEventListener('click', stopPropHandler);
-    sel.addEventListener('click', stopPropHandler);
-  });
-}
-
 
 /**
  * Apply listeners for drag selection.
@@ -259,9 +285,6 @@ export function dragSelect (selector: string): void {
   let panning = false;
   let dragSelecting = false;
   // var canvas = d3.select('#svg_group');
-  d3.selectAll(selector.replace('.active-page', '').trim())
-    .on('.drag', null);
-  const canvas = d3.select(selector);
 
   /**
    * Check if a point is in the bounds of a staff element.
@@ -283,6 +306,8 @@ export function dragSelect (selector: string): void {
     });
     return (filtered.length === 0);
   }
+
+  const canvas = d3.select(selector);
 
   /**
      * Create an initial dragging rectangle.
@@ -454,6 +479,8 @@ export function dragSelect (selector: string): void {
     panning = false;
   }
 
+  d3.selectAll(selector.replace('.active-page', '').trim())
+    .on('.drag', null);
   const dragSelectAction = d3.drag()
     .on('start', selStart)
     .on('drag', selecting)
