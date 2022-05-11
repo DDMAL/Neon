@@ -1,14 +1,19 @@
 import * as Contents from './Contents';
 import * as Warnings from '../Warnings';
 import * as Notification from '../utils/Notification';
+import * as SelectTools from '../utils/SelectTools';
+import * as SelectOptions from '../SquareEdit/SelectOptions';
 import NeonView from '../NeonView';
 import { EditorAction } from '../Types';
-import { removeHandler, deleteButtonHandler } from './SelectOptions';
+import { unsetVirgaAction, unsetInclinatumAction, removeHandler, deleteButtonHandler } from './SelectOptions';
+import { SplitStaffHandler } from './StaffTools';
+
 
 /**
  * The NeonView parent to access editor actions.
  */
 let neonView: NeonView;
+
 
 /**
  * Set the neonView member.
@@ -16,6 +21,57 @@ let neonView: NeonView;
 export function initNeonView (view: NeonView): void {
   neonView = view;
 }
+
+
+/**
+ * Check if selected elements can be grouped or not
+ * @returns true if grouped, false otherwise
+ */
+ export function isGroupable (selectionType: string, elements: Array<SVGGraphicsElement>): boolean {
+  const groups = Array.from(elements.values()) as SVGGraphicsElement[];
+
+  switch (groups.length) {
+    case 1:
+      // cannot group if only 1 element is selected
+      return false;
+
+    default:
+      // can group if more than 1 element is selected
+      if (SelectTools.sharedSecondLevelParent(groups) || selectionType === 'selByStaff') {
+        return true;
+      } else {
+        return false
+      }
+  }
+}
+
+
+/**
+ * Merge selected staves
+ */
+ export function mergeStaves (): void {
+  const systems = document.querySelectorAll('.staff.selected');
+  const elementIds = [];
+  systems.forEach(staff => {
+    elementIds.push(staff.id);
+  });
+  const editorAction: EditorAction = {
+    'action': 'merge',
+    'param': {
+      'elementIds': elementIds
+    }
+  };
+  neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
+    if (result) {
+      Notification.queueNotification('Staff Merged');
+      SelectOptions.endOptionsSelection();
+      neonView.updateForCurrentPage();
+    } else {
+      Notification.queueNotification('Merge Failed');
+    }
+  });
+}
+
 
 /**
  * Trigger the grouping selection menu.
@@ -28,6 +84,7 @@ export function triggerGrouping (type: string): void {
   initGroupingListeners();
 }
 
+
 /**
  * Remove the grouping selection menu.
  */
@@ -36,7 +93,9 @@ export function endGroupingSelection (): void {
   moreEdit.innerHTML = '';
   moreEdit.classList.add('is-invisible');
   document.body.removeEventListener('keydown', deleteButtonHandler);
+  document.body.removeEventListener('keydown', keydownListener);
 }
+
 
 /**
  * The grouping dropdown listener.
@@ -46,6 +105,8 @@ export function initGroupingListeners (): void {
   del.removeEventListener('click', removeHandler);
   del.addEventListener('click', removeHandler);
   document.body.addEventListener('keydown', deleteButtonHandler);
+  document.body.addEventListener('keydown', keydownListener);
+
   try {
     document.getElementById('mergeSyls').addEventListener('click', () => {
       const elementIds = getChildrenIds().filter(e =>
@@ -220,6 +281,68 @@ export function initGroupingListeners (): void {
   } catch (e) {}
 }
 
+
+/**
+ * Grouping/Ungrouping keybinding event listener
+ */
+const keydownListener = function(e) {
+  if (e.key === "g") {
+    // get selected elements to check if they can be groupeds
+    const elements = Array.from(document.querySelectorAll('.selected')) as SVGGraphicsElement[];
+    if (elements.length == 0) return;
+
+    let selectionType = SelectTools.getSelectionType();
+
+    // Group/merge or ungroup/split based on selection type
+    switch (selectionType) {
+      case 'selBySyl':
+        if (isGroupable(selectionType, elements)) {
+          const elementIds = getChildrenIds().filter(e =>
+            document.getElementById(e).classList.contains('neume')
+          );
+          groupingAction('group', 'neume', elementIds);
+        } else {
+          const elementIds = getChildrenIds();
+          groupingAction('ungroup', 'neume', elementIds);
+        }
+        break;
+
+      case 'selByNeume':
+        if (isGroupable(selectionType, elements)) {
+          const elementIds = getIds();
+          groupingAction('group', 'neume', elementIds);
+        } else {
+          const elementIds = getChildrenIds();
+          groupingAction('ungroup', 'nc', elementIds);
+        }
+        break;
+
+      case 'selByNc':
+        if (isGroupable(selectionType, elements)) {
+          const elementIds = getIds();
+          groupingAction('group', 'nc', elementIds);
+        } else {
+          const elementIds = getChildrenIds();
+          groupingAction('ungroup', 'nc', elementIds);
+        }
+        break;
+
+      case 'selByStaff':
+        if (isGroupable(selectionType, elements)) {
+          mergeStaves();
+        } else {
+          SelectOptions.triggerStaffSplitMode();
+        }
+        break;
+
+      default:
+        console.error(`Can't perform grouping/ungrouping action on selection type ${selectionType}.`);
+        return;
+    }
+  }
+}
+
+
 /**
  * Form and execute a group/ungroup action.
  * @param action - The action to execute. Either "group" or "ungroup".
@@ -263,6 +386,7 @@ function groupingAction (action: string, groupType: string, elementIds: string[]
   });
 }
 
+
 /**
  * @returns The IDs of selected elements.
  */
@@ -274,6 +398,7 @@ function getIds (): string[] {
   });
   return ids;
 }
+
 
 /**
  * @returns The IDs of the selected elements' children.
