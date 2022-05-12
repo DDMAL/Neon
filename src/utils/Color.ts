@@ -42,7 +42,7 @@ export function unhighlight(staff?: SVGGElement): void {
           rect.closest('.staff').classList.contains('selected') ||
           rect.closest('.syl').classList.contains('selected')
           // rect.closest('.layer').classList.contains('selected')
-          ){
+        ){
           rect.style.fill = 'red';
         } else {
           rect.style.fill = 'blue';
@@ -200,7 +200,7 @@ export function setGroupingHighlight(grouping: string): void {
   let groups;
 
   if (grouping == 'layer') {
-    groups = document.querySelectorAll(".accid, .clef, .custos, .divLine");
+    groups = document.querySelectorAll('.accid, .clef, .custos, .divLine');
   }
   else {
     groups = document.getElementsByClassName(grouping) as HTMLCollectionOf<HTMLElement>;

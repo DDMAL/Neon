@@ -1,7 +1,7 @@
 /** @module utils/Select */
 
 import {
-  unselect, getStaffBBox, selectStaff, selectLayerElement, selectAll, getSelectionType
+  unselect, getStaffBBox, selectStaff, selectAll, getSelectionType
 } from './SelectTools';
 import { resize } from './Resize';
 import NeonView from '../NeonView';
@@ -289,13 +289,43 @@ export function dragSelect (selector: string): void {
   d3.selectAll(selector.replace('.active-page', '').trim())
     .on('.drag', null);
   const canvas = d3.select(selector);
-  const dragSelectAction = d3.drag()
-    .on('start', selStart)
-    .on('drag', selecting)
-    .on('end', selEnd);
-  canvas.call(dragSelectAction);
-  if (dragHandler) {
-    dragHandler.resetTo(dragSelectAction);
+
+  /**
+   * Check if a point is in the bounds of a staff element.
+   * Rotate is not taken into account.
+   */
+  function pointNotInStaff (pt: number[]): boolean {
+    const staves = Array.from(document.getElementsByClassName('staff'));
+    const filtered = staves.filter((staff: SVGGElement) => {
+      const bbox = getStaffBBox(staff);
+      const ulx = bbox.ulx;
+      const uly = bbox.uly;
+      const lrx = bbox.lrx;
+      const lry = bbox.lry;
+      const rotate = bbox.rotate;
+
+      return (pt[0] > ulx && pt[0] < lrx) &&
+        (pt[1] > (uly + (pt[0] - ulx) * Math.tan(rotate))) &&
+        (pt[1] < (lry - (lrx - pt[0]) * Math.tan(rotate)));
+    });
+    return (filtered.length === 0);
+  }
+
+  /**
+     * Create an initial dragging rectangle.
+     * @param ulx - The upper left x-position of the new rectangle.
+     * @param uly - The upper left y-position of the new rectangle.
+     */
+  function initRect (ulx: number, uly: number): void {
+    canvas.append('rect')
+      .attr('x', ulx)
+      .attr('y', uly)
+      .attr('width', 0)
+      .attr('height', 0)
+      .attr('id', 'selectRect')
+      .attr('stroke', 'black')
+      .attr('stroke-width', strokeWidth)
+      .attr('fill', 'none');
   }
 
   function selStart (): void {
@@ -327,24 +357,18 @@ export function dragSelect (selector: string): void {
   }
 
   /**
-   * Check if a point is in the bounds of a staff element.
-   * Rotate is not taken into account.
-   */
-  function pointNotInStaff (pt: number[]): boolean {
-    const staves = Array.from(document.getElementsByClassName('staff'));
-    const filtered = staves.filter((staff: SVGGElement) => {
-      const bbox = getStaffBBox(staff);
-      const ulx = bbox.ulx;
-      const uly = bbox.uly;
-      const lrx = bbox.lrx;
-      const lry = bbox.lry;
-      const rotate = bbox.rotate;
-
-      return (pt[0] > ulx && pt[0] < lrx) &&
-        (pt[1] > (uly + (pt[0] - ulx) * Math.tan(rotate))) &&
-        (pt[1] < (lry - (lrx - pt[0]) * Math.tan(rotate)));
-    });
-    return (filtered.length === 0);
+     * Update the dragging rectangle.
+     * @param newX - The new ulx.
+     * @param newY - The new uly.
+     * @param currentWidth - The width of the rectangle in pixels.
+     * @param currentHeight - The height of the rectangle in pixels.
+     */
+  function updateRect (newX: number, newY: number, currentWidth: number, currentHeight: number): void {
+    d3.select('#selectRect')
+      .attr('x', newX)
+      .attr('y', newY)
+      .attr('width', currentWidth)
+      .attr('height', currentHeight);
   }
 
   function selecting (): void {
@@ -457,35 +481,12 @@ export function dragSelect (selector: string): void {
     panning = false;
   }
 
-  /**
-     * Create an initial dragging rectangle.
-     * @param ulx - The upper left x-position of the new rectangle.
-     * @param uly - The upper left y-position of the new rectangle.
-     */
-  function initRect (ulx: number, uly: number): void {
-    canvas.append('rect')
-      .attr('x', ulx)
-      .attr('y', uly)
-      .attr('width', 0)
-      .attr('height', 0)
-      .attr('id', 'selectRect')
-      .attr('stroke', 'black')
-      .attr('stroke-width', strokeWidth)
-      .attr('fill', 'none');
-  }
-
-  /**
-     * Update the dragging rectangle.
-     * @param newX - The new ulx.
-     * @param newY - The new uly.
-     * @param currentWidth - The width of the rectangle in pixels.
-     * @param currentHeight - The height of the rectangle in pixels.
-     */
-  function updateRect (newX: number, newY: number, currentWidth: number, currentHeight: number): void {
-    d3.select('#selectRect')
-      .attr('x', newX)
-      .attr('y', newY)
-      .attr('width', currentWidth)
-      .attr('height', currentHeight);
+  const dragSelectAction = d3.drag()
+    .on('start', selStart)
+    .on('drag', selecting)
+    .on('end', selEnd);
+  canvas.call(dragSelectAction);
+  if (dragHandler) {
+    dragHandler.resetTo(dragSelectAction);
   }
 }

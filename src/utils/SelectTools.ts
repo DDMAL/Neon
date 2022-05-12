@@ -65,6 +65,35 @@ export function unselect (): void {
 }
 
 /**
+ * Select a staff element.
+ * @param staff - The staff element in the DOM.
+ * @param dragHandler - The drag handler in use.
+ */
+export function selectStaff (staff: SVGGElement, dragHandler: DragHandler): void {
+  if (!staff.classList.contains('selected')) {
+    staff.classList.add('selected');
+    Color.unhighlight(staff);
+    Color.highlight(staff, '#d00');
+    SelectOptions.triggerSplitActions();
+    dragHandler.dragInit();
+  }
+}
+
+/**
+ * Select a layer element.
+ * @param layerElement - The layer element in the DOM.
+ * @param dragHandler - The drag handler in use.
+ */
+export function selectLayerElement (layerElement: SVGGElement, dragHandler: DragHandler): void {
+  if (!layerElement.classList.contains('selected')) {
+    layerElement.classList.add('selected');
+    Color.unhighlight(layerElement);
+    Color.highlight(layerElement, '#d00');
+    dragHandler.dragInit();
+  }
+}
+
+/**
  * Generic select function.
  * @param el - Element to select.
  * @param dragHandler - Only used for staves.
@@ -189,7 +218,7 @@ export function getStaffBBox (staff: SVGGElement): {ulx: number; uly: number; lr
       lrx = coordinates[2];
     }
   });
-  return { 'ulx': ulx, 'uly': uly, 'lrx': lrx, 'lry': lry, 'rotate': rotate };
+  return { ulx: ulx, uly: uly, lrx: lrx, lry: lry, rotate: rotate };
 }
 
 /**
@@ -238,35 +267,6 @@ export function selectNn (notNeumes: SVGGraphicsElement[]): boolean {
 }
 
 /**
- * Select a staff element.
- * @param staff - The staff element in the DOM.
- * @param dragHandler - The drag handler in use.
- */
-export function selectStaff (staff: SVGGElement, dragHandler: DragHandler): void {
-  if (!staff.classList.contains('selected')) {
-    staff.classList.add('selected');
-    Color.unhighlight(staff);
-    Color.highlight(staff, '#d00');
-    SelectOptions.triggerSplitActions();
-    dragHandler.dragInit();
-  }
-}
-
-/**
- * Select a layer element.
- * @param layerElement - The layer element in the DOM.
- * @param dragHandler - The drag handler in use.
- */
-export function selectLayerElement (layerElement: SVGGElement, dragHandler: DragHandler): void {
-  if (!layerElement.classList.contains('selected')) {
-    layerElement.classList.add('selected');
-    Color.unhighlight(layerElement);
-    Color.highlight(layerElement, '#d00');
-    dragHandler.dragInit();
-  }
-}
-
-/**
  * Handle selecting an array of elements based on the selection type.
  */
 export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: NeonView, dragHandler: DragHandler): Promise<void> {
@@ -275,7 +275,6 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
   if (elements.length === 0) {
     return;
   }
-
   let selectionClass;
   let containsClefOrCustosOrAccidOrDivLine = false;
   let containsNc = false;
@@ -480,7 +479,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
                   .x.baseVal.value;
                 const orderSecondX = (groups[1].children[0] as SVGUseElement)
                   .x.baseVal.value;
-                let posFirstY, posSecondY;
+                let posFirstY: number, posSecondY: number;
 
                 if (orderFirstX < orderSecondX) {
                   posFirstY = (groups[0].children[0] as SVGUseElement)
