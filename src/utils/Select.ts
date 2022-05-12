@@ -41,6 +41,27 @@ function escapeKeyListener (evt: KeyboardEvent): void {
   }
 }
 
+function enterKeyListener (evt: KeyboardEvent): void {
+  // check if 'enter' is pressed with the correct conditions
+  if (getSelectionType() !== 'selByBBox'
+    || !(document.getElementById('displayText') as HTMLInputElement).checked
+    || evt.key !== 'Enter'
+  )
+    return;
+
+  const selected = document.querySelector('.syllable-highlighted');
+
+  // check if there is a syllable selected
+  if (selected) {
+    const span = document.querySelector('span.' + selected.id) as HTMLElement;
+
+    // we simulate a click because the method `updateSylText()` is only
+    // accessible inside TextEditMode; the span has an event listener for
+    // clicks.
+    span.click();
+  }
+}
+
 function isSelByBBox (): boolean {
   const selByBBox = document.getElementById('selByBBox');
   if (selByBBox) {
@@ -239,6 +260,9 @@ export function clickSelect (selector: string): void {
   document.body.removeEventListener('keydown', escapeKeyListener);
   document.body.addEventListener('keydown', escapeKeyListener);
 
+  document.body.removeEventListener('keydown', enterKeyListener);
+  document.body.addEventListener('keydown', enterKeyListener);
+
   document.getElementById('container')
     .addEventListener('contextmenu', (evt) => { evt.preventDefault(); });
 
@@ -259,9 +283,6 @@ export function dragSelect (selector: string): void {
   let panning = false;
   let dragSelecting = false;
   // var canvas = d3.select('#svg_group');
-  d3.selectAll(selector.replace('.active-page', '').trim())
-    .on('.drag', null);
-  const canvas = d3.select(selector);
 
   /**
    * Check if a point is in the bounds of a staff element.
@@ -283,6 +304,8 @@ export function dragSelect (selector: string): void {
     });
     return (filtered.length === 0);
   }
+
+  const canvas = d3.select(selector);
 
   /**
      * Create an initial dragging rectangle.
@@ -454,6 +477,8 @@ export function dragSelect (selector: string): void {
     panning = false;
   }
 
+  d3.selectAll(selector.replace('.active-page', '').trim())
+    .on('.drag', null);
   const dragSelectAction = d3.drag()
     .on('start', selStart)
     .on('drag', selecting)
