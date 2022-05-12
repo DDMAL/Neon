@@ -1,3 +1,5 @@
+import NeonView from "../../NeonView";
+
 async function setBody (): Promise<void> {
   const response = await fetch(__ASSET_PREFIX__ + 'assets/template.html');
   document.body.innerHTML = await response.text();
