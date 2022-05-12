@@ -162,10 +162,10 @@ export default class TextEditMode implements TextEditInterface {
     const corrected = window.prompt('', orig);
     if (corrected !== null && corrected !== orig) {
       const editorAction = {
-        'action': 'setText',
-        'param': {
-          'elementId': [...span.classList.entries()].filter(e => e[1] !== 'text-select')[0][1],
-          'text': corrected
+        action: 'setText',
+        param: {
+          elementId: [...span.classList.entries()].filter(e => e[1] !== 'text-select')[0][1],
+          text: corrected
         }
       };
       this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then((response) => {

@@ -100,7 +100,6 @@ function setOpacityControls (meiClassName: string): void {
 
   opacitySlider.addEventListener('input', inputChangeOpacity);
   opacitySlider.addEventListener('change', inputChangeOpacity);
-
 }
 
 /**

@@ -57,10 +57,10 @@ export class SplitStaffHandler {
     // TODO
 
     const editorAction: EditorAction = {
-      'action': 'split',
-      'param': {
-        'elementId': id,
-        'x': cursorPt.x
+      action: 'split',
+      param: {
+        elementId: id,
+        x: cursorPt.x
       }
     };
 

@@ -84,7 +84,38 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
   let initialPoint: number[], initialUly: number, initialLry: number,
     initialY: number, initialRectY: number, polyLen: number, dy: number, initialRotate: number;
 
-  drawInitialRect();
+  /**
+   * Redraw the rectangle with the new bounds
+   */
+  function redraw (): void {
+    const points: Point[] = GetPoints(ulx, uly, lrx, lry, rotate);
+
+    const pointString: string = points.filter((_elem, index) => { return index % 2 === 0; })
+      .map(elem => elem.x + ',' + elem.y)
+      .join(' ');
+
+    d3.select('#resizeRect').attr('points', pointString);
+
+    for (const pointName in PointNames) {
+      const point: Point = points[PointNames[pointName]];
+      d3.select('#p-' + pointName).filter('.resizePoint')
+        .attr('cx', point.x)
+        .attr('cy', point.y);
+    }
+
+    let x = points[3].x;
+    let y = points[3].y;
+    const pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
+      (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
+    x = points[7].x;
+    y = points[7].y;
+    const pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
+      (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
+
+    d3.select('#rotateLeft').attr('points', pointStringLeft);
+    d3.select('#rotateRight').attr('points', pointStringRight);
+  }
+
   /**
    * Draw the initial rectangle around the element
    * and add the listeners to support dragging to resize.
@@ -155,6 +186,88 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         .attr('id', 'p-' + pointName);
     }
 
+    function resizeStart (name: string): void {
+      whichPoint = name;
+      const point = points.find(point => { return point.name === PointNames[name]; });
+      initialPoint = [point.x, point.y];
+      initialUly = uly;
+      initialLry = lry;
+    }
+
+    function resizeDrag (): void {
+      const currentPoint = d3.mouse(this);
+      switch (PointNames[whichPoint]) {
+        case PointNames.TopLeft:
+          ulx = currentPoint[0];
+          uly = currentPoint[1];
+          break;
+        case PointNames.Top:
+          uly = currentPoint[1] - (lrx - ulx) * Math.tan(rotate) / 2;
+          break;
+        case PointNames.TopRight:
+          lrx = currentPoint[0];
+          uly = currentPoint[1] - (lrx - ulx) * Math.tan(rotate);
+          break;
+        case PointNames.Right:
+          lrx = currentPoint[0];
+          lry = initialLry + (currentPoint[0] - initialPoint[0]) * Math.tan(rotate);
+          break;
+        case PointNames.BottomRight:
+          lrx = currentPoint[0];
+          lry = currentPoint[1];
+          break;
+        case PointNames.Bottom:
+          lry = currentPoint[1] + (lrx - ulx) * Math.tan(rotate) / 2;
+          break;
+        case PointNames.BottomLeft:
+          ulx = currentPoint[0];
+          lry = currentPoint[1] + (lrx - ulx) * Math.tan(rotate);
+          break;
+        case PointNames.Left:
+          ulx = currentPoint[0];
+          uly = initialUly + (currentPoint[0] - initialPoint[0]) * Math.tan(rotate);
+          break;
+        default:
+          console.error('Something that wasn\'t a side of the rectangle was dragged. This shouldn\'t happen.');
+      }
+      redraw();
+    }
+
+    function resizeEnd (): void {
+      const editorAction = {
+        action: 'resize',
+        param: {
+          elementId: element.id,
+          ulx: ulx,
+          uly: uly,
+          lrx: lrx,
+          lry: lry
+        }
+      };
+      neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
+        if (result) {
+          await neonView.updateForCurrentPage();
+        }
+        element = document.getElementById(element.id) as unknown as SVGGraphicsElement;
+        ulx = undefined;
+        uly = undefined;
+        lrx = undefined;
+        lry = undefined;
+        d3.selectAll('.resizePoint').remove();
+        d3.selectAll('#resizeRect').remove();
+        d3.selectAll('.rotatePoint').remove();
+        drawInitialRect();
+        if (element.classList.contains('syl')) {
+          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
+        } else {
+          try {
+            document.getElementById('moreEdit').innerHTML = '';
+            document.getElementById('moreEdit').classList.add('is-invisible');
+          } catch (e) {}
+        }
+      });
+    }
+
     // do it as a loop instead of selectAll so that you can easily know which point was
     for (const name in PointNames) {
       d3.select('#p-' + name).filter('.resizePoint').call(
@@ -164,44 +277,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
           .on('end', resizeEnd.bind(this)));
     }
 
-    if (element.classList.contains('staff')) {
-      let x = points[3].x;
-      let y = points[3].y;
-      const pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
-        (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
-      x = points[7].x;
-      y = points[7].y;
-      const pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
-        (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
-
-      d3.select('#' + element.id).append('polygon')
-        .attr('points', pointStringRight)
-        .attr('id', 'rotateRight')
-        .attr('stroke', 'black')
-        .attr('stroke-width', 7)
-        .attr('fill', '#0099ff')
-        .attr('class', 'rotatePoint');
-
-      d3.select('#' + element.id).append('polygon')
-        .attr('points', pointStringLeft)
-        .attr('id', 'rotateLeft')
-        .attr('stroke', 'black')
-        .attr('stroke-width', 7)
-        .attr('fill', '#0099ff')
-        .attr('class', 'rotatePoint');
-
-      d3.select('#rotateLeft').call(
-        d3.drag()
-          .on('start', rotateStart)
-          .on('drag', rotateDragLeft)
-          .on('end', rotateEnd));
-
-      d3.select('#rotateRight').call(
-        d3.drag()
-          .on('start', rotateStart)
-          .on('drag', rotateDragRight)
-          .on('end', rotateEnd));
-    }
+    // ROTATE
 
     function rotateStart (): void {
       const which = d3.event.sourceEvent.target.id;
@@ -254,14 +330,14 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         dy = 0;
       }
       const editorAction = {
-        'action': 'resizeRotate',
-        'param': {
-          'elementId': element.id,
-          'ulx': ulx,
-          'uly': uly,
-          'lrx': lrx,
-          'lry': lry,
-          'rotate': rotate * 180 / Math.PI
+        action: 'resizeRotate',
+        param: {
+          elementId: element.id,
+          ulx: ulx,
+          uly: uly,
+          lrx: lrx,
+          lry: lry,
+          rotate: rotate * 180 / Math.PI
         }
       };
       neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
@@ -283,118 +359,45 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       });
     }
 
-    function resizeStart (name: string): void {
-      whichPoint = name;
-      const point = points.find(point => { return point.name === PointNames[name]; });
-      initialPoint = [point.x, point.y];
-      initialUly = uly;
-      initialLry = lry;
-    }
+    if (element.classList.contains('staff')) {
+      let x = points[3].x;
+      let y = points[3].y;
+      const pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
+        (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
+      x = points[7].x;
+      y = points[7].y;
+      const pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
+        (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
 
-    function resizeDrag (): void {
-      const currentPoint = d3.mouse(this);
-      switch (PointNames[whichPoint]) {
-        case PointNames.TopLeft:
-          ulx = currentPoint[0];
-          uly = currentPoint[1];
-          break;
-        case PointNames.Top:
-          uly = currentPoint[1] - (lrx - ulx) * Math.tan(rotate) / 2;
-          break;
-        case PointNames.TopRight:
-          lrx = currentPoint[0];
-          uly = currentPoint[1] - (lrx - ulx) * Math.tan(rotate);
-          break;
-        case PointNames.Right:
-          lrx = currentPoint[0];
-          lry = initialLry + (currentPoint[0] - initialPoint[0]) * Math.tan(rotate);
-          break;
-        case PointNames.BottomRight:
-          lrx = currentPoint[0];
-          lry = currentPoint[1];
-          break;
-        case PointNames.Bottom:
-          lry = currentPoint[1] + (lrx - ulx) * Math.tan(rotate) / 2;
-          break;
-        case PointNames.BottomLeft:
-          ulx = currentPoint[0];
-          lry = currentPoint[1] + (lrx - ulx) * Math.tan(rotate);
-          break;
-        case PointNames.Left:
-          ulx = currentPoint[0];
-          uly = initialUly + (currentPoint[0] - initialPoint[0]) * Math.tan(rotate);
-          break;
-        default:
-          console.error('Something that wasn\'t a side of the rectangle was dragged. This shouldn\'t happen.');
-      }
-      redraw();
-    }
+      d3.select('#' + element.id).append('polygon')
+        .attr('points', pointStringRight)
+        .attr('id', 'rotateRight')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 7)
+        .attr('fill', '#0099ff')
+        .attr('class', 'rotatePoint');
 
-    function resizeEnd (): void {
-      const editorAction = {
-        'action': 'resize',
-        'param': {
-          'elementId': element.id,
-          'ulx': ulx,
-          'uly': uly,
-          'lrx': lrx,
-          'lry': lry
-        }
-      };
-      neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
-        if (result) {
-          await neonView.updateForCurrentPage();
-        }
-        element = document.getElementById(element.id) as unknown as SVGGraphicsElement;
-        ulx = undefined;
-        uly = undefined;
-        lrx = undefined;
-        lry = undefined;
-        d3.selectAll('.resizePoint').remove();
-        d3.selectAll('#resizeRect').remove();
-        d3.selectAll('.rotatePoint').remove();
-        drawInitialRect();
-        if (element.classList.contains('syl')) {
-          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
-        } else {
-          try {
-            document.getElementById('moreEdit').innerHTML = '';
-            document.getElementById('moreEdit').classList.add('is-invisible');
-          } catch (e) {}
-        }
-      });
+      d3.select('#' + element.id).append('polygon')
+        .attr('points', pointStringLeft)
+        .attr('id', 'rotateLeft')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 7)
+        .attr('fill', '#0099ff')
+        .attr('class', 'rotatePoint');
+
+      d3.select('#rotateLeft').call(
+        d3.drag()
+          .on('start', rotateStart)
+          .on('drag', rotateDragLeft)
+          .on('end', rotateEnd));
+
+      d3.select('#rotateRight').call(
+        d3.drag()
+          .on('start', rotateStart)
+          .on('drag', rotateDragRight)
+          .on('end', rotateEnd));
     }
   }
 
-  /**
-   * Redraw the rectangle with the new bounds
-   */
-  function redraw (): void {
-    const points: Point[] = GetPoints(ulx, uly, lrx, lry, rotate);
-
-    const pointString: string = points.filter((_elem, index) => { return index % 2 === 0; })
-      .map(elem => elem.x + ',' + elem.y)
-      .join(' ');
-
-    d3.select('#resizeRect').attr('points', pointString);
-
-    for (const pointName in PointNames) {
-      const point: Point = points[PointNames[pointName]];
-      d3.select('#p-' + pointName).filter('.resizePoint')
-        .attr('cx', point.x)
-        .attr('cy', point.y);
-    }
-
-    let x = points[3].x;
-    let y = points[3].y;
-    const pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
-      (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
-    x = points[7].x;
-    y = points[7].y;
-    const pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
-      (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
-
-    d3.select('#rotateLeft').attr('points', pointStringLeft);
-    d3.select('#rotateRight').attr('points', pointStringRight);
-  }
+  drawInitialRect();
 }

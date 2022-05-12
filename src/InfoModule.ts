@@ -3,7 +3,6 @@
 import NeonView from './NeonView';
 import { InfoInterface } from './Interfaces';
 import { Attributes } from './Types';
-import { quickselect } from 'd3-array';
 
 /**
  * Map of contours to neume names.
@@ -183,10 +182,10 @@ class InfoModule implements InfoInterface {
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         let type = '';
         if ((attributes['accid']).toUpperCase() == 'F'){
-          type = "Flat";
+          type = 'Flat';
         }
         else if((attributes['accid']).toUpperCase() == 'N'){
-          type = "Natural";
+          type = 'Natural';
         }
         body += 'Accid Type: ' + type;
         break;

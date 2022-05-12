@@ -36,24 +36,24 @@ class InsertHandler {
         break;
       case 'diamond':
         this.type = 'nc';
-        this.attributes = { 'tilt': 'se'};
+        this.attributes = { tilt: 'se' };
         break;
       case 'virga':
         this.type = 'nc';
-        this.attributes = { 'tilt': 's'};
+        this.attributes = { tilt: 's' };
         break;
       //there are multiple possible liquescent combinations
       case 'liquescentA':
         this.type = 'nc';
-        this.attributes = { 'curve': 'a'};
+        this.attributes = { curve: 'a' };
         break;
       case 'liquescentC':
         this.type = 'nc';
-        this.attributes = { 'curve': 'c'};
+        this.attributes = { curve: 'c' };
         break;
       case 'virgaReversed':
         this.type = 'nc';
-        this.attributes = { 'tilt': 'n' };
+        this.attributes = { tilt: 'n' };
         break;
       case 'pes':
       case 'clivis':
@@ -66,12 +66,12 @@ class InsertHandler {
           buttonId.charAt(0).toUpperCase() + buttonId.slice(1)
         );
         this.type = 'grouping';
-        this.attributes = { 'contour': contour };
+        this.attributes = { contour: contour };
         break;
       case 'cClef':
       case 'fClef':
         this.type = 'clef';
-        this.attributes = { 'shape': buttonId.charAt(0).toUpperCase() };
+        this.attributes = { shape: buttonId.charAt(0).toUpperCase() };
         break;
       case 'custos':
         this.type = 'custos';
@@ -79,7 +79,7 @@ class InsertHandler {
         break;
       case 'divLineMaxima':
         this.type = 'divLine';
-        this.attributes = { 'form': 'maxima' };
+        this.attributes = { form: 'maxima' };
         break;
       case 'staff':
         this.type = 'staff';
@@ -87,11 +87,11 @@ class InsertHandler {
         break;
       case 'flat':
         this.type = 'accid';
-        this.attributes = { 'accid': 'f' };
+        this.attributes = { accid: 'f' };
         break;
       case 'natural':
         this.type = 'accid';
-        this.attributes = { 'accid': 'n' };
+        this.attributes = { accid: 'n' };
         break;
       default:
         this.type = '';
@@ -216,12 +216,12 @@ class InsertHandler {
     const cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
     const editorAction: EditorAction = {
-      'action': 'insert',
-      'param': {
-        'elementType': this.type,
-        'staffId': 'auto',
-        'ulx': cursorpt.x,
-        'uly': cursorpt.y
+      action: 'insert',
+      param: {
+        elementType: this.type,
+        staffId: 'auto',
+        ulx: cursorpt.x,
+        uly: cursorpt.y
       }
     };
 
@@ -269,14 +269,14 @@ class InsertHandler {
       }
       document.getElementById('staff-circle').remove();
       const action: EditorAction = {
-        'action': 'insert',
-        'param': {
-          'elementType': 'staff',
-          'staffId': 'auto',
-          'ulx': ul.x,
-          'uly': ul.y,
-          'lrx': lr.x,
-          'lry': lr.y
+        action: 'insert',
+        param: {
+          elementType: 'staff',
+          staffId: 'auto',
+          ulx: ul.x,
+          uly: ul.y,
+          lrx: lr.x,
+          lry: lr.y
         }
       };
 

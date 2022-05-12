@@ -3,7 +3,9 @@
         "browser": true,
         "es6": true
     },
-    "extends": "plugin:@typescript-eslint/recommended",
+    "extends": [
+        "plugin:@typescript-eslint/recommended"
+    ],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
@@ -33,14 +35,19 @@
             "error",
             "single"
         ],
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ],
+        "quote-props": [
+            "error",
+            "as-needed"
+        ],
         "@typescript-eslint/semi": [
             "error",
             "always"
         ],
         "@typescript-eslint/no-var-requires": 1,
-        "@typescript-eslint/no-use-before-define": [
-            "warn"
-        ],
         "@typescript-eslint/no-unused-vars": [
             "error",
             {
