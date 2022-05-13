@@ -52,7 +52,7 @@ var Module = {
       font: 'Bravura',
       useFacsimile: true,
     });
-    console.debug("READY");
+    console.debug('READY');
     onmessage = handleNeonEvent;
     for (const message of backlog) {
       handleNeonEvent(message);

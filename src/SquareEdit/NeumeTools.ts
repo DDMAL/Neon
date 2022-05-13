@@ -48,10 +48,10 @@ export class SplitNeumeHandler {
     const ncId = nc.id;
 
     const editorAction: EditorAction = {
-      'action': 'splitNeume',
-      'param': {
-        'elementId': id,
-        'ncId': ncId
+      action: 'splitNeume',
+      param: {
+        elementId: id,
+        ncId: ncId
       }
     };
 

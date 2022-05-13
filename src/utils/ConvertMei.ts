@@ -95,6 +95,19 @@ export function convertStaffToSb(staffBasedMei: string): string {
   return vkbeautify.xml(serializer.serializeToString(meiDoc));
 }
 
+export function getSyllableText (syllable: Element): string {
+  const syl = syllable.getElementsByTagName('syl')[0].childNodes[0];
+  let sylText: string;
+  if (syl) {
+    sylText = syl.nodeValue;
+  }
+  else {
+    sylText = 'null';
+  }
+
+  return sylText;
+}
+
 export function convertSbToStaff(sbBasedMei: string): string {
   const parser = new DOMParser();
   const meiDoc = parser.parseFromString(sbBasedMei, 'text/xml');
@@ -104,6 +117,7 @@ export function convertSbToStaff(sbBasedMei: string): string {
   const neumes = Array.from(mei.getElementsByTagName('neume'));
   for (const neume of neumes) {
     if (neume.getElementsByTagName('nc').length === 0) {
+      neume.remove();
       Notification.queueNotification('This file contains a neume without neume component!');
     }
   }
@@ -112,6 +126,7 @@ export function convertSbToStaff(sbBasedMei: string): string {
   const syllables = Array.from(mei.getElementsByTagName('syllable'));
   for (const syllable of syllables) {
     if (syllable.getElementsByTagName('neume').length === 0) {
+      syllable.remove();
       Notification.queueNotification('This file contains a syllable without neume!');
     }
   }
@@ -267,15 +282,3 @@ export function convertSbToStaff(sbBasedMei: string): string {
   return vkbeautify.xml(serializer.serializeToString(meiDoc));
 }
 
-export function getSyllableText (syllable: Element) {
-  const syl = syllable.getElementsByTagName('syl')[0].childNodes[0];
-  let sylText;
-  if (syl) {
-    sylText = syl.nodeValue;
-  }
-  else {
-    sylText = 'null';
-  }
-
-  return sylText;
-}

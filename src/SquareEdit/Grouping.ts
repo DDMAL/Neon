@@ -3,7 +3,7 @@ import * as Warnings from '../Warnings';
 import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
 import { EditorAction } from '../Types';
-import { unsetVirgaAction, unsetInclinatumAction, removeHandler, deleteButtonHandler } from './SelectOptions';
+import { removeHandler, deleteButtonHandler } from './SelectOptions';
 
 /**
  * The NeonView parent to access editor actions.
@@ -88,9 +88,9 @@ export function initGroupingListeners (): void {
       const elementIds = getIds();
       
       const editorAction: EditorAction = {
-        'action': 'toggleLigature',
-        'param': {
-          'elementIds': elementIds
+        action: 'toggleLigature',
+        param: {
+          elementIds: elementIds
         }
       };
       neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
@@ -109,56 +109,56 @@ export function initGroupingListeners (): void {
     document.getElementById('toggle-link').addEventListener('click', () => {
       const elementIds = getIds();
       const chainAction: EditorAction = {
-        'action': 'chain',
-        'param': []
+        action: 'chain',
+        param: []
       };
       const param = new Array<EditorAction>();
       if (document.getElementById(elementIds[0]).getAttribute('mei:precedes')) {
         param.push({
-          'action': 'set',
-          'param': {
-            'elementId': elementIds[0],
-            'attrType': 'precedes',
-            'attrValue': ''
+          action: 'set',
+          param: {
+            elementId: elementIds[0],
+            attrType: 'precedes',
+            attrValue: ''
           }
         });
         param.push({
-          'action': 'set',
-          'param': {
-            'elementId': elementIds[1],
-            'attrType': 'follows',
-            'attrValue': ''
+          action: 'set',
+          param: {
+            elementId: elementIds[1],
+            attrType: 'follows',
+            attrValue: ''
           }
         });
         param.push({
-          'action': 'setText',
-          'param': {
-            'elementId': elementIds[1],
-            'text': ''
+          action: 'setText',
+          param: {
+            elementId: elementIds[1],
+            text: ''
           }
         });
       } else if (document.getElementById(elementIds[0]).getAttribute('mei:follows')) {
         param.push({
-          'action': 'set',
-          'param': {
-            'elementId': elementIds[0],
-            'attrType': 'follows',
-            'attrValue': ''
+          action: 'set',
+          param: {
+            elementId: elementIds[0],
+            attrType: 'follows',
+            attrValue: ''
           }
         });
         param.push({
-          'action': 'set',
-          'param': {
-            'elementId': elementIds[1],
-            'attrType': 'precedes',
-            'attrValue': ''
+          action: 'set',
+          param: {
+            elementId: elementIds[1],
+            attrType: 'precedes',
+            attrValue: ''
           }
         });
         param.push({
-          'action': 'setText',
-          'param': {
-            'elementId': elementIds[0],
-            'text': ''
+          action: 'setText',
+          param: {
+            elementId: elementIds[0],
+            text: ''
           }
         });
       } else {
@@ -180,28 +180,28 @@ export function initGroupingListeners (): void {
         }
 
         param.push({
-          'action': 'set',
-          'param': {
-            'elementId': firstSyllable.id,
-            'attrType': 'precedes',
-            'attrValue': '#' + secondSyllable.id
+          action: 'set',
+          param: {
+            elementId: firstSyllable.id,
+            attrType: 'precedes',
+            attrValue: '#' + secondSyllable.id
           }
         });
         param.push({
-          'action': 'set',
-          'param': {
-            'elementId': secondSyllable.id,
-            'attrType': 'follows',
-            'attrValue': '#' + firstSyllable.id
+          action: 'set',
+          param: {
+            elementId: secondSyllable.id,
+            attrType: 'follows',
+            attrValue: '#' + firstSyllable.id
           }
         });
         // Delete syl on second syllable
         const syl = secondSyllable.querySelector('.syl');
         if (syl !== null) {
           param.push({
-            'action': 'remove',
-            'param': {
-              'elementId': syl.id
+            action: 'remove',
+            param: {
+              elementId: syl.id
             }
           });
         }
@@ -228,10 +228,10 @@ export function initGroupingListeners (): void {
  */
 function groupingAction (action: string, groupType: string, elementIds: string[]): void {
   const editorAction: EditorAction = {
-    'action': action,
-    'param': {
-      'groupType': groupType,
-      'elementIds': elementIds
+    action: action,
+    param: {
+      groupType: groupType,
+      elementIds: elementIds
     }
   };
   neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
