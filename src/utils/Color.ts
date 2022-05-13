@@ -1,3 +1,5 @@
+import { GroupingType } from '../Types';
+
 /**
  * Adapted from color palette from Figure 2 (Colors optimized for color-blind
  * individuals) from
@@ -169,9 +171,9 @@ export function setStaffHighlight(): void {
 
 /**
  * Set a highlight by a different grouping.
- * @param grouping - Either "staff", "syllable", "neume", or "layer".
+ * @param grouping - Either "staff", "syllable", "neume", "selection", or "layer".
  */
-export function setGroupingHighlight(grouping: string): void {
+export function setGroupingHighlight(grouping: GroupingType): void {
   unsetGroupingHighlight();
   if (grouping === 'staff') {
     setStaffHighlight();

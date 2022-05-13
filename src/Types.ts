@@ -49,3 +49,7 @@ export type HTMLSVGElement = HTMLElement & SVGSVGElement;
 
 /** "Selection By" type */
 export type SelectionType = 'selByStaff' | 'selByNeume' | 'selByNc' | 'selByLayerElement' | 'selBySyl' | 'selByBBox' | 'selByLayerElement';
+
+/** Highlight grouping type  */
+export type GroupingType = 'staff' | 'syllable' | 'neume' | 'layer' | 'selection' | 'none';
+
