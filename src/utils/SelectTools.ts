@@ -489,7 +489,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
                 if ( (firstNeumeComponentX > secondNeumeComponentX) 
                   || (firstNeumeComponentX === secondNeumeComponentX && firstNeumeComponentY < secondNeumeComponentY)) {
                   [firstNeumeComponent, secondNeumeComponent] = [secondNeumeComponent, firstNeumeComponent];
-                  [firstNeumeComponentX, firstNeumeComponentY] = [secondNeumeComponentX, secondNeumeComponentY];
+                  [firstNeumeComponentX, firstNeumeComponentY, secondNeumeComponentX, secondNeumeComponentY] = [secondNeumeComponentX, secondNeumeComponentY, firstNeumeComponentX, firstNeumeComponentY];
                 }
 
                 // if stacked nc's/ligature (identical x), or descending nc's (y descends)
