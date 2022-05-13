@@ -476,13 +476,12 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
                 // Note that the order in the list may not be the same as the
                 // order by x-position.
 
-                console.log('groups: ', groups);
                 
-                let firstNeumeComponent = (groups[0].children[0] as SVGUseElement);
-                let secondNeumeComponent = (groups[1].children[0] as SVGUseElement);
+                const firstNeumeComponent = (groups[0].children[0] as SVGUseElement);
+                const secondNeumeComponent = (groups[1].children[0] as SVGUseElement);
 
-                let firstNeumeComponentX  = firstNeumeComponent.x.baseVal.value;
-                let secondNeumeComponentX = secondNeumeComponent.x.baseVal.value;
+                const firstNeumeComponentX  = firstNeumeComponent.x.baseVal.value;
+                const secondNeumeComponentX = secondNeumeComponent.x.baseVal.value;
                 let firstNeumeComponentY  = firstNeumeComponent.y.baseVal.value;
                 let secondNeumeComponentY = secondNeumeComponent.y.baseVal.value;
 
