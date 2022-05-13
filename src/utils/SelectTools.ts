@@ -2,7 +2,7 @@ import * as Color from './Color';
 import { updateHighlight } from '../DisplayPanel/DisplayControls';
 import * as Grouping from '../SquareEdit/Grouping';
 import { resize } from './Resize';
-import { Attributes } from '../Types';
+import { Attributes, SelectionType } from '../Types';
 import NeonView from '../NeonView';
 import DragHandler from './DragHandler';
 import * as SelectOptions from '../SquareEdit/SelectOptions';
@@ -12,10 +12,10 @@ import { setSelectHelperObjects } from './Select';
 /**
  * @returns The selection mode chosen by the user.
  */
-export function getSelectionType (): string {
+export function getSelectionType (): SelectionType {
   const element = document.getElementsByClassName('sel-by is-active');
   if (element.length !== 0) {
-    return element[0].id;
+    return element[0].id as SelectionType;
   } else {
     return null;
   }

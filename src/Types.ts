@@ -52,3 +52,4 @@ export type SelectionType = 'selByStaff' | 'selByNeume' | 'selByNc' | 'selByLaye
 
 /** Highlight grouping type  */
 export type GroupingType = 'staff' | 'syllable' | 'neume' | 'layer' | 'selection' | 'none';
+

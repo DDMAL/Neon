@@ -10,6 +10,7 @@ import { InfoInterface } from '../Interfaces';
 import ZoomHandler from '../SingleView/Zoom';
 
 import * as d3 from 'd3';
+import { HTMLSVGElement } from '../Types';
 
 let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 let strokeWidth = 7;
@@ -41,6 +42,30 @@ function escapeKeyListener (evt: KeyboardEvent): void {
   }
 }
 
+function arrowKeyListener (evt: KeyboardEvent): void {
+  if (getSelectionType() !== 'selByBBox' || (evt.key !== 'ArrowLeft' && evt.key !== 'ArrowRight'))
+    return;
+
+  const selected = document.querySelector('.syllable-highlighted');
+  const syllables = Array.from(document.querySelectorAll('.syllable'));
+
+  // not all syllables have BBoxes; we must filter them out
+  const bboxSyllables = syllables.filter(syl => syl.querySelector('.sylTextRect-display') !== null);
+  const ind = bboxSyllables.indexOf(selected);
+
+  if (evt.key === 'ArrowLeft' && ind > 0) {
+    unselect();
+
+    const bbox = bboxSyllables[ind - 1].querySelector('.sylTextRect-display');
+    selectAll([bbox as SVGGraphicsElement], neonView, dragHandler);
+  } else if (evt.key === 'ArrowRight' && ind < bboxSyllables.length - 1) {
+    unselect();
+
+    const bbox = bboxSyllables[ind + 1].querySelector('.sylTextRect-display');
+    selectAll([bbox as SVGGraphicsElement], neonView, dragHandler);
+  }
+}
+
 function isSelByBBox (): boolean {
   const selByBBox = document.getElementById('selByBBox');
   if (selByBBox) {
@@ -49,7 +74,33 @@ function isSelByBBox (): boolean {
   return false;
 }
 
-function stopPropHandler (evt): void { evt.stopPropagation(); }
+function stopPropHandler (evt: Event): void { evt.stopPropagation(); }
+
+/**
+ * Apply listeners for click selection.
+ * @param selector - The CSS selector used to choose where listeners are applied.
+ */
+export function clickSelect (selector: string): void {
+  document.querySelectorAll(selector).forEach(sel => {
+    sel.removeEventListener('mousedown', clickHandler);
+    sel.addEventListener('mousedown', clickHandler);
+  });
+
+  // Click away listeners
+  document.body.removeEventListener('keydown', escapeKeyListener);
+  document.body.addEventListener('keydown', escapeKeyListener);
+
+  document.body.removeEventListener('keydown', arrowKeyListener);
+  document.body.addEventListener('keydown', arrowKeyListener);
+
+  document.getElementById('container')
+    .addEventListener('contextmenu', (evt) => { evt.preventDefault(); });
+
+  document.querySelectorAll('use,rect,#moreEdit').forEach(sel => {
+    sel.removeEventListener('click', stopPropHandler);
+    sel.addEventListener('click', stopPropHandler);
+  });
+}
 
 /**
  * Handle click events related to element selection.
@@ -224,30 +275,6 @@ function clickHandler (evt: MouseEvent): void {
     }));
   }
 }
-
-/**
- * Apply listeners for click selection.
- * @param selector - The CSS selector used to choose where listeners are applied.
- */
-export function clickSelect (selector: string): void {
-  document.querySelectorAll(selector).forEach(sel => {
-    sel.removeEventListener('mousedown', clickHandler);
-    sel.addEventListener('mousedown', clickHandler);
-  });
-
-  // Click away listeners
-  document.body.removeEventListener('keydown', escapeKeyListener);
-  document.body.addEventListener('keydown', escapeKeyListener);
-
-  document.getElementById('container')
-    .addEventListener('contextmenu', (evt) => { evt.preventDefault(); });
-
-  document.querySelectorAll('use,rect,#moreEdit').forEach(sel => {
-    sel.removeEventListener('click', stopPropHandler);
-    sel.addEventListener('click', stopPropHandler);
-  });
-}
-
 
 /**
  * Apply listeners for drag selection.
