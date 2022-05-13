@@ -477,23 +477,23 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
                 // Check that second neume component is lower than first.
                 // Note that the order in the list may not be the same as the
                 // order by x-position.
-                let firstNeumeComponent = (groups[0].children[0] as SVGUseElement);
-                let secondNeumeComponent = (groups[1].children[0] as SVGUseElement);
+                let firstNC = (groups[0].children[0] as SVGUseElement);
+                let secondNC = (groups[1].children[0] as SVGUseElement);
 
-                let firstNeumeComponentX  = firstNeumeComponent.x.baseVal.value;
-                let secondNeumeComponentX = secondNeumeComponent.x.baseVal.value;
-                let firstNeumeComponentY  = firstNeumeComponent.y.baseVal.value;
-                let secondNeumeComponentY = secondNeumeComponent.y.baseVal.value;
+                let firstNCX  = firstNC.x.baseVal.value;
+                let secondNCX = secondNC.x.baseVal.value;
+                let firstNCY  = firstNC.y.baseVal.value;
+                let secondNCY = secondNC.y.baseVal.value;
 
                 // order nc's by x coord (left to right)
-                if ( (firstNeumeComponentX > secondNeumeComponentX) 
-                  || (firstNeumeComponentX === secondNeumeComponentX && firstNeumeComponentY < secondNeumeComponentY)) {
-                  [firstNeumeComponent, secondNeumeComponent] = [secondNeumeComponent, firstNeumeComponent];
-                  [firstNeumeComponentX, firstNeumeComponentY, secondNeumeComponentX, secondNeumeComponentY] = [secondNeumeComponentX, secondNeumeComponentY, firstNeumeComponentX, firstNeumeComponentY];
+                if ( (firstNCX > secondNCX) 
+                  || (firstNCX === secondNCX && firstNCY < secondNCY)) {
+                  [firstNC, secondNC] = [secondNC, firstNC];
+                  [firstNCX, firstNCY, secondNCX, secondNCY] = [secondNCX, secondNCY, firstNCX, firstNCY];
                 }
 
                 // if stacked nc's/ligature (identical x), or descending nc's (y descends)
-                if (firstNeumeComponentX === secondNeumeComponentX || firstNeumeComponentY < secondNeumeComponentY) {
+                if (firstNCX === secondNCX || firstNCY < secondNCY) {
                   Grouping.triggerGrouping('ligature'); 
                   break;
                 }
