@@ -2,19 +2,20 @@ import * as Color from './Color';
 import { updateHighlight } from '../DisplayPanel/DisplayControls';
 import * as Grouping from '../SquareEdit/Grouping';
 import { resize } from './Resize';
-import { Attributes } from '../Types';
+import { Attributes, SelectionType } from '../Types';
 import NeonView from '../NeonView';
 import DragHandler from './DragHandler';
 import * as SelectOptions from '../SquareEdit/SelectOptions';
 
 import * as d3 from 'd3';
+import { setSelectHelperObjects } from './Select';
 /**
  * @returns The selection mode chosen by the user.
  */
-export function getSelectionType (): string {
+export function getSelectionType (): SelectionType {
   const element = document.getElementsByClassName('sel-by is-active');
   if (element.length !== 0) {
-    return element[0].id;
+    return element[0].id as SelectionType;
   } else {
     return null;
   }
@@ -331,7 +332,6 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       groupsToSelect.add(document.getElementById(precedes.slice(1)));
     }
   }
-
   // Select the elements
   groupsToSelect.forEach((group: SVGGraphicsElement) => { select(group, dragHandler); });
 
@@ -432,7 +432,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
             SelectOptions.triggerDefaultSylActions();
             SelectOptions.triggerSylActions();
           }
-          // break;
+          // break
         // default:
           // if (sharedSecondLevelParent(groups)) {
           //   Grouping.triggerGrouping('syl');
@@ -475,29 +475,26 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
                 // Check that second neume component is lower than first.
                 // Note that the order in the list may not be the same as the
                 // order by x-position.
-                const orderFirstX = (groups[0].children[0] as SVGUseElement)
-                  .x.baseVal.value;
-                const orderSecondX = (groups[1].children[0] as SVGUseElement)
-                  .x.baseVal.value;
-                let posFirstY: number, posSecondY: number;
+                
+                const firstNeumeComponent = (groups[0].children[0] as SVGUseElement);
+                const secondNeumeComponent = (groups[1].children[0] as SVGUseElement);
 
-                if (orderFirstX < orderSecondX) {
-                  posFirstY = (groups[0].children[0] as SVGUseElement)
-                    .y.baseVal.value;
-                  posSecondY = (groups[1].children[0] as SVGUseElement)
-                    .y.baseVal.value;
-                } else {
-                  posFirstY = (groups[1].children[0] as SVGUseElement)
-                    .y.baseVal.value;
-                  posSecondY = (groups[0].children[0] as SVGUseElement)
-                    .y.baseVal.value;
+                const firstNeumeComponentX  = firstNeumeComponent.x.baseVal.value;
+                const secondNeumeComponentX = secondNeumeComponent.x.baseVal.value;
+                let firstNeumeComponentY  = firstNeumeComponent.y.baseVal.value;
+                let secondNeumeComponentY = secondNeumeComponent.y.baseVal.value;
+
+                // Nc's stacked on each other can only be one of 2 cases: 1) ligature, 2) podatus/pes
+                // In either case, order by lower pitch first - (as selecting by bounds gets the ligature first)
+                if (firstNeumeComponentX === secondNeumeComponentX) {
+                  if (firstNeumeComponentY < secondNeumeComponentY) {
+                    [groups[0], groups[1]] = [groups[1], groups[0]];
+                    [firstNeumeComponentY, secondNeumeComponentY] = [secondNeumeComponentY, firstNeumeComponentY];
+                  }
                 }
-
-                // Also ensure both components are marked or not marked as ligatures.
-                // const isFirstLigature = await isLigature(groups[0], neonView);
-                // const isSecondLigature = await isLigature(groups[1], neonView);
-                if (posSecondY > posFirstY) {
-                  Grouping.triggerGrouping('ligature');
+                // if stacked nc's/ligature (identical x), or descending nc's (y descends)
+                if (firstNeumeComponentX === secondNeumeComponentX || firstNeumeComponentY < secondNeumeComponentY) {
+                  Grouping.triggerGrouping('ligature'); 
                   break;
                 }
               }

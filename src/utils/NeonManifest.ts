@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { NeonManifest } from '../Types';
-import * as NeonSchema from './manifest/NeonSchema.json';
-import * as NeonContext from './manifest/NeonSchema.json';
+const NeonSchema = require('./manifest/NeonSchema.json');
+const NeonContext = require('./manifest/context.json');
 import { validate } from 'jsonschema';
+
 
 /**
  * Check if the provided Neon manifest is parseable.

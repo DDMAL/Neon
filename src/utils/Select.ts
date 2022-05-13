@@ -10,6 +10,7 @@ import { InfoInterface } from '../Interfaces';
 import ZoomHandler from '../SingleView/Zoom';
 
 import * as d3 from 'd3';
+import { HTMLSVGElement } from '../Types';
 
 let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 let strokeWidth = 7;
@@ -64,6 +65,30 @@ function enterKeyListener (evt: KeyboardEvent): void {
   }
 }
 
+function arrowKeyListener (evt: KeyboardEvent): void {
+  if (getSelectionType() !== 'selByBBox' || (evt.key !== 'ArrowLeft' && evt.key !== 'ArrowRight'))
+    return;
+
+  const selected = document.querySelector('.syllable-highlighted');
+  const syllables = Array.from(document.querySelectorAll('.syllable'));
+
+  // not all syllables have BBoxes; we must filter them out
+  const bboxSyllables = syllables.filter(syl => syl.querySelector('.sylTextRect-display') !== null);
+  const ind = bboxSyllables.indexOf(selected);
+
+  if (evt.key === 'ArrowLeft' && ind > 0) {
+    unselect();
+
+    const bbox = bboxSyllables[ind - 1].querySelector('.sylTextRect-display');
+    selectAll([bbox as SVGGraphicsElement], neonView, dragHandler);
+  } else if (evt.key === 'ArrowRight' && ind < bboxSyllables.length - 1) {
+    unselect();
+
+    const bbox = bboxSyllables[ind + 1].querySelector('.sylTextRect-display');
+    selectAll([bbox as SVGGraphicsElement], neonView, dragHandler);
+  }
+}
+
 function isSelByBBox (): boolean {
   const selByBBox = document.getElementById('selByBBox');
   if (selByBBox) {
@@ -90,6 +115,9 @@ export function clickSelect (selector: string): void {
 
   document.body.removeEventListener('keydown', enterKeyListener);
   document.body.addEventListener('keydown', enterKeyListener);
+
+  document.body.removeEventListener('keydown', arrowKeyListener);
+  document.body.addEventListener('keydown', arrowKeyListener);
 
   document.getElementById('container')
     .addEventListener('contextmenu', (evt) => { evt.preventDefault(); });
@@ -273,7 +301,6 @@ function clickHandler (evt: MouseEvent): void {
     }));
   }
 }
-
 
 /**
  * Apply listeners for drag selection.
