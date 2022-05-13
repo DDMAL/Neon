@@ -234,7 +234,7 @@ export function convertSbToStaff(sbBasedMei: string): string {
 
     // Check syllables that contains @precedes or @follows
     // Update syllable arrays for each syllable
-    const newSyllables = Array.from(mei.getElementsByTagName('syllable'));
+    let newSyllables = Array.from(mei.getElementsByTagName('syllable'));
     // For each toggle-linked syllable
     // Set @precedes and @follows to make sure pointing to the correct syllable
     if (syllable.hasAttribute('precedes')) {
