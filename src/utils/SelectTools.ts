@@ -470,30 +470,30 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
             // Check if these neume components are part of the same neume
             if (groups[0].parentElement === groups[1].parentElement) {
               const children = Array.from(groups[0].parentElement.children);
+              
               // Check that neume components are adjacent
               if (Math.abs(children.indexOf(groups[0]) - children.indexOf(groups[1])) === 1) {
+                
                 // Check that second neume component is lower than first.
                 // Note that the order in the list may not be the same as the
                 // order by x-position.
-                
-                const firstNeumeComponent = (groups[0].children[0] as SVGUseElement);
-                const secondNeumeComponent = (groups[1].children[0] as SVGUseElement);
+                let firstNC = (groups[0].children[0] as SVGUseElement);
+                let secondNC = (groups[1].children[0] as SVGUseElement);
 
-                const firstNeumeComponentX  = firstNeumeComponent.x.baseVal.value;
-                const secondNeumeComponentX = secondNeumeComponent.x.baseVal.value;
-                let firstNeumeComponentY  = firstNeumeComponent.y.baseVal.value;
-                let secondNeumeComponentY = secondNeumeComponent.y.baseVal.value;
+                let firstNCX  = firstNC.x.baseVal.value;
+                let secondNCX = secondNC.x.baseVal.value;
+                let firstNCY  = firstNC.y.baseVal.value;
+                let secondNCY = secondNC.y.baseVal.value;
 
-                // Nc's stacked on each other can only be one of 2 cases: 1) ligature, 2) podatus/pes
-                // In either case, order by lower pitch first - (as selecting by bounds gets the ligature first)
-                if (firstNeumeComponentX === secondNeumeComponentX) {
-                  if (firstNeumeComponentY < secondNeumeComponentY) {
-                    [groups[0], groups[1]] = [groups[1], groups[0]];
-                    [firstNeumeComponentY, secondNeumeComponentY] = [secondNeumeComponentY, firstNeumeComponentY];
-                  }
+                // order nc's by x coord (left to right)
+                if ( (firstNCX > secondNCX) 
+                  || (firstNCX === secondNCX && firstNCY < secondNCY)) {
+                  [firstNC, secondNC] = [secondNC, firstNC];
+                  [firstNCX, firstNCY, secondNCX, secondNCY] = [secondNCX, secondNCY, firstNCX, firstNCY];
                 }
+
                 // if stacked nc's/ligature (identical x), or descending nc's (y descends)
-                if (firstNeumeComponentX === secondNeumeComponentX || firstNeumeComponentY < secondNeumeComponentY) {
+                if (firstNCX === secondNCX || firstNCY < secondNCY) {
                   Grouping.triggerGrouping('ligature'); 
                   break;
                 }
