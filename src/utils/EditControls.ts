@@ -1,7 +1,8 @@
 import * as Notification from './Notification';
 import NeonView from '../NeonView';
-import { navbarDropdownMenu, undoRedoPanel } from './EditContents';
+import { navbarDropdownFileMenu, navbarDropdownMEIActionsMenu, undoRedoPanel } from './EditContents';
 import { convertStaffToSb } from './ConvertMei';
+import * as vkbeautify from 'vkbeautify';
 
 /**
  * Set listener on switching EditMode button to File dropdown in the navbar.
@@ -33,13 +34,6 @@ export function initNavbar (neonView: NeonView): void {
     });
   });
 
-  document.getElementById('revert').addEventListener('click', function () {
-    if (window.confirm('Reverting will cause all changes to be lost. Press OK to continue.')) {
-      neonView.deleteDb().then(() => {
-        window.location.reload();
-      });
-    }
-  });
   // Download link for MEI
   // Is an actual file with a valid URI except in local mode where it must be generated.
   document.getElementById('getmei').addEventListener('click', () => {
@@ -49,6 +43,80 @@ export function initNavbar (neonView: NeonView): void {
       document.getElementById('getmei').setAttribute('href', data);
       document.getElementById('getmei').setAttribute('download', neonView.view.getPageName() + '.mei');
     });
+  });
+
+
+  // Event listener for "Remove Empty Syllables" button inside "MEI Actions" dropdown
+  document.getElementById('remove-empty-syls').addEventListener('click', function() {
+    const uri = neonView.view.getCurrentPageURI();
+
+    neonView.getPageMEI(uri).then(meiString => {
+      const parser = new DOMParser();
+      const meiDoc = parser.parseFromString(meiString, 'text/xml');
+      const mei = meiDoc.documentElement;
+      
+      // Check for syllables without neumes
+      const syllables = Array.from(mei.getElementsByTagName('syllable'));
+      let hasEmptySyllables = false;
+      for (const syllable of syllables) {
+        if (syllable.getElementsByTagName('neume').length === 0) {
+          syllable.remove();
+          hasEmptySyllables = true;
+        }
+      }
+
+      if (!hasEmptySyllables) {
+        Notification.queueNotification('No empty syllables found.');
+      } else {
+        // update cached MEI file
+        const serializer = new XMLSerializer();
+        const updatedMeiString = vkbeautify.xml(serializer.serializeToString(meiDoc));
+        neonView.core.loadData(uri, updatedMeiString);
+
+        Notification.queueNotification('Removed empty Syllables.');
+      }
+    });
+  });
+
+  // Event listener for "Remove Empty Neumes" button inside "MEI Actions" dropdown
+  document.getElementById('remove-empty-neumes').addEventListener('click', function() {
+    const uri = neonView.view.getCurrentPageURI();
+
+    neonView.getPageMEI(uri).then(meiString => {
+      const parser = new DOMParser();
+      const meiDoc = parser.parseFromString(meiString, 'text/xml');
+      const mei = meiDoc.documentElement;
+
+      // Check for neumes without neume components
+      const neumes = Array.from(mei.getElementsByTagName('neume'));
+      let hasEmptyNeume = false;
+      for (const neume of neumes) {
+        if (neume.getElementsByTagName('nc').length === 0) {
+          neume.remove();
+          hasEmptyNeume = true;
+        }
+      }
+
+      if (!hasEmptyNeume) {
+        Notification.queueNotification('No empty neumes found.');
+      } else {
+        // update cached MEI file
+        const serializer = new XMLSerializer();
+        const updatedMeiString = vkbeautify.xml(serializer.serializeToString(meiDoc));
+        neonView.core.loadData(uri, updatedMeiString);
+
+        Notification.queueNotification('Removed empty neumes.');
+      }
+    });
+  });
+
+  // Event listener for "Revert" button inside "MEI Actions" dropdown
+  document.getElementById('revert').addEventListener('click', function () {
+    if (window.confirm('Reverting will cause all changes to be lost. Press OK to continue.')) {
+      neonView.deleteDb().then(() => {
+        window.location.reload();
+      });
+    }
   });
 }
 
@@ -104,7 +172,8 @@ export function initUndoRedoPanel (neonView: NeonView): void {
 export function startEditMode (neonView: NeonView): void {
   const parent: HTMLElement = document.getElementById('dropdown_toggle').parentElement;
   document.getElementById('dropdown_toggle').remove();
-  parent.prepend(navbarDropdownMenu);
+  parent.prepend(navbarDropdownMEIActionsMenu);
+  parent.prepend(navbarDropdownFileMenu);
   document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;
   initNavbar(neonView);
   initUndoRedoPanel(neonView);

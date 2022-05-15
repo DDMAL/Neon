@@ -2,7 +2,7 @@ import NeonCore from './NeonCore';
 
 import { parseManifest } from './utils/NeonManifest';
 import { prepareEditMode } from './utils/EditControls';
-import {setBody, setNavbarDefaultListeners} from './utils/template/Template';
+import setBody from './utils/template/Template';
 import * as Types from './Types';
 import * as Interfaces from './Interfaces';
 
@@ -87,8 +87,6 @@ class NeonView {
       return this.core.initDb();
     }).then(() => {
       this.updateForCurrentPage(true);
-    }).then(() => {
-      setNavbarDefaultListeners(this)
     });
   }
 
