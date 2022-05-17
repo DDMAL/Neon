@@ -36,11 +36,18 @@ export function unselect (): void {
       selected.style.fill = '';
     }
   });
+
+  // Set the strokes of all divlines back to black
+  Array.from(document.getElementsByClassName('divLine')).forEach((syllable: HTMLElement) => {
+    syllable.style.stroke = 'black';
+  });
+
   Array.from(document.getElementsByClassName('text-select')).forEach((el: SVGElement) => {
     el.style.color = '';
     el.style.fontWeight = '';
     el.classList.remove('text-select');
   });
+
   Array.from(document.getElementsByClassName('sylTextRect-display')).forEach((sylRect: HTMLElement) => {
     sylRect.style.fill = 'blue';
   });
@@ -107,15 +114,28 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler): void
   if (el.classList.contains('layer')) {
     return selectLayerElement(el, dragHandler);
   }
+
   if (!el.classList.contains('selected') && !el.classList.contains('sylTextRect') &&
       !el.classList.contains('sylTextRect-display')) {
     el.classList.add('selected');
+    // set fill to red
+    // set stroke to red only if selected elem is a divLine
     el.style.fill = '#d00';
+    el.style.stroke = (el.classList.contains('divLine'))? '#d00' : 'black';
+
     if (el.querySelectorAll('.sylTextRect-display').length) {
       el.querySelectorAll('.sylTextRect-display').forEach((elem: HTMLElement) => {
-        elem.style.fill = 'red';
+        elem.style.fill = '#d00';
       });
     }
+
+    if (el.querySelectorAll('.divLine').length) {
+      el.querySelectorAll('.divLine').forEach((elem: HTMLElement) => {
+        elem.style.stroke = '#d00';
+      });
+    }
+
+    // Set color of the corresponding text in the text panel to red
     let sylId;
     if (el.classList.contains('syllable')) {
       sylId = el.id;
@@ -235,7 +255,7 @@ export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, ne
     syl.classList.add('selected');
     bbox.style.fill = '#d00';
     const closest = el.closest('.syllable') as HTMLElement;
-    closest.style.fill = 'red';
+    closest.style.fill = '#d00';
     closest.classList.add('syllable-highlighted');
     if (neonView !== undefined ){
       resize(syl as SVGGraphicsElement, neonView, dragHandler);
@@ -334,7 +354,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     }
   }
   // Select the elements
-  groupsToSelect.forEach((group: SVGGraphicsElement) => { select(group, dragHandler); });
+  groupsToSelect.forEach((group: SVGGraphicsElement) => { select(group, dragHandler) });
 
   /* Determine the context menu to display (if any) */
 
