@@ -5,8 +5,7 @@ import * as SelectTools from '../utils/SelectTools';
 import * as SelectOptions from '../SquareEdit/SelectOptions';
 import NeonView from '../NeonView';
 import { EditorAction } from '../Types';
-import { unsetVirgaAction, unsetInclinatumAction, removeHandler, deleteButtonHandler } from './SelectOptions';
-import { SplitStaffHandler } from './StaffTools';
+import { removeHandler, deleteButtonHandler } from './SelectOptions';
 
 
 /**
@@ -40,7 +39,7 @@ export function initNeonView (view: NeonView): void {
       if (SelectTools.sharedSecondLevelParent(groups) || selectionType === 'selByStaff') {
         return true;
       } else {
-        return false
+        return false;
       }
   }
 }
@@ -286,12 +285,12 @@ export function initGroupingListeners (): void {
  * Grouping/Ungrouping keybinding event listener
  */
 const keydownListener = function(e) {
-  if (e.key === "g") {
+  if (e.key === 'g') {
     // get selected elements to check if they can be groupeds
     const elements = Array.from(document.querySelectorAll('.selected')) as SVGGraphicsElement[];
     if (elements.length == 0) return;
 
-    let selectionType = SelectTools.getSelectionType();
+    const selectionType = SelectTools.getSelectionType();
 
     // Group/merge or ungroup/split based on selection type
     switch (selectionType) {
@@ -340,7 +339,7 @@ const keydownListener = function(e) {
         return;
     }
   }
-}
+};
 
 
 /**
