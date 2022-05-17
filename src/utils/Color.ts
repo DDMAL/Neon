@@ -45,7 +45,7 @@ export function unhighlight(staff?: SVGGElement): void {
           rect.closest('.syl').classList.contains('selected')
           // rect.closest('.layer').classList.contains('selected')
         ){
-          rect.style.fill = 'red';
+          rect.style.fill = '#d00';
         } else {
           rect.style.fill = 'blue';
         }
@@ -71,7 +71,7 @@ export function unsetGroupingHighlight(): void {
   const highlighted = Array.from(document.getElementsByClassName('highlighted'))
     .filter((elem: HTMLElement) => !elem.parentElement.classList.contains('selected'));
   highlighted.forEach((elem: HTMLElement) => {
-    elem.setAttribute('fill', null);
+    elem.setAttribute('#d00', null);
     let rects = elem.querySelectorAll('.sylTextRect-display');
     if (!rects.length) {
       if (elem.closest('.syllable') !== null) {
@@ -82,7 +82,7 @@ export function unsetGroupingHighlight(): void {
       if (rect.closest('.syllable').classList.contains('selected') || 
       rect.closest('.syl').classList.contains('selected')
       ){
-        rect.style.fill = 'red';
+        rect.style.fill = '#d00';
       } else {
         rect.style.fill = 'blue';
       }

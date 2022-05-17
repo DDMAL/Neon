@@ -120,7 +120,7 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler): void
     // set fill to red
     // set stroke to red only if selected elem is a divLine
     el.style.fill = '#d00';
-    el.style.stroke = (el.classList.contains('divLine'))? 'red' : 'black';
+    el.style.stroke = (el.classList.contains('divLine'))? '#d00' : 'black';
 
     if (el.querySelectorAll('.sylTextRect-display').length) {
       el.querySelectorAll('.sylTextRect-display').forEach((elem: HTMLElement) => {
@@ -254,7 +254,7 @@ export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, ne
     syl.classList.add('selected');
     bbox.style.fill = '#d00';
     const closest = el.closest('.syllable') as HTMLElement;
-    closest.style.fill = 'red';
+    closest.style.fill = '#d00';
     closest.classList.add('syllable-highlighted');
     if (neonView !== undefined ){
       resize(syl as SVGGraphicsElement, neonView, dragHandler);
