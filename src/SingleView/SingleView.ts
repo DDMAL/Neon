@@ -66,21 +66,12 @@ class SingleView implements ViewInterface {
     this.zoomHandler = new ZoomHandler();
     this.displayPanel = new panel(this, 'neon-container', 'background', this.zoomHandler);
 
-    this.pageURI = image;
-    document.getElementById('loading').style.display = 'none';
-
     this.setViewEventHandlers();
+    this.displayPanel.setDisplayListeners();
 
-    const bgimg = document.getElementById('bgimg');
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(mutation => {
-        if (mutation.type === 'attributes' && bgimg.getAttribute('width') !== null) {
-          this.displayPanel.setDisplayListeners();
-          observer.disconnect();
-        }
-      });
-    });
-    observer.observe(bgimg, { attributes: true });
+    this.pageURI = image;
+
+    document.getElementById('loading').style.display = 'none';
   }
 
   /**
