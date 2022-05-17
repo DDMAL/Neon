@@ -34,6 +34,7 @@
         "start": "nodemon deployment/server.js",
         "bundle:dev": "./setup-verovio && rm -rf dist/Neon && webpack --config webpack.config.js && cp -R assets src/workers dist/Neon",
         "build": "yarn run bundle:dev && cp -R dist/Neon deployment/public/",
+        "dev": "webpack --config webpack.dev.config.js",
         "test": "jest --silent",
         "doc": "typedoc --out ./doc --mode modules ./src",
         "bundle:pages": "./setup-verovio && rm -rf dist/Neon-gh && webpack --config webpack.pages-config.js && cp -R assets src/workers dist/Neon-gh"
@@ -93,6 +94,7 @@
         "verovio-dev": "file:./verovio-util/verovio-dev",
         "webpack": "^4.12.0",
         "webpack-command": "^0.5.0",
+        "webpack-dev-server": "^4.9.0",
         "worker-loader": "^3.0.0"
     }
 }
