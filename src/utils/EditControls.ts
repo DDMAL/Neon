@@ -60,7 +60,7 @@ export function initNavbar (neonView: NeonView): void {
       let hasEmptySyllables = false;
       let removeSyllableActions = [];
       for (const syllable of syllables) {
-        // if empty syllable found, create action object for removing empty neume
+        // if empty syllable found, create action object for removing it
         if (syllable.getElementsByTagName('neume').length === 0) {
           let action = {
             action: 'remove',
@@ -114,8 +114,8 @@ export function initNavbar (neonView: NeonView): void {
       let hasEmptyNeumes = false;
       let removeNeumesActions = [];
       for (const neume of neumes) {
-        // if empty syllable found, create action object for removing empty neume
-        if (neume.getElementsByTagName('neume').length === 0) {
+        // if empty neume found, create action object for removing it
+        if (neume.getElementsByTagName('nc').length === 0) {
           let action = {
             action: 'remove',
             param: {
