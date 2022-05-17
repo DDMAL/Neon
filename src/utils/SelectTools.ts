@@ -76,6 +76,7 @@ export function selectStaff (staff: SVGGElement, dragHandler: DragHandler): void
     Color.unhighlight(staff);
     Color.highlight(staff, '#d00');
     SelectOptions.triggerSplitActions();
+    Grouping.initGroupingListeners();
     dragHandler.dragInit();
   }
 }
@@ -365,10 +366,12 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       switch (groups.length) {
         case 1:
           SelectOptions.triggerSplitActions();
+          Grouping.initGroupingListeners();
           resize(groups[0], neonView, dragHandler);
           break;
         default:
           SelectOptions.triggerStaffActions();
+          Grouping.initGroupingListeners();
       }
       break;
 
@@ -391,6 +394,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
         case 1:
           // TODO change context if it is only a neume/nc.
           SelectOptions.triggerSylActions();
+          Grouping.initGroupingListeners();
           break;
         // case 2:
         default:
@@ -431,6 +435,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
             }
             SelectOptions.triggerDefaultSylActions();
             SelectOptions.triggerSylActions();
+            Grouping.initGroupingListeners();
           }
           // break
         // default:
@@ -449,6 +454,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
         case 1:
           // TODO change context if it is only a nc.
           SelectOptions.triggerNeumeActions();
+          Grouping.initGroupingListeners();
           break;
         default:
           if (sharedSecondLevelParent(groups)) {
