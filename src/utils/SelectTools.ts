@@ -124,13 +124,13 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler): void
 
     if (el.querySelectorAll('.sylTextRect-display').length) {
       el.querySelectorAll('.sylTextRect-display').forEach((elem: HTMLElement) => {
-        elem.style.fill = 'red';
+        elem.style.fill = '#d00';
       });
     }
 
     if (el.querySelectorAll('.divLine').length) {
       el.querySelectorAll('.divLine').forEach((elem: HTMLElement) => {
-        elem.style.stroke = 'red';
+        elem.style.stroke = '#d00';
       });
     }
 
