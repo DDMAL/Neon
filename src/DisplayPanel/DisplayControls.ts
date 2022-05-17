@@ -29,8 +29,8 @@ export function setZoomControls (zoomHandler?: ZoomHandler): void {
     zoomHandler.zoomTo(Number(zoomOutput.value) / 100.0);
   }
 
-  zoomSlider.addEventListener('input', inputChangeHandler);
-  zoomSlider.addEventListener('change', inputChangeHandler);
+  // zoomSlider.addEventListener('input', inputChangeHandler);
+  zoomSlider.addEventListener('mouseup', inputChangeHandler);
 
   document.body.addEventListener('keydown', (evt) => {
     const currentZoom = parseInt(zoomOutput.value);
@@ -50,6 +50,8 @@ export function setZoomControls (zoomHandler?: ZoomHandler): void {
       zoomHandler.resetZoomAndPan();
     }
   });
+
+  zoomSlider.disabled = false;
 }
 
 /**
@@ -100,6 +102,8 @@ function setOpacityControls (meiClassName: string): void {
 
   opacitySlider.addEventListener('input', inputChangeOpacity);
   opacitySlider.addEventListener('change', inputChangeOpacity);
+
+  opacitySlider.disabled = false;
 }
 
 /**
@@ -133,6 +137,7 @@ function setBackgroundOpacityControls (background: string): void {
   bgOpacitySlider.addEventListener('input', bgInputChangeHandler);
   bgOpacitySlider.addEventListener('change', bgInputChangeHandler);
 
+  bgOpacitySlider.disabled = false;
 }
 
 /**
