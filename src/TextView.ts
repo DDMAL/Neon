@@ -78,19 +78,21 @@ class TextView implements TextViewInterface {
         this.neonView.TextEdit.initSelectByBBoxButton();
       }
     } else {
-      if ((document.getElementById('selByBBox') !== null) &&
-        document.getElementById('selByBBox').classList.contains('is-active')) {
+      if (document.getElementById('selByBBox')?.classList.contains('is-active')) {
         unselect();
         document.getElementById('selByBBox').classList.remove('is-active');
         document.getElementById('selBySyl').classList.add('is-active');
       }
+
       document.querySelectorAll('.sylTextRect-display').forEach(rect => {
         rect.classList.add('sylTextRect');
         rect.classList.remove('sylTextRect-display');
       });
+
       document.querySelectorAll('.syl.selected .sylTextRect').forEach((rect: HTMLElement) => {
         rect.style.fill = 'none';
       });
+
       try {
         document.getElementById('selByBBox').style.display = 'none';
       } catch (e) {}

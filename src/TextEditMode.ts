@@ -1,9 +1,12 @@
-import { unselect } from './utils/SelectTools';
+import { select, selectBBox, unselect } from './utils/SelectTools';
 import DragHandler from './utils/DragHandler';
 import NeonView from './NeonView';
 import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select';
 import { setGroupingHighlight } from './utils/Color';
 import { TextEditInterface } from './Interfaces';
+import { HTMLSVGElement } from './Types';
+
+import * as d3 from 'd3';
 
 /**
  * Format a string for prompting the user.
@@ -170,7 +173,20 @@ export default class TextEditMode implements TextEditInterface {
       };
       this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then((response) => {
         if (response) {
-          this.neonView.updateForCurrentPage();
+          // update the SVG
+          this.neonView.updateForCurrentPage().then(() => {
+            // An update to the page will reload the entire svg;
+            // We would like to then reselect the same selected syllable
+            // if bboxes are enabled
+            const bboxId = Array.from(span.classList).find(e => e.substr(0, 2) === 'm-');
+
+            if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
+              if (document.getElementById(bboxId)) {
+                const displayRect = document.getElementById(bboxId).querySelector('.sylTextRect-display') as HTMLSVGElement;
+                selectBBox(displayRect, this.dragHandler, this.neonView);
+              }
+            }
+          });
         }
       });
     }
