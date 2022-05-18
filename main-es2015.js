@@ -284,6 +284,7 @@ function OptionsComponent_form_32_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](8);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", ctx_r1.pages);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassProp"]("spinner", ctx_r1.submitLoading);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx_r1.formGroup3_1.valid);
 } }
 function OptionsComponent_form_33_Template(rf, ctx) { if (rf & 1) {
@@ -318,6 +319,7 @@ function OptionsComponent_form_33_Template(rf, ctx) { if (rf & 1) {
     const ctx_r2 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("formGroup", ctx_r2.formGroup3_2);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](13);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassProp"]("spinner", ctx_r2.submitLoading);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx_r2.formGroup3_2.valid);
 } }
 function OptionsComponent_form_34_Template(rf, ctx) { if (rf & 1) {
@@ -351,6 +353,7 @@ function OptionsComponent_form_34_Template(rf, ctx) { if (rf & 1) {
     const ctx_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("formGroup", ctx_r3.formGroup3_3);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](13);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassProp"]("spinner", ctx_r3.submitLoading);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx_r3.formGroup3_3.valid);
 } }
 function OptionsComponent_form_35_Template(rf, ctx) { if (rf & 1) {
@@ -378,6 +381,7 @@ function OptionsComponent_form_35_Template(rf, ctx) { if (rf & 1) {
     const ctx_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("formGroup", ctx_r4.formGroup3_4);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](9);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassProp"]("spinner", ctx_r4.submitLoading);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx_r4.formGroup3_4.valid);
 } }
 function OptionsComponent_form_36_option_8_Template(rf, ctx) { if (rf & 1) {
@@ -412,7 +416,11 @@ function OptionsComponent_form_36_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](11, "Previous");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](12, "button", 31);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](13, "Submit");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](13, "Open");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](14, "button", 47);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function OptionsComponent_form_36_Template_button_click_14_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r20); const ctx_r21 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](); return ctx_r21.handleSubmit("deleteDocument3_5"); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](15, "Delete");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
@@ -422,6 +430,10 @@ function OptionsComponent_form_36_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](8);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", ctx_r5.addedPages);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassProp"]("spinner", ctx_r5.submitLoading);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx_r5.formGroup3_5.valid);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassProp"]("spinner", ctx_r5.deleteLoading);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx_r5.formGroup3_5.valid);
 } }
 function OptionsComponent_form_37_option_8_Template(rf, ctx) { if (rf & 1) {
@@ -429,21 +441,21 @@ function OptionsComponent_form_37_option_8_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 } if (rf & 2) {
-    const manuscript_r22 = ctx.$implicit;
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpropertyInterpolate"]("value", manuscript_r22);
+    const manuscript_r23 = ctx.$implicit;
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpropertyInterpolate"]("value", manuscript_r23);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](manuscript_r22);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](manuscript_r23);
 } }
 function OptionsComponent_form_37_Template(rf, ctx) { if (rf & 1) {
-    const _r24 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "form", 47);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngSubmit", function OptionsComponent_form_37_Template_form_ngSubmit_0_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r24); const ctx_r23 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](); return ctx_r23.handleSubmit($event.target.id); });
+    const _r25 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "form", 48);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngSubmit", function OptionsComponent_form_37_Template_form_ngSubmit_0_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r25); const ctx_r24 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](); return ctx_r24.handleSubmit($event.target.id); });
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "div", 4);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](2, "label", 34);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](3, "Select a Manuscript:");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](4, "div", 27);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](5, "select", 48);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](5, "select", 49);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](6, "option", 29);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](7, "-- select a manuscript --");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
@@ -456,7 +468,11 @@ function OptionsComponent_form_37_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](11, "Previous");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](12, "button", 31);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](13, "Submit");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](13, "Open");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](14, "button", 47);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function OptionsComponent_form_37_Template_button_click_14_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r25); const ctx_r26 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](); return ctx_r26.handleSubmit("deleteDocument3_"); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](15, "Delete");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
@@ -466,7 +482,11 @@ function OptionsComponent_form_37_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](8);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", ctx_r6.addedManuscripts);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassProp"]("spinner", ctx_r6.submitLoading);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx_r6.formGroup3_6.valid);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassProp"]("spinner", ctx_r6.deleteLoading);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx_r6.formGroup3_5.valid);
 } }
 function makeParams(obj) {
     return Object.keys(obj).map(key => {
@@ -479,6 +499,8 @@ class OptionsComponent {
         this.pageOrManuscript = '';
         this.pageOrManifest = '';
         this.pageSelect = '';
+        this.submitLoading = false;
+        this.deleteLoading = false;
         this.formGroup1 = new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormGroup"]({
             selectOrUpload: new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControl"](this.selectOrUpload, _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required)
         });
@@ -526,19 +548,24 @@ class OptionsComponent {
         console.debug("Submit");
         console.debug(e);
         let params;
+        let selection;
         switch (e) {
             case "formGroup3_1":
+                this.submitLoading = true;
                 let value = this.formGroup3_1.controls.pageSelect.value;
                 params = makeParams({ manifest: value });
                 window.location.href = "./editor.html?" + params;
                 break;
             case "formGroup3_2":
+                this.submitLoading = true;
                 params = makeParams({
                     manifest: this.formGroup3_2.controls.manuscriptSelect.value
                 });
                 window.location.href = "./editor.html?" + params;
                 break;
+            // Upload page
             case "formGroup3_3":
+                this.submitLoading = true;
                 let mei = document.getElementById("meiUpload").files[0];
                 let bg = document.getElementById("bgUpload").files[0];
                 Object(_storage__WEBPACK_IMPORTED_MODULE_2__["createManifest"])(mei, bg).then(manifest => {
@@ -550,7 +577,9 @@ class OptionsComponent {
                     console.error(err);
                 });
                 break;
+            // Upload manuscript
             case "formGroup3_4":
+                this.submitLoading = true;
                 let manifest = document.getElementById("manifestUpload").files[0];
                 Object(_storage__WEBPACK_IMPORTED_MODULE_2__["addEntry"])(manifest.name, manifest, false).then(_ => {
                     window.location.reload();
@@ -558,11 +587,50 @@ class OptionsComponent {
                     console.error(err);
                 });
                 break;
+            // Load user-provided page
             case "formGroup3_5":
-            case "formGroup3_6":
-                let selection = this[e].controls.selection.value;
+                this.submitLoading = true;
+                selection = this['formGroup3_5'].controls.selection.value;
+                console.log(selection);
                 params = makeParams({ storage: selection });
-                window.location.href = "./editor.html?" + params;
+                window.location.href = `./editor.html?${params}`;
+                break;
+            // Load user-provided manuscript
+            case "formGroup3_6":
+                this.submitLoading = true;
+                selection = this['formGroup3_6'].controls.selection.value;
+                params = makeParams({ storage: selection });
+                window.location.href = `./editor.html?${params}`;
+            // Delete Page
+            case "deleteDocument3_5":
+                this.deleteLoading = true;
+                selection = this['formGroup3_5'].controls.selection.value;
+                console.log(selection);
+                if (typeof selection !== 'undefined' || selection !== null) {
+                    Object(_storage__WEBPACK_IMPORTED_MODULE_2__["deleteEntry"])(selection).then(_ => {
+                        window.location.reload();
+                    }).catch(err => {
+                        console.error(err);
+                    });
+                }
+                else {
+                    window.confirm(`${selection} could not be deleted! Continue to reload page.`);
+                }
+                break;
+            // Delete Manuscript
+            case "deleteDocument3_6":
+                this.deleteLoading = true;
+                selection = this['formGroup3_6'].controls.selection.value;
+                if (typeof selection !== 'undefined' || selection !== null) {
+                    Object(_storage__WEBPACK_IMPORTED_MODULE_2__["deleteEntry"])(selection).then(_ => {
+                        window.location.reload();
+                    }).catch(err => {
+                        console.error(err);
+                    });
+                }
+                else {
+                    window.confirm(`${selection} could not be deleted! Continue to reload page.`);
+                }
                 break;
             default:
                 console.error("Unexpected ID: " + e);
@@ -571,7 +639,7 @@ class OptionsComponent {
     }
 }
 OptionsComponent.ɵfac = function OptionsComponent_Factory(t) { return new (t || OptionsComponent)(); };
-OptionsComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: OptionsComponent, selectors: [["app-options"]], decls: 38, vars: 15, consts: [["linear", "true"], ["stepper", ""], ["label", "Select an Option", 3, "stepControl"], [3, "formGroup"], [1, "control", "field"], ["for", "select", 1, "label"], ["type", "radio", "id", "select", "formControlName", "selectOrUpload", "value", "select", 3, "ngModel", "ngModelChange"], ["for", "upload", 1, "label"], ["type", "radio", "id", "upload", "formControlName", "selectOrUpload", "value", "upload", 3, "ngModel", "ngModelChange"], ["for", "uploaded", 1, "label"], ["type", "radio", "id", "uploaded", "formControlName", "selectOrUpload", "value", "uploaded", 3, "ngModel", "ngModelChange"], ["mat-raised-button", "", "matStepperNext", "", "type", "button"], ["label", "Page or Manuscript", 3, "stepControl"], ["for", "page", 1, "label"], ["type", "radio", "id", "page", "formControlName", "pageOrManuscript", "value", "page", 3, "ngModel", "ngModelChange"], ["for", "manuscript", 1, "label"], ["type", "radio", "id", "manuscript", "formControlName", "pageOrManuscript", "value", "manuscript", 3, "ngModel", "ngModelChange"], ["mat-raised-button", "", "matStepperPrevious", "", "type", "button"], ["label", "Make Selection"], ["id", "formGroup3_1", 3, "formGroup", "ngSubmit", 4, "ngIf"], ["id", "formGroup3_2", 3, "formGroup", "ngSubmit", 4, "ngIf"], ["id", "formGroup3_3", 3, "formGroup", "ngSubmit", 4, "ngIf"], ["id", "formGroup3_4", 3, "formGroup", "ngSubmit", 4, "ngIf"], ["id", "formGroup3_5", 3, "formGroup", "ngSubmit", 4, "ngIf"], ["id", "formGroup3_6", 3, "formGroup", "ngSubmit", 4, "ngIf"], ["id", "formGroup3_1", 3, "formGroup", "ngSubmit"], ["for", "pageSubmit", 1, "label"], [1, "select"], ["name", "submission", "id", "pageSubmit", "formControlName", "pageSelect"], ["disabled", "", "selected", "", "value", ""], [3, "value", 4, "ngFor", "ngForOf"], ["mat-raised-button", "", "type", "submit", 3, "disabled"], [3, "value"], ["id", "formGroup3_2", 3, "formGroup", "ngSubmit"], ["for", "manuscriptSubmit", 1, "label"], ["name", "submission", "id", "pageSubmit", "formControlName", "manuscriptSelect"], ["value", "Salzinnes"], ["id", "formGroup3_3", 3, "formGroup", "ngSubmit"], ["for", "meiUpload", 1, "label"], ["type", "file", "formControlName", "meiUpload", "accept", "application/xml, application/x-mei, application/mei, .mei, .x-mei", "id", "meiUpload"], ["for", "bgUpload", 1, "label"], ["type", "file", "formControlName", "bgUpload", "accept", "image/png, image/jpeg", "id", "bgUpload"], ["id", "formGroup3_4", 3, "formGroup", "ngSubmit"], ["for", "manifestUpload", 1, "label"], ["type", "file", "formControlName", "manifestUpload", "accept", ".jsonld,.json,application/ld+json,application/json", "id", "manifestUpload"], ["id", "formGroup3_5", 3, "formGroup", "ngSubmit"], ["id", "pageSubmit", "formControlName", "selection"], ["id", "formGroup3_6", 3, "formGroup", "ngSubmit"], ["id", "manuscriptSubmit", "formControlName", "selection"]], template: function OptionsComponent_Template(rf, ctx) { if (rf & 1) {
+OptionsComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: OptionsComponent, selectors: [["app-options"]], decls: 38, vars: 15, consts: [["linear", "true"], ["stepper", ""], ["label", "Select an Option", 3, "stepControl"], [3, "formGroup"], [1, "control", "field"], ["for", "select", 1, "label"], ["type", "radio", "id", "select", "formControlName", "selectOrUpload", "value", "select", 3, "ngModel", "ngModelChange"], ["for", "upload", 1, "label"], ["type", "radio", "id", "upload", "formControlName", "selectOrUpload", "value", "upload", 3, "ngModel", "ngModelChange"], ["for", "uploaded", 1, "label"], ["type", "radio", "id", "uploaded", "formControlName", "selectOrUpload", "value", "uploaded", 3, "ngModel", "ngModelChange"], ["mat-raised-button", "", "matStepperNext", "", "type", "button"], ["label", "Page or Manuscript", 3, "stepControl"], ["for", "page", 1, "label"], ["type", "radio", "id", "page", "formControlName", "pageOrManuscript", "value", "page", 3, "ngModel", "ngModelChange"], ["for", "manuscript", 1, "label"], ["type", "radio", "id", "manuscript", "formControlName", "pageOrManuscript", "value", "manuscript", 3, "ngModel", "ngModelChange"], ["mat-raised-button", "", "matStepperPrevious", "", "type", "button"], ["label", "Make Selection"], ["id", "formGroup3_1", 3, "formGroup", "ngSubmit", 4, "ngIf"], ["id", "formGroup3_2", 3, "formGroup", "ngSubmit", 4, "ngIf"], ["id", "formGroup3_3", 3, "formGroup", "ngSubmit", 4, "ngIf"], ["id", "formGroup3_4", 3, "formGroup", "ngSubmit", 4, "ngIf"], ["id", "formGroup3_5", 3, "formGroup", "ngSubmit", 4, "ngIf"], ["id", "formGroup3_6", 3, "formGroup", "ngSubmit", 4, "ngIf"], ["id", "formGroup3_1", 3, "formGroup", "ngSubmit"], ["for", "pageSubmit", 1, "label"], [1, "select"], ["name", "submission", "id", "pageSubmit", "formControlName", "pageSelect"], ["disabled", "", "selected", "", "value", ""], [3, "value", 4, "ngFor", "ngForOf"], ["mat-raised-button", "", "type", "submit", 3, "disabled"], [3, "value"], ["id", "formGroup3_2", 3, "formGroup", "ngSubmit"], ["for", "manuscriptSubmit", 1, "label"], ["name", "submission", "id", "pageSubmit", "formControlName", "manuscriptSelect"], ["value", "Salzinnes"], ["id", "formGroup3_3", 3, "formGroup", "ngSubmit"], ["for", "meiUpload", 1, "label"], ["type", "file", "formControlName", "meiUpload", "accept", "application/xml, application/x-mei, application/mei, .mei, .x-mei", "id", "meiUpload"], ["for", "bgUpload", 1, "label"], ["type", "file", "formControlName", "bgUpload", "accept", "image/png, image/jpeg", "id", "bgUpload"], ["id", "formGroup3_4", 3, "formGroup", "ngSubmit"], ["for", "manifestUpload", 1, "label"], ["type", "file", "formControlName", "manifestUpload", "accept", ".jsonld,.json,application/ld+json,application/json", "id", "manifestUpload"], ["id", "formGroup3_5", 3, "formGroup", "ngSubmit"], ["id", "pageSubmit", "formControlName", "selection"], ["mat-raised-button", "", "type", "button", 3, "disabled", "click"], ["id", "formGroup3_6", 3, "formGroup", "ngSubmit"], ["id", "manuscriptSubmit", "formControlName", "selection"]], template: function OptionsComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "mat-vertical-stepper", 0, 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](2, "mat-step", 2);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "form", 3);
@@ -583,7 +651,7 @@ OptionsComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineC
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](8, "label", 7);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](9, "Load a New Document:\u00A0 ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](9, "Upload a New Document:\u00A0 ");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](10, "input", 8);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngModelChange", function OptionsComponent_Template_input_ngModelChange_10_listener($event) { return ctx.selectOrUpload = $event; });
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
@@ -629,12 +697,12 @@ OptionsComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineC
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](31, "mat-step", 18);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](32, OptionsComponent_form_32_Template, 14, 3, "form", 19);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](33, OptionsComponent_form_33_Template, 15, 2, "form", 20);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](34, OptionsComponent_form_34_Template, 15, 2, "form", 21);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](35, OptionsComponent_form_35_Template, 11, 2, "form", 22);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](36, OptionsComponent_form_36_Template, 14, 3, "form", 23);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](37, OptionsComponent_form_37_Template, 14, 3, "form", 24);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](32, OptionsComponent_form_32_Template, 14, 5, "form", 19);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](33, OptionsComponent_form_33_Template, 15, 4, "form", 20);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](34, OptionsComponent_form_34_Template, 15, 4, "form", 21);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](35, OptionsComponent_form_35_Template, 11, 4, "form", 22);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](36, OptionsComponent_form_36_Template, 16, 8, "form", 23);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](37, OptionsComponent_form_37_Template, 16, 8, "form", 24);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     } if (rf & 2) {
@@ -761,6 +829,9 @@ function addEntry(title, content, single) {
             resolve(true);
         }).catch(err => {
             reject(err);
+            console.log(err);
+            window.confirm('Upload unsuccessful. See console log for error message or continue to reload');
+            window.location.reload();
         });
     });
 }
@@ -838,7 +909,7 @@ _angular_platform_browser__WEBPACK_IMPORTED_MODULE_3__["platformBrowser"]().boot
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/gabrielle/Desktop/DDMAL_summer2021/neon-index/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /Users/maxzhang/Projects/neon-index/src/main.ts */"./src/main.ts");
 
 
 /***/ })
