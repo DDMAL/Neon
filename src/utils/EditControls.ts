@@ -112,7 +112,7 @@ export function initNavbar (neonView: NeonView): void {
 
       // Check for neumes without neume components
       let hasEmptyNeumes = false;
-      let removeNeumesActions = [];
+      let removeNeumeActions = [];
       for (const neume of neumes) {
         // if empty neume found, create action object for removing it
         if (neume.getElementsByTagName('nc').length === 0) {
@@ -123,7 +123,7 @@ export function initNavbar (neonView: NeonView): void {
             }
           }
           // add action object to array (chain) of action objects
-          removeNeumesActions.push(action);
+          removeNeumeActions.push(action);
           hasEmptyNeumes = true;
         }
       }
@@ -136,7 +136,7 @@ export function initNavbar (neonView: NeonView): void {
         // create "chain action" object
         let chainRemoveAction = {
           "action": "chain",
-          "param": removeNeumesActions,
+          "param": removeNeumeActions,
         };
 
         // execute action that removes all empty neumes
