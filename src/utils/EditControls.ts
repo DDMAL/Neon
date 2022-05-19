@@ -2,7 +2,6 @@ import * as Notification from './Notification';
 import NeonView from '../NeonView';
 import { navbarDropdownFileMenu, navbarDropdownMEIActionsMenu, undoRedoPanel } from './EditContents';
 import { convertStaffToSb } from './ConvertMei';
-import * as vkbeautify from 'vkbeautify';
 
 /**
  * Set listener on switching EditMode button to File dropdown in the navbar.
@@ -62,14 +61,14 @@ export function initNavbar (neonView: NeonView): void {
       for (const syllable of syllables) {
         // if empty syllable found, create action object for removing it
         if (syllable.getElementsByTagName('neume').length === 0) {
-          let action = {
+          let toRemove = {
             action: 'remove',
             param: {
               elementId: syllable.getAttribute('xml:id')
             }
-          }
+          };
           // add action object to array (chain) of action objects
-          removeSyllableActions.push(action);
+          removeSyllableActions.push(toRemove);
           hasEmptySyllables = true;
         }
       }
@@ -80,9 +79,9 @@ export function initNavbar (neonView: NeonView): void {
       }
       else {
         // create "chain action" object
-        let chainRemoveAction = {
-          "action": "chain",
-          "param": removeSyllableActions
+        const chainRemoveAction = {
+          action: 'chain',
+          param: removeSyllableActions
         };
 
         // execute action that removes all empty syllables
@@ -116,14 +115,14 @@ export function initNavbar (neonView: NeonView): void {
       for (const neume of neumes) {
         // if empty neume found, create action object for removing it
         if (neume.getElementsByTagName('nc').length === 0) {
-          let action = {
+          let toRemove = {
             action: 'remove',
             param: {
               elementId: neume.getAttribute('xml:id')
             }
-          }
+          };
           // add action object to array (chain) of action objects
-          removeNeumeActions.push(action);
+          removeNeumeActions.push(toRemove);
           hasEmptyNeumes = true;
         }
       }
@@ -134,9 +133,9 @@ export function initNavbar (neonView: NeonView): void {
       }
       else {
         // create "chain action" object
-        let chainRemoveAction = {
-          "action": "chain",
-          "param": removeNeumeActions,
+        const chainRemoveAction = {
+          action: 'chain',
+          param: removeNeumeActions,
         };
 
         // execute action that removes all empty neumes
