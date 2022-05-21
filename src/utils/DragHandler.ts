@@ -1,5 +1,5 @@
 import NeonView from '../NeonView';
-import { EditorAction } from '../Types';
+import { DragAction, EditorAction } from '../Types';
 import * as d3 from 'd3';
 
 class DragHandler {
@@ -77,7 +77,8 @@ class DragHandler {
     const paramArray = [];
     this.selection.filter((el: SVGElement) => !el.classList.contains('resizePoint')).forEach((el: SVGElement) => {
       const id = (el.tagName === 'rect') ? el.closest('.syl').id : el.id;
-      const singleAction = { action: 'drag',
+      const singleAction: DragAction = {
+        action: 'drag',
         param: { elementId: id,
           x: this.dx,
           y: (this.dy) * -1 }
