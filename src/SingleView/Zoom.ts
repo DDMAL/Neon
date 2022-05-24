@@ -81,6 +81,7 @@ export class ZoomHandler {
   resetZoomAndPan (): void {
     const bgimg = document.getElementById('bgimg') as HTMLImageElement;
     this.viewBox = new ViewBox(parseInt(bgimg.getAttribute('width')), parseInt(bgimg.getAttribute('height')));
+    this.updateSVGViewBox();
   }
 
   /**
