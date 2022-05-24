@@ -27,7 +27,7 @@
           <a class="navbar-item" href="//github.com/DDMAL/Neon/wiki/Instructions" target="_blank">User Guide</a>
           <a class="navbar-item" href="//github.com/DDMAL/Neon/wiki" target="_blank">Wiki</a>
           <a class="navbar-item" href="//ddmal.music.mcgill.ca" target="_blank">DDMAL</a>
-          <a class="navbar-item" onclick="hotkeyDialog()">Hotkeys</a>
+          <a class="navbar-item" onclick="showHotkeyModal()">Hotkeys</a>
           <a class="navbar-item" id="neon-version"></a>
         </div>
       </div>
@@ -48,4 +48,119 @@
     <div id="neume_info"></div>
     <div id="syl_text" class="box" style="display:none;"></div>
   </div>
+</div>
+
+<div id="neon-modal">
+  
+  <div id="neon-modal-header">
+    <div id="neon-modal-header-title"></div>
+    <div id="neon-modal-header-close" onclick="hideModal()">x</div>
+  </div>
+
+  <!-- 
+    Neon modal window content section.
+    Only one modal window is used for all modal content, so the
+    content is all declared below, but only one element 
+    with the "neon-modal-content" class is actually displayed at a time.
+    All content is hidden by default.
+  -->
+  <div id="neon-modal-content-container">
+
+    <!-- Neon modal hotkey content -->
+    <div class="neon-modal-content" id="neon-modal-content-hotkeys">
+      <div class="hotkey-entry-container">
+        <div class="hotkey-container">
+          <div class="hotkey-entry">+</div>
+        </div>
+        <div class="hotkey-entry-description">Zoom in</div>        
+      </div>
+      <div class="hotkey-entry-container">
+        <div class="hotkey-container">
+          <div class="hotkey-entry">-</div>
+        </div>
+        <div class="hotkey-entry-description">Zoom out</div>
+      </div>
+      <div class="hotkey-entry-container">
+        <div class="hotkey-container">
+          <div class="hotkey-entry">0</div>
+        </div>
+        <div class="hotkey-entry-description">Zoom reset</div>
+      </div>
+      <div class="hotkey-entry-container">
+        <div class="hotkey-container">
+          <div class="hotkey-entry">s</div>
+        </div>
+        <div class="hotkey-entry-description">Save File</div>        
+      </div>
+      <div class="hotkey-entry-container">
+        <div class="hotkey-container">
+          <div class="hotkey-entry">⌃</div>
+          <div>+</div>
+          <div class="hotkey-entry">z</div>
+          <div>or</div>
+          <div class="hotkey-entry">⌘</div>
+          <div>+</div>
+          <div class="hotkey-entry">z</div>
+        </div>
+        <div class="hotkey-entry-description">Undo</div>
+      </div>
+      <div class="hotkey-entry-container">
+        <div class="hotkey-container">
+          <div class="hotkey-entry">⌃</div>
+          <div>+</div>
+          <div class="hotkey-entry">⇧</div>
+          <div>+</div>
+          <div class="hotkey-entry">z</div>
+          <div>or</div>
+          <div class="hotkey-entry">⌘</div>
+          <div>+</div> 
+          <div class="hotkey-entry">⇧</div>
+          <div>+</div>
+          <div class="hotkey-entry">z</div>
+        </div>
+        <div class="hotkey-entry-description">Redo</div>
+      </div>
+      <div class="hotkey-entry-container">
+        <div class="hotkey-container">
+          <div class="hotkey-entry">h</div>
+        </div>
+        <div class="hotkey-entry-description">Hide MEI</div>        
+      </div>
+      <div class="hotkey-entry-container">
+        <div class="hotkey-container">
+          <div class="hotkey-entry">Esc</div>
+        </div>
+        <div class="hotkey-entry-description">Return to Edit Mode</div>        
+      </div>
+      <div class="hotkey-entry-container">
+        <div class="hotkey-container">
+          <div class="hotkey-entry">1/2/3/4</div>
+        </div>
+        <div class="hotkey-entry-description">Select by Syllable/Neume/Neume Component/Staff</div>        
+      </div>
+      <div class="hotkey-entry-container">
+        <div class="hotkey-container">
+          <div class="hotkey-entry">⇧</div>
+          <div>+</div>
+          <div class="hotkey-entry">Number</div>
+        </div>
+        <div class="hotkey-entry-description">Begin Insert for the <i>nth</i> option in the selected tab</div>
+      </div>
+    </div>
+
+
+    <!-- Neon modal edit syllable text content -->
+    <div class="neon-modal-content" id="neon-modal-content-edit-text">
+    
+      <label for="neon-modal-edit-text-input" id="neon-modal-edit-text-label">Enter Syllable Text:</label>
+      <input id="neon-modal-edit-text-input" type="text">
+      <div id="neon-modal-edit-text-btns">
+        <div class="neon-modal-btn" id="neon-modal-edit-text-cancel">Cancel</div>
+        <div class="neon-modal-btn" id="neon-modal-edit-text-save">Save</div>        
+      </div>
+
+    </div>
+  </div>
+  
+
 </div>

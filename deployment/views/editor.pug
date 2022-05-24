@@ -10,13 +10,32 @@ html
       script(type='text/javascript').
         var manifestText = decodeURIComponent("#{manifest}");
 
-        function hotkeyDialog() {
-          alert(
-            "Hotkey : Action\n\n" +
-            "+ : Zoom in\t\ts : Save File\t\tCtrl-z or \u{2318}-z : Undo\n" +
-            "\u{2013} : Zoom out\t\th : Hide MEI\t\tCtrl-Z or \u{2318}-Z : Redo\n" +
-            "0 : Zoom reset\tEsc : Return to Edit Mode\n\n1/2/3/4 : Select by Syllable/Neume/Neume Component/Staff\n\n" +
-            "Shift+Number : Begin Insert for the nth option in the selected tab");
+        /**
+        *   Display the Neon modal window with hotkey info inside
+        */
+        function showHotkeyModal() {
+          
+          // make sure no other modal content is being displayed
+          Array.from(document.getElementsByClassName('neon-modal-content')).forEach((elem) => {
+            elem.classList.remove('visible');
+          });
+
+          Array.from(document.getElementsByClassName('neon-modal-btn')).forEach((elem) => {
+            elem.classList.remove('visible');
+          });
+
+          // set up and diplay hotkey modal content
+          document.getElementById('neon-modal-content-hotkeys').classList.add('visible');
+          document.getElementById('neon-modal-header-title').innerText = 'HOTKEYS';
+          document.getElementById('neon-modal').style.display = 'flex';
+
+        }
+
+        /**
+        *    Hide the Neon modal window
+        */
+        function hideModal() {
+          document.getElementById('neon-modal').style.display = 'none';
         }
 
         function getHeight() {

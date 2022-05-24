@@ -153,3 +153,162 @@ button:focus {
         height: 100%;
     }
 }
+
+
+
+
+
+/* neon modal window styles */
+#neon-modal {
+    display: none;
+    position: absolute;
+    top: calc(50% - 30vh);
+    left: calc(50% - 25vw);
+    width: 50vw;
+    height: auto;
+    background-color: #00000080;
+    border-radius: 3px;
+    box-shadow: 0px 0px 5000px 5000px #00000080;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    color: dimgrey;
+    font-family: Montserrat, sans-serif;
+    border-radius: 5px;
+    overflow: hidden;
+    z-index: 2147483647;
+}
+
+/* modal header */
+#neon-modal-header {
+    height: 5vh;
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #3273dc;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#neon-modal-header-close {
+    border-radius: 50%;
+    height: 20px;
+    background-color: white;
+    color: rgb(182, 182, 182);
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+#neon-modal-header-close:hover {
+    background-color: rgb(196, 196, 196);
+    color: white;
+}
+
+/* modal dynamic content */
+#neon-modal-content-container {
+    display: flex;
+    overflow: scroll;
+    padding: 20px;
+    width: 100%;
+    background-color: white;
+    border-radius: 0px 0px 4px 4px;
+    max-height: 50vh;
+    flex-direction: column;
+    align-items: center;
+    align-content: space-around;
+}
+
+.neon-modal-content {
+    display: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: center;
+    flex-wrap: nowrap;
+}
+.neon-modal-content.visible {
+    display: flex;
+}
+
+/* edit syllable text modal */
+
+#neon-modal-content-edit-text {
+    width: 80%;
+    height: auto;
+}
+#neon-modal-edit-text-label {
+    width: 100%;
+}
+#neon-modal-edit-text-input {
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #afafaf;
+    height: 25px;
+    font-size: 20px;
+    color: grey;
+    outline: none;
+    margin-top: 10px;
+}
+#neon-modal-edit-text-btns{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4vh;
+    width: 100%;
+}
+.neon-modal-btn {
+    display: none;
+    background-color: #3273dc;
+    color: white;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    font-weight: 900;
+}
+.neon-modal-btn.visible {
+    display: block;
+}
+
+/* hotkeys modal */
+
+.hotkey-entry-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    justify-content: space-between;
+    padding-top: 5px;
+    border-bottom: 1px solid #e6e6e6;
+    padding-bottom: 5px;
+}
+.hotkey-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.hotkey-entry {
+    border: 2px solid rgb(213 213 213);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 40px;
+    min-height: 40px;
+}
+.hotkey-entry:hover {
+    background-color: rgb(249, 249, 249);
+}
+
+.hotkey-entry-description {
+    width: 30%;
+    word-break: break-word;
+}
