@@ -1,10 +1,12 @@
 import * as d3 from 'd3';
 
 export class ViewBox {
-  a: number;
-  b: number;
-  c: number;
-  d: number;
+  // vieBox attribute of an SVG viewport:
+  // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/viewBox
+  minX: number;
+  minY: number;
+  width: number;
+  height: number;
 
   imageHeight: number;
   imageWidth: number;
@@ -14,10 +16,10 @@ export class ViewBox {
    * @param imageHeight - Height of the contained image.
    */
   constructor (imageWidth: number, imageHeight: number) {
-    this.a = 0;
-    this.b = 0;
-    this.c = imageWidth;
-    this.d = imageHeight;
+    this.minX = 0;
+    this.minY = 0;
+    this.width = imageWidth;
+    this.height = imageHeight;
 
     this.imageWidth = imageWidth;
     this.imageHeight = imageHeight;
@@ -25,22 +27,22 @@ export class ViewBox {
 
   /**
    * Set values of the viewBox manually.
-   * @param w - First value.
-   * @param x - Second value.
-   * @param y - Third value.
-   * @param z - Fourth value.
+   * @param minX - top left x-coordinate of SVG
+   * @param minY - top left y-coordinate of SVG
+   * @param width - width of SVG
+   * @param height - height of SVG
    */
-  set (w: number, x: number, y: number, z: number): void {
-    this.a = w;
-    this.b = x;
-    this.c = y;
-    this.d = z;
+  set (minX: number, minY: number, width: number, height: number): void {
+    this.minX = minX;
+    this.minY = minY;
+    this.width = width;
+    this.height = height;
   }
 
   /** @returns Value for the viewBox parameter. */
   get (): string {
-    return this.a.toString() + ' ' + this.b.toString() + ' ' +
-      this.c + ' ' + this.d;
+    return this.minX.toString() + ' ' + this.minY.toString() + ' ' +
+      this.width + ' ' + this.height;
   }
 
   /** @param k - Factor to zoom to. */
@@ -48,13 +50,13 @@ export class ViewBox {
     const zoomHeight = (this.imageHeight / k);
     const zoomWidth = (this.imageWidth / k);
 
-    this.c = zoomWidth;
-    this.d = zoomHeight;
+    this.width = zoomWidth;
+    this.height = zoomHeight;
   }
 
   /** @returns Current zoom factor. */
   getZoom (): number {
-    return this.imageWidth / this.c;
+    return this.imageWidth / this.width;
   }
 
   /**
@@ -63,8 +65,8 @@ export class ViewBox {
    * @param yDiff - Amount to shift on y-axis.
    */
   translate (xDiff: number, yDiff: number): void {
-    this.a += xDiff;
-    this.b += yDiff;
+    this.minX += xDiff;
+    this.minY += yDiff;
   }
 }
 
@@ -79,17 +81,15 @@ export class ZoomHandler {
   resetZoomAndPan (): void {
     const bgimg = document.getElementById('bgimg') as HTMLImageElement;
     this.viewBox = new ViewBox(parseInt(bgimg.getAttribute('width')), parseInt(bgimg.getAttribute('height')));
-
-    this.updateViewBox();
   }
 
   /**
    * @param k - Factor to zoom to.
    */
   zoomTo (k: number): void {
-    this.getViewBox();
+    this.setViewBox();
     this.viewBox.zoomTo(k);
-    this.updateViewBox();
+    this.updateSVGViewBox();
   }
 
   /**
@@ -98,9 +98,9 @@ export class ZoomHandler {
   * @param yDiff - Amount to shift on y-axis.
   */
   translate (xDiff: number, yDiff: number): void {
-    this.getViewBox();
+    this.setViewBox();
     this.viewBox.translate(xDiff, yDiff);
-    this.updateViewBox();
+    this.updateSVGViewBox();
   }
 
   /**
@@ -110,14 +110,14 @@ export class ZoomHandler {
     if (this.viewBox === undefined) {
       this.resetZoomAndPan();
     } else {
-      this.updateViewBox();
+      this.updateSVGViewBox();
     }
   }
 
   /**
-   * Get the view box from the SVG in the page.
+   * Set the view box of the SVG.
    */
-  getViewBox (): void {
+  setViewBox (): void {
     if (this.viewBox === undefined) {
       const bgimg = document.getElementById('bgimg') as HTMLImageElement;
       this.viewBox = new ViewBox(parseInt(bgimg.getAttribute('width')), parseInt(bgimg.getAttribute('height')));
@@ -136,7 +136,7 @@ export class ZoomHandler {
   /**
    * Update the viewBox attribute of svg_group
    */
-  updateViewBox (): void {
+  updateSVGViewBox (): void {
     document.getElementById('svg_group').setAttribute('viewBox', this.viewBox.get());
   }
 
@@ -192,7 +192,7 @@ export class ZoomHandler {
       return;
     }
     const slider = document.getElementById('zoomSlider') as HTMLInputElement;
-    this.getViewBox();
+    this.setViewBox();
     const k = this.viewBox.getZoom();
     let newK = k - d3.event.deltaX / 100;
     if (newK < parseInt(slider.getAttribute('min')) / 100) newK = 0.25;

@@ -2,7 +2,7 @@ import * as Notification from './Notification';
 import NeonView from '../NeonView';
 import { navbarDropdownFileMenu, navbarDropdownMEIActionsMenu, undoRedoPanel } from './EditContents';
 import { convertStaffToSb } from './ConvertMei';
-import * as vkbeautify from 'vkbeautify';
+import { EditorAction } from '../Types';
 
 /**
  * Set listener on switching EditMode button to File dropdown in the navbar.
@@ -54,26 +54,48 @@ export function initNavbar (neonView: NeonView): void {
       const parser = new DOMParser();
       const meiDoc = parser.parseFromString(meiString, 'text/xml');
       const mei = meiDoc.documentElement;
-      
-      // Check for syllables without neumes
       const syllables = Array.from(mei.getElementsByTagName('syllable'));
+
+      // Check for syllables without neumes
       let hasEmptySyllables = false;
+      const removeSyllableActions = [];
       for (const syllable of syllables) {
+        // if empty syllable found, create action object for removing it
         if (syllable.getElementsByTagName('neume').length === 0) {
-          syllable.remove();
+          const toRemove: EditorAction = {
+            action: 'remove',
+            param: {
+              elementId: syllable.getAttribute('xml:id')
+            }
+          };
+          // add action object to array (chain) of action objects
+          removeSyllableActions.push(toRemove);
           hasEmptySyllables = true;
         }
       }
 
+      // check if empty syllables were found
       if (!hasEmptySyllables) {
-        Notification.queueNotification('No empty syllables found.');
-      } else {
-        // update cached MEI file
-        const serializer = new XMLSerializer();
-        const updatedMeiString = vkbeautify.xml(serializer.serializeToString(meiDoc));
-        neonView.core.loadData(uri, updatedMeiString);
+        Notification.queueNotification('No empty syllables found');
+      }
+      else {
+        // create "chain action" object
+        const chainRemoveAction: EditorAction = {
+          action: 'chain',
+          param: removeSyllableActions
+        };
 
-        Notification.queueNotification('Removed empty Syllables.');
+        // execute action that removes all empty syllables
+        // "result" value is true or false (true if chain of actions was successful)
+        neonView.edit(chainRemoveAction, uri).then((result) => {
+          if (result) {
+            neonView.updateForCurrentPage();
+            Notification.queueNotification('Removed empty Syllables');
+          }
+          else {
+            Notification.queueNotification('Failed to remove empty Syllables');
+          }
+        });
       }
     });
   });
@@ -86,26 +108,48 @@ export function initNavbar (neonView: NeonView): void {
       const parser = new DOMParser();
       const meiDoc = parser.parseFromString(meiString, 'text/xml');
       const mei = meiDoc.documentElement;
+      const neumes = Array.from(mei.getElementsByTagName('neume'));
 
       // Check for neumes without neume components
-      const neumes = Array.from(mei.getElementsByTagName('neume'));
-      let hasEmptyNeume = false;
+      let hasEmptyNeumes = false;
+      const removeNeumeActions = [];
       for (const neume of neumes) {
+        // if empty neume found, create action object for removing it
         if (neume.getElementsByTagName('nc').length === 0) {
-          neume.remove();
-          hasEmptyNeume = true;
+          const toRemove: EditorAction = {
+            action: 'remove',
+            param: {
+              elementId: neume.getAttribute('xml:id')
+            }
+          };
+          // add action object to array (chain) of action objects
+          removeNeumeActions.push(toRemove);
+          hasEmptyNeumes = true;
         }
       }
 
-      if (!hasEmptyNeume) {
-        Notification.queueNotification('No empty neumes found.');
-      } else {
-        // update cached MEI file
-        const serializer = new XMLSerializer();
-        const updatedMeiString = vkbeautify.xml(serializer.serializeToString(meiDoc));
-        neonView.core.loadData(uri, updatedMeiString);
+      // check if empty neumes were found
+      if (!hasEmptyNeumes) {
+        Notification.queueNotification('No empty Neumes found');
+      }
+      else {
+        // create "chain action" object
+        const chainRemoveAction: EditorAction = {
+          action: 'chain',
+          param: removeNeumeActions,
+        };
 
-        Notification.queueNotification('Removed empty neumes.');
+        // execute action that removes all empty neumes
+        // "result" value is true or false (true if chain of actions was successful)
+        neonView.edit(chainRemoveAction, uri).then((result) => {
+          if (result) {
+            neonView.updateForCurrentPage();
+            Notification.queueNotification('Removed empty Neumes');
+          }
+          else {
+            Notification.queueNotification('Failed to remove empty Neumes');
+          }
+        });
       }
     });
   });

@@ -1,5 +1,5 @@
 import NeonView from '../NeonView';
-import { EditorAction } from '../Types';
+import { EditorAction, InsertAction } from '../Types';
 import * as d3 from 'd3';
 
 /**
@@ -215,7 +215,7 @@ class InsertHandler {
     const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGraphicsElement).getScreenCTM();
     const cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
-    const editorAction: EditorAction = {
+    const editorAction: InsertAction = {
       action: 'insert',
       param: {
         elementType: this.type,

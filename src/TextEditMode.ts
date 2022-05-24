@@ -5,8 +5,8 @@ import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select'
 import { setGroupingHighlight } from './utils/Color';
 import { TextEditInterface } from './Interfaces';
 import { HTMLSVGElement } from './Types';
-
 import * as d3 from 'd3';
+import { SetTextAction } from './Types';
 
 /**
  * Format a string for prompting the user.
@@ -164,7 +164,7 @@ export default class TextEditMode implements TextEditInterface {
     const orig = formatRaw(span.textContent);
     const corrected = window.prompt('', orig);
     if (corrected !== null && corrected !== orig) {
-      const editorAction = {
+      const editorAction: SetTextAction = {
         action: 'setText',
         param: {
           elementId: [...span.classList.entries()].filter(e => e[1] !== 'text-select')[0][1],

@@ -8,7 +8,7 @@ export interface DisplayConstructable {
 
 export interface DisplayInterface {
   view: ViewInterface;
-  className: string;
+  meiClass: string;
   background: string;
   zoomHandler: ZoomHandler;
   setDisplayListeners (): void;

@@ -1,6 +1,6 @@
 import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
-import { EditorAction } from '../Types';
+import { EditorAction, SplitNeumeAction } from '../Types';
 
 /** Handle splitting a neume into two neumes through Verovio. */
 export class SplitNeumeHandler {
@@ -47,7 +47,7 @@ export class SplitNeumeHandler {
     const nc = (evt.target as SVGGElement).parentElement;
     const ncId = nc.id;
 
-    const editorAction: EditorAction = {
+    const editorAction: SplitNeumeAction = {
       action: 'splitNeume',
       param: {
         elementId: id,

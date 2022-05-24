@@ -1,6 +1,6 @@
 import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
-import { EditorAction } from '../Types';
+import { EditorAction, SplitAction } from '../Types';
 import { selectAll } from '../utils/SelectTools';
 import DragHandler from '../utils/DragHandler';
 
@@ -56,7 +56,7 @@ export class SplitStaffHandler {
     // Find staff point corresponds to if one exists
     // TODO
 
-    const editorAction: EditorAction = {
+    const editorAction: SplitAction = {
       action: 'split',
       param: {
         elementId: id,
