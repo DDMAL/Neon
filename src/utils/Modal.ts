@@ -131,12 +131,12 @@ export class Modal implements ModalInterface {
     (<HTMLInputElement> (document.getElementById('neon-modal-edit-text-input'))).value = orig;
     
     // Reset "Cancel" button event listener
-    document.getElementById('neon-modal-edit-text-cancel').removeEventListener('click', this.hideModal);
-    document.getElementById('neon-modal-edit-text-cancel').addEventListener('click', this.hideModal);
+    document.getElementById('neon-modal-edit-text-cancel').removeEventListener('click', this.hideModal.bind(this));
+    document.getElementById('neon-modal-edit-text-cancel').addEventListener('click', this.hideModal.bind(this));
 
     // Reset "Save" button event listener
-    document.getElementById('neon-modal-edit-text-save').removeEventListener('click', this.updateSylText);
-    document.getElementById('neon-modal-edit-text-save').addEventListener('click', this.updateSylText);
+    document.getElementById('neon-modal-edit-text-save').removeEventListener('click', this.updateSylText.bind(this));
+    document.getElementById('neon-modal-edit-text-save').addEventListener('click', this.updateSylText.bind(this));
 
     // display modal window
     document.getElementById('neon-modal-container').style.display = 'block';
