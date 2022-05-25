@@ -10,7 +10,8 @@ async function setBody (neonView: NeonView): Promise<void> {
 
   // hotkey btn onclick event listener
   document.getElementById('navbar-item-hotkeys').addEventListener('click', function() {
-    neonView.modal.openModal(ModalView.HOTKEYS);
+    neonView.modal.setModalView(ModalView.HOTKEYS);
+    neonView.modal.openModal();
   });
 
 }

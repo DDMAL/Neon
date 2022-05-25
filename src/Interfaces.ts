@@ -49,7 +49,8 @@ export interface TextEditInterface {
 }
 
 export interface ModalInterface {
-  openModal(view: ModalView): void;
+  setModalView(view: ModalView);
+  openModal(): void;
   hideModal(): void;
 }
 

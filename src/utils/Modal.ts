@@ -1,6 +1,7 @@
 import NeonView from '../NeonView';
 import { SetTextAction } from '../Types';
 import { ModalInterface } from './../Interfaces';
+import { hotkeysModal, editTextModal } from '../SquareEdit/Contents';
 
 
 
@@ -34,13 +35,29 @@ export class Modal implements ModalInterface {
 
 
   /**
-   * Open a particular modal by passing one of ModalView enum options.
+   * Set the modal view of this Modal instance.
+   * Update the content based on passed view.
    * @param view Type of modal to open (ModalView enum)
    */
-  openModal(view: ModalView): void {
+  setModalView(view: ModalView): void {
     this.modalView = view;
+    this.setModalContent();
+  }
 
-    switch(view) {
+
+  /**
+   * Return the current modal view as a string
+   */
+  getModalView(): string {
+    return this.modalView.toString();
+  }
+
+
+  /**
+   * Open a model window with content representing the current ModalView.
+   */
+  openModal(): void {
+    switch(this.modalView) {
       case ModalView.EDIT_TEXT:
         this.openEditSylTextModal();
         break;
@@ -59,7 +76,7 @@ export class Modal implements ModalInterface {
 
 
   /**
-   *   Hide the Neon modal window
+   * Hide the Neon modal window
    */
   hideModal(): void {
     switch(this.modalView) {
@@ -70,7 +87,24 @@ export class Modal implements ModalInterface {
       default:
         document.getElementById('neon-modal-container').style.display = 'none';
     } 
-  }  
+  }
+
+  /**
+   * Set content of modal window
+   */
+  private setModalContent(): void {
+    switch(this.modalView) {
+      case ModalView.EDIT_TEXT:
+        document.getElementById('neon-modal-content-container').innerHTML = editTextModal;
+        break;
+
+      case ModalView.HOTKEYS:
+        document.getElementById('neon-modal-content-container').innerHTML = hotkeysModal;
+        break;
+
+      default:
+    } 
+  }
 
 
   /**

@@ -80,7 +80,8 @@ export default class TextEditMode implements TextEditInterface {
 
       function selectSylText (): void {
         span.classList.add('selected');
-        modal.openModal(ModalView.EDIT_TEXT);
+        modal.setModalView(ModalView.EDIT_TEXT);
+        modal.openModal();
       }
 
       span.removeEventListener('click', selectSylText);
