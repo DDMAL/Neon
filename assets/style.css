@@ -156,19 +156,27 @@ button:focus {
 
 
 
-
+/* neon modal veil */
+#neon-modal-container {
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #00000080;
+    z-index: 2147483647;
+}
 
 /* neon modal window styles */
 #neon-modal {
-    display: none;
+    display: flex;
     position: absolute;
     top: calc(50% - 30vh);
     left: calc(50% - 25vw);
     width: 50vw;
     height: auto;
-    background-color: #00000080;
     border-radius: 3px;
-    box-shadow: 0px 0px 5000px 5000px #00000080;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
@@ -177,7 +185,7 @@ button:focus {
     font-family: Montserrat, sans-serif;
     border-radius: 5px;
     overflow: hidden;
-    z-index: 2147483647;
+    outline: none;
 }
 
 /* modal header */
@@ -262,16 +270,12 @@ button:focus {
     width: 100%;
 }
 .neon-modal-btn {
-    display: none;
     background-color: #3273dc;
     color: white;
     cursor: pointer;
     padding: 5px;
     border-radius: 4px;
     font-weight: 900;
-}
-.neon-modal-btn.visible {
-    display: block;
 }
 
 /* hotkeys modal */

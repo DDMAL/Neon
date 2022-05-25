@@ -8,37 +8,5 @@ html
     link(rel='stylesheet' href='/Neon/assets/style.css')
   body
       script(type='text/javascript').
-        var manifestText = decodeURIComponent("#{manifest}");
-
-        /**
-        *   Display the Neon modal window with hotkey info inside
-        */
-        function showHotkeyModal() {
-          
-          // make sure no other modal content is being displayed
-          Array.from(document.getElementsByClassName('neon-modal-content')).forEach((elem) => {
-            elem.classList.remove('visible');
-          });
-
-          Array.from(document.getElementsByClassName('neon-modal-btn')).forEach((elem) => {
-            elem.classList.remove('visible');
-          });
-
-          // set up and diplay hotkey modal content
-          document.getElementById('neon-modal-content-hotkeys').classList.add('visible');
-          document.getElementById('neon-modal-header-title').innerText = 'HOTKEYS';
-          document.getElementById('neon-modal').style.display = 'flex';
-
-        }
-
-        /**
-        *    Hide the Neon modal window
-        */
-        function hideModal() {
-          document.getElementById('neon-modal').style.display = 'none';
-        }
-
-        function getHeight() {
-          alert(window.innerHeight);
-        }
+        var manifestText = decodeURIComponent("#{manifest}");        
       script(src='/Neon/editor.js')

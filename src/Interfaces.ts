@@ -1,6 +1,7 @@
 import { NeonManifest } from './Types';
 import NeonView from './NeonView';
 import ZoomHandler from './SingleView/Zoom';
+import { ModalView } from './utils/Modal';
 
 export interface DisplayConstructable {
   new (a: ViewInterface, b: string, c: string, d?: ZoomHandler): DisplayInterface;
@@ -45,6 +46,11 @@ export interface TextEditConstructable {
 export interface TextEditInterface {
   initTextEdit (): void;
   initSelectByBBoxButton (): void;
+}
+
+export interface ModalInterface {
+  openModal(view: ModalView): void;
+  hideModal(): void;
 }
 
 export interface TextViewConstructable {

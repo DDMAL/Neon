@@ -4,16 +4,18 @@ import NeonView from './NeonView';
 import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select';
 import { setGroupingHighlight } from './utils/Color';
 import { TextEditInterface } from './Interfaces';
-import { SetTextAction } from './Types';
+import  { ModalView } from './utils/Modal';
 
 /**
  * Format a string for prompting the user.
  * @param rawString - The unformatted string.
  */
+/*
 function formatRaw (rawString: string): string {
   const removeSymbol = /\u{25CA}/u;
   return rawString.replace(removeSymbol, '').trim();
 }
+*/
 
 function selBySylListener (): void {
   if (!document.getElementById('selByBBox').classList.contains('is-active')) {
@@ -73,13 +75,16 @@ export default class TextEditMode implements TextEditInterface {
   */
   initTextEdit (): void {
     const spans = document.getElementById('syl_text').querySelectorAll('p > span');
+    const modal = this.neonView.modal;
     spans.forEach(span => {
-      function updateSylText (): void {
-        this.updateSylText(span);
+
+      function selectSylText (): void {
+        span.classList.add('selected');
+        modal.openModal(ModalView.EDIT_TEXT);
       }
 
-      span.removeEventListener('click', updateSylText.bind(this));
-      span.addEventListener('click', updateSylText.bind(this));
+      span.removeEventListener('click', selectSylText);
+      span.addEventListener('click', selectSylText);
     });
   }
 
@@ -154,65 +159,4 @@ export default class TextEditMode implements TextEditInterface {
       }
     }
   }
-
-  /**
-  * Update the text for a single syl element
-  */
-  updateSylText (span: HTMLSpanElement): void {
-    const orig = formatRaw(span.textContent);
-
-    // make sure no other modal content is being displayed
-    Array.from(document.getElementsByClassName('neon-modal-content')).forEach((elem) => {
-      elem.classList.remove('visible');
-    });
-
-    // set up Edit Syllable Text modal window
-    document.getElementById('neon-modal-content-edit-text').classList.add('visible');
-    Array.from(document.getElementsByClassName('neon-modal-btn')).forEach((elem) => {
-      elem.classList.add('visible');
-    });
-    (<HTMLInputElement>document.getElementById('neon-modal-edit-text-input')).value = orig;
-    document.getElementById('neon-modal-header-title').innerText = 'EDIT SYLLABLE TEXT';
-    document.getElementById('neon-modal-edit-text-input').addEventListener('keydown', this.updateSylTextKeydownEvent);
-
-    // "Cancel" button event listener
-    document.getElementById('neon-modal-edit-text-cancel').addEventListener('click', (function() {
-      document.getElementById('neon-modal').style.display = 'none';
-      document.getElementById('neon-modal-edit-text-input').removeEventListener('keydown', this.updateSylTextKeydownEvent);
-    }).bind(this));
-
-    // "Save" button event listener
-    document.getElementById('neon-modal-edit-text-save').addEventListener('click', (function() {
-      const updatedSylText = (<HTMLInputElement> document.getElementById('neon-modal-edit-text-input')).value;
-      if (updatedSylText !== null && updatedSylText !== orig) {
-        const editorAction: SetTextAction = {
-          action: 'setText',
-          param: {
-            elementId: [...span.classList.entries()].filter(e => e[1] !== 'text-select')[0][1],
-            text: updatedSylText
-          }
-        };
-        this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then((response) => {
-          if (response) {
-            this.neonView.updateForCurrentPage();
-          }
-        });
-      }
-      document.getElementById('neon-modal').style.display = 'none';
-      document.getElementById('neon-modal-edit-text-input').removeEventListener('keydown', this.updateSylTextKeydownEvent);
-    }).bind(this));
-
-    // display modal window
-    document.getElementById('neon-modal').style.display = 'flex';
-  }
-
-  /**
-   * Need to add this event to register "Enter" key as well as 
-   * to prevent firing of hotkey events when user types.
-   */
-  updateSylTextKeydownEvent = function(e) {
-    e.stopImmediatePropagation();
-    if (e.key === "Enter") document.getElementById('neon-modal-edit-text-save').click();
-  }
-
 }
