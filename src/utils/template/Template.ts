@@ -1,5 +1,5 @@
 import NeonView from '../../NeonView';
-import { ModalView } from '../Modal';
+import { ModalWindowView } from '../ModalWindow';
 
 async function setBody (neonView: NeonView): Promise<void> {
 
@@ -10,10 +10,9 @@ async function setBody (neonView: NeonView): Promise<void> {
 
   // hotkey btn onclick event listener
   document.getElementById('navbar-item-hotkeys').addEventListener('click', function() {
-    neonView.modal.setModalView(ModalView.HOTKEYS);
-    neonView.modal.openModal();
+    neonView.modal.setModalWindowView(ModalWindowView.HOTKEYS);
+    neonView.modal.openModalWindow();
   });
-
 }
 
 export { setBody as default };

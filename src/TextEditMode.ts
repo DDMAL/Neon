@@ -4,7 +4,7 @@ import NeonView from './NeonView';
 import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select';
 import { setGroupingHighlight } from './utils/Color';
 import { TextEditInterface } from './Interfaces';
-import  { ModalView } from './utils/Modal';
+import  { ModalWindowView } from './utils/ModalWindow';
 
 /**
  * Format a string for prompting the user.
@@ -79,9 +79,9 @@ export default class TextEditMode implements TextEditInterface {
     spans.forEach(span => {
 
       function selectSylText (): void {
-        span.classList.add('selected');
-        modal.setModalView(ModalView.EDIT_TEXT);
-        modal.openModal();
+        span.classList.add('selected-to-edit');
+        modal.setModalWindowView(ModalWindowView.EDIT_TEXT);
+        modal.openModalWindow();
       }
 
       span.removeEventListener('click', selectSylText);
