@@ -159,6 +159,7 @@ export class ModalWindow implements ModalWindowInterface {
 
     // display modal window
     document.getElementById('neon-modal-window-container').style.display = 'flex';
+    this.focusModalWindow();
   };
 
 
