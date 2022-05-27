@@ -1,8 +1,6 @@
 /** @module utils/Select */
 
-import {
-  unselect, getStaffBBox, selectStaff, selectAll, getSelectionType
-} from './SelectTools';
+import { unselect, getStaffBBox, selectStaff, selectAll, getSelectionType } from './SelectTools';
 import { resize } from './Resize';
 import NeonView from '../NeonView';
 import DragHandler from './DragHandler';
@@ -10,7 +8,6 @@ import { InfoInterface } from '../Interfaces';
 import ZoomHandler from '../SingleView/Zoom';
 
 import * as d3 from 'd3';
-import { HTMLSVGElement } from '../Types';
 
 let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 let strokeWidth = 7;
