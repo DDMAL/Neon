@@ -1,10 +1,11 @@
-import { unselect } from './utils/SelectTools';
+import { selectBBox, unselect } from './utils/SelectTools';
 import DragHandler from './utils/DragHandler';
 import NeonView from './NeonView';
 import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select';
 import { setGroupingHighlight } from './utils/Color';
 import { TextEditInterface } from './Interfaces';
 import  { ModalWindowView } from './utils/ModalWindow';
+import { HTMLSVGElement, SetTextAction } from './Types';
 
 /**
  * Format a string for prompting the user.
