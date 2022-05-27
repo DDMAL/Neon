@@ -4,16 +4,18 @@ import NeonView from './NeonView';
 import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select';
 import { setGroupingHighlight } from './utils/Color';
 import { TextEditInterface } from './Interfaces';
-import { SetTextAction } from './Types';
+import  { ModalWindowView } from './utils/ModalWindow';
 
 /**
  * Format a string for prompting the user.
  * @param rawString - The unformatted string.
  */
+/*
 function formatRaw (rawString: string): string {
   const removeSymbol = /\u{25CA}/u;
   return rawString.replace(removeSymbol, '').trim();
 }
+*/
 
 function selBySylListener (): void {
   if (!document.getElementById('selByBBox').classList.contains('is-active')) {
@@ -73,13 +75,17 @@ export default class TextEditMode implements TextEditInterface {
   */
   initTextEdit (): void {
     const spans = document.getElementById('syl_text').querySelectorAll('p > span');
+    const modal = this.neonView.modal;
     spans.forEach(span => {
-      function updateSylText (): void {
-        this.updateSylText(span);
+
+      function selectSylText (): void {
+        span.classList.add('selected-to-edit');
+        modal.setModalWindowView(ModalWindowView.EDIT_TEXT);
+        modal.openModalWindow();
       }
 
-      span.removeEventListener('click', updateSylText.bind(this));
-      span.addEventListener('click', updateSylText.bind(this));
+      span.removeEventListener('click', selectSylText);
+      span.addEventListener('click', selectSylText);
     });
   }
 
@@ -152,28 +158,6 @@ export default class TextEditMode implements TextEditInterface {
           dragSelect('.active-page svg');
         }
       }
-    }
-  }
-
-  /**
-  * Update the text for a single syl element
-  */
-  updateSylText (span: HTMLSpanElement): void {
-    const orig = formatRaw(span.textContent);
-    const corrected = window.prompt('', orig);
-    if (corrected !== null && corrected !== orig) {
-      const editorAction: SetTextAction = {
-        action: 'setText',
-        param: {
-          elementId: [...span.classList.entries()].filter(e => e[1] !== 'text-select')[0][1],
-          text: corrected
-        }
-      };
-      this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then((response) => {
-        if (response) {
-          this.neonView.updateForCurrentPage();
-        }
-      });
     }
   }
 }

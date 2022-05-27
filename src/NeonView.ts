@@ -5,6 +5,7 @@ import { prepareEditMode } from './utils/EditControls';
 import setBody from './utils/template/Template';
 import * as Types from './Types';
 import * as Interfaces from './Interfaces';
+import { ModalWindow } from './utils/ModalWindow';
 
 
 /**
@@ -28,6 +29,8 @@ class NeonView {
   textView: Interfaces.TextViewInterface;
   /** Module that allows editing of syllable text. */
   TextEdit: Interfaces.TextEditInterface;
+  /** Module that controls state and content of Neon modal windows */
+  modal: Interfaces.ModalWindowInterface;
 
   params: Interfaces.NeonViewParams;
 
@@ -76,12 +79,12 @@ class NeonView {
         this.updateForCurrentPage();
       }
     }); */
-    setBody().then(() => {
+    setBody(this).then(() => {
       this.view = new this.params.View(this, this.params.Display, this.manifest.image);
       this.name = this.manifest.title;
-
       this.core = new NeonCore(this.manifest);
       this.info = new this.params.Info(this);
+      this.modal = new ModalWindow(this);
 
       window.setTimeout(this.setupEdit.bind(this), 2000, this.params);
       return this.core.initDb();
