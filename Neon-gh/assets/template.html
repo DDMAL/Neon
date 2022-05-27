@@ -27,7 +27,7 @@
           <a class="navbar-item" href="//github.com/DDMAL/Neon/wiki/Instructions" target="_blank">User Guide</a>
           <a class="navbar-item" href="//github.com/DDMAL/Neon/wiki" target="_blank">Wiki</a>
           <a class="navbar-item" href="//ddmal.music.mcgill.ca" target="_blank">DDMAL</a>
-          <a class="navbar-item" onclick="hotkeyDialog()">Hotkeys</a>
+          <a class="navbar-item" id="navbar-item-hotkeys">Hotkeys</a>
           <a class="navbar-item" id="neon-version"></a>
         </div>
       </div>
@@ -48,4 +48,21 @@
     <div id="neume_info"></div>
     <div id="syl_text" class="box" style="display:none;"></div>
   </div>
+</div>
+
+
+<!-- Neon modal window -->
+<div id="neon-modal-window-container">
+  <div tabindex="0" id="neon-modal-window">
+    
+    <div id="neon-modal-window-header">
+      <div id="neon-modal-window-header-title"></div>
+      <div id="neon-modal-window-header-close">x</div>
+    </div>
+
+    <!-- Neon modal window content section -->
+    <div id="neon-modal-window-content-container"></div>
+  </div>
+  
+
 </div>
