@@ -219,8 +219,6 @@ export class ModalWindow implements ModalWindowInterface {
    */
   private keydownListener = function(e) {
 
-    console.log('keydown');
-
     e.stopImmediatePropagation(); // prevent Neon hotkey events from firing when user is typing
 
     switch(this.modalWindowView) {
