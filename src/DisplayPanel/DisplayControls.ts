@@ -31,18 +31,22 @@ export function setZoomControls (zoomHandler?: ZoomHandler): void {
 
   // zoomSlider.addEventListener('input', inputChangeHandler);
   zoomSlider.addEventListener('mouseup', inputChangeHandler);
+  zoomSlider.disabled = false;
 
   document.body.addEventListener('keydown', (evt) => {
     const currentZoom = parseInt(zoomOutput.value);
-    if (evt.key === '+') { // increase zoom by 20
+    if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown' || 
+    evt.key === 'ArrowRight' || evt.key === 'ArrowLeft') {
+      evt.preventDefault();
+    } else if (evt.key === '+') { // increase zoom by 20
       const newZoom = Math.min(currentZoom + 20, parseInt(zoomSlider.getAttribute('max')));
       zoomHandler.zoomTo(newZoom / 100.0);
       zoomOutput.value = String(newZoom);
       zoomSlider.value = String(newZoom);
-    } else if (evt.key === '-') { // decrease zoom by 20
+    } else if (evt.key === '_') { // decrease zoom by 20
       const newZoom = Math.max(currentZoom - 20, parseInt(zoomSlider.getAttribute('min')));
       zoomHandler.zoomTo(newZoom / 100.0);
-      zoomOutput.value = String(Math.round(newZoom));
+      zoomOutput.value = String(newZoom);
       zoomSlider.value = String(newZoom);
     } else if (evt.key === '0') {
       zoomOutput.value = '100';
@@ -50,8 +54,6 @@ export function setZoomControls (zoomHandler?: ZoomHandler): void {
       zoomHandler.resetZoomAndPan();
     }
   });
-
-  zoomSlider.disabled = false;
 }
 
 /**

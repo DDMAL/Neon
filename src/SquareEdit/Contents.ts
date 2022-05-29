@@ -314,19 +314,21 @@ export const hotkeysModal =
                     <div>+</div>
                     <div class="hotkey-entry">+</div>
                 </div>
-                <div class="hotkey-entry-description">Zoom in</div>        
+                <div class="hotkey-entry-description">Zoom In</div>        
             </div>
             <div class="hotkey-entry-container">
             <div class="hotkey-container">
+                <div class="hotkey-entry">Shift</div>
+                <div>+</div>
                 <div class="hotkey-entry">-</div>
             </div>
-            <div class="hotkey-entry-description">Zoom out</div>
+            <div class="hotkey-entry-description">Zoom Out</div>
             </div>
             <div class="hotkey-entry-container">
             <div class="hotkey-container">
                 <div class="hotkey-entry">0</div>
             </div>
-            <div class="hotkey-entry-description">Zoom reset</div>
+            <div class="hotkey-entry-description">Zoom Reset</div>
             </div>
             <div class="hotkey-entry-container">
             <div class="hotkey-container">
