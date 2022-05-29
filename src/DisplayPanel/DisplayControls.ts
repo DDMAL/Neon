@@ -35,7 +35,8 @@ export function setZoomControls (zoomHandler?: ZoomHandler): void {
 
   document.body.addEventListener('keydown', (evt) => {
     const currentZoom = parseInt(zoomOutput.value);
-    if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown') {
+    if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown' || 
+    evt.key === 'ArrowRight' || evt.key === 'ArrowLeft') {
       evt.preventDefault();
     } else if (evt.key === '+') { // increase zoom by 20
       const newZoom = Math.min(currentZoom + 20, parseInt(zoomSlider.getAttribute('max')));
