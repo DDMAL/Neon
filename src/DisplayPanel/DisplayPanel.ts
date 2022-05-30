@@ -9,7 +9,7 @@ import { DisplayInterface, ViewInterface } from '../Interfaces';
  */
 function displayControlsPanel (handleZoom: ZoomHandler): string {
   let contents = `
-    <p class="panel-heading" id="displayHeader">Display
+    <p class="panel-heading" id="displayHeader">DISPLAY
       <svg class="icon is-pulled-right">
         <use id="toggleDisplay" xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use>
       </svg>

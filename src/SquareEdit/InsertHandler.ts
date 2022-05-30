@@ -125,12 +125,12 @@ class InsertHandler {
       document.getElementById('redo').parentNode.appendChild(editModeButton);
       editModeButton.addEventListener('click', this.insertDisabled);
     }
-    const editMenu = document.getElementById('editMenu');
-    editMenu.style.backgroundColor = 'whitesmoke';
-    editMenu.style.fontWeight = '';
-    const insertMenu = document.getElementById('insertMenu');
-    insertMenu.style.backgroundColor = '#ffc7c7';
-    insertMenu.style.fontWeight = 'bold';
+    //const editMenu = document.getElementById('editMenu');
+    //editMenu.style.backgroundColor = 'whitesmoke';
+    //editMenu.style.fontWeight = '';
+    //const insertMenu = document.getElementById('insertMenu');
+    //insertMenu.style.backgroundColor = '#ffc7c7';
+    //insertMenu.style.fontWeight = 'bold';
   }
 
   /**
@@ -152,12 +152,12 @@ class InsertHandler {
     } catch (e) {
       // console.debug(e);
     }
-    const editMenu = document.getElementById('editMenu');
-    const insertMenu = document.getElementById('insertMenu');
-    editMenu.style.backgroundColor = '#ffc7c7';
-    editMenu.style.fontWeight = 'bold';
-    insertMenu.style.backgroundColor = 'whitesmoke';
-    insertMenu.style.fontWeight = '';
+    //const editMenu = document.getElementById('editMenu');
+    //const insertMenu = document.getElementById('insertMenu');
+    //editMenu.style.backgroundColor = '#ffc7c7';
+    //editMenu.style.fontWeight = 'bold';
+    //insertMenu.style.backgroundColor = 'whitesmoke';
+    //insertMenu.style.fontWeight = '';
   }).bind(this);
 
   /**

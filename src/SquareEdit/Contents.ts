@@ -63,7 +63,7 @@ export const insertTabHtml: Record<string, string> = {
  * Structure of insert panel with basic grouping tabs.
  */
 export const insertControlsPanel: string =
-    '<p class=\'panel-heading\' id=\'insertMenu\'>Insert' +
+    '<p class=\'panel-heading\' id=\'insertMenu\'>INSERT' +
     '<svg class=\'icon is-pulled-right\'><use id=\'toggleInsert\' xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></p>' +
     '<div id=\'insertContents\' style=\'overflow-y: hidden;\'>' +
     '<p class=\'panel-tabs\'>' +
@@ -78,7 +78,7 @@ export const insertControlsPanel: string =
  * Contents of edit panel with buttons.
  */
 export const editControlsPanel: string =
-    '<p class=\'panel-heading\' id=\'editMenu\'>Edit' +
+    '<p class=\'panel-heading\' id=\'editMenu\'>EDIT' +
     '<svg class=\'icon is-pulled-right\'><use id=\'toggleEdit\' xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></p>' +
     '<div id=\'editContents\'>' +
     '<a class=\'panel-block\'>' +
