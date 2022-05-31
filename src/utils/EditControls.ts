@@ -1,6 +1,6 @@
 import * as Notification from './Notification';
 import NeonView from '../NeonView';
-import { navbarDropdownFileMenu, navbarDropdownMEIActionsMenu, undoRedoPanel } from './EditContents';
+import { navbarDropdownFileMenu, navbarDropdownMEIActionsMenu } from './EditContents';
 import { convertStaffToSb } from './ConvertMei';
 import { EditorAction } from '../Types';
 
@@ -218,9 +218,9 @@ export function startEditMode (neonView: NeonView): void {
   document.getElementById('dropdown_toggle').remove();
   parent.prepend(navbarDropdownMEIActionsMenu);
   parent.prepend(navbarDropdownFileMenu);
-  document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;
+  //document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;
   initNavbar(neonView);
-  initUndoRedoPanel(neonView);
+  //initUndoRedoPanel(neonView);
 
   const selectionHighlight = document.createElement('a');
   const divider = document.createElement('hr');

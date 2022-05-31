@@ -20,15 +20,15 @@ class TextView implements TextViewInterface {
     this.notificationSent = false;
 
     // add checkbox to enable/disable the view
-    const block = document.getElementById('extensible-block');
+    const checkboxesContainer = document.getElementById('checkbox-display-options');
     const textLabel = document.createElement('label');
     const bboxLabel = document.createElement('label');
     const textButton = document.createElement('input');
     const bboxButton = document.createElement('input');
     textLabel.classList.add('checkbox');
     bboxLabel.classList.add('checkbox');
-    textLabel.textContent = 'Display Text: ';
-    bboxLabel.textContent = 'Display Text BBoxes: ';
+    textLabel.textContent = 'Text: ';
+    bboxLabel.textContent = 'BBoxes: ';
     textButton.classList.add('checkbox');
     bboxButton.classList.add('checkbox');
     textButton.id = 'displayText';
@@ -39,8 +39,8 @@ class TextView implements TextViewInterface {
     bboxButton.checked = false;
     textLabel.appendChild(textButton);
     bboxLabel.appendChild(bboxButton);
-    block.prepend(bboxLabel);
-    block.prepend(textLabel);
+    checkboxesContainer.prepend(bboxLabel);
+    checkboxesContainer.prepend(textLabel);
 
     this.setTextViewControls();
     this.neonView.view.addUpdateCallback(this.updateTextViewVisibility.bind(this));

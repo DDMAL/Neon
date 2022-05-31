@@ -36,7 +36,7 @@ export async function init (): Promise<void> {
   const displayContents = document.getElementById('displayContents');
   if (displayContents !== null) {
     const panelBlock = document.createElement('div');
-    panelBlock.classList.add('panel-block');
+    panelBlock.classList.add('panel-content-subsection');
     const pNotif = document.createElement('p');
     pNotif.textContent = 'MEI Status: ';
     const span = document.createElement('span');

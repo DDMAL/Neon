@@ -1,5 +1,6 @@
 import { bindInsertTabs, initInsertEditControls, initEditModeControls, initSelectionButtons } from './Controls';
 import { setHighlightSelectionControls } from '../DisplayPanel/DisplayControls';
+import { initUndoRedoPanel } from '../utils/EditControls';
 import * as Select from '../utils/Select';
 import InsertHandler from './InsertHandler';
 import NeonView from '../NeonView';
@@ -42,6 +43,7 @@ class SingleEditMode implements NeumeEditInterface {
     //editMenu.style.fontWeight = 'bold';
 
     initSelectionButtons();
+    initUndoRedoPanel(this.neonView);
 
     setHighlightSelectionControls();
 

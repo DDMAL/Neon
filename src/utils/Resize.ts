@@ -263,7 +263,8 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         } else {
           try {
             document.getElementById('moreEdit').innerHTML = '';
-            document.getElementById('moreEdit').classList.add('is-invisible');
+            document.getElementById('moreEdit').classList.add('is-hidden');
+            document.getElementById('moreEdit').parentElement.classList.add('hidden');
           } catch (e) {}
         }
       });

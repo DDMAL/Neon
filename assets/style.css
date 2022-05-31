@@ -1,5 +1,11 @@
+/* 
+    Note: Bulma styles are a mess. We need to get rid of it eventually. 
+    In the meantime, we use !important occasionally to override Bulma.
+*/
+
 @import url("https://unpkg.com/diva.js@6.0.2/build/diva.css");
 
+/* something */
 
 html {
     overflow: hidden;
@@ -32,7 +38,7 @@ body {
 }
 
 #right-column {
-    overflow: hidden;
+    overflow: scroll;
     height: 100%;
     width: 30%;
     padding: 0px;
@@ -61,11 +67,7 @@ body {
 }
 
 .panel-heading {
-    /* background-color: whitesmoke; */
-    /* border-radius: 4px 4px 0 0; */
-    /* color: #363636; */
     font-size: 1.25em;
-    /* font-weight: 300; */
     line-height: 1.25;
     padding: 0.5em 0.75em;
     border-radius: 0px;
@@ -78,32 +80,97 @@ body {
     font-weight: 900;
 }
 
-.panel-heading.closed-panel {
-    color: #81b1ff;
+.panel-contents {
+    max-height: 500px;
+    transition: max-height 0.2s ease-in-out;
+    border-bottom: 1px solid #dbdbdb;
+    padding: 0.5em 0.75em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: visible;
 }
 
-.panel-heading.closed-panel:hover {
-    color: #3273dc;
+.panel-contents.closed {
+    max-height: 0px;
+    border-bottom: none;
+    transition: max-height 0.2s ease-in-out;
+    overflow: hidden;
 }
 
+.panel-content-subsection {
+    width: 100%;
+    border-top: 1px solid rgb(181, 181, 181);
+    margin-top: 10px;
+    padding-top: 10px;
+}
+.panel-content-subsection.first-subsection {
+    border: none;
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
+.panel-content-subsection.hidden {
+    display: none;
+}
+
+.slider-container.display-panel {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
 
 .panel-block {
     align-items: center;
     color: #363636;
     display: flex;
     justify-content: flex-start;
-    padding: 0.5em 0.75em;
     border: none !important;
+    padding: 0px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+#display-options-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.checkbox {
+    border: 1px solid #dbdbdb;
+    cursor: pointer;
+    display: inline-block;
+    line-height: 1.25;
+    position: relative;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 4px;
+}
+
+#highlight-dropdown {
+    margin: 5px;
+}
+
+#selection-mode-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .panel-tabs {
     border: none !important;
+    align-items: flex-end;
+    display: flex;
+    font-size: 0.875em;
+    justify-content: center;
+    width: 100%;
 }
 
-#displayContents, #insertContents, #editContents {
-    padding: 15px;
-    margin-bottom: 10px;
-}
+
 
 #displayContents .button {
     width: 10.5em;
@@ -121,9 +188,23 @@ body {
     cursor: default;
 }
 
+#display-actions-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 #moreEdit {
     overflow: auto;
     padding: 1;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+#moreEdit, #extraEdit, #neumeEdit {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .item {

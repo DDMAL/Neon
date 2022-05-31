@@ -1,6 +1,6 @@
 import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
-import { EditorAction, SplitAction } from '../Types';
+import { SplitAction } from '../Types';
 import { selectAll } from '../utils/SelectTools';
 import DragHandler from '../utils/DragHandler';
 
@@ -74,7 +74,8 @@ export class SplitStaffHandler {
       selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
       try {
         document.getElementById('moreEdit').innerHTML = '';
-        document.getElementById('moreEdit').classList.add('is-invisible');
+        document.getElementById('moreEdit').classList.add('is-hidden');
+        document.getElementById('moreEdit').parentElement.classList.add('hidden');
       } catch (e) {}
     });
   }).bind(this);

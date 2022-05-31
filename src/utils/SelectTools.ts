@@ -6,9 +6,8 @@ import { Attributes, SelectionType } from '../Types';
 import NeonView from '../NeonView';
 import DragHandler from './DragHandler';
 import * as SelectOptions from '../SquareEdit/SelectOptions';
-
 import * as d3 from 'd3';
-import { setSelectHelperObjects } from './Select';
+
 /**
  * @returns The selection mode chosen by the user.
  */
@@ -68,7 +67,7 @@ export function unselect (): void {
     SelectOptions.endOptionsSelection();
   }
   document.getElementById('extraEdit').innerHTML = '';
-  document.getElementById('extraEdit').classList.add('is-invisible');
+  document.getElementById('extraEdit').classList.add('is-hidden');
   updateHighlight();
 }
 
@@ -354,7 +353,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     }
   }
   // Select the elements
-  groupsToSelect.forEach((group: SVGGraphicsElement) => { select(group, dragHandler) });
+  groupsToSelect.forEach((group: SVGGraphicsElement) => { select(group, dragHandler); });
 
   /* Determine the context menu to display (if any) */
 

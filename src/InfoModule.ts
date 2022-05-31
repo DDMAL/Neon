@@ -54,17 +54,17 @@ class InfoModule implements InfoInterface {
   constructor (neonView: NeonView) {
     this.neonView = neonView;
     // Add info box enable/disable check box
-    const block = document.getElementById('extensible-block');
+    const checkboxesContainer = document.getElementById('checkbox-display-options');
     const label = document.createElement('label');
     label.classList.add('checkbox');
-    label.textContent = 'Display Info: ';
+    label.textContent = 'Info: ';
     const input = document.createElement('input');
     input.classList.add('checkbox');
     input.id = 'displayInfo';
     input.type = 'checkbox';
     input.checked = false;
     label.appendChild(input);
-    block.prepend(label);
+    checkboxesContainer.prepend(label);
 
     this.neonView.view.addUpdateCallback(this.resetInfoListeners.bind(this));
     setInfoControls();

@@ -23,7 +23,9 @@ function selBySylListener (): void {
     try {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-invisible');
+      document.getElementById('extraEdit').classList.add('is-hidden');
+      document.getElementById('moreEdit').parentElement.classList.add('hidden');
+      document.getElementById('extraEdit').parentElement.classList.add('hidden');
     } catch (e) {}
     document.getElementById('selByBBox').classList.add('is-active');
     try {

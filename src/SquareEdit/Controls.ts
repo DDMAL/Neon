@@ -5,6 +5,7 @@ import { setGroupingHighlight } from '../utils/Color';
 import { unselect } from '../utils/SelectTools';
 import InsertHandler from './InsertHandler';
 import { NeumeEditInterface } from '../Interfaces';
+import { undoRedoPanel } from '../utils/EditContents';
 
 /**
  * Set listener on EditMode button.
@@ -13,6 +14,7 @@ export function initEditModeControls (editMode: NeumeEditInterface): void {
   document.getElementById('edit_mode').addEventListener('click', function () {
     document.getElementById('insert_controls').innerHTML += Contents.insertControlsPanel;
     document.getElementById('edit_controls').innerHTML += Contents.editControlsPanel;
+    document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;
     editMode.initEditMode();
   });
 }
@@ -56,27 +58,47 @@ export function bindInsertTabs (insertHandler: InsertHandler): void {
  * Initialize Edit and Insert control panels.
  */
 export function initInsertEditControls (): void {
-  const toggleInsert = document.getElementById('toggleInsert');
-  const toggleEdit = document.getElementById('toggleEdit');
+  const insertHeading = document.getElementById('insertMenu');
   const insertContents = document.getElementById('insertContents');
+  const insertDropdownIcon = insertHeading.querySelector('svg > use');
+
+  const editHeading = document.getElementById('editMenu');
   const editContents = document.getElementById('editContents');
-  toggleInsert.parentElement.addEventListener('click', () => {
-    if (insertContents.style.display === 'none') {
-      insertContents.style.display = '';
-      toggleInsert.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
+  const editDropdownIcon = editHeading.querySelector('svg > use');
+
+  insertHeading.addEventListener('click', () => {
+    if (insertContents.classList.contains('closed')) {
+      insertContents.classList.remove('closed');
+      insertContents.style.padding = '0.5em 0.75em';
+      insertContents.style.overflow = 'hidden';
+      setTimeout(() => {
+        insertContents.style.overflow = 'visible';
+      }, 200);
+      insertDropdownIcon.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
     } else {
-      insertContents.style.display = 'none';
-      toggleInsert.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-side');
+      insertContents.classList.add('closed');
+      setTimeout(() => {
+        insertContents.style.padding = '0px';
+      }, 200);
+      insertDropdownIcon.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-side');
     }
   });
 
-  toggleEdit.parentElement.addEventListener('click', () => {
-    if (editContents.style.display === 'none') {
-      editContents.style.display = '';
-      toggleEdit.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
+  editHeading.addEventListener('click', () => {
+    if (editContents.classList.contains('closed')) {
+      editContents.classList.remove('closed');
+      editContents.style.padding = '0.5em 0.75em';
+      editContents.style.overflow = 'hidden';
+      setTimeout(() => {
+        editContents.style.overflow = 'visible';
+      }, 200);
+      editDropdownIcon.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
     } else {
-      editContents.style.display = 'none';
-      toggleEdit.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-side');
+      editContents.classList.add('closed');
+      setTimeout(() => {
+        editContents.style.padding = '0px';
+      }, 200);
+      editDropdownIcon.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-side');
     }
   });
 }
@@ -167,7 +189,9 @@ export function initSelectionButtons (): void {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-invisible');
+      document.getElementById('extraEdit').classList.add('is-hidden');
+      document.getElementById('moreEdit').parentElement.classList.add('hidden');
+      document.getElementById('extraEdit').parentElement.classList.add('hidden');
       selBySyl.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');
@@ -189,7 +213,7 @@ export function initSelectionButtons (): void {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-invisible');
+      document.getElementById('extraEdit').classList.add('is-hidden');
       selByNeume.classList.add('is-active');
       selByNc.classList.remove('is-active');
       selBySyl.classList.remove('is-active');
@@ -211,7 +235,7 @@ export function initSelectionButtons (): void {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-invisible');
+      document.getElementById('extraEdit').classList.add('is-hidden');
       selByNc.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selBySyl.classList.remove('is-active');
@@ -233,7 +257,7 @@ export function initSelectionButtons (): void {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-invisible');
+      document.getElementById('extraEdit').classList.add('is-hidden');
       selByStaff.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');
@@ -255,7 +279,7 @@ export function initSelectionButtons (): void {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-invisible');
+      document.getElementById('extraEdit').classList.add('is-hidden');
       selByLayerElement.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');

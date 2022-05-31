@@ -65,7 +65,7 @@ export const insertTabHtml: Record<string, string> = {
 export const insertControlsPanel: string =
     '<p class=\'panel-heading\' id=\'insertMenu\'>INSERT' +
     '<svg class=\'icon is-pulled-right\'><use id=\'toggleInsert\' xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></p>' +
-    '<div id=\'insertContents\' style=\'overflow-y: hidden;\'>' +
+    '<div id=\'insertContents\' class="panel-contents" style=\'overflow-y: hidden;\'>' +
     '<p class=\'panel-tabs\'>' +
     '<a id=\'primitiveTab\' class=\'insertTab\'>Primitive Elements</a>' +
     '<a id=\'groupingTab\' class=\'insertTab\'>Grouping</a>' +
@@ -77,34 +77,59 @@ export const insertControlsPanel: string =
 /**
  * Contents of edit panel with buttons.
  */
-export const editControlsPanel: string =
-    '<p class=\'panel-heading\' id=\'editMenu\'>EDIT' +
-    '<svg class=\'icon is-pulled-right\'><use id=\'toggleEdit\' xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></p>' +
-    '<div id=\'editContents\'>' +
-    '<a class=\'panel-block\'>' +
-    '<label>Select By:&nbsp;</label>' +
-    '<div class=\'field has-addons buttons\' style=\'overflow-x: auto;\'>' +
-    '<p class=\'control\'>' +
-    '<button class=\'button sel-by is-active\' id=\'selBySyl\'>Syllable</button></p>' +
-    '<p class=\'control\'>' +
-    '<button class=\'button sel-by\' id=\'selByNeume\'>Neume</button></p>' +
-    '<p class=\'control\'>' +
-    '<button class=\'button sel-by\' id=\'selByNc\'>Neume Component</button></p>' +
-    '<p class=\'control\'>' +
-    '<button class=\'button sel-by\' id=\'selByStaff\'>Staff</button></p>' +
-    '<p class=\'control\'>' +
-    '<button class=\'button sel-by\' id=\'selByLayerElement\'>Layer Element</button></p></div></a>' +
-    '<div class=\'field is-grouped buttons\'>' +
-    '<p class=\'control\'>' +
-    '<a id=\'moreEdit\' class=\'panel-block is-invisible\'>' +
-    '<a id=\'extraEdit\' class=\'panel-block is-invisible\'>' +
-    /*
-     * The extraEdit panel is added for edit options that have dropdown menus
-     * Like the Neume and Clef menus
-     * This is done because the moreEdit menu needs to have overflow for cases where it has lots of buttons
-     * But overflow ruins dropdown menus
-     */
-    '<a id=\'neumeEdit\' class=\'panel-block is-invisible\'></div>';
+export const editControlsPanel =
+ `<p class="panel-heading" id="editMenu">EDIT
+     <svg class="icon is-pulled-right">
+         <use id="toggleEdit" xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use>
+     </svg>
+ </p>
+ <div id="editContents" class="panel-contents">
+    <div class="panel-content-subsection first-subsection">
+        <div id="selection-mode-container">
+            <div class="panel-sub-title">Selection Mode:</div>
+            <div class="field has-addons buttons" style="overflow-x: auto;">
+                <p class="control">
+                    <button class="button sel-by is-active" id="selBySyl">Syllable</button>
+                </p>
+                <p class="control">
+                    <button class="button sel-by" id="selByNeume">Neume</button>
+                </p>
+                <p class="control">
+                    <button class="button sel-by" id="selByNc">Neume Component</button>
+                </p>
+                <p class="control">
+                    <button class="button sel-by" id="selByStaff">Staff</button>
+                    </p>
+                <p class="control">
+                    <button class="button sel-by" id="selByLayerElement">Layer Element</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+     <div id="display-actions-container">
+         <div class="control">
+            <div class="panel-content-subsection hidden">
+                <div id="moreEdit" class="panel-block is-hidden"></div>
+            </div>
+            <div class="panel-content-subsection hidden">
+                <div id="extraEdit" class="panel-block is-hidden"></div>
+            </div>
+                <!--
+                * The extraEdit panel is added for edit options that have dropdown menus
+                * Like the Neume and Clef menus
+                * This is done because the moreEdit menu needs to have overflow for cases where it has lots of buttons
+                * But overflow ruins dropdown menus
+                -->
+            <div class="panel-content-subsection hidden">
+                <div id="neumeEdit" class="panel-block is-hidden"></div>
+            </div>
+            <div class="panel-content-subsection">
+                <div id="undoRedo_controls"></div>
+            </div>
+         </div>
+     </div>
+ </div>`;
 
 /**
  * Contents of extra nc action menu.

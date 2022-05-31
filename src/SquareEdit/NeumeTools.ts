@@ -70,7 +70,7 @@ export class SplitNeumeHandler {
       // selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
       // try {
       //   document.getElementById('moreEdit').innerHTML = '';
-      //   document.getElementById('moreEdit').classList.add('is-invisible');
+      //   document.getElementById('moreEdit').classList.add('is-hidden');
       // } catch (e) {}
     });
   }).bind(this);
