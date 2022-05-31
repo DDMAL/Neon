@@ -5,6 +5,7 @@ var multer = require('multer');
 const request = require('request');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const { image } = require('d3');
 
 var router = express.Router();
 const __base = '';
@@ -13,7 +14,7 @@ const manifestUpload = path.join(__base, 'deployment', 'public', 'uploads', 'man
 const meiUpload = path.join(__base, 'deployment', 'public', 'uploads', 'mei');
 const imgUpload = path.join(__base, 'deployment', 'public', 'uploads', 'img');
 const iiifUpload = path.join(__base, 'deployment', 'public', 'uploads', 'iiif');
-const iiifPublicPath = path.join('/', 'uploads', 'iiif');
+// const iiifPublicPath = path.join('/', 'uploads', 'iiif');
 const neonContext = 'https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld';
 
 const allowedPattern = /^[-_\.,\d\w ]+$/;
@@ -68,9 +69,9 @@ router.route('/')
           });
         });
         if (meiFiles.length !== 0 || iiifFiles.length !== 0) {
-          res.render('index', { 'files': meiFiles, 'iiif': iiifFiles });
+          res.render('index', { files: meiFiles, iiif: iiifFiles });
         } else {
-          res.render('index', { 'nofiles': 'No files uploaded', 'files': meiFiles, 'iiif': iiifFiles });
+          res.render('index', { nofiles: 'No files uploaded', files: meiFiles, iiif: iiifFiles });
         }
       });
     });
@@ -93,7 +94,7 @@ router.route('/upload_file').post(upload.array('resource', 2), function (req, re
       let manifest = {
         '@context': neonContext,
         '@id': '/uploads/manifests/' + manifestName,
-        title: basename,
+        title: basename, 
         timestamp: (new Date()).toISOString(),
         image: '/uploads/img/' + imageName,
         mei_annotations: [
@@ -107,7 +108,7 @@ router.route('/upload_file').post(upload.array('resource', 2), function (req, re
       };
       // Ensure files do not already exist
       if (fs.existsSync(path.join(meiUpload, meiFileName)) || fs.existsSync(path.join(imgUpload, imageName)) || fs.existsSync(path.join(manifestUpload, manifestName))) {
-        res.sendStatus(409); // Conflict
+        res.sendStatus(409); // Conflict: TODO replace with modal window message
       } else {
         // Write files
         try {
@@ -173,7 +174,7 @@ router.route('/edit/:filename').get(function (req, res) {
   }
 
   // Check that the manifest exists
-  fs.stat(path.join(manifestUpload, req.params.filename), (err, stats) => {
+  fs.stat(path.join(manifestUpload, req.params.filename), (err) => {
     if (err) {
       if (err.code !== 'ENOENT') {
         console.error(err);
@@ -186,7 +187,7 @@ router.route('/edit/:filename').get(function (req, res) {
           console.error(err);
           res.sendStatus(500); // Internal Server Error
         } else {
-          res.render('editor', { 'manifest': encodeURIComponent(data) });
+          res.render('editor', { manifest: encodeURIComponent(data) });
         }
       });
     }
@@ -204,7 +205,7 @@ router.route('/edit/:label/:rev').get((req, res) => {
       console.error(err);
       res.status(500).render('error', { statusCode: '500 - Internal Server Error', message: 'Could not find the manifest for IIIF entry ' + pathName });
     } else {
-      res.render('editor', { 'manifest': encodeURIComponent(data) });
+      res.render('editor', { manifest: encodeURIComponent(data) });
     }
   });
 });
@@ -263,10 +264,10 @@ router.route('/add-iiif').get(function (req, res) {
           let manifest = {
             '@context': neonContext,
             '@id': '/uploads/iiif/' + label + '/' + req.body.revision + '/manifest.jsonld',
-            'title': label,
-            'timestamp': (new Date()).toISOString(),
-            'image': req.body.manifest,
-            'mei_annotations': []
+            title: label,
+            timestamp: (new Date()).toISOString(),
+            image: req.body.manifest,
+            mei_annotations: []
           };
           fs.writeFile(path.join(iiifUpload, label, req.body.revision, 'manifest.jsonld'),
             JSON.stringify(manifest, null, 4),
@@ -301,7 +302,7 @@ router.route('/add-mei-iiif/:label/:rev').post(upload.array('mei'), function (re
     } else if (!response.statusCode === 200) {
       res.status(response.statusCode).send(response.statusMessage);
     } else {
-      let iiif;
+      // let iiif;
       try {
         manifest = JSON.parse(body);
       } catch (e) {
@@ -367,19 +368,19 @@ router.route('/associate-mei-iiif/:label/:rev').post(function (req, res) {
     for (let entryText of req.body.select) {
       let entry = JSON.parse(entryText);
       manifest.mei_annotations.push({
-        'id': 'urn:uuid:' + uuidv4(),
-        'type': 'Annotation',
-        'body': '/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/' + entry.file,
-        'target': entry.id
+        id: 'urn:uuid:' + uuidv4(),
+        type: 'Annotation',
+        body: '/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/' + entry.file,
+        target: entry.id
       });
     }
   } else {
     let entry = JSON.parse(req.body.select);
     manifest.mei_annotations.push({
-      'id': 'urn:uuid:' + uuidv4(),
-      'type': 'Annotation',
-      'body': '/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/' + entry.file,
-      'target': entry.id
+      id: 'urn:uuid:' + uuidv4(),
+      type: 'Annotation',
+      body: '/uploads/iiif/' + req.params.label + '/' + req.params.rev + '/' + entry.file,
+      target: entry.id
     });
   }
 
