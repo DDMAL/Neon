@@ -330,6 +330,10 @@ class NeonCore {
     }
     return new Promise((resolve): void => {
       promise.then(entry => {
+        // delete unnecessary SVG object reference;
+        // otherwise, this is not garbage collected!
+        entry.svg = null;
+
         const currentMEI = entry.mei;
         const message: VerovioMessage = {
           id: uuidv4(),
