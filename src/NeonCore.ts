@@ -402,7 +402,7 @@ class NeonCore {
         const svg = this.parser.parseFromString(
           svgText,
           'image/svg+xml'
-        ).documentElement as unknown as SVGSVGElement;
+        ).documentElement as HTMLElement & SVGSVGElement;
         this.neonCache.set(pageURI, {
           mei: mei,
           svg: svg,
