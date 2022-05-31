@@ -77,12 +77,12 @@ export default class TextEditMode implements TextEditInterface {
   initTextEdit (): void {
     const spans = document.getElementById('syl_text').querySelectorAll('p > span');
     const modal = this.neonView.modal;
-    spans.forEach(span => {
-
+    spans.forEach((span: HTMLSpanElement) => {
       function selectSylText (): void {
         span.classList.add('selected-to-edit');
         modal.setModalWindowView(ModalWindowView.EDIT_TEXT);
         modal.openModalWindow();
+        modal.updateSelectedBBox(span);
       }
 
       span.removeEventListener('click', selectSylText);

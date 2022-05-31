@@ -2,7 +2,7 @@ import NeonView from '../NeonView';
 import { HTMLSVGElement, SetTextAction } from '../Types';
 import { ModalWindowInterface } from '../Interfaces';
 import { hotkeysModal, editTextModal } from '../SquareEdit/Contents';
-import { selectBBox } from './SelectTools';
+import { selectBBox, unselect } from './SelectTools';
 
 /**
  * Defines modal types.
@@ -114,7 +114,7 @@ export class ModalWindow implements ModalWindowInterface {
    * Set content of modal window
    */
   private setModalWindowContent(): void {
-    switch(this.modalWindowView) {
+    switch (this.modalWindowView) {
       case ModalWindowView.EDIT_TEXT:
         document.getElementById('neon-modal-window-content-container').innerHTML = editTextModal;
 
@@ -167,17 +167,31 @@ export class ModalWindow implements ModalWindowInterface {
     this.focusModalWindow();
   };
 
+  /**
+   * Update the bounding box selected when the edit text modal has been clicked 
+   */
+  updateSelectedBBox = function (span: HTMLSpanElement): void {
+    unselect();
+
+    const bboxId = Array.from(span.classList).find(e => e !== 'text-select' && e !== 'selected-to-edit');
+
+    if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
+      if (document.getElementById(bboxId)) {
+        const displayRect = document.getElementById(bboxId).querySelector('.sylTextRect-display') as HTMLSVGElement;
+        selectBBox(displayRect, this.dragHandler, this.neonView);
+      }
+    }
+  };
 
   /**
    * Update text of selected-to-edit syllables with user-provided text
    */
-  private updateSylText = function(): void {
+  private updateSylText = function () {
     // span and current text of selected-to-edit syllable and filter out unwanted chars
     const span = <HTMLSpanElement> document.getElementById('syl_text').querySelectorAll('p>span.selected-to-edit')[0];
+
     const removeSymbol = /\u{25CA}/u;
     const orig = span.textContent.replace(removeSymbol, '').trim();
-    
-
     const updatedSylText = (<HTMLInputElement> document.getElementById('neon-modal-window-edit-text-input')).value;
 
     if (updatedSylText !== null && updatedSylText !== orig) {
@@ -198,15 +212,7 @@ export class ModalWindow implements ModalWindowInterface {
             // An update to the page will reload the entire svg;
             // We would like to then reselect the same selected syllable
             // if bboxes are enabled
-            const bboxId = Array.from(span.classList).find(e => e !== 'text-select' && e !== 'selected-to-edit');
-
-            if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
-              console.log(bboxId, document.getElementById(bboxId));
-              if (document.getElementById(bboxId)) {
-                const displayRect = document.getElementById(bboxId).querySelector('.sylTextRect-display') as HTMLSVGElement;
-                selectBBox(displayRect, this.dragHandler, this.neonView);
-              }
-            }
+            this.updateSelectedBBox(span);
           });
         }
       });
