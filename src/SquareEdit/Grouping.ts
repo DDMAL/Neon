@@ -80,7 +80,6 @@ export function triggerGrouping (type: string): void {
   const moreEdit = document.getElementById('moreEdit');
   moreEdit.classList.remove('is-hidden');
   document.getElementById('moreEdit').parentElement.classList.remove('hidden');
-  document.getElementById('extraEdit').parentElement.classList.remove('hidden');
   moreEdit.innerHTML += Contents.groupingMenu[type];
   initGroupingListeners();
 }
@@ -93,6 +92,7 @@ export function endGroupingSelection (): void {
   const moreEdit = document.getElementById('moreEdit');
   moreEdit.innerHTML = '';
   moreEdit.classList.add('is-hidden');
+  document.getElementById('moreEdit').parentElement.classList.add('hidden');
   document.body.removeEventListener('keydown', deleteButtonHandler);
   document.body.removeEventListener('keydown', keydownListener);
 }

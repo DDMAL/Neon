@@ -214,6 +214,8 @@ export function initSelectionButtons (): void {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
       document.getElementById('extraEdit').classList.add('is-hidden');
+      document.getElementById('moreEdit').parentElement.classList.add('hidden');
+      document.getElementById('extraEdit').parentElement.classList.add('hidden');
       selByNeume.classList.add('is-active');
       selByNc.classList.remove('is-active');
       selBySyl.classList.remove('is-active');
@@ -236,6 +238,8 @@ export function initSelectionButtons (): void {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
       document.getElementById('extraEdit').classList.add('is-hidden');
+      document.getElementById('moreEdit').parentElement.classList.add('hidden');
+      document.getElementById('extraEdit').parentElement.classList.add('hidden');
       selByNc.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selBySyl.classList.remove('is-active');
@@ -258,6 +262,8 @@ export function initSelectionButtons (): void {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
       document.getElementById('extraEdit').classList.add('is-hidden');
+      document.getElementById('moreEdit').parentElement.classList.add('hidden');
+      document.getElementById('extraEdit').parentElement.classList.add('hidden');
       selByStaff.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');
@@ -280,6 +286,8 @@ export function initSelectionButtons (): void {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
       document.getElementById('extraEdit').classList.add('is-hidden');
+      document.getElementById('moreEdit').parentElement.classList.add('hidden');
+      document.getElementById('extraEdit').parentElement.classList.add('hidden');
       selByLayerElement.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');

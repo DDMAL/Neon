@@ -231,7 +231,6 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-hidden');
     document.getElementById('moreEdit').parentElement.classList.remove('hidden');
-    document.getElementById('extraEdit').parentElement.classList.remove('hidden');
     moreEdit.innerHTML = Contents.defaultActionContents;
   } catch (e) {}
   try {
