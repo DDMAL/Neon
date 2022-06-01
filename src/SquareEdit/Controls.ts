@@ -70,13 +70,13 @@ export function initInsertEditControls (): void {
     if (insertContents.classList.contains('closed')) {
       insertContents.classList.remove('closed');
       insertContents.style.padding = '0.5em 0.75em';
-      insertContents.style.overflow = 'hidden';
       setTimeout(() => {
         insertContents.style.overflow = 'visible';
       }, 200);
       insertDropdownIcon.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
     } else {
       insertContents.classList.add('closed');
+      insertContents.style.overflow = 'hidden';
       setTimeout(() => {
         insertContents.style.padding = '0px';
       }, 200);
@@ -88,13 +88,13 @@ export function initInsertEditControls (): void {
     if (editContents.classList.contains('closed')) {
       editContents.classList.remove('closed');
       editContents.style.padding = '0.5em 0.75em';
-      editContents.style.overflow = 'hidden';
       setTimeout(() => {
         editContents.style.overflow = 'visible';
       }, 200);
       editDropdownIcon.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
     } else {
       editContents.classList.add('closed');
+      editContents.style.overflow = 'hidden';
       setTimeout(() => {
         editContents.style.padding = '0px';
       }, 200);

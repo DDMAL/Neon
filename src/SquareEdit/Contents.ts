@@ -2,60 +2,60 @@
  * HTML for each insert tab (neume, grouping, clef, system, and division).
  */
 export const insertTabHtml: Record<string, string> = {
-  primitiveTab: '<p class=\'control\'>' +
+  primitiveTab: '<p class=\'insert-element-container\' >' +
         '<button id=\'punctum\' class=\'button insertel smallel\' aria-label=\'punctum\' title=\'punctum\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/punctum.png' + '\' class=\'image\'/></button></p>' +
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'virga\' class=\'button insertel smallel\' aria-label=\'virga\' title=\'virga\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/virga.png' + '\' class=\'image\'/></button></p>' +
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'virgaReversed\' class=\'button insertel smallel\' aria-label=\'Reversed Virga\' title=\'Reversed Virga\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/virga_reversed.png' + '\' class=\'image\'/></button></p>' +
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'diamond\' class=\'button insertel smallel\' aria-label=\'inclinatum\' title=\'inclinatum\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/diamond.png' + '\' class=\'image\'/></button></p>' +
-  /*  "<p class='control'>" +
+  /*  "<p class='insert-element-container'>" +
         "<button id='white_punct' class='button insertel smallel' title='white punctum'><img src='" + White__ASSET_PREFIX__ + 'assets/img/punctum.png' + "' class='image'/></button></p>" +
-        "<p class='control'>" +
+        "<p class='insert-element-container'>" +
         "<button id='quilisma' class='button insertel smallel' title='quilisma'><img src='" + __ASSET_PREFIX__ + 'assets/img/quilisma.png' + "' class='image'/></button></p>" + */
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'custos\' class=\'button insertel smallel\' aria-label=\'custos\' title=\'custos\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/custos.png' + '\' class=\'image\'/></button></p>' +
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'cClef\' class=\'button insertel smallel\' aria-label=\'C Clef\' title=\' C Clef\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/cClef.png' + '\' class=\'image\' /></button></p>' +
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'fClef\' class=\'button insertel smallel\' aria-label=\'F Clef\' title=\'F Clef\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/fClef.png' + '\' class=\'image\'/></button></p>'+
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'liquescentA\' class=\'button insertel smallel\' aria-label=\'Liquescent A\' title=\'Liquescent A\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/liquescentA.png' + '\' class=\'image\'/></button></p>'+
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'liquescentC\' class=\'button insertel smallel\' aria-label=\'Liquescent C\' title=\'Liquescent C\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/liquescentC.png' + '\' class=\'image\'/></button></p>'+
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'virgaReversed\' class=\'button insertel smallel\' aria-label=\'Reversed Virga\' title=\'Reversed Virga\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/virga_reversed.png' + '\' class=\'image\'/></button></p>'+
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'flat\' class=\'button insertel smallel\' aria-label=\'Flat\' title=\'Flat\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/accidFlat.png' + '\' class=\'image\'/></button></p>'+
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'natural\' class=\'button insertel smallel\' aria-label=\'Natural\' title=\'Natural\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/accidNatural.png' + '\' class=\'image\'/></button></p>' + 
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'divLineMaxima\' class=\'button insertel smallel\' aria-label=\'DivLine Maxima\' title=\'DivLine Maxima\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/divisio.png' + '\' class=\'image\'/></button></p>' ,
-  groupingTab: '<p class=\'control\'>' +
+  groupingTab: '<p class=\'insert-element-container\'>' +
         '<button id=\'pes\' class=\'button insertel smallel\' aria-label=\'pes\' title=\'pes\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/pes.png' + '\' class=\'image\'/></button></p>' +
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'clivis\' class=\'button insertel smallel\' aria-label=\'clivis\' title=\'clivis\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/clivis.png' + '\' class=\'image\'/></button></p>' +
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'scandicus\' class=\'button insertel smallel\' aria-label=\'scandicus\' title=\'scandicus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/scandicus.png' + '\' class=\'image\'/></button></p>' +
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'climacus\' class=\'button insertel smallel\' aria-label=\'climacus\' title=\'climacus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/climacus.png' + '\' class=\'image\'/></button></p>' +
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'torculus\' class=\'button insertel smallel\' aria-label=\'toculus\' title=\'toculus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/torculus.png' + '\' class=\'image\'/></button></p>' +
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'porrectus\' class=\'button insertel smallel\' aria-label=\'porrectus\' title=\'porrectus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/porrectus.png' + '\' class=\'image\'/></button></p>' +
-        '<p class=\'control\'>' +
+        '<p class=\'insert-element-container\'>' +
         '<button id=\'pressus\' class=\'button insertel smallel\' aria-label=\'pressus\' title=\'pressus\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/pressus.png' + '\' class=\'image\'/></button></p>',
-  systemTab: '<p class=\'control\'>' +
+  systemTab: '<p class=\'insert-element-container\'>' +
         '<button id=\'staff\' class=\'button insertel longel\' aria-label=\'system\' title=\'system\'><img src=\'' + __ASSET_PREFIX__ + 'assets/img/staff.png' + '\' class=\'image\' /></button></p>' +
         '<p>Click upper left and lower right corners of new staff.</p>'
-  // divisionTab: "<p class='control'>" +
+  // divisionTab: "<p class='insert-element-container'>" +
   //     "<button id='smallDiv' class='button insertel tallel'><img src='" + __ASSET_PREFIX__ + 'assets/img/smalldiv.png' + "' class='image'/></button></p>" +
-  //     "<p class='control'>" +
+  //     "<p class='insert-element-container'>" +
   //     "<button id='minorDiv' class='button insertel tallel'><img src='" + __ASSET_PREFIX__ + 'assets/img/minordiv.png' +"' class='image'/></button></p>" +
-  //     "<p class='control'>" +
+  //     "<p class='insert-element-container'>" +
   //     "<button id='majorDiv' class='button insertel tallel'><img src='" + __ASSET_PREFIX__ + 'assets/img/majordiv.png' + "' class='image'/></button></p>" +
-  //     "<p class='control'>" +
+  //     "<p class='insert-element-container'>" +
   //     "<button id='finalDiv' class='button insertel tallel'><img src='" + __ASSET_PREFIX__ + 'assets/img/finaldiv.png' + "' class='image'/></button></p>"
 };
 
@@ -65,14 +65,14 @@ export const insertTabHtml: Record<string, string> = {
 export const insertControlsPanel: string =
     '<p class=\'panel-heading\' id=\'insertMenu\'>INSERT' +
     '<svg class=\'icon is-pulled-right\'><use id=\'toggleInsert\' xlink:href=\'' + __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down\'></use></svg></p>' +
+		'<div class="panel-content-subsection first-subsection">' +
     '<div id=\'insertContents\' class="panel-contents" style=\'overflow-y: hidden;\'>' +
     '<p class=\'panel-tabs\'>' +
     '<a id=\'primitiveTab\' class=\'insertTab\'>Primitive Elements</a>' +
     '<a id=\'groupingTab\' class=\'insertTab\'>Grouping</a>' +
     '<a id=\'systemTab\' class=\'insertTab\'>System</a></p>' +
     // "<a id='divisionTab' class='insertTab'>Division</a></p>" +
-    '<a class=\'panel-block has-text-centered\'>' +
-    '<div id=\'insert_data\' class=\'field is-grouped buttons\'></div></a></div>';
+    '<div id=\'insert_data\'></div></div></div>';
 
 /**
  * Contents of edit panel with buttons.
@@ -276,33 +276,44 @@ export const clefActionContents: string =
  * HTML for grouping selection menu.
  */
 export const groupingMenu = {
-  nc: '<div class=\'field is-grouped\'>' +
-        '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'groupNcs\'>Group Neume Components</button>' +
-        '<button class=\'button\' id=\'delete\'>Delete</button></p></div>',
-  neume: '<div class=\'field is-grouped\'>' +
-        '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'groupNeumes\'>Group Neumes</button>' +
-        '<button class=\'button\' id=\'delete\'>Delete</button></p></div>',
-  syl: '<div class=\'field is-grouped\'>' +
-        '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'mergeSyls\'>Merge Syllables</button>' +
-        '<button class=\'button\' id=\'delete\'>Delete</button>' +
-        '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>',
-  ligatureNc: '<div class=\'field is-grouped\'>' +
-        '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'groupNcs\'>Group Neume Components</button></p></div>' +
-        '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'toggle-ligature\'>Toggle Ligature</button>' +
-        '<button class=\'button\' id=\'delete\'>Delete</button></p></div></div>',
-  ligature: '<div class=\'field is-grouped\'>' +
-        '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'toggle-ligature\'>Toggle Ligature</button>' +
-        '<button class=\'button\' id=\'delete\'>Delete</button></p></div></div>',
-  splitSyllable: '<div class=\'field is-grouped\'>' +
-        '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'toggle-link\'>Toggle Linked Syllables</button>' +
-        '<button class=\'button\' id=\'delete\'>Delete</button></p></div></div>'
+  nc: `<div class="field is-grouped">
+				<div class="more-edit-btn panel-btn">
+						<button class="button more-edit-btn" id="groupNcs">Group Neume Components</button>
+						<button class="button" id="delete">Delete</button>
+				</div>
+      </div>`,
+  neume: `<div class="field is-grouped">
+        		<div class="more-edit-btn panel-btn">
+        			<button class="button" id="groupNeumes">Group Neumes</button>
+        			<button class="button" id="delete">Delete</button>
+						</div>
+					</div>`,
+  syl: `<div class="field is-grouped">
+        	<div class="more-edit-btn panel-btn">
+        		<button class="button" id="mergeSyls">Merge Syllables</button>
+        		<button class="button" id="delete">Delete</button>
+        		<button class="button" id="changeStaff">Re-associate to nearest staff</button>
+					</div>
+				</div>`,
+  ligatureNc: `<div class="field is-grouped">
+        				<div class="more-edit-btn panel-btn">
+        					<button class="button" id="groupNcs">Group Neume Components</button>
+        					<button class="button" id="toggle-ligature">Toggle Ligature</button>
+        					<button class="button" id="delete">Delete</button>
+								</div>
+							</div>`,
+  ligature: `<div class="field is-grouped">
+							 		<div class="more-edit-btn panel-btn">
+        						<button class="button" id="toggle-ligature">Toggle Ligature</button>
+        						<button class="button" id="delete">Delete</button>
+									</div>
+							</div>`,
+  splitSyllable: `<div class="field is-grouped">
+											<div class="more-edit-btn panel-btn">
+        								<button class="button" id="toggle-link">Toggle Linked Syllables</button>
+        								<button class="button" id="delete">Delete</button>
+											</div>
+									</div>`
 };
 
 
