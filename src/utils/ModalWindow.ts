@@ -1,9 +1,8 @@
 import NeonView from '../NeonView';
-import { SetTextAction } from '../Types';
+import { HTMLSVGElement, SetTextAction } from '../Types';
 import { ModalWindowInterface } from '../Interfaces';
 import { hotkeysModal, editTextModal } from '../SquareEdit/Contents';
-
-
+import { selectBBox, unselect } from './SelectTools';
 
 /**
  * Defines modal types.
@@ -88,6 +87,7 @@ export class ModalWindow implements ModalWindowInterface {
   }
 
 
+
   /**
    * Hide the Neon modal window
    */
@@ -100,6 +100,11 @@ export class ModalWindow implements ModalWindowInterface {
 
       default:
         document.getElementById('neon-modal-window-container').style.display = 'none';
+      
+        // after the modal is closed, no keyboard shortcuts work because
+        // the document hasn't been focused; this forcefully focuses the
+        // container
+        document.getElementById('container').focus();
     } 
     this.modalWindowState = ModalWindowState.CLOSED;
   }
@@ -109,7 +114,7 @@ export class ModalWindow implements ModalWindowInterface {
    * Set content of modal window
    */
   private setModalWindowContent(): void {
-    switch(this.modalWindowView) {
+    switch (this.modalWindowView) {
       case ModalWindowView.EDIT_TEXT:
         document.getElementById('neon-modal-window-content-container').innerHTML = editTextModal;
 
@@ -162,17 +167,31 @@ export class ModalWindow implements ModalWindowInterface {
     this.focusModalWindow();
   };
 
+  /**
+   * Update the bounding box selected when the edit text modal has been clicked 
+   */
+  updateSelectedBBox = function (span: HTMLSpanElement): void {
+    unselect();
+
+    const bboxId = Array.from(span.classList).find(e => e !== 'text-select' && e !== 'selected-to-edit');
+
+    if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
+      if (document.getElementById(bboxId)) {
+        const displayRect = document.getElementById(bboxId).querySelector('.sylTextRect-display') as HTMLSVGElement;
+        selectBBox(displayRect, this.dragHandler, this.neonView);
+      }
+    }
+  };
 
   /**
    * Update text of selected-to-edit syllables with user-provided text
    */
-  private updateSylText = function(): void {
+  private updateSylText = function () {
     // span and current text of selected-to-edit syllable and filter out unwanted chars
     const span = <HTMLSpanElement> document.getElementById('syl_text').querySelectorAll('p>span.selected-to-edit')[0];
+
     const removeSymbol = /\u{25CA}/u;
     const orig = span.textContent.replace(removeSymbol, '').trim();
-    
-
     const updatedSylText = (<HTMLInputElement> document.getElementById('neon-modal-window-edit-text-input')).value;
 
     if (updatedSylText !== null && updatedSylText !== orig) {
@@ -186,9 +205,15 @@ export class ModalWindow implements ModalWindowInterface {
         },
       };
       // send action to verovio for processing
-      this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then((response) => {
+      this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then((response: boolean) => {
         if (response) {
-          this.neonView.updateForCurrentPage();
+          // update the SVG
+          this.neonView.updateForCurrentPage().then(() => {
+            // An update to the page will reload the entire svg;
+            // We would like to then reselect the same selected syllable
+            // if bboxes are enabled
+            this.updateSelectedBBox(span);
+          });
         }
       });
     }
