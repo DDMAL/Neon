@@ -15,7 +15,7 @@ class SingleView implements ViewInterface {
   private updateCallbacks: Array<() => void>;
   private group: SVGSVGElement;
   private bg: SVGImageElement;
-  private mei: SVGSVGElement;
+  private svg: SVGSVGElement;
   zoomHandler: ZoomHandler;
   private displayPanel: DisplayPanel;
   readonly pageURI: string;
@@ -55,12 +55,13 @@ class SingleView implements ViewInterface {
       reader.readAsDataURL(blob);
     });
 
-    this.mei = document.createElementNS('http://www.w3.org/svg', 'svg') as SVGSVGElement;
-    this.mei.id = 'mei_output';
-    this.mei.classList.add('neon-container', 'active-page');
+    // It is better named svg, to avoid confusion with the actual MEI file.
+    this.svg = document.createElementNS('http://www.w3.org/svg', 'svg') as SVGSVGElement;
+    this.svg.id = 'mei_output';
+    this.svg.classList.add('neon-container', 'active-page');
 
     this.group.appendChild(this.bg);
-    this.group.appendChild(this.mei);
+    this.group.appendChild(this.svg);
     this.container.appendChild(this.group);
 
     this.zoomHandler = new ZoomHandler();
@@ -79,12 +80,12 @@ class SingleView implements ViewInterface {
    * @param svg - New rendered SVG to use.
    */
   updateSVG (svg: SVGSVGElement): void {
-    this.group.replaceChild(svg, this.mei);
-    this.mei = svg;
-    this.mei.id = 'mei_output';
-    this.mei.classList.add('neon-container', 'active-page');
-    const height = parseInt(this.mei.getAttribute('height'));
-    const width = parseInt(this.mei.getAttribute('width'));
+    this.group.replaceChild(svg, this.svg);
+    this.svg = svg;
+    this.svg.id = 'mei_output';
+    this.svg.classList.add('neon-container', 'active-page');
+    const height = parseInt(this.svg.getAttribute('height'));
+    const width = parseInt(this.svg.getAttribute('width'));
 
     this.bg.setAttribute('height', height.toString());
     this.bg.setAttribute('width', width.toString());
