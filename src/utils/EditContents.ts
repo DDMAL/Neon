@@ -6,8 +6,10 @@
 export const navbarDropdownFileMenu: HTMLDivElement = document.createElement('div');
 navbarDropdownFileMenu.classList.add('navbar-item', 'has-dropdown', 'is-hoverable');
 const fileDropdownBtn = document.createElement('div');
-fileDropdownBtn.classList.add('navbar-link');
-fileDropdownBtn.textContent = 'File';
+fileDropdownBtn.classList.add('navbar-btn');
+fileDropdownBtn.innerHTML = 
+  `<div>File</div>
+  <img class="navbar-dropdown-icon" src="/Neon/assets/img/dropdown_icon_white.svg">`;
 const fileNavbarContents = document.createElement('div');
 fileNavbarContents.classList.add('navbar-dropdown');
 fileNavbarContents.id = 'navbar-dropdown-options';
@@ -19,9 +21,9 @@ const fileDropdownContents = [
 ];
 
 fileDropdownContents.forEach(content => {
-  const item = document.createElement('a');
+  const item = document.createElement('div');
   item.id = content[0];
-  item.classList.add('navbar-item');
+  item.classList.add('navbar-dropdown-item');
   item.textContent = content[1];
   fileNavbarContents.appendChild(item);
 });
@@ -33,8 +35,10 @@ navbarDropdownFileMenu.appendChild(fileNavbarContents);
 export const navbarDropdownMEIActionsMenu: HTMLDivElement = document.createElement('div');
 navbarDropdownMEIActionsMenu.classList.add('navbar-item', 'has-dropdown', 'is-hoverable');
 const meiActionsDropdownBtn = document.createElement('div');
-meiActionsDropdownBtn.classList.add('navbar-link');
-meiActionsDropdownBtn.textContent = 'MEI Actions';
+meiActionsDropdownBtn.classList.add('navbar-btn');
+meiActionsDropdownBtn.innerHTML = 
+  `<div>MEI Actions</div>
+  <img class="navbar-dropdown-icon" src="/Neon/assets/img/dropdown_icon_white.svg">`;
 const meiActionsNavbarContents = document.createElement('div');
 meiActionsNavbarContents.classList.add('navbar-dropdown');
 meiActionsNavbarContents.id = 'navbar-dropdown-options';
@@ -45,9 +49,9 @@ const meiActionsDropdownContents = [
 ];
 
 meiActionsDropdownContents.forEach(content => {
-  const item = document.createElement('a');
+  const item = document.createElement('div');
   item.id = content[0];
-  item.classList.add('navbar-item');
+  item.classList.add('navbar-dropdown-item');
   item.textContent = content[1];
   meiActionsNavbarContents.appendChild(item);
 });
@@ -59,13 +63,11 @@ navbarDropdownMEIActionsMenu.appendChild(meiActionsNavbarContents);
  * Finalize option in the navbar for rodan
  */
 export const navbarFinalize =
-    '<a id=\'finalize\' class=\'navbar-item\'> Finalize MEI </a>';
+    '<a id="finalize" class="navbar-item"> Finalize MEI </a>';
 
 /**
  * Contents of the undo/redo panel with buttons
  */
-export const undoRedoPanel: string =
-    '<div class=\'field has-addons buttons\' style=\'overflow-x: auto;\'>' +
-    '<p class=\'control\'>' +
-    '<button class=\'button\' id=\'undo\'>Undo</button>' +
-    '<button class=\'button\' id=\'redo\'>Redo</button></p></a></div>';
+export const undoRedoPanel =
+  `<button class="side-panel-btn" id="undo">Undo</button>
+  <button class="side-panel-btn" id="redo">Redo</button>`;

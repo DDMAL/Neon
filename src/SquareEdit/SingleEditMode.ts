@@ -1,4 +1,4 @@
-import { bindInsertTabs, initInsertEditControls, initEditModeControls, initSelectionButtons } from './Controls';
+import { bindInsertTabs, initInsertEditControls, initSelectionButtons } from './Controls';
 import { setHighlightSelectionControls } from '../DisplayPanel/DisplayControls';
 import { initUndoRedoPanel } from '../utils/EditControls';
 import * as Select from '../utils/Select';
@@ -7,6 +7,9 @@ import NeonView from '../NeonView';
 import * as SelectOptions from './SelectOptions';
 import DragHandler from '../utils/DragHandler';
 import { NeumeEditInterface } from '../Interfaces';
+import * as Contents from './Contents';
+import { undoRedoPanel } from '../utils/EditContents';
+import { initNavbar } from '../utils/EditControls';
 
 /**
  * An Edit Module for a single page of a manuscript.
@@ -22,13 +25,29 @@ class SingleEditMode implements NeumeEditInterface {
    */
   constructor (neonView: NeonView) {
     this.neonView = neonView;
-    initEditModeControls(this);
+    this.initEditMode();
   }
 
   /**
-   * Initialize the start of edit mode when first leaving viewer mode.
+   * Initialize Edit mode (default).
    */
   initEditMode (): void {
+
+    initNavbar(this.neonView);
+
+    const selectionHighlight = document.createElement('a');
+    const divider = document.createElement('hr');
+    divider.classList.add('dropdown-divider');
+    selectionHighlight.classList.add('dropdown-item');
+    selectionHighlight.id = 'highlight-selection';
+    selectionHighlight.textContent = 'By Selection Mode';
+    (document.getElementsByClassName('dropdown-content'))[0].appendChild(divider);
+    (document.getElementsByClassName('dropdown-content'))[0].appendChild(selectionHighlight);
+
+    document.getElementById('insert_controls').innerHTML += Contents.insertControlsPanel;
+    document.getElementById('edit_controls').innerHTML += Contents.editControlsPanel;
+    document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;
+
     this.dragHandler = new DragHandler(this.neonView, '#svg_group');
     this.insertHandler = new InsertHandler(this.neonView, '#svg_group');
     bindInsertTabs(this.insertHandler);
@@ -38,15 +57,9 @@ class SingleEditMode implements NeumeEditInterface {
 
     SelectOptions.initNeonView(this.neonView);
     initInsertEditControls();
-    //const editMenu = document.getElementById('editMenu');
-    //editMenu.style.backgroundColor = '#ffc7c7';
-    //editMenu.style.fontWeight = 'bold';
-
     initSelectionButtons();
     initUndoRedoPanel(this.neonView);
-
     setHighlightSelectionControls();
-
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
   }
 

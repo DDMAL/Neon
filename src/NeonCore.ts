@@ -128,10 +128,10 @@ class NeonCore {
                     body: annotation.body,
                     target: annotation.target
                   });
-                  res();
+                  res('');
                 }).catch(err => {
                   console.error(err);
-                  res();
+                  res('');
                 });
               });
             });
@@ -374,7 +374,7 @@ class NeonCore {
             mei = evt.data.mei;
             evt.target.removeEventListener('message', handle);
             Validation.sendForValidation(mei);
-            resolve();
+            resolve('');
           }
         });
         this.verovioWrapper.postMessage(message);
@@ -388,7 +388,7 @@ class NeonCore {
           if (evt.data.id === message.id) {
             svgText = evt.data.svg;
             evt.target.removeEventListener('message', handle);
-            resolve();
+            resolve('');
           }
         });
         this.verovioWrapper.postMessage(message);

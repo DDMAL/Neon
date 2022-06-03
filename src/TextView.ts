@@ -25,12 +25,10 @@ class TextView implements TextViewInterface {
     const bboxLabel = document.createElement('label');
     const textButton = document.createElement('input');
     const bboxButton = document.createElement('input');
-    textLabel.classList.add('checkbox');
-    bboxLabel.classList.add('checkbox');
+    textLabel.classList.add('checkbox', 'side-panel-btn');
+    bboxLabel.classList.add('checkbox', 'side-panel-btn');
     textLabel.textContent = 'Text: ';
     bboxLabel.textContent = 'BBoxes: ';
-    textButton.classList.add('checkbox');
-    bboxButton.classList.add('checkbox');
     textButton.id = 'displayText';
     textButton.type = 'checkbox';
     bboxButton.id = 'displayBBox';

@@ -21,7 +21,7 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
   if (handleZoom !== undefined) {
     contents += `
         <div class="slider-container display-panel" style="cursor: default">
-          <button class="button" id="reset-zoom">Zoom</button>
+          <button class="side-panel-btn slider-btn" id="reset-zoom">Zoom</button>
           <input type="range"
             step="5" min="25" max="400" value="100"
             aria-labelledby="reset-zoom"
@@ -36,7 +36,7 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
   }
   contents += `
         <div class="slider-container display-panel" style="cursor: default">
-          <button class="button" id="reset-opacity">Glyph Opacity</button>
+          <button class="side-panel-btn slider-btn" id="reset-opacity">Glyph Opacity</button>
           <input type="range"
             step="5" min="0" max="100" value="100"
             aria-labelledby="reset-opacity"
@@ -49,7 +49,7 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
         </div>
         
         <div class="slider-container display-panel" style="cursor: default">
-          <button class="button" id="reset-bg-opacity">Image Opacity</button>
+          <button class="side-panel-btn slider-btn" id="reset-bg-opacity">Image Opacity</button>
           <input type="range"
             step="5" min="0" max="100" value="100"
             aria-labelledby="reset-bg-opacity"

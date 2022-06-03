@@ -3,9 +3,9 @@
 </div>
 <nav class="navbar is-light">
   <div class="navbar-brand">
-    <a class="navbar-item" id="home-link">
+    <a class="navbar-btn" id="home-link">
       <!-- <p>Neon</p> -->
-      <img src="/Neon/assets/img/Neon_Icon.svg">
+      <img src="/Neon/assets/img/Neon_Icon_3.svg">
     </a>
     <a class="navbar-burger" id="burgerMenu" role="button" aria-label="menu" aria-expanded="false">
       <span aria-hidden="true"></span>
@@ -14,29 +14,81 @@
     </a>
   </div>
   <div class="navbar-menu" id="navMenu">
+
     <div class="navbar-start">
-      <div id="dropdown_toggle"></div>
-    </div>
-    <div class="navbar-end">
-      <a class="navbar-item"
-      href="https://forms.gle/vGUpvZKZxGX5QGJZ9" target="_blank">
-        Feedback Form
-      </a>
-      <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">Help</a>
-        <div class="navbar-dropdown is-right">
-          <a class="navbar-item" href="//github.com/DDMAL/Neon/wiki/Instructions" target="_blank">User Guide</a>
-          <a class="navbar-item" href="//github.com/DDMAL/Neon/wiki" target="_blank">Wiki</a>
-          <a class="navbar-item" href="//ddmal.music.mcgill.ca" target="_blank">DDMAL</a>
-          <a class="navbar-item" id="navbar-item-hotkeys">Hotkeys</a>
-          <a class="navbar-item" id="neon-version"></a>
+
+      <div class="navbar-main-content-container" id="navbar-main-content-container-top">
+        <div>filename.mei</div>
+        <div>status of file</div>
+      </div>
+
+      <div class="navbar-main-content-container" id="navbar-main-content-container-bottom">
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-btn">
+            <div>File</div>
+            <img class="navbar-dropdown-icon" src="/Neon/assets/img/dropdown_icon_white.svg">
+          </div>
+
+          <div class="navbar-dropdown" id="navbar-dropdown-options">
+            <div id="save" class="navbar-dropdown-item">Save</div>
+            <div id="export" class="navbar-dropdown-item">Save and Export to File</div>
+            <div id="getmei" class="navbar-dropdown-item">Download MEI</div>
+          </div>   
         </div>
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-btn">
+            <div>MEI Actions</div>
+            <img class="navbar-dropdown-icon" src="/Neon/assets/img/dropdown_icon_white.svg">
+          </div>
+          <div class="navbar-dropdown" id="navbar-dropdown-options">
+            <div id="remove-empty-syls" class="navbar-dropdown-item">Remove Empty Syllables</div>
+            <div id="remove-empty-neumes" class="navbar-dropdown-item">Remove Empty Neumes</div>
+            <div id="revert" class="navbar-dropdown-item">Revert</div>
+          </div>
+        </div>
+
+      
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-btn">
+            <div>Help</div>
+            <img class="navbar-dropdown-icon" src="/Neon/assets/img/dropdown_icon_white.svg">
+          </div>
+          <div class="navbar-dropdown">
+            <div class="navbar-dropdown-item">
+              <a class="navbar-dropdown-link" href="//github.com/DDMAL/Neon/wiki/Instructions" target="_blank">User Guide</a>
+              <img class="external-link-icon" src="/Neon/assets/img/external-link.svg">
+            </div>
+            <div class="navbar-dropdown-item">
+              <a class="navbar-dropdown-link" href="//github.com/DDMAL/Neon/wiki" target="_blank">Wiki</a>
+              <img class="external-link-icon" src="/Neon/assets/img/external-link.svg">
+            </div>
+            <div class="navbar-dropdown-item">
+              <a class="navbar-dropdown-link" href="//ddmal.music.mcgill.ca" target="_blank">DDMAL</a>
+              <img class="external-link-icon" src="/Neon/assets/img/external-link.svg">
+            </div>
+            <div class="navbar-dropdown-item">
+              <div id="navbar-item-hotkeys">Hotkeys</div>
+            </div>
+            <div class="navbar-dropdown-item">
+              <div id="neon-version"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-btn">
+        <a href="https://forms.gle/vGUpvZKZxGX5QGJZ9" target="_blank">Feedback Form</a>
+        <img class="external-link-icon" src="/Neon/assets/img/external-link.svg">
       </div>
     </div>
   </div>
 </nav>
 
-<div class="columns">
+<div id="editor-body-container">
   <div id="notification-content" style="display:none;"></div>
   <div id="left-column">
     <div id="container"></div>

@@ -4,20 +4,7 @@ import * as Contents from './Contents';
 import { setGroupingHighlight } from '../utils/Color';
 import { unselect } from '../utils/SelectTools';
 import InsertHandler from './InsertHandler';
-import { NeumeEditInterface } from '../Interfaces';
-import { undoRedoPanel } from '../utils/EditContents';
 
-/**
- * Set listener on EditMode button.
- */
-export function initEditModeControls (editMode: NeumeEditInterface): void {
-  document.getElementById('edit_mode').addEventListener('click', function () {
-    document.getElementById('insert_controls').innerHTML += Contents.insertControlsPanel;
-    document.getElementById('edit_controls').innerHTML += Contents.editControlsPanel;
-    document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;
-    editMode.initEditMode();
-  });
-}
 
 /**
  * Bind listeners to insert tabs.'

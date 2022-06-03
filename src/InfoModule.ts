@@ -56,10 +56,9 @@ class InfoModule implements InfoInterface {
     // Add info box enable/disable check box
     const checkboxesContainer = document.getElementById('checkbox-display-options');
     const label = document.createElement('label');
-    label.classList.add('checkbox');
+    label.classList.add('checkbox', 'side-panel-btn');
     label.textContent = 'Info: ';
     const input = document.createElement('input');
-    input.classList.add('checkbox');
     input.id = 'displayInfo';
     input.type = 'checkbox';
     input.checked = false;

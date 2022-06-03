@@ -35,10 +35,12 @@ export class ModalWindow implements ModalWindowInterface {
    * Set neonView instance context for this modal window instance.
    * @param neonView neonView context for Modal instance
    */
-  constructor (neonView: NeonView) {
+  constructor (neonView?: NeonView) {
     this.neonView = neonView;
     this.modalWindowState = ModalWindowState.CLOSED;
   }
+
+
 
 
   /**

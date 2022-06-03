@@ -18,15 +18,127 @@ body {
     font-family: Montserrat, sans-serif !important;
     padding: 0px;
     margin: 0px;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: inherit;
+}
+
+a:hover {
+    color: inherit
 }
 
 .navbar.is-light {
     height: 5%;
-    border-bottom: 1px solid #0062ff;
-    background-color: white;
+    /* border-bottom: 1px solid #8ed2ff; */
+    background-color: #8CC0DE;
 }
 
-.columns {
+.navbar-menu {
+    color: white;
+}
+
+.navbar-start {
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar-main-content-container {
+    display: flex;
+    flex-direction: row;
+    height: 50%;
+}
+
+#navbar-main-content-container-top {
+
+}
+
+#navbar-main-content-container-bottom {
+}
+
+.navbar-item.has-dropdown.is-hoverable {
+    color: white;
+    background-color: #8cc0de;
+}
+
+
+.navbar-item.has-dropdown.is-hoverable:hover {
+    background-color: #ecffff !important;
+    color: #8cc0de !important;
+}
+
+#home-link {
+    transform: scale(0.5);
+}
+
+.navbar-btn {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.navbar-btn::after {
+    content: '';
+    background: url(../assets/img/dropdown_icon.svg);
+}
+
+.navbar-item {
+    color: white !important;
+    cursor: pointer;
+}
+
+.navbar-dropdown-item {
+    color: #8cc0de;
+    width: 100%;
+    padding: 10px;
+    padding-right: 15px;
+    padding-left: 15px;
+    white-space: nowrap;
+    font-family: Montserrat, sans-serif !important;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-dropdown-item:hover {
+    color: #ecffff;
+    background-color: #8cc0de;
+}
+
+.navbar-item:hover, .navbar-btn:hover {
+    background-color: #ecffff;
+    color: #8cc0de;
+}
+
+.external-link-icon {
+    margin-left: 10px;
+    transform: scale(0.8);
+}
+
+.navbar-dropdown-link {
+    color: inherit;
+}
+
+.navbar-dropdown-link:hover {
+    color: white;
+}
+
+.navbar-dropdown-icon {
+    margin-left: 10px;
+    display: none;
+}
+
+.navbar-dropdown {
+    border-top: 2px solid #8cc0de;
+    box-shadow: 0px 7px 10px 2px #00000052;
+    min-width: 13vw;
+}
+
+#editor-body-container {
     overflow: hidden;
     height: 95%;
     margin: 0;
@@ -43,6 +155,7 @@ body {
     width: 30%;
     padding: 0px;
     border-left: 1px solid #c4dafd;
+    border-bottom: 0px;
 }
 
 #left-column {
@@ -72,7 +185,7 @@ body {
     padding: 0.5em 0.75em;
     border-radius: 0px;
     border-top: 0px;
-    color: #3273dc;
+    color: #98c1ff;
     background-color: white;
     border: 0px !important;
     border-bottom: 1px solid #c4dafd !important;
@@ -119,6 +232,7 @@ body {
     align-items: center;
     justify-content: flex-start;
     width: 100%;
+    margin-bottom: 10px;
 }
 
 .panel-block {
@@ -160,6 +274,41 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+
+#selection-mode-btns-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.side-panel-btn {
+    background-color: white;
+    color: #434343;;
+    padding: 10px;
+    outline: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Montserrat, sans-serif;
+    border: 1px solid #dbdbdb;
+}
+
+.slider-btn {
+    padding: 10px 5px;
+    width: 30%;
+    font-size: 14px;
+}
+
+.side-panel-btn:hover {
+    border: 1px solid #c6c6c6;
+}
+
+.sel-by {
+    margin: 3px;
+}
+
+.side-panel-btn.sel-by.is-active {
+    border: 1px solid #8CC0DE;
 }
 
 .panel-tabs {
@@ -235,10 +384,6 @@ body {
     height: 80px;
 }
 
-.button {
-    margin: 0px !important;
-}
-
 .button.is-active {
     background-color: whitesmoke;
 }
@@ -257,14 +402,27 @@ button:focus {
     position: fixed;
 }
 
+
+@keyframes slideInFromLeft {
+    from {
+        transform: translateX(-20vh);
+    }
+    to {
+        transform: translateX(0vh);
+    }
+}
+
 .neon-notification {
-    padding: 0.4rem;
+    padding: 0.6rem;
     margin: 0.5rem;
-    background: #f5f5f577; /* whitesmoke with opacity */
-    border: 0.05rem solid;
-    border-radius: 1rem;
+    background: #dae9ff; /* whitesmoke with opacity */
+    border: 1px solid #1c4b91;
+    color: #1c4b91;
+    border-radius: 4px;
     z-index: 8;
     cursor: pointer;
+    transform: translateX(-5vh);
+    animation: slideInFromLeft 0.2s ease-in-out 0s forwards;
 }
 
 .overlay {
@@ -368,7 +526,7 @@ button:focus {
     width: 100%;
     padding-left: 20px;
     padding-right: 20px;
-    background-color: #3273dc;
+    background-color: #98c1ff;
     color: white;
     font-weight: bold;
     display: flex;
@@ -459,7 +617,7 @@ button:focus {
     width: 100%;
 }
 .neon-modal-window-btn {
-    background-color: #3273dc;
+    background-color: #98c1ff;
     color: white;
     cursor: pointer;
     padding: 5px;

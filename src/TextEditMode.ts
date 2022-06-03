@@ -57,20 +57,9 @@ export default class TextEditMode implements TextEditInterface {
    */
   constructor (neonView: NeonView) {
     this.neonView = neonView;
-    this.initEditModeControls();
+    this.initTextEdit();
   }
 
-  /**
-   * Set listener on edit mode button to start editing.
-   */
-  initEditModeControls (): void {
-    document.getElementById('edit_mode').addEventListener('click', () => {
-      this.initTextEdit();
-      if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
-        this.initSelectByBBoxButton();
-      }
-    });
-  }
 
   /**
   * Set text to edit mode
@@ -105,17 +94,12 @@ export default class TextEditMode implements TextEditInterface {
         return;
       }
 
-      const block = document.getElementById('selBySyl')
-        .closest('.control')
-        .closest('.field');
-      const p = document.createElement('p');
-      p.classList.add('control');
+      const block = document.getElementById('selection-mode-btns-container');
       const button = document.createElement('button');
-      button.classList.add('button', 'sel-by');
+      button.classList.add('side-panel-btn', 'sel-by');
       button.id = 'selByBBox';
       button.textContent = 'BBox';
-      p.appendChild(button);
-      block.appendChild(p);
+      block.appendChild(button);
       button.addEventListener('click', selBySylListener.bind(this));
       document.body.addEventListener('keydown', (evt) => {
         if (evt.key === '6') {

@@ -87,22 +87,14 @@ export const editControlsPanel =
     <div class="panel-content-subsection first-subsection">
         <div id="selection-mode-container">
             <div class="panel-sub-title">Selection Mode:</div>
-            <div class="field has-addons buttons" style="overflow-x: auto;">
-                <p class="control">
-                    <button class="button sel-by is-active" id="selBySyl">Syllable</button>
-                </p>
-                <p class="control">
-                    <button class="button sel-by" id="selByNeume">Neume</button>
-                </p>
-                <p class="control">
-                    <button class="button sel-by" id="selByNc">Neume Component</button>
-                </p>
-                <p class="control">
-                    <button class="button sel-by" id="selByStaff">Staff</button>
-                    </p>
-                <p class="control">
-                    <button class="button sel-by" id="selByLayerElement">Layer Element</button>
-                </p>
+            <div id="selection-mode-btns-container" style="overflow-x: auto;">
+                
+                    <button class="side-panel-btn sel-by is-active" id="selBySyl">Syllable</button>
+                    <button class="side-panel-btn sel-by" id="selByNeume">Neume</button>
+                    <button class="side-panel-btn sel-by" id="selByNc">Neume Component</button>
+                    <button class="side-panel-btn sel-by" id="selByStaff">Staff</button>
+                    <button class="side-panel-btn sel-by" id="selByLayerElement">Layer Element</button>
+                
             </div>
         </div>
     </div>
