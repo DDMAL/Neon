@@ -8,7 +8,7 @@ function updateUI (message: { data: string[] }): void {
   const errors = message.data;
   if (errors === null) {
     statusField.textContent = 'VALID';
-    statusField.style.color = 'green';
+    statusField.style.color = '#4bc14b';
     for (const child of statusField.children) {
       child.remove();
     }
