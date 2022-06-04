@@ -33,18 +33,15 @@ function updateUI (message: { data: string[] }): void {
  * for validation MEI.
  */
 export async function init (): Promise<void> {
-  const displayContents = document.getElementById('displayContents');
-  if (displayContents !== null) {
-    const panelBlock = document.createElement('div');
-    panelBlock.classList.add('panel-content-subsection');
+  const fileStatusDiv = document.getElementById('file-status');
+  if (fileStatusDiv !== null) {
     const pNotif = document.createElement('p');
     pNotif.textContent = 'MEI Status: ';
     const span = document.createElement('span');
     span.id = 'validation_status';
     span.textContent = 'unknown';
     pNotif.appendChild(span);
-    panelBlock.appendChild(pNotif);
-    displayContents.appendChild(panelBlock);
+    fileStatusDiv.appendChild(pNotif);
     statusField = document.getElementById('validation_status');
     worker = new Worker(__ASSET_PREFIX__ + 'workers/Worker.js');
     worker.onmessage = updateUI;

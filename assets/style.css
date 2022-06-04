@@ -30,19 +30,28 @@ a:hover {
     color: inherit
 }
 
+
+/* Editor main navbar */
+
 .navbar.is-light {
-    height: 5%;
-    /* border-bottom: 1px solid #8ed2ff; */
-    background-color: #8CC0DE;
+    height: 9vh;
+    border-bottom: 1px solid #7cb1b7;
+    background-color: #f2f2f2;
+    color: black;
 }
 
 .navbar-menu {
-    color: white;
+    color: black;
 }
 
 .navbar-start {
     display: flex;
     flex-direction: column;
+}
+
+.navbar-end {
+    display: flex;
+    align-items: center;
 }
 
 .navbar-main-content-container {
@@ -51,47 +60,79 @@ a:hover {
     height: 50%;
 }
 
-#navbar-main-content-container-top {
-
-}
-
-#navbar-main-content-container-bottom {
-}
-
 .navbar-item.has-dropdown.is-hoverable {
-    color: white;
-    background-color: #8cc0de;
+    color: #68A7AD;
 }
 
 
 .navbar-item.has-dropdown.is-hoverable:hover {
-    background-color: #ecffff !important;
-    color: #8cc0de !important;
+    background-color: #7cb1b7 !important;
+    color: white !important;
+    border-radius: 3px 3px 0px 0px;
 }
 
 #home-link {
     transform: scale(0.5);
 }
 
-.navbar-btn {
+.navbar-brand {
     display: flex;
     align-items: center;
-    padding: 20px;
-    cursor: pointer;
+    height: 100%;
 }
 
-.navbar-btn::after {
-    content: '';
-    background: url(../assets/img/dropdown_icon.svg);
+
+#filename {
+    font-weight: 900;
+    color: #818181;
 }
+
+#file-status {
+    color: #818181;
+}
+
+.navbar-element {
+    display: flex;
+    align-items: center;
+    padding: 0px 1vw;
+    background-color: transparent;
+    padding-right: 1vw;
+    font-weight: lighter;
+    font-size: 16px;
+}
+
+.navbar-element.navbar-btn {
+    cursor: pointer;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.navbar-btn-text {
+    border-radius: 2px;
+}
+
+.navbar-element.navbar-btn:hover {
+    background-color: #7cb1b7;
+    color: white;
+}
+
+#feedback-form-btn-container {
+    margin-right: 10px;
+    color: #7cb1b7;
+    padding: 7px;
+}
+
+#feedback-form-btn-container:hover {
+    color: white;
+}
+
 
 .navbar-item {
-    color: white !important;
     cursor: pointer;
 }
 
 .navbar-dropdown-item {
-    color: #8cc0de;
+    color: #7cb1b7;
     width: 100%;
     padding: 10px;
     padding-right: 15px;
@@ -106,12 +147,12 @@ a:hover {
 
 .navbar-dropdown-item:hover {
     color: #ecffff;
-    background-color: #8cc0de;
+    background-color: #7cb1b7;
 }
 
-.navbar-item:hover, .navbar-btn:hover {
+.navbar-item:hover {
     background-color: #ecffff;
-    color: #8cc0de;
+    color: #7cb1b7;
 }
 
 .external-link-icon {
@@ -133,14 +174,16 @@ a:hover {
 }
 
 .navbar-dropdown {
-    border-top: 2px solid #8cc0de;
+    border-top: 1px solid #7cb1b7;
     box-shadow: 0px 7px 10px 2px #00000052;
     min-width: 13vw;
 }
 
+/* Editor main body */
+
 #editor-body-container {
     overflow: hidden;
-    height: 95%;
+    height: 91vh;
     margin: 0;
     display: flex;
     flex-direction: row;
@@ -148,16 +191,6 @@ a:hover {
     justify-content: space-between;
     flex-wrap: nowrap;
 }
-
-#right-column {
-    overflow: scroll;
-    height: 100%;
-    width: 30%;
-    padding: 0px;
-    border-left: 1px solid #c4dafd;
-    border-bottom: 0px;
-}
-
 #left-column {
     display: flex;
     justify-content: center;
@@ -169,7 +202,6 @@ a:hover {
     width: 70%;
     height: 100%;
 }
-
 #container {
     width: 98%;
     height: 98%;
@@ -179,20 +211,30 @@ a:hover {
     overflow: hidden;
 }
 
+
+/* Editor right-hand-side editing actions panel */
+
+#right-column {
+    overflow: scroll;
+    height: 100%;
+    width: 30%;
+    padding: 0px;
+    border-left: 1px solid #c4dafd;
+    border-bottom: 0px;
+}
 .panel-heading {
     font-size: 1.25em;
     line-height: 1.25;
     padding: 0.5em 0.75em;
     border-radius: 0px;
     border-top: 0px;
-    color: #98c1ff;
+    color: #589ed5;
     background-color: white;
     border: 0px !important;
     border-bottom: 1px solid #c4dafd !important;
     cursor: pointer;
     font-weight: 900;
 }
-
 .panel-contents {
     max-height: 500px;
     transition: max-height 0.2s ease-in-out;
@@ -203,14 +245,16 @@ a:hover {
     align-items: flex-start;
     overflow: visible;
 }
-
 .panel-contents.closed {
     max-height: 0px;
     border-bottom: none;
     transition: max-height 0.2s ease-in-out;
     overflow: hidden;
 }
-
+#undoRedo_controls {
+    display: flex;
+    align-items: center;
+}
 .panel-content-subsection {
     width: 100%;
     border-top: 2px solid rgb(232 232 232);
@@ -222,11 +266,9 @@ a:hover {
     margin-top: 0px;
     padding-top: 0px;
 }
-
 .panel-content-subsection.hidden {
     display: none;
 }
-
 .slider-container.display-panel {
     display: flex;
     align-items: center;
@@ -234,7 +276,6 @@ a:hover {
     width: 100%;
     margin-bottom: 10px;
 }
-
 .panel-block {
     align-items: center;
     color: #363636;
@@ -244,15 +285,17 @@ a:hover {
     padding: 0px;
     width: 100%;
 }
-
 #display-options-container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
 }
-
-.checkbox {
+#checkbox-display-options {
+    display: flex;
+    align-items: center;
+}
+.checkbox-container {
     border: 1px solid #dbdbdb;
     cursor: pointer;
     display: inline-block;
@@ -262,26 +305,28 @@ a:hover {
     margin: 5px;
     border-radius: 4px;
 }
-.checkbox:hover {
+.checkbox-container:hover {
     border: 1px solid #c8c8c8;
 }
-
+.checkbox {
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+    margin-left: 15px;
+}
 #highlight-dropdown {
     margin: 5px;
 }
-
 #selection-mode-container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
-
 #selection-mode-btns-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
-
 .side-panel-btn {
     background-color: white;
     color: #434343;;
@@ -291,26 +336,22 @@ a:hover {
     cursor: pointer;
     font-family: Montserrat, sans-serif;
     border: 1px solid #dbdbdb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 3px;
 }
-
 .slider-btn {
     padding: 10px 5px;
     width: 30%;
     font-size: 14px;
 }
-
 .side-panel-btn:hover {
     border: 1px solid #c6c6c6;
 }
-
-.sel-by {
-    margin: 3px;
-}
-
 .side-panel-btn.sel-by.is-active {
-    border: 1px solid #8CC0DE;
+    border: 1px solid #7cb1b7;
 }
-
 .panel-tabs {
     border: none !important;
     align-items: flex-end;
@@ -319,17 +360,14 @@ a:hover {
     justify-content: center;
     width: 100%;
 }
-
-
-
 #displayContents .button {
     width: 10.5em;
 }
-
 #validation_status a {
     color: inherit;
 }
 
+/*
 .container {
     display: flex;
 }
@@ -337,56 +375,42 @@ a:hover {
 .diva-inner {
     cursor: default;
 }
-
+*/
 #display-actions-container {
     display: flex;
     flex-direction: column;
     width: 100%;
 }
-
 #moreEdit {
     overflow: auto;
     padding: 1;
     flex-wrap: wrap;
     flex-direction: column;
 }
-
 #moreEdit, #extraEdit, #neumeEdit {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
-
 #neume-info {
     width: 100%;
 }
-
 .message {
     width: 100%;
 }
-
-.item {
-    order: 1;
-}
-
 .smallel {
     width: 42px;
     height: 42px;
 }
-
 .longel {
     width: 100px;
     height: 42px;
 }
-
 .tallel {
     width: 42px;
     height: 80px;
 }
 
-.button.is-active {
-    background-color: whitesmoke;
-}
 
 button:focus {
     outline:0;
@@ -526,7 +550,7 @@ button:focus {
     width: 100%;
     padding-left: 20px;
     padding-right: 20px;
-    background-color: #98c1ff;
+    background-color: #589ed5;
     color: white;
     font-weight: bold;
     display: flex;
@@ -581,12 +605,22 @@ button:focus {
     margin-top: 2vh;
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
     width: 100%;
+    min-height: 20vh;
 }
 .insert-element-container {
     margin: 0.3vh 0.3vw;
+}
+
+.insertTab {
+    color: #797979 !important;
+}
+
+.insertTab.is-active {
+    border-bottom-color: #7bb1b7 !important;
+    color: #7bb1b7 !important;
 }
 
 
@@ -617,7 +651,7 @@ button:focus {
     width: 100%;
 }
 .neon-modal-window-btn {
-    background-color: #98c1ff;
+    background-color: #589ed5;
     color: white;
     cursor: pointer;
     padding: 5px;
