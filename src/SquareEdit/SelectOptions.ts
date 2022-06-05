@@ -174,7 +174,6 @@ export function changeStaffHandler(): void {
  * Function to handle inserting divisio or accidental into nearest syllable
  */
 export function insertToSyllableHandler(): void {
-  // const toInsert = [];
   const toInsert: EditorAction[] = [];
   const selected = Array.from(document.getElementsByClassName('selected'));
   selected.forEach(elem => {
@@ -196,6 +195,37 @@ export function insertToSyllableHandler(): void {
       Notification.queueNotification('Insert Success');
     } else {
       Notification.queueNotification('Insert Failed XoX');
+    }
+    endOptionsSelection();
+    neonView.updateForCurrentPage(); 
+  });
+}
+
+/**
+ * Function to handle moving divisio or accidental out of syllable
+ */
+export function moveOuttaSyllableHandler(): void {
+  const toMove: EditorAction[] = [];
+  const selected = Array.from(document.getElementsByClassName('selected'));
+  selected.forEach(elem => {
+    toMove.push(
+      {
+        action: 'moveOuttaSyllable',
+        param: {
+          elementId: elem.id
+        }
+      }
+    );
+  });
+  const chainAction: ChainAction = {
+    action: 'chain',
+    param: toMove
+  };
+  neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => { 
+    if (result) {
+      Notification.queueNotification('Move Success');
+    } else {
+      Notification.queueNotification('Move Failed XoX');
     }
     endOptionsSelection();
     neonView.updateForCurrentPage(); 
@@ -656,7 +686,12 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML += Contents.divlineActionContents;
+    if (accid.parentElement.classList.contains('syllable')) {
+      moreEdit.innerHTML += Contents.layereElementInActionContents;
+    }
+    else {
+      moreEdit.innerHTML += Contents.layereElementOutActionContents;
+    }
   } catch (e) {}
 
   try {
@@ -673,6 +708,11 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
   try {
     document.getElementById('insertToSyllable')
       .addEventListener('click', insertToSyllableHandler);
+  } catch (e) {console.debug(e);}
+
+  try {
+    document.getElementById('moveOuttaSyllable')
+      .addEventListener('click', moveOuttaSyllableHandler);
   } catch (e) {console.debug(e);}
 
   document.querySelector('#ChangeToFlat.dropdown-item')
@@ -727,14 +767,19 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
 }
 
 /**
- * Trigger extra accid or divLine actions.
+ * Trigger extra layer element (accid, divLine, custos) actions.
  */
-export function triggerDivLineActions (): void {
+export function triggerLayerElementActions (element: SVGGraphicsElement): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML += Contents.divlineActionContents;
+    if (element.parentElement.classList.contains('syllable')) {
+      moreEdit.innerHTML += Contents.layereElementInActionContents;
+    }
+    else {
+      moreEdit.innerHTML += Contents.layereElementOutActionContents;
+    }
   } catch (e) {}
 
   try {
@@ -752,6 +797,11 @@ export function triggerDivLineActions (): void {
   try {
     document.getElementById('insertToSyllable')
       .addEventListener('click', insertToSyllableHandler);
+  } catch (e) {console.debug(e);}
+
+  try {
+    document.getElementById('moveOuttaSyllable')
+      .addEventListener('click', moveOuttaSyllableHandler);
   } catch (e) {console.debug(e);}
 }
 
