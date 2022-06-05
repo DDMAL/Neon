@@ -52,8 +52,15 @@ export type InsertAction = {
   }
 };
 
-export type InsertToSylAction = {
+export type InsertToSyllableAction = {
   action: 'insertToSyllable',
+  param: {
+    elementId: string
+  }
+};
+
+export type MoveOuttaSyllableAction = {
+  action: 'moveOuttaSyllable',
   param: {
     elementId: string
   }
@@ -168,7 +175,8 @@ export type EditorAction =
   | ResizeAction
   | ResizeRotateAction
   | InsertAction
-  | InsertToSylAction
+  | InsertToSyllableAction
+  | MoveOuttaSyllableAction
   | RemoveAction
   | GroupingAction
   | UngroupingAction

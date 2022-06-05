@@ -198,13 +198,22 @@ export const custosActionContents: string =
     '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
 
 /**
- * Contents of divLine action menu.
+ * Contents of layer element (outside syllable) action menu.
  */
-export const divlineActionContents: string =
+export const layereElementOutActionContents: string =
     '<div><p class=\'control\'>' +
     '<button class=\'button\' id=\'delete\'>Delete</button>' +
     '<button class=\'button\' id=\'insertToSyllable\'>Insert to nearest syllable</button>' + '<br />'+
     '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
+
+/**
+ * Contents of layer element (inside syllable) action menu.
+ */
+export const layereElementInActionContents: string =
+ '<div><p class=\'control\'>' +
+ '<button class=\'button\' id=\'delete\'>Delete</button>' +
+ '<button class=\'button\' id=\'moveOuttaSyllable\'>Move out of syllable</button>' + '<br />'+
+ '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
 
 /**
  * Contents of accid action menu.

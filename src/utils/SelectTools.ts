@@ -370,7 +370,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     } else if (groupsToSelect.size === 1 && groups[0].classList.contains('accid')) {
       SelectOptions.triggerAccidActions(groups[0]);
     } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divLine')) {
-      SelectOptions.triggerDivLineActions();
+      SelectOptions.triggerLayerElementActions(groups[0]);
     }else {
       if (selectionType == 'selBySyl') {
         SelectOptions.triggerDefaultSylActions();
@@ -403,7 +403,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       } else if (groupsToSelect.size === 1 && groups[0].classList.contains('accid')) {
         SelectOptions.triggerAccidActions(groups[0]);
       } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divLine')) {
-        SelectOptions.triggerDivLineActions();
+        SelectOptions.triggerLayerElementActions(groups[0]);
       }else {
         SelectOptions.triggerDefaultActions();
       }
