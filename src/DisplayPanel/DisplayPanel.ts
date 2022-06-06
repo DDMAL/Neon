@@ -67,10 +67,10 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
         <div id="display-options-container">
           <div id="display-options-title" class="panel-sub-title">Display Options:</div>
           <div id="display-options-items">
-            <div id="checkbox-display-options"></div>
+            
             <div class="dropdown" id="highlight-dropdown">
               <div class="dropdown-trigger">
-                <button class="button" id="highlight-button" aria-haspopup="true" aria-controls="highlight-menu" style="width: auto">
+                <button class="side-panel-btn" id="highlight-button" aria-haspopup="true" aria-controls="highlight-menu" style="width: auto">
                   <span>Highlight</span>
                   <span id="highlight-type">&nbsp;- Off</span>
                   <svg class="icon">
@@ -89,6 +89,8 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
                 </div>
               </div>
             </div>
+
+            <div id="checkbox-display-options"></div>
 
           </div>
 

@@ -114,7 +114,7 @@ export default class TextEditMode implements TextEditInterface {
       const p = document.createElement('p');
       p.classList.add('control');
       const button = document.createElement('button');
-      button.classList.add('button', 'sel-by');
+      button.classList.add('side-panel-btn', 'sel-by');
       button.id = 'selByBBox';
       button.textContent = 'BBox';
       p.appendChild(button);

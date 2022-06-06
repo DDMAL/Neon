@@ -537,14 +537,12 @@ export function triggerSylActions (): void {
     moreEdit.classList.remove('is-hidden');
     document.getElementById('moreEdit').parentElement.classList.remove('hidden');
     moreEdit.innerHTML =
-      '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'mergeSyls\'>Merge Syllables</button></p></div>' +
-      '<div><p class=\'control\'>' +
-          '<button class=\'button\' id=\'ungroupNeumes\'>Ungroup</button></p></div>' +
-      '<div><p class=\'control\'>' +
-          '<button class=\'button\' id=\'delete\'>Delete</button></p></div>' +
-      '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
+    `<div class="right-side-panel-btns-container">
+        <button class="side-panel-btn" id="mergeSyls">Merge Syllables</button>
+        <button class="side-panel-btn" id="ungroupNeumes">Ungroup</button>
+        <button class="side-panel-btn" id="delete">Delete</button>
+        <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+      </div>`;
     document.getElementById('changeStaff').addEventListener('click', changeStaffHandler);
   } catch (e) { console.debug(e); }
   try {

@@ -230,7 +230,7 @@ a:hover {
 /* Could use a little clean-up */
 
 #right-column {
-    overflow: scroll;
+    overflow: auto;
     height: 100%;
     width: 30%;
     padding: 0px;
@@ -251,7 +251,7 @@ a:hover {
     font-weight: 900;
 }
 .panel-contents {
-    max-height: 500px;
+    max-height: 60vh;
     transition: max-height 0.2s ease-in-out;
     border-bottom: 1px solid #c4dafd;
     padding: 0.5em 0.75em;
@@ -265,6 +265,9 @@ a:hover {
     border-bottom: none;
     transition: max-height 0.2s ease-in-out;
     overflow: hidden;
+}
+.icon {
+    margin-left: 10px;
 }
 #undoRedo_controls {
     display: flex;
@@ -329,15 +332,18 @@ a:hover {
     height: 15px;
     margin-left: 15px;
 }
-#highlight-dropdown {
-    margin: 5px;
-}
 #selection-mode-container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
-#selection-mode-btns-container {
+.right-side-panel-btns-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#selection-mode-btns-container, #split-system-btns-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -386,26 +392,30 @@ a:hover {
     flex-direction: column;
     width: 100%;
 }
-#moreEdit {
-    overflow: auto;
-    padding: 1;
-    flex-wrap: wrap;
-    flex-direction: column;
-}
 #moreEdit, #extraEdit, #neumeEdit {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
+    align-items: flex-start;
+}
+/* Display Panel */
+#highlight-button {
+    font-family: Montserrat, sans-serif;
+    margin: 0px;
+}
+#highlight-dropdown {
+    margin: 3px;
 }
 /* Insert Panel */
 #insert_data {
     margin-top: 2vh;
     display: flex;
     flex-wrap: wrap;
-    align-items: stretch;
+    align-items: flex-start;
     justify-content: center;
     width: 100%;
-    min-height: 20vh;
+    min-height: 15vh;
+    align-content: flex-start;
 }
 .insert-element-container {
     margin: 0.3vh 0.3vw;
