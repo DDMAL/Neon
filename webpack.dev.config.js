@@ -9,6 +9,7 @@ module.exports = {
   mode: 'development',
   target: 'web',
   entry: {
+    landing: './deployment/server/landing.ts',
     editor: './deployment/server/editor.ts'
   },
   output: {

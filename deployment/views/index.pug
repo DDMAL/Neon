@@ -6,12 +6,10 @@ html
         link(rel='shortcut icon', type='image/x-icon', href='favicon.ico')
         style
             include ./styles/landing.css
-        script(defer=true, type='text/javascript', src='/scripts/landing.js')
+        script(defer=true, type='text/javascript', src='/Neon/landing.js')
 
     body
-        .heading Neon
-        include includes/salzines_sample.pug
-        
+        .heading Neon        
         //- ul
         //-     - for( var i = 0; i < files.length; i++ )
         //-         li
@@ -36,8 +34,6 @@ html
         br
 
         #initial_upload_container 
-            #initial_upload_area(class='drop_area', onclick='handleUploadInitial()')
-                span#initial_upload_message Upload Files
 
         #files_unmatched
             #mei_files_container 
@@ -51,7 +47,7 @@ html
 
             #manuscripts_container 
 
-            #upload_button(onclick='')
+            #upload_button
 
         #message_container
 

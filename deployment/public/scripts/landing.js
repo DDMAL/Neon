@@ -54,7 +54,7 @@ function handleUploadInitial() {
   return false;
 }
 
-function readFile(file) {
-  const reader = new FileReader();
+// function readFile(file) {
+//   const reader = new FileReader();
 
-}
+// }
