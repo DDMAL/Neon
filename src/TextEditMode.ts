@@ -65,7 +65,7 @@ export default class TextEditMode implements TextEditInterface {
   * Set text to edit mode
   */
   initTextEdit (): void {
-    const spans = document.getElementById('syl_text').querySelectorAll('p > span');
+    const spans = document.getElementById('syl_text').querySelectorAll('span');
     const modal = this.neonView.modal;
     spans.forEach(span => {
 

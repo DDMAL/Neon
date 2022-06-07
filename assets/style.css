@@ -33,14 +33,7 @@ a:hover {
 
 
 /* Section: Top Navbar */
-/* Could use a little clean-up */
-
-@media only screen and (max-width: 900px) {
-    #navMenu {
-        position: fixed;
-        height: 100%;
-    }
-}
+/* CSS in here could use a little clean-up */
 
 .navbar.is-light {
     height: 9vh;
@@ -48,58 +41,45 @@ a:hover {
     background-color: #f2f2f2;
     color: black;
 }
-
 .navbar-menu {
     color: black;
 }
-
 .navbar-start {
     display: flex;
     flex-direction: column;
 }
-
 .navbar-end {
     display: flex;
     align-items: center;
 }
-
 .navbar-main-content-container {
     display: flex;
     flex-direction: row;
     height: 50%;
 }
-
 .navbar-item.has-dropdown.is-hoverable {
     color: #68A7AD;
 }
-
-
 .navbar-item.has-dropdown.is-hoverable:hover {
     background-color: #7cb1b7 !important;
     color: white !important;
     border-radius: 3px 3px 0px 0px;
 }
-
 #home-link {
     transform: scale(0.5);
 }
-
 .navbar-brand {
     display: flex;
     align-items: center;
     height: 100%;
 }
-
-
 #filename {
     font-weight: 900;
     color: #818181;
 }
-
 #file-status {
     color: #818181;
 }
-
 .navbar-element {
     display: flex;
     align-items: center;
@@ -109,28 +89,23 @@ a:hover {
     font-weight: lighter;
     font-size: 16px;
 }
-
 .navbar-element.navbar-btn {
     cursor: pointer;
     border-radius: 2px;
     overflow: hidden;
 }
-
 .navbar-btn-text {
     border-radius: 2px;
 }
-
 .navbar-element.navbar-btn:hover {
     background-color: #7cb1b7;
     color: white;
 }
-
 #feedback-form-btn-container {
     margin-right: 10px;
     color: #7cb1b7;
     padding: 7px;
 }
-
 #feedback-form-btn-container:hover {
     color: white;
 }
@@ -176,6 +151,44 @@ a:hover {
     border-top: 1px solid #7cb1b7;
     box-shadow: 0px 7px 10px 2px #00000052;
     min-width: 13vw;
+}
+
+/* Tablet and mobile styles for navbar */
+@media screen and (max-width: 1023px) {
+    .navbar-menu.is-active {
+        display: flex;
+        flex-direction: column;
+        background-color: #e2e2e2;
+    }
+    .navbar-main-content-container {
+        display: flex;
+        flex-direction: column;
+        height: 50%;
+    }
+    .navbar-item.has-dropdown.is-hoverable {
+        color: #68A7AD;
+        margin-top: 3vh;
+    }
+    .navbar-item.has-dropdown.is-hoverable:hover {
+        background-color: #e2e2e2 !important;
+        color: #68A7AD !important;
+        border-radius: 0px;
+    }
+    .navbar-dropdown {
+        border-top: 1px solid #7cb1b7;
+        box-shadow: none;
+        min-width: 13vw;
+    }
+    .navbar-element.navbar-btn:hover {
+        background-color: #e2e2e2;
+        color: #7cb1b7 !important;
+        cursor: auto;
+    }
+}
+@media only screen and (max-width: 900px) {
+    #navMenu {
+        height: 100%;
+    }
 }
 
 /* Section: Editor Main Body */
@@ -361,6 +374,7 @@ a:hover {
     align-items: center;
     justify-content: center;
     margin: 3px;
+    font-size: 14px;
 }
 .slider-btn {
     padding: 10px 5px;
@@ -370,7 +384,7 @@ a:hover {
 .side-panel-btn:hover {
     border: 1px solid #c6c6c6;
 }
-.side-panel-btn.sel-by.is-active {
+.side-panel-btn.is-active {
     border: 1px solid #7cb1b7;
 }
 .panel-tabs {
@@ -411,7 +425,7 @@ a:hover {
     margin-top: 2vh;
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
     width: 100%;
     min-height: 15vh;
@@ -428,11 +442,31 @@ a:hover {
     border-bottom-color: #7bb1b7 !important;
     color: #7bb1b7 !important;
 }
-/* neume info (metadata) */
-#neume-info {
-    width: 100%;
+/* info bubbles */
+#info-bubbles-container {
+    padding: 0.5em 0.75em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
-.message {
+.info-bubble-container {
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+.info-bubble-header {
+    padding: 10px;
+    background-color: #84b6bb;
+    color: white;
+}
+.info-bubble-body {
+    background-color: #f2f2f2;
+    padding: 10px;
+}
+/* neume info (metadata) */
+#neume_info {
     width: 100%;
 }
 .smallel {
@@ -449,6 +483,15 @@ a:hover {
 }
 .text {
     display: none;
+}
+/* Syllable text side panel */
+.syl-text-side-panel {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.syl-text-side-panel:hover {
+    color: #848484;
 }
 
 /* Section: Neon Notifications */
@@ -468,11 +511,11 @@ a:hover {
     position: fixed;
 }
 .neon-notification {
-    padding: 0.6rem;
+    padding: 0.8rem;
     margin: 0.5rem;
-    background: #dae9ff; /* whitesmoke with opacity */
-    border: 1px solid #1c4b91;
-    color: #1c4b91;
+    font-weight: 600;
+    background: #589ed5;
+    color: #ffffff;
     border-radius: 4px;
     z-index: 8;
     cursor: pointer;
@@ -578,7 +621,7 @@ a:hover {
 /* modal dynamic content */
 #neon-modal-window-content-container {
     display: flex;
-    overflow: scroll;
+    overflow: auto;
     padding: 20px;
     width: 100%;
     background-color: white;

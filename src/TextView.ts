@@ -106,10 +106,14 @@ class TextView implements TextViewInterface {
     if ((document.getElementById('displayText') as HTMLInputElement).checked) {
       const sylText = document.getElementById('syl_text');
       sylText.style.display = '';
-      sylText.innerHTML = '<p>' + this.getSylText() + '</p>';
-      const spans = sylText.querySelectorAll('p > span');
+      sylText.innerHTML = 
+        `<div class="info-bubble-container">
+          <div class="info-bubble-header">Syllables on this page</div>
+          <div class="info-bubble-body">${this.getSylText()}</div>
+        </div>`;
+      const spans = sylText.querySelectorAll('span');
       spans.forEach(span => {
-        const syllable = document.getElementById(span.className);
+        const syllable = document.getElementById(span.classList[0]);
         const syl = syllable.querySelector('.syl');
         const text = syl.querySelector('text');
         const rect = syl.querySelector('rect');
@@ -163,7 +167,7 @@ class TextView implements TextViewInterface {
     syllables.forEach(syllable => {
       if (syllable.querySelector('.syl') !== null) {
         const syl = syllable.querySelector('.syl');
-        lyrics += '<span class=\'' + syllable.id + '\'>';
+        lyrics += `<span class="${syllable.id} syl-text-side-panel">`;
         if (syl.textContent.trim() === '') {
           lyrics += '&#x25CA; ';
         } else {
