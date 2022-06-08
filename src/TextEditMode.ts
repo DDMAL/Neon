@@ -18,7 +18,7 @@ function formatRaw (rawString: string): string {
 }
 */
 
-function selBySylListener (): void {
+function selBySyllableListener (): void {
   if (!document.getElementById('selByBBox').classList.contains('is-active')) {
     unselect();
     try {
@@ -31,7 +31,7 @@ function selBySylListener (): void {
       document.getElementById('selByNc').classList.remove('is-active');
       document.getElementById('selByNeume').classList.remove('is-active');
       document.getElementById('selByStaff').classList.remove('is-active');
-      document.getElementById('selBySyl').classList.remove('is-active');
+      document.getElementById('selBySyllable').classList.remove('is-active');
       document.getElementById('selByLayerElement').classList.remove('is-active');
     } catch (e) {}
     try {
@@ -104,7 +104,7 @@ export default class TextEditMode implements TextEditInterface {
         return;
       }
 
-      const block = document.getElementById('selBySyl')
+      const block = document.getElementById('selBySyllable')
         .closest('.control')
         .closest('.field');
       const p = document.createElement('p');
@@ -115,11 +115,11 @@ export default class TextEditMode implements TextEditInterface {
       button.textContent = 'BBox';
       p.appendChild(button);
       block.appendChild(p);
-      button.addEventListener('click', selBySylListener.bind(this));
+      button.addEventListener('click', selBySyllableListener.bind(this));
       document.body.addEventListener('keydown', (evt) => {
         if (evt.key === '6') {
           if (document.getElementById('selByBBox').style.display === '') {
-            selBySylListener.bind(this)();
+            selBySyllableListener.bind(this)();
           }
         }
       });

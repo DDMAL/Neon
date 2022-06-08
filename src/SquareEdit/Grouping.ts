@@ -294,7 +294,7 @@ const keydownListener = function(e) {
 
     // Group/merge or ungroup/split based on selection type
     switch (selectionType) {
-      case 'selBySyl':
+      case 'selBySyllable':
         if (isGroupable(selectionType, elements)) {
           const elementIds = getChildrenIds().filter(e =>
             document.getElementById(e).classList.contains('neume')
