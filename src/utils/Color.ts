@@ -181,7 +181,7 @@ export function setGroupingHighlight(grouping: GroupingType): void {
   } else if (grouping === 'selection') {
     const temp = document.querySelector('.sel-by.is-active').id;
     switch (temp) {
-      case 'selBySyl':
+      case 'selBySyllable':
       case 'selByBBox':
         grouping = 'syllable';
         break;

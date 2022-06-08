@@ -556,7 +556,7 @@ export function triggerNeumeActions (): void {
 /**
  * Trigger extra syllable actions.
  */
-export function triggerSylActions (): void {
+export function triggerSyllableActions (): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');

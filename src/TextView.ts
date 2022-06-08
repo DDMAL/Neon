@@ -81,7 +81,7 @@ class TextView implements TextViewInterface {
       if (document.getElementById('selByBBox')?.classList.contains('is-active')) {
         unselect();
         document.getElementById('selByBBox').classList.remove('is-active');
-        document.getElementById('selBySyl').classList.add('is-active');
+        document.getElementById('selBySyllable').classList.add('is-active');
       }
 
       document.querySelectorAll('.sylTextRect-display').forEach(rect => {

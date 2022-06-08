@@ -85,7 +85,7 @@ export const editControlsPanel: string =
     '<label>Select By:&nbsp;</label>' +
     '<div class=\'field has-addons buttons\' style=\'overflow-x: auto;\'>' +
     '<p class=\'control\'>' +
-    '<button class=\'button sel-by is-active\' id=\'selBySyl\'>Syllable</button></p>' +
+    '<button class=\'button sel-by is-active\' id=\'selBySyllable\'>Syllable</button></p>' +
     '<p class=\'control\'>' +
     '<button class=\'button sel-by\' id=\'selByNeume\'>Neume</button></p>' +
     '<p class=\'control\'>' +
