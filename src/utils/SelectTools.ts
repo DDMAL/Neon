@@ -422,7 +422,6 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
           (groups[0].getAttribute('mei:precedes') === '#' + groups[1].id)) {
             Grouping.triggerGrouping('splitSyllable');
           } else if (sharedSecondLevelParent(groups)) {
-            console.log('here1');
             Grouping.triggerGrouping('syl');
             changeStaffListener();
           } else {
