@@ -691,13 +691,13 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.parentElement.classList.remove('hidden');
-    moreEdit.innerHTML += Contents.divlineActionContents;
+    moreEdit.innerHTML += Contents.layerElementOutActionContents;
     moreEdit.classList.remove('is-invisible');
     if (accid.parentElement.classList.contains('syllable')) {
-      moreEdit.innerHTML += Contents.layereElementInActionContents;
+      moreEdit.innerHTML += Contents.layerElementInActionContents;
     }
     else {
-      moreEdit.innerHTML += Contents.layereElementOutActionContents;
+      moreEdit.innerHTML += Contents.layerElementOutActionContents;
     }
   } catch (e) {}
 
@@ -781,12 +781,12 @@ export function triggerLayerElementActions (element: SVGGraphicsElement): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.parentElement.classList.remove('hidden');
-    moreEdit.innerHTML += Contents.divlineActionContents;
+    moreEdit.innerHTML += Contents.layerElementOutActionContents;
     if (element.parentElement.classList.contains('syllable')) {
-      moreEdit.innerHTML += Contents.layereElementInActionContents;
+      moreEdit.innerHTML += Contents.layerElementInActionContents;
     }
     else {
-      moreEdit.innerHTML += Contents.layereElementOutActionContents;
+      moreEdit.innerHTML += Contents.layerElementOutActionContents;
     }
   } catch (e) {}
 

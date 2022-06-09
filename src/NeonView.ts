@@ -57,7 +57,7 @@ class NeonView {
   /**
    * Set up Neon for any provided editing modules.
    */
-  setupEdit(params: Interfaces.NeonViewParams): void {
+  setupEdit(params: NeonViewParams): void {
     // Set up and start the correct editing mode
     if (params.NeumeEdit !== undefined) {
       this.NeumeEdit = new params.NeumeEdit(this);

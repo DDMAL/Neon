@@ -178,7 +178,7 @@ export function initSelectionButtons (): void {
       document.getElementById('extraEdit').innerHTML = '';
       document.getElementById('moreEdit').parentElement.classList.add('hidden');
       document.getElementById('extraEdit').parentElement.classList.add('hidden');
-      selBySyl.classList.add('is-active');
+      selBySyllable.classList.add('is-active');
 
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');

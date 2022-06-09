@@ -101,7 +101,7 @@ export default class TextEditMode implements TextEditInterface {
       button.id = 'selByBBox';
       button.textContent = 'BBox';
       block.appendChild(button);
-      button.addEventListener('click', selBySylListener.bind(this));
+      button.addEventListener('click', selBySyllableListener.bind(this));
       document.body.addEventListener('keydown', (evt) => {
         if (evt.key === '6') {
           if (document.getElementById('selByBBox').style.display === '') {
