@@ -121,6 +121,7 @@ export const editControlsPanel =
      </div>
  </div>`;
 
+
 /**
  * Contents of extra nc action menu.
  */
@@ -213,13 +214,22 @@ export const custosActionContents: string =
     '<button class=\'side-panel-btn\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
 
 /**
- * Contents of divLine action menu.
+ * Contents of layer element (outside syllable) action menu.
  */
-export const divlineActionContents: string =
+export const layereElementOutActionContents: string =
     '<div><p class=\'control\'>' +
     '<button class=\'side-panel-btn\' id=\'delete\'>Delete</button>' +
     '<button class=\'side-panel-btn\' id=\'insertToSyllable\'>Insert to nearest syllable</button>' + '<br />'+
     '<button class=\'side-panel-btn\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
+
+/**
+ * Contents of layer element (inside syllable) action menu.
+ */
+export const layereElementInActionContents: string =
+ '<div><p class=\'control\'>' +
+ '<button class=\'button\' id=\'delete\'>Delete</button>' +
+ '<button class=\'button\' id=\'moveOuttaSyllable\'>Move out of syllable</button>' + '<br />'+
+ '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
 
 /**
  * Contents of accid action menu.
@@ -340,19 +350,21 @@ export const hotkeysModal =
                     <div>+</div>
                     <div class="hotkey-entry">+</div>
                 </div>
-                <div class="hotkey-entry-description">Zoom in</div>        
+                <div class="hotkey-entry-description">Zoom In</div>        
             </div>
             <div class="hotkey-entry-container">
             <div class="hotkey-container">
+                <div class="hotkey-entry">Shift</div>
+                <div>+</div>
                 <div class="hotkey-entry">-</div>
             </div>
-            <div class="hotkey-entry-description">Zoom out</div>
+            <div class="hotkey-entry-description">Zoom Out</div>
             </div>
             <div class="hotkey-entry-container">
             <div class="hotkey-container">
                 <div class="hotkey-entry">0</div>
             </div>
-            <div class="hotkey-entry-description">Zoom reset</div>
+            <div class="hotkey-entry-description">Zoom Reset</div>
             </div>
             <div class="hotkey-entry-container">
             <div class="hotkey-container">

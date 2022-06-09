@@ -301,7 +301,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
   let containsNc = false;
 
   switch (selectionType) {
-    case 'selBySyl':
+    case 'selBySyllable':
       selectionClass = '.syllable';
       break;
     case 'selByNeume':
@@ -369,9 +369,9 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     } else if (groupsToSelect.size === 1 && groups[0].classList.contains('accid')) {
       SelectOptions.triggerAccidActions(groups[0]);
     } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divLine')) {
-      SelectOptions.triggerDivLineActions();
+      SelectOptions.triggerLayerElementActions(groups[0]);
     }else {
-      if (selectionType == 'selBySyl') {
+      if (selectionType == 'selBySyllable') {
         SelectOptions.triggerDefaultSylActions();
       } else {
         SelectOptions.triggerDefaultActions();
@@ -402,17 +402,17 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       } else if (groupsToSelect.size === 1 && groups[0].classList.contains('accid')) {
         SelectOptions.triggerAccidActions(groups[0]);
       } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divLine')) {
-        SelectOptions.triggerDivLineActions();
+        SelectOptions.triggerLayerElementActions(groups[0]);
       }else {
         SelectOptions.triggerDefaultActions();
       }
       break;
 
-    case 'selBySyl':
+    case 'selBySyllable':
       switch (groups.length) {
         case 1:
           // TODO change context if it is only a neume/nc.
-          SelectOptions.triggerSylActions();
+          SelectOptions.triggerSyllableActions();
           Grouping.initGroupingListeners();
           break;
         // case 2:
@@ -423,6 +423,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
             Grouping.triggerGrouping('splitSyllable');
           } else if (sharedSecondLevelParent(groups)) {
             Grouping.triggerGrouping('syl');
+            changeStaffListener();
           } else {
             // Check if this *could* be a selection with a single logical syllable split by a staff break.
             const staff0 = groups[0].closest('.staff');
@@ -453,17 +454,17 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
               }
             }
             SelectOptions.triggerDefaultSylActions();
-            SelectOptions.triggerSylActions();
+            SelectOptions.triggerSyllableActions();
             Grouping.initGroupingListeners();
           }
           // break
         // default:
           // if (sharedSecondLevelParent(groups)) {
           //   Grouping.triggerGrouping('syl');
-          //   SelectOptions.triggerSylActions();
+          //   SelectOptions.triggerSyllableActions();
           // } else {
           //   SelectOptions.triggerDefaultSylActions();
-          //   SelectOptions.triggerSylActions();
+          //   SelectOptions.triggerSyllableActions();
           // }
       }
       break;
@@ -551,4 +552,12 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     default:
       console.error('Unknown selection type. This should not have occurred.');
   }
+
+  function changeStaffListener(): void {
+    try {
+      document.getElementById('changeStaff')
+        .addEventListener('click', SelectOptions.changeStaffHandler);
+    } catch (e) {console.debug(e);}
+  }
+  
 }

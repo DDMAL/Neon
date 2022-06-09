@@ -1,10 +1,11 @@
-import { unselect } from './utils/SelectTools';
+import { selectBBox, unselect } from './utils/SelectTools';
 import DragHandler from './utils/DragHandler';
 import NeonView from './NeonView';
 import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select';
 import { setGroupingHighlight } from './utils/Color';
 import { TextEditInterface } from './Interfaces';
 import  { ModalWindowView } from './utils/ModalWindow';
+import { HTMLSVGElement, SetTextAction } from './Types';
 
 /**
  * Format a string for prompting the user.
@@ -17,7 +18,7 @@ function formatRaw (rawString: string): string {
 }
 */
 
-function selBySylListener (): void {
+function selBySyllableListener (): void {
   if (!document.getElementById('selByBBox').classList.contains('is-active')) {
     unselect();
     try {
@@ -32,7 +33,7 @@ function selBySylListener (): void {
       document.getElementById('selByNc').classList.remove('is-active');
       document.getElementById('selByNeume').classList.remove('is-active');
       document.getElementById('selByStaff').classList.remove('is-active');
-      document.getElementById('selBySyl').classList.remove('is-active');
+      document.getElementById('selBySyllable').classList.remove('is-active');
       document.getElementById('selByLayerElement').classList.remove('is-active');
     } catch (e) {}
     try {
@@ -67,12 +68,12 @@ export default class TextEditMode implements TextEditInterface {
   initTextEdit (): void {
     const spans = document.getElementById('syl_text').querySelectorAll('span');
     const modal = this.neonView.modal;
-    spans.forEach(span => {
-
+    spans.forEach((span: HTMLSpanElement) => {
       function selectSylText (): void {
         span.classList.add('selected-to-edit');
         modal.setModalWindowView(ModalWindowView.EDIT_TEXT);
         modal.openModalWindow();
+        modal.updateSelectedBBox(span);
       }
 
       span.removeEventListener('click', selectSylText);
@@ -104,7 +105,7 @@ export default class TextEditMode implements TextEditInterface {
       document.body.addEventListener('keydown', (evt) => {
         if (evt.key === '6') {
           if (document.getElementById('selByBBox').style.display === '') {
-            selBySylListener.bind(this)();
+            selBySyllableListener.bind(this)();
           }
         }
       });

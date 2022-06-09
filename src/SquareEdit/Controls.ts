@@ -130,13 +130,13 @@ function bindElements (insertHandler: InsertHandler) {
  * Set listeners on the buttons to change selection modes.
  */
 export function initSelectionButtons (): void {
-  const selBySyl = document.getElementById('selBySyl');
+  const selBySyllable = document.getElementById('selBySyllable');
   const selByNeume = document.getElementById('selByNeume');
   const selByNc = document.getElementById('selByNc');
   const selByStaff = document.getElementById('selByStaff');
   const selByLayerElement = document.getElementById('selByLayerElement');
 
-  selBySyl.addEventListener('click', selectBySylHandler);
+  selBySyllable.addEventListener('click', selectBySylHandler);
   document.body.addEventListener('keydown', (evt) => {
     if (evt.key === '1') {
       selectBySylHandler();
@@ -172,14 +172,14 @@ export function initSelectionButtons (): void {
   });
 
   function selectBySylHandler () {
-    if (!selBySyl.classList.contains('is-active')) {
+    if (!selBySyllable.classList.contains('is-active')) {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-hidden');
       document.getElementById('moreEdit').parentElement.classList.add('hidden');
       document.getElementById('extraEdit').parentElement.classList.add('hidden');
       selBySyl.classList.add('is-active');
+
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');
       selByStaff.classList.remove('is-active');
@@ -205,7 +205,7 @@ export function initSelectionButtons (): void {
       document.getElementById('extraEdit').parentElement.classList.add('hidden');
       selByNeume.classList.add('is-active');
       selByNc.classList.remove('is-active');
-      selBySyl.classList.remove('is-active');
+      selBySyllable.classList.remove('is-active');
       selByStaff.classList.remove('is-active');
       selByLayerElement.classList.remove('is-active');
       try {
@@ -229,7 +229,7 @@ export function initSelectionButtons (): void {
       document.getElementById('extraEdit').parentElement.classList.add('hidden');
       selByNc.classList.add('is-active');
       selByNeume.classList.remove('is-active');
-      selBySyl.classList.remove('is-active');
+      selBySyllable.classList.remove('is-active');
       selByStaff.classList.remove('is-active');
       selByLayerElement.classList.remove('is-active');
       try {
@@ -254,7 +254,7 @@ export function initSelectionButtons (): void {
       selByStaff.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');
-      selBySyl.classList.remove('is-active');
+      selBySyllable.classList.remove('is-active');
       selByLayerElement.classList.remove('is-active');
       try {
         document.getElementById('selByBBox').classList.remove('is-active');
@@ -279,7 +279,7 @@ export function initSelectionButtons (): void {
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');
       selByStaff.classList.remove('is-active');
-      selBySyl.classList.remove('is-active');
+      selBySyllable.classList.remove('is-active');
       try {
         document.getElementById('selByBBox').classList.remove('is-active');
       } catch (e) {}
