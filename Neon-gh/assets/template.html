@@ -4,8 +4,8 @@
 <nav class="navbar is-light">
   <div class="navbar-brand">
     <a class="navbar-btn" id="home-link">
-      <!-- <p>Neon</p> -->
-      <img src="/Neon/assets/img/Neon_Icon_3.svg">
+      <!-- Image src attributes are ste programatically because paths are not the same in dev and prod -->
+      <img id="neon-main-icon">
     </a>
     <a class="navbar-burger" id="burgerMenu" role="button" aria-label="menu" aria-expanded="false">
       <span aria-hidden="true"></span>
@@ -27,7 +27,6 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <div class="navbar-element navbar-btn">
             <div class="navbar-btn-text">File</div>
-            <img class="navbar-dropdown-icon" src="/Neon/assets/img/dropdown_icon_white.svg">
           </div>
 
           <div class="navbar-dropdown" id="navbar-dropdown-options">
@@ -40,7 +39,6 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <div class="navbar-element navbar-btn">
             <div class="navbar-btn-text">MEI Actions</div>
-            <img class="navbar-dropdown-icon" src="/Neon/assets/img/dropdown_icon_white.svg">
           </div>
           <div class="navbar-dropdown" id="navbar-dropdown-options">
             <div id="remove-empty-syls" class="navbar-dropdown-item">Remove Empty Syllables</div>
@@ -53,20 +51,19 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <div class="navbar-element navbar-btn">
             <div class="navbar-btn-text">Help</div>
-            <img class="navbar-dropdown-icon" src="/Neon/assets/img/dropdown_icon_white.svg">
           </div>
           <div class="navbar-dropdown">
             <div class="navbar-dropdown-item">
               <a class="navbar-dropdown-link" href="//github.com/DDMAL/Neon/wiki/Instructions" target="_blank">User Guide</a>
-              <img class="external-link-icon" src="/Neon/assets/img/external-link.svg">
+              <img class="external-link-icon">
             </div>
             <div class="navbar-dropdown-item">
               <a class="navbar-dropdown-link" href="//github.com/DDMAL/Neon/wiki" target="_blank">Wiki</a>
-              <img class="external-link-icon" src="/Neon/assets/img/external-link.svg">
+              <img class="external-link-icon">
             </div>
             <div class="navbar-dropdown-item">
               <a class="navbar-dropdown-link" href="//ddmal.music.mcgill.ca" target="_blank">DDMAL</a>
-              <img class="external-link-icon" src="/Neon/assets/img/external-link.svg">
+              <img class="external-link-icon">
             </div>
             <div class="navbar-dropdown-item">
               <div id="navbar-item-hotkeys">Hotkeys</div>
@@ -82,7 +79,7 @@
     <div class="navbar-end">
       <div class="navbar-element navbar-btn" id="feedback-form-btn-container">
         <a href="https://forms.gle/vGUpvZKZxGX5QGJZ9" target="_blank">Feedback Form</a>
-        <img class="external-link-icon" src="/Neon/assets/img/external-link.svg">
+        <img class="external-link-icon">
       </div>
     </div>
   </div>
