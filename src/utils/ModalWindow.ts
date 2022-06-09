@@ -34,10 +34,12 @@ export class ModalWindow implements ModalWindowInterface {
    * Set neonView instance context for this modal window instance.
    * @param neonView neonView context for Modal instance
    */
-  constructor (neonView: NeonView) {
+  constructor (neonView?: NeonView) {
     this.neonView = neonView;
     this.modalWindowState = ModalWindowState.CLOSED;
   }
+
+
 
 
   /**
@@ -95,7 +97,7 @@ export class ModalWindow implements ModalWindowInterface {
 
     switch(this.modalWindowView) {
       case ModalWindowView.EDIT_TEXT:
-        const span = <HTMLSpanElement> document.getElementById('syl_text').querySelectorAll('p>span.selected-to-edit')[0];
+        const span = <HTMLSpanElement> document.getElementById('syl_text').querySelectorAll('span.selected-to-edit')[0];
         span.classList.remove('selected-to-edit');
 
       default:
@@ -122,7 +124,7 @@ export class ModalWindow implements ModalWindowInterface {
         document.getElementById('neon-modal-window-header-title').innerText = 'EDIT SYLLABLE TEXT';
 
         // span and current text of selected-to-edit syllable and filter out unwanted chars
-        const span = <HTMLSpanElement> document.getElementById('syl_text').querySelectorAll('p>span.selected-to-edit')[0];
+        const span = <HTMLSpanElement> document.getElementById('syl_text').querySelectorAll('span.selected-to-edit')[0];
         const removeSymbol = /\u{25CA}/u;
         const orig = span.textContent.replace(removeSymbol, '').trim();
 
@@ -188,8 +190,7 @@ export class ModalWindow implements ModalWindowInterface {
    */
   private updateSylText = function () {
     // span and current text of selected-to-edit syllable and filter out unwanted chars
-    const span = <HTMLSpanElement> document.getElementById('syl_text').querySelectorAll('p>span.selected-to-edit')[0];
-
+    const span = <HTMLSpanElement> document.getElementById('syl_text').querySelectorAll('span.selected-to-edit')[0];
     const removeSymbol = /\u{25CA}/u;
     const orig = span.textContent.replace(removeSymbol, '').trim();
     const updatedSylText = (<HTMLInputElement> document.getElementById('neon-modal-window-edit-text-input')).value;

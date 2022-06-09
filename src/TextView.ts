@@ -20,17 +20,17 @@ class TextView implements TextViewInterface {
     this.notificationSent = false;
 
     // add checkbox to enable/disable the view
-    const block = document.getElementById('extensible-block');
+    const checkboxesContainer = document.getElementById('checkbox-display-options');
     const textLabel = document.createElement('label');
     const bboxLabel = document.createElement('label');
     const textButton = document.createElement('input');
     const bboxButton = document.createElement('input');
-    textLabel.classList.add('checkbox');
-    bboxLabel.classList.add('checkbox');
-    textLabel.textContent = 'Display Text: ';
-    bboxLabel.textContent = 'Display Text BBoxes: ';
     textButton.classList.add('checkbox');
     bboxButton.classList.add('checkbox');
+    textLabel.classList.add('checkbox-container', 'side-panel-btn');
+    bboxLabel.classList.add('checkbox-container', 'side-panel-btn');
+    textLabel.textContent = 'Text';
+    bboxLabel.textContent = 'BBoxes';
     textButton.id = 'displayText';
     textButton.type = 'checkbox';
     bboxButton.id = 'displayBBox';
@@ -39,8 +39,8 @@ class TextView implements TextViewInterface {
     bboxButton.checked = false;
     textLabel.appendChild(textButton);
     bboxLabel.appendChild(bboxButton);
-    block.prepend(bboxLabel);
-    block.prepend(textLabel);
+    checkboxesContainer.prepend(bboxLabel);
+    checkboxesContainer.prepend(textLabel);
 
     this.setTextViewControls();
     this.neonView.view.addUpdateCallback(this.updateTextViewVisibility.bind(this));
@@ -108,10 +108,14 @@ class TextView implements TextViewInterface {
     if ((document.getElementById('displayText') as HTMLInputElement).checked) {
       const sylText = document.getElementById('syl_text');
       sylText.style.display = '';
-      sylText.innerHTML = '<p>' + this.getSylText() + '</p>';
-      const spans = sylText.querySelectorAll('p > span');
+      sylText.innerHTML = 
+        `<div class="info-bubble-container">
+          <div class="info-bubble-header">Syllables on this page</div>
+          <div class="info-bubble-body">${this.getSylText()}</div>
+        </div>`;
+      const spans = sylText.querySelectorAll('span');
       spans.forEach(span => {
-        const syllable = document.getElementById(span.className);
+        const syllable = document.getElementById(span.classList[0]);
         const syl = syllable.querySelector('.syl');
         const text = syl.querySelector('text');
         const rect = syl.querySelector('rect');
@@ -165,7 +169,7 @@ class TextView implements TextViewInterface {
     syllables.forEach(syllable => {
       if (syllable.querySelector('.syl') !== null) {
         const syl = syllable.querySelector('.syl');
-        lyrics += '<span class=\'' + syllable.id + '\'>';
+        lyrics += `<span class="${syllable.id} syl-text-side-panel">`;
         if (syl.textContent.trim() === '') {
           lyrics += '&#x25CA; ';
         } else {

@@ -1,7 +1,6 @@
 import NeonCore from './NeonCore';
 
 import { parseManifest } from './utils/NeonManifest';
-import { prepareEditMode } from './utils/EditControls';
 import setBody from './utils/template/Template';
 import { ModalWindow } from './utils/ModalWindow';
 import { NeonManifest, EditorAction, Attributes } from './Types';
@@ -58,12 +57,8 @@ class NeonView {
   /**
    * Set up Neon for any provided editing modules.
    */
-  setupEdit(params: NeonViewParams): void {
-    if (params.NeumeEdit !== undefined || (params.TextEdit !== undefined && params.TextView !== undefined)) {
-      // Set up display for edit button
-      prepareEditMode(this);
-    }
-
+  setupEdit(params: Interfaces.NeonViewParams): void {
+    // Set up and start the correct editing mode
     if (params.NeumeEdit !== undefined) {
       this.NeumeEdit = new params.NeumeEdit(this);
     }
@@ -94,7 +89,7 @@ class NeonView {
       this.info = new this.params.Info(this);
       this.modal = new ModalWindow(this);
 
-      window.setTimeout(this.setupEdit.bind(this), 2000, this.params);
+      this.setupEdit(this.params);
       return this.core.initDb();
     }).then(() => {
       this.updateForCurrentPage(true);

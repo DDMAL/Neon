@@ -319,14 +319,30 @@ export function initDisplayControls (meiClassName: string, background: string): 
   const displayContents = document.getElementById('displayContents');
   const toggleDisplay = document.getElementById('toggleDisplay');
 
-  toggleDisplay.parentElement.addEventListener('click', () => {
-    if (displayContents.style.display === 'none') {
-      displayContents.style.display = '';
+  document.getElementById('displayHeader').addEventListener('click', () => {
+    if (displayContents.classList.contains('closed')) {
+
+      displayContents.classList.remove('closed');
+      displayContents.style.padding = '0.5em 0.75em';
+      setTimeout(() => {
+        displayContents.style.overflow = 'visible';
+      }, 200);
       toggleDisplay.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
+
     } else {
-      displayContents.style.display = 'none';
+
+      displayContents.classList.add('closed');
+      displayContents.style.overflow = 'hidden';
+      setTimeout(() => {
+        displayContents.style.padding = '0px';
+      }, 200);
       toggleDisplay.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-side');
+
     }
+  });
+
+  document.getElementById('displayHeader').addEventListener('mouseover', () => {
+    //toggleDisplay
   });
 }
 

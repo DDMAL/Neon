@@ -8,6 +8,8 @@ async function setBody (neonView: NeonView): Promise<void> {
   (document.getElementById('home-link') as HTMLAnchorElement).href = __LINK_LOCATION__;
   document.getElementById('neon-version').textContent = __NEON_VERSION__;
 
+  document.getElementById('filename').innerText = `${neonView.manifest.title}`;
+
   // hotkey btn onclick event listener
   document.getElementById('navbar-item-hotkeys').addEventListener('click', function() {
     neonView.modal.setModalWindowView(ModalWindowView.HOTKEYS);
