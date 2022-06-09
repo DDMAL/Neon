@@ -124,10 +124,10 @@ export const editControlsPanel =
 
         <div id="display-actions-container">
                 <div class="panel-content-subsection hidden">
-                    <div id="moreEdit" class="panel-block is-hidden"></div>
+                    <div id="moreEdit"></div>
                 </div>
                 <div class="panel-content-subsection hidden">
-                    <div id="extraEdit" class="panel-block is-hidden"></div>
+                    <div id="extraEdit"></div>
                 </div>
                     <!--
                     * The extraEdit panel is added for edit options that have dropdown menus
@@ -136,7 +136,7 @@ export const editControlsPanel =
                     * But overflow ruins dropdown menus
                     -->
                 <div class="panel-content-subsection hidden">
-                    <div id="neumeEdit" class="panel-block is-hidden"></div>
+                    <div id="neumeEdit"></div>
                 </div>
                 <div class="panel-content-subsection">
                     <div id="undoRedo_controls"></div>
@@ -225,7 +225,10 @@ export const staffActionContents =
 /**
  * Contents of default action menu.
  */
-export const defaultActionContents = '<button class="side-panel-btn" id="delete">Delete</button>';
+export const defaultActionContents = 
+    `<div class="right-side-panel-btns-container">
+        <button class="side-panel-btn" id="delete">Delete</button>
+    </div>`;
 
 /**
  * Contents of default action menu when selecting by syllable
@@ -239,24 +242,30 @@ export const defaultSylActionContents =
  * Contents of custos action menu.
  */
 export const custosActionContents =
-    `<button class="side-panel-btn" id="delete">Delete</button>
-    <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>`;
+    `<div class="right-side-panel-btns-container">
+        <button class="side-panel-btn" id="delete">Delete</button>
+        <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+    </div>`;
 
 /**
  * Contents of layer element (outside syllable) action menu.
  */
 export const layerElementOutActionContents =
-    `<button class="side-panel-btn" id="delete">Delete</button>
-    <button class="side-panel-btn" id="insertToSyllable">Insert to nearest syllable</button>
-    <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>`;
+    `<div class="right-side-panel-btns-container">
+        <button class="side-panel-btn" id="delete">Delete</button>
+        <button class="side-panel-btn" id="insertToSyllable">Insert to nearest syllable</button>
+        <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+    </div>`;
 
 /**
  * Contents of layer element (inside syllable) action menu.
  */
 export const layerElementInActionContents =
-    `<button class="button" id="delete">Delete</button>
-    <button class="button" id="moveOuttaSyllable">Move out of syllable</button>
-    <button class="button" id="changeStaff">Re-associate to nearest staff</button></p></div>`;
+    `<div class="right-side-panel-btns-container">
+        <button class="button" id="delete">Delete</button>
+        <button class="button" id="moveOuttaSyllable">Move out of syllable</button>
+        <button class="button" id="changeStaff">Re-associate to nearest staff</button>
+    </div>`;
 
 /**
  * Contents of accid action menu.

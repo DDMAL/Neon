@@ -107,8 +107,7 @@ export function endOptionsSelection (): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.innerHTML = '';
-    moreEdit.classList.add('is-hidden');
-    document.getElementById('moreEdit').parentElement.classList.add('hidden');
+    moreEdit.parentElement.classList.add('hidden');
   } catch (e) {}
   document.body.removeEventListener('keydown', deleteButtonHandler);
 }
@@ -259,13 +258,12 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-hidden');
-    document.getElementById('moreEdit').parentElement.classList.remove('hidden');
+    moreEdit.parentElement.classList.remove('hidden');
     moreEdit.innerHTML = Contents.defaultActionContents;
   } catch (e) {}
   try {
     const extraEdit = document.getElementById('extraEdit');
-    extraEdit.classList.remove('is-hidden');
+    extraEdit.parentElement.classList.remove('hidden');
     extraEdit.innerHTML = Contents.ncActionContents;
   } catch (e) {}
   document.querySelector('#Punctum.dropdown-item')
@@ -428,14 +426,12 @@ export function triggerNeumeActions (): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-hidden');
-    document.getElementById('moreEdit').parentElement.classList.remove('hidden');
+    moreEdit.parentElement.classList.remove('hidden');
     moreEdit.innerHTML = Contents.defaultNeumeActionContents;
   } catch (e) {}
   try {
     const extraEdit = document.getElementById('extraEdit');
-    extraEdit.classList.remove('is-hidden');
-    document.getElementById('extraEdit').parentElement.classList.remove('hidden');
+    extraEdit.parentElement.classList.remove('hidden');
     extraEdit.innerHTML = Contents.neumeActionContents;
   } catch (e) {}
   const neume = document.querySelectorAll('.selected');
@@ -564,8 +560,7 @@ export function triggerSyllableActions (): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-hidden');
-    document.getElementById('moreEdit').parentElement.classList.remove('hidden');
+    moreEdit.parentElement.classList.remove('hidden');
     moreEdit.innerHTML =
     `<div class="right-side-panel-btns-container">
         <button class="side-panel-btn" id="mergeSyls">Merge Syllables</button>
@@ -591,14 +586,13 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-hidden');
-    document.getElementById('moreEdit').parentElement.classList.remove('hidden');
+    moreEdit.parentElement.classList.remove('hidden');
     // custos contents is just the delete button
     moreEdit.innerHTML = Contents.custosActionContents;
   } catch (e) {}
   try {
     const extraEdit = document.getElementById('extraEdit');
-    extraEdit.classList.remove('is-hidden');
+    extraEdit.parentElement.classList.remove('hidden');
     extraEdit.innerHTML = Contents.clefActionContents;
   } catch (e) {}
 
@@ -665,8 +659,7 @@ export function triggerCustosActions (): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-hidden');
-    document.getElementById('moreEdit').parentElement.classList.remove('hidden');
+    moreEdit.parentElement.classList.remove('hidden');
     moreEdit.innerHTML += Contents.custosActionContents;
   } catch (e) {}
 
@@ -691,8 +684,6 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.parentElement.classList.remove('hidden');
-    moreEdit.innerHTML += Contents.layerElementOutActionContents;
-    moreEdit.classList.remove('is-invisible');
     if (accid.parentElement.classList.contains('syllable')) {
       moreEdit.innerHTML += Contents.layerElementInActionContents;
     }
@@ -703,7 +694,7 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
 
   try {
     const extraEdit = document.getElementById('extraEdit');
-    extraEdit.classList.remove('is-hidden');
+    extraEdit.parentElement.classList.remove('hidden');
     extraEdit.innerHTML = Contents.accidActionContents;
   } catch (e) {}
 
@@ -781,7 +772,6 @@ export function triggerLayerElementActions (element: SVGGraphicsElement): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.parentElement.classList.remove('hidden');
-    moreEdit.innerHTML += Contents.layerElementOutActionContents;
     if (element.parentElement.classList.contains('syllable')) {
       moreEdit.innerHTML += Contents.layerElementInActionContents;
     }
@@ -821,8 +811,7 @@ export function triggerStaffActions (): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-hidden');
-    document.getElementById('moreEdit').parentElement.classList.remove('hidden');
+    moreEdit.parentElement.classList.remove('hidden');
     moreEdit.innerHTML = Contents.staffActionContents;
   } catch (e) {}
 
@@ -861,8 +850,7 @@ export function triggerSplitActions (): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-hidden');
-    document.getElementById('moreEdit').parentElement.classList.remove('hidden');
+    moreEdit.parentElement.classList.remove('hidden');
     moreEdit.innerHTML = Contents.splitActionContents;
   } catch (e) {}
 
@@ -920,8 +908,7 @@ export function triggerDefaultSylActions (): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-hidden');
-    document.getElementById('moreEdit').parentElement.classList.remove('hidden');
+    moreEdit.parentElement.classList.remove('hidden');
     moreEdit.innerHTML = Contents.defaultSylActionContents;
   } catch (e) {}
 
@@ -945,8 +932,7 @@ export function triggerDefaultActions (): void {
   endOptionsSelection();
   try {
     const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-hidden');
-    document.getElementById('moreEdit').parentElement.classList.remove('hidden');
+    moreEdit.parentElement.classList.remove('hidden');
     moreEdit.innerHTML = Contents.defaultActionContents;
   } catch (e) {}
 

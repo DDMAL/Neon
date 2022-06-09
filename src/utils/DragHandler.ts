@@ -121,7 +121,6 @@ class DragHandler {
   endOptionsSelection (): void {
     try {
       document.getElementById('moreEdit').innerHTML = '';
-      document.getElementById('moreEdit').classList.add('is-hidden');
       document.getElementById('moreEdit').parentElement.classList.add('hidden');
     } catch (e) {}
   }

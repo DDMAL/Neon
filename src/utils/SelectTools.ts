@@ -67,7 +67,7 @@ export function unselect (): void {
     SelectOptions.endOptionsSelection();
   }
   document.getElementById('extraEdit').innerHTML = '';
-  document.getElementById('extraEdit').classList.add('is-hidden');
+  document.getElementById('extraEdit').parentElement.classList.add('hidden');
   updateHighlight();
 }
 

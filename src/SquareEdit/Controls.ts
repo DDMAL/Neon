@@ -200,7 +200,6 @@ export function initSelectionButtons (): void {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-hidden');
       document.getElementById('moreEdit').parentElement.classList.add('hidden');
       document.getElementById('extraEdit').parentElement.classList.add('hidden');
       selByNeume.classList.add('is-active');
@@ -224,7 +223,6 @@ export function initSelectionButtons (): void {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-hidden');
       document.getElementById('moreEdit').parentElement.classList.add('hidden');
       document.getElementById('extraEdit').parentElement.classList.add('hidden');
       selByNc.classList.add('is-active');
@@ -248,7 +246,6 @@ export function initSelectionButtons (): void {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-hidden');
       document.getElementById('moreEdit').parentElement.classList.add('hidden');
       document.getElementById('extraEdit').parentElement.classList.add('hidden');
       selByStaff.classList.add('is-active');

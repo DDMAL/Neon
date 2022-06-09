@@ -74,7 +74,6 @@ export class SplitStaffHandler {
       selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
       try {
         document.getElementById('moreEdit').innerHTML = '';
-        document.getElementById('moreEdit').classList.add('is-hidden');
         document.getElementById('moreEdit').parentElement.classList.add('hidden');
       } catch (e) {}
     });

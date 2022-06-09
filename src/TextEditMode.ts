@@ -5,7 +5,6 @@ import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select'
 import { setGroupingHighlight } from './utils/Color';
 import { TextEditInterface } from './Interfaces';
 import  { ModalWindowView } from './utils/ModalWindow';
-import { HTMLSVGElement, SetTextAction } from './Types';
 
 /**
  * Format a string for prompting the user.
@@ -24,7 +23,6 @@ function selBySyllableListener (): void {
     try {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-hidden');
       document.getElementById('moreEdit').parentElement.classList.add('hidden');
       document.getElementById('extraEdit').parentElement.classList.add('hidden');
     } catch (e) {}
