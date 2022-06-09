@@ -412,13 +412,16 @@ a:hover {
     flex-wrap: wrap;
     align-items: flex-start;
 }
-/* Display Panel */
-#highlight-button {
-    font-family: Montserrat, sans-serif;
-    margin: 0px;
+.dropdown-menu {
+    padding-top: 0px;
+    margin-left: 3px;
+    max-height: 15vh;
+    overflow: auto;
+    border: 1px solid #dbdbdb;
+    border-radius: 4px;
 }
-#highlight-dropdown {
-    margin: 3px;
+.dropdown-content {
+    box-shadow: none;
 }
 /* Insert Panel */
 #insert_data {
