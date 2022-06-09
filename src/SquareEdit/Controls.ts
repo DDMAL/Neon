@@ -269,7 +269,6 @@ export function initSelectionButtons (): void {
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-hidden');
       document.getElementById('moreEdit').parentElement.classList.add('hidden');
       document.getElementById('extraEdit').parentElement.classList.add('hidden');
       selByLayerElement.classList.add('is-active');
