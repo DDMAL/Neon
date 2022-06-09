@@ -86,7 +86,7 @@ a:hover {
     padding: 0px 1vw;
     background-color: transparent;
     padding-right: 1vw;
-    font-weight: lighter;
+    font-weight: normal;
     font-size: 16px;
 }
 .navbar-element.navbar-btn {
@@ -511,10 +511,11 @@ a:hover {
     position: fixed;
 }
 .neon-notification {
-    padding: 0.8rem;
+    padding: 0.4rem 0.8rem 0.4rem 0.8rem;
     margin: 0.5rem;
     font-weight: 600;
     background: #589ed5;
+    opacity: 0.9;
     color: #ffffff;
     border-radius: 4px;
     z-index: 8;
@@ -596,7 +597,7 @@ a:hover {
     width: 100%;
     padding-left: 20px;
     padding-right: 20px;
-    background-color: #589ed5;
+    background-color: #7cb1b7;
     color: white;
     font-weight: bold;
     display: flex;
@@ -668,7 +669,7 @@ a:hover {
     width: 100%;
 }
 .neon-modal-window-btn {
-    background-color: #589ed5;
+    background-color: #7cb1b7;
     color: white;
     cursor: pointer;
     padding: 5px;
