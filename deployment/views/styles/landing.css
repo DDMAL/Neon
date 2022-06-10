@@ -8,7 +8,7 @@
 body {
     background-color: rgb(240, 250, 255);
     margin: auto;
-    padding: 4rem;
+    padding: 1rem 4rem;
 }
 
 .heading {
@@ -17,17 +17,62 @@ body {
     font-weight: 500;
 }
 
-/* .heading:hover {
-    transform: translate(-5px, -2px);
-} */
+#dropdown_label {
+  font-size: larger;
+  margin-bottom: 0.2rem;
+  font-weight: 300;
+}
+
+#select_documents_container {
+  display: block;
+  width: 20rem;
+  height: 20;
+  padding-bottom: 2rem;
+}
+
+#documents_dropdown {
+  width: inherit;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  font-size: smaller;
+}
+
+.faded {
+  font-weight: 300;
+  color: rgb(120, 120, 120);
+}
+
+#open_documents {
+  width: inherit;
+  height: 3rem;
+  font-size: medium;
+  font-weight: 300;
+  border-width: thin;
+  border-radius: 0.5em;
+  margin-bottom: 0.3rem;
+}
+
+#delete_documents {
+  width: inherit;
+  height: 1.5rem;
+  font-size: 15px;
+  font-weight: 300;
+  border-radius: 0.3rem;
+  border-width: thin;
+}
+
+#open_documents:hover, #delete_documents:hover {
+  cursor:pointer;
+  background-color: rgb(206, 220, 255);
+}
 
 #initial_upload_area {
-    border: 0.1rem dashed;
-    border-radius: 1rem;
-    width: 20rem;
-    height: 10rem;
-    line-height: 10rem;
-    text-align: center;
+  border: 0.1rem dashed;
+  border-radius: 0.5rem;
+  width: 20rem;
+  height: 10rem;
+  line-height: 10rem;
+  text-align: center;
 }
 
 #initial_upload_area:hover, .over {
@@ -38,7 +83,23 @@ body {
 }
 
 #initial_upload_message {
-    font-weight: 700;
-    font-size: 2rem;
-    user-select: none;
+  font-size: larger;
+  font-weight: 400;
+}
+
+#unmatched_files_area {
+    display: grid;
+    grid-template-columns: repeat(1, auto);
+    gap: 0.2rem;
+    width: 10rem;
+}
+  
+.file_box {
+    border: 0.1rem solid rgb(0, 0, 0);
+    background-color: rgb(255, 255, 255);
+    border-radius: .5em;
+    padding: 0.5rem;
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
 }

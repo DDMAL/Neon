@@ -20,9 +20,7 @@ const InitialUploadArea = (): HTMLElement => {
     input.multiple = true;
 
     input.onchange = (event) => { 
-      // const reader = new FileReader();
       const fileList: FileList = event.target['files']; 
-      console.log(fileList);
       fm.addNewFiles(fileList);
     };
     input.click();
