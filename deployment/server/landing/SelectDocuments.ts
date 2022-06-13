@@ -34,14 +34,14 @@ export const InitSelectDocuments = (folioNames: string[], manuscriptNames: strin
 
   function openEditorTab(filename: string) {
     // const params = makeParams({ storage: filename });
-    window.open(`./edit/${filename}`, '_blank');
+    window.open(`./edit/${filename} `, '_blank');
   }
 
-  function makeParams(obj): string {
-    return Object.keys(obj).map(key => {
-      return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
-    }).join('&');
-  }
+  // function makeParams(obj): string {
+  //   return Object.keys(obj).map(key => {
+  //     return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
+  //   }).join('&');
+  // }
 
   function handleDeleteDocuments() {
     window.alert('do something delety');

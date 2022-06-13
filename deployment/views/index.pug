@@ -10,24 +10,16 @@ html
 
     body
         .heading Neon 
-               
-        ul
-            - for( var i = 0; i < files.length; i++ )
-                li
-                    = files[i]
 
         // ---- JUST TO UPLOAD FOR NOW-------
         section.container
-            h3.subtitle
-            | Single Upload:
-            form(action='/upload_file', enctype='multipart/form-data', method='post')
-                | select an MEI file to upload:
-                input(type='file', name='resource')
-                br
-                | select a PNG file to upload:
-                input(type='file', accept='image/png', name='resource')
-                br
-                input(type='submit', value='Upload')
+          | select an MEI file to upload:
+          input(type='file', name='mei', id='mei_upload')
+          br
+          | select a PNG file to upload:
+          input(type='file', accept='image/png', name='image', id='image_upload')
+          br
+          button(type='button', id='test_upload') Upload
         // ---------------------- *delete*
         
         br
