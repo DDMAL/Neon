@@ -114,7 +114,6 @@ class InsertHandler {
     // Disable edit mode listeners
     document.body.addEventListener('keydown', this.keydownListener);
     document.body.addEventListener('keyup', this.resetInsertHandler);
-    document.body.addEventListener('click', this.clickawayHandler);
 
     // Add 'return to edit mode' button
     if (!alreadyInInsertMode) {
@@ -125,6 +124,8 @@ class InsertHandler {
       document.getElementById('redo').parentNode.appendChild(editModeButton);
       editModeButton.addEventListener('click', this.insertDisabled);
     }
+
+    document.getElementById('editContents').addEventListener('click', this.clickawayHandler);
   }
 
   /**
@@ -136,16 +137,28 @@ class InsertHandler {
     document.body.removeEventListener('keydown', this.keydownListener);
     document.body.removeEventListener('keyup', this.resetInsertHandler);
     document.body.removeEventListener('click', this.clickawayHandler);
-    const selected = document.querySelector('.insertel.is-active');
-    if (selected !== null) {
-      selected.classList.remove('is-active');
-    }
+
     this.firstClick = true;
     try {
       document.getElementById('returnToEditMode').remove();
     } catch (e) {
       // console.debug(e);
     }
+
+    const insertPanel = document.getElementById('insert_controls');
+    const insertHeading = document.getElementById('insertMenu');
+    const insertHeadingTitle = insertHeading.querySelector('.panel-heading-title');
+
+    const editPanel = document.getElementById('edit_controls');
+    const editHeading = document.getElementById('editMenu');
+    const displayHeadingTitle = editHeading.querySelector('.panel-heading-title');
+
+    insertHeadingTitle.classList.remove('focused');
+    displayHeadingTitle.classList.add('focused');
+
+    insertPanel.querySelector('.side-panel-btn.insertel.is-active').classList.add('unfocused');
+    editPanel.querySelector('.side-panel-btn.sel-by.is-active').classList.remove('unfocused');
+    
   }).bind(this);
 
   /**

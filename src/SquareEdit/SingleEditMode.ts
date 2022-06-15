@@ -52,7 +52,6 @@ class SingleEditMode implements NeumeEditInterface {
     this.insertHandler = new InsertHandler(this.neonView, '#svg_group');
     bindInsertTabs(this.insertHandler);
     document.getElementById('primitiveTab').click();
-    document.getElementById('selBySyllable').click(); //unfocus insert panel
     Select.setSelectHelperObjects(this.neonView, this.dragHandler);
     this.setSelectListeners();
 
@@ -62,6 +61,8 @@ class SingleEditMode implements NeumeEditInterface {
     initUndoRedoPanel(this.neonView);
     setHighlightSelectionControls();
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
+
+    document.getElementById('edit_controls').click(); // focus display panel
   }
 
   /**
