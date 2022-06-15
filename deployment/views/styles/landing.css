@@ -11,6 +11,26 @@ body {
     padding: 1rem 4rem;
 }
 
+.context_menu {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  width: 10rem;
+  background-color: rgb(240, 250, 255);
+  border: solid 1px rgb(0, 0, 69);
+  box-shadow: 1px 1px 2px #c9c9c9;
+}
+
+.context_menu_link {
+  display: block;
+  padding: 4px 12px;
+  text-decoration: none;
+}
+
+.context_menu_link:hover {
+  background-color: rgb(206, 220, 255);
+}
+
 #left_col {
   display: block;
   position: absolute;
@@ -103,17 +123,17 @@ body {
   border-radius: 0.5rem;
 }
 
+#unpaired_container {
+  min-height: 22rem;
+}
+
 #mei_container, #image_container {
   width: 50%;
 }
 
 #mei_list, #image_list {
-  height: 15rem;
+  min-height: 15rem;
   border-bottom: 0.1rem solid;
-}
-
-#unpaired_container {
-  height: 22rem;
 }
 
 #files_container {

@@ -1,9 +1,7 @@
-import FileBox from './FileBox';
-
-interface Folio {
-  mei: File,
-  image: File
-}
+// interface Folio {
+//   mei: File,
+//   image: File
+// }
 
 /**
  * Singleton management system, use getInstance() to retrieve instance.
@@ -11,10 +9,11 @@ interface Folio {
 class FileManager {
   private static instance: FileManager;
 
-  private meiFiles: File[] = [];
-  private imageFiles: File[] = [];
-  private iiifFiles: File[] = [];
-  private folioPairs: Folio[] = [];
+  // private meiFiles: File[] = [];
+  // private imageFiles: File[] = [];
+  // private iiifFiles: File[] = [];
+  // private folioPairs: Folio[] = [];
+  private allFiles = new Map<string, File>();
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private constructor() {}
@@ -26,67 +25,18 @@ class FileManager {
     return FileManager.instance;
   }
 
-  public addNewFiles(fileList: FileList): File[] {
-    const unacceptedFiles: File[] = [];
-    const acceptedFiles: File[] = [];
+  public addFile(file: File): void {
+    if (!this.allFiles.has(file.name)) 
+      this.allFiles.set(file.name, file);
+  }
 
-    for (const file of fileList) {
-      const filename = file.name;
-      const ext = filename.split('.').pop();
-      
-      if (ext === 'mei') 
-        this.meiFiles.push(file);
-      else if (ext === 'png' || ext === 'jpeg' || ext === 'jpg')
-        this.imageFiles.push(file);
-      else if (ext === 'jsonld')
-        this.iiifFiles.push(file);
-      else {
-        unacceptedFiles.push(file);
-        continue;
-      }
-      acceptedFiles.push(file);
+  public getFile(key: string): File {
+    if (!this.allFiles.has(key)) {
+      return this.allFiles.get(key);
     }
-    this.appendFileBoxes(acceptedFiles);
-    return unacceptedFiles;
   }
 
-  private appendFileBoxes(files: File[]) {
-    const container = document.getElementById('unmatched_files_area');
-    
-    files.forEach((file: File) => {
-      const box = FileBox(file);
-      container.appendChild(box);
-    });
-  }
-
-  public print(): void {
-    console.log('mei: ', this.meiFiles);
-    console.log('images: ', this.imageFiles);
-    console.log('iiif: ', this.iiifFiles); 
-  }
-
-  public removeFile(file: File): boolean {
-    [this.meiFiles, this.imageFiles, this.iiifFiles].forEach( (files: File[]) => {
-      const pos = files.indexOf(file);
-      if (pos !== -1) {
-        files.splice(pos, 1);
-        return true;
-      }
-    });
-    return false;
-  }
-
-  public uploadFolio(folio: Folio): boolean {
-    return false;
-  }
-
-  public uploadIiif(file: File): boolean {
-    return false;
-  }
-
-  public uploadAll(folioPairs: Folio[], iiifFiles: File[]): boolean {
-    return false;
-  }
+  
 }
 
 export default FileManager;
