@@ -36,45 +36,47 @@ function isUserInputValid (input) {
 // Main Page
 router.route('/')
   .get(function (req, res) {
-    var meiFiles = [];
-    var iiifFiles = [];
-    fs.readdir(manifestUpload, function (err, files) {
-      if (err) {
-        console.error(err);
-        res.sendStatus(500);
-        return;
-      }
-      if (files.length !== 0) {
-        var index = files.indexOf('.gitignore');
-        files.splice(index, (index < 0 ? 0 : 1));
-        meiFiles = files;
-      }
+    res.render('landing');
+    // //  -------- changing running locally storing documents to using storage.ts like neon-index -------
+    // var meiFiles = [];
+    // var iiifFiles = [];
+    // fs.readdir(manifestUpload, function (err, files) {
+    //   if (err) {
+    //     console.error(err);
+    //     res.sendStatus(500);
+    //     return;
+    //   }
+    //   if (files.length !== 0) {
+    //     var index = files.indexOf('.gitignore');
+    //     files.splice(index, (index < 0 ? 0 : 1));
+    //     meiFiles = files;
+    //   }
 
-      fs.readdir(iiifUpload, { withFileTypes: true }, function (err, files) {
-        if (err) {
-          console.error(err);
-          res.sendStatus(500);
-          return;
-        }
-        files.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
-          let label = entry.name;
-          let revisions = fs.readdirSync(path.join(iiifUpload, label), { withFileTypes: true });
-          revisions.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
-            if (err) {
-              console.error(err);
-              res.sendStatus(500);
-            } else {
-              iiifFiles.push([label, entry.name]);
-            }
-          });
-        });
-        if (meiFiles.length !== 0 || iiifFiles.length !== 0) {
-          res.render('index', { files: meiFiles, iiif: iiifFiles });
-        } else {
-          res.render('index', { nofiles: 'No files uploaded', files: meiFiles, iiif: iiifFiles });
-        }
-      });
-    });
+    //   fs.readdir(iiifUpload, { withFileTypes: true }, function (err, files) {
+    //     if (err) {
+    //       console.error(err);
+    //       res.sendStatus(500);
+    //       return;
+    //     }
+    //     files.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
+    //       let label = entry.name;
+    //       let revisions = fs.readdirSync(path.join(iiifUpload, label), { withFileTypes: true });
+    //       revisions.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
+    //         if (err) {
+    //           console.error(err);
+    //           res.sendStatus(500);
+    //         } else {
+    //           iiifFiles.push([label, entry.name]);
+    //         }
+    //       });
+    //     });
+    //     if (meiFiles.length !== 0 || iiifFiles.length !== 0) {
+    //       res.render('index', { files: meiFiles, iiif: iiifFiles });
+    //     } else {
+    //       res.render('index', { nofiles: 'No files uploaded', files: meiFiles, iiif: iiifFiles });
+    //     }
+    //   });
+    // });
   });
 
 router.route('/upload_file').post(upload.array('resource', 2), function (req, res) {

@@ -11,7 +11,13 @@ body {
     padding: 1rem 4rem;
 }
 
-.heading {
+#left_col {
+  display: block;
+  position: absolute;
+  width: 30vw;
+}
+
+#title_heading {
     display: inline-block;  
     font-size: 10rem;
     font-weight: 500;
@@ -25,8 +31,7 @@ body {
 
 #select_documents_container {
   display: block;
-  width: 20rem;
-  height: 20;
+  width: 24vw;
   padding-bottom: 2rem;
 }
 
@@ -69,9 +74,9 @@ body {
 #initial_upload_area {
   border: 0.1rem dashed;
   border-radius: 0.5rem;
-  width: 20rem;
-  height: 10rem;
-  line-height: 10rem;
+  width: 24vw;
+  height: 13rem;
+  line-height: 13rem;
   text-align: center;
 }
 
@@ -82,24 +87,59 @@ body {
     /* transform: translate(-5px, -2px) */
 }
 
-#initial_upload_message {
-  font-size: larger;
-  font-weight: 400;
+#right_col {
+  width: 50vw;
+  position: absolute;
+  top: 3rem;
+  right: 3rem;
 }
 
-#unmatched_files_area {
-    display: grid;
-    grid-template-columns: repeat(1, auto);
-    gap: 0.2rem;
-    width: 10rem;
+#uploading_container {
+  /* display: none; */
 }
-  
-.file_box {
-    border: 0.1rem solid rgb(0, 0, 0);
-    background-color: rgb(255, 255, 255);
-    border-radius: .5em;
-    padding: 0.5rem;
-    cursor: move;
-    display: flex;
-    justify-content: space-between;
+
+.file_container {
+  border: 0.1rem solid;
+  border-radius: 0.5rem;
+}
+
+#mei_container, #image_container {
+  width: 50%;
+}
+
+#mei_list, #image_list {
+  height: 15rem;
+  border-bottom: 0.1rem solid;
+}
+
+#unpaired_container {
+  height: 22rem;
+}
+
+#files_container {
+  display: flex;
+  flex-direction: row;
+}
+
+.file_heading {
+  line-height: 0;
+  padding: 0.5rem 1rem;
+}
+
+.file_list {
+  border-top: 0.1rem solid;
+  min-height: 2rem;
+}
+
+#image_container {
+  border-left: 0.1rem solid;
+}
+
+.action_button {
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+#upload_button_container {
+  float: right;
 }

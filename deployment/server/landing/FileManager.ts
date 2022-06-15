@@ -13,7 +13,6 @@ class FileManager {
 
   private meiFiles: File[] = [];
   private imageFiles: File[] = [];
-
   private iiifFiles: File[] = [];
   private folioPairs: Folio[] = [];
 

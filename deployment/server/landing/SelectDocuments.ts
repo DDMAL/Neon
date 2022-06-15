@@ -1,29 +1,84 @@
-export const InitSelectDocuments = (folioNames: string[], manuscriptNames: string[]): void => {
-  const folioGroup = document.getElementById('uploaded_folios');
-  const manuscriptGroup = document.getElementById('uploaded_manuscripts');
-  folioNames.sort(); 
-  manuscriptNames.sort();
+import { getAllDocuments, deleteEntry } from './storage';
+
+interface RowI {
+  doc: {
+    kind: string,
+    _attachments: {
+      manifest: unknown,
+    }
+    _id: string,
+    _rev: string
+  }
+  id: string,
+  key: string,
+  value: { rev: string }
+}
+interface DocumentsI {
+  total_rows: number,
+  offset: number,
+  rows: Array<RowI>
+}
+
+async function fetchDocuments(): Promise<string[][]> {
+  return await getAllDocuments()
+    .then( (res: DocumentsI) => {
+      const pages: string[] = [];
+      const manuscripts: string[] = [];
+      res['rows'].forEach( row => {
+        if (row.doc.kind === 'page') { 
+          pages.push(row.key); 
+        }
+        else if (row.doc.kind === 'manuscript') {
+          manuscripts.push(row.key); console.log('manuscripts');
+        }
+        else { 
+          console.debug('row.kind did not match page or manuscript: ', row);
+        }
+      });
+      return [pages, manuscripts];
+    })
+    .catch(err => {
+      console.log('unresolved: ', err);
+      return [[],[]];
+    });
+}
+
+export async function updateDocumentSelector(): Promise<void> {
+  const allDocuments = await fetchDocuments();
+  const folioNames = allDocuments[0].sort();
+  const manuscriptNames = allDocuments[1].sort();
+
+  const folioGroup = document.getElementById('uploaded_folios') as HTMLOptGroupElement;
+  const manuscriptGroup = document.getElementById('uploaded_manuscripts') as HTMLOptGroupElement;
+
+  folioGroup.childNodes.forEach(child => child.remove());
+  manuscriptGroup.childNodes.forEach(child => child.remove());
 
   if (folioNames.length === 0) {
-    const optGroup = document.getElementById('uploaded_folios') as HTMLOptGroupElement;
-    optGroup.label = 'No Folios Uploaded';
+    folioGroup.label = 'No Folios Uploaded';
   } 
   else folioNames.forEach(str => {
+    folioGroup.label = 'Folios: ';
     const option = document.createElement('option');
     option.value = option.innerText = str;
     folioGroup.appendChild(option);
   });
   if (manuscriptNames.length === 0) {
-    const optGroup = document.getElementById('uploaded_manuscripts') as HTMLOptGroupElement;
-    optGroup.label = 'No Manuscripts Uploaded';
+    manuscriptGroup.label = 'No Manuscripts Uploaded';
   } 
   else manuscriptNames.forEach(str => {
+    manuscriptGroup.label = 'Manuscripts: ';
     const option = document.createElement('option');
     option.value = option.innerText = str;
     manuscriptGroup.appendChild(option);
   });
+}
 
-  const handleOpenDocuments = () => getSelection().forEach(filename => openEditorTab(filename));
+export const InitSelectDocuments = (): void => {
+
+  function handleOpenDocuments() {
+    getSelection().forEach(filename => openEditorTab(filename));
+  }
 
   function getSelection() {
     const dropdown = document.getElementById('documents_dropdown') as HTMLSelectElement;
@@ -33,19 +88,30 @@ export const InitSelectDocuments = (folioNames: string[], manuscriptNames: strin
   }
 
   function openEditorTab(filename: string) {
-    // const params = makeParams({ storage: filename });
-    window.open(`./edit/${filename} `, '_blank');
+    const params = makeParams({ storage: filename });
+    window.open(`./editor.html?${params} `, '_blank');
   }
 
-  // function makeParams(obj): string {
-  //   return Object.keys(obj).map(key => {
-  //     return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
-  //   }).join('&');
-  // }
+  function makeParams(obj): string {
+    return Object.keys(obj).map(key => {
+      return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
+    }).join('&');
+  }
 
   function handleDeleteDocuments() {
-    window.alert('do something delety');
+    const selection = getSelection();
+    const filenameFormatted = selection.map(name => `- ${name}`).join('\n');
+    const alertMessage = 'Are you sure you want to delete:\n' + filenameFormatted + '\n\nThis action is irreversible';
+    const isConfirmed = window.confirm(alertMessage);
+    
+    if (isConfirmed) {
+      Promise.all(selection.map(filename => deleteEntry(filename)))
+        .then( _ => updateDocumentSelector())
+        .catch( err => console.debug('failed to delete files: ', err));
+    }
   }
+  
+  updateDocumentSelector();
 
   const openButton = document.getElementById('open_documents');
   openButton.addEventListener('click', handleOpenDocuments);

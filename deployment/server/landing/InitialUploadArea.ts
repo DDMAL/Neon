@@ -1,11 +1,10 @@
-import FileManager from './FileManager';
+import { addNewFiles } from './UploadManager';
 
 /**
  * Initial upload area component click, drag and drop functionality for storing documents (folios, manuscripts).
  * @returns InitialUploadArea Node
  */
 const InitialUploadArea = (): HTMLElement => {
-  const fm = FileManager.getInstance();
 
   const node = document.createElement('div');
   node.id = 'initial_upload_area';
@@ -21,7 +20,8 @@ const InitialUploadArea = (): HTMLElement => {
 
     input.onchange = (event) => { 
       const fileList: FileList = event.target['files']; 
-      fm.addNewFiles(fileList);
+      const files = Array.from(fileList);
+      addNewFiles(files);
     };
     input.click();
   }
@@ -40,7 +40,8 @@ const InitialUploadArea = (): HTMLElement => {
     event.preventDefault();
     node.classList.remove('over');
     const fileList = event.dataTransfer.files;
-    fm.addNewFiles(fileList);
+    const files = Array.from(fileList);
+    addNewFiles(files);
   });
   
   return node;
