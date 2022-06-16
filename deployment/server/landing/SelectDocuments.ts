@@ -1,4 +1,5 @@
 import { getAllDocuments, deleteEntry } from './storage';
+import { formatFilename } from './functions';
 
 interface RowI {
   doc: {
@@ -57,19 +58,21 @@ export async function updateDocumentSelector(): Promise<void> {
   if (folioNames.length === 0) {
     folioGroup.label = 'No Folios Uploaded';
   } 
-  else folioNames.forEach(str => {
+  else folioNames.forEach(name => {
     folioGroup.label = 'Folios: ';
     const option = document.createElement('option');
-    option.value = option.innerText = str;
+    option.value = name;
+    option.innerText = formatFilename(name, 20);
     folioGroup.appendChild(option);
   });
   if (manuscriptNames.length === 0) {
     manuscriptGroup.label = 'No Manuscripts Uploaded';
   } 
-  else manuscriptNames.forEach(str => {
+  else manuscriptNames.forEach(name => {
     manuscriptGroup.label = 'Manuscripts: ';
     const option = document.createElement('option');
-    option.value = option.innerText = str;
+    option.value = name;
+    option.innerText = formatFilename(name, 20);
     manuscriptGroup.appendChild(option);
   });
 }

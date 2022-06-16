@@ -37,9 +37,16 @@ body {
   width: 30vw;
 }
 
+#right_col {
+  min-width: 30rem;
+  width: 50vw;
+  position: absolute;
+  left: 40vw;
+}
+
 #title_heading {
     display: inline-block;  
-    font-size: 10rem;
+    font-size: 8rem;
     font-weight: 500;
 }
 
@@ -52,6 +59,7 @@ body {
 #select_documents_container {
   display: block;
   width: 24vw;
+  min-width: 25rem;
   padding-bottom: 2rem;
 }
 
@@ -107,15 +115,9 @@ body {
     /* transform: translate(-5px, -2px) */
 }
 
-#right_col {
-  width: 50vw;
-  position: absolute;
-  top: 3rem;
-  right: 3rem;
-}
-
 #uploading_container {
-  /* display: none; */
+  display: none;
+  margin-top: 12.2rem;
 }
 
 .file_container {
@@ -149,6 +151,7 @@ body {
 .file_list {
   border-top: 0.1rem solid;
   min-height: 2rem;
+  padding: 0.5rem;
 }
 
 #image_container {
