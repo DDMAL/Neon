@@ -14,7 +14,8 @@ const neumeGroups = new Map(
 );
 
 function startInfoVisibility (): void {
-  document.getElementById('neume_info').innerHTML =
+  const neumeInfo = document.getElementById('neume_info');
+  neumeInfo.innerHTML =
     `<div class="info-bubble-container">
       <div class="info-bubble-header">Element Info</div>
       <div class="info-bubble-body"><i>Hover over any element to see its metadata</i></div>
@@ -29,6 +30,8 @@ function updateInfoVisibility (): void {
   const neumeInfo = document.getElementById('neume_info');
   if ((document.getElementById('displayInfo') as HTMLInputElement).checked) {
     neumeInfo.setAttribute('style', '');
+    // scroll neume info into view
+    neumeInfo.scrollIntoView({ behavior: 'smooth' });
   } else {
     neumeInfo.setAttribute('style', 'display: none');
   }
