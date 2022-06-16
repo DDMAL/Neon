@@ -3,11 +3,13 @@ import { DragAction, EditorAction } from '../Types';
 import * as d3 from 'd3';
 
 class DragHandler {
-  private dragStartCoords: Array<number>;
-  private resetToAction: (selection: d3.Selection<d3.BaseType, {}, HTMLElement, any>, args: any[]) => void;
   readonly neonView: NeonView;
   private selector: string;
   private selection: Element[];
+
+  private dragStartCoords: [number, number] = [-1, -1];
+  private resetToAction: (selection: d3.Selection<d3.BaseType, {}, HTMLElement, any>, args: any[]) => void;
+
   private dx: number;
   private dy: number;
 
@@ -51,13 +53,11 @@ class DragHandler {
   }
 
   dragging (): void {
-    const relativeY = d3.event.y - this.dragStartCoords[1];
-    const relativeX = d3.event.x - this.dragStartCoords[0];
     this.dx = d3.event.x - this.dragStartCoords[0];
     this.dy = d3.event.y - this.dragStartCoords[1];
     this.selection.forEach((el) => {
-      d3.select(el).attr('transform', function () {
-        return 'translate(' + [relativeX, relativeY] + ')';
+      d3.select(el).attr('transform', () => {
+        return 'translate(' + [this.dx, this.dy] + ')';
       });
     });
     /*
@@ -66,10 +66,14 @@ class DragHandler {
      * it will be a child of the element in selection, so it will get moved in the above loop
      * so we cancel that movement out here
      */
-    if (this.selection.filter((element: HTMLElement) => element.classList.contains('syl')).length === 0) {
-      d3.selectAll('.syllable.selected').selectAll('.sylTextRect-display').attr('transform', function () {
-        return 'translate(' + [-1 * relativeX, -1 * relativeY] + ')';
-      });
+    const syls = this.selection.filter((el) => el.classList.contains('syl'));
+    if (syls.length === 0) {
+      d3.selectAll('.syllable.selected')
+        .selectAll('.sylTextRect-display')
+        .attr(
+          'transform',
+          () => 'translate(' + [-1 * this.dx, -1 * this.dy] + ')'
+        );
     }
   }
 
@@ -119,10 +123,11 @@ class DragHandler {
   }
 
   endOptionsSelection (): void {
-    try {
-      document.getElementById('moreEdit').innerHTML = '';
-      document.getElementById('moreEdit').parentElement.classList.add('hidden');
-    } catch (e) {}
+    const moreEdit = document.getElementById('moreEdit');
+    if (moreEdit) {
+      moreEdit.innerHTML = '';
+      moreEdit.parentElement.classList.add('hidden');
+    }
   }
 }
 
