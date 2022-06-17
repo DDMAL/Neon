@@ -423,7 +423,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
             Grouping.triggerGrouping('splitSyllable');
           } else if (sharedSecondLevelParent(groups)) {
             Grouping.triggerGrouping('syl');
-            changeStaffListener();
+            SelectOptions.addChangeStaffListener();
           } else {
             // Check if this *could* be a selection with a single logical syllable split by a staff break.
             const staff0 = groups[0].closest('.staff');
@@ -552,12 +552,4 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     default:
       console.error('Unknown selection type. This should not have occurred.');
   }
-
-  function changeStaffListener(): void {
-    try {
-      document.getElementById('changeStaff')
-        .addEventListener('click', SelectOptions.changeStaffHandler);
-    } catch (e) {console.debug(e);}
-  }
-  
 }
