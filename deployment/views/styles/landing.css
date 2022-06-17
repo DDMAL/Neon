@@ -1,14 +1,13 @@
 * {
     font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-weight: 200;
-    color:rgb(0, 0, 69);
-    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    color: #10008b;
 }
 
 body {
-    background-color: rgb(240, 250, 255);
+    background-color: rgb(255, 255, 255);
     margin: auto;
-    padding: 1rem 4rem;
+    padding: 2rem
 }
 
 .context_menu {
@@ -35,19 +34,23 @@ body {
   display: block;
   position: absolute;
   width: 30vw;
+  min-width: 15rem;
+  /* background-color: red; */
 }
 
 #right_col {
-  min-width: 30rem;
+  min-width: 35rem;
   width: 50vw;
   position: absolute;
   left: 40vw;
+  /* background-color: green; */
+
 }
 
 #title_heading {
-    display: inline-block;  
     font-size: 8rem;
     font-weight: 500;
+    /* text-shadow: 0.3rem 0.3rem #589ED5; */
 }
 
 #dropdown_label {
@@ -57,66 +60,75 @@ body {
 }
 
 #select_documents_container {
-  display: block;
-  width: 24vw;
-  min-width: 25rem;
-  padding-bottom: 2rem;
+  width: inherit;
+  min-width: inherit;
+  /* background-color: beige; */
+  margin-bottom: 2rem;
 }
 
 #documents_dropdown {
   width: inherit;
+  min-width: inherit;
   margin-bottom: 0.5rem;
   padding: 0.5rem;
   font-size: smaller;
+  border-color: #10008b;
 }
 
 .faded {
   font-weight: 300;
-  color: rgb(120, 120, 120);
+  color: #9e9e9e;
 }
 
-#open_documents {
+#open_documents, #delete_documents {
   width: inherit;
-  height: 3rem;
+  min-width: inherit;
   font-size: medium;
   font-weight: 300;
   border-width: thin;
   border-radius: 0.5em;
   margin-bottom: 0.3rem;
+  border-color:#10008b;
+}
+
+#open_documents {
+  height: 3rem;
 }
 
 #delete_documents {
-  width: inherit;
-  height: 1.5rem;
-  font-size: 15px;
-  font-weight: 300;
-  border-radius: 0.3rem;
-  border-width: thin;
+  height: 2rem;
 }
 
-#open_documents:hover, #delete_documents:hover {
+#open_documents:hover, 
+#delete_documents:hover, 
+.action_button:hover,
+#initial_upload_area:hover, 
+.over {
   cursor:pointer;
-  background-color: rgb(206, 220, 255);
+  background-color: #589ED5;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.action_button {
+  border: 0.1rem solid;
 }
 
 #initial_upload_area {
   border: 0.1rem dashed;
   border-radius: 0.5rem;
-  width: 24vw;
+  width: inherit;
   height: 13rem;
   line-height: 13rem;
   text-align: center;
 }
 
-#initial_upload_area:hover, .over {
-    cursor:pointer;
-    background-color: rgb(206, 220, 255);
-    /* box-shadow: 5px 5px rgb(191, 117, 255); */
-    /* transform: translate(-5px, -2px) */
+#initial_upload_message {
+  font-size:larger;
+  font-weight:300
 }
 
 #uploading_container {
-  display: none;
+  /* display: none; */
   margin-top: 12.2rem;
 }
 
@@ -151,7 +163,7 @@ body {
 .file_list {
   border-top: 0.1rem solid;
   min-height: 2rem;
-  padding: 0.5rem;
+  padding: 0.3rem;
 }
 
 #image_container {
@@ -165,4 +177,19 @@ body {
 
 #upload_button_container {
   float: right;
+}
+
+.unpaired_item_container {
+  /* padding-bottom: 0rem; */
+  /* height: 0rem; */
+}
+
+.unpaired_item_radio {
+  display: inline;
+  color: #7CB1B7;
+}
+
+.unpaired_item_label {
+  display: inline;
+  font-size: small;
 }

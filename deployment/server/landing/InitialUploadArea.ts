@@ -5,7 +5,7 @@ import { renderUploadingContainer } from './functions';
  * Initial upload area component click, drag and drop functionality for storing documents (folios, manuscripts).
  * @returns InitialUploadArea Node
  */
-const InitialUploadArea = (): HTMLElement => {
+const InitialUploadArea = (): HTMLDivElement => {
 
   const node = document.createElement('div');
   node.id = 'initial_upload_area';

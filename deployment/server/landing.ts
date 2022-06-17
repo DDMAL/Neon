@@ -1,5 +1,6 @@
 import { InitSelectDocuments } from './landing/SelectDocuments';
 import InitialUploadArea from './landing/InitialUploadArea';
+import { handleMakePair } from './landing/UploadManager';
 // import FileManager from './landing/FileManager';
 // import { createManifest, addEntry } from './landing/storage';
 // import UploadManager from './landing/UploadManager';
@@ -10,6 +11,7 @@ InitSelectDocuments();
 
 select('initial_upload_container').appendChild(InitialUploadArea());
 
+select('make_pair').addEventListener('click', handleMakePair);
 // function test_upload() {
 //   const mei: File = (select('mei_upload') as HTMLInputElement).files[0];
 //   const image: File = (select('image_upload') as HTMLInputElement).files[0];
