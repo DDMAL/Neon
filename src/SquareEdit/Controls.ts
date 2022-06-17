@@ -45,47 +45,85 @@ export function bindInsertTabs (insertHandler: InsertHandler): void {
  * Initialize Edit and Insert control panels.
  */
 export function initInsertEditControls (): void {
+
+  const insertPanel = document.getElementById('insert_controls');
   const insertHeading = document.getElementById('insertMenu');
+  const insertHeadingTitle = insertHeading.querySelector('.panel-heading-title');
   const insertContents = document.getElementById('insertContents');
   const insertDropdownIcon = insertHeading.querySelector('svg > use');
 
+  const editPanel = document.getElementById('edit_controls');
   const editHeading = document.getElementById('editMenu');
+  const displayHeadingTitle = editHeading.querySelector('.panel-heading-title');
   const editContents = document.getElementById('editContents');
   const editDropdownIcon = editHeading.querySelector('svg > use');
 
+
+  // event listener for when user clicks inside Insert panel
+  // insert mode is activated
+  insertPanel.addEventListener('click', () => {
+    displayHeadingTitle.classList.remove('focused');
+    insertHeadingTitle.classList.add('focused');
+
+    (<HTMLButtonElement> document.querySelector('.insertel.is-active')).click();
+    editPanel.querySelector('.side-panel-btn.sel-by.is-active').classList.add('unfocused');
+    insertPanel.querySelector('.side-panel-btn.insertel.is-active').classList.remove('unfocused');
+  });
+
+  // event listener for when user clicks inside Edit panel
+  // edit mode is activated
+  editPanel.addEventListener('click', () => {
+    insertHeadingTitle.classList.remove('focused');
+    displayHeadingTitle.classList.add('focused');
+
+    insertPanel.querySelector('.side-panel-btn.insertel.is-active').classList.add('unfocused');
+    editPanel.querySelector('.side-panel-btn.sel-by.is-active').classList.remove('unfocused');
+  });
+
+
   insertHeading.addEventListener('click', () => {
+    // if insert panel is closed, open it
     if (insertContents.classList.contains('closed')) {
+      // set classes and styles for an open panel
       insertContents.classList.remove('closed');
       insertContents.style.padding = '0.5em 0.75em';
       setTimeout(() => {
         insertContents.style.overflow = 'visible';
       }, 200);
-      insertDropdownIcon.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
-    } else {
+      insertDropdownIcon.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down`);
+    } 
+    // if insert panel is open, close it
+    else {
+      // set classes and styles for a closed panel
       insertContents.classList.add('closed');
       insertContents.style.overflow = 'hidden';
       setTimeout(() => {
         insertContents.style.padding = '0px';
       }, 200);
-      insertDropdownIcon.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-side');
+      insertDropdownIcon.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-side`);
     }
   });
 
   editHeading.addEventListener('click', () => {
+    // if edit panel is open, close it
     if (editContents.classList.contains('closed')) {
+      // set classes and styles for an open panel
       editContents.classList.remove('closed');
       editContents.style.padding = '0.5em 0.75em';
       setTimeout(() => {
         editContents.style.overflow = 'visible';
       }, 200);
-      editDropdownIcon.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
-    } else {
+      editDropdownIcon.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down`);
+    }
+    // if edit panel is closed, open it
+    else {
+      // set classes and styles for a closed panel
       editContents.classList.add('closed');
       editContents.style.overflow = 'hidden';
       setTimeout(() => {
         editContents.style.padding = '0px';
       }, 200);
-      editDropdownIcon.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-side');
+      editDropdownIcon.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-side`);
     }
   });
 }
@@ -94,8 +132,9 @@ export function initInsertEditControls (): void {
  * Activate a certain insert action.
  * @param id - The ID of the insert action tab.
  */
-function activate (id: string, insertHandler: InsertHandler) {
-  document.getElementById(id).classList.add('is-active');
+function activate (id: string, insertHandler: InsertHandler): void {
+  const selectedTab = document.getElementById(id);
+  selectedTab.classList.add('is-active');
   if (document.getElementById(id).classList.contains('insertel')) {
     insertHandler.insertActive(id);
   }

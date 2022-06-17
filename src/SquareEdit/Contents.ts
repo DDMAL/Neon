@@ -31,9 +31,6 @@ export const insertTabHtml: Record<string, string> = {
             <button id="liquescentC" class="side-panel-btn insertel smallel" aria-label="Liquescent C" title="Liquescent C"><img src="${__ASSET_PREFIX__}assets/img/liquescentC.png" class="image"></button>
         </p>
         <p class="insert-element-container">
-            <button id="virgaReversed" class="side-panel-btn insertel smallel" aria-label="Reversed Virga" title="Reversed Virga"><img src="${__ASSET_PREFIX__}assets/img/virga_reversed.png" class="image"></button>
-        </p>
-        <p class="insert-element-container">
             <button id="flat" class="side-panel-btn insertel smallel" aria-label="Flat" title="Flat"><img src="${__ASSET_PREFIX__}assets/img/accidFlat.png" class="image"></button>
         </p>
         <p class="insert-element-container">
@@ -83,9 +80,12 @@ export const insertTabHtml: Record<string, string> = {
  * Structure of insert panel with basic grouping tabs.
  */
 export const insertControlsPanel =
-    `<p class="panel-heading" id="insertMenu">INSERT
-        <svg class="icon is-pulled-right"><use id="toggleInsert" xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use></svg>
-    </p>
+    `<div class="panel-heading" id="insertMenu">
+        <div class="panel-heading-title">INSERT</div>
+        <svg class="icon is-pulled-right">
+            <use id="toggleInsert" xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use>
+        </svg>
+    </div>
 	<div class="panel-content-subsection first-subsection">
         <div id="insertContents" class="panel-contents" style="overflow-y: hidden;">
             <p class="panel-tabs">
@@ -101,11 +101,12 @@ export const insertControlsPanel =
  * Contents of edit panel with buttons.
  */
 export const editControlsPanel =
-    `<p class="panel-heading" id="editMenu">EDIT
+    `<div class="panel-heading" id="editMenu">
+        <div class="panel-heading-title focused">EDIT</div>
         <svg class="icon is-pulled-right">
             <use id="toggleEdit" xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use>
         </svg>
-    </p>
+    </div>
     <div id="editContents" class="panel-contents">
         <div class="panel-content-subsection first-subsection">
             <div id="selection-mode-container">

@@ -154,6 +154,9 @@ class TextView implements TextViewInterface {
       if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
         this.neonView.TextEdit.initTextEdit();
       }
+
+      // scroll the syllable text bubble into view
+      sylText.scrollIntoView({ behavior: 'smooth' });
     } else {
       document.getElementById('syl_text').style.display = 'none';
     }
