@@ -65,31 +65,32 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
       
       <div class="panel-content-subsection" id="extensible-block">
 
+        <div id="highlight-options-title" class="panel-sub-title">Highlight Options:</div>
+        <div class="dropdown" id="highlight-dropdown">
+          <div class="dropdown-trigger">
+            <button class="side-panel-btn" id="highlight-button" aria-haspopup="true" aria-controls="highlight-menu" style="width: auto">
+              <span>Highlight</span>
+              <span id="highlight-type">&nbsp;- Off</span>
+              <svg class="icon">
+                <use id="toggleDisplay" xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use>
+              </svg>
+            </button>
+          </div>
+          <div class="dropdown-menu" id="highlight-menu" role="menu">
+            <div class="dropdown-content">
+              <a aria-role="menuitem" class="dropdown-item" id="highlight-staff">Staff</a>
+              <a aria-role="menuitem" class="dropdown-item" id="highlight-syllable">Syllable</a>
+              <a aria-role="menuitem" class="dropdown-item" id="highlight-neume">Neume</a>
+              <a aria-role="menuitem" class="dropdown-item" id="highlight-layerElement">LayerElement</a>
+              <hr class="dropdown-divider"/>
+              <a aria-role="menuitem" class="dropdown-item" id="highlight-none">None</a>
+            </div>
+          </div>
+        </div>
+
         <div id="display-options-container">
           <div id="display-options-title" class="panel-sub-title">Display Options:</div>
           <div id="display-options-items">
-            
-            <div class="dropdown" id="highlight-dropdown">
-              <div class="dropdown-trigger">
-                <button class="side-panel-btn" id="highlight-button" aria-haspopup="true" aria-controls="highlight-menu" style="width: auto">
-                  <span>Highlight</span>
-                  <span id="highlight-type">&nbsp;- Off</span>
-                  <svg class="icon">
-                    <use id="toggleDisplay" xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use>
-                  </svg>
-                </button>
-              </div>
-              <div class="dropdown-menu" id="highlight-menu" role="menu">
-                <div class="dropdown-content">
-                  <a aria-role="menuitem" class="dropdown-item" id="highlight-staff">Staff</a>
-                  <a aria-role="menuitem" class="dropdown-item" id="highlight-syllable">Syllable</a>
-                  <a aria-role="menuitem" class="dropdown-item" id="highlight-neume">Neume</a>
-                  <a aria-role="menuitem" class="dropdown-item" id="highlight-layerElement">LayerElement</a>
-                  <hr class="dropdown-divider"/>
-                  <a aria-role="menuitem" class="dropdown-item" id="highlight-none">None</a>
-                </div>
-              </div>
-            </div>
 
             <div id="checkbox-display-options"></div>
 
