@@ -37,9 +37,14 @@ export class ModalWindow implements ModalWindowInterface {
   constructor (neonView?: NeonView) {
     this.neonView = neonView;
     this.modalWindowState = ModalWindowState.CLOSED;
+
+    // set event listeners that apply to all modal windows
+    document.getElementById('neon-modal-window-header-close').addEventListener('click', this.hideModalWindow.bind(this));
+    document.getElementById('neon-modal-window').addEventListener('keydown', this.keydownListener.bind(this));
+    document.getElementById('neon-modal-window-container').addEventListener('click', this.focusModalWindow.bind(this));
   }
 
-
+  
 
 
   /**
@@ -74,17 +79,6 @@ export class ModalWindow implements ModalWindowInterface {
       default:
         break;
     }
-
-    // reset event listeners
-    document.getElementById('neon-modal-window-header-close').removeEventListener('click', this.hideModalWindow);
-    document.getElementById('neon-modal-window-header-close').addEventListener('click', this.hideModalWindow);
-
-    document.getElementById('neon-modal-window').removeEventListener('keydown', this.keydownListener);
-    document.getElementById('neon-modal-window').addEventListener('keydown', this.keydownListener.bind(this));
-
-    document.getElementById('neon-modal-window-container').removeEventListener('click', this.focusModalWindow);
-    document.getElementById('neon-modal-window-container').addEventListener('click', this.focusModalWindow.bind(this));
-
     this.modalWindowState = ModalWindowState.OPEN;
   }
 
@@ -94,18 +88,16 @@ export class ModalWindow implements ModalWindowInterface {
    * Hide the Neon modal window
    */
   hideModalWindow(): void {
-
     switch(this.modalWindowView) {
       case ModalWindowView.EDIT_TEXT:
-        const span = <HTMLSpanElement> document.getElementById('syl_text').querySelectorAll('span.selected-to-edit')[0];
+        const span = (<HTMLSpanElement> document.getElementById('syl_text').querySelectorAll('span.selected-to-edit')[0]);
         span.classList.remove('selected-to-edit');
 
       default:
         document.getElementById('neon-modal-window-container').style.display = 'none';
       
         // after the modal is closed, no keyboard shortcuts work because
-        // the document hasn't been focused; this forcefully focuses the
-        // container
+        // the document hasn't been focused; this forcefully focuses the container
         document.getElementById('container').focus();
     } 
     this.modalWindowState = ModalWindowState.CLOSED;
@@ -119,7 +111,6 @@ export class ModalWindow implements ModalWindowInterface {
     switch (this.modalWindowView) {
       case ModalWindowView.EDIT_TEXT:
         document.getElementById('neon-modal-window-content-container').innerHTML = editTextModal;
-
         // set modal window title
         document.getElementById('neon-modal-window-header-title').innerText = 'EDIT SYLLABLE TEXT';
 
@@ -153,11 +144,9 @@ export class ModalWindow implements ModalWindowInterface {
 
     // set up Edit Syllable Text modal window
     document.getElementById('neon-modal-window-content-edit-text').classList.add('visible');
-
-
     
     // Reset "Cancel" button event listener
-    document.getElementById('neon-modal-window-edit-text-cancel').removeEventListener('click', this.hideModalWindow.bind(this));
+    document.getElementById('neon-modal-window-edit-text-cancel').removeEventListener('click', this.hideModalWindow);
     document.getElementById('neon-modal-window-edit-text-cancel').addEventListener('click', this.hideModalWindow.bind(this));
 
     // Reset "Save" button event listener
@@ -168,6 +157,7 @@ export class ModalWindow implements ModalWindowInterface {
     document.getElementById('neon-modal-window-container').style.display = 'flex';
     this.focusModalWindow();
   };
+
 
   /**
    * Update the bounding box selected when the edit text modal has been clicked 
@@ -184,6 +174,7 @@ export class ModalWindow implements ModalWindowInterface {
       }
     }
   };
+
 
   /**
    * Update text of selected-to-edit syllables with user-provided text
@@ -244,7 +235,6 @@ export class ModalWindow implements ModalWindowInterface {
    * Define event listeners for modal window based on modalView type
    */
   private keydownListener = function(e) {
-
     e.stopImmediatePropagation(); // prevent Neon hotkey events from firing when user is typing
 
     switch(this.modalWindowView) {
@@ -261,7 +251,6 @@ export class ModalWindow implements ModalWindowInterface {
    * Event listener that focuses the modal window if user clicks anywhere outside of it
    */
   private focusModalWindow = function() {
-
     switch(this.modalWindowView) {
       case ModalWindowView.EDIT_TEXT:
         (<HTMLInputElement> document.getElementById('neon-modal-window-edit-text-input')).select();
