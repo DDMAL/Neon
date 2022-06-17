@@ -260,6 +260,22 @@ a:hover {
     align-items: center;
     justify-content: space-between;
 }
+.panel-heading.focused {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    /* background-color: #b6d8f2; */
+}
+.panel-heading-title {
+    max-width: 0px;
+    overflow: visible;
+    border-bottom: 2px solid transparent;
+    transition: max-width 0.5s ease-in-out, border-bottom 0.1s ease-in-out;
+}
+.panel-heading-title.focused {
+    max-width: 500px;
+    border-bottom: 2px solid #589ed5;
+    overflow: visible;
+}
 .panel-contents {
     max-height: 60vh;
     transition: max-height 0.2s ease-in-out;
@@ -391,6 +407,9 @@ a:hover {
 .side-panel-btn.is-active {
     border: 2px solid #7cb1b7;
 }
+.side-panel-btn.is-active.unfocused {
+    border: 1px solid #7cb1b7;
+}
 .panel-tabs {
     border: none !important;
     align-items: flex-end;
@@ -455,7 +474,8 @@ a:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    min-height: 60vh;
 }
 .info-bubble-container {
     width: 100%;
