@@ -421,8 +421,12 @@ a:hover {
 #displayContents .button {
     width: 10.5em;
 }
-#validation_status a {
+#validation_status {
     color: inherit;
+    
+}
+#validation_status_title {
+    margin-right: 5px;
 }
 #display-actions-container {
     display: flex;
