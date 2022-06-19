@@ -10,7 +10,7 @@ export function getAllDocuments(): Promise<any> {
   });
 }
 
-export function createManifest(mei: File, bg: File): Promise<any> {
+export function createManifest(mei: File, bg: File): Promise<Record<string, unknown>> {
   return new Promise(async (resolve) => {
     const manifest = await fetch('https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld')
       .then(result => {
@@ -66,20 +66,28 @@ export function addEntry(title: string, content: Blob, single: boolean): Promise
     }).then(_ => {
       resolve(true);
     }).catch(err => {
-      reject(err);
-      console.log(err);
-      window.confirm('Upload unsuccessful. See console log for error message or continue to reload');
-      window.location.reload();
+      window.alert(`Error Uploading Document: ${err.message}, ${title}.`)
+      reject(false);
     });
   });
 }
 
 export function deleteEntry(id: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    db.get(id).then(doc => {
-      db.remove(doc).then(_ => {
-        resolve(true);
-      }).catch(err => reject(err));
-    }).catch(err => reject(err));
+    db.get(id)
+      .then(doc => {
+        db.remove(doc)
+          .then(_ => {
+            resolve(true);
+          })
+          .catch(err => {
+            console.log(err);
+            reject(err);
+          });
+      })
+      .catch(err => {
+        console.log(err);
+        reject(err);
+      });
   });
 }

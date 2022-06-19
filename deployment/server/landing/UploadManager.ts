@@ -3,10 +3,10 @@ import FileManager from './FileManager';
 import { formatFilename } from './functions';
 import { createManifest, addEntry } from './storage';
 
-const mei_container = document.getElementById('mei_list');
-const image_container = document.getElementById('image_list');
-const paired_container = document.getElementById('paired_list');
-const manuscript_container = document.getElementById('manuscript_list');
+const mei_container = document.getElementById('mei_list') as HTMLDivElement;
+const image_container = document.getElementById('image_list') as HTMLDivElement;
+const paired_container = document.getElementById('paired_list') as HTMLDivElement;
+const manuscript_container = document.getElementById('manuscript_list') as HTMLDivElement;
 
 const fm = FileManager.getInstance();
 
@@ -30,6 +30,7 @@ export function addNewFiles( files: File[] ): File[] {
       const manuscriptTile = createManuscriptTile(file.name);
       manuscript_container.appendChild(manuscriptTile);
       fm.addFile(file);
+      fm.addManuscript(file.name);
     }
     else {
       console.log(`Unknown file type for: ${file.name}`);
@@ -38,20 +39,6 @@ export function addNewFiles( files: File[] ): File[] {
   });
   return rejectFiles;
 } 
-
-export function handleMakePair(): void {
-  const selectedMeiElement = document.querySelector('input[name="mei_radio_group"]:checked') as HTMLInputElement;
-  const selectedImageElement = document.querySelector('input[name="image_radio_group"]:checked') as HTMLInputElement;
-  
-  const mei_filename = selectedMeiElement.value;
-  const image_filename = selectedImageElement.value;
-  if (mei_filename === undefined || image_filename === undefined) return;
-  
-  const paired_el = createPairedTile(mei_filename, image_filename);
-  paired_container.appendChild(paired_el);
-  selectedMeiElement.parentElement.remove();
-  selectedImageElement.parentElement.remove();
-}
 
 function createUnpairedItem(filename: string, group: string): HTMLDivElement {
   if (group !== 'mei' && group !== 'image') return;
@@ -78,28 +65,50 @@ function createUnpairedItem(filename: string, group: string): HTMLDivElement {
   return node;
 }
 
+export function handleMakePair(): void {
+  // get and check if selected radio exists
+  const selectedMeiElement = document.querySelector('input[name="mei_radio_group"]:checked') as HTMLInputElement;
+  const selectedImageElement = document.querySelector('input[name="image_radio_group"]:checked') as HTMLInputElement;
+  if (selectedMeiElement === null || selectedImageElement === null) return;
+  
+  const mei_filename = selectedMeiElement.value;
+  const image_filename = selectedImageElement.value;
+  // make and append UI element
+  const paired_el = createPairedTile(mei_filename, image_filename);
+  paired_container.appendChild(paired_el);
+  // reflect in file manager
+  fm.addFolio(mei_filename, image_filename);
+  // remove from unpaired mei and image lists
+  selectedMeiElement.parentElement.remove();
+  selectedImageElement.parentElement.remove();
+}
+
 function createPairedTile(mei_filename: string, image_filename: string): HTMLDivElement {
-  const node = document.createElement('div');
-  node.className = 'tile_item';
-  node.setAttribute('mei', mei_filename);
-  node.setAttribute('image', image_filename);
-  node.innerText = formatFilename(mei_filename, 20);
+  const tile = document.createElement('div');
+  tile.className = 'tile_item';
+  tile.setAttribute('mei', mei_filename);
+  tile.setAttribute('image', image_filename);
+  tile.innerText = formatFilename(mei_filename, 20);
 
-
-  const deleteButton = document.createElement('button');
-  deleteButton.innerText = '⌫';
-  deleteButton.className = 'delete_button';
-  deleteButton.addEventListener('click', () => {
-    node.remove();
+  function handleUnpair() {
+    // remove tile from UI
+    tile.remove();
+    // remove folio from file manager
+    fm.removeFolio(mei_filename);
     // add items back to unpaired containers
     const meiItem = createUnpairedItem(mei_filename, 'mei');
     mei_container.appendChild(meiItem);
     const imageItem = createUnpairedItem(image_filename, 'image');
     image_container.appendChild(imageItem);
-  });
-  node.appendChild(deleteButton);
+  }
 
-  return node;
+  const deleteButton = document.createElement('button');
+  deleteButton.innerText = '⌫';
+  deleteButton.className = 'delete_button';
+  deleteButton.addEventListener('click', handleUnpair);
+  tile.appendChild(deleteButton);
+
+  return tile;
 }
 
 function createManuscriptTile( filename: string ) {
@@ -108,15 +117,38 @@ function createManuscriptTile( filename: string ) {
   tile.setAttribute('value', filename);
   tile.innerText = formatFilename(filename, 20);
 
+  function handleDelete() {
+    // remove tile from UI
+    tile.remove();
+    // remove from file manager
+    fm.removeManuscript(filename); 
+    fm.removeFile(filename);
+  }
 
   const deleteButton = document.createElement('button');
   deleteButton.innerText = '⌫';
   deleteButton.className = 'delete_button';
-  deleteButton.addEventListener('click', () => {
-    tile.remove();
-    fm.removeFile(filename);
-  });
+  deleteButton.addEventListener('click', handleDelete);
   tile.appendChild(deleteButton);
 
   return tile;
+}
+
+export async function handleUploadAllDocuments(): Promise<boolean[]> {
+  const folioPromises = fm.getFolios().map( ([mei, image]: [File, File]) => uploadFolio(mei, image));
+  const manuscriptPromises = fm.getManuscripts().map( manuscript => uploadManuscript(manuscript));
+  const promises = folioPromises.concat(manuscriptPromises);
+  return Promise.all(promises);
+}
+
+async function uploadFolio(mei: File, image: File): Promise<boolean> {
+  return createManifest(mei, image)
+    .then(manifest => {
+      const manifestBlob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/ld+json' });
+      return addEntry(mei.name, manifestBlob, true);
+    });
+}
+
+async function uploadManuscript(manuscript: File): Promise<boolean> {
+  return addEntry(manuscript.name, manuscript, false);
 }

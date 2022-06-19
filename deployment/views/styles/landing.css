@@ -218,3 +218,12 @@ body {
   font-weight: 100;
   font-size: large;
 }
+
+#upload_button.idle {
+  color: green
+}
+
+#upload_button.uploading {
+  color: red;
+  animation: cubic-bezier(0.075, 0.82, 0.165, 1);
+}

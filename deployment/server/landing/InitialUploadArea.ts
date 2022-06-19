@@ -24,7 +24,7 @@ const InitialUploadArea = (): HTMLDivElement => {
       const files = Array.from(fileList);
       const rejectFiles = addNewFiles(files);
       renderUploadingContainer();
-      console.log(rejectFiles);
+      console.log('The following files are not .mei, .png, .jpeg, or .jsonld files: \n\n', rejectFiles);
     };
     input.click();
   }

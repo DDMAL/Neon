@@ -14,6 +14,7 @@ interface RowI {
   key: string,
   value: { rev: string }
 }
+
 interface DocumentsI {
   total_rows: number,
   offset: number,
@@ -30,7 +31,7 @@ async function fetchDocuments(): Promise<string[][]> {
           pages.push(row.key); 
         }
         else if (row.doc.kind === 'manuscript') {
-          manuscripts.push(row.key); console.log('manuscripts');
+          manuscripts.push(row.key);
         }
         else { 
           console.debug('row.kind did not match page or manuscript: ', row);
@@ -39,7 +40,7 @@ async function fetchDocuments(): Promise<string[][]> {
       return [pages, manuscripts];
     })
     .catch(err => {
-      console.log('unresolved: ', err);
+      console.log(err);
       return [[],[]];
     });
 }
@@ -51,9 +52,9 @@ export async function updateDocumentSelector(): Promise<void> {
 
   const folioGroup = document.getElementById('uploaded_folios') as HTMLOptGroupElement;
   const manuscriptGroup = document.getElementById('uploaded_manuscripts') as HTMLOptGroupElement;
-
-  folioGroup.childNodes.forEach(child => child.remove());
-  manuscriptGroup.childNodes.forEach(child => child.remove());
+  
+  folioGroup.innerHTML = '';
+  manuscriptGroup.innerHTML = '';
 
   if (folioNames.length === 0) {
     folioGroup.label = 'No Folios Uploaded';
@@ -108,8 +109,11 @@ export const InitSelectDocuments = (): void => {
     const isConfirmed = window.confirm(alertMessage);
     
     if (isConfirmed) {
-      Promise.all(selection.map(filename => deleteEntry(filename)))
-        .then( _ => updateDocumentSelector())
+      const promises = selection.map(filename => deleteEntry(filename));
+      Promise.all(promises)
+        .then( () => {
+          updateDocumentSelector();
+        })
         .catch( err => console.debug('failed to delete files: ', err));
     }
   }

@@ -55,7 +55,9 @@ html
             #manuscript_list(class='tile_list')  
           br
           #upload_button_container
-            button#upload_button(class='action_button') Upload
+            button#upload_button(class='action_button') 
+              | Upload
+              #loading_circle ◆
 
       nav#context_menu(class='context_menu')
         a.context_menu_link(href='#', data_action='')
