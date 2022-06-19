@@ -46,7 +46,7 @@ class NeonCore {
    */
   constructor (manifest: NeonManifest) {
     this.verovioWrapper = new VerovioWrapper();
-    Validation.init();
+    //Validation.init();
 
     /**
      * Stacks of previous MEI files representing actions that can be undone for each page.
