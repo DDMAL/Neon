@@ -2,7 +2,9 @@
 
 export type Attributes = { pname?: string; oct?: number; shape?: string; line?: number; ligated?: boolean; curve?: string; tilt?: string; form?: string };
 
-/** Drag editing action sent to verovio as described [here](https://github.com/DDMAL/Neon/wiki/Toolkit-Actions). */
+/**
+ * Drag editing action sent to verovio as described [here](https://github.com/DDMAL/Neon/wiki/Toolkit-Actions).
+ */
 export type DragAction = {
   action: 'drag',
   param: {
@@ -161,6 +163,14 @@ export type ChangeStaffAction = {
   }
 };
 
+export type ChangeStaffToAction = {
+  action: 'changeStaffTo',
+  param: {
+    elementId: string,
+    staffId: string,
+  }
+};
+
 export type ChangeGroupAction = {
   action: 'changeGroup',
   param: {
@@ -189,6 +199,7 @@ export type EditorAction =
   | ToggleLigatureAction
   | ChangeSkewAction
   | ChangeStaffAction
+  | ChangeStaffToAction
   | ChangeGroupAction
   | ChainAction;
 

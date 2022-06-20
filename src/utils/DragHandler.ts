@@ -1,13 +1,47 @@
 import NeonView from '../NeonView';
-import { DragAction, EditorAction } from '../Types';
+import { ChangeStaffToAction, DragAction, EditorAction } from '../Types';
 import * as d3 from 'd3';
+import { getStaffBBox } from './SelectTools';
+
+/**
+ * Get SVG relative coordinates given clientX and clientY
+ * Source: https://stackoverflow.com/questions/29261304
+ */
+function getSVGRelCoords (clientX: number, clientY: number): [number, number] {
+  const pt = new DOMPoint(clientX, clientY);
+  const svg = document.querySelector<SVGSVGElement>('#svg_group');
+  const { x, y } = pt.matrixTransform(svg.getScreenCTM().inverse());
+
+  return [x, y];
+}
+
+/**
+ * Get ID of staff by client's x-y coordinates.
+ * This function considers the *visual* bounding box of the staff
+ * based on its staff lines, instead of the SVG element itself.
+ */
+function getStaff (clientX: number, clientY: number): string {
+  const staves = Array.from(document.querySelectorAll<SVGGElement>('.staff'));
+  const staffBBoxes = staves.map(staff => getStaffBBox(staff));
+
+  // find the staff that the cursor is inside
+  const [x, y] = getSVGRelCoords(clientX, clientY);
+  const staff = staffBBoxes.find(
+    (bbox) => x <= bbox.lrx && x >= bbox.ulx && y <= bbox.lry && y >= bbox.uly
+  ); 
+
+  // if the cursor is not inside any staff, then explicitly return null
+  return staff ? staff.id : null;
+}
 
 class DragHandler {
-  private dragStartCoords: Array<number>;
-  private resetToAction: (selection: d3.Selection<d3.BaseType, {}, HTMLElement, any>, args: any[]) => void;
   readonly neonView: NeonView;
   private selector: string;
   private selection: Element[];
+
+  private dragStartCoords: [number, number] = [-1, -1];
+  private resetToAction: (selection: d3.Selection<d3.BaseType, {}, HTMLElement, any>, args: any[]) => void;
+
   private dx: number;
   private dy: number;
 
@@ -23,21 +57,6 @@ class DragHandler {
    * Initialize the dragging action and handler for selected elements.
    */
   dragInit (): void {
-    // Adding listeners
-    const dragBehaviour = d3.drag()
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      .on('start', dragStarted.bind(this))
-      .on('drag', this.dragging.bind(this))
-      .on('end', this.dragEnded.bind(this));
-
-    const activeNc = d3.selectAll('.selected');
-    const selection = Array.from(document.getElementsByClassName('selected'));
-    this.selection = selection.concat(Array.from(document.getElementsByClassName('resizePoint')));
-
-    this.dragStartCoords = new Array(activeNc.size());
-
-    activeNc.call(dragBehaviour);
-
     // Drag effects
     function dragStarted (): void {
       this.dragStartCoords = [d3.event.x, d3.event.y];
@@ -48,16 +67,26 @@ class DragHandler {
         d3.select(this.selector).call(dragBehaviour);
       }
     }
+
+    // Adding listeners
+    const dragBehaviour = d3.drag()
+      .on('start', dragStarted.bind(this))
+      .on('drag', this.dragging.bind(this))
+      .on('end', this.dragEnded.bind(this));
+
+    const activeNc = d3.selectAll('.selected');
+    activeNc.call(dragBehaviour);
+
+    const selection = Array.from(document.getElementsByClassName('selected'));
+    this.selection = selection.concat(Array.from(document.getElementsByClassName('resizePoint')));
   }
 
   dragging (): void {
-    const relativeY = d3.event.y - this.dragStartCoords[1];
-    const relativeX = d3.event.x - this.dragStartCoords[0];
     this.dx = d3.event.x - this.dragStartCoords[0];
     this.dy = d3.event.y - this.dragStartCoords[1];
     this.selection.forEach((el) => {
-      d3.select(el).attr('transform', function () {
-        return 'translate(' + [relativeX, relativeY] + ')';
+      d3.select(el).attr('transform', () => {
+        return 'translate(' + [this.dx, this.dy] + ')';
       });
     });
     /*
@@ -66,25 +95,54 @@ class DragHandler {
      * it will be a child of the element in selection, so it will get moved in the above loop
      * so we cancel that movement out here
      */
-    if (this.selection.filter((element: HTMLElement) => element.classList.contains('syl')).length === 0) {
-      d3.selectAll('.syllable.selected').selectAll('.sylTextRect-display').attr('transform', function () {
-        return 'translate(' + [-1 * relativeX, -1 * relativeY] + ')';
-      });
+    const syls = this.selection.filter((el) => el.classList.contains('syl'));
+    if (syls.length === 0) {
+      d3.selectAll('.syllable.selected')
+        .selectAll('.sylTextRect-display')
+        .attr(
+          'transform',
+          () => 'translate(' + [-1 * this.dx, -1 * this.dy] + ')'
+        );
     }
   }
 
+
   dragEnded (): void {
-    const paramArray = [];
-    this.selection.filter((el: SVGElement) => !el.classList.contains('resizePoint')).forEach((el: SVGElement) => {
-      const id = (el.tagName === 'rect') ? el.closest('.syl').id : el.id;
-      const singleAction: DragAction = {
-        action: 'drag',
-        param: { elementId: id,
-          x: this.dx,
-          y: (this.dy) * -1 }
-      };
-      paramArray.push(singleAction);
-    });
+    const paramArray: EditorAction[] = [];
+    this.selection
+      .filter((el) => !el.classList.contains('resizePoint'))
+      .forEach((el) => {
+        const id = el.tagName === 'rect' ? el.closest('.syl').id : el.id;
+
+        const dragAction: DragAction = {
+          action: 'drag',
+          param: {
+            elementId: id,
+            x: this.dx,
+            y: -this.dy,
+          }
+        };
+
+        paramArray.push(dragAction);
+
+        if (el.classList.contains('divLine') || el.classList.contains('accid') || el.classList.contains('custos')) {
+          const { clientX, clientY } = d3.event.sourceEvent;
+          const newStaff = getStaff(clientX, clientY);
+
+          const staffAction: ChangeStaffToAction = {
+            action: 'changeStaffTo',
+            param: {
+              elementId: id,
+              // if divline is moved to the background (and not a staff),
+              // set the staffId to the original staff
+              staffId: newStaff ? newStaff : el.closest('.staff').id,
+            }
+          };
+
+          paramArray.push(staffAction);
+        }
+      });
+
     const editorAction: EditorAction = {
       action: 'chain',
       param: paramArray
@@ -94,12 +152,14 @@ class DragHandler {
     const yDiff = Math.abs(this.dy);
 
     if (xDiff > 5 || yDiff > 5) {
-      this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(() => {
-        this.neonView.updateForCurrentPage();
-        this.endOptionsSelection();
-        this.reset();
-        this.dragInit();
-      });
+      this.neonView
+        .edit(editorAction, this.neonView.view.getCurrentPageURI())
+        .then(() => {
+          this.neonView.updateForCurrentPage();
+          this.endOptionsSelection();
+          this.reset();
+          this.dragInit();
+        });
     } else {
       this.reset();
       this.dragInit();
@@ -119,10 +179,11 @@ class DragHandler {
   }
 
   endOptionsSelection (): void {
-    try {
-      document.getElementById('moreEdit').innerHTML = '';
-      document.getElementById('moreEdit').parentElement.classList.add('hidden');
-    } catch (e) {}
+    const moreEdit = document.getElementById('moreEdit');
+    if (moreEdit) {
+      moreEdit.innerHTML = '';
+      moreEdit.parentElement.classList.add('hidden');
+    }
   }
 }
 
