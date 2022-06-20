@@ -280,7 +280,7 @@ a:hover {
     max-height: 60vh;
     transition: max-height 0.2s ease-in-out;
     border-bottom: 1px solid #c4dafd;
-    padding: 0.5em 0.75em;
+    padding: 1vw 1vw;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -302,8 +302,8 @@ a:hover {
 .panel-content-subsection {
     width: 100%;
     border-top: 2px solid rgb(232 232 232);
-    margin-top: 2vh;
-    padding-top: 2vh;
+    margin-top: 1.5vh;
+    padding-top: 1.5vh;
 }
 .panel-content-subsection.first-subsection {
     border: none;
@@ -312,6 +312,9 @@ a:hover {
 }
 .panel-content-subsection.hidden {
     display: none;
+}
+.panel-sub-title {
+    margin-bottom: 1vh;
 }
 .slider-container.display-panel {
     display: flex;
@@ -361,6 +364,17 @@ a:hover {
     width: 15px;
     height: 15px;
     margin-left: 15px;
+}
+#display-all-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+#display-options-separator {
+    border-left: 2px solid rgb(232 232 232);
+    margin-left: 8px;
+    padding-left: 8px;
 }
 #selection-mode-container {
     display: flex;
