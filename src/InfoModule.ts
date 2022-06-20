@@ -31,7 +31,7 @@ function updateInfoVisibility (): void {
   if ((document.getElementById('displayInfo') as HTMLInputElement).checked) {
     neumeInfo.setAttribute('style', '');
     // scroll neume info into view
-    neumeInfo.scrollIntoView({ behavior: 'smooth' });
+    //neumeInfo.scrollIntoView({ behavior: 'smooth' });
   } else {
     neumeInfo.setAttribute('style', 'display: none');
   }

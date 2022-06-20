@@ -105,6 +105,7 @@ class TextView implements TextViewInterface {
   * and add the event listeners to make sure the syl highlights when moused over
   */
   updateTextViewVisibility (): void {
+    console.log(this);
     if ((document.getElementById('displayText') as HTMLInputElement).checked) {
       const sylText = document.getElementById('syl_text');
       sylText.style.display = '';
@@ -156,7 +157,7 @@ class TextView implements TextViewInterface {
       }
 
       // scroll the syllable text bubble into view
-      sylText.scrollIntoView({ behavior: 'smooth' });
+      //sylText.scrollIntoView({ behavior: 'smooth' });
     } else {
       document.getElementById('syl_text').style.display = 'none';
     }

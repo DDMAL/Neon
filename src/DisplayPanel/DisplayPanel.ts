@@ -32,8 +32,7 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
             disabled="disabled"
           />
           <output id="zoomOutput" for="zoomSlider">100</output>
-        </div>
-    `;
+        </div>`;
   }
   contents += `
         <div class="slider-container display-panel" style="cursor: default">
@@ -63,7 +62,7 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
         </div>
       </div>
       
-      <div class="panel-content-subsection" id="extensible-block">
+      <div class="panel-content-subsection">
 
         <div id="highlight-options-title" class="panel-sub-title">Highlight Options:</div>
         <div class="dropdown" id="highlight-dropdown">
@@ -87,20 +86,26 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
             </div>
           </div>
         </div>
+      </div>
 
+      <div class="panel-content-subsection">
         <div id="display-options-container">
           <div id="display-options-title" class="panel-sub-title">Display Options:</div>
           <div id="display-options-items">
 
-            <div id="checkbox-display-options"></div>
+            <div id="checkbox-display-options">
+              <div id="display-all-container">
+                <div id="display-options-separator">
+                <div class="side-panel-btn" id="display-all-btn">Display All</div>
+              </div>
+            </div>
 
           </div>
 
         </div>
-
       </div>
-    </div>
-  `;
+      
+    </div>`;
 
   return contents;
 }
