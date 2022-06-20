@@ -10,7 +10,8 @@ import { selectBBox, unselect } from './SelectTools';
  */
 export enum ModalWindowView {
   EDIT_TEXT,
-  HOTKEYS
+  HOTKEYS,
+  VALIDATION_STATUS
 }
 
 enum ModalWindowState {
@@ -52,9 +53,9 @@ export class ModalWindow implements ModalWindowInterface {
    * Update the content based on passed view.
    * @param view Type of modal to open (ModalView enum)
    */
-  setModalWindowView(view: ModalWindowView): void {
+  setModalWindowView(view: ModalWindowView, content?: string): void {
     this.modalWindowView = view;
-    this.setModalWindowContent();
+    this.setModalWindowContent(content);
   }
 
 
@@ -70,13 +71,23 @@ export class ModalWindow implements ModalWindowInterface {
    * Open a model window with content representing the current ModalView.
    */
   openModalWindow(): void {
+    // make sure no other modal content is being displayed
+    Array.from(document.getElementsByClassName('neon-modal-window-content')).forEach((elem) => {
+      elem.classList.remove('visible');
+    });
     switch(this.modalWindowView) {
+      
       case ModalWindowView.EDIT_TEXT:
         this.openEditSylTextModalWindow();
         break;
+        
       case ModalWindowView.HOTKEYS:
-        this.openHotkeyModalWindow();
+        // set up and diplay hotkey modal content
+        document.getElementById('neon-modal-window-content-hotkeys').classList.add('visible');
+        
       default:
+        document.getElementById('neon-modal-window-container').style.display = 'flex';
+        this.focusModalWindow();
         break;
     }
     this.modalWindowState = ModalWindowState.OPEN;
@@ -107,7 +118,7 @@ export class ModalWindow implements ModalWindowInterface {
   /**
    * Set content of modal window
    */
-  private setModalWindowContent(): void {
+  private setModalWindowContent(content?: string): void {
     switch (this.modalWindowView) {
       case ModalWindowView.EDIT_TEXT:
         document.getElementById('neon-modal-window-content-container').innerHTML = editTextModal;
@@ -128,7 +139,19 @@ export class ModalWindow implements ModalWindowInterface {
         document.getElementById('neon-modal-window-header-title').innerText = 'HOTKEYS';
         break;
 
+      case ModalWindowView.VALIDATION_STATUS:
+        document.getElementById('neon-modal-window-content-container').innerHTML = 
+          `<div style="margin-bottom: 30px;white-space: pre-line;">${content}</div>
+          <div class="neon-modal-window-btn">
+            <a href="data:text/plain;charset=utf-8,${encodeURIComponent(content)}" download="validation.log">
+              Export
+            </a>
+            </div>`;
+        document.getElementById('neon-modal-window-header-title').innerText = 'ERROR LOG';
+        break;
+
       default:
+        console.error('Unknown selection type. This should not have occurred.');
     } 
   }
 
@@ -217,6 +240,7 @@ export class ModalWindow implements ModalWindowInterface {
   /**
    * Fill modal window with hotkey info content
    */
+  /*
   private openHotkeyModalWindow = function() {   
     // make sure no other modal content is being displayed
     Array.from(document.getElementsByClassName('neon-modal-window-content')).forEach((elem) => {
@@ -229,6 +253,7 @@ export class ModalWindow implements ModalWindowInterface {
     document.getElementById('neon-modal-window-container').style.display = 'flex';
     this.focusModalWindow();
   };
+  */
 
 
   /**
