@@ -41,8 +41,8 @@ class SingleEditMode implements NeumeEditInterface {
     selectionHighlight.classList.add('dropdown-item');
     selectionHighlight.id = 'highlight-selection';
     selectionHighlight.textContent = 'By Selection Mode';
-    (document.getElementsByClassName('dropdown-content'))[0].appendChild(divider);
-    (document.getElementsByClassName('dropdown-content'))[0].appendChild(selectionHighlight);
+    document.getElementsByClassName('dropdown-content')[0].prepend(divider);
+    document.getElementsByClassName('dropdown-content')[0].prepend(selectionHighlight);
 
     document.getElementById('insert_controls').innerHTML += Contents.insertControlsPanel;
     document.getElementById('edit_controls').innerHTML += Contents.editControlsPanel;
@@ -52,7 +52,6 @@ class SingleEditMode implements NeumeEditInterface {
     this.insertHandler = new InsertHandler(this.neonView, '#svg_group');
     bindInsertTabs(this.insertHandler);
     document.getElementById('primitiveTab').click();
-    document.getElementById('selBySyllable').click(); //unfocus insert panel
     Select.setSelectHelperObjects(this.neonView, this.dragHandler);
     this.setSelectListeners();
 
@@ -62,6 +61,8 @@ class SingleEditMode implements NeumeEditInterface {
     initUndoRedoPanel(this.neonView);
     setHighlightSelectionControls();
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
+
+    document.getElementById('edit_controls').click(); // focus display panel
   }
 
   /**

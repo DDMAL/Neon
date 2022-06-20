@@ -43,6 +43,8 @@ class DivaEdit implements NeumeEditInterface {
     setHighlightSelectionControls();
 
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
+
+    document.getElementById('edit_controls').click(); // focus display panel
   }
 
   /**

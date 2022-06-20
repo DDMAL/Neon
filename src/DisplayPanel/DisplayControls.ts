@@ -318,25 +318,26 @@ export function initDisplayControls (meiClassName: string, background: string): 
 
   const displayContents = document.getElementById('displayContents');
   const toggleDisplay = document.getElementById('toggleDisplay');
+  const displayHeader = document.getElementById('displayHeader');
 
-  document.getElementById('displayHeader').addEventListener('click', () => {
+  displayHeader.addEventListener('click', () => {
+    // if display panel is closed, open it
     if (displayContents.classList.contains('closed')) {
-
       displayContents.classList.remove('closed');
       displayContents.style.padding = '0.5em 0.75em';
       setTimeout(() => {
         displayContents.style.overflow = 'visible';
       }, 200);
-      toggleDisplay.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-down');
-
-    } else {
-
+      toggleDisplay.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down`);
+    } 
+    // if display panel is open, close it
+    else {
       displayContents.classList.add('closed');
       displayContents.style.overflow = 'hidden';
       setTimeout(() => {
         displayContents.style.padding = '0px';
       }, 200);
-      toggleDisplay.setAttribute('xlink:href', __ASSET_PREFIX__ + 'assets/img/icons.svg' + '#dropdown-side');
+      toggleDisplay.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-side`);
 
     }
   });

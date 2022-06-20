@@ -1,5 +1,5 @@
 import NeonCore from './NeonCore';
-
+import * as Validation from './Validation';
 import { parseManifest } from './utils/NeonManifest';
 import setBody from './utils/template/Template';
 import { ModalWindow } from './utils/ModalWindow';
@@ -88,6 +88,7 @@ class NeonView {
       this.core = new NeonCore(this.manifest);
       this.info = new this.params.Info(this);
       this.modal = new ModalWindow(this);
+      Validation.init(this); // initialize validation
 
       this.setupEdit(this.params);
       return this.core.initDb();
