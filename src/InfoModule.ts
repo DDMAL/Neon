@@ -59,7 +59,7 @@ class InfoModule implements InfoInterface {
   constructor (neonView: NeonView) {
     this.neonView = neonView;
     // Add info box enable/disable check box
-    const checkboxesContainer = document.getElementById('checkbox-display-options');
+    const checkboxesContainer = document.getElementById('display-single-container');
     const label = document.createElement('label');
     label.classList.add('checkbox-container', 'side-panel-btn');
     label.textContent = 'Info';

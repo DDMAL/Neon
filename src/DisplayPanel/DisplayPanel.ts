@@ -91,9 +91,13 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
       <div class="panel-content-subsection">
         <div id="display-options-container">
           <div id="display-options-title" class="panel-sub-title">Display Options:</div>
+
           <div id="display-options-items">
 
             <div id="checkbox-display-options">
+
+              <div id="display-single-container"></div>
+
               <div id="display-all-container">
                 <div id="display-options-separator">
                 <div class="side-panel-btn" id="display-all-btn">Display All</div>
