@@ -14,13 +14,13 @@ export function bindInsertTabs (insertHandler: InsertHandler): void {
   const tabIds: string[] = insertTabs.map((tab) => { return tab.id; });
 
   document.body.addEventListener('keydown', (evt: KeyboardEvent) => {
+    console.log('here');
     if (evt.code.match(/^Digit\d$/) && evt.shiftKey) {
       try {
         const index = Number(evt.code[evt.code.length - 1]) - 1;
         const insertOptions = document.getElementsByClassName('insertel');
         const selectedOption = insertOptions[index];
         deactivate('.insertel');
-        insertHandler.insertDisabled();
         activate(selectedOption.id, insertHandler);
       } catch (e) {
         console.debug(e);
@@ -130,6 +130,8 @@ export function initInsertEditControls (): void {
 
 /**
  * Activate a certain insert action.
+ * This function is used for activating insert PANELS
+ * and insert ICONS (whyyy).
  * @param id - The ID of the insert action tab.
  */
 function activate (id: string, insertHandler: InsertHandler): void {
