@@ -19,8 +19,7 @@ export function bindInsertTabs (insertHandler: InsertHandler): void {
         const index = Number(evt.code[evt.code.length - 1]) - 1;
         const insertOptions = document.getElementsByClassName('insertel');
         const selectedOption = insertOptions[index];
-        deactivate('.insertel');
-        activate(selectedOption.id, insertHandler);
+        (<HTMLButtonElement> selectedOption).click();
       } catch (e) {
         console.debug(e);
       }
