@@ -20,7 +20,7 @@ class TextView implements TextViewInterface {
     this.notificationSent = false;
 
     // add checkbox to enable/disable the view
-    const checkboxesContainer = document.getElementById('checkbox-display-options');
+    const checkboxesContainer = document.getElementById('display-single-container');
     const textLabel = document.createElement('label');
     const bboxLabel = document.createElement('label');
     const textButton = document.createElement('input');

@@ -277,7 +277,7 @@ a:hover {
     overflow: visible;
 }
 .panel-contents {
-    max-height: 60vh;
+    max-height: 100vh;
     transition: max-height 0.2s ease-in-out;
     border-bottom: 1px solid #c4dafd;
     padding: 1vw 1vw;
@@ -345,6 +345,12 @@ a:hover {
 #checkbox-display-options {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+}
+#display-single-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 .checkbox-container {
     border: 1px solid #dbdbdb;

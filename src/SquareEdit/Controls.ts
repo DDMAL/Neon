@@ -14,6 +14,7 @@ export function bindInsertTabs (insertHandler: InsertHandler): void {
   const tabIds: string[] = insertTabs.map((tab) => { return tab.id; });
 
   document.body.addEventListener('keydown', (evt: KeyboardEvent) => {
+    console.log('here');
     if (evt.code.match(/^Digit\d$/) && evt.shiftKey) {
       try {
         const index = Number(evt.code[evt.code.length - 1]) - 1;
