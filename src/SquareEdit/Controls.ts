@@ -183,17 +183,11 @@ export function initSelectionButtons (): void {
   selByLayerElement.addEventListener('click', selByLayerElementHandler);
 
   document.body.addEventListener('keydown', (evt) => {
-
-    Array.from(document.querySelectorAll('.side-panel-btn.sel-by')).forEach((selEl) => {
-      selEl.classList.remove('unfocused');
-      selEl.classList.remove('is-active');
-    });
-
-    if (evt.key === '1') selectBySylHandler();
-    if (evt.key === '2') selectByNeumeHandler();
-    if (evt.key === '3') selectByNcHandler();
-    if (evt.key === '4') selectByStaffHandler();
-    if (evt.key === '5') selByLayerElementHandler();
+    if (evt.key === '1') selBySyllable.click();
+    if (evt.key === '2') selByNeume.click();
+    if (evt.key === '3') selByNc.click();
+    if (evt.key === '4') selByStaff.click();
+    if (evt.key === '5') selByLayerElement.click();
   });
 
 
