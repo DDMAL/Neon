@@ -212,10 +212,22 @@ export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
 }
 
 /**
+ * Bounding box object interface for getStaffBBox()
+ */
+export interface StaffBBox {
+  id: string;
+  ulx: number;
+  uly: number;
+  lrx: number;
+  lry: number;
+  rotate: number;
+}
+
+/**
  * Get the bounding box of a staff based on its staff lines.
  * Rotate is included in radians.
  */
-export function getStaffBBox (staff: SVGGElement): {ulx: number; uly: number; lrx: number; lry: number; rotate: number} {
+export function getStaffBBox (staff: SVGGElement): StaffBBox {
   let ulx, uly, lrx, lry, rotate;
   staff.querySelectorAll('path').forEach(path => {
     const coordinates: number[] = path.getAttribute('d')
@@ -239,7 +251,15 @@ export function getStaffBBox (staff: SVGGElement): {ulx: number; uly: number; lr
       lrx = coordinates[2];
     }
   });
-  return { ulx: ulx, uly: uly, lrx: lrx, lry: lry, rotate: rotate };
+
+  return {
+    id: staff.id,
+    ulx: ulx,
+    uly: uly,
+    lrx: lrx,
+    lry: lry,
+    rotate: rotate,
+  };
 }
 
 /**
@@ -423,7 +443,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
             Grouping.triggerGrouping('splitSyllable');
           } else if (sharedSecondLevelParent(groups)) {
             Grouping.triggerGrouping('syl');
-            changeStaffListener();
+            SelectOptions.addChangeStaffListener();
           } else {
             // Check if this *could* be a selection with a single logical syllable split by a staff break.
             const staff0 = groups[0].closest('.staff');
@@ -552,12 +572,11 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     default:
       console.error('Unknown selection type. This should not have occurred.');
   }
-
+  
   function changeStaffListener(): void {
     try {
       document.getElementById('changeStaff')
         .addEventListener('click', SelectOptions.changeStaffHandler);
     } catch (e) {console.debug(e);}
   }
-  
 }

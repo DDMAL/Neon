@@ -141,7 +141,7 @@ export class ModalWindow implements ModalWindowInterface {
 
       case ModalWindowView.VALIDATION_STATUS:
         document.getElementById('neon-modal-window-content-container').innerHTML = 
-          `<div style="margin-bottom: 30px;">${content}</div>
+          `<div style="margin-bottom: 30px;white-space: pre-line;">${content}</div>
           <div class="neon-modal-window-btn">
             <a href="data:text/plain;charset=utf-8,${encodeURIComponent(content)}" download="validation.log">
               Export
@@ -151,6 +151,7 @@ export class ModalWindow implements ModalWindowInterface {
         break;
 
       default:
+        console.error('Unknown selection type. This should not have occurred.');
     } 
   }
 
