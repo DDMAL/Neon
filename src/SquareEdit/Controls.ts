@@ -177,39 +177,25 @@ export function initSelectionButtons (): void {
   const selByLayerElement = document.getElementById('selByLayerElement');
 
   selBySyllable.addEventListener('click', selectBySylHandler);
-  document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === '1') {
-      selectBySylHandler();
-    }
-  });
-
   selByNeume.addEventListener('click', selectByNeumeHandler);
-  document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === '2') {
-      selectByNeumeHandler();
-    }
-  });
-
   selByNc.addEventListener('click', selectByNcHandler);
-  document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === '3') {
-      selectByNcHandler();
-    }
-  });
-
   selByStaff.addEventListener('click', selectByStaffHandler);
+  selByLayerElement.addEventListener('click', selByLayerElementHandler);
+
   document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === '4') {
-      selectByStaffHandler();
-    }
+
+    Array.from(document.querySelectorAll('.side-panel-btn.sel-by')).forEach((selEl) => {
+      selEl.classList.remove('unfocused');
+      selEl.classList.remove('is-active');
+    });
+
+    if (evt.key === '1') selectBySylHandler();
+    if (evt.key === '2') selectByNeumeHandler();
+    if (evt.key === '3') selectByNcHandler();
+    if (evt.key === '4') selectByStaffHandler();
+    if (evt.key === '5') selByLayerElementHandler();
   });
 
-  selByLayerElement.addEventListener('click', selByLayerElementHandler);
-  document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === '5') {
-      selByLayerElementHandler();
-    }
-  });
 
   function selectBySylHandler () {
     if (!selBySyllable.classList.contains('is-active')) {
