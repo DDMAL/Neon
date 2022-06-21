@@ -3,7 +3,7 @@ import PouchDB from 'pouchdb';
 
 const db = new PouchDB('Neon-User-Storage');
 
-export function getAllDocuments(): Promise<any> {
+export function getAllDocuments(): Promise<PouchDB.Core.AllDocsResponse<unknown>> {
   return new Promise((resolve, reject) => {
     db.allDocs({ include_docs: true }).then(result => { resolve(result); })
       .catch(err => { reject(err); });
@@ -66,7 +66,7 @@ export function addEntry(title: string, content: Blob, single: boolean): Promise
     }).then(_ => {
       resolve(true);
     }).catch(err => {
-      window.alert(`Error Uploading Document: ${err.message}, ${title}.`)
+      window.alert(`Error Uploading Document: ${err.message}, ${title}.`);
       reject(false);
     });
   });
