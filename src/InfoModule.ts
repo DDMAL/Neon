@@ -28,12 +28,30 @@ function startInfoVisibility (): void {
  */
 function updateInfoVisibility (): void {
   const neumeInfo = document.getElementById('neume_info');
+
+  const displayAllBtn = document.getElementById('display-all-btn');
+  const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
+  const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
+  const displayText = document.getElementById('displayText') as HTMLInputElement;
+
   if ((document.getElementById('displayInfo') as HTMLInputElement).checked) {
     neumeInfo.setAttribute('style', '');
     // scroll neume info into view
     //neumeInfo.scrollIntoView({ behavior: 'smooth' });
+
+    // if this is the 3rd option to be checked (all three are selected),
+    // set "Display/Hide All" button to "Hide All".
+    if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
+      displayAllBtn.classList.add('selected');
+      displayAllBtn.innerHTML = "Hide All";
+    }
   } else {
     neumeInfo.setAttribute('style', 'display: none');
+    // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
+    if (displayAllBtn.classList.contains('selected')) {
+      displayAllBtn.classList.remove('selected');
+      displayAllBtn.innerHTML = "Display All";
+    }
   }
 }
 
