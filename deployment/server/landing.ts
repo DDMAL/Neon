@@ -1,5 +1,5 @@
 import { InitSelectDocuments, updateDocumentSelector } from './landing/selectDocuments';
-import { handleMakePair, handleUploadAllDocuments } from './landing/uploadManager';
+import { handleMakePair, handleUploadAllDocuments } from './landing/UploadManager';
 import { InitUploadArea } from './landing/uploadArea';
 import FileManager from './landing/FileManager';
 

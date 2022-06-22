@@ -1,31 +1,16 @@
 import { v4 as uuidv4 } from 'uuid';
-import PouchDB from 'pouchdb';
-
+import * as PouchDB from 'pouchdb';
+import { NeonManifest, allDocs } from './types';
 const db = new PouchDB('Neon-User-Storage');
 
-interface docI extends PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> {
-  kind?: string;
-}
-
-export interface DocumentsI extends PouchDB.Core.AllDocsResponse<unknown> {
-  rows: { 
-    doc?: docI; 
-    id: string; 
-    key: string; 
-    value: { 
-      rev: string; 
-      deleted?: boolean; 
-    }; }[]
-}
-
-export function getAllDocuments(): Promise<DocumentsI> {
+export function getAllDocuments(): Promise<allDocs> {
   return new Promise((resolve, reject) => {
-    db.allDocs({ include_docs: true }).then(result => { resolve(result); })
+    db.allDocs({ include_docs: true }).then(result => resolve(result))
       .catch(err => { reject(err); });
   });
 }
 
-export function createManifest(mei: File, bg: File): Promise<Record<string, unknown>> {
+export function createManifest(mei: File, bg: File): Promise<NeonManifest> {
   return new Promise(async (resolve) => {
     const manifest = await fetch('https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld')
       .then(result => {

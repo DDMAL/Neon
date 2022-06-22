@@ -14,15 +14,15 @@ export function InitUploadArea(): void {
 
   // Upload area, add event listeners for click and drag and drop
   const upload_area = document.querySelector('#initial_upload_area') as HTMLDivElement;
-  upload_area.addEventListener('click', () => input.click());
-  upload_area.addEventListener('dragleave', () => upload_area.classList.remove('over')); 
-  upload_area.addEventListener('dragover', (event) => { 
+  upload_area.onclick = () => input.click();
+  upload_area.ondragleave = () => upload_area.classList.remove('over'); 
+  upload_area.ondragover = (event) => { 
     event.stopPropagation();
     event.preventDefault();
     upload_area.classList.add('over');
     event.dataTransfer.dropEffect = 'copy';
-  });
-  upload_area.addEventListener('drop', (event) => {
+  };
+  upload_area.ondrop = (event) => {
     event.stopPropagation();
     event.preventDefault();
     upload_area.classList.remove('over');
@@ -30,5 +30,5 @@ export function InitUploadArea(): void {
     const files = Array.from(fileList);
     const rejectFiles = addNewFiles(files);
     console.log(rejectFiles);
-  });
+  };
 }

@@ -1,10 +1,10 @@
 import { getAllDocuments, deleteEntry } from './storage';
 import { formatFilename } from './functions';
-import { DocumentsI } from './storage'; 
+import { allDocs } from './types';
 
 async function fetchDocuments(): Promise<string[][]> {
   return await getAllDocuments()
-    .then( (res: DocumentsI) => {
+    .then( (res: allDocs) => {
       const pages: string[] = [];
       const manuscripts: string[] = [];
       res.rows.forEach( row => {
@@ -15,7 +15,7 @@ async function fetchDocuments(): Promise<string[][]> {
           manuscripts.push(row.key);
         }
         else { 
-          console.debug('file type/kind did not match page or manuscript: ', row);
+          console.log('file type/kind did not match page or manuscript: ', row);
         }
       });
       return [pages, manuscripts];

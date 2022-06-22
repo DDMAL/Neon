@@ -3,10 +3,10 @@ import FileManager from './FileManager';
 import { formatFilename } from './functions';
 import { createManifest, addEntry } from './storage';
 
-const mei_container = document.getElementById('mei_list') as HTMLDivElement;
-const image_container = document.getElementById('image_list') as HTMLDivElement;
-const paired_container = document.getElementById('paired_list') as HTMLDivElement;
-const manuscript_container = document.getElementById('manuscript_list') as HTMLDivElement;
+const mei_container: HTMLDivElement = document.querySelector('#mei_list');
+const image_container: HTMLDivElement = document.querySelector('#image_list');
+const paired_container: HTMLDivElement = document.querySelector('#paired_list');
+const manuscript_container: HTMLDivElement = document.querySelector('#manuscript_list');
 
 const fm = FileManager.getInstance();
 
@@ -67,8 +67,8 @@ function createUnpairedItem(filename: string, group: string): HTMLDivElement {
 
 export function handleMakePair(): void {
   // get and check if selected radio exists
-  const selectedMeiElement = document.querySelector('input[name="mei_radio_group"]:checked') as HTMLInputElement;
-  const selectedImageElement = document.querySelector('input[name="image_radio_group"]:checked') as HTMLInputElement;
+  const selectedMeiElement: HTMLInputElement = document.querySelector('input[name="mei_radio_group"]:checked');
+  const selectedImageElement: HTMLInputElement = document.querySelector('input[name="image_radio_group"]:checked');
   if (selectedMeiElement === null || selectedImageElement === null) return;
   
   const mei_filename = selectedMeiElement.value;
