@@ -1,32 +1,13 @@
 import { getAllDocuments, deleteEntry } from './storage';
 import { formatFilename } from './functions';
-
-interface RowI {
-  doc: {
-    kind: string,
-    _attachments: {
-      manifest: unknown,
-    }
-    _id: string,
-    _rev: string
-  }
-  id: string,
-  key: string,
-  value: { rev: string }
-}
-
-interface DocumentsI {
-  total_rows: number,
-  offset: number,
-  rows: Array<RowI>
-}
+import { DocumentsI } from './storage'; 
 
 async function fetchDocuments(): Promise<string[][]> {
   return await getAllDocuments()
     .then( (res: DocumentsI) => {
       const pages: string[] = [];
       const manuscripts: string[] = [];
-      res['rows'].forEach( row => {
+      res.rows.forEach( row => {
         if (row.doc.kind === 'page') { 
           pages.push(row.key); 
         }
@@ -34,7 +15,7 @@ async function fetchDocuments(): Promise<string[][]> {
           manuscripts.push(row.key);
         }
         else { 
-          console.debug('row.kind did not match page or manuscript: ', row);
+          console.debug('file type/kind did not match page or manuscript: ', row);
         }
       });
       return [pages, manuscripts];

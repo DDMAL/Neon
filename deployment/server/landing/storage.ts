@@ -3,7 +3,22 @@ import PouchDB from 'pouchdb';
 
 const db = new PouchDB('Neon-User-Storage');
 
-export function getAllDocuments(): Promise<PouchDB.Core.AllDocsResponse<unknown>> {
+interface docI extends PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> {
+  kind?: string;
+}
+
+export interface DocumentsI extends PouchDB.Core.AllDocsResponse<unknown> {
+  rows: { 
+    doc?: docI; 
+    id: string; 
+    key: string; 
+    value: { 
+      rev: string; 
+      deleted?: boolean; 
+    }; }[]
+}
+
+export function getAllDocuments(): Promise<DocumentsI> {
   return new Promise((resolve, reject) => {
     db.allDocs({ include_docs: true }).then(result => { resolve(result); })
       .catch(err => { reject(err); });
