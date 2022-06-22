@@ -349,7 +349,8 @@ export function initDisplayControls (meiClassName: string, background: string): 
   const toggleDisplay = document.getElementById('toggleDisplay');
   const displayHeader = document.getElementById('displayHeader');
 
-  displayHeader.addEventListener('click', () => {
+  displayHeader.addEventListener('click', (e) => {
+    e.stopPropagation();
     // if display panel is closed, open it
     if (displayContents.classList.contains('closed')) {
       displayContents.classList.remove('closed');
