@@ -382,6 +382,12 @@ a:hover {
     margin-right: 8px;
     padding-right: 8px;
 }
+#display-all-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
 #selection-mode-container {
     display: flex;
     flex-direction: column;
