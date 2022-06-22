@@ -269,8 +269,9 @@ function clickHandler (this: SVGGraphicsElement, evt: MouseEvent): void {
           (pt.y > (uly + (pt.x - ulx) * Math.tan(rotate))) &&
           (pt.y < (lry - (lrx - pt.x) * Math.tan(rotate)));
       });
+    if (!isMultiSelect())
+      unselect();
 
-    unselect();
     if (selectedStaves.length == 0) {
       return;
     }
