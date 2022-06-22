@@ -58,7 +58,7 @@ class TextView implements TextViewInterface {
     this.updateBBoxViewVisibility();
     document.getElementById('displayText')
       .addEventListener('click', textViewVis.bind(this));
-    document.getElementById('displayBBox')
+    document.getElementById('displayBBox') // Why is BBox logic is inside TextView.ts ???
       .addEventListener('click', bboxViewVis.bind(this));
   }
 
@@ -66,6 +66,12 @@ class TextView implements TextViewInterface {
    * Update visibility of text bounding boxes
    */
   updateBBoxViewVisibility (): void {
+
+    const displayAllBtn = document.getElementById('display-all-btn');
+    const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
+    const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
+    const displayText = document.getElementById('displayText') as HTMLInputElement;
+
     if ((document.getElementById('displayBBox')as HTMLInputElement).checked) {
       document.querySelectorAll('.sylTextRect').forEach(rect => {
         rect.classList.add('sylTextRect-display');
@@ -77,7 +83,15 @@ class TextView implements TextViewInterface {
       if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
         this.neonView.TextEdit.initSelectByBBoxButton();
       }
-    } else {
+
+      // if this is the 3rd option to be checked (all three are selected),
+      // set "Display/Hide All" button to "Hide All".
+      if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
+        displayAllBtn.classList.add('selected');
+        displayAllBtn.innerHTML = "Hide All";
+      }
+    } 
+    else {
       if (document.getElementById('selByBBox')?.classList.contains('is-active')) {
         unselect();
         document.getElementById('selByBBox').classList.remove('is-active');
@@ -95,7 +109,14 @@ class TextView implements TextViewInterface {
 
       try {
         document.getElementById('selByBBox').style.display = 'none';
-      } catch (e) {}
+      } 
+      catch (e) {}
+
+      // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
+      if (displayAllBtn.classList.contains('selected')) {
+        displayAllBtn.classList.remove('selected');
+        displayAllBtn.innerHTML = "Display All";
+      }
     }
     updateHighlight();
   }
@@ -105,6 +126,12 @@ class TextView implements TextViewInterface {
   * and add the event listeners to make sure the syl highlights when moused over
   */
   updateTextViewVisibility (): void {
+
+    const displayAllBtn = document.getElementById('display-all-btn');
+    const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
+    const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
+    const displayText = document.getElementById('displayText') as HTMLInputElement;
+
     if ((document.getElementById('displayText') as HTMLInputElement).checked) {
       const sylText = document.getElementById('syl_text');
       sylText.style.display = '';
@@ -157,8 +184,21 @@ class TextView implements TextViewInterface {
 
       // scroll the syllable text bubble into view
       //sylText.scrollIntoView({ behavior: 'smooth' });
-    } else {
+
+      // if this is the 3rd option to be checked (all three are selected),
+      // set "Display/Hide All" button to "Hide All".
+      if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
+        displayAllBtn.classList.add('selected');
+        displayAllBtn.innerHTML = "Hide All";
+      }
+    } 
+    else {
       document.getElementById('syl_text').style.display = 'none';
+      // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
+      if (displayAllBtn.classList.contains('selected')) {
+        displayAllBtn.classList.remove('selected');
+        displayAllBtn.innerHTML = "Display All";
+      }
     }
   }
 
