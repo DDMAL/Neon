@@ -105,7 +105,6 @@ class TextView implements TextViewInterface {
   * and add the event listeners to make sure the syl highlights when moused over
   */
   updateTextViewVisibility (): void {
-    console.log(this);
     if ((document.getElementById('displayText') as HTMLInputElement).checked) {
       const sylText = document.getElementById('syl_text');
       sylText.style.display = '';
