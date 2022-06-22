@@ -29,19 +29,11 @@ class DivaEdit implements NeumeEditInterface {
     document.getElementById('primitiveTab').click();
     Select.setSelectHelperObjects(this.neonView, this.dragHandler);
     this.setSelectListeners();
-
     SelectOptions.initNeonView(this.neonView);
     initInsertEditControls();
-    //const editMenu = document.getElementById('editMenu');
-    //editMenu.style.backgroundColor = '#ffc7c7';
-    //editMenu.style.fontWeight = 'bold';
-
     Select.setSelectStrokeWidth(1);
-
     initSelectionButtons();
-
     setHighlightSelectionControls();
-
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
 
     document.getElementById('edit_controls').click(); // focus display panel
