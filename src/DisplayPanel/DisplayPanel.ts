@@ -96,12 +96,13 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
 
             <div id="checkbox-display-options">
 
-              <div id="display-single-container"></div>
-
               <div id="display-all-container">
                 <div id="display-options-separator">
                 <div class="side-panel-btn" id="display-all-btn">Display All</div>
               </div>
+              <div id="display-single-container"></div>
+
+              
             </div>
 
           </div>
