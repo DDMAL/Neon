@@ -1,5 +1,3 @@
-import PouchDb from 'pouchdb-core';
-
 /** Modeled after the [W3 Web Annotation Data Model.](https://www.w3.org/TR/annotation-model/) */
 export type WebAnnotation = {
   id: string,

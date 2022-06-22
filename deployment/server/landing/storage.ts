@@ -1,22 +1,27 @@
 import { v4 as uuidv4 } from 'uuid';
-import * as PouchDB from 'pouchdb';
+import PouchDB from 'pouchdb';
 import { NeonManifest, allDocs } from './types';
+import * as localManifest from '../../public/manifest.json';
+
 const db = new PouchDB('Neon-User-Storage');
+const manifestURL = 'https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld';
 
 export function getAllDocuments(): Promise<allDocs> {
   return new Promise((resolve, reject) => {
-    db.allDocs({ include_docs: true }).then(result => resolve(result))
-      .catch(err => { reject(err); });
+    db.allDocs({ include_docs: true })
+      .then(result => resolve(result))
+      .catch(err => reject(err));
   });
 }
 
 export function createManifest(mei: File, bg: File): Promise<NeonManifest> {
   return new Promise(async (resolve) => {
-    const manifest = await fetch('https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld')
-      .then(result => {
-        if (result.ok) {
-          return result.json();
-        }
+    // get up-to-date manifest, else use local copy
+    const manifest = await fetch(manifestURL)
+      .then(result => result.json())
+      .catch( (err) => {
+        console.log('no connection: ', err);
+        return localManifest;
       });
     manifest['@id'] = uuidv4();
     manifest['title'] = mei.name;
