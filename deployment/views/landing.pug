@@ -12,18 +12,9 @@ html
       #left_col
         #title_heading Neon
 
-        //- // ---- JUST TO UPLOAD FOR NOW-------
-        //- section.container
-        //-   | select an MEI file to upload:
-        //-   input(type='file', name='mei', id='mei_upload')
-        //-   br
-        //-   | select a PNG file to upload:
-        //-   input(type='file', accept='image/png', name='image', id='image_upload')
-        //-   br
-        //-   button(type='button', id='test_upload') Upload
-        //- // ---------------------- *delete*
         br
         br
+        
         #select_documents_container
           #dropdown_label Uploaded Documents
           select#documents_dropdown(name='Uploaded Documents', multiple, size='10')
@@ -31,8 +22,12 @@ html
             optgroup#uploaded_manuscripts(class='faded', label='Manuscript:')
           button#open_documents Open Documents
           button#delete_documents Delete Documents
+
         br
+
         #initial_upload_container 
+          #initial_upload_area 
+            span#initial_upload_message Upload Files
 
       #right_col
         #uploading_container 

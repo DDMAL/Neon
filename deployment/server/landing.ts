@@ -1,13 +1,11 @@
-import { InitSelectDocuments, updateDocumentSelector } from './landing/SelectDocuments';
-import InitialUploadArea from './landing/InitialUploadArea';
-import { handleMakePair, handleUploadAllDocuments } from './landing/UploadManager';
+import { InitSelectDocuments, updateDocumentSelector } from './landing/selectDocuments';
+import { handleMakePair, handleUploadAllDocuments } from './landing/uploadManager';
+import { InitUploadArea } from './landing/uploadArea';
 import FileManager from './landing/FileManager';
-// import { createManifest, addEntry } from './landing/storage';
-// import UploadManager from './landing/UploadManager';
 
 InitSelectDocuments();
+InitUploadArea();
 
-document.getElementById('initial_upload_container').appendChild(InitialUploadArea()); // add to html instead of making in initialUploadArea
 // add function to pairing button
 document.getElementById('make_pair').addEventListener('click', handleMakePair);
 document.getElementById('upload_button').addEventListener('click', async () => {

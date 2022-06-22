@@ -1,8 +1,3 @@
-// interface Folio {
-//   mei: File,
-//   image: File
-// }
-
 /**
  * Singleton management system, use getInstance() to retrieve instance.
  */
