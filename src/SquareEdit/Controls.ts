@@ -19,9 +19,7 @@ export function bindInsertTabs (insertHandler: InsertHandler): void {
         const index = Number(evt.code[evt.code.length - 1]) - 1;
         const insertOptions = document.getElementsByClassName('insertel');
         const selectedOption = insertOptions[index];
-        deactivate('.insertel');
-        insertHandler.insertDisabled();
-        activate(selectedOption.id, insertHandler);
+        (<HTMLButtonElement> selectedOption).click();
       } catch (e) {
         console.debug(e);
       }
@@ -130,6 +128,8 @@ export function initInsertEditControls (): void {
 
 /**
  * Activate a certain insert action.
+ * This function is used for activating insert PANELS
+ * and insert ICONS (whyyy).
  * @param id - The ID of the insert action tab.
  */
 function activate (id: string, insertHandler: InsertHandler): void {
@@ -148,6 +148,7 @@ function deactivate (type: string) {
   const elList = document.querySelectorAll(type);
   elList.forEach(el => {
     el.classList.remove('is-active');
+    el.classList.remove('unfocused');
   });
 }
 
@@ -176,39 +177,19 @@ export function initSelectionButtons (): void {
   const selByLayerElement = document.getElementById('selByLayerElement');
 
   selBySyllable.addEventListener('click', selectBySylHandler);
-  document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === '1') {
-      selectBySylHandler();
-    }
-  });
-
   selByNeume.addEventListener('click', selectByNeumeHandler);
-  document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === '2') {
-      selectByNeumeHandler();
-    }
-  });
-
   selByNc.addEventListener('click', selectByNcHandler);
-  document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === '3') {
-      selectByNcHandler();
-    }
-  });
-
   selByStaff.addEventListener('click', selectByStaffHandler);
+  selByLayerElement.addEventListener('click', selByLayerElementHandler);
+
   document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === '4') {
-      selectByStaffHandler();
-    }
+    if (evt.key === '1') selBySyllable.click();
+    if (evt.key === '2') selByNeume.click();
+    if (evt.key === '3') selByNc.click();
+    if (evt.key === '4') selByStaff.click();
+    if (evt.key === '5') selByLayerElement.click();
   });
 
-  selByLayerElement.addEventListener('click', selByLayerElementHandler);
-  document.body.addEventListener('keydown', (evt) => {
-    if (evt.key === '5') {
-      selByLayerElementHandler();
-    }
-  });
 
   function selectBySylHandler () {
     if (!selBySyllable.classList.contains('is-active')) {
