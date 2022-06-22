@@ -219,11 +219,29 @@ body {
   font-size: large;
 }
 
-#upload_button.idle {
-  color: green
+#upload_button {
+  display: inline-flex;
 }
 
-#upload_button.uploading {
+#loading_circle {
+  margin-left: 0.2rem;
+  display: none;
+}
+
+#loading_circle.loading {
+  display: block;
   color: red;
-  animation: cubic-bezier(0.075, 0.82, 0.165, 1);
+  animation-name: spin;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+}
+
+@keyframes spin {
+  from {
+      transform:rotate(0deg);
+  }
+  to {
+      transform:rotate(360deg);
+  }
 }
