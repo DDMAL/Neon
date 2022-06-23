@@ -79,7 +79,8 @@ export function initInsertEditControls (): void {
   });
 
 
-  insertHeading.addEventListener('click', () => {
+  insertHeading.addEventListener('click', (e) => {
+    e.stopPropagation();
     // if insert panel is closed, open it
     if (insertContents.classList.contains('closed')) {
       // set classes and styles for an open panel
@@ -102,7 +103,8 @@ export function initInsertEditControls (): void {
     }
   });
 
-  editHeading.addEventListener('click', () => {
+  editHeading.addEventListener('click', (e) => {
+    e.stopPropagation();
     // if edit panel is open, close it
     if (editContents.classList.contains('closed')) {
       // set classes and styles for an open panel
