@@ -438,20 +438,47 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
         // case 2:
         default:
           // Check if this is a linked syllable split by a staff break
-          if (Grouping.isLinkable('selBySyllable', groups)) { 
+          if ((groups[0].getAttribute('mei:follows') === '#' + groups[1].id) ||
+          (groups[0].getAttribute('mei:precedes') === '#' + groups[1].id)) {
             Grouping.triggerGrouping('splitSyllable');
-          } 
-          else if (Grouping.isGroupable('selBySyllable', groups)) {
+          } else if (sharedSecondLevelParent(groups)) {
             Grouping.triggerGrouping('syl');
             SelectOptions.addChangeStaffListener();
-          } 
-          else {
+          } else {
+            // Check if this *could* be a selection with a single logical syllable split by a staff break.
+            const staff0 = groups[0].closest('.staff');
+            const staff1 = groups[1].closest('.staff');
+            const staffChildren = Array.from(staff0.parentElement.children);
+            // Check if these are adjacent staves (logically)
+            if (Math.abs(staffChildren.indexOf(staff0) - staffChildren.indexOf(staff1)) === 1) {
+              // Check if one syllable is the last in the first staff and the other is the first in the second.
+              // Determine which staff is first.
+              const firstStaff = (staffChildren.indexOf(staff0) < staffChildren.indexOf(staff1)) ? staff0 : staff1;
+              const secondStaff = (firstStaff.id === staff0.id) ? staff1 : staff0;
+              const firstLayer = firstStaff.querySelector('.layer');
+              const secondLayer = secondStaff.querySelector('.layer');
+
+              // Check that the first staff has either syllable as the last syllable
+              const firstSyllableChildren = Array.from(firstLayer.children)
+                .filter((elem: HTMLElement) => elem.classList.contains('syllable')) as HTMLElement[];
+              const secondSyllableChildren = Array.from(secondLayer.children)
+                .filter((elem: HTMLElement) => elem.classList.contains('syllable')) as HTMLElement[];
+              const lastSyllable = firstSyllableChildren[firstSyllableChildren.length - 1];
+              const firstSyllable = secondSyllableChildren[0];
+              if (lastSyllable.id === groups[0].id && firstSyllable.id === groups[1].id) {
+                Grouping.triggerGrouping('splitSyllable');
+                break;
+              } else if (lastSyllable.id === groups[1].id && firstSyllable.id === groups[0].id) {
+                Grouping.triggerGrouping('splitSyllable');
+                break;
+              }
+            }
             SelectOptions.triggerDefaultSylActions();
             SelectOptions.triggerSyllableActions();
             Grouping.initGroupingListeners();
           }
           // break
-          // default:
+        // default:
           // if (sharedSecondLevelParent(groups)) {
           //   Grouping.triggerGrouping('syl');
           //   SelectOptions.triggerSyllableActions();

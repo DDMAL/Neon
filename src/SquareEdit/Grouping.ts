@@ -46,61 +46,6 @@ export function isGroupable (selectionType: string, elements: Array<SVGGraphicsE
 
 
 /**
- * Check if the selected elements can be linked or unlikned.
- * @param selectionType Current selection mode. Only certain elements can be linked
- * @param elements The elements under question 
- * @returns true if user should be able to link or un-link elements, false otherwise
- */
-export function isLinkable(selectionType: string, elements: Array<SVGGraphicsElement>): boolean {
-
-  switch(elements.length) {
-    case 1:
-      return false;
-    
-    default:
-      // only Syllables can be linked or unlinked (?)
-      if (selectionType !== 'selBySyllable') return false;
-    
-      // if precedes and follows attributes exist and their IDs match
-      if ((elements[0].getAttribute('mei:follows') === '#' + elements[1].id) ||
-      (elements[0].getAttribute('mei:precedes') === '#' + elements[1].id)) {
-        return true;
-      }
-      else {
-        // Check if this *could* be a selection with a single logical syllable split by a staff break. 
-        const staff0 = elements[0].closest('.staff');
-        const staff1 = elements[1].closest('.staff');
-        const staffChildren = Array.from(staff0.parentElement.children);
-        // Check if these are adjacent staves (logically)
-        if (Math.abs(staffChildren.indexOf(staff0) - staffChildren.indexOf(staff1)) === 1) {
-          // Check if one syllable is the last in the first staff and the other is the first in the second.
-          // Determine which staff is first.
-          const firstStaff = (staffChildren.indexOf(staff0) < staffChildren.indexOf(staff1)) ? staff0 : staff1;
-          const secondStaff = (firstStaff.id === staff0.id) ? staff1 : staff0;
-          const firstLayer = firstStaff.querySelector('.layer');
-          const secondLayer = secondStaff.querySelector('.layer');
-    
-          // Check that the first staff has either syllable as the last syllable
-          const firstSyllableChildren = Array.from(firstLayer.children).filter((elem: HTMLElement) => elem.classList.contains('syllable'));
-          const secondSyllableChildren = Array.from(secondLayer.children).filter((elem: HTMLElement) => elem.classList.contains('syllable'));    
-          const lastSyllable = firstSyllableChildren[firstSyllableChildren.length - 1];
-          const firstSyllable = secondSyllableChildren[0];
-    
-          if (lastSyllable.id === elements[0].id && firstSyllable.id === elements[1].id) {
-            return true;
-          } 
-          else if (lastSyllable.id === elements[1].id && firstSyllable.id === elements[0].id) {
-            return true;
-          }
-        }
-      }    
-  }
-
-  return false;
-}
-
-
-/**
  * Merge selected staves
  */
 export function mergeStaves (): void {
@@ -222,7 +167,115 @@ export function initGroupingListeners (): void {
 
   try {
     document.getElementById('toggle-link').addEventListener('click', () => {
-      toggleLinkedSyllables();
+      const elementIds = getIds();
+      const chainAction: EditorAction = {
+        action: 'chain',
+        param: []
+      };
+      const param = new Array<EditorAction>();
+      if (document.getElementById(elementIds[0]).getAttribute('mei:precedes')) {
+        param.push({
+          action: 'set',
+          param: {
+            elementId: elementIds[0],
+            attrType: 'precedes',
+            attrValue: ''
+          }
+        });
+        param.push({
+          action: 'set',
+          param: {
+            elementId: elementIds[1],
+            attrType: 'follows',
+            attrValue: ''
+          }
+        });
+        param.push({
+          action: 'setText',
+          param: {
+            elementId: elementIds[1],
+            text: ''
+          }
+        });
+      } else if (document.getElementById(elementIds[0]).getAttribute('mei:follows')) {
+        param.push({
+          action: 'set',
+          param: {
+            elementId: elementIds[0],
+            attrType: 'follows',
+            attrValue: ''
+          }
+        });
+        param.push({
+          action: 'set',
+          param: {
+            elementId: elementIds[1],
+            attrType: 'precedes',
+            attrValue: ''
+          }
+        });
+        param.push({
+          action: 'setText',
+          param: {
+            elementId: elementIds[0],
+            text: ''
+          }
+        });
+      } else {
+        // Associate syllables. Will need to find which is first. Use staves.
+        const syllable0 = document.getElementById(elementIds[0]);
+        const syllable1 = document.getElementById(elementIds[1]);
+        const staff0 = syllable0.closest('.staff');
+        const staff1 = syllable1.closest('.staff');
+        const staffChildren = Array.from(staff0.parentElement.children).filter((elem: HTMLElement) => elem.classList.contains('staff'));
+
+        let firstSyllable, secondSyllable;
+        // Determine first syllable comes first by staff
+        if (staffChildren.indexOf(staff0) < staffChildren.indexOf(staff1)) {
+          firstSyllable = syllable0;
+          secondSyllable = syllable1;
+        } else {
+          firstSyllable = syllable1;
+          secondSyllable = syllable0;
+        }
+
+        param.push({
+          action: 'set',
+          param: {
+            elementId: firstSyllable.id,
+            attrType: 'precedes',
+            attrValue: '#' + secondSyllable.id
+          }
+        });
+        param.push({
+          action: 'set',
+          param: {
+            elementId: secondSyllable.id,
+            attrType: 'follows',
+            attrValue: '#' + firstSyllable.id
+          }
+        });
+        // Delete syl on second syllable
+        const syl = secondSyllable.querySelector('.syl');
+        if (syl !== null) {
+          param.push({
+            action: 'remove',
+            param: {
+              elementId: syl.id
+            }
+          });
+        }
+      }
+      chainAction.param = param;
+      neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Toggled Syllable Link');
+        } else {
+          Notification.queueNotification('Failed to Toggle Syllable Link');
+        }
+        endGroupingSelection();
+        neonView.updateForCurrentPage();
+      });
     });
   } catch (e) {}
 }
@@ -242,10 +295,7 @@ const keydownListener = function(e) {
     // Group/merge or ungroup/split based on selection type
     switch (selectionType) {
       case 'selBySyllable':
-        if (isLinkable(selectionType, elements)) {
-          toggleLinkedSyllables();
-        }
-        else if (isGroupable(selectionType, elements)) {
+        if (isGroupable(selectionType, elements)) {
           const elementIds = getChildrenIds().filter(e =>
             document.getElementById(e).classList.contains('neume')
           );
@@ -332,123 +382,6 @@ function groupingAction (action: 'group' | 'ungroup', groupType: 'neume' | 'nc',
       }
     }
     endGroupingSelection();
-  });
-}
-
-
-/**
- * Determine what action to perform when user clicks on "Toggle Linked Syllable"
- * Also called when correspinding hotkey is pressed.
- */
-function toggleLinkedSyllables() {
-  const elementIds = getIds();
-  const chainAction: EditorAction = {
-    action: 'chain',
-    param: []
-  };
-  const param = new Array<EditorAction>();
-  if (document.getElementById(elementIds[0]).getAttribute('mei:precedes')) {
-    param.push({
-      action: 'set',
-      param: {
-        elementId: elementIds[0],
-        attrType: 'precedes',
-        attrValue: ''
-      }
-    });
-    param.push({
-      action: 'set',
-      param: {
-        elementId: elementIds[1],
-        attrType: 'follows',
-        attrValue: ''
-      }
-    });
-    param.push({
-      action: 'setText',
-      param: {
-        elementId: elementIds[1],
-        text: ''
-      }
-    });
-  } else if (document.getElementById(elementIds[0]).getAttribute('mei:follows')) {
-    param.push({
-      action: 'set',
-      param: {
-        elementId: elementIds[0],
-        attrType: 'follows',
-        attrValue: ''
-      }
-    });
-    param.push({
-      action: 'set',
-      param: {
-        elementId: elementIds[1],
-        attrType: 'precedes',
-        attrValue: ''
-      }
-    });
-    param.push({
-      action: 'setText',
-      param: {
-        elementId: elementIds[0],
-        text: ''
-      }
-    });
-  } else {
-    // Associate syllables. Will need to find which is first. Use staves.
-    const syllable0 = document.getElementById(elementIds[0]);
-    const syllable1 = document.getElementById(elementIds[1]);
-    const staff0 = syllable0.closest('.staff');
-    const staff1 = syllable1.closest('.staff');
-    const staffChildren = Array.from(staff0.parentElement.children).filter((elem: HTMLElement) => elem.classList.contains('staff'));
-
-    let firstSyllable, secondSyllable;
-    // Determine first syllable comes first by staff
-    if (staffChildren.indexOf(staff0) < staffChildren.indexOf(staff1)) {
-      firstSyllable = syllable0;
-      secondSyllable = syllable1;
-    } else {
-      firstSyllable = syllable1;
-      secondSyllable = syllable0;
-    }
-
-    param.push({
-      action: 'set',
-      param: {
-        elementId: firstSyllable.id,
-        attrType: 'precedes',
-        attrValue: '#' + secondSyllable.id
-      }
-    });
-    param.push({
-      action: 'set',
-      param: {
-        elementId: secondSyllable.id,
-        attrType: 'follows',
-        attrValue: '#' + firstSyllable.id
-      }
-    });
-    // Delete syl on second syllable
-    const syl = secondSyllable.querySelector('.syl');
-    if (syl !== null) {
-      param.push({
-        action: 'remove',
-        param: {
-          elementId: syl.id
-        }
-      });
-    }
-  }
-  chainAction.param = param;
-  neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => {
-    if (result) {
-      Notification.queueNotification('Toggled Syllable Link');
-    } else {
-      Notification.queueNotification('Failed to Toggle Syllable Link');
-    }
-    endGroupingSelection();
-    neonView.updateForCurrentPage();
   });
 }
 
