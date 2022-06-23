@@ -8,6 +8,7 @@ import { InfoInterface } from '../Interfaces';
 import ZoomHandler from '../SingleView/Zoom';
 
 import * as d3 from 'd3';
+import { getStaffByCoords, getSVGRelCoords } from './Coordinates';
 
 let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 let strokeWidth = 7;
@@ -248,34 +249,13 @@ function clickHandler (evt: MouseEvent): void {
     }
 
     // Check if the point is in a staff.
-    const container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0] as SVGSVGElement;
-    let pt = container.createSVGPoint();
-    pt.x = evt.clientX;
-    pt.y = evt.clientY;
-    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGraphicsElement).getScreenCTM();
-    pt = pt.matrixTransform(transformMatrix.inverse());
-
-    const selectedStaves = Array.from(document.getElementsByClassName('staff'))
-      .filter((staff: SVGGElement) => {
-        const bbox = getStaffBBox(staff);
-        const ulx = bbox.ulx;
-        const uly = bbox.uly;
-        const lrx = bbox.lrx;
-        const lry = bbox.lry;
-        const rotate = bbox.rotate;
-
-        return (pt.x > ulx && pt.x < lrx) &&
-          (pt.y > (uly + (pt.x - ulx) * Math.tan(rotate))) &&
-          (pt.y < (lry - (lrx - pt.x) * Math.tan(rotate)));
-      });
-
     unselect();
-    if (selectedStaves.length == 0) {
-      return;
-    }
 
     // Select a staff
-    const staff = selectedStaves[0] as SVGGElement;
+    const staff = getStaffByCoords(evt.clientX, evt.clientY);
+    
+    if (!staff) return;
+
     if (!staff.classList.contains('selected')) {
       // Select previously unselected staff
       selectStaff(staff, dragHandler);
@@ -414,12 +394,11 @@ export function dragSelect (selector: string): void {
 
   function selEnd (): void {
     if (!panning && dragSelecting) {
-      const rx = parseInt(document.getElementById('selectRect').getAttribute('x'));
-      const ry = parseInt(document.getElementById('selectRect').getAttribute('y'));
-      const lx = parseInt(document.getElementById('selectRect').getAttribute('x')) +
-        parseInt(document.getElementById('selectRect').getAttribute('width'));
-      const ly = parseInt(document.getElementById('selectRect').getAttribute('y')) +
-        parseInt(document.getElementById('selectRect').getAttribute('height'));
+      const selectRect = document.getElementById('selectRect');
+      const rx = parseInt(selectRect.getAttribute('x'));
+      const ry = parseInt(selectRect.getAttribute('y'));
+      const lx = rx + parseInt(selectRect.getAttribute('width'));
+      const ly = ry + parseInt(selectRect.getAttribute('height'));
       // Transform to the correct coordinate system
       const node = canvas.node() as SVGSVGElement;
       let ul = node.createSVGPoint();
