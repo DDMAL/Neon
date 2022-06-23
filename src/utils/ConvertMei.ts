@@ -234,46 +234,44 @@ export function convertSbToStaff(sbBasedMei: string): string {
 
     // Check syllables that contains @precedes or @follows
     // Update syllable arrays for each syllable
-    let newSyllables = Array.from(mei.getElementsByTagName('syllable'));
+    const newSyllables = Array.from(mei.getElementsByTagName('syllable'));
     // For each toggle-linked syllable
-    // Set @precedes and @follows to make sure pointing to the correct syllable
+    // Check @precedes and @follows to make sure pointing to the correct syllable
     if (syllable.hasAttribute('precedes')) {
-      const syllableIdx = newSyllables.indexOf(syllable);
-      if (syllableIdx >= 0) {
-        const nextSyllable = newSyllables[syllableIdx+1];
-        if (nextSyllable) {
-          if (nextSyllable.hasAttribute('follows')) {
-            if (nextSyllable.getAttribute('follows') != '#' + syllable.getAttribute('xml:id')) {
-              const sylText = getSyllableText(syllable);
-              Notification.queueNotification('Wrong @follows value for toggle-linked syllable: ' + sylText);
-            }
-          }
-          else {
+      // Get xml:id of the next syllable (without the #, if it exists)
+      const nextId = syllable.getAttribute('precedes').replace('#', '');
+      const nextSyllable = newSyllables.find(syl => syl.getAttribute('xml:id') === nextId);
+      if (nextSyllable) {
+        if (nextSyllable.hasAttribute('follows')) {
+          if (nextSyllable.getAttribute('follows') != '#' + syllable.getAttribute('xml:id')) {
             const sylText = getSyllableText(syllable);
-            Notification.queueNotification('No @follows value found for toggle-linked syllable: ' + sylText);
+            Notification.queueNotification('Wrong @follows value for toggle-linked syllable: ' + sylText);
+          }
+        } else {
+          const sylText = getSyllableText(syllable);
+          Notification.queueNotification('No @follows value found for toggle-linked syllable: ' + sylText);
+        }
+      } else {
+        const sylText = getSyllableText(syllable);
+        Notification.queueNotification('The @precedes syllable does not exist for toggle-linked syllable: ' + sylText);
+      }
+    } else if (syllable.hasAttribute('follows')) {
+      const prevId = syllable.getAttribute('follows').replace('#', '');
+      const prevSyllable = newSyllables.find(syl => syl.getAttribute('xml:id') === prevId);
+      if (prevSyllable) {
+        if (prevSyllable.hasAttribute('precedes')) {
+          if (prevSyllable.getAttribute('precedes') != '#' + syllable.getAttribute('xml:id')) {
+            const sylText = getSyllableText(prevSyllable);
+            Notification.queueNotification('Wrong @precedes value for toggle-linked syllable: ' + sylText);
           }
         }
         else {
-          Notification.queueNotification('No syllables found after @precedes');
+          const sylText = getSyllableText(prevSyllable);
+          Notification.queueNotification('No @precedes value found for toggle-linked syllable: ' + sylText);
         }
-      }
-    }
-    else if (syllable.hasAttribute('follows')) {
-      const syllableIdx = newSyllables.indexOf(syllable);
-      if (syllableIdx > 0) {
-        const prevSyllable = newSyllables[syllableIdx-1];
-        if (prevSyllable) {
-          if (prevSyllable.hasAttribute('precedes')) {
-            if (prevSyllable.getAttribute('precedes') != '#' + syllable.getAttribute('xml:id')) {
-              const sylText = getSyllableText(prevSyllable);
-              Notification.queueNotification('Wrong @precedes value for toggle-linked syllable: ' + sylText);
-            }
-          }
-          else {
-            const sylText = getSyllableText(prevSyllable);
-            Notification.queueNotification('No @precedes value found for toggle-linked syllable: ' + sylText);
-          }
-        }
+      } else {
+        const sylText = getSyllableText(syllable);
+        Notification.queueNotification('The @follows syllable does not exist for toggle-linked syllable: ' + sylText);
       }
     }
   }
