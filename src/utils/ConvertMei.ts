@@ -253,7 +253,13 @@ export function convertSbToStaff(sbBasedMei: string): string {
         }
       } else {
         const sylText = getSyllableText(syllable);
-        Notification.queueNotification('The @precedes syllable does not exist for toggle-linked syllable: ' + sylText);
+        Notification.queueNotification(`
+          <div>
+            The @precedes syllable does not exist for toggle-linked syllable
+          </div>
+          <div> ID: ${syllable.getAttribute('xml:id')} </div>
+          <div> Text: ${sylText} </div>
+        `);
       }
     } else if (syllable.hasAttribute('follows')) {
       const prevId = syllable.getAttribute('follows').replace('#', '');
@@ -271,7 +277,13 @@ export function convertSbToStaff(sbBasedMei: string): string {
         }
       } else {
         const sylText = getSyllableText(syllable);
-        Notification.queueNotification('The @follows syllable does not exist for toggle-linked syllable: ' + sylText);
+        Notification.queueNotification(`
+          <div>
+            The @follows syllable does not exist for toggle-linked syllable
+          </div>
+          <div> ID: ${syllable.getAttribute('xml:id')} </div>
+          <div> Text: ${sylText} </div>
+        `);
       }
     }
   }
