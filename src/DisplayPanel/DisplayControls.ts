@@ -304,6 +304,34 @@ function setBurgerControls (): void {
   });
 }
 
+/** 
+ * Set listener for "Display All" button in Display panel.
+*/
+function setDisplayAllListener(): void {
+  const selectAllBtn = document.querySelector('#display-all-btn');
+  selectAllBtn.addEventListener('click', () => {
+    // at the moment, classname 'selected' is only used for tracking purposes
+    if (selectAllBtn.classList.contains('selected')) {
+      selectAllBtn.classList.remove('selected');
+      selectAllBtn.innerHTML = 'Display All';
+      const options =  document.querySelectorAll('.checkbox-container > .checkbox');
+
+      Array.from(options).forEach((option: HTMLInputElement) => {
+        if (option.checked) option.click();
+      });
+    }
+    else {
+      selectAllBtn.classList.add('selected');
+      selectAllBtn.innerHTML = 'Hide All';
+      const options =  document.querySelectorAll('.checkbox-container > .checkbox');
+      
+      Array.from(options).forEach((option: HTMLInputElement) => {
+        if (!option.checked) option.click();
+      });
+    }
+  });
+}
+
 /**
  * Initialize listeners and controls for display panel.
  * @param {string} meiClassName - The class used to signifiy the MEI element(s).
@@ -315,12 +343,14 @@ export function initDisplayControls (meiClassName: string, background: string): 
   setHighlightControls();
   setBurgerControls();
   setHighlightKeyControls();
+  setDisplayAllListener();
 
   const displayContents = document.getElementById('displayContents');
   const toggleDisplay = document.getElementById('toggleDisplay');
   const displayHeader = document.getElementById('displayHeader');
 
-  displayHeader.addEventListener('click', () => {
+  displayHeader.addEventListener('click', (e) => {
+    e.stopPropagation();
     // if display panel is closed, open it
     if (displayContents.classList.contains('closed')) {
       displayContents.classList.remove('closed');
@@ -338,12 +368,7 @@ export function initDisplayControls (meiClassName: string, background: string): 
         displayContents.style.padding = '0px';
       }, 200);
       toggleDisplay.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-side`);
-
     }
-  });
-
-  document.getElementById('displayHeader').addEventListener('mouseover', () => {
-    //toggleDisplay
   });
 }
 
