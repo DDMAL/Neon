@@ -1,38 +1,7 @@
 import NeonView from '../NeonView';
 import { ChangeStaffToAction, DragAction, EditorAction } from '../Types';
 import * as d3 from 'd3';
-import { getStaffBBox } from './SelectTools';
-
-/**
- * Get SVG relative coordinates given clientX and clientY
- * Source: https://stackoverflow.com/questions/29261304
- */
-function getSVGRelCoords (clientX: number, clientY: number): [number, number] {
-  const pt = new DOMPoint(clientX, clientY);
-  const svg = document.querySelector<SVGSVGElement>('#svg_group');
-  const { x, y } = pt.matrixTransform(svg.getScreenCTM().inverse());
-
-  return [x, y];
-}
-
-/**
- * Get ID of staff by client's x-y coordinates.
- * This function considers the *visual* bounding box of the staff
- * based on its staff lines, instead of the SVG element itself.
- */
-function getStaff (clientX: number, clientY: number): string {
-  const staves = Array.from(document.querySelectorAll<SVGGElement>('.staff'));
-  const staffBBoxes = staves.map(staff => getStaffBBox(staff));
-
-  // find the staff that the cursor is inside
-  const [x, y] = getSVGRelCoords(clientX, clientY);
-  const staff = staffBBoxes.find(
-    (bbox) => x <= bbox.lrx && x >= bbox.ulx && y <= bbox.lry && y >= bbox.uly
-  ); 
-
-  // if the cursor is not inside any staff, then explicitly return null
-  return staff ? staff.id : null;
-}
+import { getStaffIdByCoords } from './Coordinates';
 
 class DragHandler {
   readonly neonView: NeonView;
@@ -127,7 +96,7 @@ class DragHandler {
 
         if (el.classList.contains('divLine') || el.classList.contains('accid') || el.classList.contains('custos')) {
           const { clientX, clientY } = d3.event.sourceEvent;
-          const newStaff = getStaff(clientX, clientY);
+          const newStaff = getStaffIdByCoords(clientX, clientY);
 
           const staffAction: ChangeStaffToAction = {
             action: 'changeStaffTo',

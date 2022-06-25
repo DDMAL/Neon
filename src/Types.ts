@@ -48,9 +48,7 @@ export type InsertAction = {
     lrx?: number,
     lry?: number,
     // TODO: attributes are currently never used yet in Neon
-    attributes?: {
-      shape: string
-    }
+    attributes?: { shape: string } | Record<string, string>;
   }
 };
 
