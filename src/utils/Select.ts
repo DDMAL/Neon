@@ -253,10 +253,6 @@ function clickHandler (this: SVGGraphicsElement, evt: MouseEvent): void {
     if (!isMultiSelect())
       unselect();
 
-    if (selectedStaves.length == 0) {
-      return;
-    }
-
     // Select a staff
     const staff = getStaffByCoords(evt.clientX, evt.clientY);
     
