@@ -62,17 +62,22 @@ export function isLinkable(selectionType: string, elements: Array<SVGGraphicsEle
       if (selectionType !== 'selBySyllable') return false;
     
       // if precedes and follows attributes exist and their IDs match
-      if ((elements[0].getAttribute('mei:follows') === '#' + elements[1].id) ||
-      (elements[0].getAttribute('mei:precedes') === '#' + elements[1].id)) {
+      if (((elements[0].getAttribute('mei:follows') === `#${elements[1].id}`) && 
+          (elements[1].getAttribute('mei:precedes') === `#${elements[0].id}`)) ||
+          ((elements[0].getAttribute('mei:precedes') === '#' + elements[1].id) &&
+          (elements[1].getAttribute('mei:follows') === '#' + elements[0].id))) {
         return true;
       }
       else {
         // Check if this *could* be a selection with a single logical syllable split by a staff break. 
-        const staff0 = elements[0].closest('.staff');
-        const staff1 = elements[1].closest('.staff');
-        const staffChildren = Array.from(staff0.parentElement.children);
+
+        
         // Check if these are adjacent staves (logically)
-        if (Math.abs(staffChildren.indexOf(staff0) - staffChildren.indexOf(staff1)) === 1) {
+        if (SelectTools.isMultiStaveSelection(elements)) {
+          const staff0 = elements[0].closest('.staff');
+          const staff1 = elements[1].closest('.staff');
+          const staffChildren = Array.from(staff0.parentElement.children);
+
           // Check if one syllable is the last in the first staff and the other is the first in the second.
           // Determine which staff is first.
           const firstStaff = (staffChildren.indexOf(staff0) < staffChildren.indexOf(staff1)) ? staff0 : staff1;
@@ -242,15 +247,22 @@ const keydownListener = function(e) {
     // Group/merge or ungroup/split based on selection type
     switch (selectionType) {
       case 'selBySyllable':
+        // if syllables are linnkable, toggle linked syllable
+        // linked syllables cannot be grouped/ungrouped
         if (isLinkable(selectionType, elements)) {
           toggleLinkedSyllables();
         }
+        // check if groupable before grouping
         else if (isGroupable(selectionType, elements)) {
           const elementIds = getChildrenIds().filter(e =>
             document.getElementById(e).classList.contains('neume')
           );
           groupingAction('group', 'neume', elementIds);
-        } else {
+
+        } 
+        // can only ungroup if length == 1
+        // cannot ungroup if multiple syllables are selected
+        else if (elements.length === 1) {
           const elementIds = getChildrenIds();
           groupingAction('ungroup', 'neume', elementIds);
         }
@@ -337,7 +349,7 @@ function groupingAction (action: 'group' | 'ungroup', groupType: 'neume' | 'nc',
 
 
 /**
- * Determine what action to perform when user clicks on "Toggle Linked Syllable"
+ * Determine what action (link/unlink) to perform when user clicks on "Toggle Linked Syllable"
  * Also called when correspinding hotkey is pressed.
  */
 function toggleLinkedSyllables() {

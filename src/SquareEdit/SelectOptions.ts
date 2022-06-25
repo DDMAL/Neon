@@ -282,10 +282,15 @@ function setEditControls(editType: 'moreEdit' | 'extraEdit', contents: string, r
   if (edit) {
     edit.parentElement.classList.remove('hidden');
 
-    if (replace)
+    if (replace) {
+      console.log(contents);
+      console.trace();
       edit.innerHTML = contents;
-    else
+    }
+    else {
+
       edit.innerHTML += contents;
+    }
   }
 }
 
@@ -571,20 +576,61 @@ export function triggerNeumeActions (): void {
 /**
  * Trigger extra syllable actions.
  */
-export function triggerSyllableActions (): void {
+export function triggerSyllableActions (selectionType: string): void {
   endOptionsSelection();
 
-  const extraActionsHTML = `
-    <div class="right-side-panel-btns-container">
-      <button class="side-panel-btn" id="mergeSyls">Merge Syllables</button>
-      <button class="side-panel-btn" id="ungroupNeumes">Ungroup</button>
-      <button class="side-panel-btn" id="delete">Delete</button>
-      <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
-    </div>
-  `;
-  setEditControls('moreEdit', extraActionsHTML);
+  // initialize variable that will hold html to be added to Display panel
+  let extraActionsHTML = '';
+
+  // determine the type of selection that was made by the user
+  switch(selectionType) {
+    // only one syllable
+    case 'singleSelect':
+      extraActionsHTML += 
+        `<div class="right-side-panel-btns-container">
+          <button class="side-panel-btn" id="ungroupNeumes">Ungroup</button>
+          <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+          <button class="side-panel-btn" id="delete">Delete</button>
+        </div>`;
+      break;
+
+    // two syllables on separate staves
+    case 'linkableSelect':
+      extraActionsHTML += 
+        `<div class="right-side-panel-btns-container">
+          <button class="side-panel-btn" id="toggle-link">Toggle Linked Syllables</button>
+          <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+          <button class="side-panel-btn" id="delete">Delete</button>
+        </div>`;
+      break;
+
+    // tow or more syllables on one staff
+    case 'multiSelect':
+      extraActionsHTML += 
+        `<div class="right-side-panel-btns-container">
+          <button class="side-panel-btn" id="mergeSyls">Merge Syllables</button>
+          <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+          <button class="side-panel-btn" id="delete">Delete</button>
+        </div>`;
+      break;
+
+    // more than two syllables accross multiple staves
+    case 'multiStaveMultiSelect':
+      extraActionsHTML += 
+        `<div class="right-side-panel-btns-container">
+          <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+          <button class="side-panel-btn" id="delete">Delete</button>
+        </div>`;
+      break;
+
+  }
+
+  // set content of additional actions in Display panel 
+  // and initialize necessary listeners
+  setEditControls('moreEdit', extraActionsHTML, true);
   addChangeStaffListener();
   addDeleteListener();
+  Grouping.initGroupingListeners();
 }
 
 /**

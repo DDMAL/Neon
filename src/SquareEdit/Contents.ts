@@ -360,7 +360,14 @@ export const groupingMenu = {
                         <button class="side-panel-btn" id="toggle-link">Toggle Linked Syllables</button>
                         <button class="side-panel-btn" id="delete">Delete</button>
                     </div>
-                </div>`
+                </div>`,
+  multiStaveSyllables: `<div class="more-edit-btn panel-btn">
+                            <div class="right-side-panel-btns-container">
+                                <button class="side-panel-btn" id="ungroupNeumes">Ungroup</button>
+                                <button class="side-panel-btn" id="delete">Delete</button>
+                                <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+                            </div>
+                        </div>`
 };
 
 

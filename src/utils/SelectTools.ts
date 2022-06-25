@@ -212,6 +212,20 @@ export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
 }
 
 /**
+ * Check if user selected elements accross multiple staves
+ * @param elements the user-selected elements
+ * @returns true if selection is accross multiple staves, false otherwise
+ */
+export function isMultiStaveSelection(elements: SVGElement[]): boolean {
+  const staff0 = elements[0].closest('.staff');
+  const staff1 = elements[1].closest('.staff');
+  const staffChildren = Array.from(staff0.parentElement.children);
+
+  if (Math.abs(staffChildren.indexOf(staff0) - staffChildren.indexOf(staff1)) === 1) return true;
+  else return false;
+}
+
+/**
  * Bounding box object interface for getStaffBBox()
  */
 export interface StaffBBox {
@@ -429,36 +443,33 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       break;
 
     case 'selBySyllable':
+
       switch (groups.length) {
         case 1:
           // TODO change context if it is only a neume/nc.
-          SelectOptions.triggerSyllableActions();
-          Grouping.initGroupingListeners();
+          SelectOptions.triggerSyllableActions('singleSelect');
           break;
-        // case 2:
-        default:
+
+        case 2:
           // Check if this is a linked syllable split by a staff break
+          // if they are linkable, user can toggle linked-sylls
           if (Grouping.isLinkable('selBySyllable', groups)) { 
-            Grouping.triggerGrouping('splitSyllable');
-          } 
-          else if (Grouping.isGroupable('selBySyllable', groups)) {
-            Grouping.triggerGrouping('syl');
-            SelectOptions.addChangeStaffListener();
-          } 
-          else {
-            SelectOptions.triggerDefaultSylActions();
-            SelectOptions.triggerSyllableActions();
-            Grouping.initGroupingListeners();
+            SelectOptions.triggerSyllableActions('linkableSelect');
           }
-          // break
-          // default:
-          // if (sharedSecondLevelParent(groups)) {
-          //   Grouping.triggerGrouping('syl');
-          //   SelectOptions.triggerSyllableActions();
-          // } else {
-          //   SelectOptions.triggerDefaultSylActions();
-          //   SelectOptions.triggerSyllableActions();
-          // }
+          else if (Grouping.isGroupable('selBySyllable', groups)) {
+            SelectOptions.triggerSyllableActions('multiSelect');
+          }
+          break;
+
+        default:
+          // if syllables are all located on one stave, they should be groupable
+          if (Grouping.isGroupable('selBySyllable', groups)) {
+            SelectOptions.triggerSyllableActions('multiSelect');
+          }
+          // if sylls are accross multiple staves
+          else if (isMultiStaveSelection(groups)) {
+            SelectOptions.triggerSyllableActions('multiStaveMultiSelect');
+          }
       }
       break;
 
