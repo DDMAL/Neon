@@ -281,16 +281,8 @@ function setEditControls(editType: 'moreEdit' | 'extraEdit', contents: string, r
   
   if (edit) {
     edit.parentElement.classList.remove('hidden');
-
-    if (replace) {
-      console.log(contents);
-      console.trace();
-      edit.innerHTML = contents;
-    }
-    else {
-
-      edit.innerHTML += contents;
-    }
+    if (replace) edit.innerHTML = contents;
+    else edit.innerHTML += contents;
   }
 }
 

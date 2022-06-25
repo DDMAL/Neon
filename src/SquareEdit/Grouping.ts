@@ -54,10 +54,8 @@ export function isGroupable (selectionType: string, elements: Array<SVGGraphicsE
 export function isLinkable(selectionType: string, elements: Array<SVGGraphicsElement>): boolean {
 
   switch(elements.length) {
-    case 1:
-      return false;
-    
-    default:
+    // only a selection of length 2 can lead to option to toggle syllable link
+    case 2:
       // only Syllables can be linked or unlinked (?)
       if (selectionType !== 'selBySyllable') return false;
     
@@ -70,8 +68,6 @@ export function isLinkable(selectionType: string, elements: Array<SVGGraphicsEle
       }
       else {
         // Check if this *could* be a selection with a single logical syllable split by a staff break. 
-
-        
         // Check if these are adjacent staves (logically)
         if (SelectTools.isMultiStaveSelection(elements)) {
           const staff0 = elements[0].closest('.staff');
@@ -98,7 +94,12 @@ export function isLinkable(selectionType: string, elements: Array<SVGGraphicsEle
             return true;
           }
         }
-      }    
+      }
+      
+    // cannot toggle link for syllable selection if number of selected
+    // syllables is not equal to 2
+    default:
+      return false;
   }
 
   return false;
@@ -260,7 +261,7 @@ const keydownListener = function(e) {
           groupingAction('group', 'neume', elementIds);
 
         } 
-        // can only ungroup if length == 1
+        // can only ungroup if length is 1 (one syllable selected)
         // cannot ungroup if multiple syllables are selected
         else if (elements.length === 1) {
           const elementIds = getChildrenIds();
