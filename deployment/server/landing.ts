@@ -1,7 +1,7 @@
-import { InitSelectDocuments, updateDocumentSelector } from './landing/selectDocuments';
-import { handleMakePair, handleUploadAllDocuments } from './landing/UploadManager';
-import { InitUploadArea } from './landing/uploadArea';
-import FileManager from './landing/FileManager';
+import { InitSelectDocuments, updateDocumentSelector } from '../../src/landing/selectDocuments';
+import { handleMakePair, handleUploadAllDocuments } from '../../src/landing/UploadManager';
+import { InitUploadArea } from '../../src/landing/uploadArea';
+import FileManager from '../../src/landing/FileManager';
 
 InitSelectDocuments();
 InitUploadArea();
