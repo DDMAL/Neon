@@ -160,18 +160,32 @@ class DisplayPanel implements DisplayInterface {
   }
 
   /**
-   * Load local settings values before SVG is loaded
+   * Load localStorage values before SVG is loaded
+   * 
+   * NOTE: this function only causes visual changes, not functional changes.
+   *    Functional changes are done in separate modules which depend on specific conditions.
    */
   loadSettings (): void {
-    const { zoom, glyphOpacity, imageOpacity } = getSettings();
+    const { zoom, glyphOpacity, imageOpacity, highlightMode } = getSettings();
+    
+    // Zoom
     document.querySelector<HTMLInputElement>('#zoomOutput').value = String(zoom);
     document.querySelector<HTMLInputElement>('#zoomSlider').value = String(zoom);
 
+    // Image opacity
     document.querySelector<HTMLInputElement>('#bgOpacityOutput').value = String(imageOpacity);
     document.querySelector<HTMLInputElement>('#bgOpacitySlider').value = String(imageOpacity);
 
+    // Glyph opacity
     document.querySelector<HTMLInputElement>('#opacityOutput').value = String(glyphOpacity);
     document.querySelector<HTMLInputElement>('#opacitySlider').value = String(glyphOpacity);
+
+    // Highlight mode:
+    // Display string = capitalized version of highlight-${id}
+    const highlightId = highlightMode === 'layer' ? 'layerElement' : highlightMode;
+    const displayHighlight = highlightId.charAt(0).toUpperCase() + highlightId.slice(1);
+
+    document.querySelector('#highlight-type').textContent = `\xA0- ${displayHighlight}`;
   }
 
   /**

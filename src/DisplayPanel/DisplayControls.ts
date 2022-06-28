@@ -177,6 +177,9 @@ function updateHighlightOption (id: string, grouping: GroupingType, display: str
   const dropdown = document.getElementById('highlight-dropdown');
   const highlightType = document.getElementById('highlight-type');
 
+  // save highlight option to localStorage
+  setSettings({ highlightMode: grouping });
+
   dropdown.classList.remove('is-active');
   document.querySelectorAll('.highlight-selected').forEach(elem => {
     elem.classList.remove('highlight-selected');
@@ -353,6 +356,22 @@ function setDisplayAllListener(): void {
 }
 
 /**
+ * Load highlight settings from localStorage
+ */
+export function loadHighlightSettings (): void {
+  const { highlightMode } = getSettings();
+
+  // For some reason, layer is the only one with the weird ID naming,
+  // and thus we need to check for it and fix it
+  const id = highlightMode === 'layer' ? 'layerElement' : highlightMode;
+
+  // Display string = capitalized version of highlight-${id}
+  const display = id.charAt(0).toUpperCase() + id.slice(1);
+
+  updateHighlightOption(id, highlightMode, display);
+}
+
+/**
  * Initialize listeners and controls for display panel.
  * @param {string} meiClassName - The class used to signifiy the MEI element(s).
  * @param {string} background - The class used to signify the background.
@@ -364,6 +383,7 @@ export function initDisplayControls (meiClassName: string, background: string): 
   setBurgerControls();
   setHighlightKeyControls();
   setDisplayAllListener();
+  loadHighlightSettings();
 
   const displayContents = document.getElementById('displayContents');
   const toggleDisplay = document.getElementById('toggleDisplay');

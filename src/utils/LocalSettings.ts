@@ -1,8 +1,10 @@
+import { GroupingType } from '../Types';
+
 interface Settings {
   zoom?: number;
   glyphOpacity?: number;
   imageOpacity?: number;
-  highlightMode?: string;
+  highlightMode?: GroupingType;
 
   displayBBox?: boolean;
   displayText?: boolean;
@@ -32,7 +34,7 @@ class LocalSettings {
         zoom: 100,
         glyphOpacity: 100,
         imageOpacity: 100,
-        highlightMode: 'highlight-none',
+        highlightMode: 'none',
 
         displayBBox: false,
         displayText: false,
