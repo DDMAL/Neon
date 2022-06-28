@@ -235,17 +235,40 @@ export function convertSbToStaff(sbBasedMei: string): string {
     // Check syllables that contains @precedes or @follows
     // Update syllable arrays for each syllable
     const newSyllables = Array.from(mei.getElementsByTagName('syllable'));
+    const sylInd = newSyllables.indexOf(syllable);
+
     // For each toggle-linked syllable
     // Check @precedes and @follows to make sure pointing to the correct syllable
     if (syllable.hasAttribute('precedes')) {
       // Get xml:id of the next syllable (without the #, if it exists)
       const nextId = syllable.getAttribute('precedes').replace('#', '');
-      const nextSyllable = newSyllables.find(syl => syl.getAttribute('xml:id') === nextId);
+
+      // Find the next syllable and its index in the array
+      let nextSylInd: number;
+      const nextSyllable = newSyllables.find((syl, ind) => {
+        if (syl.getAttribute('xml:id') === nextId) {
+          nextSylInd = ind;
+          return true;
+        }
+
+        return false;
+      });
+
       if (nextSyllable) {
         if (nextSyllable.hasAttribute('follows')) {
+          // Check if the @follows value is correct
           if (nextSyllable.getAttribute('follows') != '#' + syllable.getAttribute('xml:id')) {
             const sylText = getSyllableText(syllable);
             Notification.queueNotification('Wrong @follows value for toggle-linked syllable: ' + sylText);
+
+            continue;
+          }
+
+          // Since the @follows value is correct, a pair of syllables exist for the toggle-linked syllable.
+          // Now check if the @follows syllable is the next syllable (index-wise) in the array
+          if (nextSylInd !== sylInd + 1) {
+            const sylText = getSyllableText(syllable);
+            Notification.queueNotification(`Unexpected syllable(s) inside the toggle-linked syllable: ${sylText}`);
           }
         } else {
           const sylText = getSyllableText(syllable);
@@ -263,7 +286,8 @@ export function convertSbToStaff(sbBasedMei: string): string {
       }
     } else if (syllable.hasAttribute('follows')) {
       const prevId = syllable.getAttribute('follows').replace('#', '');
-      const prevSyllable = newSyllables.find(syl => syl.getAttribute('xml:id') === prevId);
+      const prevSyllable = newSyllables.find((syl) => syl.getAttribute('xml:id') === prevId);
+
       if (prevSyllable) {
         if (prevSyllable.hasAttribute('precedes')) {
           if (prevSyllable.getAttribute('precedes') != '#' + syllable.getAttribute('xml:id')) {
