@@ -1,6 +1,7 @@
 import * as DisplayControls from './DisplayControls';
 import ZoomHandler from '../SingleView/Zoom';
 import { DisplayInterface, ViewInterface } from '../Interfaces';
+import { getSettings } from '../utils/LocalSettings';
 
 /**
  * Return the HTML for the display panel.
@@ -141,6 +142,9 @@ class DisplayPanel implements DisplayInterface {
 
     const displayPanel = document.getElementById('display_controls');
     displayPanel.innerHTML = displayControlsPanel(this.zoomHandler);
+
+    this.loadSettings();
+
     this.view.addUpdateCallback(this.updateVisualization.bind(this));
   }
 
@@ -156,10 +160,26 @@ class DisplayPanel implements DisplayInterface {
   }
 
   /**
+   * Load local settings values before SVG is loaded
+   */
+  loadSettings (): void {
+    const { zoom, glyphOpacity, imageOpacity } = getSettings();
+    document.querySelector<HTMLInputElement>('#zoomOutput').value = String(zoom);
+    document.querySelector<HTMLInputElement>('#zoomSlider').value = String(zoom);
+
+    document.querySelector<HTMLInputElement>('#bgOpacityOutput').value = String(imageOpacity);
+    document.querySelector<HTMLInputElement>('#bgOpacitySlider').value = String(imageOpacity);
+
+    document.querySelector<HTMLInputElement>('#opacityOutput').value = String(glyphOpacity);
+    document.querySelector<HTMLInputElement>('#opacitySlider').value = String(glyphOpacity);
+  }
+
+  /**
    * Update SVG based on visualization settings
    */
   updateVisualization (): void {
     DisplayControls.setOpacityFromSlider(this.meiClass);
+    DisplayControls.setBgOpacityFromSlider(this.background);
     DisplayControls.updateHighlight();
   }
 }

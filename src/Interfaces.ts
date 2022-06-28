@@ -14,6 +14,7 @@ export interface DisplayInterface {
   zoomHandler: ZoomHandler;
   setDisplayListeners (): void;
   updateVisualization (): void;
+  loadSettings (): void;
 }
 
 export interface ViewConstructable {

@@ -13,6 +13,7 @@ import {
   TextViewInterface,
   ViewInterface
 } from './Interfaces';
+import LocalSettings, { getSettings } from './utils/LocalSettings';
 
 
 /**
@@ -38,6 +39,8 @@ class NeonView {
   TextEdit: TextEditInterface;
   /** Module that controls state and content of Neon modal windows */
   modal: ModalWindowInterface;
+  /** Module that handles user's settings stored in localStorage */
+  localSettings: LocalSettings;
 
   params: NeonViewParams;
 
@@ -83,6 +86,8 @@ class NeonView {
       }
     }); */
     setBody(this).then(() => {
+      // load the components
+      this.localSettings = new LocalSettings(this.manifest['@id']);
       this.view = new this.params.View(this, this.params.Display, this.manifest.image);
       this.name = this.manifest.title;
       this.core = new NeonCore(this.manifest);
