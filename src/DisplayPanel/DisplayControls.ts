@@ -183,13 +183,13 @@ function updateHighlightOption (id: string, grouping: GroupingType, display: str
   });
 
   if (id === 'none') {
-    highlightType.textContent = ' - Off';
+    highlightType.textContent = '\xA0- Off';
     Color.unsetGroupingHighlight();
     return;
   }
-
+  
   option.classList.add('highlight-selected');
-  highlightType.textContent = ` - ${display}`;
+  highlightType.textContent = `\xA0- ${display}`;
   Color.setGroupingHighlight(grouping);
 }
 
@@ -199,7 +199,7 @@ function updateHighlightOption (id: string, grouping: GroupingType, display: str
  * @param grouping - Grouping
  * @param display - Text displayed on dropdown select
  */
-function setHighlightOption (id: string, grouping: GroupingType, display: string): void {
+export function setHighlightOption (id: string, grouping: GroupingType, display: string): void {
   const option = document.getElementById(`highlight-${id}`);
   option.addEventListener('click', () => {
     updateHighlightOption(id, grouping, display);
@@ -231,7 +231,6 @@ export function setHighlightControls (): void {
       setHighlightOption('neume', 'neume', 'Neume');
       setHighlightOption('layerElement', 'layer', 'LayerElement');
       setHighlightOption('none', 'none', 'Off');
-      // setHighlightOption('selection', 'selection', 'Selection');
     } else {
       document.body.removeEventListener('click', highlightClickaway);
     }
