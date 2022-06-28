@@ -67,12 +67,14 @@ class SingleView implements ViewInterface {
     this.zoomHandler = new ZoomHandler();
     this.displayPanel = new panel(this, 'neon-container', 'background', this.zoomHandler);
 
-    this.setViewEventHandlers();
-    this.displayPanel.setDisplayListeners();
-
     this.pageURI = image;
 
     document.getElementById('loading').style.display = 'none';
+  }
+
+  onSVGLoad (): void {
+    this.setViewEventHandlers();
+    this.displayPanel.setDisplayListeners();
   }
 
   /**

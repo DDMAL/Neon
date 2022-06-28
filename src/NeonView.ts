@@ -93,7 +93,11 @@ class NeonView {
       this.setupEdit(this.params);
       return this.core.initDb();
     }).then(() => {
-      this.updateForCurrentPage(true);
+      // load the SVG
+      return this.updateForCurrentPage(true);
+    }).then(() => {
+      // add the event listeners dependent on the SVG
+      this.view.onSVGLoad();
     });
   }
 

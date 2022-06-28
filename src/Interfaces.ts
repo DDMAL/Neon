@@ -27,6 +27,7 @@ export interface ViewInterface {
   getCurrentPage (): number;
   getCurrentPageURI (): string;
   getPageName (): string;
+  onSVGLoad? (): void;
 }
 
 export interface NeumeEditConstructable {
