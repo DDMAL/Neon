@@ -29,24 +29,59 @@
             <div class="navbar-btn-text">File</div>
           </div>
 
-          <div class="navbar-dropdown" id="navbar-dropdown-options">
-            <div id="save" class="navbar-dropdown-item">Save</div>
-            <div id="export" class="navbar-dropdown-item">Save and Export to File</div>
-            <a id="getmei" class="navbar-dropdown-item">Download MEI</a>
+          <div class="navbar-dropdown">
+            <div id="save" class="navbar-dropdown-item">
+              <div class="navbar-dropdown-item-text">Save</div>
+            </div>
+            <div id="export" class="navbar-dropdown-item">
+              <div class="navbar-dropdown-item-text">Save and Export to File</div>
+            </div>
+            <a id="getmei" class="navbar-dropdown-item">
+             <div class="navbar-dropdown-item-text">Download MEI</div>
+            </a>
           </div>   
+        </div>
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-element navbar-btn">
+            <div class="navbar-btn-text">View</div>
+          </div>
+          <div class="navbar-dropdown">
+            <div id="default-zoom" class="navbar-dropdown-item extendable">
+
+              <div class="navbar-dropdown-item-text">Default Zoom</div>
+              <img src="/Neon/assets/img/right_arrow.svg" class="right-arrow">
+
+              <!-- Extendable content -->
+              <div id="extendable-content" class="dropdown-extendable-content-container">
+                <div class="navbar-dropdown-item extendable">
+                  <img src="/Neon/assets/img/checkmark.svg" id="zoom-fit-content-icon" class="checkmark-icon default-zoom selected">
+                  <div class="navbar-dropdown-item-text checked" id="zoom-fit-content">Fit Content</div>
+                </div>
+                <div class="navbar-dropdown-item extendable">
+                  <img src="/Neon/assets/img/checkmark.svg" id="zoom-easy-edit-icon" class="checkmark-icon default-zoom">
+                  <div class="navbar-dropdown-item-text" id="zoom-easy-edit">Easy Edit</div>
+                </div>
+              </div>
+
+            </div>
+
+            <div id="default-zoom" class="navbar-dropdown-item extendable">
+              <div class="navbar-dropdown-item-text">Show error logs</div>
+            </div>
+          </div>
         </div>
 
         <div class="navbar-item has-dropdown is-hoverable">
           <div class="navbar-element navbar-btn">
             <div class="navbar-btn-text">MEI Actions</div>
           </div>
-          <div class="navbar-dropdown" id="navbar-dropdown-options">
+          <div class="navbar-dropdown">
             <div id="remove-empty-syls" class="navbar-dropdown-item">Remove Empty Syllables</div>
             <div id="remove-empty-neumes" class="navbar-dropdown-item">Remove Empty Neumes</div>
             <div id="revert" class="navbar-dropdown-item">Revert</div>
           </div>
         </div>
-
       
         <div class="navbar-item has-dropdown is-hoverable">
           <div class="navbar-element navbar-btn">

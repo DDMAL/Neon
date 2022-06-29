@@ -2,21 +2,14 @@ import * as Notification from './Notification';
 import NeonView from '../NeonView';
 import { convertStaffToSb } from './ConvertMei';
 import { EditorAction } from '../Types';
+import ZoomHandler from '../SingleView/Zoom';
 
 /**
- * Set listener on switching EditMode button to File dropdown in the navbar.
+ * Set top navbar event listeners.
  */
 export function initNavbar (neonView: NeonView): void {
-  // setup navbar listeners
-  const navbarDropdowns = document.querySelectorAll('.navbar-item.has-dropdown.is-hoverable');
-  Array.from(navbarDropdowns).forEach((dropDown) => {
-    dropDown.addEventListener('mouseover', () => {
-      //
-    });
-  });
 
-
-
+  /* "FILE" menu */
   document.getElementById('save').addEventListener('click', () => {
     neonView.save().then(() => {
       Notification.queueNotification('Saved');
@@ -54,6 +47,7 @@ export function initNavbar (neonView: NeonView): void {
   });
 
 
+  /* "MEI ACTIONS" menu */
   // Event listener for "Remove Empty Syllables" button inside "MEI Actions" dropdown
   document.getElementById('remove-empty-syls').addEventListener('click', function() {
     const uri = neonView.view.getCurrentPageURI();
@@ -169,6 +163,38 @@ export function initNavbar (neonView: NeonView): void {
         window.location.reload();
       });
     }
+  });
+
+
+  /* "VIEW" menu */
+
+  // Event listeners for setting default zoom settings inside "View" dropdown
+  const fitContentBtn = document.querySelector('#zoom-fit-content');
+  const fitContentCheckmark = document.querySelector('#zoom-fit-content-icon');
+  const easyEditBtn = document.querySelector('#zoom-easy-edit');
+  const easyEditCheckmark = document.querySelector('#zoom-easy-edit-icon');
+  
+  // fit content listener
+  fitContentBtn.addEventListener('click', () => {
+    easyEditBtn.classList.remove('checked');
+    fitContentBtn.classList.add('checked');
+
+    easyEditCheckmark.classList.remove('selected');
+    fitContentCheckmark.classList.add('selected');
+
+    // TODO: Save default zoom settings in local storage
+    
+  });
+  // easy edit listener
+  easyEditBtn.addEventListener('click', () => {
+    fitContentBtn.classList.remove('checked');
+    easyEditBtn.classList.add('checked');
+
+    fitContentCheckmark.classList.remove('selected');
+    easyEditCheckmark.classList.add('selected');
+
+    // TODO: Save default zoom settings in local storage
+
   });
 }
 
