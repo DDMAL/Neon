@@ -26,7 +26,7 @@ export function initNeonView (view: NeonView): void {
  * Check if selected elements can be grouped or not
  * @returns true if grouped, false otherwise
  */
-export function isGroupable (selectionType: string, elements: Array<SVGGraphicsElement>): boolean {
+export function isGroupable(selectionType: string, elements: Array<SVGGraphicsElement>): boolean {
   const groups = Array.from(elements.values()) as SVGGraphicsElement[];
 
   switch (groups.length) {
@@ -34,13 +34,53 @@ export function isGroupable (selectionType: string, elements: Array<SVGGraphicsE
       // cannot group if only 1 element is selected
       return false;
 
+    // handle case where selection is one linked-syllable and one non-linked syllable
+    // that is found before OR after the linked-syllable
+    case 3:
+      if (SelectTools.sharedSecondLevelParent(groups) || selectionType === 'selByStaff') {
+        return true;
+      }
+      // Check for situation when 2 syllable elems are selected and 
+      // one of them selected is a linked syllable (which is itself considered 2 sylls, hence case 3).
+      // This is the only situation where multi-stave syllable merging is allowed.
+      else if (isLinked([elements[0], elements[1]]) || isLinked([elements[1], elements[2]])) {
+        return true
+      }
+      else {
+        return false;
+      }
+      break;
+
     default:
-      // can group if more than 1 element is selected
+      // can group if more than 1 element is selected and they share the same staff
       if (SelectTools.sharedSecondLevelParent(groups) || selectionType === 'selByStaff') {
         return true;
       } else {
         return false;
       }
+  }
+}
+
+
+/**
+ * Checks to see is a selection of elements is already linked
+ * @param elements elements to be considered
+ * @returns true is linked, false otherwise
+ */
+export function isLinked(elements: Array<SVGGraphicsElement>): boolean {
+
+  // if number of elements is not 2, elements cannot be linked by definition
+  if (elements.length !== 2) return false;
+
+  // if precedes and follows attributes exist and their IDs match
+  if (((elements[0].getAttribute('mei:follows') === `#${elements[1].id}`) && 
+      (elements[1].getAttribute('mei:precedes') === `#${elements[0].id}`)) ||
+      ((elements[0].getAttribute('mei:precedes') === '#' + elements[1].id) &&
+      (elements[1].getAttribute('mei:follows') === '#' + elements[0].id))) {
+    return true;
+  }
+  else {
+    return false;
   }
 }
 
@@ -59,13 +99,11 @@ export function isLinkable(selectionType: string, elements: Array<SVGGraphicsEle
       // only Syllables can be linked or unlinked (?)
       if (selectionType !== 'selBySyllable') return false;
     
-      // if precedes and follows attributes exist and their IDs match
-      if (((elements[0].getAttribute('mei:follows') === `#${elements[1].id}`) && 
-          (elements[1].getAttribute('mei:precedes') === `#${elements[0].id}`)) ||
-          ((elements[0].getAttribute('mei:precedes') === '#' + elements[1].id) &&
-          (elements[1].getAttribute('mei:follows') === '#' + elements[0].id))) {
+      // if ALREADY linked
+      if (isLinked([elements[0], elements[1]])) {
         return true;
       }
+      // if CAN be linked
       else {
         // Check if this *could* be a selection with a single logical syllable split by a staff break. 
         // Check if these are adjacent staves (logically)
