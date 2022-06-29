@@ -1,6 +1,7 @@
 import * as DisplayControls from './DisplayControls';
 import ZoomHandler from '../SingleView/Zoom';
 import { DisplayInterface, ViewInterface } from '../Interfaces';
+import { getSettings } from '../utils/LocalSettings';
 
 /**
  * Return the HTML for the display panel.
@@ -141,6 +142,9 @@ class DisplayPanel implements DisplayInterface {
 
     const displayPanel = document.getElementById('display_controls');
     displayPanel.innerHTML = displayControlsPanel(this.zoomHandler);
+
+    this.loadSettings();
+
     this.view.addUpdateCallback(this.updateVisualization.bind(this));
   }
 
@@ -156,10 +160,40 @@ class DisplayPanel implements DisplayInterface {
   }
 
   /**
+   * Load localStorage values before SVG is loaded
+   * 
+   * NOTE: this function only causes visual changes, not functional changes.
+   *    Functional changes are done in separate modules which depend on specific conditions.
+   */
+  loadSettings (): void {
+    const { zoom, glyphOpacity, imageOpacity, highlightMode } = getSettings();
+    
+    // Zoom
+    document.querySelector<HTMLInputElement>('#zoomOutput').value = String(zoom);
+    document.querySelector<HTMLInputElement>('#zoomSlider').value = String(zoom);
+
+    // Image opacity
+    document.querySelector<HTMLInputElement>('#bgOpacityOutput').value = String(imageOpacity);
+    document.querySelector<HTMLInputElement>('#bgOpacitySlider').value = String(imageOpacity);
+
+    // Glyph opacity
+    document.querySelector<HTMLInputElement>('#opacityOutput').value = String(glyphOpacity);
+    document.querySelector<HTMLInputElement>('#opacitySlider').value = String(glyphOpacity);
+
+    // Highlight mode:
+    // Display string = capitalized version of highlight-${id}
+    const highlightId = highlightMode === 'layer' ? 'layerElement' : highlightMode;
+    const displayHighlight = highlightId.charAt(0).toUpperCase() + highlightId.slice(1);
+
+    document.querySelector('#highlight-type').textContent = `\xA0- ${displayHighlight}`;
+  }
+
+  /**
    * Update SVG based on visualization settings
    */
   updateVisualization (): void {
     DisplayControls.setOpacityFromSlider(this.meiClass);
+    DisplayControls.setBgOpacityFromSlider(this.background);
     DisplayControls.updateHighlight();
   }
 }

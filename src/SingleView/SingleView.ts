@@ -1,4 +1,4 @@
-import { updateHighlight, setOpacityFromSlider } from '../DisplayPanel/DisplayControls';
+import { updateHighlight, setOpacityFromSlider, setBgOpacityFromSlider } from '../DisplayPanel/DisplayControls';
 import NeonView from '../NeonView';
 import DisplayPanel from '../DisplayPanel/DisplayPanel';
 import ZoomHandler from './Zoom';
@@ -67,12 +67,14 @@ class SingleView implements ViewInterface {
     this.zoomHandler = new ZoomHandler();
     this.displayPanel = new panel(this, 'neon-container', 'background', this.zoomHandler);
 
-    this.setViewEventHandlers();
-    this.displayPanel.setDisplayListeners();
-
     this.pageURI = image;
 
     document.getElementById('loading').style.display = 'none';
+  }
+
+  onSVGLoad (): void {
+    this.setViewEventHandlers();
+    this.displayPanel.setDisplayListeners();
   }
 
   /**
@@ -131,6 +133,7 @@ class SingleView implements ViewInterface {
   resetTransformations (): void {
     this.displayPanel.zoomHandler.restoreTransformation();
     setOpacityFromSlider();
+    setBgOpacityFromSlider();
   }
 
   /**

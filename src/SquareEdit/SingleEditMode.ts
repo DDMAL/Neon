@@ -1,5 +1,5 @@
 import { bindInsertTabs, initInsertEditControls, initSelectionButtons } from './Controls';
-import { setHighlightSelectionControls } from '../DisplayPanel/DisplayControls';
+import { setHighlightOption } from '../DisplayPanel/DisplayControls';
 import { initUndoRedoPanel } from '../utils/EditControls';
 import * as Select from '../utils/Select';
 import InsertHandler from './InsertHandler';
@@ -59,7 +59,7 @@ class SingleEditMode implements NeumeEditInterface {
     initInsertEditControls();
     initSelectionButtons();
     initUndoRedoPanel(this.neonView);
-    setHighlightSelectionControls();
+    setHighlightOption('selection', 'selection', 'Selection');
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
 
     document.getElementById('selBySyllable').click(); // focus display panel
