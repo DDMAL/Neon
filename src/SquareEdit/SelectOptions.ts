@@ -607,7 +607,7 @@ export function triggerSyllableActions (selectionType: string): void {
       break;
 
     // more than two syllables accross multiple staves
-    case 'multiStaveMultiSelect':
+    case 'default':
       extraActionsHTML += 
         `<div class="right-side-panel-btns-container">
           <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>

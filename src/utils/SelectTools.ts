@@ -195,6 +195,74 @@ export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): P
 }
 
 /**
+ * Check if list of elements of a certain type are logically adjacent to each other.
+ * Includes elements that are on separate staves but would otherwise be next to each other.
+ * Can not apply to elements of type neume component.
+ * 
+ * @param selectionType user selection mode
+ * @param elements the elements of interest
+ * @returns true if elements are adjacent, false otherwise
+ */
+export function areAdjacent(selectionType: string, elements: SVGGraphicsElement[]): boolean {
+
+  // 2 elements cannot be adjacent if there is only 1 element
+  if (elements.length < 2) return false;
+
+  const parentElem = elements[0].parentElement;
+  let allChildren = Array.from(parentElem.children);
+
+  switch(selectionType) {
+    case 'selBySyllable':
+      allChildren = Array.from(parentElem.children).filter((el) => {
+        return el.classList.contains('syllable');
+      });
+      break;
+
+    case 'selByNeume':
+      allChildren = Array.from(parentElem.children).filter((el) => {
+        return el.classList.contains('neume');
+      });
+      break;
+
+    case 'selByNc':
+      allChildren = Array.from(parentElem.children).filter((el) => {
+        return el.classList.contains('nc');
+      });
+      break;
+
+    case 'selByStaff':
+      allChildren = Array.from(parentElem.children).filter((el) => {
+        return el.classList.contains('staff');
+      });
+      break;
+
+    default:
+      return false;
+  }
+
+  let sortedElements = [];
+  // sort elements in order of appearance
+  for (let i=0; i<allChildren.length; i++) {
+    for (let j=0; j<elements.length; j++) {
+      if (allChildren[i].isSameNode(elements[j])) {
+        sortedElements.push(elements[j]);
+      }
+    }
+  }
+
+  // now check if they are all adjacent
+  for (let i=0; i<sortedElements.length-1; i++) {
+    const firstElem = sortedElements[i];
+    const secondElem = sortedElements[i+1];
+
+    if (Math.abs(allChildren.indexOf(firstElem) - allChildren.indexOf(secondElem)) !== 1) return false
+  }
+
+  return true;
+}
+
+
+/**
  * @param elements - The elements to compare.
  * @returns True if the elements have the same parent up two levels, otherwise false.
  */
@@ -466,6 +534,9 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
           else if (Grouping.isGroupable('selBySyllable', groups)) {
             SelectOptions.triggerSyllableActions('multiSelect');
           }
+          else {
+            SelectOptions.triggerSyllableActions('default');
+          }
           break;
 
         default:
@@ -474,8 +545,8 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
             SelectOptions.triggerSyllableActions('multiSelect');
           }
           // if sylls are accross multiple staves
-          else if (isMultiStaveSelection(groups)) {
-            SelectOptions.triggerSyllableActions('multiStaveMultiSelect');
+          else {
+            SelectOptions.triggerSyllableActions('default');
           }
       }
       break;
@@ -488,7 +559,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
           Grouping.initGroupingListeners();
           break;
         default:
-          if (sharedSecondLevelParent(groups)) {
+          if (Grouping.isGroupable(selectionType, groups)) {
             Grouping.triggerGrouping('neume');
           } else {
             SelectOptions.triggerDefaultActions();

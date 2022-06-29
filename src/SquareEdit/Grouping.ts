@@ -37,23 +37,23 @@ export function isGroupable(selectionType: string, elements: Array<SVGGraphicsEl
     // handle case where selection is one linked-syllable and one non-linked syllable
     // that is found before OR after the linked-syllable
     case 3:
-      if (SelectTools.sharedSecondLevelParent(groups) || selectionType === 'selByStaff') {
+      if ((SelectTools.sharedSecondLevelParent(groups) || selectionType === 'selByStaff') &&
+          SelectTools.areAdjacent(selectionType, elements)) {
         return true;
       }
       // Check for situation when 2 syllable elems are selected and 
       // one of them selected is a linked syllable (which is itself considered 2 sylls, hence case 3).
       // This is the only situation where multi-stave syllable merging is allowed.
-      else if (isLinked([elements[0], elements[1]]) || isLinked([elements[1], elements[2]])) {
+      else if ((isLinked([elements[0], elements[1]]) || isLinked([elements[1], elements[2]])) &&
+                SelectTools.areAdjacent(selectionType, elements)) {
         return true
       }
-      else {
-        return false;
-      }
-      break;
+      else return false;
 
     default:
       // can group if more than 1 element is selected and they share the same staff
-      if (SelectTools.sharedSecondLevelParent(groups) || selectionType === 'selByStaff') {
+      if ((SelectTools.sharedSecondLevelParent(groups) || selectionType === 'selByStaff') &&
+          SelectTools.areAdjacent(selectionType, elements)) {
         return true;
       } else {
         return false;
