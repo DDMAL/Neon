@@ -217,12 +217,19 @@ export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
  * @returns true if selection is accross multiple staves, false otherwise
  */
 export function isMultiStaveSelection(elements: SVGElement[]): boolean {
-  const staff0 = elements[0].closest('.staff');
-  const staff1 = elements[1].closest('.staff');
-  const staffChildren = Array.from(staff0.parentElement.children);
+  let elementsArray = Array.from(elements);
 
-  if (Math.abs(staffChildren.indexOf(staff0) - staffChildren.indexOf(staff1)) === 1) return true;
-  else return false;
+  for (let i=0; i<elementsArray.length; i++) {
+    const staff = elementsArray[i].closest('.staff');
+
+    for (let j=i; j<elementsArray.length; j++) {
+      const anotherStaff = elementsArray[j].closest('.staff');
+      // compare with other staves
+      if (!staff.isSameNode(anotherStaff)) return true;
+    }
+  }
+
+  return false;
 }
 
 /**
