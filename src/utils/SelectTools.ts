@@ -194,6 +194,7 @@ export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): P
   return (attributes.ligated);
 }
 
+
 /**
  * Check if list of elements of a certain type are logically adjacent to each other.
  * Includes elements that are on separate staves but would otherwise be next to each other.
@@ -204,58 +205,53 @@ export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): P
  * @returns true if elements are adjacent, false otherwise
  */
 export function areAdjacent(selectionType: string, elements: SVGGraphicsElement[]): boolean {
-
   // 2 elements cannot be adjacent if there is only 1 element
   if (elements.length < 2) return false;
 
-  const parentElem = elements[0].parentElement;
-  let allChildren = Array.from(parentElem.children);
-
+  // get all elements that are of the same type as selectionType
+  let allElemsOfSelectionType: HTMLElement[];
   switch(selectionType) {
     case 'selBySyllable':
-      allChildren = Array.from(parentElem.children).filter((el) => {
-        return el.classList.contains('syllable');
-      });
+      allElemsOfSelectionType = Array.from(document.querySelectorAll('.syllable'));
       break;
 
     case 'selByNeume':
-      allChildren = Array.from(parentElem.children).filter((el) => {
-        return el.classList.contains('neume');
-      });
+      allElemsOfSelectionType = Array.from(document.querySelectorAll('.neume'));
       break;
 
     case 'selByNc':
-      allChildren = Array.from(parentElem.children).filter((el) => {
-        return el.classList.contains('nc');
-      });
+      allElemsOfSelectionType = Array.from(document.querySelectorAll('.nc'));
       break;
 
     case 'selByStaff':
-      allChildren = Array.from(parentElem.children).filter((el) => {
-        return el.classList.contains('staff');
-      });
+      allElemsOfSelectionType = Array.from(document.querySelectorAll('.staff'));
       break;
 
     default:
       return false;
   }
-
+  
+  // Sort SELECTED elements in order of appearance by 
+  // matching to order of ALL elements of selection type
   let sortedElements = [];
-  // sort elements in order of appearance
-  for (let i=0; i<allChildren.length; i++) {
+  for (let i=0; i<allElemsOfSelectionType.length; i++) {
     for (let j=0; j<elements.length; j++) {
-      if (allChildren[i].isSameNode(elements[j])) {
+      if (allElemsOfSelectionType[i].isSameNode(elements[j])) {
         sortedElements.push(elements[j]);
       }
     }
   }
 
-  // now check if they are all adjacent
+  // Now check if SELECTED elements are all adjacent (in a row) by 
+  // finding and comparing their indeces in the array of ALL elements of selection type
   for (let i=0; i<sortedElements.length-1; i++) {
     const firstElem = sortedElements[i];
     const secondElem = sortedElements[i+1];
 
-    if (Math.abs(allChildren.indexOf(firstElem) - allChildren.indexOf(secondElem)) !== 1) return false
+    const index1 = allElemsOfSelectionType.indexOf(firstElem);
+    const index2 = allElemsOfSelectionType.indexOf(secondElem);
+
+    if (Math.abs(index1 - index2) !== 1) return false
   }
 
   return true;
@@ -529,12 +525,15 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
           // Check if this is a linked syllable split by a staff break
           // if they are linkable, user can toggle linked-sylls
           if (Grouping.isLinkable('selBySyllable', groups)) { 
+            console.log('linkable');
             SelectOptions.triggerSyllableActions('linkableSelect');
           }
           else if (Grouping.isGroupable('selBySyllable', groups)) {
+            console.log('groupable');
             SelectOptions.triggerSyllableActions('multiSelect');
           }
           else {
+            console.log('neither');
             SelectOptions.triggerSyllableActions('default');
           }
           break;
@@ -542,6 +541,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
         default:
           // if syllables are all located on one stave, they should be groupable
           if (Grouping.isGroupable('selBySyllable', groups)) {
+            console.log('groupable');
             SelectOptions.triggerSyllableActions('multiSelect');
           }
           // if sylls are accross multiple staves

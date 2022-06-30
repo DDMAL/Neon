@@ -606,7 +606,7 @@ export function triggerSyllableActions (selectionType: string): void {
         </div>`;
       break;
 
-    // more than two syllables accross multiple staves
+    //default options
     case 'default':
       extraActionsHTML += 
         `<div class="right-side-panel-btns-container">
