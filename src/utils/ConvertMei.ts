@@ -102,7 +102,7 @@ export function getSyllableText (syllable: Element): string {
     sylText = syl.nodeValue;
   }
   else {
-    sylText = 'null';
+    sylText = '◊';
   }
 
   return sylText;
@@ -271,7 +271,7 @@ export function convertSbToStaff(sbBasedMei: string): string {
             const sylText = getSyllableText(syllable);
             const unexpectedSylsText = newSyllables
               .slice(syllableIdx + 1, nextSyllableIdx)
-              .map((syllable) => getSyllableText(syllable) && '◊');
+              .map((syllable) => getSyllableText(syllable));
 
             const sylsText = [sylText, ...unexpectedSylsText].join(' - ');
             Notification.queueNotification(`Unexpected syllable(s) inside the toggle-linked syllable: ${sylsText}`);
