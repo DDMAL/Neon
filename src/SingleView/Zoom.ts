@@ -82,10 +82,11 @@ export class ZoomHandler {
   resetZoomAndPan (resetSettings = true): void {
     const bgimg = document.getElementById('bgimg') as HTMLImageElement;
     this.viewBox = new ViewBox(parseInt(bgimg.getAttribute('width')), parseInt(bgimg.getAttribute('height')));
-    this.updateSVGViewBox();
 
-    if (resetSettings)
+    if (resetSettings) {
+      this.updateSVGViewBox();
       setSettings({ zoom: 100 });
+    }
   }
 
   /**
@@ -144,7 +145,9 @@ export class ZoomHandler {
    * Update the viewBox attribute of svg_group
    */
   updateSVGViewBox (): void {
-    document.getElementById('svg_group').setAttribute('viewBox', this.viewBox.get());
+    const viewBoxString = this.viewBox.get();
+    document.getElementById('svg_group').setAttribute('viewBox', viewBoxString);
+    setSettings({ viewBox: viewBoxString });
   }
 
   startDrag (): void {

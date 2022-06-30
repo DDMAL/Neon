@@ -25,6 +25,7 @@ interface Settings {
   displayBBox: boolean;
   displayText: boolean;
   displayInfo: boolean;
+  viewBox: string;
 }
 
 /**
@@ -43,6 +44,7 @@ const DEFAULT_SETTINGS: Settings = {
   displayBBox: false,
   displayText: false,
   displayInfo: false,
+  viewBox: null
 };
 
 class LocalSettings {
@@ -60,8 +62,15 @@ class LocalSettings {
    * new fields that may not be in localStorage.
    */
   load (): void {
-    const stored: Partial<Settings> = JSON.parse(window.localStorage.getItem(this.id));
-    this.sync(stored);
+    try {
+      const stored: Partial<Settings> = JSON.parse(window.localStorage.getItem(this.id));
+      this.sync(stored);
+    } catch (error) {
+      // If localStorage value is not a JSON object (for instance, an empty string),
+      // a SyntaxError will be thrown. We must handle it by calling sync()
+      // with an empty JSON object.
+      this.sync({});
+    }
   }
 
   /**
