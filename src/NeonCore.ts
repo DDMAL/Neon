@@ -5,6 +5,7 @@ import { WebAnnotation, Attributes, EditorAction, NeonManifest, VerovioMessage }
 import { uuidv4 } from './utils/random';
 
 import PouchDB from 'pouchdb';
+import { setSavedStatus } from './utils/Save';
 
 /**
  * A cache is used to keep track of what has happened
@@ -351,6 +352,7 @@ class NeonCore {
             }
             evt.target.removeEventListener('message', handle);
             this.updateCache(pageURI, true).then(() => { resolve(evt.data.result); });
+            setSavedStatus(false);
           }
         }
         this.verovioWrapper.addEventListener('message', handle.bind(this));
