@@ -13,7 +13,7 @@ import {
   TextViewInterface,
   ViewInterface
 } from './Interfaces';
-import LocalSettings, { getSettings } from './utils/LocalSettings';
+import LocalSettings from './utils/LocalSettings';
 
 
 /**
