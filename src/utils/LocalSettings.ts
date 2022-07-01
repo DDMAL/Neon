@@ -1,17 +1,51 @@
-import { GroupingType } from '../Types';
+import { GroupingType, SelectionType } from '../Types';
 
+/**
+ * The one instance of LocalSettings that will be created and
+ * used by the editor.
+ * 
+ * Use the functions `getSettings()` and `setSettings()`
+ * to access this instance.
+ */
+let localSettings: LocalSettings = null;
+
+/**
+ * Interface for the settings for each folio
+ * stored in localStorage.
+ *
+ * Every key is optional so that this same typing
+ * can be used for `setSettings()` / `LocalSettings.set()`.
+ */
 interface Settings {
-  zoom?: number;
-  glyphOpacity?: number;
-  imageOpacity?: number;
-  highlightMode?: GroupingType;
-
-  displayBBox?: boolean;
-  displayText?: boolean;
-  displayInfo?: boolean;
+  zoom: number;
+  glyphOpacity: number;
+  imageOpacity: number;
+  highlightMode: GroupingType;
+  selectionMode: SelectionType;
+  displayBBox: boolean;
+  displayText: boolean;
+  displayInfo: boolean;
+  viewBox: string;
 }
 
-let localSettings: LocalSettings = null;
+/**
+ * Default settings, which should be set for a folio with no
+ * localStorage value.
+ *
+ * This should be updated alongside the interface `Settings`
+ * any time we want to add a new setting to store in localStorage.
+ */
+const DEFAULT_SETTINGS: Settings = {
+  zoom: 100,
+  glyphOpacity: 100,
+  imageOpacity: 100,
+  highlightMode: 'none',
+  selectionMode: 'selBySyllable',
+  displayBBox: false,
+  displayText: false,
+  displayInfo: false,
+  viewBox: null
+};
 
 class LocalSettings {
   id: string;
@@ -23,42 +57,52 @@ class LocalSettings {
     this.load();
   }
 
-  /** Load settings from localStorage; if it does not exist, create and store
-    *   new settings in localStorage
-    */
+  /**
+   * Load settings from localStorage, and sync loaded settings with
+   * new fields that may not be in localStorage.
+   */
   load (): void {
-    const stored = JSON.parse(window.localStorage.getItem(this.id));
-
-    if (!stored) {
-      const newSettings: Settings = {
-        zoom: 100,
-        glyphOpacity: 100,
-        imageOpacity: 100,
-        highlightMode: 'none',
-
-        displayBBox: false,
-        displayText: false,
-        displayInfo: false,
-      };
-
-      window.localStorage.setItem(this.id, JSON.stringify(newSettings));
-      this.settings = newSettings;
-    } else {
-      this.settings = stored;
+    try {
+      const stored: Partial<Settings> = JSON.parse(window.localStorage.getItem(this.id));
+      this.sync(stored);
+    } catch (error) {
+      // If localStorage value is not a JSON object (for instance, an empty string),
+      // a SyntaxError will be thrown. We must handle it by calling sync()
+      // with an empty JSON object.
+      this.sync({});
     }
   }
 
-  set (params: Settings): void {
+  /**
+   * Set new fields in localStorage, as a "union" of old and new settings.
+   */
+  set (params: Partial<Settings>): void {
     this.settings = { ...this.settings, ...params };
+    window.localStorage.setItem(this.id, JSON.stringify(this.settings));
+  }
+
+  /**
+   * Sync settings that may not be included in user's localStorage,
+   * such as fields that have been added to localStorage in a new
+   * update of Neon.
+   */
+  sync (stored: Partial<Settings>): void {
+    this.settings = { ...DEFAULT_SETTINGS, ...stored };
     window.localStorage.setItem(this.id, JSON.stringify(this.settings));
   }
 }
 
+/**
+ * Get localStorage settings for the folio.
+ */
 export function getSettings (): Settings {
   return localSettings.settings;
 }
 
-export function setSettings (params: Settings): void {
+/**
+ * Set specific localStorage settings for the folio.
+ */
+export function setSettings (params: Partial<Settings>): void {
   localSettings.set(params);
 }
 

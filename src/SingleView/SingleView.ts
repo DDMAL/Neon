@@ -1,10 +1,11 @@
 import { updateHighlight, setOpacityFromSlider, setBgOpacityFromSlider } from '../DisplayPanel/DisplayControls';
 import NeonView from '../NeonView';
 import DisplayPanel from '../DisplayPanel/DisplayPanel';
-import ZoomHandler from './Zoom';
+import ZoomHandler, { ViewBox } from './Zoom';
 import { ViewInterface, DisplayConstructable } from '../Interfaces';
 
 import * as d3 from 'd3';
+import { getSettings, setSettings } from '../utils/LocalSettings';
 
 /**
  * A view module for displaying a single page of a manuscript.
@@ -46,7 +47,22 @@ class SingleView implements ViewInterface {
           this.bg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', reader.result.toString());
           const bbox = this.bg.getBBox();
           if (!this.group.hasAttribute('viewBox')) {
-            this.group.setAttribute('viewBox', '0 0 ' + bbox.width.toString() + ' ' + bbox.height.toString());
+            /*
+              If the SVG does not have a viewBox, load the previous viewBox
+              value from localStorage. If none has been stored (viewBox is null),
+              set it to the default value of the width and height of the background image
+              
+              Note: an SVG's viewBox gives the "box" that the user can see the SVG through.
+              The user may be zoomed into a very specific section of the SVG, in which case the
+              viewBox should give coordinates of that specific box.
+
+              See more: https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/viewBox
+            */
+            let { viewBox } = getSettings();
+            if (!viewBox)
+              viewBox = '0 0 ' + bbox.width.toString() + ' ' + bbox.height.toString();
+
+            this.group.setAttribute('viewBox', viewBox);
           }
         });
         return result.blob();
@@ -91,7 +107,13 @@ class SingleView implements ViewInterface {
 
     this.bg.setAttribute('height', height.toString());
     this.bg.setAttribute('width', width.toString());
-    this.group.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+
+    const { viewBox } = getSettings();
+    if (!viewBox)
+      this.group.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+    else
+      this.group.setAttribute('viewBox', viewBox);
+
     updateHighlight();
     this.resetTransformations();
     this.updateCallbacks.forEach(callback => callback());
