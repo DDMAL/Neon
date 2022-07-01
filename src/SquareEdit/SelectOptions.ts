@@ -558,7 +558,7 @@ export function triggerNeumeActions (): void {
       if (result) {
         Notification.queueNotification('Grouping Changed');
       } else {
-        Notification.queueNotification('Grouping Failed');
+        Notification.queueNotification('Grouping Failed', 'error');
       }
       endOptionsSelection();
       neonView.updateForCurrentPage();

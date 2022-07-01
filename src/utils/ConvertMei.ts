@@ -118,7 +118,7 @@ export function convertSbToStaff(sbBasedMei: string): string {
   for (const neume of neumes) {
     if (neume.getElementsByTagName('nc').length === 0) {
       // neume.remove();
-      Notification.queueNotification('This file contains a neume without neume component!');
+      Notification.queueNotification('This file contains a neume without neume component!', 'warning');
     }
   }
 
@@ -127,7 +127,7 @@ export function convertSbToStaff(sbBasedMei: string): string {
   for (const syllable of syllables) {
     if (syllable.getElementsByTagName('neume').length === 0) {
       // syllable.remove();
-      Notification.queueNotification('This file contains a syllable without neume!');
+      Notification.queueNotification('This file contains a syllable without neume!', 'warning');
     }
   }
 
@@ -238,7 +238,8 @@ export function convertSbToStaff(sbBasedMei: string): string {
     // Update syllable arrays for each syllable
     const syllableIdx = newSyllables.indexOf(syllable);
 
-    // Toggle-linked syllables: Check the PRECEDING syllable
+    // For each toggle-linked syllable
+    // Set @precedes and @follows to make sure pointing to the correct syllable
     if (syllable.hasAttribute('precedes')) {
       // Get xml:id of the next syllable (without the #, if it exists)
       const nextSyllableId = syllable.getAttribute('precedes').replace('#', '');
