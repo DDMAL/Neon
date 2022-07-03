@@ -46,7 +46,7 @@ class NeonCore {
    */
   constructor (manifest: NeonManifest) {
     this.verovioWrapper = new VerovioWrapper();
-    Validation.init();
+    //Validation.init();
 
     /**
      * Stacks of previous MEI files representing actions that can be undone for each page.
@@ -128,10 +128,10 @@ class NeonCore {
                     body: annotation.body,
                     target: annotation.target
                   });
-                  res();
+                  res('');
                 }).catch(err => {
                   console.error(err);
-                  res();
+                  res('');
                 });
               });
             });
@@ -330,6 +330,10 @@ class NeonCore {
     }
     return new Promise((resolve): void => {
       promise.then(entry => {
+        // delete unnecessary SVG object reference;
+        // otherwise, this is not garbage collected!
+        entry.svg = null;
+
         const currentMEI = entry.mei;
         const message: VerovioMessage = {
           id: uuidv4(),
@@ -374,7 +378,7 @@ class NeonCore {
             mei = evt.data.mei;
             evt.target.removeEventListener('message', handle);
             Validation.sendForValidation(mei);
-            resolve();
+            resolve('');
           }
         });
         this.verovioWrapper.postMessage(message);
@@ -388,7 +392,7 @@ class NeonCore {
           if (evt.data.id === message.id) {
             svgText = evt.data.svg;
             evt.target.removeEventListener('message', handle);
-            resolve();
+            resolve('');
           }
         });
         this.verovioWrapper.postMessage(message);
@@ -398,7 +402,7 @@ class NeonCore {
         const svg = this.parser.parseFromString(
           svgText,
           'image/svg+xml'
-        ).documentElement as unknown as SVGSVGElement;
+        ).documentElement as HTMLElement & SVGSVGElement;
         this.neonCache.set(pageURI, {
           mei: mei,
           svg: svg,

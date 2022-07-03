@@ -1,6 +1,7 @@
 import NeonView from '../NeonView';
 import { EditorAction, InsertAction } from '../Types';
 import * as d3 from 'd3';
+import { getSVGRelCoords, Point } from '../utils/Coordinates';
 
 /**
  * Class that handles insert mode, events, and actions.
@@ -8,7 +9,7 @@ import * as d3 from 'd3';
 class InsertHandler {
   type: string;
   firstClick = true;
-  coord: DOMPoint;
+  coord: Point;
   attributes: Record<string, string>;
   selector: string;
   neonView: NeonView;
@@ -114,23 +115,18 @@ class InsertHandler {
     // Disable edit mode listeners
     document.body.addEventListener('keydown', this.keydownListener);
     document.body.addEventListener('keyup', this.resetInsertHandler);
-    document.body.addEventListener('click', this.clickawayHandler);
 
     // Add 'return to edit mode' button
     if (!alreadyInInsertMode) {
       const editModeButton = document.createElement('button');
       editModeButton.id = 'returnToEditMode';
-      editModeButton.classList.add('button');
+      editModeButton.classList.add('side-panel-btn');
       editModeButton.innerHTML = 'Return to Edit Mode';
       document.getElementById('redo').parentNode.appendChild(editModeButton);
       editModeButton.addEventListener('click', this.insertDisabled);
     }
-    const editMenu = document.getElementById('editMenu');
-    editMenu.style.backgroundColor = 'whitesmoke';
-    editMenu.style.fontWeight = '';
-    const insertMenu = document.getElementById('insertMenu');
-    insertMenu.style.backgroundColor = '#ffc7c7';
-    insertMenu.style.fontWeight = 'bold';
+
+    document.getElementById('editContents').addEventListener('click', this.clickawayHandler);
   }
 
   /**
@@ -142,22 +138,28 @@ class InsertHandler {
     document.body.removeEventListener('keydown', this.keydownListener);
     document.body.removeEventListener('keyup', this.resetInsertHandler);
     document.body.removeEventListener('click', this.clickawayHandler);
-    const selected = document.querySelector('.insertel.is-active');
-    if (selected !== null) {
-      selected.classList.remove('is-active');
-    }
+
     this.firstClick = true;
     try {
       document.getElementById('returnToEditMode').remove();
     } catch (e) {
       // console.debug(e);
     }
-    const editMenu = document.getElementById('editMenu');
-    const insertMenu = document.getElementById('insertMenu');
-    editMenu.style.backgroundColor = '#ffc7c7';
-    editMenu.style.fontWeight = 'bold';
-    insertMenu.style.backgroundColor = 'whitesmoke';
-    insertMenu.style.fontWeight = '';
+
+    const insertPanel = document.getElementById('insert_controls');
+    const insertHeading = document.getElementById('insertMenu');
+    const insertHeadingTitle = insertHeading.querySelector('.panel-heading-title');
+
+    const editPanel = document.getElementById('edit_controls');
+    const editHeading = document.getElementById('editMenu');
+    const displayHeadingTitle = editHeading.querySelector('.panel-heading-title');
+
+    insertHeadingTitle.classList.remove('focused');
+    displayHeadingTitle.classList.add('focused');
+
+    insertPanel.querySelector('.side-panel-btn.insertel.is-active').classList.add('unfocused');
+    editPanel.querySelector('.side-panel-btn.sel-by.is-active').classList.remove('unfocused');
+    
   }).bind(this);
 
   /**
@@ -207,26 +209,20 @@ class InsertHandler {
    */
   handler = (function handler (evt: MouseEvent): void {
     evt.stopPropagation();
-    const container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0] as SVGSVGElement;
-    const pt = container.createSVGPoint();
-    pt.x = evt.clientX;
-    pt.y = evt.clientY;
-    // Transform pt to SVG context
-    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGraphicsElement).getScreenCTM();
-    const cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
+    const cursor = getSVGRelCoords(evt.clientX, evt.clientY);
     const editorAction: InsertAction = {
       action: 'insert',
       param: {
         elementType: this.type,
         staffId: 'auto',
-        ulx: cursorpt.x,
-        uly: cursorpt.y
+        ulx: cursor.x,
+        uly: cursor.y,
       }
     };
 
     if (this.attributes !== null) {
-      editorAction['param']['attributes'] = this.attributes;
+      editorAction.param.attributes = this.attributes;
       if (this.attributes['shape'] === 'F') {
         editorAction['param']['ulx'] -= 50;
       }
@@ -243,29 +239,26 @@ class InsertHandler {
    * Event handler to insert a staff.
    */
   staffHandler = (function staffHandler (evt: MouseEvent): void {
-    const container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0] as SVGSVGElement;
-    const pt = container.createSVGPoint();
-    pt.x = evt.clientX;
-    pt.y = evt.clientY;
-    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGraphicsElement).getScreenCTM();
-    const cursorpt = pt.matrixTransform(transformMatrix.inverse());
+    const container = document.querySelector('.active-page > .definition-scale');
+
+    const cursor = getSVGRelCoords(evt.clientX, evt.clientY);
 
     if (this.firstClick) {
-      this.coord = cursorpt;
-      d3.select(container).append('circle').attr('cx', cursorpt.x)
-        .attr('cy', cursorpt.y)
+      this.coord = cursor;
+      d3.select(container).append('circle').attr('cx', cursor.x)
+        .attr('cy', cursor.y)
         .attr('r', 10)
         .attr('id', 'staff-circle')
         .attr('fill', 'green');
       this.firstClick = false;
     } else {
-      let ul, lr;
-      if (cursorpt.x < this.coord.x || cursorpt.y < this.coord.y) { // second point is not lr
-        ul = cursorpt;
+      let ul: Point, lr: Point;
+      if (cursor.x < this.coord.x || cursor.y < this.coord.y) { // second point is not lr
+        ul = cursor;
         lr = this.coord;
       } else {
         ul = this.coord;
-        lr = cursorpt;
+        lr = cursor;
       }
       document.getElementById('staff-circle').remove();
       const action: EditorAction = {
@@ -301,4 +294,5 @@ class InsertHandler {
     return (this.type !== '');
   }
 }
+
 export { InsertHandler as default };

@@ -295,10 +295,10 @@ describe.each(browserNames)('Tests on %s', (title) => {
         });
 
         test('Click select syllable', async () => {
-          const selBySylButton = await browser.findElement(By.id('selBySyl'));
+          const selBySyllableButton = await browser.findElement(By.id('selBySyllable'));
           const actions = browser.actions();
-          await actions.click(selBySylButton).perform();
-          expect(await selBySylButton.getAttribute('class')).toContain('is-active');
+          await actions.click(selBySyllableButton).perform();
+          expect(await selBySyllableButton.getAttribute('class')).toContain('is-active');
           const syl = await browser.findElement(By.id('m-9eea945f-9acf-4f85-9dee-ce24fde486f1'));
           const sylNc = await syl.findElement(By.className('nc'));
           // await actions.click(sylNc).perform();
@@ -309,10 +309,10 @@ describe.each(browserNames)('Tests on %s', (title) => {
         });
 
         test('Click select split syllable', async () => {
-          const selBySylButton = await browser.findElement(By.id('selBySyl'));
+          const selBySyllableButton = await browser.findElement(By.id('selBySyllable'));
           const actions = browser.actions();
-          await actions.click(selBySylButton).perform();
-          expect(await selBySylButton.getAttribute('class')).toContain('is-active');
+          await actions.click(selBySyllableButton).perform();
+          expect(await selBySyllableButton.getAttribute('class')).toContain('is-active');
           const firstHalf = await browser.findElement(By.id('m-eefa04b9-e43e-41a9-8d63-d5b093834442'));
           const secondHalf = await browser.findElement(By.id('m-23a8ef14-9b60-47dd-b072-fa2b6bc2e8bd'));
           const firstHalfNc = await firstHalf.findElement(By.className('nc'));
@@ -356,9 +356,9 @@ describe.each(browserNames)('Tests on %s', (title) => {
 
       test('Delete element', async () => {
         expect.assertions(1);
-        const selBySylButton = await browser.findElement(By.id('selBySyl'));
+        const selBySyllableButton = await browser.findElement(By.id('selBySyllable'));
         const actions = browser.actions();
-        await actions.click(selBySylButton).perform();
+        await actions.click(selBySyllableButton).perform();
         const syl = await browser.findElement(By.className('syllable'));
         const sylNc = await syl.findElement(By.className('nc'));
         const id = await sylNc.getAttribute('id');

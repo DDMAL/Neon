@@ -1,4 +1,4 @@
-import { unselect } from './utils/SelectTools';
+import { selectBBox, unselect } from './utils/SelectTools';
 import DragHandler from './utils/DragHandler';
 import NeonView from './NeonView';
 import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select';
@@ -17,20 +17,21 @@ function formatRaw (rawString: string): string {
 }
 */
 
-function selBySylListener (): void {
+function selBySyllableListener (): void {
   if (!document.getElementById('selByBBox').classList.contains('is-active')) {
     unselect();
     try {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-invisible');
+      document.getElementById('moreEdit').parentElement.classList.add('hidden');
+      document.getElementById('extraEdit').parentElement.classList.add('hidden');
     } catch (e) {}
     document.getElementById('selByBBox').classList.add('is-active');
     try {
       document.getElementById('selByNc').classList.remove('is-active');
       document.getElementById('selByNeume').classList.remove('is-active');
       document.getElementById('selByStaff').classList.remove('is-active');
-      document.getElementById('selBySyl').classList.remove('is-active');
+      document.getElementById('selBySyllable').classList.remove('is-active');
       document.getElementById('selByLayerElement').classList.remove('is-active');
     } catch (e) {}
     try {
@@ -55,33 +56,22 @@ export default class TextEditMode implements TextEditInterface {
    */
   constructor (neonView: NeonView) {
     this.neonView = neonView;
-    this.initEditModeControls();
+    this.initTextEdit();
   }
 
-  /**
-   * Set listener on edit mode button to start editing.
-   */
-  initEditModeControls (): void {
-    document.getElementById('edit_mode').addEventListener('click', () => {
-      this.initTextEdit();
-      if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
-        this.initSelectByBBoxButton();
-      }
-    });
-  }
 
   /**
   * Set text to edit mode
   */
   initTextEdit (): void {
-    const spans = document.getElementById('syl_text').querySelectorAll('p > span');
+    const spans = document.getElementById('syl_text').querySelectorAll('span');
     const modal = this.neonView.modal;
-    spans.forEach(span => {
-
+    spans.forEach((span: HTMLSpanElement) => {
       function selectSylText (): void {
         span.classList.add('selected-to-edit');
         modal.setModalWindowView(ModalWindowView.EDIT_TEXT);
         modal.openModalWindow();
+        modal.updateSelectedBBox(span);
       }
 
       span.removeEventListener('click', selectSylText);
@@ -103,22 +93,17 @@ export default class TextEditMode implements TextEditInterface {
         return;
       }
 
-      const block = document.getElementById('selBySyl')
-        .closest('.control')
-        .closest('.field');
-      const p = document.createElement('p');
-      p.classList.add('control');
+      const block = document.getElementById('selection-mode-btns-container');
       const button = document.createElement('button');
-      button.classList.add('button', 'sel-by');
+      button.classList.add('side-panel-btn', 'sel-by');
       button.id = 'selByBBox';
       button.textContent = 'BBox';
-      p.appendChild(button);
-      block.appendChild(p);
-      button.addEventListener('click', selBySylListener.bind(this));
+      block.appendChild(button);
+      button.addEventListener('click', selBySyllableListener.bind(this));
       document.body.addEventListener('keydown', (evt) => {
         if (evt.key === '6') {
           if (document.getElementById('selByBBox').style.display === '') {
-            selBySylListener.bind(this)();
+            selBySyllableListener.bind(this)();
           }
         }
       });
@@ -128,7 +113,7 @@ export default class TextEditMode implements TextEditInterface {
       const p = document.createElement('p');
       p.classList.add('control');
       const button = document.createElement('button');
-      button.classList.add('button', 'sel-by');
+      button.classList.add('side-panel-btn', 'sel-by');
       button.id = 'selByBBox';
       button.textContent = 'BBox';
       p.appendChild(button);

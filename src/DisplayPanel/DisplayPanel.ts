@@ -9,59 +9,65 @@ import { DisplayInterface, ViewInterface } from '../Interfaces';
  */
 function displayControlsPanel (handleZoom: ZoomHandler): string {
   let contents = `
-    <p class="panel-heading" id="displayHeader">Display
+    <div class="panel-heading" id="displayHeader">
+      <div class="panel-heading-title">DISPLAY</div>
       <svg class="icon is-pulled-right">
-        <use id="toggleDisplay" xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use>
+        <use id="toggleDisplay" class="panel-dropdown-icon" xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use>
       </svg>
-    </p>
-    <div id="displayContents">
+    </div>
+    <div id="displayContents" class="panel-contents">
+      <div class="panel-content-subsection first-subsection">
   `;
 
   if (handleZoom !== undefined) {
     contents += `
-      <a class="panel-block has-text-centered" style="cursor: default">
-        <button class="button" id="reset-zoom">Zoom</button>
-        <input type="range"
-          step="5" min="25" max="400" value="100"
-          aria-labelledby="reset-zoom"
-          class="slider is-fullwidth is-large"
-          id="zoomSlider"
-          style="padding-left: 1rem; padding-right: 1rem;"
-          disabled="disabled"
-        />
-        <output id="zoomOutput" for="zoomSlider">100</output>
-      </a>
-    `;
+        <div class="slider-container display-panel" style="cursor: default">
+          <button class="side-panel-btn slider-btn" id="reset-zoom">Zoom</button>
+          <input type="range"
+            step="5" min="25" max="400" value="100"
+            aria-labelledby="reset-zoom"
+            class="slider is-fullwidth is-large"
+            id="zoomSlider"
+            style="padding-left: 1rem; padding-right: 1rem;"
+            disabled="disabled"
+          />
+          <output id="zoomOutput" for="zoomSlider">100</output>
+        </div>`;
   }
   contents += `
-      <a class="panel-block has-text-centered" style="cursor: default">
-        <button class="button" id="reset-opacity">Glyph Opacity</button>
-        <input type="range"
-          step="5" min="0" max="100" value="100"
-          aria-labelledby="reset-opacity"
-          class="slider is-fullwidth is-large"
-          id="opacitySlider"
-          style="padding-left: 1rem; padding-right: 1rem;"
-          disabled="disabled"
-        />
-        <output id="opacityOutput" for="opacitySlider">100</output>
-      </a>
-      <a class="panel-block has-text-centered" style="cursor: default">
-        <button class="button" id="reset-bg-opacity">Image Opacity</button>
-        <input type="range"
-          step="5" min="0" max="100" value="100"
-          aria-labelledby="reset-bg-opacity"
-          class="slider is-fullwidth is-large"
-          id="bgOpacitySlider"
-          style="padding-left: 1rem; padding-right: 1rem;"
-          disabled="disabled"
-        />
-        <output id="bgOpacityOutput" for="bgOpacitySlider">100</output>
-      </a>
-      <div class="panel-block" id="extensible-block">
+        <div class="slider-container display-panel" style="cursor: default">
+          <button class="side-panel-btn slider-btn" id="reset-opacity">Glyph Opacity</button>
+          <input type="range"
+            step="5" min="0" max="100" value="100"
+            aria-labelledby="reset-opacity"
+            class="slider is-fullwidth is-large"
+            id="opacitySlider"
+            style="padding-left: 1rem; padding-right: 1rem;"
+            disabled="disabled"
+          />
+          <output id="opacityOutput" for="opacitySlider">100</output>
+        </div>
+        
+        <div class="slider-container display-panel" style="cursor: default">
+          <button class="side-panel-btn slider-btn" id="reset-bg-opacity">Image Opacity</button>
+          <input type="range"
+            step="5" min="0" max="100" value="100"
+            aria-labelledby="reset-bg-opacity"
+            class="slider is-fullwidth is-large"
+            id="bgOpacitySlider"
+            style="padding-left: 1rem; padding-right: 1rem;"
+            disabled="disabled"
+          />
+          <output id="bgOpacityOutput" for="bgOpacitySlider">100</output>
+        </div>
+      </div>
+      
+      <div class="panel-content-subsection">
+
+        <div id="highlight-options-title" class="panel-sub-title">Highlight Options:</div>
         <div class="dropdown" id="highlight-dropdown">
           <div class="dropdown-trigger">
-            <button class="button" id="highlight-button" aria-haspopup="true" aria-controls="highlight-menu" style="width: auto">
+            <button class="side-panel-btn" id="highlight-button" aria-haspopup="true" aria-controls="highlight-menu" style="width: auto">
               <span>Highlight</span>
               <span id="highlight-type">&nbsp;- Off</span>
               <svg class="icon">
@@ -81,8 +87,30 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
           </div>
         </div>
       </div>
-    </div>
-  `;
+
+      <div class="panel-content-subsection">
+        <div id="display-options-container">
+          <div id="display-options-title" class="panel-sub-title">Display Options:</div>
+
+          <div id="display-options-items">
+
+            <div id="checkbox-display-options">
+
+              <div id="display-all-container">
+                <div id="display-options-separator">
+                <div class="side-panel-btn" id="display-all-btn">Display All</div>
+              </div>
+              <div id="display-single-container"></div>
+
+              
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      
+    </div>`;
 
   return contents;
 }

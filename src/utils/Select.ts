@@ -1,8 +1,6 @@
 /** @module utils/Select */
 
-import {
-  unselect, getStaffBBox, selectStaff, selectAll, getSelectionType
-} from './SelectTools';
+import { unselect, getStaffBBox, selectStaff, selectAll, getSelectionType } from './SelectTools';
 import { resize } from './Resize';
 import NeonView from '../NeonView';
 import DragHandler from './DragHandler';
@@ -10,7 +8,7 @@ import { InfoInterface } from '../Interfaces';
 import ZoomHandler from '../SingleView/Zoom';
 
 import * as d3 from 'd3';
-import { HTMLSVGElement } from '../Types';
+import { getStaffByCoords, getSVGRelCoords } from './Coordinates';
 
 let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 let strokeWidth = 7;
@@ -131,16 +129,24 @@ export function clickSelect (selector: string): void {
 /**
  * Handle click events related to element selection.
  */
-function clickHandler (evt: MouseEvent): void {
-  if (!neonView) return;
-  const mode = neonView.getUserMode();
 
-  // If in insert mode or panning is active from shift key
-  if (mode === 'insert' || evt.shiftKey) { return; }
-  // Check if the element being clicked on is part of a drag Selection
+// The `this` keyword can be "passed" as a fake parameter so that we can type it correctly
+// https://www.typescriptlang.org/docs/handbook/2/functions.html#declaring-this-in-a-function
+function clickHandler (this: SVGGraphicsElement, evt: MouseEvent): void {
+  // Return if user is in insert mode or panning is active from shift key
+  if (!neonView || neonView.getUserMode() === 'insert' || evt.shiftKey)
+    return;
+
+  // Helper function to check if the ctrl/cmd key has been selected
+  function isMultiSelect (): boolean {
+    return window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey;
+  }
+
+  // If user has clicked a layer element
   if (this.tagName === 'use' && getSelectionType() !== 'selByBBox') {
     if (this.closest('.selected') === null) {
-      let selection = [this];
+      let selection: SVGGraphicsElement[] = [this];
+
       // Check if this is part of a ligature and, if so, add all of it to the selection.
       const firstLigatureHalf = /E9B[45678]/;
       const secondLigatureHalf = /E9B[9ABC]/;
@@ -149,8 +155,9 @@ function clickHandler (evt: MouseEvent): void {
         const nc = this.closest('.nc');
         const neume = this.closest('.neume');
         const ncIndex = Array.from(neume.children).indexOf(nc);
-        const firstUse = neume.children[ncIndex - 1].children[0];
+        const firstUse = neume.children[ncIndex - 1].children[0] as SVGGraphicsElement;
         console.assert(firstUse.getAttribute('xlink:href').match(firstLigatureHalf), 'First glyph of ligature unexpected!');
+
         if (firstUse.closest('.selected') === null) {
           selection.unshift(firstUse);
         }
@@ -159,49 +166,42 @@ function clickHandler (evt: MouseEvent): void {
         const nc = this.closest('.nc');
         const neume = this.closest('.neume');
         const ncIndex = Array.from(neume.children).indexOf(nc);
-        const secondUse = neume.children[ncIndex + 1].children[0];
+        const secondUse = neume.children[ncIndex + 1].children[0] as SVGGraphicsElement;
         console.assert(secondUse.getAttribute('xlink:href').match(secondLigatureHalf), 'Second glyph of ligature unexpected!');
+
         if (secondUse.closest('.selected') === null) {
           selection.push(secondUse);
         }
       }
-      if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
-        selection = selection.concat(Array.from(document.getElementsByClassName('selected')));
+
+      if (isMultiSelect()) {
+        selection = selection.concat(Array.from(document.querySelectorAll('.selected')));
       }
+
       selectAll(selection, neonView, dragHandler);
+
       if (dragHandler) {
         dragHandler.dragInit();
       }
     }
     else {
-      let selection = [];
-      if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
-        // determine which selection mode we're in
-        const temp = document.querySelector('.sel-by.is-active').id;
-        let mode = '';
-        switch (temp) {
-          case 'selByStaff':
-            mode = '.staff';
-            break;
-          case 'selByNeume':
-            mode = '.neume';
-            break;
-          case 'selByNc':
-            mode = '.nc';
-            break;
-          case 'selByLayerElement':
-            mode = '.accid';
-            break;
-          default:
-            mode = '.syllable';
-            break;
-        }
-        const remove = [this.closest(mode)];
+      if (isMultiSelect()) {
+        const selectionMode = document.querySelector('.sel-by .is-active').id;
+        const modeToClass = {
+          selByStaff: '.staff',
+          selByNeume: '.neume',
+          selByNc: '.nc',
+          selByLayerElement: '.accid',
+        };
+        const selectedClass = modeToClass[selectionMode] || '.syllable';
+        const remove = [this.closest(selectedClass)];
+
+        let selection = [];
         selection = Array.from(document.getElementsByClassName('selected'));
-        selection = selection.filter( (el) => {
-          return !remove.includes(el);
-        });
+        selection = selection.filter((el) => !remove.includes(el));
+
         selectAll(selection, neonView, dragHandler);
+
         if (dragHandler) {
           dragHandler.dragInit();
         }
@@ -210,7 +210,7 @@ function clickHandler (evt: MouseEvent): void {
   } else if ((evt.target as HTMLElement).tagName === 'rect' && getSelectionType() === 'selByBBox') {
     if (this.closest('.selected') === null) {
       let selection = [evt.target] as SVGGElement[];
-      if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
+      if (isMultiSelect()) {
         selection = selection.concat(Array.from(document.getElementsByClassName('selected')) as SVGGElement[]);
         selection = selection.map( (el) => {
           if (el.tagName == 'rect') {
@@ -225,7 +225,7 @@ function clickHandler (evt: MouseEvent): void {
       }
     } else {
       let selection = [];
-      if (window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey) {
+      if (isMultiSelect()) {
         const remove = [this];
         selection = Array.from(document.getElementsByClassName('selected'));
         selection = selection.map( (el) => {
@@ -244,41 +244,20 @@ function clickHandler (evt: MouseEvent): void {
       }
     }
   } else {
-    // Check if the point being clicked on is a staff selection (if applicable)
     if (getSelectionType() !== 'selByStaff') {
       info.infoListeners();
       return;
     }
 
     // Check if the point is in a staff.
-    const container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0] as SVGSVGElement;
-    let pt = container.createSVGPoint();
-    pt.x = evt.clientX;
-    pt.y = evt.clientY;
-    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGraphicsElement).getScreenCTM();
-    pt = pt.matrixTransform(transformMatrix.inverse());
-
-    const selectedStaves = Array.from(document.getElementsByClassName('staff'))
-      .filter((staff: SVGGElement) => {
-        const bbox = getStaffBBox(staff);
-        const ulx = bbox.ulx;
-        const uly = bbox.uly;
-        const lrx = bbox.lrx;
-        const lry = bbox.lry;
-        const rotate = bbox.rotate;
-
-        return (pt.x > ulx && pt.x < lrx) &&
-          (pt.y > (uly + (pt.x - ulx) * Math.tan(rotate))) &&
-          (pt.y < (lry - (lrx - pt.x) * Math.tan(rotate)));
-      });
-
-    unselect();
-    if (selectedStaves.length == 0) {
-      return;
-    }
+    if (!isMultiSelect())
+      unselect();
 
     // Select a staff
-    const staff = selectedStaves[0] as SVGGElement;
+    const staff = getStaffByCoords(evt.clientX, evt.clientY);
+    
+    if (!staff) return;
+
     if (!staff.classList.contains('selected')) {
       // Select previously unselected staff
       selectStaff(staff, dragHandler);
@@ -417,12 +396,11 @@ export function dragSelect (selector: string): void {
 
   function selEnd (): void {
     if (!panning && dragSelecting) {
-      const rx = parseInt(document.getElementById('selectRect').getAttribute('x'));
-      const ry = parseInt(document.getElementById('selectRect').getAttribute('y'));
-      const lx = parseInt(document.getElementById('selectRect').getAttribute('x')) +
-        parseInt(document.getElementById('selectRect').getAttribute('width'));
-      const ly = parseInt(document.getElementById('selectRect').getAttribute('y')) +
-        parseInt(document.getElementById('selectRect').getAttribute('height'));
+      const selectRect = document.getElementById('selectRect');
+      const rx = parseInt(selectRect.getAttribute('x'));
+      const ry = parseInt(selectRect.getAttribute('y'));
+      const lx = rx + parseInt(selectRect.getAttribute('width'));
+      const ly = ry + parseInt(selectRect.getAttribute('height'));
       // Transform to the correct coordinate system
       const node = canvas.node() as SVGSVGElement;
       let ul = node.createSVGPoint();

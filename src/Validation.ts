@@ -1,3 +1,6 @@
+import NeonView from "./NeonView";
+import { ModalWindow, ModalWindowView } from "./utils/ModalWindow";
+
 const schemaResponse = fetch(__ASSET_PREFIX__ + 'assets/mei-all.rng');
 let worker: Worker, schema: string, statusField: HTMLSpanElement;
 
@@ -8,7 +11,7 @@ function updateUI (message: { data: string[] }): void {
   const errors = message.data;
   if (errors === null) {
     statusField.textContent = 'VALID';
-    statusField.style.color = 'green';
+    statusField.style.color = '#4bc14b';
     for (const child of statusField.children) {
       child.remove();
     }
@@ -19,35 +22,40 @@ function updateUI (message: { data: string[] }): void {
     });
     statusField.textContent = '';
     statusField.style.color = 'red';
-    const link = document.createElement('a');
-    link.setAttribute('href', 'data:text/plain;charset=utf-8,' +
-      encodeURIComponent(log));
-    link.setAttribute('download', 'validation.log');
-    link.textContent = 'INVALID';
-    statusField.appendChild(link);
+    const status = document.createElement('div');
+    //link.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(log)}`);
+    //link.setAttribute('download', 'validation.log');
+    status.textContent = 'INVALID';
+    status.style.cursor = 'pointer';
+    statusField.appendChild(status);
+
+    status.addEventListener('click', statusOnClick.bind(this, log));
   }
+}
+
+function statusOnClick(log: string) {
+  this.modal.setModalWindowView(ModalWindowView.VALIDATION_STATUS, log);
+  this.modal.openModalWindow();
 }
 
 /**
  * Add the validation information to the display and create the WebWorker
  * for validation MEI.
  */
-export async function init (): Promise<void> {
-  const displayContents = document.getElementById('displayContents');
-  if (displayContents !== null) {
-    const panelBlock = document.createElement('div');
-    panelBlock.classList.add('panel-block');
-    const pNotif = document.createElement('p');
-    pNotif.textContent = 'MEI Status: ';
-    const span = document.createElement('span');
-    span.id = 'validation_status';
-    span.textContent = 'unknown';
-    pNotif.appendChild(span);
-    panelBlock.appendChild(pNotif);
-    displayContents.appendChild(panelBlock);
+export async function init (neonView: NeonView): Promise<void> {
+  const fileStatusDiv = document.getElementById('file-status');
+  if (fileStatusDiv !== null) {
+    const statusTitle = document.createElement('div');
+    statusTitle.textContent = 'MEI Status:';
+    statusTitle.id = "validation_status_title";
+    const status = document.createElement('span');
+    status.id = 'validation_status';
+    status.textContent = 'unknown';
+    fileStatusDiv.appendChild(statusTitle);
+    fileStatusDiv.appendChild(status);
     statusField = document.getElementById('validation_status');
     worker = new Worker(__ASSET_PREFIX__ + 'workers/Worker.js');
-    worker.onmessage = updateUI;
+    worker.onmessage = updateUI.bind(neonView);
   }
 }
 

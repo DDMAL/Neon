@@ -82,7 +82,11 @@ function displayNotification (notification: Notification): void {
     }
   }
   const notificationContent = document.getElementById('notification-content');
-  notificationContent.innerHTML += '<div class=\'neon-notification\' id=\'' + notification.getId() + '\'>' + notification.message + '</div> ';
+  const newNotification = document.createElement('div');
+  newNotification.classList.add('neon-notification');
+  newNotification.id = notification.getId();
+  newNotification.innerHTML = notification.message;
+  notificationContent.append(newNotification);
   notificationContent.style.display = '';
   notification.display();
 }

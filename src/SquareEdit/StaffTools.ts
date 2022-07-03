@@ -1,8 +1,9 @@
 import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
-import { EditorAction, SplitAction } from '../Types';
+import { SplitAction } from '../Types';
 import { selectAll } from '../utils/SelectTools';
 import DragHandler from '../utils/DragHandler';
+import { getSVGRelCoords } from '../utils/Coordinates';
 
 /** Handle splitting a staff into two staves through Verovio. */
 export class SplitStaffHandler {
@@ -42,25 +43,15 @@ export class SplitStaffHandler {
 
   /** Handle input to split a staff. */
   handler = ((evt: MouseEvent): void => {
-    const id = this.staff.id;
-
-    const container = this.staff.closest('.definition-scale') as SVGSVGElement;
-    const pt = container.createSVGPoint();
-    pt.x = evt.clientX;
-    pt.y = evt.clientY;
-
-    // Transform to SVG coordinate system.
-    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGElement)
-      .getScreenCTM().inverse();
-    const cursorPt = pt.matrixTransform(transformMatrix);
     // Find staff point corresponds to if one exists
     // TODO
-
+    const id = this.staff.id;
+    const cursor = getSVGRelCoords(evt.clientX, evt.clientY);
     const editorAction: SplitAction = {
       action: 'split',
       param: {
         elementId: id,
-        x: cursorPt.x
+        x: cursor.x
       }
     };
 
@@ -71,11 +62,13 @@ export class SplitStaffHandler {
       }
       const dragHandler = new DragHandler(this.neonView, '.staff');
       this.splitDisable();
-      selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
-      try {
-        document.getElementById('moreEdit').innerHTML = '';
-        document.getElementById('moreEdit').classList.add('is-invisible');
-      } catch (e) {}
+      selectAll([document.querySelector(`#${id}`)], this.neonView, dragHandler);
+
+      const moreEdit = document.getElementById('moreEdit');
+      if (moreEdit) {
+        moreEdit.innerHTML = '';
+        moreEdit.parentElement.classList.add('hidden');
+      }
     });
   }).bind(this);
 

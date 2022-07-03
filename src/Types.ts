@@ -2,7 +2,9 @@
 
 export type Attributes = { pname?: string; oct?: number; shape?: string; line?: number; ligated?: boolean; curve?: string; tilt?: string; form?: string };
 
-/** Drag editing action sent to verovio as described [here](https://github.com/DDMAL/Neon/wiki/Toolkit-Actions). */
+/**
+ * Drag editing action sent to verovio as described [here](https://github.com/DDMAL/Neon/wiki/Toolkit-Actions).
+ */
 export type DragAction = {
   action: 'drag',
   param: {
@@ -46,14 +48,19 @@ export type InsertAction = {
     lrx?: number,
     lry?: number,
     // TODO: attributes are currently never used yet in Neon
-    attributes?: {
-      shape: string
-    }
+    attributes?: { shape: string } | Record<string, string>;
   }
 };
 
-export type InsertToSylAction = {
+export type InsertToSyllableAction = {
   action: 'insertToSyllable',
+  param: {
+    elementId: string
+  }
+};
+
+export type MoveOuttaSyllableAction = {
+  action: 'moveOuttaSyllable',
   param: {
     elementId: string
   }
@@ -154,6 +161,14 @@ export type ChangeStaffAction = {
   }
 };
 
+export type ChangeStaffToAction = {
+  action: 'changeStaffTo',
+  param: {
+    elementId: string,
+    staffId: string,
+  }
+};
+
 export type ChangeGroupAction = {
   action: 'changeGroup',
   param: {
@@ -168,7 +183,8 @@ export type EditorAction =
   | ResizeAction
   | ResizeRotateAction
   | InsertAction
-  | InsertToSylAction
+  | InsertToSyllableAction
+  | MoveOuttaSyllableAction
   | RemoveAction
   | GroupingAction
   | UngroupingAction
@@ -181,6 +197,7 @@ export type EditorAction =
   | ToggleLigatureAction
   | ChangeSkewAction
   | ChangeStaffAction
+  | ChangeStaffToAction
   | ChangeGroupAction
   | ChainAction;
 
@@ -250,7 +267,7 @@ export type NeonManifest = {
 export type HTMLSVGElement = HTMLElement & SVGSVGElement;
 
 /** "Selection By" type */
-export type SelectionType = 'selByStaff' | 'selByNeume' | 'selByNc' | 'selByLayerElement' | 'selBySyl' | 'selByBBox' | 'selByLayerElement';
+export type SelectionType = 'selByStaff' | 'selByNeume' | 'selByNc' | 'selByLayerElement' | 'selBySyllable' | 'selByBBox' | 'selByLayerElement';
 
 /** Highlight grouping type  */
 export type GroupingType = 'staff' | 'syllable' | 'neume' | 'layer' | 'selection' | 'none';

@@ -1,6 +1,5 @@
 import * as Notification from './Notification';
 import NeonView from '../NeonView';
-import { navbarDropdownFileMenu, navbarDropdownMEIActionsMenu, undoRedoPanel } from './EditContents';
 import { convertStaffToSb } from './ConvertMei';
 import { EditorAction } from '../Types';
 
@@ -9,6 +8,15 @@ import { EditorAction } from '../Types';
  */
 export function initNavbar (neonView: NeonView): void {
   // setup navbar listeners
+  const navbarDropdowns = document.querySelectorAll('.navbar-item.has-dropdown.is-hoverable');
+  Array.from(navbarDropdowns).forEach((dropDown) => {
+    dropDown.addEventListener('mouseover', () => {
+      //
+    });
+  });
+
+
+
   document.getElementById('save').addEventListener('click', () => {
     neonView.save().then(() => {
       Notification.queueNotification('Saved');
@@ -208,47 +216,3 @@ export function initUndoRedoPanel (neonView: NeonView): void {
     }
   });
 }
-
-/**
- * start the basic edit mode features
- * is called when the edit mode button is clicked
- */
-export function startEditMode (neonView: NeonView): void {
-  const parent: HTMLElement = document.getElementById('dropdown_toggle').parentElement;
-  document.getElementById('dropdown_toggle').remove();
-  parent.prepend(navbarDropdownMEIActionsMenu);
-  parent.prepend(navbarDropdownFileMenu);
-  document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;
-  initNavbar(neonView);
-  initUndoRedoPanel(neonView);
-
-  const selectionHighlight = document.createElement('a');
-  const divider = document.createElement('hr');
-  divider.classList.add('dropdown-divider');
-  selectionHighlight.classList.add('dropdown-item');
-  selectionHighlight.id = 'highlight-selection';
-  selectionHighlight.textContent = 'By Selection Mode';
-  (document.getElementsByClassName('dropdown-content'))[0].appendChild(divider);
-  (document.getElementsByClassName('dropdown-content'))[0].appendChild(selectionHighlight);
-}
-
-/**
- * prepare the edit mode button
- */
-export function prepareEditMode (neonView: NeonView): void {
-  const parent = document.getElementById('dropdown_toggle');
-  const editItem = document.createElement('a');
-  editItem.classList.add('navbar-item');
-  const editButton = document.createElement('button');
-  editButton.classList.add('button');
-  editButton.id = 'edit_mode';
-  editButton.textContent = 'Edit MEI';
-  editItem.appendChild(editButton);
-  parent.appendChild(editItem);
-
-  editButton.addEventListener('click', () => {
-    startEditMode(neonView);
-  });
-}
-
-

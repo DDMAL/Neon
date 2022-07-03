@@ -52,6 +52,7 @@ export interface ModalWindowInterface {
   setModalWindowView(view: ModalWindowView): void;
   openModalWindow(): void;
   hideModalWindow(): void;
+  updateSelectedBBox(span: HTMLSpanElement): void;
 }
 
 export interface TextViewConstructable {
@@ -71,7 +72,7 @@ export interface InfoInterface {
   getPitches (ncs: Iterable<SVGGraphicsElement>): Promise<string>;
   pitchNameToNum (pname: string): number;
   getContourByValue (value: string): string;
-  updateInfoModule (a: string, b: string): void;
+  updateInfoModule (body: string): void;
   infoListeners (): void;
   stopListeners (): void;
   resetInfoListeners (): void;

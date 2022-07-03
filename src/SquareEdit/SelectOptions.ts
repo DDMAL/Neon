@@ -107,7 +107,7 @@ export function endOptionsSelection (): void {
   try {
     const moreEdit = document.getElementById('moreEdit');
     moreEdit.innerHTML = '';
-    moreEdit.classList.add('is-invisible');
+    moreEdit.parentElement.classList.add('hidden');
   } catch (e) {}
   document.body.removeEventListener('keydown', deleteButtonHandler);
 }
@@ -174,7 +174,6 @@ export function changeStaffHandler(): void {
  * Function to handle inserting divisio or accidental into nearest syllable
  */
 export function insertToSyllableHandler(): void {
-  // const toInsert = [];
   const toInsert: EditorAction[] = [];
   const selected = Array.from(document.getElementsByClassName('selected'));
   selected.forEach(elem => {
@@ -203,13 +202,44 @@ export function insertToSyllableHandler(): void {
 }
 
 /**
+ * Function to handle moving divisio or accidental out of syllable
+ */
+export function moveOuttaSyllableHandler(): void {
+  const toMove: EditorAction[] = [];
+  const selected = Array.from(document.getElementsByClassName('selected'));
+  selected.forEach(elem => {
+    toMove.push(
+      {
+        action: 'moveOuttaSyllable',
+        param: {
+          elementId: elem.id
+        }
+      }
+    );
+  });
+  const chainAction: ChainAction = {
+    action: 'chain',
+    param: toMove
+  };
+  neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => { 
+    if (result) {
+      Notification.queueNotification('Move Success');
+    } else {
+      Notification.queueNotification('Move Failed XoX');
+    }
+    endOptionsSelection();
+    neonView.updateForCurrentPage(); 
+  });
+}
+
+/**
  * Trigger the extra layer element action menu for a selection.
  */
 //  export function triggerLayerElementActions (): void {
 //   endOptionsSelection();
 //   try {
 //     const moreEdit = document.getElementById('moreEdit');
-//     moreEdit.classList.remove('is-invisible');
+//     moreEdit.classList.remove('is-hidden');
 //     moreEdit.innerHTML = Contents.defaultActionContents;
 //   } catch (e) {}
 
@@ -221,21 +251,54 @@ export function insertToSyllableHandler(): void {
 //   } catch (e) {}
 // }
 
+function addDeleteListener(): void {
+  const del = document.getElementById('delete');
+
+  if (del) {
+    del.removeEventListener('click', removeHandler);
+    del.addEventListener('click', removeHandler);
+
+    // TODO: should this be outside the if condition?
+    document.body.addEventListener('keydown', deleteButtonHandler);
+  }
+}
+
+export function addChangeStaffListener(): void {
+  const staff = document.getElementById('changeStaff');
+  staff?.removeEventListener('click', changeStaffHandler);
+  staff?.addEventListener('click', changeStaffHandler);
+}
+
+/**
+ * Function to set the HTML content of edit controls: either #moreEdit or #extraEdit
+ *
+ * @param {'moreEdit' | 'extraEdit'} editType - The type of edit controls
+ * @param {string} contents - The innerHTML contents
+ * @param {boolean} replace - Is the innerHTML being replaced, or being added to?
+ */
+function setEditControls(editType: 'moreEdit' | 'extraEdit', contents: string, replace = true): void {
+  const edit = document.getElementById(editType);
+  
+  if (edit) {
+    edit.parentElement.classList.remove('hidden');
+
+    if (replace)
+      edit.innerHTML = contents;
+    else
+      edit.innerHTML += contents;
+  }
+}
+
 /**
  * Trigger the extra nc action menu for a selection.
  */
 export function triggerNcActions (nc: SVGGraphicsElement): void {
   endOptionsSelection();
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.defaultActionContents;
-  } catch (e) {}
-  try {
-    const extraEdit = document.getElementById('extraEdit');
-    extraEdit.classList.remove('is-invisible');
-    extraEdit.innerHTML = Contents.ncActionContents;
-  } catch (e) {}
+
+  setEditControls('moreEdit', Contents.defaultActionContents);
+  setEditControls('extraEdit', Contents.ncActionContents);
+  addDeleteListener();
+
   document.querySelector('#Punctum.dropdown-item')
     .addEventListener('click', () => {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
@@ -379,13 +442,6 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       });
     });  
 
-  try {
-    const del = document.getElementById('delete');
-    del.removeEventListener('click', removeHandler);
-    del.addEventListener('click', removeHandler);
-  } catch (e) {}
-  document.body.addEventListener('keydown', deleteButtonHandler);
-
   initOptionsListeners();
 }
 
@@ -394,16 +450,11 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
  */
 export function triggerNeumeActions (): void {
   endOptionsSelection();
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.defaultNeumeActionContents;
-  } catch (e) {}
-  try {
-    const extraEdit = document.getElementById('extraEdit');
-    extraEdit.classList.remove('is-invisible');
-    extraEdit.innerHTML = Contents.neumeActionContents;
-  } catch (e) {}
+
+  setEditControls('moreEdit', Contents.defaultNeumeActionContents);
+  setEditControls('extraEdit', Contents.neumeActionContents);
+  addDeleteListener();
+
   const neume = document.querySelectorAll('.selected');
   if (neume.length !== 1) {
     console.warn('More than one neume selected! Cannot trigger Neume ClickSelect actions.');
@@ -513,12 +564,6 @@ export function triggerNeumeActions (): void {
       neonView.updateForCurrentPage();
     });
   }
-  try {
-    const del = document.getElementById('delete');
-    del.removeEventListener('click', removeHandler);
-    del.addEventListener('click', removeHandler);
-  } catch (e) {}
-  document.body.addEventListener('keydown', deleteButtonHandler);
 
   initOptionsListeners();
 }
@@ -526,28 +571,20 @@ export function triggerNeumeActions (): void {
 /**
  * Trigger extra syllable actions.
  */
-export function triggerSylActions (): void {
+export function triggerSyllableActions (): void {
   endOptionsSelection();
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML =
-      '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'mergeSyls\'>Merge Syllables</button></p></div>' +
-      '<div><p class=\'control\'>' +
-          '<button class=\'button\' id=\'ungroupNeumes\'>Ungroup</button></p></div>' +
-      '<div><p class=\'control\'>' +
-          '<button class=\'button\' id=\'delete\'>Delete</button></p></div>' +
-      '<div><p class=\'control\'>' +
-        '<button class=\'button\' id=\'changeStaff\'>Re-associate to nearest staff</button></p></div>';
-    document.getElementById('changeStaff').addEventListener('click', changeStaffHandler);
-  } catch (e) { console.debug(e); }
-  try {
-    const del = document.getElementById('delete');
-    del.removeEventListener('click', removeHandler);
-    del.addEventListener('click', removeHandler);
-  } catch (e) {}
-  document.body.addEventListener('keydown', deleteButtonHandler);
+
+  const extraActionsHTML = `
+    <div class="right-side-panel-btns-container">
+      <button class="side-panel-btn" id="mergeSyls">Merge Syllables</button>
+      <button class="side-panel-btn" id="ungroupNeumes">Ungroup</button>
+      <button class="side-panel-btn" id="delete">Delete</button>
+      <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+    </div>
+  `;
+  setEditControls('moreEdit', extraActionsHTML);
+  addChangeStaffListener();
+  addDeleteListener();
 }
 
 /**
@@ -556,23 +593,12 @@ export function triggerSylActions (): void {
  */
 export function triggerClefActions (clef: SVGGraphicsElement): void {
   endOptionsSelection();
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-invisible');
-    // custos contents is just the delete button
-    moreEdit.innerHTML = Contents.custosActionContents;
-  } catch (e) {}
-  try {
-    const extraEdit = document.getElementById('extraEdit');
-    extraEdit.classList.remove('is-invisible');
-    extraEdit.innerHTML = Contents.clefActionContents;
-  } catch (e) {}
 
-  try {
-    document.getElementById('changeStaff')
-      .addEventListener('click', changeStaffHandler);
-  } catch (e) {console.debug(e);}
-  
+  setEditControls('moreEdit', Contents.custosActionContents);
+  setEditControls('extraEdit', Contents.clefActionContents);
+  addChangeStaffListener();
+  addDeleteListener();
+
   document.querySelector('#CClef.dropdown-item')
     .addEventListener('click', () => {
       const setCClef: SetClefAction = {
@@ -612,15 +638,6 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
       });
     });
 
-  try {
-    const del = document.getElementById('delete');
-    del.removeEventListener('click', removeHandler);
-    del.addEventListener('click', removeHandler);
-    document.getElementById('changeStaff').addEventListener('click', changeStaffHandler);
-  } catch (e) {console.debug(e);}
-  document.body.addEventListener('keydown', deleteButtonHandler);
-
-
   initOptionsListeners();
 }
 
@@ -629,23 +646,9 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
  */
 export function triggerCustosActions (): void {
   endOptionsSelection();
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML += Contents.custosActionContents;
-  } catch (e) {}
-
-  try {
-    document.getElementById('changeStaff')
-      .addEventListener('click', changeStaffHandler);
-  } catch (e) {console.debug(e);}
-
-  try {
-    const del = document.getElementById('delete');
-    del.removeEventListener('click', removeHandler);
-    del.addEventListener('click', removeHandler);
-    document.body.addEventListener('keydown', deleteButtonHandler);
-  } catch (e) {}
+  setEditControls('moreEdit', Contents.custosActionContents);
+  addChangeStaffListener();
+  addDeleteListener();
 }
 
 /**
@@ -653,27 +656,18 @@ export function triggerCustosActions (): void {
  */
 export function triggerAccidActions (accid: SVGGraphicsElement): void {
   endOptionsSelection();
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML += Contents.divlineActionContents;
-  } catch (e) {}
 
-  try {
-    const extraEdit = document.getElementById('extraEdit');
-    extraEdit.classList.remove('is-invisible');
-    extraEdit.innerHTML = Contents.accidActionContents;
-  } catch (e) {}
+  const isSyllableInAccid = accid.parentElement.classList.contains('syllable');
+  const moreEditContents = (isSyllableInAccid)
+    ? Contents.layerElementInActionContents
+    : Contents.layerElementOutActionContents;
+  setEditControls('moreEdit', moreEditContents, false);
+  setEditControls('extraEdit', Contents.accidActionContents);
+  addDeleteListener();
 
-  try {
-    document.getElementById('changeStaff')
-      .addEventListener('click', changeStaffHandler);
-  } catch (e) {console.debug(e);}
-
-  try {
-    document.getElementById('insertToSyllable')
-      .addEventListener('click', insertToSyllableHandler);
-  } catch (e) {console.debug(e);}
+  addChangeStaffListener();
+  document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
+  document.getElementById('moveOuttaSyllable')?.addEventListener('click', moveOuttaSyllableHandler);
 
   document.querySelector('#ChangeToFlat.dropdown-item')
     .addEventListener('click', () => {
@@ -716,43 +710,25 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
       });
     });
 
-  try {
-    const del = document.getElementById('delete');
-    del.removeEventListener('click', removeHandler);
-    del.addEventListener('click', removeHandler);
-    document.body.addEventListener('keydown', deleteButtonHandler);
-  } catch (e) {}
-
   initOptionsListeners();
 }
 
 /**
- * Trigger extra accid or divLine actions.
+ * Trigger extra layer element (accid, divLine, custos) actions.
  */
-export function triggerDivLineActions (): void {
+export function triggerLayerElementActions (element: SVGGraphicsElement): void {
   endOptionsSelection();
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML += Contents.divlineActionContents;
-  } catch (e) {}
 
-  try {
-    document.getElementById('changeStaff')
-      .addEventListener('click', changeStaffHandler);
-  } catch (e) {console.debug(e);}
+  const parentIsSyllable = element.parentElement.classList.contains('syllable');
+  const layerElementActions = parentIsSyllable
+    ? Contents.layerElementInActionContents
+    : Contents.layerElementOutActionContents;
+  setEditControls('moreEdit', layerElementActions, false);
+  addDeleteListener();
 
-  try {
-    const del = document.getElementById('delete');
-    del.removeEventListener('click', removeHandler);
-    del.addEventListener('click', removeHandler);
-    document.body.addEventListener('keydown', deleteButtonHandler);
-  } catch (e) {}
-
-  try {
-    document.getElementById('insertToSyllable')
-      .addEventListener('click', insertToSyllableHandler);
-  } catch (e) {console.debug(e);}
+  addChangeStaffListener();
+  document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
+  document.getElementById('moveOuttaSyllable')?.addEventListener('click', moveOuttaSyllableHandler);
 }
 
 
@@ -761,23 +737,12 @@ export function triggerDivLineActions (): void {
  */
 export function triggerStaffActions (): void {
   endOptionsSelection();
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.staffActionContents;
-  } catch (e) {}
+  setEditControls('moreEdit', Contents.staffActionContents);
+  addDeleteListener();
 
-  document.getElementById('merge-systems')
-    .addEventListener('click', () => {
-      Grouping.mergeStaves();
-    });
-
-  try {
-    const del = document.getElementById('delete');
-    del.removeEventListener('click', removeHandler);
-    del.addEventListener('click', removeHandler);
-  } catch (e) {}
-  document.body.addEventListener('keydown', deleteButtonHandler);
+  document.getElementById('merge-systems').addEventListener('click', () => {
+    Grouping.mergeStaves();
+  });
 }
 
 /**
@@ -800,11 +765,8 @@ export function triggerStaffSplitMode (): void {
  */
 export function triggerSplitActions (): void {
   endOptionsSelection();
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.splitActionContents;
-  } catch (e) {}
+  setEditControls('moreEdit', Contents.splitActionContents);
+  addDeleteListener();
 
   // TODO add trigger for split action
   document.getElementById('split-system')
@@ -844,13 +806,6 @@ export function triggerSplitActions (): void {
         endOptionsSelection();
       }
     });
-
-  try {
-    const del = document.getElementById('delete');
-    del.removeEventListener('click', removeHandler);
-    del.addEventListener('click', removeHandler);
-  } catch (e) {}
-  document.body.addEventListener('keydown', deleteButtonHandler);
 }
 
 /**
@@ -858,23 +813,9 @@ export function triggerSplitActions (): void {
  */
 export function triggerDefaultSylActions (): void {
   endOptionsSelection();
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.defaultSylActionContents;
-  } catch (e) {}
-
-  try {
-    const del = document.getElementById('delete');
-    del.removeEventListener('click', removeHandler);
-    del.addEventListener('click', removeHandler);
-  } catch (e) {}
-  document.body.addEventListener('keydown', deleteButtonHandler);
-  try {
-    const changeStaff = document.getElementById('changeStaff');
-    changeStaff.removeEventListener('click', changeStaffHandler);
-    changeStaff.addEventListener('click', changeStaffHandler);
-  } catch(e) {console.debug(e);}
+  setEditControls('moreEdit', Contents.defaultSylActionContents);
+  addDeleteListener();
+  addChangeStaffListener();
 }
 
 /**
@@ -882,18 +823,8 @@ export function triggerDefaultSylActions (): void {
  */
 export function triggerDefaultActions (): void {
   endOptionsSelection();
-  try {
-    const moreEdit = document.getElementById('moreEdit');
-    moreEdit.classList.remove('is-invisible');
-    moreEdit.innerHTML = Contents.defaultActionContents;
-  } catch (e) {}
-
-  try {
-    const del = document.getElementById('delete');
-    del.removeEventListener('click', removeHandler);
-    del.addEventListener('click', removeHandler);
-  } catch (e) {}
-  document.body.addEventListener('keydown', deleteButtonHandler);
+  setEditControls('moreEdit', Contents.defaultActionContents);
+  addDeleteListener();
 }
 
 /**

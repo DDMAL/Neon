@@ -14,9 +14,12 @@ const neumeGroups = new Map(
 );
 
 function startInfoVisibility (): void {
-  document.getElementById('neume_info').innerHTML =
-    '<article class=\'message\'><div class=\'message-header\'><p></p></div>' +
-      '<div class=\'message-body\'></div>';
+  const neumeInfo = document.getElementById('neume_info');
+  neumeInfo.innerHTML =
+    `<div class="info-bubble-container">
+      <div class="info-bubble-header">Element Info</div>
+      <div class="info-bubble-body"><i>Hover over any element to see its metadata</i></div>
+    </div>`;
   document.getElementById('neume_info').setAttribute('style', 'display: none');
 }
 
@@ -25,10 +28,30 @@ function startInfoVisibility (): void {
  */
 function updateInfoVisibility (): void {
   const neumeInfo = document.getElementById('neume_info');
+
+  const displayAllBtn = document.getElementById('display-all-btn');
+  const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
+  const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
+  const displayText = document.getElementById('displayText') as HTMLInputElement;
+
   if ((document.getElementById('displayInfo') as HTMLInputElement).checked) {
     neumeInfo.setAttribute('style', '');
+    // scroll neume info into view
+    //neumeInfo.scrollIntoView({ behavior: 'smooth' });
+
+    // if this is the 3rd option to be checked (all three are selected),
+    // set "Display/Hide All" button to "Hide All".
+    if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
+      displayAllBtn.classList.add('selected');
+      displayAllBtn.innerHTML = "Hide All";
+    }
   } else {
     neumeInfo.setAttribute('style', 'display: none');
+    // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
+    if (displayAllBtn.classList.contains('selected')) {
+      displayAllBtn.classList.remove('selected');
+      displayAllBtn.innerHTML = "Display All";
+    }
   }
 }
 
@@ -54,17 +77,17 @@ class InfoModule implements InfoInterface {
   constructor (neonView: NeonView) {
     this.neonView = neonView;
     // Add info box enable/disable check box
-    const block = document.getElementById('extensible-block');
+    const checkboxesContainer = document.getElementById('display-single-container');
     const label = document.createElement('label');
-    label.classList.add('checkbox');
-    label.textContent = 'Display Info: ';
+    label.classList.add('checkbox-container', 'side-panel-btn');
+    label.textContent = 'Info';
     const input = document.createElement('input');
-    input.classList.add('checkbox');
     input.id = 'displayInfo';
+    input.classList.add('checkbox');
     input.type = 'checkbox';
     input.checked = false;
     label.appendChild(input);
-    block.prepend(label);
+    checkboxesContainer.prepend(label);
 
     this.neonView.view.addUpdateCallback(this.resetInfoListeners.bind(this));
     setInfoControls();
@@ -202,7 +225,8 @@ class InfoModule implements InfoInterface {
         body += 'nothing';
         break;
     }
-    this.updateInfoModule(elementClass, body);
+    body = `Type: ${elementClass}\n${body}`;
+    this.updateInfoModule(body);
   }
 
   /**
@@ -253,16 +277,13 @@ class InfoModule implements InfoInterface {
 
   /**
    * Show and update the info box.
-   * @param title - The info box title.
    * @param body - The info box contents.
    */
-  updateInfoModule (title: string, body: string): void {
-    document.getElementsByClassName('message-header')[0].querySelector('p')
-      .textContent = title;
-    (document.getElementsByClassName('message-body')[0] as HTMLElement).innerText = body;
+  updateInfoModule (body: string): void {
+    (<HTMLElement> document.getElementsByClassName('info-bubble-body')[0]).innerText = body;
 
     if ((document.getElementById('displayInfo') as HTMLInputElement).checked) {
-      (document.getElementsByClassName('message')[0] as HTMLElement).style.display = '';
+      (document.getElementsByClassName('info-bubble-container')[0] as HTMLElement).style.display = '';
     }
   }
 
