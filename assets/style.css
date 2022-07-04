@@ -31,6 +31,11 @@ a:hover {
     color: inherit
 }
 
+.flex-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
 
 /* Section: Top Navbar */
 /* CSS in here could use a little clean-up */
@@ -118,12 +123,20 @@ a:hover {
     padding: 10px;
     padding-right: 15px;
     padding-left: 15px;
-    white-space: nowrap;
     font-family: Montserrat, sans-serif !important;
     font-size: 16px;
     cursor: pointer;
     display: flex;
+    justify-content: flex-start;
     align-items: center;
+}
+.navbar-dropdown-item-text-wrapper {
+    width: 80%;
+    display: flex;
+}
+.navbar-dropdown-item-icon-wrapper {
+    width: 20%;
+    display: flex;
 }
 .dropdown-extendable-content-container {
     border: 1px solid #dbdbdb;
@@ -145,10 +158,6 @@ a:hover {
 }
 .checkmark-icon.default-zoom.selected {
     opacity: 1;
-}
-.right-arrow {
-    margin-left: 10px;
-    margin-right: 15px;
 }
 .navbar-dropdown-item:hover {
     color: #ecffff;
@@ -707,7 +716,6 @@ a:hover {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    flex-wrap: nowrap;
     color: dimgrey;
     font-family: Montserrat, sans-serif;
     border-radius: 5px;

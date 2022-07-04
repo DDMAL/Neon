@@ -47,27 +47,47 @@
             <div class="navbar-btn-text">View</div>
           </div>
           <div class="navbar-dropdown">
-            <div id="default-zoom" class="navbar-dropdown-item extendable">
 
-              <div class="navbar-dropdown-item-text">Default Zoom</div>
-              <img src="/Neon/assets/img/right_arrow.svg" class="right-arrow">
+            <div id="default-zoom" class="navbar-dropdown-item has-extendable-content">
 
-              <!-- Extendable content -->
+              <div class="navbar-dropdown-item-text-wrapper">
+                <div class="navbar-dropdown-item-text">Default Zoom</div>
+              </div>
+              <div class="navbar-dropdown-item-icon-wrapper flex-end">
+                <img src="/Neon/assets/img/right_arrow.svg" class="right-arrow">
+              </div>
+
+              <!-- Extendable content start -->
               <div id="extendable-content" class="dropdown-extendable-content-container">
                 <div class="navbar-dropdown-item extendable">
-                  <img src="/Neon/assets/img/checkmark.svg" id="zoom-fit-content-icon" class="checkmark-icon default-zoom selected">
-                  <div class="navbar-dropdown-item-text checked" id="zoom-fit-content">Fit Content</div>
+                  <div class="navbar-dropdown-item-icon-wrapper">
+                    <img src="/Neon/assets/img/checkmark.svg" id="zoom-fit-content-icon" class="checkmark-icon default-zoom selected navbar-item-icon">
+                  </div>
+                  <div class="navbar-dropdown-item-text-wrapper">
+                    <div class="navbar-dropdown-item-text checked" id="zoom-fit-content">Fit Content</div>
+                  </div>
                 </div>
                 <div class="navbar-dropdown-item extendable">
-                  <img src="/Neon/assets/img/checkmark.svg" id="zoom-easy-edit-icon" class="checkmark-icon default-zoom">
-                  <div class="navbar-dropdown-item-text" id="zoom-easy-edit">Easy Edit</div>
+                  <div class="navbar-dropdown-item-icon-wrapper">
+                    <img src="/Neon/assets/img/checkmark.svg" id="zoom-easy-edit-icon" class="checkmark-icon default-zoom navbar-item-icon">
+                  </div>
+                  <div class="navbar-dropdown-item-text-wrapper">
+                    <div class="navbar-dropdown-item-text" id="zoom-easy-edit">Easy Edit</div>
+                  </div>
                 </div>
               </div>
+              <!-- Extendable content end -->
 
             </div>
 
-            <div id="default-zoom" class="navbar-dropdown-item extendable">
-              <div class="navbar-dropdown-item-text">Show error logs</div>
+            <div class="navbar-dropdown-item">
+
+              <div class="navbar-dropdown-item-icon-wrapper">
+                <img src="/Neon/assets/img/checkmark.svg" id="zoom-easy-edit-icon" class="checkmark-icon">
+              </div>
+              <div class="navbar-dropdown-item-text-wrapper">
+                <div class="navbar-dropdown-item-text">Show error logs</div>
+              </div>
             </div>
           </div>
         </div>
