@@ -1,7 +1,8 @@
 import NeonView from '../NeonView';
 import { ChangeStaffToAction, DragAction, EditorAction } from '../Types';
 import * as d3 from 'd3';
-import { getStaffIdByCoords } from './Coordinates';
+import { getStaffIdByCoords, isOutOfSVGBounds } from './Coordinates';
+import { queueNotification } from './Notification';
 
 class DragHandler {
   readonly neonView: NeonView;
@@ -9,7 +10,7 @@ class DragHandler {
   private selection: Element[];
 
   private dragStartCoords: [number, number] = [-1, -1];
-  private resetToAction: (selection: d3.Selection<d3.BaseType, {}, HTMLElement, any>, args: any[]) => void;
+  private resetToAction: (selection: d3.Selection<d3.BaseType, unknown, HTMLElement, unknown>, args: unknown[]) => void;
 
   private dx: number;
   private dy: number;
@@ -83,6 +84,12 @@ class DragHandler {
       .forEach((el) => {
         const id = el.tagName === 'rect' ? el.closest('.syl').id : el.id;
 
+        // If the cursor is out of bounds, nothing should be inserted.
+        const endX = this.dragStartCoords[0] + this.dx;
+        const endY = this.dragStartCoords[1] + this.dy;
+        if (isOutOfSVGBounds(endX, endY))
+          return queueNotification('[FAIL] Glyph was placed out of bounds! Drag action failed.');
+
         const dragAction: DragAction = {
           action: 'drag',
           param: {
@@ -136,7 +143,7 @@ class DragHandler {
   }
 
   /** Set the d3 action to use for [[reset]]. */
-  resetTo (reset: (selection: d3.Selection<d3.BaseType, {}, HTMLElement, any>, args: any[]) => void): void {
+  resetTo (reset: (selection: d3.Selection<d3.BaseType, unknown, HTMLElement, unknown>, args: unknown[]) => void): void {
     this.resetToAction = reset;
   }
 

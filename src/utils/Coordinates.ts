@@ -54,3 +54,12 @@ export function getStaffByCoords (clientX: number, clientY: number): SVGGElement
   const staffId = getStaffIdByCoords(clientX, clientY);
   return document.querySelector(`#${staffId}`);
 }
+
+export function isOutOfSVGBounds (x: number, y: number): boolean {
+  const bgimg = document.querySelector<SVGImageElement>('#bgimg');
+  
+  return (
+    x <= 0 || x >= Number(bgimg.getAttribute('width')) ||
+    y <= 0 || y >= Number(bgimg.getAttribute('height'))
+  );
+}
