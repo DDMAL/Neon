@@ -1,6 +1,5 @@
 import NeonView from '../../NeonView';
 import { ModalWindowView } from '../ModalWindow';
-import { initNotificationLog } from '../NotificationLog';
 
 async function setBody (neonView: NeonView): Promise<void> {
 
@@ -20,8 +19,6 @@ async function setBody (neonView: NeonView): Promise<void> {
     neonView.modal.setModalWindowView(ModalWindowView.HOTKEYS);
     neonView.modal.openModalWindow();
   });
-
-  initNotificationLog();
 }
 
 export { setBody as default };

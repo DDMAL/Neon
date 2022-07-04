@@ -204,7 +204,7 @@ class TextView implements TextViewInterface {
       // set "Display/Hide All" button to "Hide All".
       if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
         displayAllBtn.classList.add('selected');
-        displayAllBtn.innerHTML = "Hide All";
+        displayAllBtn.innerHTML = 'Hide All';
       }
     } 
     else {
@@ -212,7 +212,7 @@ class TextView implements TextViewInterface {
       // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
       if (displayAllBtn.classList.contains('selected')) {
         displayAllBtn.classList.remove('selected');
-        displayAllBtn.innerHTML = "Display All";
+        displayAllBtn.innerHTML = 'Display All';
       }
     }
   }
@@ -239,7 +239,7 @@ class TextView implements TextViewInterface {
       }
     });
     if (!this.notificationSent) {
-      Notification.queueNotification('Blank syllables are represented by &#x25CA;!');
+      Notification.queueNotification('Blank syllables are represented by ◊!');
       this.notificationSent = true;
     }
     return lyrics.replace(uniToDash, '-');
