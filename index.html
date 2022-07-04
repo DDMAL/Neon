@@ -1,15 +1,82 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Neon</title>
-  <base href="./">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link rel="stylesheet" href="styles.564fc2a6727b188df5d6.css"></head>
-<body>
-  <app-root></app-root>
-<script src="runtime-es2015.409e6590615fb48d139f.js" type="module"></script><script src="runtime-es5.409e6590615fb48d139f.js" nomodule defer></script><script src="polyfills-es5.2dcde1efe3c1bf4aaa25.js" nomodule defer></script><script src="polyfills-es2015.a0fa45e0fa52702b64f0.js" type="module"></script><script src="scripts.f4112a059865e3b2258f.js" defer></script><script src="main-es2015.bfb334314dfb61a6849f.js" type="module"></script><script src="main-es5.bfb334314dfb61a6849f.js" nomodule defer></script></body>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Neon</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="stylesheet" href="style.css" />
+    <script
+      defer
+      type="text/javascript"
+      src="./Neon-gh/landing.js"
+    ></script>
+  </head>
+  <body>
+    <div id="left_col">
+      <div id="title_heading">Neon</div>
+      <br /><br />
+      <div id="select_documents_container">
+        <div id="dropdown_label">Uploaded Documents</div>
+        <select
+          id="documents_dropdown"
+          name="Uploaded Documents"
+          multiple
+          size="10"
+        >
+          <optgroup class="faded" id="uploaded_folios" label="Folios:" />
+          <optgroup
+            class="faded"
+            id="uploaded_manuscripts"
+            label="Manuscript:"
+          />
+        </select>
+        <button id="open_documents">Open Documents</button>
+        <button id="delete_documents">Delete Documents</button>
+      </div>
+      <br />
+      <div id="initial_upload_container">
+        <div id="initial_upload_area">
+          <span id="initial_upload_message">Upload Files</span>
+        </div>
+      </div>
+    </div>
+    <div id="right_col">
+      <div id="uploading_container">
+        <div class="file_container" id="unpaired_container">
+          <div id="files_container">
+            <div id="mei_container">
+              <h2 class="file_heading">MEI</h2>
+              <div class="file_list" id="mei_list"></div>
+            </div>
+            <div id="image_container">
+              <h2 class="file_heading">Images</h2>
+              <div class="file_list" id="image_list"></div>
+            </div>
+          </div>
+          <button class="action_button" id="make_pair">Make Pair</button>
+        </div>
+        <br />
+        <div class="file_container" id="paired_container">
+          <h2 class="file_heading">Paired Folios</h2>
+          <div class="tile_list" id="paired_list"></div>
+        </div>
+        <br />
+        <div class="file_container" id="manuscripts_container">
+          <h2 class="file_heading">Manuscripts</h2>
+          <div class="tile_list" id="manuscript_list"></div>
+        </div>
+        <br />
+        <div id="upload_button_container">
+          <button class="action_button" id="upload_button">
+            Upload
+            <div id="loading_circle">⟳</div>
+          </button>
+        </div>
+      </div>
+    </div>
+    <nav class="context_menu" id="context_menu">
+      <a class="context_menu_link" href="#" data_action=""
+        ><Lorem>Ipsum</Lorem></a
+      >
+    </nav>
+  </body>
 </html>

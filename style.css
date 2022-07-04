@@ -1,0 +1,249 @@
+* {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-weight: 200;
+  color: #10008b;
+}
+
+body {
+  background-color: rgb(255, 255, 255);
+  margin: auto;
+  padding: 2rem;
+}
+
+.context_menu {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  width: 10rem;
+  background-color: rgb(240, 250, 255);
+  border: solid 1px rgb(0, 0, 69);
+  box-shadow: 1px 1px 2px #c9c9c9;
+}
+
+.context_menu_link {
+  display: block;
+  padding: 4px 12px;
+  text-decoration: none;
+}
+
+.context_menu_link:hover {
+  background-color: rgb(206, 220, 255);
+}
+
+#left_col {
+  display: block;
+  position: absolute;
+  width: 30vw;
+  min-width: 15rem;
+  /* background-color: red; */
+}
+
+#right_col {
+  min-width: 35rem;
+  width: 50vw;
+  position: absolute;
+  left: 40vw;
+  /* background-color: green; */
+}
+
+#title_heading {
+  font-size: 8rem;
+  font-weight: 500;
+  /* text-shadow: 0.3rem 0.3rem #589ED5; */
+}
+
+#dropdown_label {
+  font-size: larger;
+  margin-bottom: 0.2rem;
+  font-weight: 300;
+}
+
+#select_documents_container {
+  width: inherit;
+  min-width: inherit;
+  /* background-color: beige; */
+  margin-bottom: 2rem;
+}
+
+#documents_dropdown {
+  width: inherit;
+  min-width: inherit;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  font-size: smaller;
+  border-color: #10008b;
+}
+
+.faded {
+  font-weight: 300;
+  color: #9e9e9e;
+}
+
+#open_documents,
+#delete_documents {
+  width: inherit;
+  min-width: inherit;
+  font-size: medium;
+  font-weight: 300;
+  border-width: thin;
+  border-radius: 0.5em;
+  margin-bottom: 0.3rem;
+  border-color: #10008b;
+}
+
+#open_documents {
+  height: 3rem;
+}
+
+#delete_documents {
+  height: 2rem;
+}
+
+#open_documents:hover,
+#delete_documents:hover,
+.action_button:hover,
+#initial_upload_area:hover,
+.over {
+  cursor: pointer;
+  background-color: #589ed5;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.action_button {
+  border: 0.1rem solid;
+}
+
+#initial_upload_area {
+  border: 0.1rem dashed;
+  border-radius: 0.5rem;
+  width: inherit;
+  height: 13rem;
+  line-height: 13rem;
+  text-align: center;
+}
+
+#initial_upload_message {
+  font-size: larger;
+  font-weight: 300;
+}
+
+#uploading_container {
+  /* display: none; */
+  margin-top: 12.2rem;
+  width: inherit;
+}
+
+.file_container {
+  border: 0.1rem solid;
+  border-radius: 0.5rem;
+  width: inherit;
+}
+
+#unpaired_container {
+  min-height: 22rem;
+}
+
+#mei_container,
+#image_container {
+  width: 50%;
+}
+
+#mei_list,
+#image_list {
+  min-height: 15rem;
+  border-bottom: 0.1rem solid;
+}
+
+#files_container {
+  display: flex;
+  flex-direction: row;
+}
+
+.file_heading {
+  line-height: 0;
+  padding: 0.5rem 1rem;
+}
+
+.file_list {
+  border-top: 0.1rem solid;
+  min-height: 2rem;
+  padding: 0.3rem;
+}
+
+#image_container {
+  border-left: 0.1rem solid;
+}
+
+.action_button {
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+#upload_button_container {
+  float: right;
+}
+
+.unpaired_item_container {
+  /* padding-bottom: 0rem; */
+  /* height: 0rem; */
+}
+
+.unpaired_item_radio {
+  display: inline;
+  color: #7cb1b7;
+}
+
+.unpaired_item_label {
+  display: inline;
+  font-size: small;
+}
+
+.tile_list {
+  border-top: 0.1rem solid;
+  min-height: 2rem;
+  padding: 0.5rem;
+}
+
+.tile_item {
+  display: inline-block;
+  font-size: small;
+  border: 0.1rem solid;
+  border-radius: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  margin: 0.25rem;
+}
+
+.delete_button {
+  border: none;
+  color: rgb(255, 0, 187);
+  font-weight: 100;
+  font-size: large;
+}
+
+#upload_button {
+  display: inline-flex;
+}
+
+#loading_circle {
+  margin-left: 0.2rem;
+  display: none;
+}
+
+#loading_circle.loading {
+  display: block;
+  color: red;
+  animation-name: spin;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
