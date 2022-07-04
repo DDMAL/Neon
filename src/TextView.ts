@@ -88,7 +88,7 @@ class TextView implements TextViewInterface {
       // set "Display/Hide All" button to "Hide All".
       if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
         displayAllBtn.classList.add('selected');
-        displayAllBtn.innerHTML = "Hide All";
+        displayAllBtn.innerHTML = 'Hide All';
       }
     } 
     else {
@@ -115,7 +115,7 @@ class TextView implements TextViewInterface {
       // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
       if (displayAllBtn.classList.contains('selected')) {
         displayAllBtn.classList.remove('selected');
-        displayAllBtn.innerHTML = "Display All";
+        displayAllBtn.innerHTML = 'Display All';
       }
     }
     updateHighlight();
@@ -151,6 +151,9 @@ class TextView implements TextViewInterface {
         }
 
         span.addEventListener('mouseover', () => {
+          if (syllable.classList.contains('syllable-highlighted'))
+            return;
+
           syllable.classList.add('selected');
           syllable.querySelectorAll('.neume').forEach(neume => {
             neume.classList.add('selected');
@@ -163,6 +166,9 @@ class TextView implements TextViewInterface {
         });
 
         span.addEventListener('mouseleave', () => {
+          if (syllable.classList.contains('syllable-highlighted'))
+            return;
+
           syllable.classList.remove('selected');
           syllable.querySelectorAll('.neume').forEach(neume => {
             neume.classList.remove('selected');
@@ -189,7 +195,7 @@ class TextView implements TextViewInterface {
       // set "Display/Hide All" button to "Hide All".
       if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
         displayAllBtn.classList.add('selected');
-        displayAllBtn.innerHTML = "Hide All";
+        displayAllBtn.innerHTML = 'Hide All';
       }
     } 
     else {
@@ -197,7 +203,7 @@ class TextView implements TextViewInterface {
       // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
       if (displayAllBtn.classList.contains('selected')) {
         displayAllBtn.classList.remove('selected');
-        displayAllBtn.innerHTML = "Display All";
+        displayAllBtn.innerHTML = 'Display All';
       }
     }
   }
