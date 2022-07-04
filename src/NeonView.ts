@@ -13,7 +13,7 @@ import {
   TextViewInterface,
   ViewInterface
 } from './Interfaces';
-import { setSavedStatus } from './utils/Save';
+import { setSavedStatus, listenUnsavedChanges } from './utils/Unsaved';
 
 
 /**
@@ -90,6 +90,7 @@ class NeonView {
       this.info = new this.params.Info(this);
       this.modal = new ModalWindow(this);
       Validation.init(this); // initialize validation
+      listenUnsavedChanges();
 
       this.setupEdit(this.params);
       return this.core.initDb();

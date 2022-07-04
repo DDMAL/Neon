@@ -5,7 +5,7 @@ import { WebAnnotation, Attributes, EditorAction, NeonManifest, VerovioMessage }
 import { uuidv4 } from './utils/random';
 
 import PouchDB from 'pouchdb';
-import { setSavedStatus } from './utils/Save';
+import { setSavedStatus } from './utils/Unsaved';
 
 /**
  * A cache is used to keep track of what has happened
