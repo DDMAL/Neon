@@ -152,11 +152,11 @@ a:hover {
     margin-right: 5px;
 }
 */
-.checkmark-icon.default-zoom {
+.checkmark-icon {
     opacity: 0;
     transition: 0.1s ease-in-out;
 }
-.checkmark-icon.default-zoom.selected {
+.checkmark-icon.selected {
     opacity: 1;
 }
 .navbar-dropdown-item:hover {
@@ -607,6 +607,40 @@ a:hover {
 
 .syl-text-side-panel:hover {
     color: #848484;
+}
+/* Error logs panel */
+#notification_log {
+    display: none;
+}
+#notification_log.visible {
+    display: block;
+}
+.notification-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 95%;
+    margin: 5px 0px;
+}
+.notification-wrapper {
+    /* padding-left: 10px; */
+    /* padding-right: 10px; */
+    padding: 10px;
+    /* border: 1px solid lightgray; */
+    background-color: #efefef;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 85%;
+}
+.remove-notif-icon-wrapper {
+    height: 100%;
+    width: 7%;
+}
+.remove-notif-icon {
+    cursor: pointer;
 }
 
 /* Section: Neon Notifications */

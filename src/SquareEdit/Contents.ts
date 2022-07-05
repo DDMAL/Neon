@@ -492,3 +492,13 @@ export const hotkeysModal =
             </div>
         </div>
     </div>`;
+
+
+export const errorLogsPanelContents = 
+    `<div class="panel-heading" id="notifLogHeading">
+        <div class="panel-heading-title">Notification Log</div>
+        <svg class="icon">
+            <use id="toggleNotifLog" xlink:href="/Neon/assets/img/icons.svg#dropdown-down"></use>
+        </svg>
+    </div>
+    <div class="panel-contents" id="notifLogContents" style="overflow: visible; padding: 0.5em 0.75em;"><div>`;
