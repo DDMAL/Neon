@@ -1,4 +1,4 @@
-import { selectBBox, unselect } from './utils/SelectTools';
+import { unselect } from './utils/SelectTools';
 import DragHandler from './utils/DragHandler';
 import NeonView from './NeonView';
 import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select';

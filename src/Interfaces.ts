@@ -60,7 +60,7 @@ export interface TextViewConstructable {
 }
 
 export interface TextViewInterface {
-  getSylText (): string;
+  getSylSpans (): HTMLSpanElement[];
 }
 
 export interface InfoConstructable {

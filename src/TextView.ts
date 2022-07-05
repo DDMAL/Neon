@@ -4,6 +4,28 @@ import { unselect } from './utils/SelectTools';
 import { updateHighlight } from './DisplayPanel/DisplayControls';
 import { TextViewInterface } from './Interfaces';
 
+export function updateDisplayAll (): void {
+  const displayAll = document.getElementById('display-all-btn');
+  const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
+  const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
+  const displayText = document.getElementById('displayText') as HTMLInputElement;
+
+  // if this is the 3rd option to be checked (all three are selected),
+  // set "Display/Hide All" button to "Hide All".
+  if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
+    displayAll.classList.add('selected');
+    displayAll.innerHTML = 'Hide All';
+
+    return;
+  }
+
+  // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
+  if (displayAll.classList.contains('selected')) {
+    displayAll.classList.remove('selected');
+    displayAll.innerHTML = 'Display All';
+  }
+}
+
 /*
  * Class that manages getting the text for syllables in Neon from the mei file
  */
@@ -67,11 +89,6 @@ class TextView implements TextViewInterface {
    */
   updateBBoxViewVisibility (): void {
 
-    const displayAllBtn = document.getElementById('display-all-btn');
-    const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
-    const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
-    const displayText = document.getElementById('displayText') as HTMLInputElement;
-
     if ((document.getElementById('displayBBox')as HTMLInputElement).checked) {
       document.querySelectorAll('.sylTextRect').forEach(rect => {
         rect.classList.add('sylTextRect-display');
@@ -84,12 +101,7 @@ class TextView implements TextViewInterface {
         this.neonView.TextEdit.initSelectByBBoxButton();
       }
 
-      // if this is the 3rd option to be checked (all three are selected),
-      // set "Display/Hide All" button to "Hide All".
-      if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
-        displayAllBtn.classList.add('selected');
-        displayAllBtn.innerHTML = 'Hide All';
-      }
+      updateDisplayAll();
     } 
     else {
       if (document.getElementById('selByBBox')?.classList.contains('is-active')) {
@@ -112,11 +124,7 @@ class TextView implements TextViewInterface {
       } 
       catch (e) {}
 
-      // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
-      if (displayAllBtn.classList.contains('selected')) {
-        displayAllBtn.classList.remove('selected');
-        displayAllBtn.innerHTML = 'Display All';
-      }
+      updateDisplayAll();
     }
     updateHighlight();
   }
@@ -126,114 +134,132 @@ class TextView implements TextViewInterface {
   * and add the event listeners to make sure the syl highlights when moused over
   */
   updateTextViewVisibility (): void {
+    if (document.querySelector<HTMLInputElement>('#displayText').checked) {
+      // Create text spans with event listeners
+      const spans = this.getSylSpans();
+      spans.forEach(span => {
+        const syllable = document.getElementById(span.classList[0]);
 
-    const displayAllBtn = document.getElementById('display-all-btn');
-    const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
-    const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
-    const displayText = document.getElementById('displayText') as HTMLInputElement;
+        const text = syllable.querySelector('.syl > text');
+        if (text.classList.length === 0)
+          text.classList.add('text');
 
-    if ((document.getElementById('displayText') as HTMLInputElement).checked) {
+        span.addEventListener('mouseover', this.mouseOverSpan(syllable));
+        span.addEventListener('mouseleave', this.mouseLeaveSpan(syllable));
+      });
+
+      // Create text view with spans
       const sylText = document.getElementById('syl_text');
       sylText.style.display = '';
       sylText.innerHTML = 
         `<div class="info-bubble-container">
           <div class="info-bubble-header">Syllables on this page</div>
-          <div class="info-bubble-body">${this.getSylText()}</div>
+          <div class="info-bubble-body"></div>
         </div>`;
-      const spans = sylText.querySelectorAll('span');
-      spans.forEach(span => {
-        const syllable = document.getElementById(span.classList[0]);
-        const syl = syllable.querySelector('.syl');
-        const text = syl.querySelector('text');
-        const rect = syl.querySelector('rect');
-        if (text.classList.length === 0) {
-          text.classList.add('text');
-        }
+      sylText.querySelector('.info-bubble-body').append(...spans);
 
-        span.addEventListener('mouseover', () => {
-          if (syllable.classList.contains('syllable-highlighted'))
-            return;
-
-          syllable.classList.add('selected');
-          syllable.querySelectorAll('.neume').forEach(neume => {
-            neume.classList.add('selected');
-          });
-          if (rect !== null) {
-            rect.style.fill = '#d00';
-          }
-          // syl.attr('fill', '#ffc7c7');
-          // this.highlightBoundingBox(span);
-        });
-
-        span.addEventListener('mouseleave', () => {
-          if (syllable.classList.contains('syllable-highlighted'))
-            return;
-
-          syllable.classList.remove('selected');
-          syllable.querySelectorAll('.neume').forEach(neume => {
-            neume.classList.remove('selected');
-          });
-          if (rect !== null) {
-            if (syllable.style.fill !== 'rgb(0, 0, 0)') { // syllable.getAttributeNS('http://www.w3.org/2000/SVG', 'fill');
-              rect.style.fill = syllable.getAttribute('fill');
-            } else {
-              rect.style.fill = 'blue';
-            }
-          }
-          // syl.attr('fill', null);
-          // this.removeBoundingBox(span);
-        });
-      });
+      // Set click listeners on syl texts
       if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
         this.neonView.TextEdit.initTextEdit();
       }
 
-      // scroll the syllable text bubble into view
-      //sylText.scrollIntoView({ behavior: 'smooth' });
+      // If any syllables are highlighted at the moment of enabling syl text display,
+      // highlight their text spans in syl_text
+      const selSyllables = Array.from(document.querySelectorAll('.syllable.selected'));
+      const sylTextSpans = selSyllables
+        .filter(syllable => syllable.querySelector('.syl') !== null)
+        .map(syllable => document.querySelector<HTMLSpanElement>(`.${syllable.id}`));
+      // sylTextSpans.forEach(span => highlightSylText(span));
 
-      // if this is the 3rd option to be checked (all three are selected),
-      // set "Display/Hide All" button to "Hide All".
-      if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
-        displayAllBtn.classList.add('selected');
-        displayAllBtn.innerHTML = 'Hide All';
-      }
-    } 
+      this.sendBlankSyllableAlert();
+
+      updateDisplayAll();
+
+      // scroll the syllable text bubble into view
+      // sylText.scrollIntoView({ behavior: 'smooth' });
+    }
     else {
       document.getElementById('syl_text').style.display = 'none';
-      // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
-      if (displayAllBtn.classList.contains('selected')) {
-        displayAllBtn.classList.remove('selected');
-        displayAllBtn.innerHTML = 'Display All';
-      }
+      updateDisplayAll();
     }
   }
 
   /**
-   * Get the syllable text of the loaded file
+   * Get syl text
    */
-  getSylText (): string {
-    let lyrics = '';
-    const uniToDash = /\ue551/g;
-    const syllables = document.querySelectorAll('.active-page .syllable');
-    syllables.forEach(syllable => {
-      if (syllable.querySelector('.syl') !== null) {
+  getSylText (syl: Element): string {
+    // If the syl text is empty, replace it with a diamond
+    if (syl.textContent.trim() === '')
+      return '&#x25CA; ';
+
+    // Else, combine all the text of the syl's text children
+    const textChildren = syl.firstElementChild.firstElementChild.children;
+    const combinedText = Array.from(textChildren).map(
+      text => text.textContent !== '' ? text.textContent : '&#x25CA; '
+    );
+
+    return combinedText.join('').replace(/\ue551/g, '-');
+  }
+
+  /**
+   * Create the spans with syl text for "Syllables on this page"
+   */
+  getSylSpans (): HTMLSpanElement[] {
+    const syllables = Array.from<SVGGElement>(document.querySelectorAll('.active-page .syllable'));
+    const lyrics = syllables
+      .filter((syllable) => syllable.querySelector('.syl') !== null)
+      .map((syllable) => {
         const syl = syllable.querySelector('.syl');
-        lyrics += `<span class="${syllable.id} syl-text-side-panel">`;
-        if (syl.textContent.trim() === '') {
-          lyrics += '&#x25CA; ';
-        } else {
-          Array.from(syl.children[0].children[0].children).forEach(text => {
-            lyrics += text.textContent !== '' ? text.textContent : '&#x25CA; ';
-          });
-        }
-        lyrics += ' </span>';
-      }
-    });
+
+        const span = document.createElement('span');
+        span.classList.add(`${syllable.id}`, 'syl-text-side-panel');
+        span.innerHTML = this.getSylText(syl) + ' ';
+
+        return span;
+      });
+
+    return lyrics;
+  }
+
+  /**
+   * Alert the user of what a blank syllable is represented by
+   */
+  sendBlankSyllableAlert (): void {
     if (!this.notificationSent) {
       Notification.queueNotification('Blank syllables are represented by &#x25CA;!');
       this.notificationSent = true;
     }
-    return lyrics.replace(uniToDash, '-');
+  }
+
+  mouseOverSpan (syllable: HTMLElement) {
+    return (): void => {
+      if (syllable.classList.contains('syllable-highlighted'))
+        return;
+
+      syllable.classList.add('selected');
+      syllable.querySelectorAll('.neume').forEach(neume => neume.classList.add('selected'));
+
+      const rect = syllable.querySelector<SVGRectElement>('.syl > rect');
+      if (rect !== null)
+        rect.style.fill = '#d00';
+    };
+  }
+
+  mouseLeaveSpan (syllable: HTMLElement) {
+    return (): void => {
+      if (syllable.classList.contains('syllable-highlighted'))
+        return;
+
+      syllable.classList.remove('selected');
+      syllable.querySelectorAll('.neume').forEach(neume => neume.classList.remove('selected'));
+
+      const rect = syllable.querySelector<SVGRectElement>('.syl > rect');
+      if (rect !== null) {
+        // If there is no highlight option enabled, all syllables have a fill color of black
+        const isHighlightOff = syllable.style.fill === 'rgb(0, 0, 0)';
+        rect.style.fill = (isHighlightOff) ? 'blue' : syllable.getAttribute('fill');
+      }
+    };
   }
 }
 
