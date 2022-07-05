@@ -102,7 +102,7 @@ export function getSyllableText (syllable: Element): string {
     sylText = syl.nodeValue;
   }
   else {
-    sylText = 'null';
+    sylText = '◊';
   }
 
   return sylText;
@@ -224,6 +224,8 @@ export function convertSbToStaff(sbBasedMei: string): string {
   }
 
   // Second pass on all syllables to handle clefs and custos that might remain
+  const newSyllables = Array.from(mei.getElementsByTagName('syllable'));
+
   for (const syllable of mei.querySelectorAll('syllable')) {
     for (const clef of syllable.querySelectorAll('clef')) {
       syllable.insertAdjacentElement('beforebegin', clef);
@@ -234,46 +236,81 @@ export function convertSbToStaff(sbBasedMei: string): string {
 
     // Check syllables that contains @precedes or @follows
     // Update syllable arrays for each syllable
-    let newSyllables = Array.from(mei.getElementsByTagName('syllable'));
-    // For each toggle-linked syllable
-    // Set @precedes and @follows to make sure pointing to the correct syllable
+    const syllableIdx = newSyllables.indexOf(syllable);
+
+    // Toggle-linked syllables: Check the PRECEDING syllable
     if (syllable.hasAttribute('precedes')) {
-      const syllableIdx = newSyllables.indexOf(syllable);
-      if (syllableIdx >= 0) {
-        const nextSyllable = newSyllables[syllableIdx+1];
-        if (nextSyllable) {
-          if (nextSyllable.hasAttribute('follows')) {
-            if (nextSyllable.getAttribute('follows') != '#' + syllable.getAttribute('xml:id')) {
-              const sylText = getSyllableText(syllable);
-              Notification.queueNotification('Wrong @follows value for toggle-linked syllable: ' + sylText);
-            }
-          }
-          else {
-            const sylText = getSyllableText(syllable);
-            Notification.queueNotification('No @follows value found for toggle-linked syllable: ' + sylText);
-          }
+      // Get xml:id of the next syllable (without the #, if it exists)
+      const nextSyllableId = syllable.getAttribute('precedes').replace('#', '');
+
+      // Find the next syllable and its index in the array
+      let nextSyllableIdx: number;
+      const nextSyllable = newSyllables.find((element, idx) => {
+        if (element.getAttribute('xml:id') === nextSyllableId) {
+          nextSyllableIdx = idx;
+          return true;
         }
-        else {
-          Notification.queueNotification('No syllables found after @precedes');
-        }
+
+        return false;
+      });
+
+      // Condition 1: The next (following) syllable cannot be found
+      if (!nextSyllable) {
+        const sylText = getSyllableText(syllable);
+        Notification.queueNotification(`Missing the 2nd part of the toggle-linked syllable (${sylText})`);
+        continue;
+      }
+
+      // Condition 2: The next syllable has been found, but the @follows attribute does NOT EXIST
+      if (!nextSyllable.hasAttribute('follows')) {
+        const sylText = getSyllableText(syllable);
+        Notification.queueNotification(`The 2nd part of the toggle-linked syllable (${sylText}) does not link to any syllable`);
+        continue;
+      }
+
+      // Condition 3: The next syllable's @follows attribute exists, but it is not in the correct format #id
+      if (nextSyllable.getAttribute('follows') != '#' + syllable.getAttribute('xml:id')) {
+        const sylText = getSyllableText(syllable);
+        Notification.queueNotification(`The 2nd part of the toggle-linked syllable (${sylText}) links to the wrong syllable`);
+        continue;
+      }
+
+      // Condition 4:
+      // Since the @follows value is correct, a pair of syllables exist for the toggle-linked syllable.
+      // Check if the @follows syllable is the next syllable (index-wise) in the array:
+      if (nextSyllableIdx !== syllableIdx + 1) {
+        const sylText = getSyllableText(syllable);
+        const unexpectedSylsText = newSyllables
+          .slice(syllableIdx + 1, nextSyllableIdx)
+          .map((syllable) => getSyllableText(syllable));
+
+        const sylsText = [sylText, ...unexpectedSylsText].join(' - ');
+        Notification.queueNotification(`Unexpected syllable(s) inside toggle-linked syllable: ${sylsText}`);
       }
     }
+    // Toggle-linked syllables: Check the FOLLOWING syllable
     else if (syllable.hasAttribute('follows')) {
-      const syllableIdx = newSyllables.indexOf(syllable);
-      if (syllableIdx > 0) {
-        const prevSyllable = newSyllables[syllableIdx-1];
-        if (prevSyllable) {
-          if (prevSyllable.hasAttribute('precedes')) {
-            if (prevSyllable.getAttribute('precedes') != '#' + syllable.getAttribute('xml:id')) {
-              const sylText = getSyllableText(prevSyllable);
-              Notification.queueNotification('Wrong @precedes value for toggle-linked syllable: ' + sylText);
-            }
-          }
-          else {
-            const sylText = getSyllableText(prevSyllable);
-            Notification.queueNotification('No @precedes value found for toggle-linked syllable: ' + sylText);
-          }
-        }
+      const prevSyllableId = syllable.getAttribute('follows').replace('#', '');
+      const prevSyllable = newSyllables.find((syllable) => syllable.getAttribute('xml:id') === prevSyllableId);
+
+      // Condition 1: The previous syllable does not exist
+      if (!prevSyllable) {
+        const sylText = getSyllableText(syllable);
+        Notification.queueNotification(`Missing the 1st part of the toggle-linked syllable (${sylText})`);
+        continue;
+      }
+
+      // Condition 2: The previous syllable exists, but the @precedes attribute does NOT EXIST
+      if (!prevSyllable.hasAttribute('precedes')) {
+        const sylText = getSyllableText(prevSyllable);
+        Notification.queueNotification(`The 1st part of the toggle-linked syllable (${sylText}) does not link to any syllable`);
+        continue;
+      }
+
+      // Condition 3: The previous syllable's @precedes attribute exists, but it is not in the correct format #id
+      if (prevSyllable.getAttribute('precedes') != '#' + syllable.getAttribute('xml:id')) {
+        const sylText = getSyllableText(prevSyllable);
+        Notification.queueNotification(`The 1st part of the toggle-linked syllable (${sylText}) links to the wrong syllable`);
       }
     }
   }
