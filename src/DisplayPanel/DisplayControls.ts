@@ -168,44 +168,42 @@ export function setBgOpacityFromSlider (background?: string): void {
 
 /**
  * Update highlight dropdown option + display
- * @param id - The DOM element's id as `highlight-${id}`
- * @param grouping - Grouping
- * @param display - Text displayed on dropdown select
+ * @param group - GroupingType / The DOM element's id as `highlight-${id}`
  */
-function updateHighlightOption (id: string, grouping: GroupingType, display: string): void {
-  const option = document.getElementById(`highlight-${id}`);
+function updateHighlightOption (group: GroupingType): void {
+  const option = document.getElementById(`highlight-${group}`);
   const dropdown = document.getElementById('highlight-dropdown');
   const highlightType = document.getElementById('highlight-type');
 
   // save highlight option to localStorage
-  setSettings({ highlightMode: grouping });
+  setSettings({ highlightMode: group });
 
   dropdown.classList.remove('is-active');
   document.querySelectorAll('.highlight-selected').forEach(elem => {
     elem.classList.remove('highlight-selected');
   });
 
-  if (id === 'none') {
+  if (group === 'none') {
     highlightType.textContent = '\xA0- Off';
     Color.unsetGroupingHighlight();
     return;
   }
   
   option.classList.add('highlight-selected');
-  highlightType.textContent = `\xA0- ${display}`;
-  Color.setGroupingHighlight(grouping);
+
+  // Text content is the grouping type capitalized
+  highlightType.textContent = `\xA0- ${group[0].toUpperCase() + group.slice(1)}`;
+  Color.setGroupingHighlight(group);
 }
 
 /**
  * Set click listener for each highlight dropdown option
- * @param id - The DOM element's id as `highlight-${id}`
- * @param grouping - Grouping
- * @param display - Text displayed on dropdown select
+ * @param group - GroupingType / The DOM element's id as `highlight-${id}`
  */
-export function setHighlightOption (id: string, grouping: GroupingType, display: string): void {
-  const option = document.getElementById(`highlight-${id}`);
+export function setHighlightOption (group: GroupingType): void {
+  const option = document.getElementById(`highlight-${group}`);
   option.addEventListener('click', () => {
-    updateHighlightOption(id, grouping, display);
+    updateHighlightOption(group);
   });
 }
 
@@ -229,11 +227,11 @@ export function setHighlightControls (): void {
     if (dropdown.classList.contains('is-active')) {
       document.body.addEventListener('click', highlightClickaway);
 
-      setHighlightOption('staff', 'staff', 'Staff');
-      setHighlightOption('syllable', 'syllable', 'Syllable');
-      setHighlightOption('neume', 'neume', 'Neume');
-      setHighlightOption('layerElement', 'layer', 'LayerElement');
-      setHighlightOption('none', 'none', 'Off');
+      setHighlightOption('staff');
+      setHighlightOption('syllable');
+      setHighlightOption('neume');
+      setHighlightOption('layerElement');
+      setHighlightOption('none');
     } else {
       document.body.removeEventListener('click', highlightClickaway);
     }
@@ -249,22 +247,22 @@ function setHighlightKeyControls (): void {
   document.body.addEventListener('keydown', (evt) => {
     switch (evt.key) {
       case 'q':
-        updateHighlightOption('staff', 'staff', 'Staff');
+        updateHighlightOption('staff');
         break;
       case 'w':
-        updateHighlightOption('syllable', 'syllable', 'Syllable');
+        updateHighlightOption('syllable');
         break;
       case 'e':
-        updateHighlightOption('neume', 'neume', 'Neume');
+        updateHighlightOption('neume');
         break;
       case 'r':
-        updateHighlightOption('layerElement', 'layer', 'LayerElement');
+        updateHighlightOption('layerElement');
         break;
       case 't':
-        updateHighlightOption('selection', 'selection', 'Selection');
+        updateHighlightOption('selection');
         break;
       case 'y':
-        updateHighlightOption('none', 'none', 'highlight-none');
+        updateHighlightOption('none');
         break;
     }
   });
@@ -307,7 +305,7 @@ export function updateHighlight (): void {
       Color.setGroupingHighlight('neume');
       break;
     case 'highlight-layerElement':
-      Color.setGroupingHighlight('layer');
+      Color.setGroupingHighlight('layerElement');
       break;
     case 'highlight-selection':
       Color.setGroupingHighlight('selection');
@@ -360,15 +358,7 @@ function setDisplayAllListener(): void {
  */
 export function loadHighlightSettings (): void {
   const { highlightMode } = getSettings();
-
-  // For some reason, layer is the only one with the weird ID naming,
-  // and thus we need to check for it and fix it
-  const id = highlightMode === 'layer' ? 'layerElement' : highlightMode;
-
-  // Display string = capitalized version of highlight-${id}
-  const display = id.charAt(0).toUpperCase() + id.slice(1);
-
-  updateHighlightOption(id, highlightMode, display);
+  updateHighlightOption(highlightMode);
 }
 
 /**

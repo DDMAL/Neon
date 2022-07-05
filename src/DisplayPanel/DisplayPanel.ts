@@ -181,11 +181,9 @@ class DisplayPanel implements DisplayInterface {
     document.querySelector<HTMLInputElement>('#opacitySlider').value = String(glyphOpacity);
 
     // Highlight mode:
-    // Display string = capitalized version of highlight-${id}
-    const highlightId = highlightMode === 'layer' ? 'layerElement' : highlightMode;
-    const displayHighlight = highlightId.charAt(0).toUpperCase() + highlightId.slice(1);
-
-    document.querySelector('#highlight-type').textContent = `\xA0- ${displayHighlight}`;
+    // Text = capitalized version of highlight-${id}
+    const text = highlightMode === 'none' ? 'Off' : highlightMode[0].toUpperCase() + highlightMode.slice(1);
+    document.querySelector('#highlight-type').textContent = `\xA0- ${text}`;
   }
 
   /**

@@ -60,7 +60,7 @@ class SingleEditMode implements NeumeEditInterface {
     initInsertEditControls();
     initSelectionButtons();
     initUndoRedoPanel(this.neonView);
-    setHighlightOption('selection', 'selection', 'Selection');
+    setHighlightOption('selection');
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
 
     // focus display panel by clicking on the stored selection mode

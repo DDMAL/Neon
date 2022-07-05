@@ -314,7 +314,7 @@ export function initSelectionButtons (): void {
       } catch (e) {}
       try {
         if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
-          setGroupingHighlight('layer');
+          setGroupingHighlight('layerElement');
         }
       } catch (e) {}
     }

@@ -171,7 +171,7 @@ export function setStaffHighlight(): void {
 
 /**
  * Set a highlight by a different grouping.
- * @param grouping - Either "staff", "syllable", "neume", "selection", or "layer".
+ * @param grouping - Either "staff", "syllable", "neume", "selection", or "layerElement".
  */
 export function setGroupingHighlight(grouping: GroupingType): void {
   unsetGroupingHighlight();
@@ -189,7 +189,7 @@ export function setGroupingHighlight(grouping: GroupingType): void {
         grouping = 'staff';
         break;
       case 'selByLayerElement':
-        grouping = 'layer';
+        grouping = 'layerElement';
         break;
       case 'selByNeume':
       default:
@@ -201,7 +201,7 @@ export function setGroupingHighlight(grouping: GroupingType): void {
   }
   let groups;
 
-  if (grouping == 'layer') {
+  if (grouping == 'layerElement') {
     groups = document.querySelectorAll('.accid, .clef, .custos, .divLine');
   }
   else {
