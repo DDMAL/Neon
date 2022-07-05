@@ -525,15 +525,12 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
           // Check if this is a linked syllable split by a staff break
           // if they are linkable, user can toggle linked-sylls
           if (Grouping.isLinkable('selBySyllable', groups)) { 
-            console.log('linkable');
             SelectOptions.triggerSyllableActions('linkableSelect');
           }
           else if (Grouping.isGroupable('selBySyllable', groups)) {
-            console.log('groupable');
             SelectOptions.triggerSyllableActions('multiSelect');
           }
           else {
-            console.log('neither');
             SelectOptions.triggerSyllableActions('default');
           }
           break;
@@ -541,7 +538,6 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
         default:
           // if syllables are all located on one stave, they should be groupable
           if (Grouping.isGroupable('selBySyllable', groups)) {
-            console.log('groupable');
             SelectOptions.triggerSyllableActions('multiSelect');
           }
           // if sylls are accross multiple staves
