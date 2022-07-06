@@ -4,7 +4,8 @@ import * as Contents from './Contents';
 import { setGroupingHighlight } from '../utils/Color';
 import { unselect } from '../utils/SelectTools';
 import InsertHandler from './InsertHandler';
-
+import { setSettings } from '../utils/LocalSettings';
+import { GroupingType, SelectionType } from '../Types';
 
 /**
  * Bind listeners to insert tabs.'
@@ -195,6 +196,8 @@ export function initSelectionButtons (): void {
 
   function selectBySylHandler () {
     if (!selBySyllable.classList.contains('is-active')) {
+      setSettings({ selectionMode: 'selBySyllable' });
+
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
@@ -219,6 +222,8 @@ export function initSelectionButtons (): void {
 
   function selectByNeumeHandler () {
     if (!selByNeume.classList.contains('is-active')) {
+      setSettings({ selectionMode: 'selByNeume' });
+
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
@@ -242,6 +247,8 @@ export function initSelectionButtons (): void {
 
   function selectByNcHandler () {
     if (!selByNc.classList.contains('is-active')) {
+      setSettings({ selectionMode: 'selByNc' });
+
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
@@ -265,6 +272,8 @@ export function initSelectionButtons (): void {
 
   function selectByStaffHandler () {
     if (!selByStaff.classList.contains('is-active')) {
+      setSettings({ selectionMode: 'selByStaff' });
+
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
@@ -288,6 +297,8 @@ export function initSelectionButtons (): void {
 
   function selByLayerElementHandler () {
     if (!selByLayerElement.classList.contains('is-active')) {
+      setSettings({ selectionMode: 'selByLayerElement' });
+
       unselect();
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
@@ -303,7 +314,7 @@ export function initSelectionButtons (): void {
       } catch (e) {}
       try {
         if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
-          setGroupingHighlight('layer');
+          setGroupingHighlight('layerElement');
         }
       } catch (e) {}
     }

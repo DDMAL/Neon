@@ -1,5 +1,5 @@
 import { bindInsertTabs, initInsertEditControls, initSelectionButtons } from './Controls';
-import { setHighlightSelectionControls } from '../DisplayPanel/DisplayControls';
+import { setHighlightOption } from '../DisplayPanel/DisplayControls';
 import { initUndoRedoPanel } from '../utils/EditControls';
 import * as Select from '../utils/Select';
 import InsertHandler from './InsertHandler';
@@ -10,6 +10,7 @@ import { NeumeEditInterface } from '../Interfaces';
 import * as Contents from './Contents';
 import { undoRedoPanel } from '../utils/EditContents';
 import { initNavbar } from '../utils/EditControls';
+import { getSettings } from '../utils/LocalSettings';
 
 /**
  * An Edit Module for a single page of a manuscript.
@@ -59,10 +60,12 @@ class SingleEditMode implements NeumeEditInterface {
     initInsertEditControls();
     initSelectionButtons();
     initUndoRedoPanel(this.neonView);
-    setHighlightSelectionControls();
+    setHighlightOption('selection');
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
 
-    document.getElementById('selBySyllable').click(); // focus display panel
+    // focus display panel by clicking on the stored selection mode
+    const { selectionMode } = getSettings();
+    document.getElementById(selectionMode).click();
   }
 
   /**

@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { setSettings } from '../utils/LocalSettings';
 
 export class ViewBox {
   // vieBox attribute of an SVG viewport:
@@ -78,10 +79,14 @@ export class ZoomHandler {
   /**
    * Reset the zoom and pan of the SVG viewbox
    */
-  resetZoomAndPan (): void {
+  resetZoomAndPan (resetSettings = true): void {
     const bgimg = document.getElementById('bgimg') as HTMLImageElement;
     this.viewBox = new ViewBox(parseInt(bgimg.getAttribute('width')), parseInt(bgimg.getAttribute('height')));
-    this.updateSVGViewBox();
+
+    if (resetSettings) {
+      this.updateSVGViewBox();
+      setSettings({ zoom: 100 });
+    }
   }
 
   /**
@@ -91,6 +96,8 @@ export class ZoomHandler {
     this.setViewBox();
     this.viewBox.zoomTo(k);
     this.updateSVGViewBox();
+
+    setSettings({ zoom: Math.floor(k * 100) });
   }
 
   /**
@@ -109,7 +116,7 @@ export class ZoomHandler {
    */
   restoreTransformation (): void {
     if (this.viewBox === undefined) {
-      this.resetZoomAndPan();
+      this.resetZoomAndPan(false);
     } else {
       this.updateSVGViewBox();
     }
@@ -138,7 +145,9 @@ export class ZoomHandler {
    * Update the viewBox attribute of svg_group
    */
   updateSVGViewBox (): void {
-    document.getElementById('svg_group').setAttribute('viewBox', this.viewBox.get());
+    const viewBoxString = this.viewBox.get();
+    document.getElementById('svg_group').setAttribute('viewBox', viewBoxString);
+    setSettings({ viewBox: viewBoxString });
   }
 
   startDrag (): void {
