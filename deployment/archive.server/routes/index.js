@@ -10,11 +10,10 @@ const { image } = require('d3');
 var router = express.Router();
 const __base = '';
 
-const manifestUpload = path.join(__base, 'deployment', 'public', 'uploads', 'manifests');
-const meiUpload = path.join(__base, 'deployment', 'public', 'uploads', 'mei');
-const imgUpload = path.join(__base, 'deployment', 'public', 'uploads', 'img');
-const iiifUpload = path.join(__base, 'deployment', 'public', 'uploads', 'iiif');
-// const iiifPublicPath = path.join('/', 'uploads', 'iiif');
+const manifestUpload = path.join(__base, 'deployment', 'archive.public', 'uploads', 'manifests');
+const meiUpload = path.join(__base, 'deployment', 'archive.public', 'uploads', 'mei');
+const imgUpload = path.join(__base, 'deployment', 'archive.public', 'uploads', 'img');
+const iiifUpload = path.join(__base, 'deployment', 'archive.public', 'uploads', 'iiif');
 const neonContext = 'https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld';
 
 const allowedPattern = /^[-_\.,\d\w ]+$/;
@@ -36,47 +35,45 @@ function isUserInputValid (input) {
 // Main Page
 router.route('/')
   .get(function (req, res) {
-    res.render('landing');
-    // //  -------- changing running locally storing documents to using storage.ts like neon-index -------
-    // var meiFiles = [];
-    // var iiifFiles = [];
-    // fs.readdir(manifestUpload, function (err, files) {
-    //   if (err) {
-    //     console.error(err);
-    //     res.sendStatus(500);
-    //     return;
-    //   }
-    //   if (files.length !== 0) {
-    //     var index = files.indexOf('.gitignore');
-    //     files.splice(index, (index < 0 ? 0 : 1));
-    //     meiFiles = files;
-    //   }
+    var meiFiles = [];
+    var iiifFiles = [];
+    fs.readdir(manifestUpload, function (err, files) {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+        return;
+      }
+      if (files.length !== 0) {
+        var index = files.indexOf('.gitignore');
+        files.splice(index, (index < 0 ? 0 : 1));
+        meiFiles = files;
+      }
 
-    //   fs.readdir(iiifUpload, { withFileTypes: true }, function (err, files) {
-    //     if (err) {
-    //       console.error(err);
-    //       res.sendStatus(500);
-    //       return;
-    //     }
-    //     files.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
-    //       let label = entry.name;
-    //       let revisions = fs.readdirSync(path.join(iiifUpload, label), { withFileTypes: true });
-    //       revisions.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
-    //         if (err) {
-    //           console.error(err);
-    //           res.sendStatus(500);
-    //         } else {
-    //           iiifFiles.push([label, entry.name]);
-    //         }
-    //       });
-    //     });
-    //     if (meiFiles.length !== 0 || iiifFiles.length !== 0) {
-    //       res.render('index', { files: meiFiles, iiif: iiifFiles });
-    //     } else {
-    //       res.render('index', { nofiles: 'No files uploaded', files: meiFiles, iiif: iiifFiles });
-    //     }
-    //   });
-    // });
+      fs.readdir(iiifUpload, { withFileTypes: true }, function (err, files) {
+        if (err) {
+          console.error(err);
+          res.sendStatus(500);
+          return;
+        }
+        files.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
+          let label = entry.name;
+          let revisions = fs.readdirSync(path.join(iiifUpload, label), { withFileTypes: true });
+          revisions.filter(entry => { return entry.isDirectory(); }).forEach(entry => {
+            if (err) {
+              console.error(err);
+              res.sendStatus(500);
+            } else {
+              iiifFiles.push([label, entry.name]);
+            }
+          });
+        });
+        if (meiFiles.length !== 0 || iiifFiles.length !== 0) {
+          res.render('index', { files: meiFiles, iiif: iiifFiles });
+        } else {
+          res.render('index', { nofiles: 'No files uploaded', files: meiFiles, iiif: iiifFiles });
+        }
+      });
+    });
   });
 
 router.route('/upload_file').post(upload.array('resource', 2), function (req, res) {
@@ -144,8 +141,8 @@ router.route('/delete/:filename')
         let meiPath = manifest.mei_annotations[0].body.split('/');
         try {
           fs.unlinkSync(path.join(manifestUpload, req.params.filename));
-          fs.unlinkSync(path.join('deployment', 'public', ...imagePath));
-          fs.unlinkSync(path.join('deployment', 'public', ...meiPath));
+          fs.unlinkSync(path.join('deployment', 'archive.public', ...imagePath));
+          fs.unlinkSync(path.join('deployment', 'archive.public', ...meiPath));
         } catch (e) {
           console.error(e);
           return res.sendStatus(500);

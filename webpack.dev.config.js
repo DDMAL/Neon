@@ -9,11 +9,11 @@ module.exports = {
   mode: 'development',
   target: 'web',
   entry: {
-    landing: './deployment/server/landing.ts',
-    editor: './deployment/server/editor.ts'
+    landing: './deployment/archive.server/landing.ts',
+    editor: './deployment/archive.server/editor.ts'
   },
   output: {
-    path: path.resolve(__dirname, 'deployment', 'public', 'Neon'),
+    path: path.resolve(__dirname, 'deployment', 'archive.public', 'Neon'),
     publicPath: '/',
     filename: '[name].js'
   },
@@ -22,7 +22,7 @@ module.exports = {
   },
   devtool: 'source-map',
   devServer: {
-    static: './deployment/public',
+    static: './deployment/archive.public',
     hot: true,
   },
   watch: true,

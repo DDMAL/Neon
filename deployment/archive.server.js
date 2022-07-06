@@ -1,7 +1,7 @@
 /* eslint spaced-comment: ["error", "always", { "exceptions": ["="] }] */
 var express = require('express');
 var app = express();
-var routes = require('./server/routes/index');
+var routes = require('./archive.server/routes/index');
 var bodyParser = require('body-parser');
 
 global.__base = __dirname + '/';
@@ -36,13 +36,13 @@ app.use('/', routes);
 // Templating Engine
 //=====================
 
-app.set('views', 'deployment/views');
+app.set('views', 'deployment/archive.views');
 app.set('view engine', 'pug');
 
 //=============
 // Static Files
 //=============
-app.use(express.static('deployment/public'));
+app.use(express.static('deployment/archive.public'));
 
 app.listen(8080);
 

@@ -8,8 +8,8 @@ let commitHash = childProcess.execSync('git rev-parse --short HEAD').toString();
 module.exports = {
   mode: 'production',
   entry: {
-    landing: './deployment/server/landing.ts',
-    editor: './deployment/pages/editor.js',
+    landing: './deployment/scripts/landing.ts',
+    editor: './deployment/scripts/editor.js',
   },
   output: {
     path: path.resolve(__dirname, 'dist', 'Neon-gh'),
