@@ -1,6 +1,6 @@
 import { getAllDocuments, deleteEntry } from './storage';
 import { formatFilename } from './functions';
-import { allDocs } from './types';
+import { allDocs } from '../Types';
 
 async function fetchDocuments(): Promise<string[][]> {
   return await getAllDocuments()
