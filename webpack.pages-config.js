@@ -9,49 +9,47 @@ module.exports = {
   mode: 'production',
   entry: {
     landing: './deployment/scripts/landing.ts',
-    editor: './deployment/scripts/editor.js',
+    editor: './deployment/scripts/editor.ts',
   },
   output: {
     path: path.resolve(__dirname, 'dist', 'Neon-gh'),
-    filename: '[name].js'
+    filename: '[name].js',
   },
   node: {
-    fs: 'empty'
+    fs: 'empty',
   },
   devtool: 'source-map',
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: [
-          'awesome-typescript-loader'
-        ],
-        exclude: /node_modules/
+        use: ['awesome-typescript-loader'],
+        exclude: /node_modules/,
       },
       {
         test: /Worker\.js$/,
         use: [
           {
             loader: 'worker-loader',
-            options: { publicPath: '/Neon-gh/' }
-          }
-        ]
-      }
-    ]
+            options: { publicPath: '/Neon-gh/' },
+          },
+        ],
+      },
+    ],
   },
   resolve: {
-    extensions: [ '.ts', '.js' ]
+    extensions: ['.ts', '.js'],
   },
   externals: {
     'verovio-dev': 'verovio',
-    d3: 'd3'
+    d3: 'd3',
   },
   plugins: [
     new HardSourceWebpackPlugin(),
     new webpack.DefinePlugin({
       __LINK_LOCATION__: JSON.stringify('https://ddmal.music.mcgill.ca/Neon'),
       __NEON_VERSION__: JSON.stringify(commitHash),
-      __ASSET_PREFIX__: JSON.stringify('/Neon-gh/')
-    })
-  ]
+      __ASSET_PREFIX__: JSON.stringify('/Neon-gh/'),
+    }),
+  ],
 };
