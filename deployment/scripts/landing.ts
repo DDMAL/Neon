@@ -3,6 +3,8 @@ import { handleMakePair, handleUploadAllDocuments } from '../../src/LandingPage/
 import { InitUploadArea } from '../../src/LandingPage/UploadArea';
 import FileManager from '../../src/LandingPage/FileManager';
 
+const fm = FileManager.getInstance();
+
 InitSelectDocuments();
 InitUploadArea();
 
@@ -35,10 +37,9 @@ function updateAndClear() {
 
 
 // to see behind the scenes: to-be-removed
-const fm = FileManager.getInstance();
-const foobar = document.createElement('button');
-foobar.innerText = 'PRINT ALL FILES';
-foobar.addEventListener('click', () => {
-  fm.print();
-});
-document.querySelector('#right_col').appendChild(foobar);
+// const foobar = document.createElement('button');
+// foobar.innerText = 'PRINT ALL FILES';
+// foobar.addEventListener('click', () => {
+//   fm.print();
+// });
+// document.querySelector('#right_col').appendChild(foobar);

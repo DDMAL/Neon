@@ -1,6 +1,6 @@
 import { InitSelectDocuments, updateDocumentSelector } from '../../src/LandingPage/selectDocuments';
 import { handleMakePair, handleUploadAllDocuments } from '../../src/LandingPage/UploadManager';
-import { InitUploadArea } from '../../src/LandingPage/uploadArea';
+import { InitUploadArea } from '../../src/LandingPage/UploadArea';
 import FileManager from '../../src/LandingPage/FileManager';
 
 InitSelectDocuments();

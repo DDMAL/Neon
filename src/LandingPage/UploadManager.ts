@@ -11,7 +11,7 @@ const manuscript_container: HTMLDivElement = document.querySelector('#manuscript
 const fm = FileManager.getInstance();
 
 export function addNewFiles( files: File[] ): File[] {
-
+  console.log(files);
   const rejectFiles: File[] = [];
   files.forEach( file => {
     const ext = file.name.split('.').pop();

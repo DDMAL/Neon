@@ -28,6 +28,9 @@ async function fetchDocuments(): Promise<string[][]> {
 
 export async function updateDocumentSelector(): Promise<void> {
   const allDocuments = await fetchDocuments();
+
+  console.log(allDocuments);
+  
   const folioNames = allDocuments[0].sort();
   const manuscriptNames = allDocuments[1].sort();
 
