@@ -259,15 +259,99 @@ export function areAdjacent(selectionType: string, elements: SVGGraphicsElement[
 
 
 /**
+ * Check to see if the array of elements all share the same logical parent.
+ * For example: If all neumes are in the same syllable.
+ * 
+ * Note!! There is currently no logic for treating layer elements and bboxes!
+ * Note!! Function will always return true for stave elements. (Should it???)
+ * 
+ * @param selectionType the current Neon selection mode
+ * @param elements the elements in question
+ * @returns true if all elements share the same logical parent, false otherwise.
+ */
+export function sharedLogicalParent(selectionType: string, elements: SVGGraphicsElement[]): boolean {
+
+  if (!elementsHaveCorrectType(selectionType, elements)) return false;
+
+  switch(selectionType) {
+    case 'selBySyllable':
+      const referenceParentStaff = elements[0].closest('.staff');
+      for (let i=0; i<elements.length; i++) {
+        const elem = elements[i];
+        if (!elem.closest('.staff').isSameNode(referenceParentStaff)) return false;
+      }
+      return true;
+
+    case 'selByNeume':
+      const referenceParentSyllable = elements[0].closest('.syllable');
+      for (let i=0; i<elements.length; i++) {
+        const elem = elements[i];
+        if (!elem.closest('.syllable').isSameNode(referenceParentSyllable)) return false;
+      }
+      return true;
+
+    case 'selByStaff':
+      return true;
+
+    default:
+      return false;
+  }
+}
+
+
+/**
+ * Check if all selected elements have the same type as current selection mode. 
+ * For example, check if all selected elements are of type neume, or syllable, etc.
+ * 
+ * Note!! There is no logic currently implemented for layer elements or bboxes.
+ * 
+ * @param selectionType the current selection mode
+ * @param elements the elements that are being checked
+ * @returns true if all elements match selection mode, false otherwise.
+ */
+export function elementsHaveCorrectType(selectionType: string, elements: SVGGraphicsElement[]): boolean {
+
+  if (elements.length < 2) return false;
+
+  switch(selectionType) {
+    case 'selBySyllable':
+      elements.forEach((elem) => {
+        if (!elem.classList.contains('syllable')) return false;
+      });
+      break;
+
+    case 'selByNeume':
+      elements.forEach((elem) => {
+        if (!elem.classList.contains('neume')) return false;
+      });
+      break;
+
+    case 'selByStaff':
+      elements.forEach((elem) => {
+        if (!elem.classList.contains('staff')) return false;
+      });
+      break;
+
+    default:
+      return false;
+  }
+
+  return true;
+}
+
+
+/**
  * @param elements - The elements to compare.
  * @returns True if the elements have the same parent up two levels, otherwise false.
  */
-export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
+export function sharedSecondLevelParent (elements: SVGGraphicsElement[]): boolean {
   const tempElements = Array.from(elements);
   const firstElement = tempElements.pop();
   const secondParent = firstElement.parentElement.parentElement;
+  console.log(secondParent);
   for (const element of tempElements) {
     const secPar = element.parentElement.parentElement;
+    console.log(secPar);
     if (secPar.id !== secondParent.id) {
       return false;
     }
@@ -295,6 +379,7 @@ export function isMultiStaveSelection(elements: SVGElement[]): boolean {
 
   return false;
 }
+
 
 /**
  * Bounding box object interface for getStaffBBox()
@@ -555,7 +640,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
           Grouping.initGroupingListeners();
           break;
         default:
-          if (Grouping.isGroupable(selectionType, groups)) {
+          if (Grouping.isGroupable('selByNeume', groups)) {
             Grouping.triggerGrouping('neume');
           } else {
             SelectOptions.triggerDefaultActions();

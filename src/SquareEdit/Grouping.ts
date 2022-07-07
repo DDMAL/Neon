@@ -29,10 +29,15 @@ export function initNeonView (view: NeonView): void {
 export function isGroupable(selectionType: string, elements: Array<SVGGraphicsElement>): boolean {
   const groups = Array.from(elements.values()) as SVGGraphicsElement[];
 
-  switch (groups.length) {
-    case 1:
+  if (groups.length < 2) {
       // cannot group if only 1 element is selected
       return false;
+  }
+
+  switch(selectionType) {
+    case 'selByNeume':
+      // if neumes are in same syllable, don't display grouping option
+      if (SelectTools.sharedLogicalParent(selectionType, elements)) return false;
 
     default:
       // check if all selected elements are adjacent to each other
@@ -42,6 +47,7 @@ export function isGroupable(selectionType: string, elements: Array<SVGGraphicsEl
         return false;
       }
   }
+
 }
 
 
