@@ -1,0 +1,119 @@
+<div class="overlay" id="loading">
+  <div class="loader"></div>
+</div>
+<nav class="navbar is-light">
+  <div class="navbar-brand">
+    <a class="navbar-btn" id="home-link">
+      <!-- Image src attributes are ste programatically because paths are not the same in dev and prod -->
+      <img id="neon-main-icon">
+    </a>
+    <a class="navbar-burger" id="burgerMenu" role="button" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu" id="navMenu">
+
+    <div class="navbar-start">
+
+      <div class="navbar-main-content-container" id="navbar-main-content-container-top">
+        <div class="navbar-element" id="filename"></div>
+        <div class="navbar-element" id="file-status"></div>
+      </div>
+
+      <div class="navbar-main-content-container" id="navbar-main-content-container-bottom">
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-element navbar-btn">
+            <div class="navbar-btn-text">File</div>
+          </div>
+
+          <div class="navbar-dropdown" id="navbar-dropdown-options">
+            <div id="save" class="navbar-dropdown-item">Save</div>
+            <div id="export" class="navbar-dropdown-item">Save and Export to File</div>
+            <a id="getmei" class="navbar-dropdown-item">Download MEI</a>
+          </div>   
+        </div>
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-element navbar-btn">
+            <div class="navbar-btn-text">MEI Actions</div>
+          </div>
+          <div class="navbar-dropdown" id="navbar-dropdown-options">
+            <div id="remove-empty-syls" class="navbar-dropdown-item">Remove Empty Syllables</div>
+            <div id="remove-empty-neumes" class="navbar-dropdown-item">Remove Empty Neumes</div>
+            <div id="revert" class="navbar-dropdown-item">Revert</div>
+          </div>
+        </div>
+
+      
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-element navbar-btn">
+            <div class="navbar-btn-text">Help</div>
+          </div>
+          <div class="navbar-dropdown">
+            <a class="navbar-dropdown-item navbar-dropdown-link" href="//github.com/DDMAL/Neon/wiki/Instructions" target="_blank">
+              User Guide
+              <img class="external-link-icon">
+            </a>
+            <a class="navbar-dropdown-item" href="//github.com/DDMAL/Neon/wiki" target="_blank">
+              Wiki
+              <img class="external-link-icon">
+            </a>
+            <a class="navbar-dropdown-item" href="//ddmal.music.mcgill.ca" target="_blank">
+              DDMAL
+              <img class="external-link-icon">
+            </a>
+            <div class="navbar-dropdown-item">
+              <div id="navbar-item-hotkeys">Hotkeys</div>
+            </div>
+            <div class="navbar-dropdown-item">
+              <div id="neon-version"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="navbar-end">
+      <a class="navbar-element navbar-btn" id="feedback-form-btn-container" href="https://forms.gle/vGUpvZKZxGX5QGJZ9" target="_blank">
+        Feedback Form
+        <img class="external-link-icon">
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div id="editor-body-container">
+  <div id="notification-content" style="display:none;"></div>
+  <div id="left-column">
+    <div id="container"></div>
+  </div>
+  <div class="is-hidden-mobile" id="right-column">
+      <div id="display_controls"></div>
+      <div id="insert_controls"></div>
+      <div id="edit_controls"></div>
+      <div id="info-bubbles-container">
+        <div id="neume_info"></div>
+        <div id="syl_text" style="display:none;"></div>
+      </div>
+  </div>
+</div>
+
+
+<!-- Neon modal window -->
+<div id="neon-modal-window-container">
+  <div tabindex="0" id="neon-modal-window">
+    
+    <div id="neon-modal-window-header">
+      <div id="neon-modal-window-header-title"></div>
+      <div id="neon-modal-window-header-close">x</div>
+    </div>
+
+    <!-- Neon modal window content section -->
+    <div id="neon-modal-window-content-container"></div>
+  </div>
+  
+
+</div>
