@@ -5,6 +5,13 @@ export interface Point {
   y: number;
 }
 
+export interface BBox {
+  ulx: number;
+  uly: number;
+  lrx: number;
+  lry: number;
+}
+
 /**
  * Get SVG relative coordinates given clientX and clientY
  * Source: https://stackoverflow.com/questions/29261304
@@ -63,3 +70,15 @@ export function isOutOfSVGBounds (x: number, y: number): boolean {
     y <= 0 || y >= Number(bgimg.getAttribute('height'))
   );
 }
+
+/**
+ * Check whether the bounding box of an element is within the rectangle defined
+ * by the upper left and lower right points `ul` and `lr`
+ */
+export function isInside (bbox: BBox, ul: Point, lr: Point): boolean {
+  const isXRange = (bbox.ulx >= ul.x) && (bbox.lrx <= lr.x);
+  const isYRange = (bbox.uly >= ul.y) && (bbox.lry <= lr.y);
+  return isXRange && isYRange;
+}
+
+/**

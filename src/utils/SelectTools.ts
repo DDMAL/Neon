@@ -252,14 +252,7 @@ export function getStaffBBox (staff: SVGGElement): StaffBBox {
     }
   });
 
-  return {
-    id: staff.id,
-    ulx: ulx,
-    uly: uly,
-    lrx: lrx,
-    lry: lry,
-    rotate: rotate,
-  };
+  return { id: staff.id, ulx, uly, lrx, lry, rotate, };
 }
 
 /**
