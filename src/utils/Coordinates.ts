@@ -82,3 +82,17 @@ export function isInside (bbox: BBox, ul: Point, lr: Point): boolean {
 }
 
 /**
+ * Get bounding box (lrx, lry, ulx, uly) of a glyph, which
+ * is a <use> element in the SVG
+ */
+export function getGlyphBBox (use: SVGUseElement): BBox {
+  const rect = (use.parentNode as SVGGElement).getBBox();
+
+  return {
+    ulx: rect.x,
+    uly: rect.y,
+    lrx: rect.x + rect.width,
+    lry: rect.y + rect.height
+  };
+}
+

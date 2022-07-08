@@ -1,7 +1,7 @@
 import NeonView from '../NeonView';
 import { ChangeStaffToAction, DragAction, EditorAction } from '../Types';
 import * as d3 from 'd3';
-import { getStaffIdByCoords, isOutOfSVGBounds } from './Coordinates';
+import { BBox, isOutOfSVGBounds, getGlyphBBox, getStaffIdByCoords } from './Coordinates';
 import { queueNotification } from './Notification';
 
 class DragHandler {
@@ -84,6 +84,15 @@ class DragHandler {
     // Filter selection for draggable elements
     const selection = this.selection.filter((el) => !el.classList.contains('resizePoint'));
 
+    // If the cursor is out of bounds or the selection array is out of bounds,
+    // drag actions should not happen. Return an error notification and reset
+    // the drag handler
+    if (this.isCursorOutOfBounds() || this.isSelOutOfBounds(selection)) {
+      this.returnElements(this.selection);
+      this.reset();
+      this.dragInit();
+      return queueNotification('[FAIL] Glyphs were placed out of bounds! Drag action failed.');
+    }
 
     // Create the chain editor action for selection
     const dragActions = this.createDragActions(selection);
@@ -179,6 +188,47 @@ class DragHandler {
 
       return arr.concat([dragAction, staffAction]);
     }, []);
+  }
+
+  isCursorOutOfBounds (): boolean {
+    const endX = this.dragStartCoords[0] + this.dx;
+    const endY = this.dragStartCoords[1] + this.dy;
+
+    return isOutOfSVGBounds(endX, endY);
+  }
+
+  /**
+   * Returns whether the selection array is within the bounds of the SVG
+   * @param {SVGGraphicsElement[]} selection
+   * @returns {boolean} Is selection out of bounds
+   */
+  isSelOutOfBounds (selection: SVGGraphicsElement[]): boolean {
+    // Get the bounding boxes of all glyphs (<use> elements) within the selection array
+    const glyphs: SVGUseElement[] = selection.reduce(
+      (acc, el) => acc.concat(...el.querySelectorAll('use')), []
+    );
+    const glyphBBoxes: BBox[] = glyphs.map(getGlyphBBox);
+
+    // Get the surrounding bounding box of the selected elements
+    const selectionBBox: BBox = glyphBBoxes.reduce(
+      (bbox, curr) => {
+        return {
+          ulx: Math.min(bbox.ulx, curr.ulx),
+          uly: Math.min(bbox.uly, curr.uly),
+          lrx: Math.max(bbox.lrx, curr.lrx),
+          lry: Math.max(bbox.lry, curr.lry),
+        };
+      },
+      {
+        ulx: Number.MAX_VALUE,
+        uly: Number.MAX_VALUE,
+        lrx: Number.MIN_VALUE,
+        lry: Number.MIN_VALUE,
+      }
+    );
+
+    const { ulx, uly, lrx, lry } = selectionBBox;
+    return isOutOfSVGBounds(ulx + this.dx, uly + this.dy) || isOutOfSVGBounds(lrx + this.dx, lry + this.dy);
   }
 }
 
