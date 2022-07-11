@@ -63,11 +63,11 @@ export function getStaffByCoords (clientX: number, clientY: number): SVGGElement
 }
 
 export function isOutOfSVGBounds (x: number, y: number): boolean {
-  const bgimg = document.querySelector<SVGImageElement>('#bgimg');
+  const bgImg = document.querySelector<SVGImageElement>('#bgimg');
   
   return (
-    x <= 0 || x >= Number(bgimg.getAttribute('width')) ||
-    y <= 0 || y >= Number(bgimg.getAttribute('height'))
+    x <= 0 || x >= Number(bgImg.getAttribute('width')) ||
+    y <= 0 || y >= Number(bgImg.getAttribute('height'))
   );
 }
 
@@ -75,9 +75,9 @@ export function isOutOfSVGBounds (x: number, y: number): boolean {
  * Check whether the bounding box of an element is within the rectangle defined
  * by the upper left and lower right points `ul` and `lr`
  */
-export function isInside (bbox: BBox, ul: Point, lr: Point): boolean {
-  const isXRange = (bbox.ulx >= ul.x) && (bbox.lrx <= lr.x);
-  const isYRange = (bbox.uly >= ul.y) && (bbox.lry <= lr.y);
+export function isBBoxInRect (bbox: BBox, ulPoint: Point, lrPoint: Point): boolean {
+  const isXRange = (bbox.ulx >= ulPoint.x) && (bbox.lrx <= lrPoint.x);
+  const isYRange = (bbox.uly >= ulPoint.y) && (bbox.lry <= lrPoint.y);
   return isXRange && isYRange;
 }
 

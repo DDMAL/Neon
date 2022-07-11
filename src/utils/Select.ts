@@ -8,7 +8,7 @@ import { InfoInterface } from '../Interfaces';
 import ZoomHandler from '../SingleView/Zoom';
 
 import * as d3 from 'd3';
-import { BBox, getStaffByCoords, isInside, Point } from './Coordinates';
+import { BBox, getStaffByCoords, isBBoxInRect, Point } from './Coordinates';
 
 let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 let strokeWidth = 7;
@@ -129,12 +129,12 @@ function getBBoxCoords (el: SVGGraphicsElement): BBox {
  * Checks whether an element is within the drag selection rectangle.
  * Returns true if the element is within the bounds of `ul` (upper left) and `lr` (lower right)
  */
-function isWithinRect(d: SVGGraphicsElement, ul: Point, lr: Point): boolean {
-  if (isSelByBBox()) return isInside(getBBoxCoords(d), ul, lr);
-  if (d.tagName === 'use') return isInside(getBBoxCoords(d), ul, lr);
+function isElementInRect(el: SVGGraphicsElement, ul: Point, lr: Point): boolean {
+  if (isSelByBBox()) return isBBoxInRect(getBBoxCoords(el), ul, lr);
+  if (el.tagName === 'use') return isBBoxInRect(getBBoxCoords(el), ul, lr);
 
   // TODO: Simplify
-  const box = getStaffBBox(d);
+  const box = getStaffBBox(el);
   return !((ul.x < box.ulx && lr.x < box.ulx) || (ul.x > box.lrx && lr.x > box.lrx) ||
           (ul.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate)) &&
             lr.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate))) ||
@@ -469,7 +469,7 @@ export function dragSelect (selector: string): void {
       // Get all elements corresponding to the selector
       const elements = getElementsBySelector(selector);
       // Get the elements within the selection rectangle
-      const selectedElements = elements.filter(el => isWithinRect(el, ul, lr));
+      const selectedElements = elements.filter(el => isElementInRect(el, ul, lr));
 
       // Get other halves of ligatures if only one is selected
       selectedElements.forEach((element: SVGElement) => {

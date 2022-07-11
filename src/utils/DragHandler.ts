@@ -87,7 +87,7 @@ class DragHandler {
     // If the cursor is out of bounds or the selection array is out of bounds,
     // drag actions should not happen. Return an error notification and reset
     // the drag handler
-    if (this.isCursorOutOfBounds() || this.isSelOutOfBounds(selection)) {
+    if (this.isCursorOutOfBounds() || this.isDragOutOfBounds(selection)) {
       this.returnElements(this.selection);
       this.reset();
       this.dragInit();
@@ -202,7 +202,7 @@ class DragHandler {
    * @param {SVGGraphicsElement[]} selection
    * @returns {boolean} Is selection out of bounds
    */
-  isSelOutOfBounds (selection: SVGGraphicsElement[]): boolean {
+  isDragOutOfBounds (selection: SVGGraphicsElement[]): boolean {
     // Get the bounding boxes of all glyphs (<use> elements) within the selection array
     const glyphs: SVGUseElement[] = selection.reduce(
       (acc, el) => acc.concat(...el.querySelectorAll('use')), []
