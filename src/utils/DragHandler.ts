@@ -95,10 +95,41 @@ class DragHandler {
     }
 
     // Create the chain editor action for selection
-    const dragActions = this.createDragActions(selection);
+    const paramArray: EditorAction[] = [];
+    selection.forEach((el) => {
+      const id = el.tagName === 'rect' ? el.closest('.syl').id : el.id;
+
+      const dragAction: DragAction = {
+        action: 'drag',
+        param: {
+          elementId: id,
+          x: this.dx,
+          y: -this.dy,
+        }
+      };
+
+      paramArray.push(dragAction);
+
+      if (el.classList.contains('divLine') || el.classList.contains('accid') || el.classList.contains('custos')) {
+        // Else, also add the ChangeStaffAction (for divline, accid, or custo)
+        const { clientX, clientY } = d3.event.sourceEvent;
+        const newStaff = getStaffIdByCoords(clientX, clientY);
+        const staffAction: ChangeStaffToAction = {
+          action: 'changeStaffTo',
+          param: {
+            elementId: id,
+            // if divline is moved to the background (and not a staff),
+            // set the staffId to the original staff
+            staffId: newStaff || el.closest('.staff').id,
+          }
+        };
+
+        paramArray.push(staffAction);
+      }
+    });
     const editorAction: EditorAction = {
       action: 'chain',
-      param: dragActions
+      param: paramArray
     };
 
     // Send editor action
@@ -149,45 +180,6 @@ class DragHandler {
     selection.forEach((el) => {
       el.removeAttribute('transform');
     });
-  }
-
-  /**
-   * Create drag / change staff actions for the selection array
-   * @param {SVGGraphicsElement[]} selection Selected elements
-   * @returns {EditorAction[]} Drag / change staff actions
-   */
-  createDragActions (selection: SVGGraphicsElement[]): EditorAction[] {
-    return selection.reduce((arr, el) => {
-      const id = el.tagName === 'rect' ? el.closest('.syl').id : el.id;
-
-      const dragAction: DragAction = {
-        action: 'drag',
-        param: {
-          elementId: id,
-          x: this.dx,
-          y: -this.dy,
-        }
-      };
-
-      // If not a divline, accid, or custo, add only the DragAction
-      if (!(el.classList.contains('divLine') || el.classList.contains('accid') || el.classList.contains('custos')))
-        return arr.concat(dragAction);
-
-      // Else, also add the ChangeStaffAction (for divline, accid, or custo)
-      const { clientX, clientY } = d3.event.sourceEvent;
-      const newStaff = getStaffIdByCoords(clientX, clientY);
-      const staffAction: ChangeStaffToAction = {
-        action: 'changeStaffTo',
-        param: {
-          elementId: id,
-          // if divline is moved to the background (and not a staff),
-          // set the staffId to the original staff
-          staffId: newStaff || el.closest('.staff').id,
-        }
-      };
-
-      return arr.concat([dragAction, staffAction]);
-    }, []);
   }
 
   isCursorOutOfBounds (): boolean {
