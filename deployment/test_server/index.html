@@ -15,19 +15,14 @@
       <div id="title_heading">Neon</div>
       <br /><br />
       <div id="select_documents_container">
-        <div id="dropdown_label">Uploaded Documents</div>
+        <button id="uploaded_selection" class="selection_button">Uploaded Documents</button>
+        <button id="sample_selection" class="selection_button">Sample Documents</button>
         <select
           id="documents_dropdown"
-          name="Uploaded Documents"
+          class="uploaded"
           multiple
           size="10"
         >
-          <optgroup class="faded" id="uploaded_folios" label="Folios:" />
-          <optgroup
-            class="faded"
-            id="uploaded_manuscripts"
-            label="Manuscript:"
-          />
         </select>
         <button id="open_documents">Open Documents</button>
         <button id="delete_documents">Delete Documents</button>
@@ -73,10 +68,5 @@
         </div>
       </div>
     </div>
-    <nav class="context_menu" id="context_menu">
-      <a class="context_menu_link" href="#" data_action=""
-        ><Lorem>Ipsum</Lorem></a
-      >
-    </nav>
   </body>
 </html>

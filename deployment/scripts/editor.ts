@@ -12,10 +12,10 @@ import { NeonManifest } from '../../src/Types';
 import PouchDB from 'pouchdb';
 
 const name = getGetParam('manifest');
-const manifestLocation = 'manifests/' + name + '.jsonld';
-const storage= getGetParam('storage');
+const storage = getGetParam('storage');
 
 if (name) {
+  const manifestLocation = 'assets/manifests/' + name + '.jsonld';  
   window.fetch(manifestLocation).then(response => {
     if (response.ok) {
       return response.text();
