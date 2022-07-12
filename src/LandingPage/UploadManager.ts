@@ -3,14 +3,19 @@ import FileManager from './FileManager';
 import { formatFilename } from './functions';
 import { createManifest, addEntry } from './storage';
 
-const mei_container: HTMLDivElement = document.querySelector('#mei_list');
-const image_container: HTMLDivElement = document.querySelector('#image_list');
-const paired_container: HTMLDivElement = document.querySelector('#paired_list');
-const manuscript_container: HTMLDivElement = document.querySelector('#manuscript_list');
+// const mei_container: HTMLDivElement = document.querySelector('#mei_list');
+// const image_container: HTMLDivElement = document.querySelector('#image_list');
+// const paired_container: HTMLDivElement = document.querySelector('#paired_list');
+// const manuscript_container: HTMLDivElement = document.querySelector('#manuscript_list');
 
 const fm = FileManager.getInstance();
 
 export function addNewFiles( files: File[] ): File[] {
+
+  const mei_container: HTMLDivElement = document.querySelector('#mei_list');
+  const image_container: HTMLDivElement = document.querySelector('#image_list');
+  const paired_container: HTMLDivElement = document.querySelector('#paired_list');
+  const manuscript_container: HTMLDivElement = document.querySelector('#manuscript_list');
 
   const rejectFiles: File[] = [];
   files.forEach( file => {
@@ -27,10 +32,12 @@ export function addNewFiles( files: File[] ): File[] {
       fm.addFile(file);
     }
     else if ( ext === 'jsonld' ) {
+      /*
       const manuscriptTile = createManuscriptTile(file.name);
       manuscript_container.appendChild(manuscriptTile);
       fm.addFile(file);
       fm.addManuscript(file.name);
+      */
     }
     else {
       console.log(`Unknown file type for: ${file.name}`);
@@ -58,7 +65,7 @@ function createUnpairedItem(filename: string, group: string): HTMLDivElement {
   const label = document.createElement('label');
   label.className = 'unpaired_item_label';
   label.setAttribute('for', id);
-  label.innerText = formatFilename(filename, 35);
+  label.innerText = formatFilename(filename, 28);
 
   node.appendChild(radio);
   node.appendChild(label);
@@ -66,6 +73,8 @@ function createUnpairedItem(filename: string, group: string): HTMLDivElement {
 }
 
 export function handleMakePair(): void {
+  const paired_container: HTMLDivElement = document.querySelector('#paired_list');
+
   // get and check if selected radio exists
   const selectedMeiElement: HTMLInputElement = document.querySelector('input[name="mei_radio_group"]:checked');
   const selectedImageElement: HTMLInputElement = document.querySelector('input[name="image_radio_group"]:checked');
@@ -84,11 +93,20 @@ export function handleMakePair(): void {
 }
 
 function createPairedTile(mei_filename: string, image_filename: string): HTMLDivElement {
+
+  const mei_container: HTMLDivElement = document.querySelector('#mei_list');
+  const image_container: HTMLDivElement = document.querySelector('#image_list');
+
+
   const tile = document.createElement('div');
   tile.className = 'tile_item';
   tile.setAttribute('mei', mei_filename);
   tile.setAttribute('image', image_filename);
-  tile.innerText = formatFilename(mei_filename, 20);
+
+  const tile_filename = document.createElement('div');
+  tile_filename.classList.add('tile-filename');
+  tile_filename.innerHTML = formatFilename(mei_filename, 20);
+  tile.appendChild(tile_filename); 
 
   function handleUnpair() {
     // remove tile from UI
@@ -134,11 +152,11 @@ function createManuscriptTile( filename: string ) {
   return tile;
 }
 
-export async function handleUploadAllDocuments(): Promise<boolean[]> {
+export function handleUploadAllDocuments(): Promise<any> {
   const folioPromises = fm.getFolios().map( ([mei, image]: [File, File]) => uploadFolio(mei, image));
   const manuscriptPromises = fm.getManuscripts().map( manuscript => uploadManuscript(manuscript));
   const promises = folioPromises.concat(manuscriptPromises);
-  return Promise.all(promises);
+  return PromiseAllSettled(promises);
 }
 
 async function uploadFolio(mei: File, image: File): Promise<boolean> {
@@ -151,4 +169,10 @@ async function uploadFolio(mei: File, image: File): Promise<boolean> {
 
 async function uploadManuscript(manuscript: File): Promise<boolean> {
   return addEntry(manuscript.name, manuscript, false);
+}
+
+function PromiseAllSettled(promises) {
+  const fulfilled = value => ({ status: 'fulfilled', value });
+  const rejected = reason => ({ status: 'rejected', reason });
+  return Promise.all([...promises].map(p => Promise.resolve(p).then(fulfilled, rejected)));
 }

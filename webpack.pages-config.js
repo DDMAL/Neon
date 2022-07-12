@@ -10,6 +10,7 @@ module.exports = {
   entry: {
     landing: './deployment/scripts/landing.ts',
     editor: './deployment/scripts/editor.ts',
+    dashboard: './deployment/scripts/dashboard.ts',
   },
   output: {
     path: path.resolve(__dirname, 'dist', 'Neon-gh'),

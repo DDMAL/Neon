@@ -52,7 +52,6 @@ export interface ModalWindowInterface {
   setModalWindowView(view: ModalWindowView): void;
   openModalWindow(): void;
   hideModalWindow(): void;
-  updateSelectedBBox(span: HTMLSpanElement): void;
 }
 
 export interface TextViewConstructable {

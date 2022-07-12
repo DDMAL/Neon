@@ -61,6 +61,23 @@ export default class TextEditMode implements TextEditInterface {
 
 
   /**
+   * Update the bounding box selected when the edit text modal has been clicked 
+   */
+  updateSelectedBBox (span: HTMLSpanElement): void {
+    unselect();
+
+    const bboxId = Array.from(span.classList).find(e => e !== 'text-select' && e !== 'selected-to-edit');
+
+    if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
+      if (document.getElementById(bboxId)) {
+        const displayRect = document.getElementById(bboxId).querySelector('.sylTextRect-display') as SVGGraphicsElement;
+        selectBBox(displayRect, this.dragHandler, this.neonView);
+      }
+    }
+  };
+
+
+  /**
   * Set text to edit mode
   */
   initTextEdit (): void {
@@ -71,13 +88,14 @@ export default class TextEditMode implements TextEditInterface {
         span.classList.add('selected-to-edit');
         modal.setModalWindowView(ModalWindowView.EDIT_TEXT);
         modal.openModalWindow();
-        modal.updateSelectedBBox(span);
+        this.updateSelectedBBox(span);
       }
 
       span.removeEventListener('click', selectSylText);
       span.addEventListener('click', selectSylText);
     });
   }
+
 
   /**
   * Add the selectByBBox button.

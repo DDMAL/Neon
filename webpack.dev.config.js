@@ -9,8 +9,9 @@ module.exports = {
   mode: 'development',
   target: 'web',
   entry: {
-    landing: './deployment/archive.server/landing.ts',
-    editor: './deployment/archive.server/editor.ts'
+    landing: './deployment/scripts/landing.ts',
+    editor: './deployment/scripts/editor.ts',
+    dashboard: './deployment/scripts/dashboard.ts',
   },
   output: {
     path: path.resolve(__dirname, 'deployment', 'archive.public', 'Neon'),
