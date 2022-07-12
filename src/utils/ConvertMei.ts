@@ -319,3 +319,27 @@ export function convertSbToStaff(sbBasedMei: string): string {
   return vkbeautify.xml(serializer.serializeToString(meiDoc));
 }
 
+export function checkOutOfBoundsGlyphs (meiString: string): void {
+  const parser = new DOMParser();
+  const meiDoc = parser.parseFromString(meiString, 'text/xml');
+  const mei = meiDoc.documentElement;
+
+
+  // Check for out-of-bound glyphs
+  const zones = Array.from(mei.querySelectorAll('zone'));
+  const dimensions = mei.querySelector('surface');
+  const meiLrx = Number(dimensions.getAttribute('lrx')), meiLry = Number(dimensions.getAttribute('lry'));
+
+  function isAttrOutOfBounds(zone: Element, attr: string): boolean {
+    const coord = Number(zone.getAttribute(attr));
+    const comp = (attr == 'lrx' || attr == 'ulx') ? meiLrx : meiLry;
+    return coord < 0 || coord > comp;
+  }
+
+  // isOutOfBounds = whether there exists at least one facsimile that is out of bounds
+  const isOutOfBounds = zones.some((zone) => 
+    ['ulx', 'uly', 'lrx', 'lry'].some((attr) => isAttrOutOfBounds(zone, attr))
+  );
+
+  if (isOutOfBounds) Notification.queueNotification('[WARN] This folio contains glyph(s) placed out-of-bounds!');
+}
