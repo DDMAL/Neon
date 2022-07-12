@@ -1,9 +1,9 @@
-import { InitSelectDocuments, updateDocumentSelector } from '../../src/LandingPage/selectDocuments';
+import { InitDocumentSelector, updateDocumentSelector } from '../../src/LandingPage/DocumentSelector';
 import { handleMakePair, handleUploadAllDocuments } from '../../src/LandingPage/UploadManager';
 import { InitUploadArea } from '../../src/LandingPage/UploadArea';
 import FileManager from '../../src/LandingPage/FileManager';
 
-InitSelectDocuments();
+InitDocumentSelector();
 InitUploadArea();
 
 // add function to pairing button
