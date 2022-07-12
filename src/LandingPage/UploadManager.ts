@@ -58,7 +58,7 @@ function createUnpairedItem(filename: string, group: string): HTMLDivElement {
   const label = document.createElement('label');
   label.className = 'unpaired_item_label';
   label.setAttribute('for', id);
-  label.innerText = formatFilename(filename, 35);
+  label.innerText = formatFilename(filename, 28);
 
   node.appendChild(radio);
   node.appendChild(label);
@@ -134,11 +134,11 @@ function createManuscriptTile( filename: string ) {
   return tile;
 }
 
-export async function handleUploadAllDocuments(): Promise<boolean[]> {
+export function handleUploadAllDocuments(): Promise<any> {
   const folioPromises = fm.getFolios().map( ([mei, image]: [File, File]) => uploadFolio(mei, image));
   const manuscriptPromises = fm.getManuscripts().map( manuscript => uploadManuscript(manuscript));
   const promises = folioPromises.concat(manuscriptPromises);
-  return Promise.all(promises);
+  return PromiseAllSettled(promises);
 }
 
 async function uploadFolio(mei: File, image: File): Promise<boolean> {
@@ -151,4 +151,10 @@ async function uploadFolio(mei: File, image: File): Promise<boolean> {
 
 async function uploadManuscript(manuscript: File): Promise<boolean> {
   return addEntry(manuscript.name, manuscript, false);
+}
+
+function PromiseAllSettled(promises) {
+  const fulfilled = value => ({ status: 'fulfilled', value });
+  const rejected = reason => ({ status: 'rejected', reason });
+  return Promise.all([...promises].map(p => Promise.resolve(p).then(fulfilled, rejected)));
 }
