@@ -8,7 +8,7 @@ import { InfoInterface } from '../Interfaces';
 import ZoomHandler from '../SingleView/Zoom';
 
 import * as d3 from 'd3';
-import { getStaffByCoords, getSVGRelCoords } from './Coordinates';
+import { getStaffByCoords } from './Coordinates';
 
 let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 let strokeWidth = 7;
