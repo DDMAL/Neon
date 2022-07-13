@@ -105,12 +105,8 @@ export function selectLayerElement (layerElement: SVGGElement, dragHandler: Drag
  * Generic select function.
  * @param el - Element to select.
  * @param dragHandler - Only used for staves.
- * @param needsHighlightUpdate - Whether updateHighlight() should be called
  */
-export function select (el: SVGGraphicsElement, dragHandler?: DragHandler, needsHighlightUpdate = true): void {
-  // If element does not exist, exit
-  if (!el) return;
-
+export function select (el: SVGGraphicsElement, dragHandler?: DragHandler): void {
   if (el.classList.contains('staff')) {
     return selectStaff(el, dragHandler);
   }
@@ -154,9 +150,7 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler, needs
       });
     }
   }
-
-  if (needsHighlightUpdate)
-    updateHighlight();
+  updateHighlight();
 }
 
 /**
@@ -352,9 +346,9 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
 
   // Get the groupings specified by selectionClass
   // that contain the provided elements to select.
-  const groupsToSelect = new Set<SVGGElement>();
+  const groupsToSelect = new Set();
   for (const element of elements) {
-    let grouping = element.closest<SVGGElement>(selectionClass);
+    let grouping = element.closest(selectionClass);
     if (grouping === null) {
       // Check if we click-selected a clef or a custos or an accid or a divLine
       grouping = element.closest('.clef, .custos, .accid, .divLine');
@@ -371,15 +365,15 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     // Check for precedes/follows
     const follows = grouping.getAttribute('mei:follows');
     if (follows) {
-      groupsToSelect.add(document.querySelector('#' + follows.slice(1)));
+      groupsToSelect.add(document.getElementById(follows.slice(1)));
     }
     const precedes = grouping.getAttribute('mei:precedes');
     if (precedes) {
-      groupsToSelect.add(document.querySelector('#' + precedes.slice(1)));
+      groupsToSelect.add(document.getElementById(precedes.slice(1)));
     }
   }
   // Select the elements
-  groupsToSelect.forEach((group: SVGGraphicsElement) => select(group, dragHandler, false));
+  groupsToSelect.forEach((group: SVGGraphicsElement) => { select(group, dragHandler); });
 
   /* Determine the context menu to display (if any) */
 
