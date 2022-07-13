@@ -65,8 +65,9 @@ class DragHandler {
      */
     const syls = this.selection.filter((el) => el.classList.contains('syl'));
     if (syls.length === 0) {
-      const bboxes = Array.from(document.querySelectorAll('.syllable.selected > .sylTextRect-display'));
-      this.returnElements(bboxes);
+      const bboxes = Array.from(document.querySelectorAll('.syllable.selected'))
+        .map(el => el.querySelector('.sylTextRect-display'));
+      this.moveElements(bboxes, -this.dx, -this.dy);
     }
   }
 
@@ -88,7 +89,14 @@ class DragHandler {
     // drag actions should not happen. Return an error notification and reset
     // the drag handler
     if (this.isCursorOutOfBounds() || this.isDragOutOfBounds(selection)) {
+      // Return the selection back to normal state
       this.returnElements(this.selection);
+
+      // Return the bounding boxes as well
+      const bboxes = Array.from(document.querySelectorAll('.syllable.selected'))
+        .map(el => el.querySelector('.sylTextRect-display'));
+      this.returnElements(bboxes);
+
       this.reset();
       this.dragInit();
       return queueNotification('[FAIL] Glyphs were placed out of bounds! Drag action failed.');
@@ -167,7 +175,7 @@ class DragHandler {
    * Visually move the selected elements by `dx` and `dy`; (not using d3)
    */
   moveElements (selection: Element[], dx: number, dy: number): void {
-    selection.forEach((el) => {
+    selection.filter(el => el !== null).forEach((el) => {
       el.setAttribute('transform', `translate(${dx},${dy})`);
     });
   }
@@ -177,7 +185,7 @@ class DragHandler {
    * by removing the transform attribute
    */
   returnElements (selection: Element[]): void {
-    selection.forEach((el) => {
+    selection.filter(el => el !== null).forEach((el) => {
       el.removeAttribute('transform');
     });
   }
