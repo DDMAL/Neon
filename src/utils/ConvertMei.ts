@@ -341,5 +341,8 @@ export function checkOutOfBoundsGlyphs (meiString: string): void {
     ['ulx', 'uly', 'lrx', 'lry'].some((attr) => isAttrOutOfBounds(zone, attr))
   );
 
-  if (isOutOfBounds) Notification.queueNotification('[WARN] This folio contains glyph(s) placed out-of-bounds!');
+  if (isOutOfBounds)
+    Notification.queueNotification('[WARN] This folio contains glyph(s) placed out-of-bounds!');
+  else
+    Notification.queueNotification('[INFO] This folio has no out-of-bound glyphs.');
 }
