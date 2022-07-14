@@ -1,7 +1,8 @@
 import NeonView from '../NeonView';
 import { EditorAction, InsertAction } from '../Types';
 import * as d3 from 'd3';
-import { getSVGRelCoords, Point } from '../utils/Coordinates';
+import { getSVGRelCoords, isOutOfSVGBounds, Point } from '../utils/Coordinates';
+import { queueNotification } from '../utils/Notification';
 
 /**
  * Class that handles insert mode, events, and actions.
@@ -210,7 +211,11 @@ class InsertHandler {
   handler = (function handler (evt: MouseEvent): void {
     evt.stopPropagation();
 
+    // If the cursor is out of bounds, nothing should be inserted.
     const cursor = getSVGRelCoords(evt.clientX, evt.clientY);
+    if (isOutOfSVGBounds(cursor.x, cursor.y))
+      return queueNotification('[FAIL] Glyph was placed out of bounds! Insertion failed.');
+
     const editorAction: InsertAction = {
       action: 'insert',
       param: {

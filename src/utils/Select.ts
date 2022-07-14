@@ -8,7 +8,7 @@ import { InfoInterface } from '../Interfaces';
 import ZoomHandler from '../SingleView/Zoom';
 
 import * as d3 from 'd3';
-import { getStaffByCoords, getSVGRelCoords } from './Coordinates';
+import { BBox, getStaffByCoords, isBBoxInRect, Point } from './Coordinates';
 
 let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 let strokeWidth = 7;
@@ -96,6 +96,51 @@ function isSelByBBox (): boolean {
 }
 
 function stopPropHandler (evt: Event): void { evt.stopPropagation(); }
+
+/**
+ * Get bounding box of an element
+ */
+function getBBoxCoords (el: SVGGraphicsElement): BBox {
+  if (isSelByBBox()) {
+    const ulx = Number(el.getAttribute('x')), uly = Number(el.getAttribute('y'));
+    // What is the math here???
+    const lrx = ulx + Number((el.getAttribute('width').slice(0, -2)));
+    const lry = uly + Number((el.getAttribute('height').slice(0, -2)));
+
+    return { ulx, uly, lrx, lry };
+  }
+
+  if (el.tagName === 'use') {
+    const rect = (el.parentNode as SVGGElement).getBBox();
+
+    return {
+      ulx: rect.x,
+      uly: rect.y,
+      lrx: rect.x + rect.width,
+      lry: rect.y + rect.height
+    };
+  }
+
+  return getStaffBBox(el);
+}
+
+
+/**
+ * Checks whether an element is within the drag selection rectangle.
+ * Returns true if the element is within the bounds of `ul` (upper left) and `lr` (lower right)
+ */
+function isElementInRect(el: SVGGraphicsElement, ul: Point, lr: Point): boolean {
+  if (isSelByBBox()) return isBBoxInRect(getBBoxCoords(el), ul, lr);
+  if (el.tagName === 'use') return isBBoxInRect(getBBoxCoords(el), ul, lr);
+
+  // TODO: Simplify
+  const box = getStaffBBox(el);
+  return !((ul.x < box.ulx && lr.x < box.ulx) || (ul.x > box.lrx && lr.x > box.lrx) ||
+          (ul.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate)) &&
+            lr.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate))) ||
+          (ul.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.rotate)) &&
+            lr.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.rotate))));
+}
 
 /**
  * Apply listeners for click selection.
@@ -292,6 +337,8 @@ export function dragSelect (selector: string): void {
   let dragSelecting = false;
   // var canvas = d3.select('#svg_group');
 
+  const canvas = d3.select(selector);
+
   /**
    * Check if a point is in the bounds of a staff element.
    * Rotate is not taken into account.
@@ -312,8 +359,6 @@ export function dragSelect (selector: string): void {
     });
     return (filtered.length === 0);
   }
-
-  const canvas = d3.select(selector);
 
   /**
      * Create an initial dragging rectangle.
@@ -375,6 +420,16 @@ export function dragSelect (selector: string): void {
       .attr('height', currentHeight);
   }
 
+  function getElementsBySelector (selector: string): SVGGraphicsElement[] {
+    if (document.getElementById('selByStaff').classList.contains('is-active'))
+      return Array.from(document.querySelectorAll(selector + ' use, ' + selector + ' .staff'));
+
+    if (isSelByBBox())
+      return Array.from(document.querySelectorAll(selector + ' .sylTextRect-display'));
+
+    return Array.from(document.querySelectorAll(selector + ' use'));
+  }
+
   function selecting (): void {
     if (!panning && dragSelecting) {
       const currentPt = d3.mouse(this);
@@ -401,58 +456,23 @@ export function dragSelect (selector: string): void {
       const ry = parseInt(selectRect.getAttribute('y'));
       const lx = rx + parseInt(selectRect.getAttribute('width'));
       const ly = ry + parseInt(selectRect.getAttribute('height'));
+
       // Transform to the correct coordinate system
       const node = canvas.node() as SVGSVGElement;
-      let ul = node.createSVGPoint();
-      ul.x = rx;
-      ul.y = ry;
-      let lr = node.createSVGPoint();
-      lr.x = lx;
-      lr.y = ly;
+      let ul = new DOMPoint(rx, ry), lr = new DOMPoint(lx, ly);
       const transform = node.getScreenCTM().inverse()
-        .multiply((canvas.select('.system').node() as SVGGraphicsElement)
-          .getScreenCTM()).inverse();
+        .multiply((canvas.select('.system').node() as SVGGraphicsElement).getScreenCTM())
+        .inverse();
       ul = ul.matrixTransform(transform);
       lr = lr.matrixTransform(transform);
 
-      let nc;
-      if (document.getElementById('selByStaff').classList.contains('is-active')) {
-        nc = document.querySelectorAll(selector + ' use, ' + selector + ' .staff');
-      } else if (isSelByBBox()) {
-        nc = document.querySelectorAll(selector + ' .sylTextRect-display');
-      } else {
-        nc = document.querySelectorAll(selector + ' use');
-      }
-      const els = Array.from(nc);
-
-      const elements = els.filter(function (d: SVGGraphicsElement): boolean {
-        let ulx, uly, lrx, lry;
-        if (isSelByBBox()) {
-          ulx = Number(d.getAttribute('x'));
-          uly = Number(d.getAttribute('y'));
-          lrx = +ulx + +(d.getAttribute('width').slice(0, -2));
-          lry = +uly + +(d.getAttribute('height').slice(0, -2));
-          return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
-        } else if (d.tagName === 'use') {
-          const box = (d.parentNode as SVGGElement).getBBox();
-          ulx = box.x;
-          uly = box.y;
-          lrx = box.x + box.width;
-          lry = box.y + box.height;
-          return !(((ul.x < ulx && lr.x < ulx) || (ul.x > lrx && lr.x > lrx)) || ((ul.y < uly && lr.y < uly) || (ul.y > lry && lr.y > lry)));
-        } else {
-          const box = getStaffBBox(d);
-          return !((ul.x < box.ulx && lr.x < box.ulx) ||
-                  (ul.x > box.lrx && lr.x > box.lrx) ||
-                  (ul.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate)) &&
-                    lr.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate))) ||
-                  (ul.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.rotate)) &&
-                    lr.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.rotate))));
-        }
-      }) as SVGGraphicsElement[];
+      // Get all elements corresponding to the selector
+      const elements = getElementsBySelector(selector);
+      // Get the elements within the selection rectangle
+      const selectedElements = elements.filter(el => isElementInRect(el, ul, lr));
 
       // Get other halves of ligatures if only one is selected
-      elements.forEach((element: SVGElement) => {
+      selectedElements.forEach((element: SVGElement) => {
         if (element.tagName === 'use' && element.getAttribute('xlink:href').match(/E9B[456789ABC]/)) {
           const neume = element.closest('.neume');
           const ncIndex = Array.from(neume.children).indexOf(element.closest('.nc'));
@@ -460,20 +480,20 @@ export function dragSelect (selector: string): void {
             // Add second half of ligature to selected list if not already present
             const secondNc = neume.children[ncIndex + 1];
             const secondUse = secondNc.querySelector('use');
-            if (elements.indexOf(secondUse) < 0) {
-              elements.push(secondUse);
+            if (selectedElements.indexOf(secondUse) < 0) {
+              selectedElements.push(secondUse);
             }
           } else {
             // Add first half of ligature to selected list if not already present
             const firstNc = neume.children[ncIndex - 1];
             const firstUse = firstNc.querySelector('use');
-            if (elements.indexOf(firstUse) < 0) {
-              elements.push(firstUse);
+            if (selectedElements.indexOf(firstUse) < 0) {
+              selectedElements.push(firstUse);
             }
           }
         }
       });
-      selectAll(elements, neonView, dragHandler);
+      selectAll(selectedElements, neonView, dragHandler);
 
       if (dragHandler) {
         dragHandler.dragInit();
