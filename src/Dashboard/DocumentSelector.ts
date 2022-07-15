@@ -2,7 +2,7 @@ import { getAllDocuments, deleteEntry } from './storage';
 import { formatFilename } from './functions';
 import { allDocs } from '../Types';
 import { documents } from './documents';
-import { selectedDocs } from '../../deployment/scripts/dashboard';
+import { fm, selectedDocs } from '../../deployment/scripts/dashboard';
 
 const uploadedDocsContainer = document.querySelector('#uploaded-docs-content');
 const sampleDocsContainer = document.querySelector('#sample-docs-content');
@@ -71,8 +71,6 @@ export async function updateDocumentSelector(): Promise<void> {
   
   if (sampleDocs.length === 0) {
     const doc = document.createElement('div');
-    doc.classList.add('document-entry');
-    doc.classList.add('sample-doc');
     doc.innerHTML = 'No Documents Uploaded';
     sampleDocsContainer.appendChild(doc);
   } 
@@ -149,9 +147,9 @@ export const InitDocumentSelector = (): void => {
   function handleOpenDocuments() {
     for (let i=0; i<selectedDocs.length; i++) {
       const doc = selectedDocs[i];
-      const filename = doc.querySelector('.filename-text').innerText;
       const isUploaded = (doc.classList.contains('uploaded-doc'))? true : false;
-      openEditorTab(`${filename}.mei`, isUploaded);
+      const filename =  isUploaded? `${doc.querySelector('.filename-text').innerText}.mei` : doc.querySelector('.filename-text').innerText;
+      openEditorTab(filename, isUploaded);
     }
     selectedDocs.length = 0;
     Array.from(document.querySelectorAll('.document-entry.elected'))

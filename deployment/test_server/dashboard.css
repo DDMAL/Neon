@@ -183,11 +183,11 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   opacity: 0.4;
 }
 .action-bar-item-container.active {
   opacity: 1;
+  cursor: pointer;
 }
 #upload-new-doc-button {
   border-radius: 3px;
@@ -335,7 +335,6 @@ a {
   justify-content: space-between;
   align-items: center;
   align-content: center;
-  flex-wrap: wrap;
 }
 
 .file_container {
