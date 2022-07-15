@@ -159,10 +159,9 @@ export const InitDocumentSelector = (): void => {
 
   // gets user selected filenames 
   function getSelection() {
-    const dropdown: HTMLSelectElement = document.querySelector('#documents_dropdown');
-    return [...dropdown.options]
-      .filter(option => option.selected)
-      .map(option => option.value);
+    const selectedDocs = Array.from(document.querySelectorAll('.document-entry.selected'));
+    const filenames = selectedDocs.map((doc) => `${doc.querySelector('.filename-text').innerHTML}.mei`);
+    return filenames;
   }
 
   function openEditorTab(filename: string, isUploaded: boolean) {
