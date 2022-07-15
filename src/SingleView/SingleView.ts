@@ -114,7 +114,9 @@ class SingleView implements ViewInterface {
     else
       this.group.setAttribute('viewBox', viewBox);
 
-    updateHighlight();
+    // this.updateCallbacks includes the function updateVisualization, which
+    // already calles updateHighlight():
+    // updateHighlight();
     this.resetTransformations();
     this.updateCallbacks.forEach(callback => callback());
   }

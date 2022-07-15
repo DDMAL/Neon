@@ -101,6 +101,8 @@ class TextView implements TextViewInterface {
         displayAllBtn.classList.add('selected');
         displayAllBtn.innerHTML = 'Hide All';
       }
+
+      updateHighlight();
     } 
     else {
       if (document.getElementById('selByBBox')?.classList.contains('is-active')) {
@@ -129,7 +131,6 @@ class TextView implements TextViewInterface {
         displayAllBtn.innerHTML = 'Display All';
       }
     }
-    updateHighlight();
   }
 
   /**
