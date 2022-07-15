@@ -2,7 +2,7 @@ import NeonView from '../NeonView';
 import { SetTextAction } from '../Types';
 import { ModalWindowInterface } from '../Interfaces';
 import { hotkeysModal, editTextModal } from '../SquareEdit/Contents';
-import { uploadAreaHTML } from '../LandingPage/uploadArea';
+import { uploadAreaHTML } from '../Dashboard/dashboard_components';
 
 
 /**

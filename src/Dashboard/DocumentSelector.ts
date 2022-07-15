@@ -2,7 +2,7 @@ import { getAllDocuments, deleteEntry } from './storage';
 import { formatFilename } from './functions';
 import { allDocs } from '../Types';
 import { documents } from './documents';
-import { selectedDocs} from '../../deployment/scripts/dashboard';
+import { selectedDocs } from '../../deployment/scripts/dashboard';
 
 const uploadedDocsContainer = document.querySelector('#uploaded-docs-content');
 const sampleDocsContainer = document.querySelector('#sample-docs-content');

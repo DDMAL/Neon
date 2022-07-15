@@ -1,11 +1,10 @@
-import { InitDocumentSelector, updateDocumentSelector } from '../../src/LandingPage/DocumentSelector';
-import { handleMakePair, handleUploadAllDocuments } from '../../src/LandingPage/UploadManager';
-import { InitUploadArea } from '../../src/LandingPage/uploadArea';
-import FileManager from '../../src/LandingPage/FileManager';
+import { InitDocumentSelector, updateDocumentSelector } from '../../src/Dashboard/DocumentSelector';
+import { handleMakePair, handleUploadAllDocuments } from '../../src/Dashboard/UploadManager';
+import { InitUploadArea } from '../../src/Dashboard/uploadArea';
+import FileManager from '../../src/Dashboard/FileManager';
 
 export const fm = FileManager.getInstance();
 export const selectedDocs = [];
-export var commandKeyIsPressed = false;
 
 InitDocumentSelector();
 
