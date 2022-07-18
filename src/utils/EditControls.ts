@@ -19,13 +19,13 @@ export function initNavbar (neonView: NeonView): void {
 
   document.getElementById('save').addEventListener('click', () => {
     neonView.save().then(() => {
-      Notification.queueNotification('Saved');
+      Notification.queueNotification('Saved', 'success');
     });
   });
   document.body.addEventListener('keydown', (evt) => {
     if (evt.key === 's') {
       neonView.save().then(() => {
-        Notification.queueNotification('Saved');
+        Notification.queueNotification('Saved', 'success');
       });
     }
   });
@@ -38,7 +38,7 @@ export function initNavbar (neonView: NeonView): void {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      Notification.queueNotification('Saved');
+      Notification.queueNotification('Saved', 'success');
     });
   });
 
@@ -84,7 +84,7 @@ export function initNavbar (neonView: NeonView): void {
 
       // check if empty syllables were found
       if (!hasEmptySyllables) {
-        Notification.queueNotification('No empty syllables found');
+        Notification.queueNotification('No empty syllables found', 'warning');
       }
       else {
         // create "chain action" object
@@ -98,10 +98,10 @@ export function initNavbar (neonView: NeonView): void {
         neonView.edit(chainRemoveAction, uri).then((result) => {
           if (result) {
             neonView.updateForCurrentPage();
-            Notification.queueNotification('Removed empty Syllables');
+            Notification.queueNotification('Removed empty Syllables', 'success');
           }
           else {
-            Notification.queueNotification('Failed to remove empty Syllables');
+            Notification.queueNotification('Failed to remove empty Syllables', 'error');
           }
         });
       }
@@ -138,7 +138,7 @@ export function initNavbar (neonView: NeonView): void {
 
       // check if empty neumes were found
       if (!hasEmptyNeumes) {
-        Notification.queueNotification('No empty Neumes found');
+        Notification.queueNotification('No empty Neumes found', 'warning');
       }
       else {
         // create "chain action" object
@@ -152,13 +152,84 @@ export function initNavbar (neonView: NeonView): void {
         neonView.edit(chainRemoveAction, uri).then((result) => {
           if (result) {
             neonView.updateForCurrentPage();
-            Notification.queueNotification('Removed empty Neumes');
+            Notification.queueNotification('Removed empty Neumes', 'success');
           }
           else {
-            Notification.queueNotification('Failed to remove empty Neumes');
+            Notification.queueNotification('Failed to remove empty Neumes', 'error');
           }
         });
       }
+    });
+  });
+
+  document.getElementById('remove-out-of-bounds-glyphs').addEventListener('click', function () {
+    const uri = neonView.view.getCurrentPageURI();
+    neonView.getPageMEI(uri).then(meiString => {
+      // Load MEI document into parser
+      const parser = new DOMParser();
+      const meiDoc = parser.parseFromString(meiString, 'text/xml');
+      const mei = meiDoc.documentElement;
+
+      // Get bounds of the MEI
+      const dimensions = mei.querySelector('surface');
+      const meiLrx = Number(dimensions.getAttribute('lrx')), meiLry = Number(dimensions.getAttribute('lry'));
+
+      function isAttrOutOfBounds(zone: Element, attr: string): boolean {
+        const coord = Number(zone.getAttribute(attr));
+        const comp = (attr == 'lrx' || attr == 'ulx') ? meiLrx : meiLry;
+        return coord < 0 || coord > comp;
+      }
+
+      // Get array of zones that are out of bound, and create a hash map
+      // for fast retrieval
+      const zones = Array.from(mei.querySelectorAll('zone'));
+      const outOfBoundZones = zones.filter(zone =>
+        ['ulx', 'uly', 'lrx', 'lry'].some((attr) => isAttrOutOfBounds(zone, attr))
+      );
+      const zoneMap = new Map(outOfBoundZones.map(zone => [zone.getAttribute('xml:id'), zone]));
+
+      // Filter out the neume components and divlines that have a zone out of bounds
+      const glyphs = Array.from(mei.querySelectorAll('nc, divLine, clef, accid'));
+      const outOfBoundGlyphs = glyphs.filter(glyph => {
+        if (glyph.hasAttribute('facs')) {
+          const facsId = glyph.getAttribute('facs').slice(1);
+          return zoneMap.has(facsId);
+        }
+
+        return false;
+      });
+
+      // Check if there are no out-of-bound glyphs, and 
+      // exit, since no edit needs to be made.
+      if (outOfBoundGlyphs.length === 0) {
+        return Notification.queueNotification('There are no out-of-bound glyphs to remove.', 'warning');
+      }
+
+      // Create remove actions and chain action to send to Verovio
+      const removeActions: EditorAction[] = outOfBoundGlyphs.map(glyph => {
+        return {
+          action: 'remove',
+          param: {
+            elementId: glyph.getAttribute('xml:id'),
+          }
+        };
+      });
+
+      const chainAction: EditorAction = {
+        action: 'chain',
+        param: removeActions,
+      };
+
+      neonView.edit(chainAction, uri)
+        .then((result) => {
+          if (result) {
+            neonView.updateForCurrentPage();
+            Notification.queueNotification('Successfully removed out-of-bounds syllables.', 'success');
+          }
+          else {
+            Notification.queueNotification('Failed to remove out-of-bound syllables.', 'error');
+          }
+        });
     });
   });
 

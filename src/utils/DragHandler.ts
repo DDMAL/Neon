@@ -99,7 +99,7 @@ class DragHandler {
 
       this.reset();
       this.dragInit();
-      return queueNotification('[FAIL] Glyphs were placed out of bounds! Drag action failed.');
+      return queueNotification('[FAIL] Glyphs were placed out of bounds! Drag action failed.', 'error');
     }
 
     // Create the chain editor action for selection

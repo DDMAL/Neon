@@ -214,7 +214,7 @@ class InsertHandler {
     // If the cursor is out of bounds, nothing should be inserted.
     const cursor = getSVGRelCoords(evt.clientX, evt.clientY);
     if (isOutOfSVGBounds(cursor.x, cursor.y))
-      return queueNotification('[FAIL] Glyph was placed out of bounds! Insertion failed.');
+      return queueNotification('[FAIL] Glyph was placed out of bounds! Insertion failed.', 'error');
 
     const editorAction: InsertAction = {
       action: 'insert',

@@ -1,4 +1,4 @@
-import { convertSbToStaff } from './utils/ConvertMei';
+import { checkOutOfBoundsGlyphs, convertSbToStaff } from './utils/ConvertMei';
 import * as Validation from './Validation';
 import VerovioWrapper from './VerovioWrapper';
 import { WebAnnotation, Attributes, EditorAction, NeonManifest, VerovioMessage } from './Types';
@@ -208,6 +208,8 @@ class NeonCore {
             if (data.match(/<sb .+>/)) {
               data = convertSbToStaff(data);
             }
+
+            checkOutOfBoundsGlyphs(data);
             this.loadData(pageURI, data).then(() => {
               resolve(this.neonCache.get(pageURI));
             });
