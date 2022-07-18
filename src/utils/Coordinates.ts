@@ -72,16 +72,6 @@ export function isOutOfSVGBounds (x: number, y: number): boolean {
 }
 
 /**
- * Check whether the bounding box of an element is within the rectangle defined
- * by the upper left and lower right points `ul` and `lr`
- */
-export function isBBoxInRect (bbox: BBox, ulPoint: Point, lrPoint: Point): boolean {
-  const isXRange = (bbox.ulx >= ulPoint.x) && (bbox.lrx <= lrPoint.x);
-  const isYRange = (bbox.uly >= ulPoint.y) && (bbox.lry <= lrPoint.y);
-  return isXRange && isYRange;
-}
-
-/**
  * Get bounding box (lrx, lry, ulx, uly) of a glyph, which
  * is a <use> element in the SVG
  */

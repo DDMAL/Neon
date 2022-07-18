@@ -8,7 +8,7 @@ import { InfoInterface } from '../Interfaces';
 import ZoomHandler from '../SingleView/Zoom';
 
 import * as d3 from 'd3';
-import { BBox, getStaffByCoords, isBBoxInRect, Point } from './Coordinates';
+import { BBox, getStaffByCoords, Point } from './Coordinates';
 
 let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
 let strokeWidth = 7;
@@ -130,8 +130,14 @@ function getBBoxCoords (el: SVGGraphicsElement): BBox {
  * Returns true if the element is within the bounds of `ul` (upper left) and `lr` (lower right)
  */
 function isElementInRect(el: SVGGraphicsElement, ul: Point, lr: Point): boolean {
-  if (isSelByBBox()) return isBBoxInRect(getBBoxCoords(el), ul, lr);
-  if (el.tagName === 'use') return isBBoxInRect(getBBoxCoords(el), ul, lr);
+  if (isSelByBBox() || el.tagName === 'use') {
+    const bbox = getBBoxCoords(el);
+    
+    // We want to find whether the bounding box overlaps with the rectangle
+    // defined by `ul` and `lr`. The easiest solution is to negate a sum-of-products equation:
+    // i.e., there are 4 possibilities in which the two *don't* overlap
+    return !(lr.x < bbox.ulx || ul.x > bbox.lrx || lr.y < bbox.uly || ul.y > bbox.lry);
+  }
 
   // TODO: Simplify
   const box = getStaffBBox(el);
