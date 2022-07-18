@@ -224,10 +224,10 @@ export function initNavbar (neonView: NeonView): void {
         .then((result) => {
           if (result) {
             neonView.updateForCurrentPage();
-            Notification.queueNotification('[SUCCESS] Successfully removed out-of-bounds syllables.');
+            Notification.queueNotification('Successfully removed out-of-bounds syllables.', 'success');
           }
           else {
-            Notification.queueNotification('[FAIL] Failed to remove out-of-bound syllables.');
+            Notification.queueNotification('Failed to remove out-of-bound syllables.', 'error');
           }
         });
     });

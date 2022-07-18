@@ -343,5 +343,5 @@ export function checkOutOfBoundsGlyphs (meiString: string): void {
   );
 
   if (isOutOfBounds)
-    Notification.queueNotification('[WARN] This folio contains glyph(s) placed out-of-bounds!');
+    Notification.queueNotification('This folio contains glyph(s) placed out-of-bounds!', 'warning');
 }
