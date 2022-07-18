@@ -84,7 +84,7 @@ export function initNavbar (neonView: NeonView): void {
 
       // check if empty syllables were found
       if (!hasEmptySyllables) {
-        Notification.queueNotification('No empty syllables found');
+        Notification.queueNotification('No empty syllables found', 'warning');
       }
       else {
         // create "chain action" object
@@ -138,7 +138,7 @@ export function initNavbar (neonView: NeonView): void {
 
       // check if empty neumes were found
       if (!hasEmptyNeumes) {
-        Notification.queueNotification('No empty Neumes found');
+        Notification.queueNotification('No empty Neumes found', 'warning');
       }
       else {
         // create "chain action" object
@@ -202,7 +202,7 @@ export function initNavbar (neonView: NeonView): void {
       // Check if there are no out-of-bound glyphs, and 
       // exit, since no edit needs to be made.
       if (outOfBoundGlyphs.length === 0) {
-        return Notification.queueNotification('There are no out-of-bound glyphs to remove.');
+        return Notification.queueNotification('There are no out-of-bound glyphs to remove.', 'warning');
       }
 
       // Create remove actions and chain action to send to Verovio
