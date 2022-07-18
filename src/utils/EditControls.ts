@@ -199,6 +199,12 @@ export function initNavbar (neonView: NeonView): void {
         return false;
       });
 
+      // Check if there are no out-of-bound glyphs, and 
+      // exit, since no edit needs to be made.
+      if (outOfBoundGlyphs.length === 0) {
+        return Notification.queueNotification('There are no out-of-bound glyphs to remove.');
+      }
+
       // Create remove actions and chain action to send to Verovio
       const removeActions: EditorAction[] = outOfBoundGlyphs.map(glyph => {
         return {
