@@ -189,7 +189,7 @@ export function initNavbar (neonView: NeonView): void {
       const zoneMap = new Map(outOfBoundZones.map(zone => [zone.getAttribute('xml:id'), zone]));
 
       // Filter out the neume components and divlines that have a zone out of bounds
-      const glyphs = Array.from(mei.querySelectorAll('nc, divLine'));
+      const glyphs = Array.from(mei.querySelectorAll('nc, divLine, clef, accid'));
       const outOfBoundGlyphs = glyphs.filter(glyph => {
         if (glyph.hasAttribute('facs')) {
           const facsId = glyph.getAttribute('facs').slice(1);
