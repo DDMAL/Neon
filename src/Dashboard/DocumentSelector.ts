@@ -41,6 +41,7 @@ export async function updateDocumentSelector(): Promise<void> {
   if (uploadedDocs.length === 0) {
     const doc = document.createElement('div');
     //doc.classList.add('document-entry');
+    doc.id = 'no-docs-msg';
     doc.innerHTML = 'No Documents Uploaded';
     uploadedDocsContainer.appendChild(doc);
   } 
@@ -152,7 +153,11 @@ export const InitDocumentSelector = (): void => {
       openEditorTab(filename, isUploaded);
     }
     selectedDocs.length = 0;
-    Array.from(document.querySelectorAll('.document-entry.elected'))
+    Array.from(document.querySelectorAll('.document-entry.selected')).forEach((doc) => {
+      doc.classList.remove('selected');
+      document.querySelector('#remove-doc').classList.remove('active');
+      document.querySelector('#open-doc').classList.remove('active');
+    });
   }
 
   // gets user selected filenames 

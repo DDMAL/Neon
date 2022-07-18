@@ -13,7 +13,7 @@ module.exports = {
     dashboard: './deployment/scripts/dashboard.ts',
   },
   output: {
-    path: path.resolve(__dirname, 'dist', 'Neon'),
+    path: path.resolve(__dirname, 'deployment', 'test_server', 'Neon-gh'),
     publicPath: '/',
     filename: '[name].js'
   },
@@ -35,7 +35,7 @@ module.exports = {
         use: [
           {
             loader: 'worker-loader',
-            options: { publicPath: '/Neon/' }
+            options: { publicPath: '/Neon-gh/' }
           }
         ]
       }
@@ -53,7 +53,7 @@ module.exports = {
     new webpack.DefinePlugin({
       __LINK_LOCATION__: JSON.stringify('/'),
       __NEON_VERSION__: JSON.stringify(commitHash),
-      __ASSET_PREFIX__: JSON.stringify('/Neon/')
+      __ASSET_PREFIX__: JSON.stringify('/Neon-gh/')
     })
   ]
 };
