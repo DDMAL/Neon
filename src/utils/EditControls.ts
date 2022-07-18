@@ -19,13 +19,13 @@ export function initNavbar (neonView: NeonView): void {
 
   document.getElementById('save').addEventListener('click', () => {
     neonView.save().then(() => {
-      Notification.queueNotification('Saved');
+      Notification.queueNotification('Saved', 'success');
     });
   });
   document.body.addEventListener('keydown', (evt) => {
     if (evt.key === 's') {
       neonView.save().then(() => {
-        Notification.queueNotification('Saved');
+        Notification.queueNotification('Saved', 'success');
       });
     }
   });
@@ -38,7 +38,7 @@ export function initNavbar (neonView: NeonView): void {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      Notification.queueNotification('Saved');
+      Notification.queueNotification('Saved', 'success');
     });
   });
 
@@ -98,10 +98,10 @@ export function initNavbar (neonView: NeonView): void {
         neonView.edit(chainRemoveAction, uri).then((result) => {
           if (result) {
             neonView.updateForCurrentPage();
-            Notification.queueNotification('Removed empty Syllables');
+            Notification.queueNotification('Removed empty Syllables', 'success');
           }
           else {
-            Notification.queueNotification('Failed to remove empty Syllables');
+            Notification.queueNotification('Failed to remove empty Syllables', 'error');
           }
         });
       }
@@ -152,10 +152,10 @@ export function initNavbar (neonView: NeonView): void {
         neonView.edit(chainRemoveAction, uri).then((result) => {
           if (result) {
             neonView.updateForCurrentPage();
-            Notification.queueNotification('Removed empty Neumes');
+            Notification.queueNotification('Removed empty Neumes', 'success');
           }
           else {
-            Notification.queueNotification('Failed to remove empty Neumes');
+            Notification.queueNotification('Failed to remove empty Neumes', 'error');
           }
         });
       }

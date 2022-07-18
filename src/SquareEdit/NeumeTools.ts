@@ -58,11 +58,11 @@ export class SplitNeumeHandler {
     this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(async (result) => {
       if (result) {
         await this.neonView.updateForCurrentPage();
-        Notification.queueNotification('Split action successful');
+        Notification.queueNotification('Split action successful', 'success');
       } 
       else {
         await this.neonView.updateForCurrentPage();
-        Notification.queueNotification('Split action failed');
+        Notification.queueNotification('Split action failed', 'error');
       }
       // this.neonView.updateForCurrentPage();
       // const dragHandler = new DragHandler(this.neonView, '.neume');
