@@ -244,9 +244,13 @@ class InsertHandler {
    * Event handler to insert a staff.
    */
   staffHandler = (function staffHandler (evt: MouseEvent): void {
-    const container = document.querySelector('.active-page > .definition-scale');
-
     const cursor = getSVGRelCoords(evt.clientX, evt.clientY);
+
+    if (isOutOfSVGBounds(cursor.x, cursor.y)) {
+      return queueNotification('Staff cannot be placed out of bounds!', 'error');
+    }
+
+    const container = document.querySelector('.active-page > .definition-scale');
 
     if (this.firstClick) {
       this.coord = cursor;
