@@ -76,7 +76,7 @@ export function isOutOfSVGBounds (x: number, y: number): boolean {
  * is a <use> element in the SVG
  */
 export function getGlyphBBox (use: SVGUseElement): BBox {
-  const rect = (use.parentNode as SVGGElement).getBBox();
+  const rect = use.getBBox();
 
   return {
     ulx: rect.x,
