@@ -204,13 +204,13 @@ export function insertToSyllableHandler(): void {
 /**
  * Function to handle moving divisio or accidental out of syllable
  */
-export function moveOuttaSyllableHandler(): void {
+export function moveOutsideSyllableHandler(): void {
   const toMove: EditorAction[] = [];
   const selected = Array.from(document.getElementsByClassName('selected'));
   selected.forEach(elem => {
     toMove.push(
       {
-        action: 'moveOuttaSyllable',
+        action: 'moveOutsideSyllable',
         param: {
           elementId: elem.id
         }
@@ -667,7 +667,7 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
 
   addChangeStaffListener();
   document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
-  document.getElementById('moveOuttaSyllable')?.addEventListener('click', moveOuttaSyllableHandler);
+  document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
 
   document.querySelector('#ChangeToFlat.dropdown-item')
     .addEventListener('click', () => {
@@ -728,7 +728,7 @@ export function triggerLayerElementActions (element: SVGGraphicsElement): void {
 
   addChangeStaffListener();
   document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
-  document.getElementById('moveOuttaSyllable')?.addEventListener('click', moveOuttaSyllableHandler);
+  document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
 }
 
 

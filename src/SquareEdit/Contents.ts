@@ -264,7 +264,7 @@ export const layerElementOutActionContents =
 export const layerElementInActionContents =
     `<div class="right-side-panel-btns-container">
         <button class="side-panel-btn" id="delete">Delete</button>
-        <button class="side-panel-btn" id="moveOuttaSyllable">Move out of syllable</button>
+        <button class="side-panel-btn" id="moveOutsideSyllable">Move out of syllable</button>
         <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
     </div>`;
 
