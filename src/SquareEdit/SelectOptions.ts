@@ -104,11 +104,16 @@ export function deleteButtonHandler (evt: KeyboardEvent): void {
  * End the extra options menu.
  */
 export function endOptionsSelection (): void {
-  try {
-    const moreEdit = document.getElementById('moreEdit');
+  const moreEdit = document.getElementById('moreEdit');
+  const extraEdit = document.getElementById('extraEdit');
+  if (moreEdit) {
     moreEdit.innerHTML = '';
     moreEdit.parentElement.classList.add('hidden');
-  } catch (e) {}
+  }
+  if (extraEdit) {
+    extraEdit.innerHTML = '';
+    extraEdit.parentElement.classList.add('hidden');
+  }
   document.body.removeEventListener('keydown', deleteButtonHandler);
 }
 
