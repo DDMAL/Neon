@@ -574,15 +574,7 @@ export function triggerNeumeActions (): void {
 export function triggerSyllableActions (): void {
   endOptionsSelection();
 
-  const extraActionsHTML = `
-    <div class="right-side-panel-btns-container">
-      <button class="side-panel-btn" id="mergeSyls">Merge Syllables</button>
-      <button class="side-panel-btn" id="ungroupNeumes">Ungroup</button>
-      <button class="side-panel-btn" id="delete">Delete</button>
-      <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
-    </div>
-  `;
-  setEditControls('moreEdit', extraActionsHTML);
+  setEditControls('moreEdit', Contents.syllableActionsContent);
   addChangeStaffListener();
   addDeleteListener();
 }
@@ -594,10 +586,17 @@ export function triggerSyllableActions (): void {
 export function triggerClefActions (clef: SVGGraphicsElement): void {
   endOptionsSelection();
 
-  setEditControls('moreEdit', Contents.custosActionContents);
+  const isClefInSyllable = clef.parentElement.classList.contains('syllable');
+  const moreEditContents = (isClefInSyllable)
+    ? Contents.layerElementInActionContents
+    : Contents.layerElementOutActionContents;
+  setEditControls('moreEdit', moreEditContents);
   setEditControls('extraEdit', Contents.clefActionContents);
-  addChangeStaffListener();
   addDeleteListener();
+
+  addChangeStaffListener();
+  document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
+  document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
 
   document.querySelector('#CClef.dropdown-item')
     .addEventListener('click', () => {
