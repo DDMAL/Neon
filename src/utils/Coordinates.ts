@@ -75,8 +75,8 @@ export function isOutOfSVGBounds (x: number, y: number): boolean {
  * Get bounding box (lrx, lry, ulx, uly) of a glyph, which
  * is a <use> element in the SVG
  */
-export function getGlyphBBox (use: SVGUseElement): BBox {
-  const rect = use.getBBox();
+export function getGlyphBBox (g: SVGRectElement | SVGUseElement): BBox {
+  const rect = (g.tagName == 'rect') ? g.getBBox() : (g.parentNode as SVGGElement).getBBox();
 
   return {
     ulx: rect.x,
