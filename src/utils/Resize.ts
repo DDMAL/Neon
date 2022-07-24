@@ -4,6 +4,8 @@ import DragHandler from './DragHandler';
 
 import * as d3 from 'd3';
 import { EditorAction, ResizeAction } from '../Types';
+import { isOutOfSVGBounds } from './Coordinates';
+import { queueNotification } from './Notification';
 
 /**
  * Resize a staff or a syllable text bounding box.
@@ -25,7 +27,7 @@ const PointNames = {
   Left: 7
 };
 
-function GetPoints(ulx: number, uly: number, lrx: number, lry: number, rotate: number): Point[] {
+function getPoints(ulx: number, uly: number, lrx: number, lry: number, rotate: number): Point[] {
   // Note that arc functions return an angle x in [-pi/2, pi/2].
   let points: Array<Point>;
   // ul is ulx, uly, lr is lrx, lry
@@ -89,7 +91,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
    * Redraw the rectangle with the new bounds
    */
   function redraw (): void {
-    const points: Point[] = GetPoints(ulx, uly, lrx, lry, rotate);
+    const points: Point[] = getPoints(ulx, uly, lrx, lry, rotate);
 
     const pointString: string = points.filter((_elem, index) => { return index % 2 === 0; })
       .map(elem => elem.x + ',' + elem.y)
@@ -157,7 +159,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
 
     let whichPoint: string;
 
-    const points = GetPoints(ulx, uly, lrx, lry, rotate);
+    const points = getPoints(ulx, uly, lrx, lry, rotate);
 
     polyLen = points[2].x - points[0].x;
 
@@ -235,6 +237,23 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
     }
 
     function resizeEnd (): void {
+      if (isOutOfSVGBounds(ulx, uly) || isOutOfSVGBounds(lrx, lry)) {
+        document.querySelectorAll('.resizePoint').forEach(el => el.remove());
+        document.querySelectorAll('#resizeRect').forEach(el => el.remove());
+        document.querySelectorAll('.rotatePoint').forEach(el => el.remove());
+        drawInitialRect();
+        if (element.classList.contains('syl')) {
+          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
+        } else {
+          try {
+            document.getElementById('moreEdit').innerHTML = '';
+            document.getElementById('moreEdit').parentElement.classList.add('hidden');
+          } catch (e) {}
+        }
+
+        return queueNotification('[FAIL] Glyphs were placed out of bounds! Resize action failed.', 'error');
+      }
+
       const editorAction: ResizeAction = {
         action: 'resize',
         param: {
