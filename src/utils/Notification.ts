@@ -1,5 +1,7 @@
 import { uuidv4 } from './random';
 
+type NotificationType = 'default' | 'error' | 'warning' | 'success';
+
 const notifications: Notification[] = new Array(0);
 let currentModeMessage: Notification = null;
 let notifying = false;
@@ -8,6 +10,13 @@ let notifying = false;
  * Number of notifications to display at a time.
  */
 const NUMBER_TO_DISPLAY = 3;
+
+const notificationIcon: Record<NotificationType, string> = {
+  default: '',
+  warning: '⚠️ ',
+  error: '🔴 ',
+  success: '✅ ',
+};
 
 /**
  * A class to manage Neon notifications.
@@ -18,16 +27,18 @@ class Notification {
   id: string;
   isModeMessage: boolean;
   timeoutID: number;
+  type: NotificationType;
   /**
    * Create a new notification.
    * @param message - Notification content.
    */
-  constructor (message: string) {
-    this.message = message;
+  constructor (message: string, type: NotificationType) {
+    this.message = notificationIcon[type] + message;
     this.displayed = false;
     this.id = uuidv4();
     this.isModeMessage = message.search('Mode') !== -1;
     this.timeoutID = -1;
+    this.type = type;
   }
 
   /** Set the ID from setTimeout. */
@@ -84,6 +95,7 @@ function displayNotification (notification: Notification): void {
   const notificationContent = document.getElementById('notification-content');
   const newNotification = document.createElement('div');
   newNotification.classList.add('neon-notification');
+  newNotification.classList.add(`neon-notification-${notification.type}`);
   newNotification.id = notification.getId();
   newNotification.innerHTML = notification.message;
   notificationContent.append(newNotification);
@@ -99,11 +111,15 @@ function startNotification (): void {
     notifying = true;
     const currentNotification = notifications.pop();
     displayNotification(currentNotification);
-    currentNotification.setTimeoutId(window.setTimeout(clearOrShowNextNotification, 5000, currentNotification.getId()));
-    document.getElementById(currentNotification.getId()).addEventListener('click', () => {
-      window.clearTimeout(currentNotification.timeoutID);
-      clearOrShowNextNotification(currentNotification.getId());
-    });
+    currentNotification.setTimeoutId(
+      window.setTimeout(clearOrShowNextNotification, 5000, currentNotification.getId())
+    );
+    document
+      .getElementById(currentNotification.getId())
+      .addEventListener('click', () => {
+        window.clearTimeout(currentNotification.timeoutID);
+        clearOrShowNextNotification(currentNotification.getId());
+      });
   }
 }
 
@@ -111,11 +127,10 @@ function startNotification (): void {
  * Add a notification to the queue.
  * @param notification - Notification content.
  */
-export function queueNotification (notification: string): void {
-  const notif = new Notification(notification);
+export function queueNotification (notification: string, type: NotificationType = 'default'): void {
+  const notif = new Notification(notification, type);
   notifications.push(notif);
   if (!notifying || document.getElementById('notification-content').querySelectorAll('.neon-notification').length < NUMBER_TO_DISPLAY) {
     startNotification();
   }
 }
-
