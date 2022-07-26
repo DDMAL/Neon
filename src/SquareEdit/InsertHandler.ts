@@ -1,6 +1,8 @@
 import NeonView from '../NeonView';
 import { EditorAction, InsertAction } from '../Types';
 import * as d3 from 'd3';
+import { getSVGRelCoords, isOutOfSVGBounds, Point } from '../utils/Coordinates';
+import { queueNotification } from '../utils/Notification';
 
 /**
  * Class that handles insert mode, events, and actions.
@@ -8,7 +10,7 @@ import * as d3 from 'd3';
 class InsertHandler {
   type: string;
   firstClick = true;
-  coord: DOMPoint;
+  coord: Point;
   attributes: Record<string, string>;
   selector: string;
   neonView: NeonView;
@@ -208,26 +210,24 @@ class InsertHandler {
    */
   handler = (function handler (evt: MouseEvent): void {
     evt.stopPropagation();
-    const container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0] as SVGSVGElement;
-    const pt = container.createSVGPoint();
-    pt.x = evt.clientX;
-    pt.y = evt.clientY;
-    // Transform pt to SVG context
-    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGraphicsElement).getScreenCTM();
-    const cursorpt = pt.matrixTransform(transformMatrix.inverse());
+
+    // If the cursor is out of bounds, nothing should be inserted.
+    const cursor = getSVGRelCoords(evt.clientX, evt.clientY);
+    if (isOutOfSVGBounds(cursor.x, cursor.y))
+      return queueNotification('[FAIL] Glyph was placed out of bounds! Insertion failed.', 'error');
 
     const editorAction: InsertAction = {
       action: 'insert',
       param: {
         elementType: this.type,
         staffId: 'auto',
-        ulx: cursorpt.x,
-        uly: cursorpt.y
+        ulx: cursor.x,
+        uly: cursor.y,
       }
     };
 
     if (this.attributes !== null) {
-      editorAction['param']['attributes'] = this.attributes;
+      editorAction.param.attributes = this.attributes;
       if (this.attributes['shape'] === 'F') {
         editorAction['param']['ulx'] -= 50;
       }
@@ -244,29 +244,30 @@ class InsertHandler {
    * Event handler to insert a staff.
    */
   staffHandler = (function staffHandler (evt: MouseEvent): void {
-    const container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0] as SVGSVGElement;
-    const pt = container.createSVGPoint();
-    pt.x = evt.clientX;
-    pt.y = evt.clientY;
-    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGraphicsElement).getScreenCTM();
-    const cursorpt = pt.matrixTransform(transformMatrix.inverse());
+    const cursor = getSVGRelCoords(evt.clientX, evt.clientY);
+
+    if (isOutOfSVGBounds(cursor.x, cursor.y)) {
+      return queueNotification('Staff cannot be placed out of bounds!', 'error');
+    }
+
+    const container = document.querySelector('.active-page > .definition-scale');
 
     if (this.firstClick) {
-      this.coord = cursorpt;
-      d3.select(container).append('circle').attr('cx', cursorpt.x)
-        .attr('cy', cursorpt.y)
+      this.coord = cursor;
+      d3.select(container).append('circle').attr('cx', cursor.x)
+        .attr('cy', cursor.y)
         .attr('r', 10)
         .attr('id', 'staff-circle')
         .attr('fill', 'green');
       this.firstClick = false;
     } else {
-      let ul, lr;
-      if (cursorpt.x < this.coord.x || cursorpt.y < this.coord.y) { // second point is not lr
-        ul = cursorpt;
+      let ul: Point, lr: Point;
+      if (cursor.x < this.coord.x || cursor.y < this.coord.y) { // second point is not lr
+        ul = cursor;
         lr = this.coord;
       } else {
         ul = this.coord;
-        lr = cursorpt;
+        lr = cursor;
       }
       document.getElementById('staff-circle').remove();
       const action: EditorAction = {
@@ -302,4 +303,5 @@ class InsertHandler {
     return (this.type !== '');
   }
 }
+
 export { InsertHandler as default };

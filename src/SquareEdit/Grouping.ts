@@ -150,11 +150,11 @@ export function mergeStaves (): void {
   };
   neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
     if (result) {
-      Notification.queueNotification('Staff Merged');
+      Notification.queueNotification('Staff Merged', 'success');
       SelectOptions.endOptionsSelection();
       neonView.updateForCurrentPage();
     } else {
-      Notification.queueNotification('Merge Failed');
+      Notification.queueNotification('Merge Failed', 'error');
     }
   });
 }
@@ -243,9 +243,9 @@ export function initGroupingListeners (): void {
       };
       neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Ligature Toggled');
+          Notification.queueNotification('Ligature Toggled', 'success');
         } else {
-          Notification.queueNotification('Ligature Toggle Failed');
+          Notification.queueNotification('Ligature Toggle Failed', 'error');
         }
         endGroupingSelection();
         neonView.updateForCurrentPage();
@@ -349,15 +349,15 @@ function groupingAction (action: 'group' | 'ungroup', groupType: 'neume' | 'nc',
   neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
     if (result) {
       if (action === 'group') {
-        Notification.queueNotification('Grouping Success');
+        Notification.queueNotification('Grouping Success', 'success');
       } else {
-        Notification.queueNotification('Ungrouping Success');
+        Notification.queueNotification('Ungrouping Success', 'success');
       }
     } else {
       if (action === 'group') {
-        Notification.queueNotification('Grouping Failed');
+        Notification.queueNotification('Grouping Failed', 'error');
       } else {
-        Notification.queueNotification('Ungrouping Failed');
+        Notification.queueNotification('Ungrouping Failed', 'error');
       }
     }
     neonView.updateForCurrentPage();

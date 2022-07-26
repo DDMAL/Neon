@@ -48,9 +48,7 @@ export type InsertAction = {
     lrx?: number,
     lry?: number,
     // TODO: attributes are currently never used yet in Neon
-    attributes?: {
-      shape: string
-    }
+    attributes?: { shape: string } | Record<string, string>;
   }
 };
 
@@ -272,5 +270,5 @@ export type HTMLSVGElement = HTMLElement & SVGSVGElement;
 export type SelectionType = 'selByStaff' | 'selByNeume' | 'selByNc' | 'selByLayerElement' | 'selBySyllable' | 'selByBBox' | 'selByLayerElement';
 
 /** Highlight grouping type  */
-export type GroupingType = 'staff' | 'syllable' | 'neume' | 'layer' | 'selection' | 'none';
+export type GroupingType = 'staff' | 'syllable' | 'neume' | 'layerElement' | 'selection' | 'none';
 

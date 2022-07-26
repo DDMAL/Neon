@@ -3,6 +3,7 @@ import NeonView from './NeonView';
 import { unselect } from './utils/SelectTools';
 import { updateHighlight } from './DisplayPanel/DisplayControls';
 import { TextViewInterface } from './Interfaces';
+import { getSettings, setSettings } from './utils/LocalSettings';
 
 /*
  * Class that manages getting the text for syllables in Neon from the mei file
@@ -42,6 +43,7 @@ class TextView implements TextViewInterface {
     checkboxesContainer.prepend(bboxLabel);
     checkboxesContainer.prepend(textLabel);
 
+    this.loadSettings();
     this.setTextViewControls();
     this.neonView.view.addUpdateCallback(this.updateTextViewVisibility.bind(this));
     this.neonView.view.addUpdateCallback(this.updateBBoxViewVisibility.bind(this));
@@ -62,6 +64,12 @@ class TextView implements TextViewInterface {
       .addEventListener('click', bboxViewVis.bind(this));
   }
 
+  loadSettings (): void {
+    const { displayText, displayBBox } = getSettings();
+    document.querySelector<HTMLInputElement>('#displayText').checked = displayText;
+    document.querySelector<HTMLInputElement>('#displayBBox').checked = displayBBox;
+  }
+
   /**
    * Update visibility of text bounding boxes
    */
@@ -72,7 +80,10 @@ class TextView implements TextViewInterface {
     const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
     const displayText = document.getElementById('displayText') as HTMLInputElement;
 
-    if ((document.getElementById('displayBBox')as HTMLInputElement).checked) {
+    // save to localStorage
+    setSettings({ displayBBox: displayBBoxes.checked });
+
+    if (displayBBoxes.checked) {
       document.querySelectorAll('.sylTextRect').forEach(rect => {
         rect.classList.add('sylTextRect-display');
         rect.classList.remove('sylTextRect');
@@ -88,7 +99,7 @@ class TextView implements TextViewInterface {
       // set "Display/Hide All" button to "Hide All".
       if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
         displayAllBtn.classList.add('selected');
-        displayAllBtn.innerHTML = "Hide All";
+        displayAllBtn.innerHTML = 'Hide All';
       }
     } 
     else {
@@ -115,7 +126,7 @@ class TextView implements TextViewInterface {
       // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
       if (displayAllBtn.classList.contains('selected')) {
         displayAllBtn.classList.remove('selected');
-        displayAllBtn.innerHTML = "Display All";
+        displayAllBtn.innerHTML = 'Display All';
       }
     }
     updateHighlight();
@@ -132,7 +143,10 @@ class TextView implements TextViewInterface {
     const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
     const displayText = document.getElementById('displayText') as HTMLInputElement;
 
-    if ((document.getElementById('displayText') as HTMLInputElement).checked) {
+    // save to localStorage
+    setSettings({ displayText: displayText.checked });
+
+    if (displayText.checked) {
       const sylText = document.getElementById('syl_text');
       sylText.style.display = '';
       sylText.innerHTML = 
@@ -151,6 +165,9 @@ class TextView implements TextViewInterface {
         }
 
         span.addEventListener('mouseover', () => {
+          if (syllable.classList.contains('syllable-highlighted'))
+            return;
+
           syllable.classList.add('selected');
           syllable.querySelectorAll('.neume').forEach(neume => {
             neume.classList.add('selected');
@@ -163,6 +180,9 @@ class TextView implements TextViewInterface {
         });
 
         span.addEventListener('mouseleave', () => {
+          if (syllable.classList.contains('syllable-highlighted'))
+            return;
+
           syllable.classList.remove('selected');
           syllable.querySelectorAll('.neume').forEach(neume => {
             neume.classList.remove('selected');
@@ -178,6 +198,7 @@ class TextView implements TextViewInterface {
           // this.removeBoundingBox(span);
         });
       });
+
       if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
         this.neonView.TextEdit.initTextEdit();
       }
@@ -189,7 +210,7 @@ class TextView implements TextViewInterface {
       // set "Display/Hide All" button to "Hide All".
       if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
         displayAllBtn.classList.add('selected');
-        displayAllBtn.innerHTML = "Hide All";
+        displayAllBtn.innerHTML = 'Hide All';
       }
     } 
     else {
@@ -197,7 +218,7 @@ class TextView implements TextViewInterface {
       // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
       if (displayAllBtn.classList.contains('selected')) {
         displayAllBtn.classList.remove('selected');
-        displayAllBtn.innerHTML = "Display All";
+        displayAllBtn.innerHTML = 'Display All';
       }
     }
   }
