@@ -62,11 +62,11 @@ export function mergeStaves (): void {
   };
   neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
     if (result) {
-      Notification.queueNotification('Staff Merged');
+      Notification.queueNotification('Staff Merged', 'success');
       SelectOptions.endOptionsSelection();
       neonView.updateForCurrentPage();
     } else {
-      Notification.queueNotification('Merge Failed');
+      Notification.queueNotification('Merge Failed', 'error');
     }
   });
 }
@@ -155,9 +155,9 @@ export function initGroupingListeners (): void {
       };
       neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Ligature Toggled');
+          Notification.queueNotification('Ligature Toggled', 'success');
         } else {
-          Notification.queueNotification('Ligature Toggle Failed');
+          Notification.queueNotification('Ligature Toggle Failed', 'error');
         }
         endGroupingSelection();
         neonView.updateForCurrentPage();
@@ -269,9 +269,9 @@ export function initGroupingListeners (): void {
       chainAction.param = param;
       neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Toggled Syllable Link');
+          Notification.queueNotification('Toggled Syllable Link', 'success');
         } else {
-          Notification.queueNotification('Failed to Toggle Syllable Link');
+          Notification.queueNotification('Failed to Toggle Syllable Link', 'error');
         }
         endGroupingSelection();
         neonView.updateForCurrentPage();

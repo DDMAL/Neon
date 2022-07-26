@@ -165,6 +165,9 @@ class TextView implements TextViewInterface {
         }
 
         span.addEventListener('mouseover', () => {
+          if (syllable.classList.contains('syllable-highlighted'))
+            return;
+
           syllable.classList.add('selected');
           syllable.querySelectorAll('.neume').forEach(neume => {
             neume.classList.add('selected');
@@ -177,6 +180,9 @@ class TextView implements TextViewInterface {
         });
 
         span.addEventListener('mouseleave', () => {
+          if (syllable.classList.contains('syllable-highlighted'))
+            return;
+
           syllable.classList.remove('selected');
           syllable.querySelectorAll('.neume').forEach(neume => {
             neume.classList.remove('selected');
