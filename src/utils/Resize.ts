@@ -245,10 +245,11 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         if (element.classList.contains('syl')) {
           selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
         } else {
-          try {
+          const moreEdit = document.getElementById('moreEdit');
+          if (moreEdit) {
             document.getElementById('moreEdit').innerHTML = '';
             document.getElementById('moreEdit').parentElement.classList.add('hidden');
-          } catch (e) {}
+          }
         }
 
         return queueNotification('[FAIL] Glyphs were placed out of bounds! Resize action failed.', 'error');
@@ -349,6 +350,28 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       if (dy === undefined) {
         dy = 0;
       }
+
+      if (isOutOfSVGBounds(ulx, uly) || isOutOfSVGBounds(lrx, lry)) {
+        document.querySelectorAll('.resizePoint').forEach(el => el.remove());
+        document.querySelectorAll('#resizeRect').forEach(el => el.remove());
+        document.querySelectorAll('.rotatePoint').forEach(el => el.remove());
+
+        element = document.getElementById(element.id) as unknown as SVGGraphicsElement;
+        ulx = undefined;
+        uly = undefined;
+        lrx = undefined;
+        lry = undefined;
+        dy = undefined;
+        drawInitialRect();
+        if (element.classList.contains('syl')) {
+          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
+        } else {
+          selectStaff(element, dragHandler);
+        }
+
+        return queueNotification('[FAIL] Glyphs were placed out of bounds! Rotate action failed.', 'error');
+      }
+
       const editorAction: EditorAction = {
         action: 'resizeRotate',
         param: {
