@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import PouchDB from 'pouchdb';
 import { NeonManifest, allDocs } from '../Types';
-import * as localManifest from '../../deployment/archive.public/manifest.json';
+import * as localManifest from '../../assets/manifest.json';
 
 const db = new PouchDB('Neon-User-Storage');
 const manifestURL = 'https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld';
