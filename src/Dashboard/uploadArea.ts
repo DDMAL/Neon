@@ -26,7 +26,7 @@ export function InitUploadArea(): void {
         updateAndClear();
       });
 
-      modalWindow.hideModalWindow();
+    modalWindow.hideModalWindow();
   });
 
   // Make invisible input element for file system selector
