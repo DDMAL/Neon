@@ -231,14 +231,18 @@ a:hover {
 
 .selected > .highlighted {
     fill: #d00;
+    paint-order: stroke fill;
 }
 
 .selected > .highlighted .divLine {
-    stroke: #d00 !important;
+    
 }
 
 .divLine {
-    stroke-width: 30px;
+    stroke: black;
+    paint-order: stroke;
+    stroke-width: 40px;
+    stroke-linejoin: round;
 }
 
 .diva-wrapper {
