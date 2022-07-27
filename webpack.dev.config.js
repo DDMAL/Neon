@@ -14,7 +14,7 @@ module.exports = {
     dashboard: './deployment/scripts/dashboard.ts',
   },
   output: {
-    path: path.resolve(__dirname, 'deployment', 'test_server', 'Neon-gh'),
+    path: path.resolve(__dirname, 'deployment', 'server', 'Neon-gh'),
     publicPath: '/',
     filename: '[name].js'
   },
@@ -23,7 +23,7 @@ module.exports = {
   },
   devtool: 'source-map',
   devServer: {
-    static: './deployment/test_server',
+    static: './deployment/server',
     hot: true,
   },
   watch: true,
