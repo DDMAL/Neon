@@ -17,7 +17,7 @@ function drag (selector: string, offsetX = 0, offsetY = 0) {
 
 beforeEach(() => {
   cy.visit('http://localhost:8080/edit/test.jsonld');
-  cy.get('#mei_output', { timeout: 5000 }).should('be.visible');
+  cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
 });
 
 describe('drag: syllables', () => {

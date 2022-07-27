@@ -18,7 +18,7 @@ describe('test: zoom', () => {
     cy.visit('http://localhost:8080/edit/test.jsonld');
 
     // SVG should be visible
-    cy.get('#mei_output', { timeout: 5000 }).should('be.visible');
+    cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
 
     cy.get('#svg_group')
       .should('have.attr', 'viewBox')
