@@ -30,8 +30,8 @@ export function isGroupable(selectionType: string, elements: Array<SVGGraphicsEl
   const groups = Array.from(elements.values()) as SVGGraphicsElement[];
 
   if (groups.length < 2) {
-      // cannot group if only 1 element is selected
-      return false;
+    // cannot group if only 1 element is selected
+    return false;
   }
 
   switch(selectionType) {
