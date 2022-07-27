@@ -236,7 +236,7 @@ export function setGroupingHighlight(grouping: GroupingType): void {
       groups[i].classList.remove('highlighted');
     }
   }
-  document.querySelectorAll('.nc, .custos, .clef, .accid, .divLine').forEach(el => {
+  document.querySelectorAll('.nc, .custos, .clef, .accid').forEach(el => {
     el.setAttribute('stroke', 'black');
     el.setAttribute('stroke-width', '30px');
   });

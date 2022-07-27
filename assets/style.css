@@ -224,9 +224,23 @@ a:hover {
     fill: blue;
     opacity: 0.2;
 }
+
 .selected {
     fill: #d00;
 }
+
+.selected > .highlighted {
+    fill: #d00;
+}
+
+.selected > .highlighted .divLine {
+    stroke: #d00 !important;
+}
+
+.divLine {
+    stroke-width: 30px;
+}
+
 .diva-wrapper {
     min-height: inherit;
     height: 100%;

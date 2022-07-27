@@ -175,8 +175,6 @@ class TextView implements TextViewInterface {
           if (rect !== null) {
             rect.style.fill = '#d00';
           }
-          // syl.attr('fill', '#ffc7c7');
-          // this.highlightBoundingBox(span);
         });
 
         span.addEventListener('mouseleave', () => {
@@ -188,14 +186,12 @@ class TextView implements TextViewInterface {
             neume.classList.remove('selected');
           });
           if (rect !== null) {
-            if (syllable.style.fill !== 'rgb(0, 0, 0)') { // syllable.getAttributeNS('http://www.w3.org/2000/SVG', 'fill');
+            if (syllable.style.fill !== 'rgb(0, 0, 0)') {
               rect.style.fill = syllable.getAttribute('fill');
             } else {
               rect.style.fill = 'blue';
             }
           }
-          // syl.attr('fill', null);
-          // this.removeBoundingBox(span);
         });
       });
 
