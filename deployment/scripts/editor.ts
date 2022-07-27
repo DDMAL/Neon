@@ -14,8 +14,10 @@ import PouchDB from 'pouchdb';
 const name = getGetParam('manifest');
 const storage = getGetParam('storage');
 
+console.log(name);
+
 if (name) {
-  const manifestLocation = 'samples/manifests/' + name + '.jsonld';  
+  const manifestLocation = `./samples/manifests/${name}.jsonld`;
   window.fetch(manifestLocation).then(response => {
     if (response.ok) {
       return response.text();
@@ -39,6 +41,7 @@ if (name) {
         reject(err);
       });
     });
+
     let params: NeonViewParams;
     if (mediaType.match(/image\/*/)) {
       params = {
