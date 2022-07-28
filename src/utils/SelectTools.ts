@@ -200,22 +200,192 @@ export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): P
   return (attributes.ligated);
 }
 
+
+/**
+ * Check if list of elements of a certain type are logically adjacent to each other.
+ * Includes elements that are on separate staves but would otherwise be next to each other.
+ * Can not apply to elements of type neume component.
+ * 
+ * @param selectionType user selection mode
+ * @param elements the elements of interest
+ * @returns true if elements are adjacent, false otherwise
+ */
+export function areAdjacent(selectionType: string, elements: SVGGraphicsElement[]): boolean {
+  // 2 elements cannot be adjacent if there is only 1 element
+  if (elements.length < 2) return false;
+
+  // get all elements that are of the same type as selectionType
+  let allElemsOfSelectionType: HTMLElement[];
+  switch(selectionType) {
+    case 'selBySyllable':
+      allElemsOfSelectionType = Array.from(document.querySelectorAll('.syllable'));
+      break;
+
+    case 'selByNeume':
+      allElemsOfSelectionType = Array.from(document.querySelectorAll('.neume'));
+      break;
+
+    case 'selByNc':
+      allElemsOfSelectionType = Array.from(document.querySelectorAll('.nc'));
+      break;
+
+    case 'selByStaff':
+      allElemsOfSelectionType = Array.from(document.querySelectorAll('.staff'));
+      break;
+
+    default:
+      return false;
+  }
+  
+  // Sort SELECTED elements in order of appearance by 
+  // matching to order of ALL elements of selection type
+  let sortedElements = [];
+  for (let i=0; i<allElemsOfSelectionType.length; i++) {
+    for (let j=0; j<elements.length; j++) {
+      if (allElemsOfSelectionType[i].isSameNode(elements[j])) {
+        sortedElements.push(elements[j]);
+      }
+    }
+  }
+
+  // Now check if SELECTED elements are all adjacent (in a row) by 
+  // finding and comparing their indeces in the array of ALL elements of selection type
+  for (let i=0; i<sortedElements.length-1; i++) {
+    const firstElem = sortedElements[i];
+    const secondElem = sortedElements[i+1];
+
+    const index1 = allElemsOfSelectionType.indexOf(firstElem);
+    const index2 = allElemsOfSelectionType.indexOf(secondElem);
+
+    if (Math.abs(index1 - index2) !== 1) return false
+  }
+
+  return true;
+}
+
+
+/**
+ * Check to see if the array of elements all share the same logical parent.
+ * For example: If all neumes are in the same syllable.
+ * 
+ * Note!! There is currently no logic for treating layer elements and bboxes!
+ * Note!! Function will always return true for stave elements. (Should it???)
+ * 
+ * @param selectionType the current Neon selection mode
+ * @param elements the elements in question
+ * @returns true if all elements share the same logical parent, false otherwise.
+ */
+export function sharedLogicalParent(selectionType: string, elements: SVGGraphicsElement[]): boolean {
+
+  if (!elementsHaveCorrectType(selectionType, elements)) return false;
+
+  switch(selectionType) {
+    case 'selBySyllable':
+      const referenceParentStaff = elements[0].closest('.staff');
+      for (let i=0; i<elements.length; i++) {
+        const elem = elements[i];
+        if (!elem.closest('.staff').isSameNode(referenceParentStaff)) return false;
+      }
+      return true;
+
+    case 'selByNeume':
+      const referenceParentSyllable = elements[0].closest('.syllable');
+      for (let i=0; i<elements.length; i++) {
+        const elem = elements[i];
+        if (!elem.closest('.syllable').isSameNode(referenceParentSyllable)) return false;
+      }
+      return true;
+
+    case 'selByStaff':
+      return true;
+
+    default:
+      return false;
+  }
+}
+
+
+/**
+ * Check if all selected elements have the same type as current selection mode. 
+ * For example, check if all selected elements are of type neume, or syllable, etc.
+ * 
+ * Note!! There is no logic currently implemented for layer elements or bboxes.
+ * 
+ * @param selectionType the current selection mode
+ * @param elements the elements that are being checked
+ * @returns true if all elements match selection mode, false otherwise.
+ */
+export function elementsHaveCorrectType(selectionType: string, elements: SVGGraphicsElement[]): boolean {
+
+  if (elements.length < 2) return false;
+
+  switch(selectionType) {
+    case 'selBySyllable':
+      elements.forEach((elem) => {
+        if (!elem.classList.contains('syllable')) return false;
+      });
+      break;
+
+    case 'selByNeume':
+      elements.forEach((elem) => {
+        if (!elem.classList.contains('neume')) return false;
+      });
+      break;
+
+    case 'selByStaff':
+      elements.forEach((elem) => {
+        if (!elem.classList.contains('staff')) return false;
+      });
+      break;
+
+    default:
+      return false;
+  }
+
+  return true;
+}
+
+
 /**
  * @param elements - The elements to compare.
  * @returns True if the elements have the same parent up two levels, otherwise false.
  */
-export function sharedSecondLevelParent (elements: SVGElement[]): boolean {
+export function sharedSecondLevelParent (elements: SVGGraphicsElement[]): boolean {
   const tempElements = Array.from(elements);
   const firstElement = tempElements.pop();
   const secondParent = firstElement.parentElement.parentElement;
+  console.log(secondParent);
   for (const element of tempElements) {
     const secPar = element.parentElement.parentElement;
+    console.log(secPar);
     if (secPar.id !== secondParent.id) {
       return false;
     }
   }
   return true;
 }
+
+/**
+ * Check if user selected elements accross multiple staves
+ * @param elements the user-selected elements
+ * @returns true if selection is accross multiple staves, false otherwise
+ */
+export function isMultiStaveSelection(elements: SVGElement[]): boolean {
+  let elementsArray = Array.from(elements);
+
+  for (let i=0; i<elementsArray.length; i++) {
+    const staff = elementsArray[i].closest('.staff');
+
+    for (let j=i; j<elementsArray.length; j++) {
+      const anotherStaff = elementsArray[j].closest('.staff');
+      // compare with other staves
+      if (!staff.isSameNode(anotherStaff)) return true;
+    }
+  }
+
+  return false;
+}
+
 
 /**
  * Bounding box object interface for getStaffBBox()
@@ -428,63 +598,36 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       break;
 
     case 'selBySyllable':
+
       switch (groups.length) {
         case 1:
           // TODO change context if it is only a neume/nc.
-          SelectOptions.triggerSyllableActions();
-          Grouping.initGroupingListeners();
+          SelectOptions.triggerSyllableActions('singleSelect');
           break;
-        // case 2:
-        default:
-          // Check if this is a linked syllable split by a staff break
-          if ((groups[0].getAttribute('mei:follows') === '#' + groups[1].id) ||
-          (groups[0].getAttribute('mei:precedes') === '#' + groups[1].id)) {
-            Grouping.triggerGrouping('splitSyllable');
-          } else if (sharedSecondLevelParent(groups)) {
-            Grouping.triggerGrouping('syl');
-            SelectOptions.addChangeStaffListener();
-          } else {
-            // Check if this *could* be a selection with a single logical syllable split by a staff break.
-            const staff0 = groups[0].closest('.staff');
-            const staff1 = groups[1].closest('.staff');
-            const staffChildren = Array.from(staff0.parentElement.children);
-            // Check if these are adjacent staves (logically)
-            if (Math.abs(staffChildren.indexOf(staff0) - staffChildren.indexOf(staff1)) === 1) {
-              // Check if one syllable is the last in the first staff and the other is the first in the second.
-              // Determine which staff is first.
-              const firstStaff = (staffChildren.indexOf(staff0) < staffChildren.indexOf(staff1)) ? staff0 : staff1;
-              const secondStaff = (firstStaff.id === staff0.id) ? staff1 : staff0;
-              const firstLayer = firstStaff.querySelector('.layer');
-              const secondLayer = secondStaff.querySelector('.layer');
 
-              // Check that the first staff has either syllable as the last syllable
-              const firstSyllableChildren = Array.from(firstLayer.children)
-                .filter((elem: HTMLElement) => elem.classList.contains('syllable')) as HTMLElement[];
-              const secondSyllableChildren = Array.from(secondLayer.children)
-                .filter((elem: HTMLElement) => elem.classList.contains('syllable')) as HTMLElement[];
-              const lastSyllable = firstSyllableChildren[firstSyllableChildren.length - 1];
-              const firstSyllable = secondSyllableChildren[0];
-              if (lastSyllable.id === groups[0].id && firstSyllable.id === groups[1].id) {
-                Grouping.triggerGrouping('splitSyllable');
-                break;
-              } else if (lastSyllable.id === groups[1].id && firstSyllable.id === groups[0].id) {
-                Grouping.triggerGrouping('splitSyllable');
-                break;
-              }
-            }
-            SelectOptions.triggerDefaultSylActions();
-            SelectOptions.triggerSyllableActions();
-            Grouping.initGroupingListeners();
+        case 2:
+          // Check if this is a linked syllable split by a staff break
+          // if they are linkable, user can toggle linked-sylls
+          if (Grouping.isLinkable('selBySyllable', groups)) { 
+            SelectOptions.triggerSyllableActions('linkableSelect');
           }
-          // break
-        // default:
-          // if (sharedSecondLevelParent(groups)) {
-          //   Grouping.triggerGrouping('syl');
-          //   SelectOptions.triggerSyllableActions();
-          // } else {
-          //   SelectOptions.triggerDefaultSylActions();
-          //   SelectOptions.triggerSyllableActions();
-          // }
+          else if (Grouping.isGroupable('selBySyllable', groups)) {
+            SelectOptions.triggerSyllableActions('multiSelect');
+          }
+          else {
+            SelectOptions.triggerSyllableActions('default');
+          }
+          break;
+
+        default:
+          // if syllables are all located on one stave, they should be groupable
+          if (Grouping.isGroupable('selBySyllable', groups)) {
+            SelectOptions.triggerSyllableActions('multiSelect');
+          }
+          // if sylls are accross multiple staves
+          else {
+            SelectOptions.triggerSyllableActions('default');
+          }
       }
       break;
 
@@ -496,7 +639,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
           Grouping.initGroupingListeners();
           break;
         default:
-          if (sharedSecondLevelParent(groups)) {
+          if (Grouping.isGroupable('selByNeume', groups)) {
             Grouping.triggerGrouping('neume');
           } else {
             SelectOptions.triggerDefaultActions();
