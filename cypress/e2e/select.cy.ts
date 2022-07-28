@@ -1,13 +1,10 @@
-Cypress.on('uncaught:exception', () => {
-  // returning false here prevents Cypress from
-  // failing the test
-  return false;
-});
+// Tests for selection of glyphs
+// - Are selected glyphs visually shown?
+// - Do resize points show up for bounding boxes and staves?
 
+// Load page and wait for SVG to be visible
 beforeEach(() => {
   cy.visit('http://localhost:8080/edit/test.jsonld');
-
-  // SVG should be visible
   cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
 });
 
@@ -19,12 +16,13 @@ describe('select: syllable', () => {
   });
 
   it('highlight: syllable should be selected red', () => {
-    cy.get('.syllable').first().click(1, 1, { timeout: 100, force: true })
+    cy.get('.syllable').first()
+      .click({ timeout: 100, force: true })
       .should('have.class', 'selected')
       .should('have.css', 'fill')
       .and('eq', 'rgb(221, 0, 0)');
 
-    cy.get('#svg_group').find('.resizePoint').should('have.length', 0);
+    cy.get('#svg_group > .resizePoint').should('have.length', 0);
   });
 });
 
@@ -43,6 +41,9 @@ describe('select: staff', () => {
       .click({ timeout: 100, force: true })
       .should('have.class', 'selected', { timeout: 200 })
       .within(() => {
+        // Check whether syllables, clefs, and accidentals have
+        // - `highlighted` class
+        // - Filled red
         cy.get('.syllable, .clef, .accid')
           .should('have.class', 'highlighted')
           .and('have.css', 'fill')
@@ -51,6 +52,7 @@ describe('select: staff', () => {
   });
 
   // TODO: This test should work after fixing https://github.com/DDMAL/Neon/issues/940
+  // Check whether divlines show up as red when a staff is selected
   it.skip('highlight: divlines', () => {
     const staffId = '#m-bb55180f-699b-4266-bf98-99f75d5ba995';
 

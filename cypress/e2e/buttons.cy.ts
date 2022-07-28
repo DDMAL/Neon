@@ -1,3 +1,5 @@
+// Tests for validating buttons
+
 describe('visual: activate sidebar buttons', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8080/edit/test.jsonld');
