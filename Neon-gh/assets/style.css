@@ -567,18 +567,35 @@ a:hover {
     z-index: 8;
     position: fixed;
 }
+
 .neon-notification {
     padding: 0.4rem 0.8rem 0.4rem 0.8rem;
     margin: 0.5rem;
     font-weight: 600;
     background: #589ed5;
-    opacity: 0.9;
     color: #ffffff;
     border-radius: 4px;
     z-index: 8;
     cursor: pointer;
     transform: translateX(-5vh);
     animation: slideInFromLeft 0.2s ease-in-out 0s forwards;
+}
+
+.neon-notification-default {
+    background: #589ed5;
+}
+
+.neon-notification-error {
+    background: #df546a;
+}
+
+.neon-notification-warning {
+    /* background: #fae095; */
+    background: #f5c144;
+}
+
+.neon-notification-success {
+    background: #6dc492;
 }
 
 
@@ -684,7 +701,7 @@ a:hover {
     width: 100%;
     background-color: white;
     border-radius: 0px 0px 4px 4px;
-    max-height: 50vh;
+    max-height: 70vh;
     flex-direction: column;
     align-items: center;
     align-content: space-around;
