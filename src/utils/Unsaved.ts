@@ -1,14 +1,13 @@
 
-// when page first loads, show default icon (saved)
+// Initial saved status
 let saved = true;
-const indicator = document.querySelector<HTMLDivElement>('#file-saved');
-indicator.setAttribute('src', `${__ASSET_PREFIX__}assets/img/saved-icon.svg`);
 
 
 /**
  * Update status of saved status indicator
  */
 function updateIndicator (): void {
+  const indicator = document.querySelector<HTMLDivElement>('#file-saved');
   const path = saved? `${__ASSET_PREFIX__}assets/img/saved-icon.svg` : `${__ASSET_PREFIX__}assets/img/unsaved-icon.svg`;
   indicator.setAttribute('src', path);
 }

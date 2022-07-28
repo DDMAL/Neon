@@ -20,7 +20,9 @@ async function setBody (neonView: NeonView): Promise<void> {
     neonView.modal.openModalWindow();
   });
 
-  //focus
+  // set initial saved status
+  const indicator = document.querySelector<HTMLDivElement>('#file-saved');
+  indicator.setAttribute('src', `${__ASSET_PREFIX__}assets/img/saved-icon.svg`);
 }
 
 export { setBody as default };
