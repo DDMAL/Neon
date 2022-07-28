@@ -1,9 +1,9 @@
-describe('Side bar buttons should be turned active', () => {
+describe('visual: activate sidebar buttons', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8080/edit/test.jsonld');
   });
 
-  it('SelBy', () => {
+  it('class: buttons should have `is-active` class when clicked', () => {
     cy.get('#selByStaff').click().should('have.class', 'is-active');
     cy.get('#selBySyllable').click().should('have.class', 'is-active');
     cy.get('#selByNeume').click().should('have.class', 'is-active');

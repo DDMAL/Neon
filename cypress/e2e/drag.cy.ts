@@ -21,32 +21,34 @@ beforeEach(() => {
 });
 
 describe('drag: syllables', () => {
+  const SYLLABLE_ID = '#m-090b1f54-dce2-40bf-8b1f-ecc9be5a4c63';
+
   beforeEach(() => {
     cy.get('#selBySyllable').click().should('have.class', 'is-active');
   });
 
-  it('error: move random syllable out of bounds LEFT', () => {
-    drag('#m-090b1f54-dce2-40bf-8b1f-ecc9be5a4c63', -300, 0);
+  it('error: move out of bounds LEFT', () => {
+    drag(SYLLABLE_ID, -300, 0);
     cy.contains('Drag action failed').should('be.visible');
   });
 
-  it('error: move random syllable out of bounds RIGHT', () => {
-    drag('#m-090b1f54-dce2-40bf-8b1f-ecc9be5a4c63', 700, 0);
+  it('error: move out of bounds RIGHT', () => {
+    drag(SYLLABLE_ID, 700, 0);
     cy.contains('Drag action failed').should('be.visible');
   });
 
-  it('error: move random syllable out of bounds TOP', () => {
-    drag('#m-090b1f54-dce2-40bf-8b1f-ecc9be5a4c63', 0, -500);
+  it('error: move out of bounds TOP', () => {
+    drag(SYLLABLE_ID, 0, -500);
     cy.contains('Drag action failed').should('be.visible');
   });
 
-  it('error: move random syllable out of bounds BOTTOm', () => {
-    drag('#m-090b1f54-dce2-40bf-8b1f-ecc9be5a4c63', 0, 500);
+  it('error: move out of bounds BOTTOm', () => {
+    drag(SYLLABLE_ID, 0, 500);
     cy.contains('Drag action failed').should('be.visible');
   });
 
-  it('safe: move syllable within bounds', () => {
-    drag('#m-090b1f54-dce2-40bf-8b1f-ecc9be5a4c63', 50, -30);
+  it('safe: move within bounds', () => {
+    drag(SYLLABLE_ID, 50, -30);
     cy.contains('Drag action failed').should('not.exist');
   });
 });
@@ -56,7 +58,7 @@ describe('drag: staves', () => {
     cy.get('#selByStaff').click().should('have.class', 'is-active');
   });
 
-  it('error: move first staff out of bounds to the LEFT', () => {
+  it('error: move out of bounds to the LEFT', () => {
     cy.get('.staff').first().then(el => {
       const origin = el[0].getBoundingClientRect();
 
@@ -74,22 +76,22 @@ describe('drag: staves', () => {
     cy.contains('Drag action failed').should('be.visible');
   });
 
-  it('error: move first staff out of bounds to the RIGHT', () => {
+  it('error: move out of bounds to the RIGHT', () => {
     drag('.staff', 200, 0);
     cy.contains('Drag action failed').should('be.visible');
   });
 
-  it('error: move first staff out of bounds to the TOP', () => {
+  it('error: move out of bounds to the TOP', () => {
     drag('.staff', 0, -300);
     cy.contains('Drag action failed').should('be.visible');
   });
   
-  it('error: move first staff out of bounds to the BOTTOM', () => {
+  it('error: move out of bounds to the BOTTOM', () => {
     drag('.staff', 0, 1000);
     cy.contains('Drag action failed').should('be.visible');
   });
 
-  it('safe: move first staff within bounds', () => {
+  it('safe: move within bounds', () => {
     drag('.staff', 50, -30);
     cy.contains('Drag action failed').should('not.exist');
   });
