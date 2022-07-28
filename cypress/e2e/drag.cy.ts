@@ -2,6 +2,13 @@
 // - Do they visually move to the correct place?
 // - Are there out-of-bound checks?
 
+Cypress.on('uncaught:exception', () => {
+  // returning false here prevents Cypress from
+  // failing the test
+  return false;
+});
+
+
 /**
  * Drag function for syllables and staves
  */
@@ -10,8 +17,8 @@ function drag (selector: string, offsetX = 0, offsetY = 0) {
   cy.window().then(win => {
     cy.get(selector).first()
       .click({ timeout: 100, force: true })
-      .trigger('mousedown', { timeout: 100, force: true, which: 1, view: win })
-      .trigger('mousemove', offsetX, offsetY, { force: true })
+      .trigger('mousedown', 1, 1, { timeout: 100, force: true, which: 1, view: win })
+      .trigger('mousemove', offsetX + 1, offsetY + 1, { force: true })
       .trigger('mouseup', { force: true, view: win });
   });
 }
@@ -55,7 +62,7 @@ beforeEach(() => {
 describe('drag: bounding boxes', () => {
   beforeEach(() => {
     cy.get('#displayBBox').click();
-    cy.get('#selByBBox').click();
+    cy.get('#selByBBox').should('be.visible').click();
 
     cy.get('.sylTextRect-display').should('have.length.gt', 0);
   });
