@@ -97,7 +97,16 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       .map(elem => elem.x + ',' + elem.y)
       .join(' ');
 
-    d3.select('#resizeRect').attr('points', pointString);
+    document.querySelector('#resizeRect').setAttribute('points', pointString);
+
+    const textRect = document.querySelector('.syl.selected > .sylTextRect-display');
+    if (textRect) {
+      textRect.setAttribute('x', String(Math.min(ulx, lrx)));
+      textRect.setAttribute('y', String(Math.min(uly, lry)));
+      textRect.setAttribute('width', String(Math.abs(lrx - ulx)));
+      textRect.setAttribute('height', String(Math.abs(lry - uly)));
+    }
+
 
     for (const pointName in PointNames) {
       const point: Point = points[PointNames[pointName]];
