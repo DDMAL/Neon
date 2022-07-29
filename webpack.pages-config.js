@@ -13,7 +13,7 @@ module.exports = {
     dashboard: './deployment/scripts/dashboard.ts',
   },
   output: {
-    path: path.resolve(__dirname, 'dist', 'Neon-gh'),
+    path: path.resolve(__dirname, 'dist', 'Neon', 'Neon-gh'),
     filename: '[name].js',
   },
   node: {
