@@ -50,7 +50,7 @@ module.exports = {
     new webpack.DefinePlugin({
       __LINK_LOCATION__: JSON.stringify('https://ddmal.music.mcgill.ca/Neon'),
       __NEON_VERSION__: JSON.stringify(commitHash),
-      __ASSET_PREFIX__: JSON.stringify('/Neon-gh/'),
+      __ASSET_PREFIX__: JSON.stringify('/Neon/Neon-gh/'),
     }),
   ],
 };
