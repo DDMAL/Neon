@@ -32,7 +32,7 @@ module.exports = {
         use: [
           {
             loader: 'worker-loader',
-            options: { publicPath: '/Neon-gh/' },
+            options: { publicPath: '/Neon/Neon-gh/' },
           },
         ],
       },

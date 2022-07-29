@@ -1,5 +1,4 @@
-import { InitDocumentSelector, updateDocumentSelector } from '../../src/Dashboard/DocumentSelector';
-import { handleMakePair, handleUploadAllDocuments } from '../../src/Dashboard/UploadManager';
+import { InitDocumentSelector } from '../../src/Dashboard/DocumentSelector';
 import { InitUploadArea } from '../../src/Dashboard/uploadArea';
 import FileManager from '../../src/Dashboard/FileManager';
 
@@ -11,4 +10,6 @@ InitDocumentSelector();
 document.querySelector('#upload-new-doc-button')?.addEventListener('click', function() {
   InitUploadArea();
 });
+
+document.querySelector('#home-link')?.setAttribute('href', __LINK_LOCATION__);
 
