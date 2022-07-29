@@ -123,7 +123,7 @@ export const editControlsPanel =
             </div>
         </div>
 
-        <div id="display-actions-container">
+        <div id="display-slider-actions-container">
                 <div class="panel-content-subsection hidden">
                     <div id="moreEdit"></div>
                 </div>

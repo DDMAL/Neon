@@ -22,44 +22,68 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
 
   if (handleZoom !== undefined) {
     contents += `
-        <div class="slider-container display-panel" style="cursor: default">
-          <button class="side-panel-btn slider-btn" id="reset-zoom">Zoom</button>
-          <input type="range"
-            step="5" min="25" max="400" value="100"
-            aria-labelledby="reset-zoom"
-            class="slider is-fullwidth is-large"
-            id="zoomSlider"
-            style="padding-left: 1rem; padding-right: 1rem;"
-            disabled="disabled"
-          />
-          <output id="zoomOutput" for="zoomSlider">100</output>
+        <div class="slider-and-slider-actions-container display-panel" style="cursor: default">
+          <div class="slider-actions-container">
+            <div class="display-slider-title">Zoom</div>
+            <button class="side-panel-btn slider-btn" id="reset-zoom">⟲</button>
+            <button class="side-panel-btn slider-btn" id="set-zoom-easy-edit">
+              <img class="slider-btn-img" src="/Neon/assets/img/expand-icon.svg">
+            </button>
+          </div>
+          <div class="slider-container">
+            <input type="range"
+              step="5" min="25" max="400" value="100"
+              aria-labelledby="reset-zoom"
+              class="slider is-fullwidth is-large"
+              id="zoomSlider"
+              style="padding-left: 1rem; padding-right: 1rem;"
+              disabled="disabled"
+            />
+            <output id="zoomOutput" for="zoomSlider">100</output>
+          </div>
         </div>`;
   }
   contents += `
-        <div class="slider-container display-panel" style="cursor: default">
-          <button class="side-panel-btn slider-btn" id="reset-opacity">Glyph Opacity</button>
-          <input type="range"
-            step="5" min="0" max="100" value="100"
-            aria-labelledby="reset-opacity"
-            class="slider is-fullwidth is-large"
-            id="opacitySlider"
-            style="padding-left: 1rem; padding-right: 1rem;"
-            disabled="disabled"
-          />
-          <output id="opacityOutput" for="opacitySlider">100</output>
+        <div class="slider-and-slider-actions-container display-panel" style="cursor: default">
+          <div class="slider-actions-container">
+          <div class="display-slider-title">Glyph Opacity</div>
+            <button class="side-panel-btn slider-btn" id="reset-opacity">⟲</button>
+            <button class="side-panel-btn slider-btn" id="hide-glyphs">
+              <img class="slider-btn-img" src="/Neon/assets/img/hide-icon.svg">
+            </button>   
+          </div>
+          <div class="slider-container">
+            <input type="range"
+              step="5" min="0" max="100" value="100"
+              aria-labelledby="reset-opacity"
+              class="slider is-fullwidth is-large"
+              id="opacitySlider"
+              style="padding-left: 1rem; padding-right: 1rem;"
+              disabled="disabled"
+            />
+            <output id="opacityOutput" for="opacitySlider">100</output>
+          </div>
         </div>
         
-        <div class="slider-container display-panel" style="cursor: default">
-          <button class="side-panel-btn slider-btn" id="reset-bg-opacity">Image Opacity</button>
-          <input type="range"
-            step="5" min="0" max="100" value="100"
-            aria-labelledby="reset-bg-opacity"
-            class="slider is-fullwidth is-large"
-            id="bgOpacitySlider"
-            style="padding-left: 1rem; padding-right: 1rem;"
-            disabled="disabled"
-          />
-          <output id="bgOpacityOutput" for="bgOpacitySlider">100</output>
+        <div class="slider-and-slider-actions-container display-panel" style="cursor: default">
+          <div class="slider-actions-container">
+          <div class="display-slider-title">Image Opacity</div> 
+            <button class="side-panel-btn slider-btn" id="reset-bg-opacity">⟲</button>
+            <button class="side-panel-btn slider-btn" id="hide-bg-img">
+              <img class="slider-btn-img" src="/Neon/assets/img/hide-icon.svg">
+            </button>   
+          </div>
+          <div class="slider-container">
+            <input type="range"
+              step="5" min="0" max="100" value="100"
+              aria-labelledby="reset-bg-opacity"
+              class="slider is-fullwidth is-large"
+              id="bgOpacitySlider"
+              style="padding-left: 1rem; padding-right: 1rem;"
+              disabled="disabled"
+            />
+            <output id="bgOpacityOutput" for="bgOpacitySlider">100</output>
+          </div>
         </div>
       </div>
       

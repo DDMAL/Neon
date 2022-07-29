@@ -79,6 +79,7 @@ class TextView implements TextViewInterface {
     const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
     const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
     const displayText = document.getElementById('displayText') as HTMLInputElement;
+    const displayErrLog = document.getElementById('display-errors') as HTMLInputElement;
 
     // save to localStorage
     setSettings({ displayBBox: displayBBoxes.checked });
@@ -97,7 +98,8 @@ class TextView implements TextViewInterface {
 
       // if this is the 3rd option to be checked (all three are selected),
       // set "Display/Hide All" button to "Hide All".
-      if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
+      if (displayInfo?.checked && displayBBoxes?.checked && 
+          displayText?.checked && displayErrLog?.checked) {
         displayAllBtn.classList.add('selected');
         displayAllBtn.innerHTML = 'Hide All';
       }
@@ -142,6 +144,7 @@ class TextView implements TextViewInterface {
     const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
     const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
     const displayText = document.getElementById('displayText') as HTMLInputElement;
+    const displayErrLog = document.getElementById('display-errors') as HTMLInputElement;
 
     // save to localStorage
     setSettings({ displayText: displayText.checked });
@@ -208,7 +211,8 @@ class TextView implements TextViewInterface {
 
       // if this is the 3rd option to be checked (all three are selected),
       // set "Display/Hide All" button to "Hide All".
-      if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
+      if (displayInfo?.checked && displayBBoxes?.checked && 
+          displayText?.checked && displayErrLog?.checked) {
         displayAllBtn.classList.add('selected');
         displayAllBtn.innerHTML = 'Hide All';
       }

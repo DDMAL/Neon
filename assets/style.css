@@ -374,8 +374,9 @@ a:hover {
 .panel-sub-title {
     margin-bottom: 1vh;
 }
-.slider-container.display-panel {
+.slider-and-slider-actions-container.display-panel {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     width: 100%;
@@ -384,6 +385,22 @@ a:hover {
 }
 #zoomSlider, #opacitySlider, #bgOpacitySlider {
     margin: 0px;
+}
+.slider-actions-container {
+    display: flex;
+    width: 80%;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 1vh;
+    height: 3.5vh;
+}
+.display-slider-title {
+    width: auto;
+    margin-right: 1vw;
+}
+.slider-container {
+    display: flex;
+    width: 90%;
 }
 .panel-block {
     align-items: center;
@@ -478,12 +495,13 @@ a:hover {
     font-size: 14px;
 }
 .slider-btn {
-    padding: 7px 5px;
-    width: 20%;
-    min-width: 20%;
+    width: 10%;
     height: 100%;
-    font-size: 0.8em;
-    margin: 0px;
+    padding: 0;
+    margin: 0vw 0.2vw;
+}
+.slider-btn-img {
+    height: 60%;
 }
 .side-panel-btn:hover {
     border: 1px solid #c6c6c6;
@@ -512,7 +530,7 @@ a:hover {
 #validation_status_title {
     margin-right: 5px;
 }
-#display-actions-container {
+#display-slider-actions-container {
     display: flex;
     flex-direction: column;
     width: 100%;

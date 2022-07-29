@@ -316,7 +316,7 @@ a:hover {
 .panel-sub-title {
     margin-bottom: 1vh;
 }
-.slider-container.display-panel {
+.slider-and-slider-actions-container.display-panel {
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -454,7 +454,7 @@ a:hover {
 #validation_status_title {
     margin-right: 5px;
 }
-#display-actions-container {
+#display-slider-actions-container {
     display: flex;
     flex-direction: column;
     width: 100%;

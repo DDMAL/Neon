@@ -239,6 +239,8 @@ export function initNavbar (neonView: NeonView): void {
 
   /* "VIEW" menu */
 
+  /*
+
   // Event listeners for setting default zoom settings inside "View" dropdown
   const fitContentBtn = document.querySelector('#zoom-fit-content');
   const fitContentCheckmark = document.querySelector('#zoom-fit-content-icon');
@@ -267,6 +269,7 @@ export function initNavbar (neonView: NeonView): void {
     // TODO: Save default zoom settings in local storage
 
   });
+  */
 }
 
 /**
@@ -287,7 +290,7 @@ export function initUndoRedoPanel (neonView: NeonView): void {
   }
 
   /**
-   * Tries to redo an action and update the page if it succeeds.
+     * Tries to redo an action and update the page if it succeeds.
    */
   function redoHandler (): void {
     neonView.redo().then((result: boolean) => {

@@ -1,5 +1,7 @@
 import { Notification } from './Notification';
 import { errorLogsPanelContents } from '../SquareEdit/Contents';
+import { setSettings, getSettings } from './LocalSettings';
+
 
 // TODO: styling
 function createLogMessage (notif: Notification): Element {
@@ -48,6 +50,7 @@ export function recordNotification (notif: Notification): void {
  * Adds necessary HTML to DOM.
  */
 export function initNotificationLog(): void {
+  // notification log panel
   const log = document.querySelector('#notification_log');
   log.innerHTML = errorLogsPanelContents;
 
@@ -59,9 +62,13 @@ export function initNotificationLog(): void {
  * Set up event listeners for Notification Log panel
  */
 export function initNotificationLogControls(): void {
+  const notifPanel = document.querySelector('#notification_log');
   const heading = document.querySelector('#notifLogHeading');
   const dropdownIcon = heading.querySelector('svg > use');
   const contents = document.querySelector('#notifLogContents') as HTMLElement;
+
+  const { displayErrLog } = getSettings();
+  if (displayErrLog) notifPanel.classList.add('visible');
 
   heading.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -86,25 +93,62 @@ export function initNotificationLogControls(): void {
       dropdownIcon.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-side`);
     }
   });
+
+  initDisplayListener();
 }
 
 
 /**
  * Initializes click listener on "Show error logs" button in "View" dropdown.
  */
-export function initDropdownListener(): void {
-  const showErrorLogsBtn = document.querySelector('#show-error-logs-btn');
-  const checkmark = document.querySelector('#show-error-logs-checkmark-icon');
+export function initDisplayListener(): void {
   const notifPanel = document.querySelector('#notification_log');
+  const checkboxesContainer = document.querySelector('#display-single-container');
+  const errorsLabel = document.createElement('label');
+  const erorrsBtn = document.createElement('input');
 
-  showErrorLogsBtn.addEventListener('click', () => {
-    if (checkmark.classList.contains('selected')) {
-      checkmark.classList.remove('selected');
-      notifPanel.classList.remove('visible');
+  erorrsBtn.classList.add('checkbox');
+  errorsLabel.classList.add('checkbox-container', 'side-panel-btn');
+  errorsLabel.textContent = 'Errors';
+  erorrsBtn.id = 'display-errors';
+  erorrsBtn.type = 'checkbox';
+  erorrsBtn.checked = false;
+  errorsLabel.appendChild(erorrsBtn);
+  checkboxesContainer.append(errorsLabel);
+
+
+  const { displayErrLog } = getSettings();
+  if (displayErrLog) erorrsBtn.checked = true;
+
+  erorrsBtn.addEventListener('click', () => {
+
+    // setSettings({ displayBBox: displayBBoxes.checked });
+
+    const displayAllBtn = document.getElementById('display-all-btn');
+    const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
+    const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
+    const displayText = document.getElementById('displayText') as HTMLInputElement;
+    const displayErrLog = document.getElementById('display-errors') as HTMLInputElement;
+
+
+    if (erorrsBtn.checked) {
+      notifPanel.classList.add('visible');
+      setSettings({ displayErrLog: true});
+
+      if (displayInfo?.checked && displayBBoxes?.checked && 
+        displayText?.checked && displayErrLog?.checked) {
+      displayAllBtn.classList.add('selected');
+      displayAllBtn.innerHTML = 'Hide All';
+    }
     }
     else {
-      checkmark.classList.add('selected');
-      notifPanel.classList.add('visible');
+      notifPanel.classList.remove('visible');
+      setSettings({ displayErrLog: false});
+      if (displayAllBtn.classList.contains('selected')) {
+        displayAllBtn.classList.remove('selected');
+        displayAllBtn.innerHTML = 'Display All';
+      }
     }
+    
   });
 }

@@ -25,6 +25,7 @@ interface Settings {
   displayBBox: boolean;
   displayText: boolean;
   displayInfo: boolean;
+  displayErrLog: boolean;
   viewBox: string;
 }
 
@@ -44,6 +45,7 @@ const DEFAULT_SETTINGS: Settings = {
   displayBBox: false,
   displayText: false,
   displayInfo: false,
+  displayErrLog: false,
   viewBox: null
 };
 

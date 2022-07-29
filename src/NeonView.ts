@@ -14,6 +14,7 @@ import {
   ViewInterface
 } from './Interfaces';
 import LocalSettings from './utils/LocalSettings';
+  import { initNotificationLog } from '../src/utils/NotificationLog';
 
 
 /**
@@ -94,6 +95,7 @@ class NeonView {
       this.info = new this.params.Info(this);
       this.modal = new ModalWindow(this);
       Validation.init(this); // initialize validation
+      initNotificationLog(); // initialize notifications logs
 
       this.setupEdit(this.params);
       return this.core.initDb();
