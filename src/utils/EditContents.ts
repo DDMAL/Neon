@@ -7,9 +7,7 @@ export const navbarDropdownFileMenu: HTMLDivElement = document.createElement('di
 navbarDropdownFileMenu.classList.add('navbar-item', 'has-dropdown', 'is-hoverable');
 const fileDropdownBtn = document.createElement('div');
 fileDropdownBtn.classList.add('navbar-btn');
-fileDropdownBtn.innerHTML = 
-  `<div>File</div>
-  <img class="navbar-dropdown-icon" src="/Neon/assets/img/dropdown_icon_white.svg">`;
+fileDropdownBtn.innerHTML = `<div>File</div>`;
 const fileNavbarContents = document.createElement('div');
 fileNavbarContents.classList.add('navbar-dropdown');
 fileNavbarContents.id = 'navbar-dropdown-options';
@@ -36,9 +34,7 @@ export const navbarDropdownMEIActionsMenu: HTMLDivElement = document.createEleme
 navbarDropdownMEIActionsMenu.classList.add('navbar-item', 'has-dropdown', 'is-hoverable');
 const meiActionsDropdownBtn = document.createElement('div');
 meiActionsDropdownBtn.classList.add('navbar-btn');
-meiActionsDropdownBtn.innerHTML = 
-  `<div>MEI Actions</div>
-  <img class="navbar-dropdown-icon" src="/Neon/assets/img/dropdown_icon_white.svg">`;
+meiActionsDropdownBtn.innerHTML = `<div>MEI Actions</div>`;
 const meiActionsNavbarContents = document.createElement('div');
 meiActionsNavbarContents.classList.add('navbar-dropdown');
 meiActionsNavbarContents.id = 'navbar-dropdown-options';

@@ -1,8 +1,9 @@
 import NeonView from '../NeonView';
-import { HTMLSVGElement, SetTextAction } from '../Types';
+import { SetTextAction } from '../Types';
 import { ModalWindowInterface } from '../Interfaces';
 import { hotkeysModal, editTextModal } from '../SquareEdit/Contents';
-import { selectBBox, unselect } from './SelectTools';
+import { uploadAreaHTML } from '../Dashboard/dashboard_components';
+
 
 /**
  * Defines modal types.
@@ -11,7 +12,8 @@ import { selectBBox, unselect } from './SelectTools';
 export enum ModalWindowView {
   EDIT_TEXT,
   HOTKEYS,
-  VALIDATION_STATUS
+  VALIDATION_STATUS,
+  DOCUMENT_UPLOAD
 }
 
 enum ModalWindowState {
@@ -84,12 +86,18 @@ export class ModalWindow implements ModalWindowInterface {
       case ModalWindowView.HOTKEYS:
         // set up and diplay hotkey modal content
         document.getElementById('neon-modal-window-content-hotkeys').classList.add('visible');
+
+      case ModalWindowView.DOCUMENT_UPLOAD:
+        // add function to pairing button
         
       default:
         document.getElementById('neon-modal-window-container').style.display = 'flex';
         this.focusModalWindow();
         break;
     }
+    // make sure user can't scroll when modal is open
+    document.body.style.overflowX = 'hidden';
+    document.body.style.overflowY = 'hidden';
     this.modalWindowState = ModalWindowState.OPEN;
   }
 
@@ -109,8 +117,13 @@ export class ModalWindow implements ModalWindowInterface {
       
         // after the modal is closed, no keyboard shortcuts work because
         // the document hasn't been focused; this forcefully focuses the container
-        document.getElementById('container').focus();
+        if (this.modalWindowView !== ModalWindowView.DOCUMENT_UPLOAD) {
+          document.getElementById('container').focus();
+        }
     } 
+    // reset scroll behavior of body
+    document.body.style.overflowX = 'hidden';
+    document.body.style.overflowY = 'scroll';
     this.modalWindowState = ModalWindowState.CLOSED;
   }
 
@@ -150,6 +163,11 @@ export class ModalWindow implements ModalWindowInterface {
         document.getElementById('neon-modal-window-header-title').innerText = 'ERROR LOG';
         break;
 
+        case ModalWindowView.DOCUMENT_UPLOAD:
+          document.getElementById('neon-modal-window-header-title').innerText = 'DOCUMENT UPLOAD';
+          document.getElementById('neon-modal-window-content-container').innerHTML = uploadAreaHTML;
+          break;
+
       default:
         console.error('Unknown selection type. This should not have occurred.');
     } 
@@ -181,22 +199,6 @@ export class ModalWindow implements ModalWindowInterface {
     this.focusModalWindow();
   };
 
-
-  /**
-   * Update the bounding box selected when the edit text modal has been clicked 
-   */
-  updateSelectedBBox = function (span: HTMLSpanElement): void {
-    unselect();
-
-    const bboxId = Array.from(span.classList).find(e => e !== 'text-select' && e !== 'selected-to-edit');
-
-    if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
-      if (document.getElementById(bboxId)) {
-        const displayRect = document.getElementById(bboxId).querySelector('.sylTextRect-display') as HTMLSVGElement;
-        selectBBox(displayRect, this.dragHandler, this.neonView);
-      }
-    }
-  };
 
 
   /**

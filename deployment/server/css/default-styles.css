@@ -1,0 +1,86 @@
+body {
+    background-color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-weight: 300;
+}
+a {
+text-decoration: none;
+color: inherit;
+}
+.dividing-line {
+border-bottom: 2px solid #dfdfdf;
+width: 80%;
+}
+
+/* Section: Main Navbar */
+.navbar-section {
+    background-color: #f2f2f2;
+    width: 100%;
+    height: 8vh;
+    min-height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #589ed5;
+}
+.navbar-content-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 95%;
+}
+.neon-content-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    height: 80%;
+}
+.navbar-link {
+    margin-right: 0.7vw;
+    margin-left: 0.7vw;
+    cursor: pointer;
+    padding: 0.5vw;
+    border-radius: 3px;
+}
+.navbar-link:hover {
+    background-color: #589ed5;
+    color: white;
+}
+#home-link {
+    cursor: pointer;
+    height: 70%;
+}
+#neon-main-icon {
+    height: 100%;
+}
+
+/* Section: Main (Content) */
+.main-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.main-section-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    color: #589ed5;
+    overflow: scroll;
+    align-items: center;
+}
+
+
+/* Section: Footer */
+.footer-section {
+    height: 50vh;
+    background-color: #2d6a9a;
+}
