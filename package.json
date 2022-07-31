@@ -33,7 +33,7 @@
     "scripts": {
         "start": "http-server deployment/server/",
         "build": "./setup-verovio && rm -rf deployment/server/Neon-gh && webpack --config webpack.config.js && cp -R assets src/workers deployment/server/Neon-gh",
-        "bundle:pages": "./setup-verovio && rm -rf dist/Neon-gh && webpack --config webpack.pages-config.js && cp -R assets src/workers dist/Neon-gh",
+        "bundle:pages": "./setup-verovio && rm -rf dist/Neon/Neon-gh && webpack --config webpack.pages-config.js && cp -R assets src/workers dist/Neon/Neon-gh",
         "dev": "webpack --config webpack.dev.config.js",
         "test": "jest --silent",
         "doc": "typedoc --out ./doc --mode modules ./src"
