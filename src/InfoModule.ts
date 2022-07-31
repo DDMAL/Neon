@@ -3,6 +3,7 @@
 import NeonView from './NeonView';
 import { InfoInterface } from './Interfaces';
 import { Attributes } from './Types';
+import { getSettings, setSettings } from './utils/LocalSettings';
 
 /**
  * Map of contours to neume names.
@@ -34,25 +35,36 @@ function updateInfoVisibility (): void {
   const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
   const displayText = document.getElementById('displayText') as HTMLInputElement;
 
-  if ((document.getElementById('displayInfo') as HTMLInputElement).checked) {
+  // save setting to localStorage
+  setSettings({ displayInfo: displayInfo.checked });
+
+  if (displayInfo.checked) {
     neumeInfo.setAttribute('style', '');
     // scroll neume info into view
     //neumeInfo.scrollIntoView({ behavior: 'smooth' });
 
     // if this is the 3rd option to be checked (all three are selected),
     // set "Display/Hide All" button to "Hide All".
-    if (displayInfo.checked && displayBBoxes.checked && displayText.checked) {
+    if (displayInfo?.checked && displayBBoxes?.checked && displayText?.checked) {
       displayAllBtn.classList.add('selected');
-      displayAllBtn.innerHTML = "Hide All";
+      displayAllBtn.innerHTML = 'Hide All';
     }
   } else {
     neumeInfo.setAttribute('style', 'display: none');
     // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
     if (displayAllBtn.classList.contains('selected')) {
       displayAllBtn.classList.remove('selected');
-      displayAllBtn.innerHTML = "Display All";
+      displayAllBtn.innerHTML = 'Display All';
     }
   }
+}
+
+/**
+ * Load displayInfo settings from localStorage
+ */
+function loadSettings (): void {
+  const { displayInfo } = getSettings();
+  document.querySelector<HTMLInputElement>('#displayInfo').checked = displayInfo;
 }
 
 /**
@@ -60,6 +72,7 @@ function updateInfoVisibility (): void {
  */
 function setInfoControls (): void {
   startInfoVisibility();
+  loadSettings();
   updateInfoVisibility();
   document.getElementById('displayInfo').addEventListener('click', updateInfoVisibility);
 }

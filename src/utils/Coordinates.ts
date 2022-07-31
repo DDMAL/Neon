@@ -5,6 +5,13 @@ export interface Point {
   y: number;
 }
 
+export interface BBox {
+  ulx: number;
+  uly: number;
+  lrx: number;
+  lry: number;
+}
+
 /**
  * Get SVG relative coordinates given clientX and clientY
  * Source: https://stackoverflow.com/questions/29261304
@@ -54,3 +61,28 @@ export function getStaffByCoords (clientX: number, clientY: number): SVGGElement
   const staffId = getStaffIdByCoords(clientX, clientY);
   return document.querySelector(`#${staffId}`);
 }
+
+export function isOutOfSVGBounds (x: number, y: number): boolean {
+  const bgImg = document.querySelector<SVGImageElement>('#bgimg');
+  
+  return (
+    x <= 0 || x >= Number(bgImg.getAttribute('width')) ||
+    y <= 0 || y >= Number(bgImg.getAttribute('height'))
+  );
+}
+
+/**
+ * Get bounding box (lrx, lry, ulx, uly) of a glyph, which
+ * is a <use> element in the SVG
+ */
+export function getGlyphBBox (g: SVGRectElement | SVGUseElement): BBox {
+  const rect = (g.tagName == 'rect') ? g.getBBox() : (g.parentNode as SVGGElement).getBBox();
+
+  return {
+    ulx: rect.x,
+    uly: rect.y,
+    lrx: rect.x + rect.width,
+    lry: rect.y + rect.height
+  };
+}
+

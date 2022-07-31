@@ -14,6 +14,7 @@ export interface DisplayInterface {
   zoomHandler: ZoomHandler;
   setDisplayListeners (): void;
   updateVisualization (): void;
+  loadSettings (): void;
 }
 
 export interface ViewConstructable {
@@ -27,6 +28,7 @@ export interface ViewInterface {
   getCurrentPage (): number;
   getCurrentPageURI (): string;
   getPageName (): string;
+  onSVGLoad? (): void;
 }
 
 export interface NeumeEditConstructable {
@@ -52,7 +54,6 @@ export interface ModalWindowInterface {
   setModalWindowView(view: ModalWindowView): void;
   openModalWindow(): void;
   hideModalWindow(): void;
-  updateSelectedBBox(span: HTMLSpanElement): void;
 }
 
 export interface TextViewConstructable {

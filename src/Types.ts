@@ -263,6 +263,20 @@ export type NeonManifest = {
   mei_annotations: WebAnnotation[]
 };
 
+export type allDocs = {
+  offset?: number,
+  total_rows?: number,
+  rows?: { 
+    doc?: PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> & { kind?: string }; 
+    id: string; 
+    key: string; 
+    value: { 
+      rev: string; 
+      deleted?: boolean; 
+    }; 
+  }[]
+};
+
 /** An <svg> element from any DOM queries */
 export type HTMLSVGElement = HTMLElement & SVGSVGElement;
 
@@ -270,5 +284,5 @@ export type HTMLSVGElement = HTMLElement & SVGSVGElement;
 export type SelectionType = 'selByStaff' | 'selByNeume' | 'selByNc' | 'selByLayerElement' | 'selBySyllable' | 'selByBBox' | 'selByLayerElement';
 
 /** Highlight grouping type  */
-export type GroupingType = 'staff' | 'syllable' | 'neume' | 'layer' | 'selection' | 'none';
+export type GroupingType = 'staff' | 'syllable' | 'neume' | 'layerElement' | 'selection' | 'none';
 

@@ -58,7 +58,7 @@ export class SplitStaffHandler {
     this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(async (result) => {
       if (result) {
         await this.neonView.updateForCurrentPage();
-        Notification.queueNotification('Split action successful');
+        Notification.queueNotification('Split action successful', 'success');
       }
       const dragHandler = new DragHandler(this.neonView, '.staff');
       this.splitDisable();
