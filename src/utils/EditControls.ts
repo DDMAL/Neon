@@ -15,8 +15,6 @@ export function initNavbar (neonView: NeonView): void {
     });
   });
 
-
-
   document.getElementById('save').addEventListener('click', () => {
     neonView.save().then(() => {
       Notification.queueNotification('Saved', 'success');
