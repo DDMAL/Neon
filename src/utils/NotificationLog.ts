@@ -18,17 +18,17 @@ function createLogMessage (notif: Notification): Element {
     </div>
 
     <div class="remove-notif-icon-wrapper">
-      <img class="log-remove remove-notif-icon" src="/Neon/assets/img/garbage-closed.svg">
+      <img class="log-remove remove-notif-icon" src="${__ASSET_PREFIX__}/assets/img/garbage-closed.svg">
     </div>
   `;
 
   const remove = notifDiv.querySelector<HTMLButtonElement>('.log-remove');
   remove.onclick = () => notifDiv.remove();
   remove.addEventListener('mouseover', () => {
-    remove.setAttribute('src', '/Neon/assets/img/garbage-open.svg')
+    remove.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/garbage-open.svg`)
   });
   remove.addEventListener('mouseout', () => {
-    remove.setAttribute('src', '/Neon/assets/img/garbage-closed.svg')
+    remove.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/garbage-closed.svg`)
   });
 
   return notifDiv;

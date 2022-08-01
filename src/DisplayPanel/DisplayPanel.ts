@@ -27,7 +27,7 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
             <div class="display-slider-title">Zoom</div>
             <button class="side-panel-btn slider-btn" id="reset-zoom">⟲</button>
             <button class="side-panel-btn slider-btn" id="set-zoom-easy-edit">
-              <img class="slider-btn-img" src="/Neon/assets/img/expand-icon.svg">
+              <img class="slider-btn-img" src="${__ASSET_PREFIX__}assets/img/expand-icon.svg">
             </button>
           </div>
           <div class="slider-container">
@@ -48,7 +48,7 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
           <div class="slider-actions-container">
           <div class="display-slider-title">Glyph Opacity</div>
             <button class="side-panel-btn slider-btn" id="toggle-glyph-opacity">
-              <img class="slider-btn-img" src="/Neon/assets/img/hide-icon.svg">
+              <img class="slider-btn-img" src="${__ASSET_PREFIX__}/assets/img/hide-icon.svg">
             </button>   
           </div>
           <div class="slider-container">
@@ -67,7 +67,7 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
           <div class="slider-actions-container">
           <div class="display-slider-title">Image Opacity</div> 
             <button class="side-panel-btn slider-btn" id="toggle-bg-opacity">
-              <img class="slider-btn-img" src="/Neon/assets/img/hide-icon.svg">
+              <img class="slider-btn-img" src="${__ASSET_PREFIX__}/assets/img/hide-icon.svg">
             </button>   
           </div>
           <div class="slider-container">
