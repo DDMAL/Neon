@@ -9,6 +9,14 @@ import ZoomHandler from '../SingleView/Zoom';
  */
 export function initNavbar (neonView: NeonView): void {
 
+  // setup navbar listeners
+  const navbarDropdowns = document.querySelectorAll('.navbar-item.has-dropdown.is-hoverable');
+  Array.from(navbarDropdowns).forEach((dropDown) => {
+    dropDown.addEventListener('mouseover', () => {
+      //
+    });
+  });
+
   /* "FILE" menu */
   document.getElementById('save').addEventListener('click', () => {
     neonView.save().then(() => {

@@ -1,4 +1,4 @@
-import { getStaffBBox, selectBBox, selectStaff } from './SelectTools';
+import { getStaffBBox, selectBBox, selectStaff, selectAll } from './SelectTools';
 import NeonView from '../NeonView';
 import DragHandler from './DragHandler';
 
@@ -249,15 +249,16 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         if (result) {
           await neonView.updateForCurrentPage();
         }
-        element = document.getElementById(element.id) as unknown as SVGGraphicsElement;
+        element = document.querySelector<SVGGraphicsElement>(`#${element.id}`);
         ulx = undefined;
         uly = undefined;
         lrx = undefined;
         lry = undefined;
-        d3.selectAll('.resizePoint').remove();
-        d3.selectAll('#resizeRect').remove();
-        d3.selectAll('.rotatePoint').remove();
+        document.querySelectorAll('.resizePoint').forEach(el => el.remove());
+        document.querySelectorAll('#resizeRect').forEach(el => el.remove());
+        document.querySelectorAll('.rotatePoint').forEach(el => el.remove());
         drawInitialRect();
+        selectAll([element], neonView, dragHandler);
         if (element.classList.contains('syl')) {
           selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
         } else {
@@ -352,6 +353,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         lry = undefined;
         dy = undefined;
         drawInitialRect();
+        selectAll([element], neonView, dragHandler);
         if (element.classList.contains('syl')) {
           selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
         } else {
