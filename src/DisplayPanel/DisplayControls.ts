@@ -4,7 +4,6 @@ import * as Color from '../utils/Color';
 import ZoomHandler from '../SingleView/Zoom';
 import { GroupingType } from '../Types';
 import { getSettings, setSettings } from '../utils/LocalSettings';
-import { createModuleResolutionCache } from 'typescript';
 
 let lastGlyphOpacity: number, lastImageOpacity: number;
 
