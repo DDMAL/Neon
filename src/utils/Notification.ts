@@ -1,3 +1,4 @@
+import { recordNotification } from './NotificationLog';
 import { uuidv4 } from './random';
 
 type NotificationType = 'default' | 'error' | 'warning' | 'success';
@@ -21,7 +22,7 @@ const notificationIcon: Record<NotificationType, string> = {
 /**
  * A class to manage Neon notifications.
  */
-class Notification {
+export class Notification {
   message: string;
   displayed: boolean;
   id: string;
@@ -130,6 +131,8 @@ function startNotification (): void {
 export function queueNotification (notification: string, type: NotificationType = 'default'): void {
   const notif = new Notification(notification, type);
   notifications.push(notif);
+  recordNotification(notif);
+
   if (!notifying || document.getElementById('notification-content').querySelectorAll('.neon-notification').length < NUMBER_TO_DISPLAY) {
     startNotification();
   }
