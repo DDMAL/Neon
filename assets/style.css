@@ -142,16 +142,6 @@ a:hover {
     border: 1px solid #dbdbdb;
     min-width: 13vw;
 }
-/*
-.dropdown-extendable-content-container > .navbar-dropdown-item > .navbar-dropdown-item-text::before {
-    content: ' ';
-    margin-right: 5px;
-}
-.dropdown-extendable-content-container > .navbar-dropdown-item > .navbar-dropdown-item-text.checked::before {
-    content: '✓';
-    margin-right: 5px;
-}
-*/
 .checkmark-icon {
     opacity: 0;
     transition: 0.1s ease-in-out;
@@ -499,6 +489,7 @@ a:hover {
     height: 100%;
     padding: 0;
     margin: 0vw 0.2vw;
+    font-size: 16px;
 }
 .slider-btn-img {
     height: 60%;

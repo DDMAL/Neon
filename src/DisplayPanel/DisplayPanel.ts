@@ -47,19 +47,17 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
         <div class="slider-and-slider-actions-container display-panel" style="cursor: default">
           <div class="slider-actions-container">
           <div class="display-slider-title">Glyph Opacity</div>
-            <button class="side-panel-btn slider-btn" id="reset-opacity">⟲</button>
-            <button class="side-panel-btn slider-btn" id="hide-glyphs">
+            <button class="side-panel-btn slider-btn" id="toggle-glyph-opacity">
               <img class="slider-btn-img" src="/Neon/assets/img/hide-icon.svg">
             </button>   
           </div>
           <div class="slider-container">
             <input type="range"
               step="5" min="0" max="100" value="100"
-              aria-labelledby="reset-opacity"
+              aria-labelledby="toggle-glyph-opacity"
               class="slider is-fullwidth is-large"
               id="opacitySlider"
               style="padding-left: 1rem; padding-right: 1rem;"
-              disabled="disabled"
             />
             <output id="opacityOutput" for="opacitySlider">100</output>
           </div>
@@ -68,19 +66,17 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
         <div class="slider-and-slider-actions-container display-panel" style="cursor: default">
           <div class="slider-actions-container">
           <div class="display-slider-title">Image Opacity</div> 
-            <button class="side-panel-btn slider-btn" id="reset-bg-opacity">⟲</button>
-            <button class="side-panel-btn slider-btn" id="hide-bg-img">
+            <button class="side-panel-btn slider-btn" id="toggle-bg-opacity">
               <img class="slider-btn-img" src="/Neon/assets/img/hide-icon.svg">
             </button>   
           </div>
           <div class="slider-container">
             <input type="range"
               step="5" min="0" max="100" value="100"
-              aria-labelledby="reset-bg-opacity"
+              aria-labelledby="toggle-bg-opacity"
               class="slider is-fullwidth is-large"
               id="bgOpacitySlider"
               style="padding-left: 1rem; padding-right: 1rem;"
-              disabled="disabled"
             />
             <output id="bgOpacityOutput" for="bgOpacitySlider">100</output>
           </div>
