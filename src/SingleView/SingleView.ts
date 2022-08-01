@@ -1,11 +1,11 @@
 import { updateHighlight, setOpacityFromSlider, setBgOpacityFromSlider } from '../DisplayPanel/DisplayControls';
 import NeonView from '../NeonView';
 import DisplayPanel from '../DisplayPanel/DisplayPanel';
-import ZoomHandler, { ViewBox } from './Zoom';
+import ZoomHandler from './Zoom';
 import { ViewInterface, DisplayConstructable } from '../Interfaces';
 
 import * as d3 from 'd3';
-import { getSettings, setSettings } from '../utils/LocalSettings';
+import { getSettings } from '../utils/LocalSettings';
 
 /**
  * A view module for displaying a single page of a manuscript.

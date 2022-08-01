@@ -204,8 +204,11 @@ class DragHandler {
    */
   isDragOutOfBounds (selection: SVGGraphicsElement[]): boolean {
     // Get the bounding boxes of all glyphs (<use> elements) within the selection array
+    const isBBoxDisplayed = document.querySelector<HTMLInputElement>('#displayBBox').checked;
+    const glyphSelector = isBBoxDisplayed ? 'use, rect' : 'use';
+
     const glyphs: SVGUseElement[] = selection.reduce(
-      (acc, el) => acc.concat(...el.querySelectorAll('use, rect')), []
+      (acc, el) => acc.concat(...el.querySelectorAll(glyphSelector)), []
     );
     const glyphBBoxes: BBox[] = glyphs.map(getGlyphBBox);
 
