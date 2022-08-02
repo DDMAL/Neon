@@ -2,7 +2,7 @@
 
 describe('visual: activate sidebar buttons', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8080/edit/test.jsonld');
+    cy.visit('http://localhost:8080/editor.html?manifest=test');
   });
 
   it('class: buttons should have `is-active` class when clicked', () => {

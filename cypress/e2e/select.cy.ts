@@ -4,7 +4,7 @@
 
 // Load page and wait for SVG to be visible
 beforeEach(() => {
-  cy.visit('http://localhost:8080/edit/test.jsonld');
+  cy.visit('http://localhost:8080/editor.html?manifest=test');
   cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
 });
 

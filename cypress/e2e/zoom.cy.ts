@@ -8,7 +8,7 @@ describe('test: zoom', () => {
 
   beforeEach(() => {
     // Visit the website, and wait until the MEI SVG is visible:
-    cy.visit('http://localhost:8080/edit/test.jsonld');
+    cy.visit('http://localhost:8080/editor.html?manifest=test');
     cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
 
     expectZoom(100);
