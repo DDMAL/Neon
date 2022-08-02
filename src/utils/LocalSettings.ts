@@ -16,7 +16,7 @@ let localSettings: LocalSettings = null;
  * Every key is optional so that this same typing
  * can be used for `setSettings()` / `LocalSettings.set()`.
  */
-interface Settings {
+export interface Settings {
   zoom: number;
   glyphOpacity: number;
   imageOpacity: number;
