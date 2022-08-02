@@ -13,6 +13,8 @@ import {
   TextViewInterface,
   ViewInterface
 } from './Interfaces';
+import { initNotificationLog } from '../src/utils/NotificationLog';
+import { setSavedStatus, listenUnsavedChanges } from './utils/Unsaved';
 import LocalSettings, { getSettings } from './utils/LocalSettings';
 
 
@@ -94,6 +96,8 @@ class NeonView {
       this.info = new this.params.Info(this);
       this.modal = new ModalWindow(this);
       Validation.init(this); // initialize validation
+      initNotificationLog(); // initialize notifications logs
+      listenUnsavedChanges();
 
       this.setupEdit(this.params);
       return this.core.initDb();
@@ -119,6 +123,7 @@ class NeonView {
    * Redo an action performed on the current page (if there is one).
    */
   redo (): Promise<boolean> {
+    setSavedStatus(false);
     return this.core.redo(this.view.getCurrentPageURI());
   }
 
@@ -126,6 +131,7 @@ class NeonView {
    * Undo the last action performed on the current page (if there is one).
    */
   undo (): Promise<boolean> {
+    setSavedStatus(false);
     return this.core.undo(this.view.getCurrentPageURI());
   }
 
@@ -184,6 +190,7 @@ class NeonView {
    * Save the current state to the browser database.
    */
   save (): Promise<void> {
+    setSavedStatus(true);
     return this.core.updateDatabase();
   }
 

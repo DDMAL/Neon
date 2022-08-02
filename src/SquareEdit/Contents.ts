@@ -123,7 +123,7 @@ export const editControlsPanel =
             </div>
         </div>
 
-        <div id="display-actions-container">
+        <div id="display-slider-actions-container">
                 <div class="panel-content-subsection hidden">
                     <div id="moreEdit"></div>
                 </div>
@@ -495,3 +495,13 @@ export const hotkeysModal = `
             </div>
         </div>
     </div>`;
+
+
+export const errorLogsPanelContents = 
+    `<div class="panel-heading" id="notifLogHeading">
+        <div class="panel-heading-title">Notification Log</div>
+        <svg class="icon">
+            <use id="toggleNotifLog" xlink:href="${__ASSET_PREFIX__}/assets/img/icons.svg#dropdown-down"></use>
+        </svg>
+    </div>
+    <div class="panel-contents" id="notifLogContents" style="overflow: visible; padding: 0.5em 0.75em;"><div>`;

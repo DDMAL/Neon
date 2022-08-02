@@ -19,6 +19,9 @@
 
       <div class="navbar-main-content-container" id="navbar-main-content-container-top">
         <div class="navbar-element" id="filename"></div>
+        <div id="unsaved-changes-container">
+          <img class="navbar-element" id="file-saved" src="/Neon/assets/img/saved-icon.svg">
+        </div>
         <div class="navbar-element" id="file-status"></div>
       </div>
 
@@ -29,25 +32,82 @@
             <div class="navbar-btn-text">File</div>
           </div>
 
-          <div class="navbar-dropdown" id="navbar-dropdown-options">
-            <div id="save" class="navbar-dropdown-item">Save</div>
-            <div id="export" class="navbar-dropdown-item">Save and Export to File</div>
-            <a id="getmei" class="navbar-dropdown-item">Download MEI</a>
+          <div class="navbar-dropdown">
+            <div id="save" class="navbar-dropdown-item">
+              <div class="navbar-dropdown-item-text">Save</div>
+            </div>
+            <div id="export" class="navbar-dropdown-item">
+              <div class="navbar-dropdown-item-text">Save and Export to File</div>
+            </div>
+            <a id="getmei" class="navbar-dropdown-item">
+             <div class="navbar-dropdown-item-text">Download MEI</div>
+            </a>
           </div>   
         </div>
+
+        <!--
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-element navbar-btn">
+            <div class="navbar-btn-text">View</div>
+          </div>
+          <div class="navbar-dropdown">
+
+            <div id="default-zoom" class="navbar-dropdown-item has-extendable-content">
+
+              <div class="navbar-dropdown-item-text-wrapper">
+                <div class="navbar-dropdown-item-text">Default Zoom</div>
+              </div>
+              <div class="navbar-dropdown-item-icon-wrapper flex-end">
+                <img src="/Neon/assets/img/right_arrow.svg" class="right-arrow">
+              </div>
+
+              
+              <div id="extendable-content" class="dropdown-extendable-content-container">
+                <div class="navbar-dropdown-item extendable">
+                  <div class="navbar-dropdown-item-icon-wrapper">
+                    <img src="/Neon/assets/img/checkmark.svg" id="zoom-fit-content-icon" class="checkmark-icon default-zoom selected navbar-item-icon">
+                  </div>
+                  <div class="navbar-dropdown-item-text-wrapper">
+                    <div class="navbar-dropdown-item-text checked" id="zoom-fit-content">Fit Content</div>
+                  </div>
+                </div>
+                <div class="navbar-dropdown-item extendable">
+                  <div class="navbar-dropdown-item-icon-wrapper">
+                    <img src="/Neon/assets/img/checkmark.svg" id="zoom-easy-edit-icon" class="checkmark-icon default-zoom navbar-item-icon">
+                  </div>
+                  <div class="navbar-dropdown-item-text-wrapper">
+                    <div class="navbar-dropdown-item-text" id="zoom-easy-edit">Easy Edit</div>
+                  </div>
+                </div>
+              </div>
+              
+
+            </div>
+
+            <div class="navbar-dropdown-item">
+
+              <div class="navbar-dropdown-item-icon-wrapper">
+                <img src="/Neon/assets/img/checkmark.svg" id="show-error-logs-checkmark-icon" class="checkmark-icon">
+              </div>
+              <div class="navbar-dropdown-item-text-wrapper">
+                <div class="navbar-dropdown-item-text" id="show-error-logs-btn">Show error logs</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        -->
 
         <div class="navbar-item has-dropdown is-hoverable">
           <div class="navbar-element navbar-btn">
             <div class="navbar-btn-text">MEI Actions</div>
           </div>
-          <div class="navbar-dropdown" id="navbar-dropdown-options">
+          <div class="navbar-dropdown">
             <div id="remove-empty-syls" class="navbar-dropdown-item">Remove Empty Syllables</div>
             <div id="remove-empty-neumes" class="navbar-dropdown-item">Remove Empty Neumes</div>
             <div id="remove-out-of-bounds-glyphs" class="navbar-dropdown-item">Remove Out-of-bounds Glyphs</div>
             <div id="revert" class="navbar-dropdown-item">Revert</div>
           </div>
         </div>
-
       
         <div class="navbar-item has-dropdown is-hoverable">
           <div class="navbar-element navbar-btn">
@@ -95,6 +155,7 @@
       <div id="display_controls"></div>
       <div id="insert_controls"></div>
       <div id="edit_controls"></div>
+      <div id="notification_log"></div>
       <div id="info-bubbles-container">
         <div id="neume_info"></div>
         <div id="syl_text" style="display:none;"></div>

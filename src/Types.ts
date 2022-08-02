@@ -263,6 +263,20 @@ export type NeonManifest = {
   mei_annotations: WebAnnotation[]
 };
 
+export type allDocs = {
+  offset?: number,
+  total_rows?: number,
+  rows?: { 
+    doc?: PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> & { kind?: string }; 
+    id: string; 
+    key: string; 
+    value: { 
+      rev: string; 
+      deleted?: boolean; 
+    }; 
+  }[]
+};
+
 /** An <svg> element from any DOM queries */
 export type HTMLSVGElement = HTMLElement & SVGSVGElement;
 

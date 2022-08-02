@@ -9,10 +9,12 @@ module.exports = {
   mode: 'development',
   target: 'web',
   entry: {
-    editor: './deployment/server/editor.ts'
+    landing: './deployment/scripts/landing.ts',
+    editor: './deployment/scripts/editor.ts',
+    dashboard: './deployment/scripts/dashboard.ts',
   },
   output: {
-    path: path.resolve(__dirname, 'deployment', 'public', 'Neon'),
+    path: path.resolve(__dirname, 'deployment', 'server', 'Neon-gh'),
     publicPath: '/',
     filename: '[name].js'
   },
@@ -21,7 +23,7 @@ module.exports = {
   },
   devtool: 'source-map',
   devServer: {
-    static: './deployment/public',
+    static: './deployment/server',
     hot: true,
   },
   watch: true,
@@ -39,7 +41,7 @@ module.exports = {
         use: [
           {
             loader: 'worker-loader',
-            options: { publicPath: '/Neon/' }
+            options: { publicPath: '/Neon-gh/' }
           }
         ]
       }
@@ -57,7 +59,7 @@ module.exports = {
     new webpack.DefinePlugin({
       __LINK_LOCATION__: JSON.stringify('/'),
       __NEON_VERSION__: JSON.stringify(commitHash),
-      __ASSET_PREFIX__: JSON.stringify('/Neon/')
+      __ASSET_PREFIX__: JSON.stringify('/Neon-gh/')
     })
   ]
 };
