@@ -6,7 +6,7 @@ beforeEach(() => {
 const LOCALSTORAGE_KEY = 'samples/manifests/test.jsonld';
 
 describe('test(settings): highlight', () => {
-  it.skip('key: no change if paired with cmd/ctrl', () => {
+  it('key: no change if paired with cmd/ctrl', () => {
     // Check cmd/ctrl + r: should refresh the page without a change in highlight option
     cy.get('body').type('{meta}r');
     cy.window().then(win => {
