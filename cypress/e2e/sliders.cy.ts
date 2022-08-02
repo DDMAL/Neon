@@ -53,8 +53,8 @@ describe('test: glyph opacity', () => {
 describe.skip('test: glyph opacity toggle button', () => {
   it('toggle: clicking on button should set opacity to 0', () => {
     cy.get('#toggle-glyph-opacity').click();
+    expectOpacity(0);
     expectToggleButton(0);
-
   });
 
   it('toggle: after slider set opacity to 30', () => {
@@ -63,6 +63,19 @@ describe.skip('test: glyph opacity toggle button', () => {
     expectToggleButton(30);
 
     cy.get('#toggle-glyph-opacity').click();
+
+    expectOpacity(0);
+    expectToggleButton(0);
+  });
+
+  it('toggle: after opacity is set to 0', () => {
+    setOpacity(0);
+    expectOpacity(0);
+    expectToggleButton(0);
+
+    cy.get('#toggle-glyph-opacity').click();
+
+    expectOpacity(100);
     expectToggleButton(100);
   });
 });
