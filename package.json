@@ -38,7 +38,7 @@
         "doc": "typedoc --out ./doc --mode modules ./src",
         "cypress:open": "cypress open",
         "cypress:test": "cypress run",
-        "test": "jest --silent"
+        "test": "cypress open"
     },
     "jest": {
         "testPathIgnorePatterns": [
