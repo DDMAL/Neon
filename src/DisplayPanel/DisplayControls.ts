@@ -73,6 +73,7 @@ export function setZoomControls (zoomHandler?: ZoomHandler): void {
 export function setOpacityFromSlider (meiClassName?: string): void {
   const opacityOutput = document.getElementById('opacityOutput') as HTMLOutputElement;
   const opacitySlider = document.getElementById('opacitySlider') as HTMLInputElement;
+  const toggleOpacityBtn = document.getElementById('toggle-glyph-opacity');
 
   opacitySlider.value = opacityOutput.value;
   // this is where we load glyph opacity from localStorage on page-load
@@ -81,9 +82,11 @@ export function setOpacityFromSlider (meiClassName?: string): void {
   // dispay correct slider tiggle display icon
   const hideGlyphsImg = document.querySelector('#toggle-glyph-opacity > img');
   if (Number(opacityOutput.value) === 0) {
+    toggleOpacityBtn.classList.remove('hide-icon');
     hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/show-icon.svg`);
   }
   else {
+    toggleOpacityBtn.classList.add('hide-icon');
     hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/hide-icon.svg`);
   }
 
@@ -121,7 +124,6 @@ function setOpacityControls (meiClassName: string): void {
 
     let newOpacity;
     if (toggleOpacityBtn.classList.contains('hide-icon')) {
-      toggleOpacityBtn.classList.remove('hide-icon');
       newOpacity = 0;
     }
     else {
@@ -177,11 +179,9 @@ function setBackgroundOpacityControls (background: string): void {
     let newOpacity;
 
     if (toggleBgOpacityBtn.classList.contains('hide-icon')) {
-      toggleBgOpacityBtn.classList.remove('hide-icon');
       newOpacity = 0;
     }
     else {
-      toggleBgOpacityBtn.classList.add('hide-icon');
       newOpacity = 1;
     }
     (document.getElementsByClassName(background)[0] as HTMLElement)
@@ -204,6 +204,7 @@ function setBackgroundOpacityControls (background: string): void {
 
 export function setBgOpacityFromSlider (background?: string): void {
   const bgOpacityOutput: HTMLOutputElement = document.querySelector('#bgOpacityOutput');
+  const toggleBgOpacityBtn = document.getElementById('toggle-bg-opacity');
   
   setSettings({ imageOpacity: Number(bgOpacityOutput.value) });
 
@@ -211,9 +212,11 @@ export function setBgOpacityFromSlider (background?: string): void {
   const hideGlyphsImg = document.querySelector('#toggle-bg-opacity > img');
   //console.log(Number(bgOpacityOutput.value));
   if (Number(bgOpacityOutput.value) === 0) {
+    toggleBgOpacityBtn.classList.remove('hide-icon');
     hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/show-icon.svg`);
   }
   else {
+    toggleBgOpacityBtn.classList.add('hide-icon');
     hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/hide-icon.svg`);
   }
 
