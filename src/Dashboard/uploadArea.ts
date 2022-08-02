@@ -1,6 +1,6 @@
-import { addNewFiles } from './uploadManager';
+import { addNewFiles } from './UploadManager';
 import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
-import { handleUploadAllDocuments, handleMakePair } from './uploadManager';
+import { handleUploadAllDocuments, handleMakePair } from './UploadManager';
 import { updateDocumentSelector } from './DocumentSelector';
 import { fm } from '../../deployment/scripts/dashboard';
 
