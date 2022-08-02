@@ -1319,11 +1319,6 @@
   dependencies:
     eslint-visitor-keys "^1.1.0"
 
-"@ungap/url-search-params@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.npmjs.org/@ungap/url-search-params/-/url-search-params-0.1.4.tgz"
-  integrity sha512-RLwrxCTDNiNev9hpr9rDq8NyeQ8Nn0X1we4Wu7Tlf368I8r+7hBj3uObhifhuLk74egaYaSX5nUsBlWz6kjj+A==
-
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
   resolved "https://registry.npmjs.org/@webassemblyjs/ast/-/ast-1.9.0.tgz"
@@ -3554,14 +3549,15 @@ diffie-hellman@^5.0.0:
     miller-rabin "^4.0.0"
     randombytes "^2.0.0"
 
-"diva.js@github:DDMAL/diva.js#master":
+diva.js@^6.0.2:
   version "6.0.2"
-  resolved "git+ssh://git@github.com/DDMAL/diva.js.git#f977534acc0b0f67b6108059d006bead70494fb3"
+  resolved "https://registry.yarnpkg.com/diva.js/-/diva.js-6.0.2.tgz#b52e9e49557a9070ce5542b7e2d5bfbf68dfb3c2"
+  integrity sha512-X6R/skn07y4lGi5uslafRIxjkPl/Lb7rRdZvzfDcWd6XsyTA2h8Yglozh3PMjuiZb+fTU32jNf0LMf24dTdb0Q==
   dependencies:
-    "@ungap/url-search-params" "^0.1.4"
     array.prototype.fill "^1.0.2"
     extend "^3.0.2"
     lodash "^4.17.15"
+    url-search-params "^1.0.2"
     whatwg-fetch "^2.0.4"
 
 dns-equal@^1.0.0:
@@ -9687,6 +9683,11 @@ url-parse-lax@^3.0.0:
   integrity sha1-FrXK/Afb42dsGxmZF3gj1lA6yww=
   dependencies:
     prepend-http "^2.0.0"
+
+url-search-params@^1.0.2:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/url-search-params/-/url-search-params-1.1.0.tgz#865669a6e4e9e5543f86fc972b27c91485375326"
+  integrity sha512-XiO5GLAxmlZgdLob/RmKZRc2INHrssMbpwD6O46JkB1aEJO4fkV3x3mR6+CDX01ijfEUwvfwCiUQZrKqfm1ILw==
 
 url@^0.11.0:
   version "0.11.0"
