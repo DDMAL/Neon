@@ -104,11 +104,16 @@ export function deleteButtonHandler (evt: KeyboardEvent): void {
  * End the extra options menu.
  */
 export function endOptionsSelection (): void {
-  try {
-    const moreEdit = document.getElementById('moreEdit');
+  const moreEdit = document.getElementById('moreEdit');
+  const extraEdit = document.getElementById('extraEdit');
+  if (moreEdit) {
     moreEdit.innerHTML = '';
     moreEdit.parentElement.classList.add('hidden');
-  } catch (e) {}
+  }
+  if (extraEdit) {
+    extraEdit.innerHTML = '';
+    extraEdit.parentElement.classList.add('hidden');
+  }
   document.body.removeEventListener('keydown', deleteButtonHandler);
 }
 
@@ -204,13 +209,13 @@ export function insertToSyllableHandler(): void {
 /**
  * Function to handle moving divisio or accidental out of syllable
  */
-export function moveOuttaSyllableHandler(): void {
+export function moveOutsideSyllableHandler(): void {
   const toMove: EditorAction[] = [];
   const selected = Array.from(document.getElementsByClassName('selected'));
   selected.forEach(elem => {
     toMove.push(
       {
-        action: 'moveOuttaSyllable',
+        action: 'moveOutsideSyllable',
         param: {
           elementId: elem.id
         }
@@ -571,6 +576,7 @@ export function triggerNeumeActions (): void {
 export function triggerSyllableActions (selectionType: string): void {
   endOptionsSelection();
 
+  setEditControls('moreEdit', Contents.syllableActionsContent);
   // initialize variable that will hold html to be added to Display panel
   let extraActionsHTML = '';
 
@@ -632,10 +638,17 @@ export function triggerSyllableActions (selectionType: string): void {
 export function triggerClefActions (clef: SVGGraphicsElement): void {
   endOptionsSelection();
 
-  setEditControls('moreEdit', Contents.custosActionContents);
+  const isClefInSyllable = clef.parentElement.classList.contains('syllable');
+  const moreEditContents = (isClefInSyllable)
+    ? Contents.layerElementInActionContents
+    : Contents.layerElementOutActionContents;
+  setEditControls('moreEdit', moreEditContents);
   setEditControls('extraEdit', Contents.clefActionContents);
-  addChangeStaffListener();
   addDeleteListener();
+
+  addChangeStaffListener();
+  document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
+  document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
 
   document.querySelector('#CClef.dropdown-item')
     .addEventListener('click', () => {
@@ -705,7 +718,7 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
 
   addChangeStaffListener();
   document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
-  document.getElementById('moveOuttaSyllable')?.addEventListener('click', moveOuttaSyllableHandler);
+  document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
 
   document.querySelector('#ChangeToFlat.dropdown-item')
     .addEventListener('click', () => {
@@ -766,7 +779,7 @@ export function triggerLayerElementActions (element: SVGGraphicsElement): void {
 
   addChangeStaffListener();
   document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
-  document.getElementById('moveOuttaSyllable')?.addEventListener('click', moveOuttaSyllableHandler);
+  document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
 }
 
 
