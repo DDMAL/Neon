@@ -197,9 +197,9 @@ export function insertToSyllableHandler(): void {
   };
   neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => { 
     if (result) {
-      Notification.queueNotification('Insert Success');
+      Notification.queueNotification('Insert Success', 'success');
     } else {
-      Notification.queueNotification('Insert Failed XoX');
+      Notification.queueNotification('Insert Failed XoX', 'error');
     }
     endOptionsSelection();
     neonView.updateForCurrentPage(); 
@@ -228,9 +228,9 @@ export function moveOutsideSyllableHandler(): void {
   };
   neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => { 
     if (result) {
-      Notification.queueNotification('Move Success');
+      Notification.queueNotification('Move Success', 'success');
     } else {
-      Notification.queueNotification('Move Failed XoX');
+      Notification.queueNotification('Move Failed XoX', 'error');
     }
     endOptionsSelection();
     neonView.updateForCurrentPage(); 
@@ -286,11 +286,8 @@ function setEditControls(editType: 'moreEdit' | 'extraEdit', contents: string, r
   
   if (edit) {
     edit.parentElement.classList.remove('hidden');
-
-    if (replace)
-      edit.innerHTML = contents;
-    else
-      edit.innerHTML += contents;
+    if (replace) edit.innerHTML = contents;
+    else edit.innerHTML += contents;
   }
 }
 
@@ -313,9 +310,9 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
       neonView.edit({ action: 'chain', param: [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentClockwise, unsetLiquescentAnticlockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Shape Changed');
+          Notification.queueNotification('Shape Changed', 'success');
         } else {
-          Notification.queueNotification('Shape Change Failed');
+          Notification.queueNotification('Shape Change Failed', 'error');
         }
         endOptionsSelection();
         neonView.updateForCurrentPage();
@@ -338,9 +335,9 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       };
       neonView.edit({ action: 'chain', param: [ unsetVirga, unsetVirgaReversed, unsetLiquescentClockwise, unsetLiquescentAnticlockwise, setInclinatum ] } , neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Shape Changed');
+          Notification.queueNotification('Shape Changed', 'success');
         } else {
-          Notification.queueNotification('Shape Change Failed');
+          Notification.queueNotification('Shape Change Failed', 'error');
         }
         endOptionsSelection();
         neonView.updateForCurrentPage();
@@ -363,9 +360,9 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       };
       neonView.edit({ action: 'chain', param: [ unsetVirgaReversed, unsetInclinatum, unsetLiquescentClockwise, unsetLiquescentAnticlockwise, setVirga ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Shape Changed');
+          Notification.queueNotification('Shape Changed', 'success');
         } else {
-          Notification.queueNotification('Shape Change Failed');
+          Notification.queueNotification('Shape Change Failed', 'error');
         }
         endOptionsSelection();
         neonView.updateForCurrentPage();
@@ -388,9 +385,9 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       };
       neonView.edit({ action: 'chain', param: [ unsetInclinatum, unsetVirga, unsetLiquescentClockwise, unsetLiquescentAnticlockwise, setVirgaReversed ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Shape Changed');
+          Notification.queueNotification('Shape Changed', 'success');
         } else {
-          Notification.queueNotification('Shape Change Failed');
+          Notification.queueNotification('Shape Change Failed', 'error');
         }
         endOptionsSelection();
         neonView.updateForCurrentPage();
@@ -413,9 +410,9 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       };
       neonView.edit({ action: 'chain', param: [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentAnticlockwise, setLiquescentClockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Shape Changed');
+          Notification.queueNotification('Shape Changed', 'success');
         } else {
-          Notification.queueNotification('Shape Change Failed');
+          Notification.queueNotification('Shape Change Failed', 'error');
         }
         endOptionsSelection();
         neonView.updateForCurrentPage();
@@ -438,9 +435,9 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       };
       neonView.edit({ action: 'chain', param: [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentClockwise, setLiquescentAnticlockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Shape Changed');
+          Notification.queueNotification('Shape Changed', 'success');
         } else {
-          Notification.queueNotification('Shape Change Failed');
+          Notification.queueNotification('Shape Change Failed', 'error');
         }
         endOptionsSelection();
         neonView.updateForCurrentPage();
@@ -561,9 +558,9 @@ export function triggerNeumeActions (): void {
     };
     neonView.edit(changeGroupingAction, neonView.view.getCurrentPageURI()).then((result) => {
       if (result) {
-        Notification.queueNotification('Grouping Changed');
+        Notification.queueNotification('Grouping Changed', 'success');
       } else {
-        Notification.queueNotification('Grouping Failed');
+        Notification.queueNotification('Grouping Failed', 'error');
       }
       endOptionsSelection();
       neonView.updateForCurrentPage();
@@ -576,12 +573,62 @@ export function triggerNeumeActions (): void {
 /**
  * Trigger extra syllable actions.
  */
-export function triggerSyllableActions (): void {
+export function triggerSyllableActions (selectionType: string): void {
   endOptionsSelection();
 
   setEditControls('moreEdit', Contents.syllableActionsContent);
+  // initialize variable that will hold html to be added to Display panel
+  let extraActionsHTML = '';
+
+  // determine the type of selection that was made by the user
+  switch(selectionType) {
+    // only one syllable
+    case 'singleSelect':
+      extraActionsHTML += 
+        `<div class="right-side-panel-btns-container">
+          <button class="side-panel-btn" id="ungroupNeumes">Ungroup</button>
+          <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+          <button class="side-panel-btn" id="delete">Delete</button>
+        </div>`;
+      break;
+
+    // two syllables on separate staves
+    case 'linkableSelect':
+      extraActionsHTML += 
+        `<div class="right-side-panel-btns-container">
+          <button class="side-panel-btn" id="toggle-link">Toggle Linked Syllables</button>
+          <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+          <button class="side-panel-btn" id="delete">Delete</button>
+        </div>`;
+      break;
+
+    // tow or more syllables on one staff
+    case 'multiSelect':
+      extraActionsHTML += 
+        `<div class="right-side-panel-btns-container">
+          <button class="side-panel-btn" id="mergeSyls">Merge Syllables</button>
+          <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+          <button class="side-panel-btn" id="delete">Delete</button>
+        </div>`;
+      break;
+
+    //default options
+    case 'default':
+      extraActionsHTML += 
+        `<div class="right-side-panel-btns-container">
+          <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+          <button class="side-panel-btn" id="delete">Delete</button>
+        </div>`;
+      break;
+
+  }
+
+  // set content of additional actions in Display panel 
+  // and initialize necessary listeners
+  setEditControls('moreEdit', extraActionsHTML, true);
   addChangeStaffListener();
   addDeleteListener();
+  Grouping.initGroupingListeners();
 }
 
 /**
@@ -614,9 +661,9 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
       };
       neonView.edit(setCClef, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Shape Changed');
+          Notification.queueNotification('Shape Changed', 'success');
         } else {
-          Notification.queueNotification('Shape Change Failed');
+          Notification.queueNotification('Shape Change Failed', 'error');
         }
         endOptionsSelection();
         neonView.updateForCurrentPage();
@@ -633,9 +680,9 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
       };
       neonView.edit(setFClef, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Shape Changed');
+          Notification.queueNotification('Shape Changed', 'success');
         } else {
-          Notification.queueNotification('Shape Change Failed');
+          Notification.queueNotification('Shape Change Failed', 'error');
         }
         endOptionsSelection();
         neonView.updateForCurrentPage();
@@ -685,9 +732,9 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
       };
       neonView.edit(changeToFlat, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Shape Changed');
+          Notification.queueNotification('Shape Changed', 'success');
         } else {
-          Notification.queueNotification('Shape Change Failed');
+          Notification.queueNotification('Shape Change Failed', 'error');
         }
         endOptionsSelection();
         neonView.updateForCurrentPage();
@@ -705,9 +752,9 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
       };
       neonView.edit(changeToNatural, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Shape Changed');
+          Notification.queueNotification('Shape Changed', 'success');
         } else {
-          Notification.queueNotification('Shape Change Failed');
+          Notification.queueNotification('Shape Change Failed', 'error');
         }
         endOptionsSelection();
         neonView.updateForCurrentPage();

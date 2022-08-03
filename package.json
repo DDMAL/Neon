@@ -31,13 +31,12 @@
         "url": "https://github.com/DDMAL/Neon/issues"
     },
     "scripts": {
-        "start": "nodemon deployment/server.js",
-        "bundle:dev": "./setup-verovio && rm -rf dist/Neon && webpack --config webpack.config.js && cp -R assets src/workers dist/Neon",
-        "build": "yarn run bundle:dev && cp -R dist/Neon deployment/public/",
+        "start": "http-server deployment/server/",
+        "build": "./setup-verovio && rm -rf deployment/server/Neon-gh && webpack --config webpack.config.js && cp -R assets src/workers deployment/server/Neon-gh",
+        "bundle:pages": "./setup-verovio && rm -rf dist/Neon/Neon-gh && webpack --config webpack.pages-config.js && cp -R assets src/workers dist/Neon/Neon-gh",
         "dev": "webpack --config webpack.dev.config.js",
         "test": "jest --silent",
-        "doc": "typedoc --out ./doc --mode modules ./src",
-        "bundle:pages": "./setup-verovio && rm -rf dist/Neon-gh && webpack --config webpack.pages-config.js && cp -R assets src/workers dist/Neon-gh"
+        "doc": "typedoc --out ./doc --mode modules ./src"
     },
     "jest": {
         "testPathIgnorePatterns": [
@@ -52,13 +51,14 @@
     },
     "dependencies": {
         "d3": "^5.11.0",
-        "diva.js": "github:DDMAL/diva.js#master",
+        "diva.js": "^6.0.2",
+        "http-server": "^14.1.1",
         "jsonschema": "^1.2.4",
         "pouchdb": "^7.1.1",
         "vkbeautify": "^0.99.3"
     },
     "devDependencies": {
-        "@types/d3": "^5.7.2",
+        "@types/d3": "^5.11.0",
         "@types/diva.js": "^6.0.1",
         "@types/elementtree": "^0.1.0",
         "@types/fs-extra": "^9.0.1",

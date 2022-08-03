@@ -99,7 +99,7 @@ class DragHandler {
 
       this.reset();
       this.dragInit();
-      return queueNotification('[FAIL] Glyphs were placed out of bounds! Drag action failed.');
+      return queueNotification('[FAIL] Glyphs were placed out of bounds! Drag action failed.', 'error');
     }
 
     // Create the chain editor action for selection
@@ -209,8 +209,11 @@ class DragHandler {
    */
   isDragOutOfBounds (selection: SVGGraphicsElement[]): boolean {
     // Get the bounding boxes of all glyphs (<use> elements) within the selection array
+    const isBBoxDisplayed = document.querySelector<HTMLInputElement>('#displayBBox').checked;
+    const glyphSelector = isBBoxDisplayed ? 'use, rect' : 'use';
+
     const glyphs: SVGUseElement[] = selection.reduce(
-      (acc, el) => acc.concat(...el.querySelectorAll('use')), []
+      (acc, el) => acc.concat(...el.querySelectorAll(glyphSelector)), []
     );
     const glyphBBoxes: BBox[] = glyphs.map(getGlyphBBox);
 

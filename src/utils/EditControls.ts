@@ -2,11 +2,13 @@ import * as Notification from './Notification';
 import NeonView from '../NeonView';
 import { convertStaffToSb } from './ConvertMei';
 import { EditorAction } from '../Types';
+import ZoomHandler from '../SingleView/Zoom';
 
 /**
- * Set listener on switching EditMode button to File dropdown in the navbar.
+ * Set top navbar event listeners.
  */
 export function initNavbar (neonView: NeonView): void {
+
   // setup navbar listeners
   const navbarDropdowns = document.querySelectorAll('.navbar-item.has-dropdown.is-hoverable');
   Array.from(navbarDropdowns).forEach((dropDown) => {
@@ -15,17 +17,16 @@ export function initNavbar (neonView: NeonView): void {
     });
   });
 
-
-
+  /* "FILE" menu */
   document.getElementById('save').addEventListener('click', () => {
     neonView.save().then(() => {
-      Notification.queueNotification('Saved');
+      Notification.queueNotification('Saved', 'success');
     });
   });
   document.body.addEventListener('keydown', (evt) => {
     if (evt.key === 's') {
       neonView.save().then(() => {
-        Notification.queueNotification('Saved');
+        Notification.queueNotification('Saved', 'success');
       });
     }
   });
@@ -38,7 +39,7 @@ export function initNavbar (neonView: NeonView): void {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      Notification.queueNotification('Saved');
+      Notification.queueNotification('Saved', 'success');
     });
   });
 
@@ -54,6 +55,7 @@ export function initNavbar (neonView: NeonView): void {
   });
 
 
+  /* "MEI ACTIONS" menu */
   // Event listener for "Remove Empty Syllables" button inside "MEI Actions" dropdown
   document.getElementById('remove-empty-syls').addEventListener('click', function() {
     const uri = neonView.view.getCurrentPageURI();
@@ -84,7 +86,7 @@ export function initNavbar (neonView: NeonView): void {
 
       // check if empty syllables were found
       if (!hasEmptySyllables) {
-        Notification.queueNotification('No empty syllables found');
+        Notification.queueNotification('No empty syllables found', 'warning');
       }
       else {
         // create "chain action" object
@@ -98,10 +100,10 @@ export function initNavbar (neonView: NeonView): void {
         neonView.edit(chainRemoveAction, uri).then((result) => {
           if (result) {
             neonView.updateForCurrentPage();
-            Notification.queueNotification('Removed empty Syllables');
+            Notification.queueNotification('Removed empty Syllables', 'success');
           }
           else {
-            Notification.queueNotification('Failed to remove empty Syllables');
+            Notification.queueNotification('Failed to remove empty Syllables', 'error');
           }
         });
       }
@@ -138,7 +140,7 @@ export function initNavbar (neonView: NeonView): void {
 
       // check if empty neumes were found
       if (!hasEmptyNeumes) {
-        Notification.queueNotification('No empty Neumes found');
+        Notification.queueNotification('No empty Neumes found', 'warning');
       }
       else {
         // create "chain action" object
@@ -152,13 +154,84 @@ export function initNavbar (neonView: NeonView): void {
         neonView.edit(chainRemoveAction, uri).then((result) => {
           if (result) {
             neonView.updateForCurrentPage();
-            Notification.queueNotification('Removed empty Neumes');
+            Notification.queueNotification('Removed empty Neumes', 'success');
           }
           else {
-            Notification.queueNotification('Failed to remove empty Neumes');
+            Notification.queueNotification('Failed to remove empty Neumes', 'error');
           }
         });
       }
+    });
+  });
+
+  document.getElementById('remove-out-of-bounds-glyphs').addEventListener('click', function () {
+    const uri = neonView.view.getCurrentPageURI();
+    neonView.getPageMEI(uri).then(meiString => {
+      // Load MEI document into parser
+      const parser = new DOMParser();
+      const meiDoc = parser.parseFromString(meiString, 'text/xml');
+      const mei = meiDoc.documentElement;
+
+      // Get bounds of the MEI
+      const dimensions = mei.querySelector('surface');
+      const meiLrx = Number(dimensions.getAttribute('lrx')), meiLry = Number(dimensions.getAttribute('lry'));
+
+      function isAttrOutOfBounds(zone: Element, attr: string): boolean {
+        const coord = Number(zone.getAttribute(attr));
+        const comp = (attr == 'lrx' || attr == 'ulx') ? meiLrx : meiLry;
+        return coord < 0 || coord > comp;
+      }
+
+      // Get array of zones that are out of bound, and create a hash map
+      // for fast retrieval
+      const zones = Array.from(mei.querySelectorAll('zone'));
+      const outOfBoundZones = zones.filter(zone =>
+        ['ulx', 'uly', 'lrx', 'lry'].some((attr) => isAttrOutOfBounds(zone, attr))
+      );
+      const zoneMap = new Map(outOfBoundZones.map(zone => [zone.getAttribute('xml:id'), zone]));
+
+      // Filter out the neume components and divlines that have a zone out of bounds
+      const glyphs = Array.from(mei.querySelectorAll('nc, divLine, clef, accid'));
+      const outOfBoundGlyphs = glyphs.filter(glyph => {
+        if (glyph.hasAttribute('facs')) {
+          const facsId = glyph.getAttribute('facs').slice(1);
+          return zoneMap.has(facsId);
+        }
+
+        return false;
+      });
+
+      // Check if there are no out-of-bound glyphs, and 
+      // exit, since no edit needs to be made.
+      if (outOfBoundGlyphs.length === 0) {
+        return Notification.queueNotification('There are no out-of-bound glyphs to remove.', 'warning');
+      }
+
+      // Create remove actions and chain action to send to Verovio
+      const removeActions: EditorAction[] = outOfBoundGlyphs.map(glyph => {
+        return {
+          action: 'remove',
+          param: {
+            elementId: glyph.getAttribute('xml:id'),
+          }
+        };
+      });
+
+      const chainAction: EditorAction = {
+        action: 'chain',
+        param: removeActions,
+      };
+
+      neonView.edit(chainAction, uri)
+        .then((result) => {
+          if (result) {
+            neonView.updateForCurrentPage();
+            Notification.queueNotification('Successfully removed out-of-bounds syllables.', 'success');
+          }
+          else {
+            Notification.queueNotification('Failed to remove out-of-bound syllables.', 'error');
+          }
+        });
     });
   });
 
@@ -170,6 +243,41 @@ export function initNavbar (neonView: NeonView): void {
       });
     }
   });
+
+
+  /* "VIEW" menu */
+
+  /*
+
+  // Event listeners for setting default zoom settings inside "View" dropdown
+  const fitContentBtn = document.querySelector('#zoom-fit-content');
+  const fitContentCheckmark = document.querySelector('#zoom-fit-content-icon');
+  const easyEditBtn = document.querySelector('#zoom-easy-edit');
+  const easyEditCheckmark = document.querySelector('#zoom-easy-edit-icon');
+  
+  // fit content listener
+  fitContentBtn.addEventListener('click', () => {
+    easyEditBtn.classList.remove('checked');
+    fitContentBtn.classList.add('checked');
+
+    easyEditCheckmark.classList.remove('selected');
+    fitContentCheckmark.classList.add('selected');
+
+    // TODO: Save default zoom settings in local storage
+    
+  });
+  // easy edit listener
+  easyEditBtn.addEventListener('click', () => {
+    fitContentBtn.classList.remove('checked');
+    easyEditBtn.classList.add('checked');
+
+    fitContentCheckmark.classList.remove('selected');
+    easyEditCheckmark.classList.add('selected');
+
+    // TODO: Save default zoom settings in local storage
+
+  });
+  */
 }
 
 /**
@@ -190,7 +298,7 @@ export function initUndoRedoPanel (neonView: NeonView): void {
   }
 
   /**
-   * Tries to redo an action and update the page if it succeeds.
+     * Tries to redo an action and update the page if it succeeds.
    */
   function redoHandler (): void {
     neonView.redo().then((result: boolean) => {
