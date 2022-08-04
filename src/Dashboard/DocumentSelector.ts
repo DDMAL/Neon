@@ -115,7 +115,6 @@ export async function updateDocumentSelector(): Promise<void> {
 
     // double click event immediately opens document
     doc.addEventListener('dblclick', function() {
-      console.log('hi');
       const isUploaded = (doc.classList.contains('uploaded-doc'))? true : false;
       const filename =  isUploaded? `${(<HTMLElement> doc.querySelector('.filename-text')).innerText}.mei` : (<HTMLElement> doc.querySelector('.filename-text')).innerText;
       openEditorTab(filename, isUploaded);
