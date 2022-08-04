@@ -15,6 +15,28 @@ enum selectionType {
   sample = 'sample'
 }
 
+
+// gets user selected filenames 
+function getSelection() {
+  const selectedDocs = Array.from(document.querySelectorAll('.document-entry.selected'));
+  const filenames = selectedDocs.map((doc) => `${doc.querySelector('.filename-text').innerHTML}.mei`);
+  return filenames;
+}
+
+function openEditorTab(filename: string, isUploaded: boolean) {
+  let params;
+  if (isUploaded) params = { storage: filename };
+  else params = { manifest: filename };
+  const query = makeQuery(params);
+  window.open(`./editor.html?${query}`, '_blank');
+}
+
+function makeQuery(obj): string {
+  return Object.keys(obj).map(key => {
+    return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
+  }).join('&');
+}
+
 async function fetchUploadedDocuments(): Promise<string[]> {
   return await getAllDocuments()
     .then( (res: allDocs) => {
@@ -90,6 +112,16 @@ export async function updateDocumentSelector(): Promise<void> {
 
   // add onclick event listener to docs
   Array.from(document.querySelectorAll('.document-entry')).forEach((doc) => {
+
+    // double click event immediately opens document
+    doc.addEventListener('dblclick', function() {
+      console.log('hi');
+      const isUploaded = (doc.classList.contains('uploaded-doc'))? true : false;
+      const filename =  isUploaded? `${(<HTMLElement> doc.querySelector('.filename-text')).innerText}.mei` : (<HTMLElement> doc.querySelector('.filename-text')).innerText;
+      openEditorTab(filename, isUploaded);
+    });
+
+    // single click selects document or adds document to existing selection
     doc.addEventListener('click', function(e) {
       
       if (doc.classList.contains('selected')) {
@@ -144,7 +176,6 @@ export const InitDocumentSelector = (): void => {
     }
   }
 
-
   function handleOpenDocuments() {
     for (let i=0; i<selectedDocs.length; i++) {
       const doc = selectedDocs[i];
@@ -158,27 +189,6 @@ export const InitDocumentSelector = (): void => {
       document.querySelector('#remove-doc').classList.remove('active');
       document.querySelector('#open-doc').classList.remove('active');
     });
-  }
-
-  // gets user selected filenames 
-  function getSelection() {
-    const selectedDocs = Array.from(document.querySelectorAll('.document-entry.selected'));
-    const filenames = selectedDocs.map((doc) => `${doc.querySelector('.filename-text').innerHTML}.mei`);
-    return filenames;
-  }
-
-  function openEditorTab(filename: string, isUploaded: boolean) {
-    let params;
-    if (isUploaded) params = { storage: filename };
-    else params = { manifest: filename };
-    const query = makeQuery(params);
-    window.open(`./editor.html?${query}`, '_blank');
-  }
-
-  function makeQuery(obj): string {
-    return Object.keys(obj).map(key => {
-      return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
-    }).join('&');
   }
 
   function handleDeleteDocuments() {
