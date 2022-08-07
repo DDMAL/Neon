@@ -4,6 +4,8 @@ import DragHandler from './DragHandler';
 
 import * as d3 from 'd3';
 import { EditorAction, ResizeAction } from '../Types';
+import { isOutOfSVGBounds } from './Coordinates';
+import { queueNotification } from './Notification';
 
 /**
  * Resize a staff or a syllable text bounding box.
@@ -25,7 +27,7 @@ const PointNames = {
   Left: 7
 };
 
-function GetPoints(ulx: number, uly: number, lrx: number, lry: number, rotate: number): Point[] {
+function getPoints(ulx: number, uly: number, lrx: number, lry: number, rotate: number): Point[] {
   // Note that arc functions return an angle x in [-pi/2, pi/2].
   let points: Array<Point>;
   // ul is ulx, uly, lr is lrx, lry
@@ -60,42 +62,38 @@ function GetPoints(ulx: number, uly: number, lrx: number, lry: number, rotate: n
 }
 
 export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHandler: DragHandler): void {
-  /**
-   * The upper-left x-coordinate of the element.
-   */
   let ulx: number;
-  /**
-   * The upper-left y-coordinate of the element.
-   */
   let uly: number;
-  /**
-   * The lower-right x-coordinate of the element.
-   */
   let lrx: number;
-  /**
-   * The lower-right y-coordinate of the element.
-   */
   let lry: number;
-
-  /**
-   * The rotate of the rect in radians.
-   */
   let rotate: number;
 
+  let initialUlx: number, initialLrx: number;
   let initialPoint: number[], initialUly: number, initialLry: number,
     initialY: number, initialRectY: number, polyLen: number, dy: number, initialRotate: number;
+
+  drawInitialRect();
 
   /**
    * Redraw the rectangle with the new bounds
    */
   function redraw (): void {
-    const points: Point[] = GetPoints(ulx, uly, lrx, lry, rotate);
+    const points: Point[] = getPoints(ulx, uly, lrx, lry, rotate);
 
     const pointString: string = points.filter((_elem, index) => { return index % 2 === 0; })
       .map(elem => elem.x + ',' + elem.y)
       .join(' ');
 
-    d3.select('#resizeRect').attr('points', pointString);
+    document.querySelector('#resizeRect').setAttribute('points', pointString);
+
+    const textRect = document.querySelector('.syl.selected > .sylTextRect-display');
+    if (textRect) {
+      textRect.setAttribute('x', String(Math.min(ulx, lrx)));
+      textRect.setAttribute('y', String(Math.min(uly, lry)));
+      textRect.setAttribute('width', String(Math.abs(lrx - ulx)));
+      textRect.setAttribute('height', String(Math.abs(lry - uly)));
+    }
+
 
     for (const pointName in PointNames) {
       const point: Point = points[PointNames[pointName]];
@@ -155,13 +153,15 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         (coordinates[2] - coordinates[0]));
     }
 
+    initialUlx = ulx, initialUly = uly, initialLrx = lrx, initialLry = lry;
+
     let whichPoint: string;
 
-    const points = GetPoints(ulx, uly, lrx, lry, rotate);
+    const points = getPoints(ulx, uly, lrx, lry, rotate);
 
     polyLen = points[2].x - points[0].x;
 
-    const pointString = points.filter((_elem, index) => { return index % 2 === 0; })
+    const pointString = points.filter((_, index) => index % 2 === 0)
       .map(elem => elem.x + ',' + elem.y)
       .join(' ');
 
@@ -187,9 +187,57 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         .attr('id', 'p-' + pointName);
     }
 
+    // do it as a loop instead of selectAll so that you can easily know which point was
+    for (const name in PointNames) {
+      d3.select('#p-' + name).filter('.resizePoint').call(
+        d3.drag()
+          .on('start', () => { resizeStart(name); })
+          .on('drag', resizeDrag)
+          .on('end', resizeEnd.bind(this)));
+    }
+
+    if (element.classList.contains('staff')) {
+      let x = points[3].x;
+      let y = points[3].y;
+      const pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
+        (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
+      x = points[7].x;
+      y = points[7].y;
+      const pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
+        (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
+
+      d3.select('#' + element.id).append('polygon')
+        .attr('points', pointStringRight)
+        .attr('id', 'rotateRight')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 7)
+        .attr('fill', '#0099ff')
+        .attr('class', 'rotatePoint');
+
+      d3.select('#' + element.id).append('polygon')
+        .attr('points', pointStringLeft)
+        .attr('id', 'rotateLeft')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 7)
+        .attr('fill', '#0099ff')
+        .attr('class', 'rotatePoint');
+
+      d3.select('#rotateLeft').call(
+        d3.drag()
+          .on('start', rotateStart)
+          .on('drag', rotateDragLeft)
+          .on('end', rotateEnd));
+
+      d3.select('#rotateRight').call(
+        d3.drag()
+          .on('start', rotateStart)
+          .on('drag', rotateDragRight)
+          .on('end', rotateEnd));
+    }
+
     function resizeStart (name: string): void {
       whichPoint = name;
-      const point = points.find(point => { return point.name === PointNames[name]; });
+      const point = points.find(point => point.name === PointNames[name]);
       initialPoint = [point.x, point.y];
       initialUly = uly;
       initialLry = lry;
@@ -235,6 +283,13 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
     }
 
     function resizeEnd (): void {
+      if (isOutOfSVGBounds(ulx, uly) || isOutOfSVGBounds(lrx, lry)) {
+        ulx = initialUlx, uly = initialUly, lrx = initialLrx, lry = initialLry;
+        redraw();
+
+        return queueNotification('[FAIL] Glyphs were placed out of bounds! Resize action failed.', 'error');
+      }
+
       const editorAction: ResizeAction = {
         action: 'resize',
         param: {
@@ -245,42 +300,34 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
           lry: lry
         }
       };
+
       neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
         if (result) {
           await neonView.updateForCurrentPage();
         }
-        element = document.querySelector<SVGGraphicsElement>(`#${element.id}`);
-        ulx = undefined;
-        uly = undefined;
-        lrx = undefined;
-        lry = undefined;
-        document.querySelectorAll('.resizePoint').forEach(el => el.remove());
-        document.querySelectorAll('#resizeRect').forEach(el => el.remove());
-        document.querySelectorAll('.rotatePoint').forEach(el => el.remove());
+        element = document.querySelector(`#${element.id}`);
+        ulx = undefined, uly = undefined, lrx = undefined, lry = undefined;
+        d3.selectAll('.resizePoint').remove();
+        d3.selectAll('#resizeRect').remove();
+        d3.selectAll('.rotatePoint').remove();
         drawInitialRect();
-        selectAll([element], neonView, dragHandler);
+        
         if (element.classList.contains('syl')) {
           selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
         } else {
-          try {
-            document.getElementById('moreEdit').innerHTML = '';
-            document.getElementById('moreEdit').parentElement.classList.add('hidden');
-          } catch (e) {}
+          selectStaff(document.querySelector(`#${element.id}`), dragHandler);
+
+          const moreEdit = document.querySelector('moreEdit');
+
+          if (moreEdit) {
+            moreEdit.innerHTML = '';
+            moreEdit.parentElement.classList.add('hidden');
+          }
         }
       });
     }
 
-    // do it as a loop instead of selectAll so that you can easily know which point was
-    for (const name in PointNames) {
-      d3.select('#p-' + name).filter('.resizePoint').call(
-        d3.drag()
-          .on('start', () => { resizeStart(name); })
-          .on('drag', resizeDrag)
-          .on('end', resizeEnd.bind(this)));
-    }
-
     // ROTATE
-
     function rotateStart (): void {
       const which = d3.event.sourceEvent.target.id;
       initialY = d3.mouse(this)[1];
@@ -331,6 +378,28 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       if (dy === undefined) {
         dy = 0;
       }
+
+      if (isOutOfSVGBounds(ulx, uly) || isOutOfSVGBounds(lrx, lry)) {
+        document.querySelectorAll('.resizePoint').forEach(el => el.remove());
+        document.querySelectorAll('#resizeRect').forEach(el => el.remove());
+        document.querySelectorAll('.rotatePoint').forEach(el => el.remove());
+
+        element = document.getElementById(element.id) as unknown as SVGGraphicsElement;
+        ulx = undefined;
+        uly = undefined;
+        lrx = undefined;
+        lry = undefined;
+        dy = undefined;
+        drawInitialRect();
+        if (element.classList.contains('syl')) {
+          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
+        } else {
+          selectStaff(element, dragHandler);
+        }
+
+        return queueNotification('[FAIL] Glyphs were placed out of bounds! Rotate action failed.', 'error');
+      }
+
       const editorAction: EditorAction = {
         action: 'resizeRotate',
         param: {
@@ -361,46 +430,5 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         }
       });
     }
-
-    if (element.classList.contains('staff')) {
-      let x = points[3].x;
-      let y = points[3].y;
-      const pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
-        (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
-      x = points[7].x;
-      y = points[7].y;
-      const pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
-        (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
-
-      d3.select('#' + element.id).append('polygon')
-        .attr('points', pointStringRight)
-        .attr('id', 'rotateRight')
-        .attr('stroke', 'black')
-        .attr('stroke-width', 7)
-        .attr('fill', '#0099ff')
-        .attr('class', 'rotatePoint');
-
-      d3.select('#' + element.id).append('polygon')
-        .attr('points', pointStringLeft)
-        .attr('id', 'rotateLeft')
-        .attr('stroke', 'black')
-        .attr('stroke-width', 7)
-        .attr('fill', '#0099ff')
-        .attr('class', 'rotatePoint');
-
-      d3.select('#rotateLeft').call(
-        d3.drag()
-          .on('start', rotateStart)
-          .on('drag', rotateDragLeft)
-          .on('end', rotateEnd));
-
-      d3.select('#rotateRight').call(
-        d3.drag()
-          .on('start', rotateStart)
-          .on('drag', rotateDragRight)
-          .on('end', rotateEnd));
-    }
   }
-
-  drawInitialRect();
 }
