@@ -35,8 +35,10 @@
         "build": "./setup-verovio && rm -rf deployment/server/Neon-gh && webpack --config webpack.config.js && cp -R assets src/workers deployment/server/Neon-gh",
         "bundle:pages": "./setup-verovio && rm -rf dist/Neon/Neon-gh && webpack --config webpack.pages-config.js && cp -R assets src/workers dist/Neon/Neon-gh",
         "dev": "webpack --config webpack.dev.config.js",
-        "test": "jest --silent",
-        "doc": "typedoc --out ./doc --mode modules ./src"
+        "doc": "typedoc --out ./doc --mode modules ./src",
+        "cypress:open": "cypress open",
+        "cypress:test": "cypress run",
+        "test": "cypress open"
     },
     "jest": {
         "testPathIgnorePatterns": [
@@ -74,6 +76,7 @@
         "bulma": "^0.9.0",
         "bulma-extensions": "^6.2.7",
         "bulma-slider": "^2.0.0",
+        "cypress": "^10.3.1",
         "eslint": "^7.6.0",
         "express": "^4.17.1",
         "fs-extra": "^9.0.1",

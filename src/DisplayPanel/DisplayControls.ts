@@ -300,6 +300,9 @@ export function setHighlightControls (): void {
   */
 function setHighlightKeyControls (): void {
   document.body.addEventListener('keydown', (evt) => {
+    // Prevent cmd/ctrl+r from changing highlight option
+    if (evt.metaKey) return;
+
     switch (evt.key) {
       case 'q':
         updateHighlightOption('staff');
