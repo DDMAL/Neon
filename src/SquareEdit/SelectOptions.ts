@@ -104,11 +104,16 @@ export function deleteButtonHandler (evt: KeyboardEvent): void {
  * End the extra options menu.
  */
 export function endOptionsSelection (): void {
-  try {
-    const moreEdit = document.getElementById('moreEdit');
+  const moreEdit = document.getElementById('moreEdit');
+  const extraEdit = document.getElementById('extraEdit');
+  if (moreEdit) {
     moreEdit.innerHTML = '';
     moreEdit.parentElement.classList.add('hidden');
-  } catch (e) {}
+  }
+  if (extraEdit) {
+    extraEdit.innerHTML = '';
+    extraEdit.parentElement.classList.add('hidden');
+  }
   document.body.removeEventListener('keydown', deleteButtonHandler);
 }
 
@@ -204,13 +209,13 @@ export function insertToSyllableHandler(): void {
 /**
  * Function to handle moving divisio or accidental out of syllable
  */
-export function moveOuttaSyllableHandler(): void {
+export function moveOutsideSyllableHandler(): void {
   const toMove: EditorAction[] = [];
   const selected = Array.from(document.getElementsByClassName('selected'));
   selected.forEach(elem => {
     toMove.push(
       {
-        action: 'moveOuttaSyllable',
+        action: 'moveOutsideSyllable',
         param: {
           elementId: elem.id
         }
@@ -281,11 +286,8 @@ function setEditControls(editType: 'moreEdit' | 'extraEdit', contents: string, r
   
   if (edit) {
     edit.parentElement.classList.remove('hidden');
-
-    if (replace)
-      edit.innerHTML = contents;
-    else
-      edit.innerHTML += contents;
+    if (replace) edit.innerHTML = contents;
+    else edit.innerHTML += contents;
   }
 }
 
@@ -571,20 +573,62 @@ export function triggerNeumeActions (): void {
 /**
  * Trigger extra syllable actions.
  */
-export function triggerSyllableActions (): void {
+export function triggerSyllableActions (selectionType: string): void {
   endOptionsSelection();
 
-  const extraActionsHTML = `
-    <div class="right-side-panel-btns-container">
-      <button class="side-panel-btn" id="mergeSyls">Merge Syllables</button>
-      <button class="side-panel-btn" id="ungroupNeumes">Ungroup</button>
-      <button class="side-panel-btn" id="delete">Delete</button>
-      <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
-    </div>
-  `;
-  setEditControls('moreEdit', extraActionsHTML);
+  setEditControls('moreEdit', Contents.syllableActionsContent);
+  // initialize variable that will hold html to be added to Display panel
+  let extraActionsHTML = '';
+
+  // determine the type of selection that was made by the user
+  switch(selectionType) {
+    // only one syllable
+    case 'singleSelect':
+      extraActionsHTML += 
+        `<div class="right-side-panel-btns-container">
+          <button class="side-panel-btn" id="ungroupNeumes">Ungroup</button>
+          <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+          <button class="side-panel-btn" id="delete">Delete</button>
+        </div>`;
+      break;
+
+    // two syllables on separate staves
+    case 'linkableSelect':
+      extraActionsHTML += 
+        `<div class="right-side-panel-btns-container">
+          <button class="side-panel-btn" id="toggle-link">Toggle Linked Syllables</button>
+          <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+          <button class="side-panel-btn" id="delete">Delete</button>
+        </div>`;
+      break;
+
+    // tow or more syllables on one staff
+    case 'multiSelect':
+      extraActionsHTML += 
+        `<div class="right-side-panel-btns-container">
+          <button class="side-panel-btn" id="mergeSyls">Merge Syllables</button>
+          <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+          <button class="side-panel-btn" id="delete">Delete</button>
+        </div>`;
+      break;
+
+    //default options
+    case 'default':
+      extraActionsHTML += 
+        `<div class="right-side-panel-btns-container">
+          <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+          <button class="side-panel-btn" id="delete">Delete</button>
+        </div>`;
+      break;
+
+  }
+
+  // set content of additional actions in Display panel 
+  // and initialize necessary listeners
+  setEditControls('moreEdit', extraActionsHTML, true);
   addChangeStaffListener();
   addDeleteListener();
+  Grouping.initGroupingListeners();
 }
 
 /**
@@ -594,10 +638,17 @@ export function triggerSyllableActions (): void {
 export function triggerClefActions (clef: SVGGraphicsElement): void {
   endOptionsSelection();
 
-  setEditControls('moreEdit', Contents.custosActionContents);
+  const isClefInSyllable = clef.parentElement.classList.contains('syllable');
+  const moreEditContents = (isClefInSyllable)
+    ? Contents.layerElementInActionContents
+    : Contents.layerElementOutActionContents;
+  setEditControls('moreEdit', moreEditContents);
   setEditControls('extraEdit', Contents.clefActionContents);
-  addChangeStaffListener();
   addDeleteListener();
+
+  addChangeStaffListener();
+  document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
+  document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
 
   document.querySelector('#CClef.dropdown-item')
     .addEventListener('click', () => {
@@ -667,7 +718,7 @@ export function triggerAccidActions (accid: SVGGraphicsElement): void {
 
   addChangeStaffListener();
   document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
-  document.getElementById('moveOuttaSyllable')?.addEventListener('click', moveOuttaSyllableHandler);
+  document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
 
   document.querySelector('#ChangeToFlat.dropdown-item')
     .addEventListener('click', () => {
@@ -728,7 +779,7 @@ export function triggerLayerElementActions (element: SVGGraphicsElement): void {
 
   addChangeStaffListener();
   document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
-  document.getElementById('moveOuttaSyllable')?.addEventListener('click', moveOuttaSyllableHandler);
+  document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
 }
 
 

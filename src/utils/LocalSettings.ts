@@ -16,7 +16,7 @@ let localSettings: LocalSettings = null;
  * Every key is optional so that this same typing
  * can be used for `setSettings()` / `LocalSettings.set()`.
  */
-interface Settings {
+export interface Settings {
   zoom: number;
   glyphOpacity: number;
   imageOpacity: number;
@@ -25,6 +25,7 @@ interface Settings {
   displayBBox: boolean;
   displayText: boolean;
   displayInfo: boolean;
+  displayErrLog: boolean;
   viewBox: string;
 }
 
@@ -44,6 +45,7 @@ const DEFAULT_SETTINGS: Settings = {
   displayBBox: false,
   displayText: false,
   displayInfo: false,
+  displayErrLog: false,
   viewBox: null
 };
 

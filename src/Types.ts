@@ -59,8 +59,8 @@ export type InsertToSyllableAction = {
   }
 };
 
-export type MoveOuttaSyllableAction = {
-  action: 'moveOuttaSyllable',
+export type MoveOutsideSyllableAction = {
+  action: 'moveOutsideSyllable',
   param: {
     elementId: string
   }
@@ -184,7 +184,7 @@ export type EditorAction =
   | ResizeRotateAction
   | InsertAction
   | InsertToSyllableAction
-  | MoveOuttaSyllableAction
+  | MoveOutsideSyllableAction
   | RemoveAction
   | GroupingAction
   | UngroupingAction
@@ -261,6 +261,20 @@ export type NeonManifest = {
   timestamp: string,
   image: string,
   mei_annotations: WebAnnotation[]
+};
+
+export type allDocs = {
+  offset?: number,
+  total_rows?: number,
+  rows?: { 
+    doc?: PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> & { kind?: string }; 
+    id: string; 
+    key: string; 
+    value: { 
+      rev: string; 
+      deleted?: boolean; 
+    }; 
+  }[]
 };
 
 /** An <svg> element from any DOM queries */

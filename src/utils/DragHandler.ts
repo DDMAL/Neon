@@ -165,9 +165,14 @@ class DragHandler {
 
   endOptionsSelection (): void {
     const moreEdit = document.getElementById('moreEdit');
+    const extraEdit = document.getElementById('extraEdit');
     if (moreEdit) {
       moreEdit.innerHTML = '';
       moreEdit.parentElement.classList.add('hidden');
+    }
+    if (extraEdit) {
+      extraEdit.innerHTML = '';
+      extraEdit.parentElement.classList.add('hidden');
     }
   }
 

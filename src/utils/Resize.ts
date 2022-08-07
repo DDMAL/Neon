@@ -1,4 +1,4 @@
-import { getStaffBBox, selectBBox, selectStaff } from './SelectTools';
+import { getStaffBBox, selectBBox, selectStaff, selectAll } from './SelectTools';
 import NeonView from '../NeonView';
 import DragHandler from './DragHandler';
 
@@ -311,7 +311,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         d3.selectAll('#resizeRect').remove();
         d3.selectAll('.rotatePoint').remove();
         drawInitialRect();
-
+        
         if (element.classList.contains('syl')) {
           selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
         } else {
@@ -422,6 +422,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         lry = undefined;
         dy = undefined;
         drawInitialRect();
+        selectAll([element], neonView, dragHandler);
         if (element.classList.contains('syl')) {
           selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
         } else {

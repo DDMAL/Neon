@@ -3,7 +3,7 @@ describe('resize: bounding boxes', () => {
   // Wait for the SVG to be visible, have bounding boxes displayed,
   // have selection mode to bounding boxes, and expect there to be bounding boxes.
   beforeEach(() => {
-    cy.visit('http://localhost:8080/edit/test.jsonld');
+    cy.visit('http://localhost:8080/editor.html?manifest=test');
     cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
     cy.get('#displayBBox').click();
     cy.get('#selByBBox').click();

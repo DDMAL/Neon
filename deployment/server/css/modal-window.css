@@ -1,0 +1,172 @@
+/* Section: Modal Windows */
+
+/* neon modal veil */
+#neon-modal-window-container {
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #00000080;
+    z-index: 2147483647;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+}
+/* neon modal window styles */
+#neon-modal-window {
+    display: flex;
+    position: absolute;
+    height: auto;
+    width: auto;
+    min-width: 25vw;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    color: dimgrey;
+    font-family: Montserrat, sans-serif;
+    border-radius: 5px;
+    overflow: hidden;
+    outline: none;
+}
+/* modal header */
+#neon-modal-window-header {
+    height: 5vh;
+    width: 100%;
+    background-color: #7cb1b7;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#neon-modal-window-header-title {
+    margin-left: 10px;
+}
+#neon-modal-window-header-close {
+    margin-right: 10px;
+}
+#neon-modal-window-header-close {
+    border-radius: 50%;
+    height: 20px;
+    background-color: white;
+    color: rgb(182, 182, 182);
+    width: 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    cursor: pointer;
+    align-content: center;
+}
+#neon-modal-window-header-close:hover {
+    background-color: rgb(196, 196, 196);
+    color: white;
+}
+/* modal dynamic content */
+#neon-modal-window-content-container {
+    display: flex;
+    overflow: auto;
+    width: 100%;
+    background-color: white;
+    border-radius: 0px 0px 4px 4px;
+    max-height: 90vh;
+    flex-direction: column;
+    align-items: center;
+    align-content: space-around;
+    color: #9d9d9d;
+}
+.neon-modal-window-content {
+    display: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: center;
+    flex-wrap: nowrap;
+}
+.neon-modal-window-content.visible {
+    display: flex;
+}
+/* edit syllable text modal */
+#neon-modal-window-content-edit-text {
+    width: 80%;
+    height: auto;
+}
+#neon-modal-window-edit-text-label {
+    width: 100%;
+}
+#neon-modal-window-edit-text-input {
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #afafaf;
+    height: 25px;
+    font-size: 20px;
+    color: grey;
+    outline: none;
+    margin-top: 10px;
+}
+#neon-modal-window-edit-text-btns{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4vh;
+    width: 100%;
+}
+.neon-modal-window-btn {
+    background-color: #7cb1b7;
+    color: white;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    font-weight: 900;
+}
+/* hotkeys modal */
+.hotkey-subcategory-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2vh;
+}
+.hotkey-subcategory-title {
+    margin-top: 20px;
+    font-weight: bold;
+    width: 100%;
+    margin-bottom: 1vh;
+}
+.hotkey-entry-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 95%;
+    height: auto;
+    justify-content: space-between;
+    padding-top: 5px;
+    border-bottom: 1px solid #e6e6e6;
+    padding-bottom: 5px;
+}
+.hotkey-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.hotkey-entry {
+    border: 2px solid rgb(213 213 213);
+    padding: 3px;
+    border-radius: 5px;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 30px;
+    min-height: 30px;
+}
+.hotkey-entry:hover {
+    background-color: rgb(249, 249, 249);
+}
+.hotkey-entry-description {
+    width: 30%;
+    word-break: break-word;
+}

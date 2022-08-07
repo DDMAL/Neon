@@ -55,7 +55,7 @@ function dragBBox (selector: string, offsetX = 0, offsetY = 0) {
 }
 
 beforeEach(() => {
-  cy.visit('http://localhost:8080/edit/test.jsonld');
+  cy.visit('http://localhost:8080/editor.html?manifest=test');
   cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
 });
 

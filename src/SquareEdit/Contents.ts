@@ -123,7 +123,7 @@ export const editControlsPanel =
             </div>
         </div>
 
-        <div id="display-actions-container">
+        <div id="display-slider-actions-container">
                 <div class="panel-content-subsection hidden">
                     <div id="moreEdit"></div>
                 </div>
@@ -264,7 +264,7 @@ export const layerElementOutActionContents =
 export const layerElementInActionContents =
     `<div class="right-side-panel-btns-container">
         <button class="side-panel-btn" id="delete">Delete</button>
-        <button class="side-panel-btn" id="moveOuttaSyllable">Move out of syllable</button>
+        <button class="side-panel-btn" id="moveOutsideSyllable">Move outside syllable</button>
         <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
     </div>`;
 
@@ -495,3 +495,21 @@ export const hotkeysModal = `
             </div>
         </div>
     </div>`;
+
+export const syllableActionsContent = `
+  <div class="right-side-panel-btns-container">
+    <button class="side-panel-btn" id="mergeSyls">Merge Syllables</button>
+    <button class="side-panel-btn" id="ungroupNeumes">Ungroup</button>
+    <button class="side-panel-btn" id="delete">Delete</button>
+    <button class="side-panel-btn" id="changeStaff">Re-associate to nearest staff</button>
+  </div>
+`;
+
+export const errorLogsPanelContents = 
+    `<div class="panel-heading" id="notifLogHeading">
+        <div class="panel-heading-title">Notification Log</div>
+        <svg class="icon">
+            <use id="toggleNotifLog" xlink:href="${__ASSET_PREFIX__}/assets/img/icons.svg#dropdown-down"></use>
+        </svg>
+    </div>
+    <div class="panel-contents" id="notifLogContents" style="overflow: visible; padding: 0.5em 0.75em;"><div>`;
