@@ -8,10 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: cypress-io/github-action@v4
-        env:
-          DEBUG: 'cypress:*'
         with:
-          cache: yarn cache clean
           build: yarn build 
           start: yarn start
           browser: chrome
