@@ -3,6 +3,7 @@ import { SetTextAction } from '../Types';
 import { ModalWindowInterface } from '../Interfaces';
 import { hotkeysModal, editTextModal } from '../SquareEdit/Contents';
 import { uploadAreaHTML } from '../Dashboard/dashboard_components';
+import { updateSelectedBBox } from '../TextEditMode';
 
 
 /**
@@ -163,10 +164,10 @@ export class ModalWindow implements ModalWindowInterface {
         document.getElementById('neon-modal-window-header-title').innerText = 'ERROR LOG';
         break;
 
-        case ModalWindowView.DOCUMENT_UPLOAD:
-          document.getElementById('neon-modal-window-header-title').innerText = 'DOCUMENT UPLOAD';
-          document.getElementById('neon-modal-window-content-container').innerHTML = uploadAreaHTML;
-          break;
+      case ModalWindowView.DOCUMENT_UPLOAD:
+        document.getElementById('neon-modal-window-header-title').innerText = 'DOCUMENT UPLOAD';
+        document.getElementById('neon-modal-window-content-container').innerHTML = uploadAreaHTML;
+        break;
 
       default:
         console.error('Unknown selection type. This should not have occurred.');
@@ -199,8 +200,6 @@ export class ModalWindow implements ModalWindowInterface {
     this.focusModalWindow();
   };
 
-
-
   /**
    * Update text of selected-to-edit syllables with user-provided text
    */
@@ -229,7 +228,7 @@ export class ModalWindow implements ModalWindowInterface {
             // An update to the page will reload the entire svg;
             // We would like to then reselect the same selected syllable
             // if bboxes are enabled
-            this.updateSelectedBBox(span);
+            updateSelectedBBox(span, this.dragHandler, this.neonView);
           });
         }
       });

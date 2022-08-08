@@ -43,6 +43,19 @@ function selBySyllableListener (): void {
   this.addBBoxListeners();
 }
 
+export function updateSelectedBBox (span: HTMLSpanElement, dragHandler: DragHandler, neonView: NeonView) {
+  unselect();
+
+  const bboxId = Array.from(span.classList).find(e => e !== 'text-select' && e !== 'selected-to-edit');
+
+  if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
+    if (document.getElementById(bboxId)) {
+      const displayRect = document.getElementById(bboxId).querySelector('.sylTextRect-display') as SVGGraphicsElement;
+      selectBBox(displayRect, dragHandler, neonView);
+    }
+  }
+}
+
 /**
  * A Text editing module that works with the SingleView and DivaView modules
  */
@@ -74,7 +87,7 @@ export default class TextEditMode implements TextEditInterface {
         selectBBox(displayRect, this.dragHandler, this.neonView);
       }
     }
-  };
+  }
 
 
   /**
@@ -88,7 +101,7 @@ export default class TextEditMode implements TextEditInterface {
         span.classList.add('selected-to-edit');
         modal.setModalWindowView(ModalWindowView.EDIT_TEXT);
         modal.openModalWindow();
-        this.updateSelectedBBox(span);
+        updateSelectedBBox(span, this.dragHandler, this.neonView);
       }
 
       span.removeEventListener('click', selectSylText);
