@@ -3,6 +3,7 @@ import { ChangeStaffToAction, DragAction, EditorAction } from '../Types';
 import * as d3 from 'd3';
 import { BBox, isOutOfSVGBounds, getGlyphBBox, getStaffIdByCoords } from './Coordinates';
 import { queueNotification } from './Notification';
+import { selectAll, selectBBox, selectStaff } from './SelectTools';
 
 class DragHandler {
   readonly neonView: NeonView;
@@ -143,12 +144,39 @@ class DragHandler {
     // Send editor action
     this.neonView
       .edit(editorAction, this.neonView.view.getCurrentPageURI())
-      .then(() => {
-        this.neonView.updateForCurrentPage();
+      .then(async () => {
+        // Neon re-renders the entire SVG, and hence, before we do so,
+        // we need to store all the elements (IDs) we need to select again
+        // Then, we need to reselect them by calling `this.reselect()`
+        const toReselect = Array.from(document.querySelectorAll('.selected')).map(el => el.id);
+
+        // CAUTION: `updateForCurrentPage()` is an asynchronous function!
+        // It requires an `await` keyword.
+        await this.neonView.updateForCurrentPage();
         this.endOptionsSelection();
         this.reset();
+
+        // Reselect the elements and reinitialize drag
+        await this.reselect(toReselect);
         this.dragInit();
       });
+  }
+
+  async reselect (toReselect: string[]): Promise<void> {
+    const reselected = toReselect.map(id => document.querySelector<SVGGraphicsElement>(`#${id}`));
+    await selectAll(reselected, this.neonView, this);
+
+    // Bounding boxes must be explicitly selected using `selectBBox()`
+    reselected
+      .filter(el => el.classList.contains('syl'))
+      .forEach(
+        el => selectBBox(el.querySelector('.sylTextRect-display'), this, this.neonView)
+      );
+
+    // Staves must be explicitly selected using `selectStaff()`
+    reselected
+      .filter(el => el.classList.contains('staff'))
+      .forEach(el => selectStaff(el, this));
   }
 
   /** Set the d3 action to use for [[reset]]. */
