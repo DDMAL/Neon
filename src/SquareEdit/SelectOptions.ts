@@ -4,7 +4,15 @@ import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
 import { SplitStaffHandler } from './StaffTools';
 import { SplitNeumeHandler } from './NeumeTools';
-import { ChainAction, ChangeStaffAction, EditorAction, RemoveAction, SetAction, SetClefAction } from '../Types';
+import {
+  ChainAction,
+  ChangeStaffAction,
+  DisplaceClefOctaveAction,
+  EditorAction,
+  RemoveAction,
+  SetAction,
+  SetClefAction
+} from '../Types';
 import { getStaffBBox } from '../utils/SelectTools';
 
 /**
@@ -649,6 +657,48 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
   addChangeStaffListener();
   document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
   document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
+
+  document.querySelector('#increment-octave')
+    .addEventListener('click', () => {
+      const incrementOctave: DisplaceClefOctaveAction = {
+        action: 'displaceClefOctave',
+        param: {
+          elementId: clef.id,
+          direction: 'above'
+        }
+      };
+
+      neonView.edit(incrementOctave, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Clef octave incremented', 'success');
+        } else {
+          Notification.queueNotification('Clef octave could not be changed', 'error');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
+    });
+
+  document.querySelector('#decrement-octave')
+    .addEventListener('click', () => {
+      const incrementOctave: DisplaceClefOctaveAction = {
+        action: 'displaceClefOctave',
+        param: {
+          elementId: clef.id,
+          direction: 'below'
+        }
+      };
+
+      neonView.edit(incrementOctave, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Clef octave decremented', 'success');
+        } else {
+          Notification.queueNotification('Clef octave could not be changed', 'error');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
+    });
 
   document.querySelector('#CClef.dropdown-item')
     .addEventListener('click', () => {

@@ -303,21 +303,38 @@ export const splitActionContents =
  * Contents of extra clef action menu.
  */
 export const clefActionContents =
-    `<label>Change Clef Shape:&nbsp;</label>
-    <div id="drop_select" class="dropdown">
-        <div class="dropdown-trigger"overflow="auto">
-            <button id="select-options" class="side-panel-btn" aria-haspopup="true" aria-controls="dropdown-menu">
-                <span>Clef Shapes</span>
-                <svg class="icon"><use xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use></svg>
-            </button>
-        </div>
-        <div class="dropdown-menu" id="dropdown-menu" role="menu">
-            <div class="dropdown-content">
-                <a id="CClef" class="dropdown-item">C Clef</a>
-                <a id="FClef" class="dropdown-item">F Clef</a>
+    `
+    <div class="right-side-panel-btns-container">
+        <div id="drop_select" class="dropdown">
+            <div class="dropdown-trigger" overflow="auto">
+                <button id="select-options" class="side-panel-btn" aria-haspopup="true" aria-controls="dropdown-menu">
+                    <span>Displace Octave</span>
+                    <svg class="icon"><use xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use></svg>
+                </button>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                <div class="dropdown-content">
+                    <a id="increment-octave" class="dropdown-item">+1 Octave</a>
+                    <a id="decrement-octave" class="dropdown-item">-1 Octave</a>
+                </div>
             </div>
         </div>
-    </div>`;
+        <div id="drop_select" class="dropdown">
+            <div class="dropdown-trigger" overflow="auto">
+                <button id="select-options" class="side-panel-btn" aria-haspopup="true" aria-controls="dropdown-menu">
+                    <span>Change Clef Shape</span>
+                    <svg class="icon"><use xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use></svg>
+                </button>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                <div class="dropdown-content">
+                    <a id="CClef" class="dropdown-item">C Clef</a>
+                    <a id="FClef" class="dropdown-item">F Clef</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
 
 /**
  * HTML for grouping selection menu.
