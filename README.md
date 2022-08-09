@@ -44,19 +44,14 @@ Instructions
 
 Neon has two main modes: viewer and editor. To learn how to use both, [read the instructions on our wiki.](https://github.com/DDMAL/Neon/wiki/Instructions)
 
-Test
+Testing
 ----
 
-Follow the instructions from above first. The tests for Neon use [Selenium](https://docs.seleniumhq.org/) and use Firefox, Safari, and Chrome. Their respective webdrivers are required. Safari 12 or greater is required. On Mac, Firefox and Chrome can be installed by:
-```shell
-brew cask install firefox
-brew cask install google-chrome
-brew install geckodriver
-brew cask install chromedriver
-```
-Then you can run the tests locally using `yarn test`. We use [jest](https://facebook.github.io/jest/) to script our tests.
+Follow the instructions from above first.
 
-*These tests require the server to be running on `localhost:8080`*
+We use [Cypress](https://www.cypress.io/) for E2E testing.
+
+Run the command `yarn test`. [Read more about testing on our wiki.](https://github.com/DDMAL/Neon/wiki/Testing-with-Cypress)
 
 Verovio
 -------
