@@ -209,7 +209,6 @@ export function setBgOpacityFromSlider (background?: string): void {
 
   // dispay correct slider tiggle display icon
   const hideGlyphsImg = document.querySelector('#toggle-bg-opacity > img');
-  //console.log(Number(bgOpacityOutput.value));
   if (Number(bgOpacityOutput.value) === 0) {
     hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/show-icon.svg`);
   }

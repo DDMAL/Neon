@@ -63,8 +63,7 @@ export function InitUploadArea(): void {
     const fileList = event.dataTransfer.files;
     const files = Array.from(fileList);
     // addNewFiles handles adding files, rejectFiles is an array of non compatible files
-    const rejectFiles = addNewFiles(files);
-    console.log(rejectFiles);
+    addNewFiles(files);
   };
 }
 

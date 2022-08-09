@@ -3,19 +3,13 @@ import FileManager from './FileManager';
 import { formatFilename } from './functions';
 import { createManifest, addEntry } from './storage';
 
-// const mei_container: HTMLDivElement = document.querySelector('#mei_list');
-// const image_container: HTMLDivElement = document.querySelector('#image_list');
-// const paired_container: HTMLDivElement = document.querySelector('#paired_list');
-// const manuscript_container: HTMLDivElement = document.querySelector('#manuscript_list');
-
 const fm = FileManager.getInstance();
 
 export function addNewFiles( files: File[] ): File[] {
-
   const mei_container: HTMLDivElement = document.querySelector('#mei_list');
   const image_container: HTMLDivElement = document.querySelector('#image_list');
-  const paired_container: HTMLDivElement = document.querySelector('#paired_list');
-  const manuscript_container: HTMLDivElement = document.querySelector('#manuscript_list');
+  // const paired_container: HTMLDivElement = document.querySelector('#paired_list');
+  // const manuscript_container: HTMLDivElement = document.querySelector('#manuscript_list');
 
   const rejectFiles: File[] = [];
   files.forEach( file => {
@@ -129,28 +123,28 @@ function createPairedTile(mei_filename: string, image_filename: string): HTMLDiv
   return tile;
 }
 
-function createManuscriptTile( filename: string ) {
-  const tile = document.createElement('div');
-  tile.className = 'tile_item';
-  tile.setAttribute('value', filename);
-  tile.innerText = formatFilename(filename, 20);
+// function createManuscriptTile( filename: string ) {
+//   const tile = document.createElement('div');
+//   tile.className = 'tile_item';
+//   tile.setAttribute('value', filename);
+//   tile.innerText = formatFilename(filename, 20);
 
-  function handleDelete() {
-    // remove tile from UI
-    tile.remove();
-    // remove from file manager
-    fm.removeManuscript(filename); 
-    fm.removeFile(filename);
-  }
+//   function handleDelete() {
+//     // remove tile from UI
+//     tile.remove();
+//     // remove from file manager
+//     fm.removeManuscript(filename); 
+//     fm.removeFile(filename);
+//   }
 
-  const deleteButton = document.createElement('button');
-  deleteButton.innerText = '⌫';
-  deleteButton.className = 'delete_button';
-  deleteButton.addEventListener('click', handleDelete);
-  tile.appendChild(deleteButton);
+//   const deleteButton = document.createElement('button');
+//   deleteButton.innerText = '⌫';
+//   deleteButton.className = 'delete_button';
+//   deleteButton.addEventListener('click', handleDelete);
+//   tile.appendChild(deleteButton);
 
-  return tile;
-}
+//   return tile;
+// }
 
 export function handleUploadAllDocuments(): Promise<any> {
   const folioPromises = fm.getFolios().map( ([mei, image]: [File, File]) => uploadFolio(mei, image));
