@@ -13,7 +13,7 @@ import {
   TextViewInterface,
   ViewInterface
 } from './Interfaces';
-import { initNotificationLog } from '../src/utils/NotificationLog';
+import { initErrorLog } from '../src/utils/ErrorLog';
 import { setSavedStatus, listenUnsavedChanges } from './utils/Unsaved';
 import LocalSettings, { getSettings } from './utils/LocalSettings';
 
@@ -96,7 +96,7 @@ class NeonView {
       this.info = new this.params.Info(this);
       this.modal = new ModalWindow(this);
       Validation.init(this); // initialize validation
-      initNotificationLog(); // initialize notifications logs
+      initErrorLog(); // initialize notifications logs
       listenUnsavedChanges();
 
       this.setupEdit(this.params);

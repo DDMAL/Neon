@@ -1,6 +1,5 @@
 import NeonView from '../../NeonView';
 import { ModalWindowView } from '../ModalWindow';
-import { initNotificationLog } from '../NotificationLog';
 
 async function setBody (neonView: NeonView): Promise<void> {
 

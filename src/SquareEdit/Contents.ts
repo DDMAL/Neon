@@ -506,10 +506,10 @@ export const syllableActionsContent = `
 `;
 
 export const errorLogsPanelContents = 
-    `<div class="panel-heading" id="notifLogHeading">
-        <div class="panel-heading-title">Notification Log</div>
+    `<div class="panel-heading" id="errorLogHeading">
+        <div class="panel-heading-title">Error Log</div>
         <svg class="icon">
-            <use id="toggleNotifLog" xlink:href="${__ASSET_PREFIX__}/assets/img/icons.svg#dropdown-down"></use>
+            <use id="toggleErrorLog" xlink:href="${__ASSET_PREFIX__}/assets/img/icons.svg#dropdown-down"></use>
         </svg>
     </div>
-    <div class="panel-contents" id="notifLogContents" style="overflow: visible; padding: 0.5em 0.75em;"><div>`;
+    <div class="panel-contents" id="errorLogContents" style="overflow: visible; padding: 0.5em 0.75em;"><div>`;

@@ -1,4 +1,4 @@
-import { recordNotification } from './NotificationLog';
+import { recordNotification } from './ErrorLog';
 import { uuidv4 } from './random';
 
 type NotificationType = 'default' | 'error' | 'warning' | 'success';
