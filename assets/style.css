@@ -635,10 +635,10 @@ a:hover {
     color: #848484;
 }
 /* Error logs panel */
-#notification_log {
+#error_log {
     display: none;
 }
-#notification_log.visible {
+#error_log.visible {
     display: block;
 }
 .notification-container {
