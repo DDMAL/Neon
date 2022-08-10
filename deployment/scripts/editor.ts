@@ -14,8 +14,6 @@ import PouchDB from 'pouchdb';
 const name = getGetParam('manifest');
 const storage = getGetParam('storage');
 
-console.log(name);
-
 if (name) {
   const manifestLocation = `./samples/manifests/${name}.jsonld`;
   window.fetch(manifestLocation).then(response => {
@@ -73,8 +71,6 @@ if (name) {
   db.getAttachment(storage, 'manifest').then(blob => {
     return new window.Response(blob).json();
   }).then(async manifest => {
-    console.log(manifest);
-
     const mediaType: string = await new Promise((resolve, reject) => {
       window.fetch(manifest.image).then(response => {
         resolve(<string>response.headers.get('Content-Type'));

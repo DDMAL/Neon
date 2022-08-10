@@ -164,7 +164,12 @@ class DragHandler {
 
   async reselect (toReselect: string[]): Promise<void> {
     const reselected = toReselect.map(id => document.querySelector<SVGGraphicsElement>(`#${id}`));
-    await selectAll(reselected, this.neonView, this);
+
+    // All glyphs except bouding boxes ('syl's) must be selected with
+    // `selectAll()`
+    reselected
+      .filter(el => !el.classList.contains('syl'))
+      .forEach(async () => await selectAll(reselected, this.neonView, this));
 
     // Bounding boxes must be explicitly selected using `selectBBox()`
     reselected
@@ -174,6 +179,7 @@ class DragHandler {
       );
 
     // Staves must be explicitly selected using `selectStaff()`
+    // AND must be selected with `selectAll()` for correct behavior (for some reason).
     reselected
       .filter(el => el.classList.contains('staff'))
       .forEach(el => selectStaff(el, this));
