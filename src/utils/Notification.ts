@@ -131,7 +131,10 @@ function startNotification (): void {
 export function queueNotification (notification: string, type: NotificationType = 'default'): void {
   const notif = new Notification(notification, type);
   notifications.push(notif);
-  recordNotification(notif);
+
+  if (notif.type == 'error' || notif.type == 'warning') {
+    recordNotification(notif);
+  }
 
   if (!notifying || document.getElementById('notification-content').querySelectorAll('.neon-notification').length < NUMBER_TO_DISPLAY) {
     startNotification();
