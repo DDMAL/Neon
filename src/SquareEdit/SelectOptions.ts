@@ -670,9 +670,9 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
 
       neonView.edit(incrementOctave, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Clef octave incremented', 'success');
+          Notification.queueNotification('Clef octave incremented.', 'success');
         } else {
-          Notification.queueNotification('Clef octave could not be changed', 'error');
+          Notification.queueNotification('Maximum octave displacement reached. Clef can only be displaced up to 3 octaves.', 'error');
         }
         endOptionsSelection();
         neonView.updateForCurrentPage();
@@ -691,9 +691,9 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
 
       neonView.edit(incrementOctave, neonView.view.getCurrentPageURI()).then((result) => {
         if (result) {
-          Notification.queueNotification('Clef octave decremented', 'success');
+          Notification.queueNotification('Clef octave decremented.', 'success');
         } else {
-          Notification.queueNotification('Clef octave could not be changed', 'error');
+          Notification.queueNotification('Maximum octave displacement reached. Clef can only be displaced up to 3 octaves.', 'error');
         }
         endOptionsSelection();
         neonView.updateForCurrentPage();
