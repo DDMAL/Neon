@@ -24,7 +24,7 @@
     },
     "rules": {
         "@typescript-eslint/indent": [
-            "error",
+            "warn",
             2
         ],
         "linebreak-style": [
@@ -44,15 +44,18 @@
             "as-needed"
         ],
         "@typescript-eslint/semi": [
-            "error",
+            "warn",
             "always"
         ],
         "@typescript-eslint/no-var-requires": 1,
         "@typescript-eslint/no-unused-vars": [
-            "error",
+            "warn",
             {
                 "argsIgnorePattern": "^_"
             }
+        ],
+        "@typescript-eslint/no-empty-function": [
+            "warn"
         ]
     }
 }
