@@ -73,6 +73,6 @@ async function updateAndClear() {
     document.querySelector('#paired_list')!.innerHTML = '';
     //document.querySelector('#manuscript_list')!.innerHTML = '';
     fm.clearFolios();
-    fm.clearManuscripts();
+    // fm.clearManuscripts();
   });
 }
