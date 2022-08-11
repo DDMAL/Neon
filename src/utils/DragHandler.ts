@@ -119,8 +119,8 @@ class DragHandler {
 
       paramArray.push(dragAction);
 
-      if (el.classList.contains('divLine') || el.classList.contains('accid') || el.classList.contains('custos')) {
-        // Else, also add the ChangeStaffAction (for divline, accid, or custo)
+      if (el.classList.contains('divLine') || el.classList.contains('accid')) {
+        // Else, also add the ChangeStaffAction (for divline and accid)
         const { clientX, clientY } = d3.event.sourceEvent;
         const newStaff = getStaffIdByCoords(clientX, clientY);
         const staffAction: ChangeStaffToAction = {
