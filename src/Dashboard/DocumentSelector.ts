@@ -1,4 +1,4 @@
-import { getAllDocuments, deleteEntry } from './storage';
+import { getAllDocuments, deleteEntry } from './Storage';
 import { formatFilename } from './functions';
 import { allDocs } from '../Types';
 import { documents } from './documents';

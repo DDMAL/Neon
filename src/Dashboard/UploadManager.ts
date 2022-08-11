@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import FileManager from './FileManager';
 import { formatFilename } from './functions';
-import { createManifest, addEntry } from './storage';
+import { createManifest, addEntry } from './Storage';
 
 const fm = FileManager.getInstance();
 
