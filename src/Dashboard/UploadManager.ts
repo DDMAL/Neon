@@ -127,7 +127,7 @@ export function handleUploadAllDocuments(): Promise<any> {
 }
 
 async function uploadFolio(name: string, mei: File, image: File): Promise<boolean> {
-  return createManifest(mei, image)
+  return createManifest(name, mei, image)
     .then(manifest => {
       const manifestBlob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/ld+json' });
       return addEntry(name, manifestBlob, true);

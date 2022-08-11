@@ -14,7 +14,7 @@ export function getAllDocuments(): Promise<allDocs> {
   });
 }
 
-export function createManifest(mei: File, bg: File): Promise<NeonManifest> {
+export function createManifest(name: string, mei: File, bg: File): Promise<NeonManifest> {
   return new Promise(async (resolve) => {
     // get up-to-date manifest, else use local copy
     const manifest = await fetch(manifestURL)
@@ -24,7 +24,7 @@ export function createManifest(mei: File, bg: File): Promise<NeonManifest> {
         return localManifest;
       });
     manifest['@id'] = uuidv4();
-    manifest['title'] = mei.name;
+    manifest['title'] = name;
     manifest['timestamp'] = (new Date()).toISOString();
 
     const meiPromise = new Promise(resolve => {
