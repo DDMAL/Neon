@@ -16,6 +16,7 @@ import {
 import { initErrorLog } from '../src/utils/ErrorLog';
 import { setSavedStatus, listenUnsavedChanges } from './utils/Unsaved';
 import LocalSettings, { getSettings } from './utils/LocalSettings';
+import AdvancedSettings from './utils/AdvancedSettings';
 
 
 /**
@@ -95,7 +96,10 @@ class NeonView {
       this.core = new NeonCore(this.manifest);
       this.info = new this.params.Info(this);
       this.modal = new ModalWindow(this);
-      Validation.init(this); // initialize validation
+
+      AdvancedSettings.init(this);
+
+      // Validation.init(this); // initialize validation
       initErrorLog(); // initialize notifications logs
       listenUnsavedChanges();
 

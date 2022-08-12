@@ -26,6 +26,7 @@ export interface Settings {
   displayText: boolean;
   displayInfo: boolean;
   displayErrLog: boolean;
+  displayAdvanced: boolean;
   viewBox: string;
 }
 
@@ -46,6 +47,7 @@ const DEFAULT_SETTINGS: Settings = {
   displayText: false,
   displayInfo: false,
   displayErrLog: false,
+  displayAdvanced: false,
   viewBox: null
 };
 
