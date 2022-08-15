@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import FileManager from './FileManager';
-import { formatFilename } from './functions';
-import { createManifest, addEntry } from './Storage';
+import { formatFilename, renameFile } from './functions';
+import { createManifest, addEntry, fetchSampleDocuments, fetchUploadedDocuments } from './Storage';
 
 const fm = FileManager.getInstance();
 
@@ -119,8 +119,16 @@ function createPairedTile(filename: string, mei_filename: string, image_filename
   return tile;
 }
 
-export function handleUploadAllDocuments(): Promise<any> {
-  const folioPromises = fm.getFolios().map( ([name, mei, image]: [string, File, File]) => uploadFolio(name, mei, image));
+export async function handleUploadAllDocuments(): Promise<any> {
+  const uploads = await fetchUploadedDocuments();
+  const samples = fetchSampleDocuments();
+  const allFolios = uploads.concat(samples);
+
+  const folioPromises = fm.getFolios()
+    .map( ([name, mei, image]: [string, File, File]) => {
+      const newName = renameFile(name, allFolios);
+      uploadFolio(newName, mei, image)
+    });
   // const manuscriptPromises = fm.getManuscripts().map( manuscript => uploadManuscript(manuscript));
   const promises = folioPromises; // .concat(manuscriptPromises);
   return PromiseAllSettled(promises);

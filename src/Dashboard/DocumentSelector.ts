@@ -1,7 +1,6 @@
-import { getAllDocuments, deleteEntry } from './Storage';
+import { fetchUploadedDocuments, fetchSampleDocuments, deleteEntry } from './Storage';
 import { formatFilename } from './functions';
-import { allDocs } from '../Types';
-import { documents } from './documents';
+import { samples } from './samples_filenames';
 
 const uploadedDocsContainer = document.querySelector('#uploaded-docs-content');
 const sampleDocsContainer = document.querySelector('#sample-docs-content');
@@ -11,14 +10,74 @@ const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
 
+// Lists the documents in order as represented on dashboard
+let orderedDocuments: string[];
+let orderedSelection: boolean[];
+
+// Shift selection mimics MacOS behaviour
+class shiftSelection { 
+  private start;
+  private end;
+  private prevSelection = [];
+
+  public constructor() {
+    this.reset();
+  }
+
+  public setStart(start: number) {
+    this.reset();
+    this.start = Math.max(start, 0);
+  }
+
+  public setEnd(end: number) {
+    this.end = end;
+  }
+
+  public reset() {
+    this.start = 0;
+    this.end = -1;
+    this.prevSelection.splice(0);
+  }
+
+  public getPrevSelection() {
+    return this.prevSelection;
+  }
+
+  public getSelection() {
+    let start: number;
+    let end: number;
+
+    if (this.end === -1) {
+      return [];
+    }
+    if (this.end < this.start) {
+      start = this.end;
+      end = this.start + 1;
+    }
+    else {
+      start = this.start;
+      end = this.end + 1;
+    }
+    const range = Array.from({ length: (end - start) }, (v, k) => k + start);
+    // For each shift selection action: if the Shift key is still held, the end shift pos can change 
+    // with the previously (before-shift) selected elements still selected while the current shift selections unselect.
+    const specificSelection = range.filter(idx => !(orderedSelection[idx]));
+    this.prevSelection = specificSelection;
+    return specificSelection;
+  }
+} 
+
+const shift = new shiftSelection();
+
+
 // Gets user selected document tile elements
 function getSelectionTiles() {
-  return Array.from(document.querySelectorAll('.document-entry.selected'));
+  return getSelectionFilenames().map(filename => document.getElementById(filename));
 }
 
 // gets user selected filenames 
 function getSelectionFilenames() {
-  return getSelectionTiles().map((doc) => doc.querySelector('.filename-text').getAttribute('value'));
+  return orderedDocuments.filter((_, idx) => orderedSelection[idx]);
 }
 
 // Open editor tab
@@ -31,11 +90,10 @@ function openEditorTab(filename: string, isUploaded: boolean) {
 }
 
 // Opens editor tab given a document tile element
-function openTile(doc: Element) {
-  const isUploaded = (doc.classList.contains('uploaded-doc')) ? true : false;
-  const filename = doc.querySelector('.filename-text').getAttribute('value');
+function openTile(tile: Element) {
+  const isUploaded = (tile.classList.contains('uploaded-doc')) ? true : false;
+  const filename = tile.id;
   openEditorTab(filename, isUploaded);
-  loseFocus(doc);
 }
 
 function makeQuery(obj): string {
@@ -44,14 +102,37 @@ function makeQuery(obj): string {
   }).join('&');
 }
 
-function loseFocus(tile: Element) {
+function unselect(tile: Element, idx?: number) {
+  if (tile != null) {
+    idx = (idx != undefined) ? idx : orderedDocuments.indexOf(tile.id);
+  }
+  else if (idx != undefined) {
+    tile = document.getElementById(orderedDocuments[idx]);
+  }
+  else return;
   tile.classList.remove('selected');
+  orderedSelection[idx] = false;
 }
 
-function loseFocusAll() {
+function unselectAll() {
   Array.from(document.querySelectorAll('.document-entry.selected'))
-    .forEach((doc) => loseFocus(doc));
+    .forEach((tile) => tile.classList.remove('selected'));
+  orderedSelection
+    .splice(0)
+    .concat(new Array<boolean>(orderedDocuments.length).fill(false));
   disableSidebarActions();
+}
+
+function select(tile: Element, idx?: number) {
+  if (tile != null) {
+    idx = (idx != undefined) ? idx : orderedDocuments.indexOf(tile.id);
+  }
+  else if (idx != undefined) {
+    tile = document.getElementById(orderedDocuments[idx]);
+  }
+  else return;
+  tile.classList.add('selected');
+  orderedSelection[idx] = true;
 }
 
 function disableSidebarActions() {
@@ -64,53 +145,32 @@ function enableSideBarActions() {
   deleteButton.classList.add('active');
 }
 
-async function fetchUploadedDocuments(): Promise<string[]> {
-  return await getAllDocuments()
-    .then( (res: allDocs) => {
-      return res.rows.map( row => row.key);
-    })
-    .catch(err => {
-      console.log('Could\'nt fetch uploaded documents', err.message);
-      return [];
-    });
-}
 
-async function fetchSampleDocuments(): Promise<string[]> {
-  return documents;
-}
 
 export async function updateDocumentSelector(): Promise<void> {
-  const openButton: HTMLButtonElement = document.querySelector('#open-doc');
-  const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
-
+  disableSidebarActions();
+  shift.reset();
   // load user-uploaded docs
   uploadedDocsContainer.innerHTML = '';
-
   const uploadedDocs = await fetchUploadedDocuments();
   uploadedDocs.sort();
 
   if (uploadedDocs.length === 0) {
     const doc = document.createElement('div');
-    //doc.classList.add('document-entry');
     doc.id = 'no-docs-msg';
     doc.innerHTML = 'No Documents Uploaded';
     uploadedDocsContainer.appendChild(doc);
   } 
   else uploadedDocs.forEach(filename => {
     const doc = document.createElement('div');
+    doc.id = filename; // unique id
     doc.classList.add('document-entry');
     doc.classList.add('uploaded-doc');
 
     const name = document.createElement('div');
     name.classList.add('filename-text');
-    name.setAttribute('value', filename);
     name.innerHTML = formatFilename(filename, 25);
     doc.appendChild(name);
-
-    // const input = document.createElement('input');
-    // input.classList.add('doc-multiselect-btn');
-    // input.setAttribute('type', 'checkbox');
-    // name.appendChild(input);
 
     uploadedDocsContainer.appendChild(doc);
   });
@@ -118,7 +178,7 @@ export async function updateDocumentSelector(): Promise<void> {
   // load sample docs
   sampleDocsContainer.innerHTML = '';
 
-  const sampleDocs = await fetchSampleDocuments();
+  const sampleDocs = fetchSampleDocuments();
   sampleDocs.sort();
   
   if (sampleDocs.length === 0) {
@@ -128,95 +188,101 @@ export async function updateDocumentSelector(): Promise<void> {
   } 
   else sampleDocs.forEach(filename => {
     const doc = document.createElement('div');
+    doc.id = filename;
     doc.classList.add('document-entry');
 
     const name = document.createElement('div');
     name.classList.add('filename-text');
-    name.setAttribute('value', filename);
     name.innerHTML = formatFilename(filename, 25);
     doc.appendChild(name);
 
     sampleDocsContainer.appendChild(doc);
   });
-
+  // Clear list of documents/selections and update
+  orderedDocuments = uploadedDocs.concat(samples);
+  orderedSelection = new Array<boolean>(orderedDocuments.length).fill(false);
 
   // add onclick event listener to docs
-  Array.from(document.querySelectorAll('.document-entry')).forEach((doc) => {
-    // double click event immediately opens document
-    doc.addEventListener('dblclick', function() {
-      getSelectionTiles().forEach(tile => openTile(tile));
-    });
+  orderedDocuments.forEach((filename, idx) => {
+    const tile = document.getElementById(`${filename}`);
+    const isSelected = orderedSelection[idx];
 
-    // single click selects document or adds document to existing selection
-    doc.addEventListener('click', function(e) {
+    // double click event immediately opens document
+    tile.addEventListener('dblclick', handleOpenDocuments, false);
+
+    // Single click selects document or adds document to existing selection
+    tile.addEventListener('click', function(e) {
       // No Shift or Meta pressed 
       if (!metaKeyIsPressed && !shiftKeyIsPressed) {
-        // Tile is already selected -> No change
-        if (doc.classList.contains('selected')) {
-          Array.from(document.querySelectorAll('.document-entry.selected'))
-            .forEach((doc) => loseFocus(doc));
-          doc.classList.add('selected');
-        }
-        // Tile is not selected -> Clear selection and select tile
-        else {
-          Array.from(document.querySelectorAll('.document-entry.selected'))
-            .forEach((doc) => loseFocus(doc));
-          doc.classList.add('selected');
-        }
+        // Selected or not selected -> clear selection and select cur tile
+        unselectAll();
+        enableSideBarActions();
+        select(tile, idx);
+        shift.setStart(idx); // Track start of shift selection
       }
       // Meta key pressed (default behaviour if both meta and shift are pressed)
       else if (metaKeyIsPressed) {
-        if (doc.classList.contains('selected')) {
-          // do nothing
+        if (isSelected) {
+          unselect(tile, idx);
+          if (getSelectionFilenames().length === 0) {
+            disableSidebarActions();
+          }
+          shift.setStart(orderedSelection.lastIndexOf(true)); // MacOS behaviour: shift start goes to largest idx selected item
         }
         // Tile is not selected -> Add to selection
         else {
-          doc.classList.add('selected');
+          select(tile, idx);
+          shift.setStart(idx); // Track start of shift selection
+          enableSideBarActions();
         }
       }
-      // WIP
-      // else if (shiftKeyIsPressed) {
-      // foobar
-      // }
-
-      // Check if there are any tiles selected
-      if (getSelectionTiles().length === 0) {
-        disableSidebarActions();
-      }
-      else {
+      // Marks the end of shift selection
+      else if (shiftKeyIsPressed) {
+        // Unselect previous shift selection if applicable
+        shift.getPrevSelection().forEach((index) => {
+          unselect(null, index);
+        })
+        // Select new shift select
+        shift.setEnd(idx);
+        shift.getSelection().forEach((index) => {   
+          select(null, index);
+        });
         enableSideBarActions();
       }
-    });
+    }, false);
   });
 }
 
-export const InitDocumentSelector = (): void => {
+function handleOpenDocuments() {
+  getSelectionTiles().forEach(tile => {
+    openTile(tile);
+  });
+  shift.reset();
+  unselectAll();
+  disableSidebarActions();
+}
 
-  function handleOpenDocuments() {
-    getSelectionTiles().forEach(tile => {
-      openTile(tile);
-    });
-    disableSidebarActions();
-  }
-
-  function handleDeleteDocuments() {
-    const filenames = getSelectionFilenames();
-    const filenameFormatted = filenames.join('\n');
-    const alertMessage = 'Are you sure you want to delete:\n' + filenameFormatted + '\n\nThis action is irreversible';
-    const isConfirmed = window.confirm(alertMessage);
-    
-    if (isConfirmed) {
-      const promises = filenames.map(filename => deleteEntry(filename));
-      Promise.all(promises)
-        .then( () => {
-          updateDocumentSelector();
-        })
-        .catch( err => console.debug('failed to delete files: ', err));
-      
-      disableSidebarActions();
-    }
-  }
+function handleDeleteDocuments() {
+  const filenames = getSelectionFilenames();
+  const filenameFormatted = filenames.join('\n');
+  const alertMessage = 'Are you sure you want to delete:\n' + filenameFormatted + '\n\nThis action is irreversible.';
+  const isConfirmed = window.confirm(alertMessage);
   
+  if (isConfirmed) {
+    const promises = filenames.map(filename => deleteEntry(filename));
+    Promise.all(promises)
+      .then( () => {
+        updateDocumentSelector();
+      })
+      .catch( err => console.debug('failed to delete files: ', err));
+    
+    unselectAll();
+    disableSidebarActions();
+    shift.reset();
+  }
+}
+
+export const InitDocumentSelector = (): void => {
   openButton!.addEventListener('click', handleOpenDocuments);
   deleteButton!.addEventListener('click', handleDeleteDocuments);
 
@@ -225,9 +291,9 @@ export const InitDocumentSelector = (): void => {
     if (e.shiftKey) shiftKeyIsPressed = true;
     // Lose focus on esc key
     if (e.key === 'Escape') {
-      Array.from(document.querySelectorAll('.document-entry.selected'))
-        .forEach((doc) => loseFocus(doc));
+      unselectAll();
       disableSidebarActions();
+      shift.reset();
     }
   });
 
@@ -240,10 +306,12 @@ export const InitDocumentSelector = (): void => {
   const background: HTMLElement = document.querySelector('.main-section-content');
   background.addEventListener('click', function(e) {
     const classList = (<Element>e.target).classList;
-    if ( !['document-entry', 'filename-text']
-          .some(className => classList.contains(className)) 
-    ) loseFocusAll();
+    if ( !['document-entry', 'filename-text'].some(className => classList.contains(className)) ) {
+      unselectAll();
+      disableSidebarActions();
+      shift.reset();
+    }
   });
-
+  
   updateDocumentSelector();
-};
+}

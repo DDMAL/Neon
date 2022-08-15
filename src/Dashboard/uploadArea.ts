@@ -15,7 +15,7 @@ export function InitUploadArea(): void {
 
   document.querySelector('#make_pair')!.addEventListener('click', handleMakePair);
 
-  document.querySelector('#upload_button')!.addEventListener('click', async () => {
+  document.querySelector('#upload_button')!.addEventListener('click', async function() {
     handleUploadAllDocuments()
       .then( (res) => {
         console.log('Upload results: ', res);
