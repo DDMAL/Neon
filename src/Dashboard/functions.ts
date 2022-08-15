@@ -9,15 +9,12 @@ export function formatFilename(filename: string, maxLen: number): string {
 export function renameFile(filename: string, comparisons: string[]): string {
   const reg = new RegExp(filename);
   const results = comparisons.filter((comparison: string) => reg.test(comparison));
-  console.log('results: ', results);
 
   if (results.length !== 0) {
     // Find lowest digit to name
     const digitsReg = /\(\d+\),/g;
     const soup = results.join().concat(',');
-    console.log(soup);
     const digitsResults = soup.match(digitsReg);
-    console.log('digitsResults: ', digitsResults)
     
     // If no digit matches then go to else statement
     if (digitsResults !== null) {
@@ -26,7 +23,6 @@ export function renameFile(filename: string, comparisons: string[]): string {
         return Number(stripped);
       });
       digits.sort();
-      console.log('digits: ', digits);
 
       const idx = digits.indexOf(1);
       if (idx === -1) return `${filename}(1)`;
