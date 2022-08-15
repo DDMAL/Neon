@@ -155,9 +155,9 @@ export const InitDocumentSelector = (): void => {
     selectedDocs.length = 0;
     Array.from(document.querySelectorAll('.document-entry.selected')).forEach((doc) => {
       doc.classList.remove('selected');
-      document.querySelector('#remove-doc').classList.remove('active');
-      document.querySelector('#open-doc').classList.remove('active');
     });
+    document.querySelector('#remove-doc').classList.remove('active');
+    document.querySelector('#open-doc').classList.remove('active');
   }
 
   // gets user selected filenames 
@@ -194,6 +194,13 @@ export const InitDocumentSelector = (): void => {
         })
         .catch( err => console.debug('failed to delete files: ', err));
     }
+
+    selectedDocs.length = 0;
+    Array.from(document.querySelectorAll('.document-entry.selected')).forEach((doc) => {
+      doc.classList.remove('selected');
+    });
+    document.querySelector('#remove-doc').classList.remove('active');
+    document.querySelector('#open-doc').classList.remove('active');
   }
   
   openButton?.addEventListener('click', handleOpenDocuments);

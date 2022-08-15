@@ -2,6 +2,6 @@
 // https://docs.cypress.io/guides/tooling/typescript-support#Configure-tsconfig-json
 {
     "compilerOptions": {
-        "types": ["cypress", "node"]
+        "types": ["cypress", "node", "cypress-file-upload"]
     }
 }
