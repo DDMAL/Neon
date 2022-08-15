@@ -263,6 +263,7 @@ export type NeonManifest = {
   mei_annotations: WebAnnotation[]
 };
 
+
 export type allDocs = {
   offset?: number,
   total_rows?: number,

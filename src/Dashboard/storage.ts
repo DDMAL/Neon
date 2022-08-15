@@ -5,7 +5,6 @@ import * as localManifest from '../../assets/manifest.json';
 import { samples } from './samples_filenames';
 
 const db = new PouchDB('Neon-User-Storage');
-const manifestURL = 'https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld';
 
 function getAllDocuments(): Promise<allDocs> {
   return new Promise((resolve, reject) => {
@@ -30,15 +29,10 @@ export function fetchSampleDocuments(): string[] {
   return samples;
 }
 
-export function createManifest(name: string, mei: File, bg: File): Promise<NeonManifest> {
+export function createManifest(name: string, mei: File, bg: File): Promise<any> {
   return new Promise(async (resolve) => {
     // get up-to-date manifest, else use local copy
-    const manifest = await fetch(manifestURL)
-      .then(result => result.json())
-      .catch( (err) => {
-        console.log('no connection: ', err);
-        return localManifest;
-      });
+    const manifest = localManifest;
     manifest['@id'] = uuidv4();
     manifest['title'] = name;
     manifest['timestamp'] = (new Date()).toISOString();
