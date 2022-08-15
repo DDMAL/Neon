@@ -59,11 +59,23 @@ export async function init (neonView: NeonView): Promise<void> {
   }
 }
 
+async function stop (): Promise<void> {
+  if (worker) {
+    worker.terminate();
+    worker = null;
+  }
+
+  const fileStatusDiv = document.getElementById('file-status');
+  fileStatusDiv.innerHTML = '';
+}
+
 /**
  * Send the contents of an MEI file to the WebWorker for validation.
  * @param {string} meiData
  */
 export async function sendForValidation (meiData: string): Promise<void> {
+  if (!worker) return;
+
   if (statusField === undefined) {
     return;
   }
@@ -90,4 +102,4 @@ export function blankPage (): void {
   statusField.style.color = 'color:gray';
 }
 
-export default { init };
+export default { init, stop, sendForValidation };

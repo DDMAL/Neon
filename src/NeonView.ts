@@ -1,5 +1,4 @@
 import NeonCore from './NeonCore';
-import * as Validation from './Validation';
 import { parseManifest } from './utils/NeonManifest';
 import setBody from './utils/template/Template';
 import { ModalWindow } from './utils/ModalWindow';
@@ -223,10 +222,10 @@ class NeonView {
 
   /**
    * Get the page's MEI file as a string.
-   * @param pageNo - The identifying URI of the page.
+   * @param pageURI - The identifying URI of the page.
    */
-  getPageMEI (pageNo: string): Promise<string> {
-    return this.core.getMEI(pageNo);
+  getPageMEI (pageURI: string): Promise<string> {
+    return this.core.getMEI(pageURI);
   }
 
   /**
