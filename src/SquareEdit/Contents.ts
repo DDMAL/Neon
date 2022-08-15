@@ -151,7 +151,7 @@ export const editControlsPanel =
  */
 export const ncActionContents =
     `<label>Change Head Shape:</label>
-    <div id="drop_select" class="dropdown">
+    <div class="drop_select dropdown">
         <div class="dropdown-trigger">
             <button id="select-options" class="side-panel-btn" aria-haspopup="true" aria-controls="dropdown-menu">
                 <span>Head Shapes</span>
@@ -185,7 +185,7 @@ export const defaultNeumeActionContents =
 export const neumeActionContents =
     `<label>Grouping Options:</label>
     <div class="right-side-panel-btns-container">
-        <div id="drop_select" class="dropdown">
+        <div class="drop_select dropdown">
             <div class="dropdown-trigger">
                 <button id="select-options" class="side-panel-btn" aria-haspopup="true" aria-controls="dropdown-menu">
                     <span>Groupings</span>
@@ -273,7 +273,7 @@ export const layerElementInActionContents =
  */
 export const accidActionContents =
     `<label>Change Accidental:</label>
-    <div id="drop_select" class="dropdown">
+    <div class="drop_select dropdown">
         <div class="dropdown-trigger"overflow="auto">
             <button id="select-options" class="side-panel-btn" aria-haspopup="true" aria-controls="dropdown-menu">
                 <span>Shapes</span>
@@ -305,7 +305,7 @@ export const splitActionContents =
 export const clefActionContents =
     `
     <div class="right-side-panel-btns-container">
-        <div id="drop_select" class="dropdown">
+        <div class="drop_select dropdown">
             <div class="dropdown-trigger" overflow="auto">
                 <button id="select-options" class="side-panel-btn" aria-haspopup="true" aria-controls="dropdown-menu">
                     <span>Displace Octave</span>
@@ -319,7 +319,7 @@ export const clefActionContents =
                 </div>
             </div>
         </div>
-        <div id="drop_select" class="dropdown">
+        <div class="drop_select dropdown">
             <div class="dropdown-trigger" overflow="auto">
                 <button id="select-options" class="side-panel-btn" aria-haspopup="true" aria-controls="dropdown-menu">
                     <span>Change Clef Shape</span>

@@ -1,6 +1,6 @@
 import * as Contents from './Contents';
 import * as Grouping from './Grouping';
-import * as Notification from '../utils/Notification';
+import Notification from '../utils/Notification';
 import NeonView from '../NeonView';
 import { SplitStaffHandler } from './StaffTools';
 import { SplitNeumeHandler } from './NeumeTools';
@@ -929,10 +929,37 @@ export function triggerDefaultActions (): void {
 }
 
 /**
- * Initialize extra dropdown options.
+ * Initialize extra dropdown options:
+ * Listen to clicks on dropdowns
  */
 function initOptionsListeners (): void {
-  document.getElementById('drop_select').addEventListener('click', function () {
-    this.classList.toggle('is-active');
-  });
+  document
+    .querySelectorAll('.drop_select')
+    .forEach(
+      drop => {
+        // When anything that is not the dropdown is clicked away, the dropdown
+        // should lose its visibility
+        const optionsClickaway = () => {
+          document.body.removeEventListener('click', optionsClickaway);
+          drop.classList.remove('is-active');
+        };
+
+        drop.addEventListener('click', (evt) => {
+          // Toggle visibility of dropdown
+          drop.classList.toggle('is-active');
+
+          // Remove visibility of other dropdowns when this one is clicked
+          Array.from(document.querySelectorAll('.drop_select'))
+            .filter(other => other !== drop)
+            .forEach(other => other.classList.remove('is-active'));
+
+          // Don't allow other event listeners on the body to interfere with this listener
+          evt.stopPropagation();
+
+          if (drop.classList.contains('is-active'))
+            document.body.addEventListener('click', optionsClickaway);
+          else
+            document.body.removeEventListener('click', optionsClickaway);
+        });
+      });
 }
