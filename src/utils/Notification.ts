@@ -140,3 +140,5 @@ export function queueNotification (notification: string, type: NotificationType 
     startNotification();
   }
 }
+
+export default { queueNotification };
