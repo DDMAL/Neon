@@ -66,6 +66,14 @@ export type MoveOutsideSyllableAction = {
   }
 };
 
+export type DisplaceClefOctaveAction = {
+  action: 'displaceClefOctave',
+  param: {
+    elementId: string,
+    direction: 'above' | 'below'
+  }
+};
+
 export type RemoveAction = {
   action: 'remove',
   param: {
@@ -185,6 +193,7 @@ export type EditorAction =
   | InsertAction
   | InsertToSyllableAction
   | MoveOutsideSyllableAction
+  | DisplaceClefOctaveAction
   | RemoveAction
   | GroupingAction
   | UngroupingAction
