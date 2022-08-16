@@ -69,7 +69,6 @@ class shiftSelection {
 
 const shift = new shiftSelection();
 
-
 // Gets user selected document tile elements
 function getSelectionTiles() {
   return getSelectionFilenames().map(filename => document.getElementById(filename));
@@ -117,10 +116,7 @@ function unselect(tile: Element, idx?: number) {
 function unselectAll() {
   Array.from(document.querySelectorAll('.document-entry.selected'))
     .forEach((tile) => tile.classList.remove('selected'));
-  orderedSelection
-    .splice(0)
-    .concat(new Array<boolean>(orderedDocuments.length).fill(false));
-  disableSidebarActions();
+  orderedSelection.fill(false);
 }
 
 function select(tile: Element, idx?: number) {
@@ -135,20 +131,27 @@ function select(tile: Element, idx?: number) {
   orderedSelection[idx] = true;
 }
 
-function disableSidebarActions() {
-  openButton.classList.remove('active');
-  deleteButton.classList.remove('active');
+// Determines whether to set delete doc or open doc to active
+function setSidebarActions() {
+  // -1 if no selection, some value i if selected.
+  // if (idx=i) > orderedDocuments.length - samples.length, then no user uploads are selected.
+  const lastIdx = orderedSelection.lastIndexOf(true);
+  if (lastIdx === -1) {
+    openButton.classList.remove('active');
+    deleteButton.classList.remove('active');
+  }
+  else {
+    openButton.classList.add('active');
+    if (lastIdx < (orderedDocuments.length - samples.length)) {
+      deleteButton.classList.add('active');
+    }
+    else {
+      deleteButton.classList.remove('active');
+    }
+  }
 }
-
-function enableSideBarActions() {
-  openButton.classList.add('active');
-  deleteButton.classList.add('active');
-}
-
-
 
 export async function updateDocumentSelector(): Promise<void> {
-  disableSidebarActions();
   shift.reset();
   // load user-uploaded docs
   uploadedDocsContainer.innerHTML = '';
@@ -216,25 +219,22 @@ export async function updateDocumentSelector(): Promise<void> {
       if (!metaKeyIsPressed && !shiftKeyIsPressed) {
         // Selected or not selected -> clear selection and select cur tile
         unselectAll();
-        enableSideBarActions();
         select(tile, idx);
         shift.setStart(idx); // Track start of shift selection
+        setSidebarActions();
       }
       // Meta key pressed (default behaviour if both meta and shift are pressed)
       else if (metaKeyIsPressed) {
         if (isSelected) {
           unselect(tile, idx);
-          if (getSelectionFilenames().length === 0) {
-            disableSidebarActions();
-          }
           shift.setStart(orderedSelection.lastIndexOf(true)); // MacOS behaviour: shift start goes to largest idx selected item
         }
         // Tile is not selected -> Add to selection
         else {
           select(tile, idx);
           shift.setStart(idx); // Track start of shift selection
-          enableSideBarActions();
         }
+        setSidebarActions();
       }
       // Marks the end of shift selection
       else if (shiftKeyIsPressed) {
@@ -247,22 +247,25 @@ export async function updateDocumentSelector(): Promise<void> {
         shift.getSelection().forEach((index) => {   
           select(null, index);
         });
-        enableSideBarActions();
+        setSidebarActions();
       }
     }, false);
   });
 }
 
 function handleOpenDocuments() {
+  if (!openButton.classList.contains('active')) return;
   getSelectionTiles().forEach(tile => {
     openTile(tile);
   });
   shift.reset();
   unselectAll();
-  disableSidebarActions();
+  setSidebarActions();
 }
 
 function handleDeleteDocuments() {
+  if (!deleteButton.classList.contains('active')) return;
+
   const filenames = getSelectionFilenames();
   const filenameFormatted = filenames.join('\n');
   const alertMessage = 'Are you sure you want to delete:\n' + filenameFormatted + '\n\nThis action is irreversible.';
@@ -277,9 +280,9 @@ function handleDeleteDocuments() {
       .catch( err => console.debug('failed to delete files: ', err));
     
     unselectAll();
-    disableSidebarActions();
     shift.reset();
   }
+  setSidebarActions();
 }
 
 export const InitDocumentSelector = (): void => {
@@ -292,8 +295,8 @@ export const InitDocumentSelector = (): void => {
     // Lose focus on esc key
     if (e.key === 'Escape') {
       unselectAll();
-      disableSidebarActions();
       shift.reset();
+      setSidebarActions();
     }
   });
 
@@ -308,8 +311,8 @@ export const InitDocumentSelector = (): void => {
     const classList = (<Element>e.target).classList;
     if ( !['document-entry', 'filename-text'].some(className => classList.contains(className)) ) {
       unselectAll();
-      disableSidebarActions();
       shift.reset();
+      setSidebarActions();
     }
   });
   
