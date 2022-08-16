@@ -31,7 +31,6 @@ export function addNewFiles( files: File[] ): File[] {
       // fm.addManuscript(file.name);
     }
     else {
-      console.log(`Unknown file type for: ${file.name}`);
       rejectFiles.push(file);
     }
   });

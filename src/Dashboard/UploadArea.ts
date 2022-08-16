@@ -29,22 +29,23 @@ export function InitUploadArea(): void {
     modalWindow.hideModalWindow();
   });
 
-  // Make invisible input element for file system selector
+  // File System selector when clicking on upload area
   const fileSelector = document.createElement('input');
   fileSelector.type = 'file';
   fileSelector.multiple = true;
-
   fileSelector.addEventListener('change', function handleFileSelectorChange() { 
     const fileList: FileList = fileSelector.files; 
     const files = Array.from(fileList);
     const rejectFiles = addNewFiles(files);
-    if (rejectFiles.length !== 0) 
-      console.log('The following files are not .mei, .png, .jpeg, or .jsonld files: \n\n', rejectFiles);
+    if (rejectFiles.length !== 0) {
+      const filenames = rejectFiles.map(file => file.name);
+      window.alert(`The following files are not .mei, .png, .jpeg, or .jsonld files: \n\n${filenames.join('\n')}`);
+    }
     // remove selection
     fileSelector.value = null;
   });
 
-  // Upload area, add event listeners for click and drag and drop
+  // Add event listeners for click and drag and drop
   const upload_area: HTMLDivElement = document.querySelector('#initial_upload_area');
   upload_area.onclick = () => fileSelector.click();
   // add visual cues for dragging files over upload area
@@ -62,8 +63,11 @@ export function InitUploadArea(): void {
     upload_area.classList.remove('over');
     const fileList = event.dataTransfer.files;
     const files = Array.from(fileList);
-    // addNewFiles handles adding files, rejectFiles is an array of non compatible files
-    addNewFiles(files);
+    const rejectFiles = addNewFiles(files);
+    if (rejectFiles.length !== 0) {
+      const filenames = rejectFiles.map(file => file.name);
+      window.alert(`The following files are not .mei, .png, .jpeg, or .jsonld files: \n\n${filenames.join('\n')}`);
+    }
   };
 }
 

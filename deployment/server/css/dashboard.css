@@ -218,13 +218,11 @@
   height: 2rem;
 }
 
-#open_documents:hover,
-#delete_documents:hover,
 #initial_upload_area:hover,
 .over {
   cursor: pointer;
-  /* background-color: #589ed5; */
-  transition: 0.1s ease-in-out;
+  background-color: #dffcff;
+  transition: 0.1s;
 }
 
 .action_button {
