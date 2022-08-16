@@ -140,7 +140,7 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
  * A class that sets the content of the display panel to the right and
  * manages controls for viewing.
  */
-class DisplayPanel implements DisplayInterface {
+export class DisplayPanel implements DisplayInterface {
   view: ViewInterface;
   meiClass: string;
   background: string;
@@ -216,4 +216,21 @@ class DisplayPanel implements DisplayInterface {
   }
 }
 
-export { DisplayPanel as default };
+export function updateDisplayAll (): void {
+  const displayAllBtn = document.querySelector<HTMLInputElement>('#display-all-btn');
+
+  const btns = document.querySelector('#display-single-container');
+  const checkboxes = Array.from(btns.querySelectorAll<HTMLInputElement>('input[type=checkbox]'));
+  const allChecked = checkboxes.every(box => box.checked);
+
+  if (allChecked) {
+    displayAllBtn.classList.add('selected');
+    displayAllBtn.innerHTML = 'Hide All';
+  } else {
+    displayAllBtn.classList.remove('selected');
+    displayAllBtn.innerHTML = 'Display All';
+  }
+  
+}
+
+export default DisplayPanel;
