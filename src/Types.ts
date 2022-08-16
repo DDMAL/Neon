@@ -1,6 +1,22 @@
 /** Type definitions for Neon */
 
-export type Attributes = { pname?: string; oct?: number; shape?: string; line?: number; ligated?: boolean; curve?: string; tilt?: string; form?: string };
+export type Attributes = {
+  pname?: string;
+  oct?: string;
+  shape?: string;
+  line?: string;
+  ligated?: string;
+  curve?: string;
+  tilt?: string;
+  form?: string;
+};
+
+export type ClefAttributes = {
+  line: string
+  shape: 'C' | 'F'
+  'dis.place'?: 'above' | 'below'
+  dis?: string
+};
 
 /**
  * Drag editing action sent to verovio as described [here](https://github.com/DDMAL/Neon/wiki/Toolkit-Actions).
@@ -10,8 +26,8 @@ export type DragAction = {
   param: {
     elementId: string,
     x: number,
-    y: number
-  }
+    y: number;
+  };
 };
 
 /** Resize editing action sent to verovio as described [here](https://github.com/DDMAL/Neon/wiki/Toolkit-Actions). */
@@ -22,8 +38,8 @@ export type ResizeAction = {
     ulx: number,
     uly: number,
     lrx: number,
-    lry: number
-  }
+    lry: number;
+  };
 };
 
 export type ResizeRotateAction = {
@@ -34,8 +50,8 @@ export type ResizeRotateAction = {
     uly: number,
     lrx: number,
     lry: number,
-    rotate: number
-  }
+    rotate: number;
+  };
 };
 
 export type InsertAction = {
@@ -48,53 +64,53 @@ export type InsertAction = {
     lrx?: number,
     lry?: number,
     // TODO: attributes are currently never used yet in Neon
-    attributes?: { shape: string } | Record<string, string>;
-  }
+    attributes?: { shape: string; } | Record<string, string>;
+  };
 };
 
 export type InsertToSyllableAction = {
   action: 'insertToSyllable',
   param: {
-    elementId: string
-  }
+    elementId: string;
+  };
 };
 
 export type MoveOutsideSyllableAction = {
   action: 'moveOutsideSyllable',
   param: {
-    elementId: string
-  }
+    elementId: string;
+  };
 };
 
 export type DisplaceClefOctaveAction = {
   action: 'displaceClefOctave',
   param: {
     elementId: string,
-    direction: 'above' | 'below'
-  }
+    direction: 'above' | 'below';
+  };
 };
 
 export type RemoveAction = {
   action: 'remove',
   param: {
-    elementId: string
-  }
+    elementId: string;
+  };
 };
 
 export type GroupingAction = {
   action: 'group',
   param: {
     groupType: 'neume' | 'nc',
-    elementIds: string[]
-  }
+    elementIds: string[];
+  };
 };
 
 export type UngroupingAction = {
   action: 'ungroup',
   param: {
     groupType: 'neume' | 'nc',
-    elementIds: string[]
-  }
+    elementIds: string[];
+  };
 };
 
 export type SetAction = {
@@ -102,54 +118,54 @@ export type SetAction = {
   param: {
     elementId: string,
     attrType: string,
-    attrValue: string
-  }
+    attrValue: string;
+  };
 };
 
 export type MergeAction = {
   action: 'merge',
   param: {
-    elementIds: string[]
-  }
+    elementIds: string[];
+  };
 };
 
 export type SplitAction = {
   action: 'split',
   param: {
     elementId: string,
-    x: number
-  }
+    x: number;
+  };
 };
 
 export type SplitNeumeAction = {
   action: 'splitNeume',
   param: {
     elementId: string,
-    ncId: string
-  }
+    ncId: string;
+  };
 };
 
 export type SetTextAction = {
   action: 'setText',
   param: {
     elementId: string,
-    text: string
-  }
+    text: string;
+  };
 };
 
 export type SetClefAction = {
   action: 'setClef',
   param: {
     elementId: string,
-    shape: string
-  }
+    shape: string;
+  };
 };
 
 export type ToggleLigatureAction = {
   action: 'toggleLigature',
   param: {
-    elementIds: string[]
-  }
+    elementIds: string[];
+  };
 };
 
 // MIGHT BE USELESS: does not exist in Verovio
@@ -158,15 +174,15 @@ export type ChangeSkewAction = {
   param: {
     elementId: string,
     dy: number,
-    rightSide: boolean
-  }
+    rightSide: boolean;
+  };
 };
 
 export type ChangeStaffAction = {
   action: 'changeStaff',
   param: {
-    elementId: string
-  }
+    elementId: string;
+  };
 };
 
 export type ChangeStaffToAction = {
@@ -174,20 +190,20 @@ export type ChangeStaffToAction = {
   param: {
     elementId: string,
     staffId: string,
-  }
+  };
 };
 
 export type ChangeGroupAction = {
   action: 'changeGroup',
   param: {
     elementId: string,
-    contour: string
-  }
+    contour: string;
+  };
 };
 
 /** An editing action sent to verovio as described [here](https://github.com/DDMAL/Neon/wiki/Toolkit-Actions). */
 export type EditorAction =
-  | DragAction 
+  | DragAction
   | ResizeAction
   | ResizeRotateAction
   | InsertAction
@@ -212,7 +228,7 @@ export type EditorAction =
 
 export type ChainAction = {
   action: 'chain',
-  param: EditorAction[]
+  param: EditorAction[];
 };
 
 /** A message sent to the verovio web worker. */
@@ -221,7 +237,7 @@ export type VerovioMessage = {
   id: string,
   mei?: string,
   elementId?: string,
-  editorAction?: EditorAction
+  editorAction?: EditorAction;
 };
 
 export type VerovioResponse = {
@@ -232,7 +248,7 @@ export type VerovioResponse = {
   mei?: string,
   info?: {
     status: string,
-    message: string
+    message: string;
   };
 };
 
@@ -241,7 +257,7 @@ export type WebAnnotation = {
   id: string,
   type: string,
   body: string,
-  target: string
+  target: string;
 };
 
 /** Required @context field in the JSON-LD Neon manifest;
@@ -258,8 +274,8 @@ export type NeonContext = {
   mei_annotations: {
     '@id': string,
     '@type': string,
-    '@container': string
-  }
+    '@container': string;
+  };
 };
 
 /** Required fields in the JSON-LD Neon manifest. */
@@ -269,21 +285,21 @@ export type NeonManifest = {
   title: string,
   timestamp: string,
   image: string,
-  mei_annotations: WebAnnotation[]
+  mei_annotations: WebAnnotation[];
 };
 
 export type allDocs = {
   offset?: number,
   total_rows?: number,
-  rows?: { 
-    doc?: PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> & { kind?: string }; 
-    id: string; 
-    key: string; 
-    value: { 
-      rev: string; 
-      deleted?: boolean; 
-    }; 
-  }[]
+  rows?: {
+    doc?: PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> & { kind?: string; };
+    id: string;
+    key: string;
+    value: {
+      rev: string;
+      deleted?: boolean;
+    };
+  }[];
 };
 
 /** An <svg> element from any DOM queries */

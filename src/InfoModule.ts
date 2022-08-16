@@ -2,7 +2,7 @@
 
 import NeonView from './NeonView';
 import { InfoInterface } from './Interfaces';
-import { Attributes } from './Types';
+import { Attributes, ClefAttributes } from './Types';
 import { getSettings, setSettings } from './utils/LocalSettings';
 
 /**
@@ -164,12 +164,12 @@ class InfoModule implements InfoInterface {
 
     // Gets the pitches depending on element type and
     switch (elementClass) {
-      case 'neume':
+      case 'neume': {
         // Select neume components of selected neume
         const ncs = element.querySelectorAll('.nc') as NodeListOf<SVGGraphicsElement>;
-        if (ncs.length === 1){
+        if (ncs.length === 1) {
           const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
-          if (attr.curve === 'a' || attr.curve === 'c'){
+          if (attr.curve === 'a' || attr.curve === 'c') {
             let pitches = await this.getPitches(ncs);
 
             pitches = pitches.trim().toUpperCase();
@@ -177,13 +177,12 @@ class InfoModule implements InfoInterface {
                     'Pitch(es): ' + pitches;
             break;
           }
-
         }
 
         let contour = await this.getContour(ncs);
-        if (ncs.length === 1){
+        if (ncs.length === 1) {
           const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
-          if(attr.tilt === 's'){
+          if(attr.tilt === 's') {
             let pitches = await this.getPitches(ncs);
 
             pitches = pitches.trim().toUpperCase();
@@ -212,11 +211,13 @@ class InfoModule implements InfoInterface {
         body = 'Shape: ' + (contour === undefined ? 'Compound' : contour) + '\r\n' +
                 'Pitch(es): ' + pitches;
         break;
-      case 'custos':
+      }
+      case 'custos': {
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         body += 'Pitch: ' + (attributes['pname']).toUpperCase() + attributes['oct'];
         break;
-      case 'accid':
+      }
+      case 'accid': {
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         let type = '';
         if ((attributes['accid']).toUpperCase() == 'F'){
@@ -227,18 +228,38 @@ class InfoModule implements InfoInterface {
         }
         body += 'Accid Type: ' + type;
         break;
-      case 'clef':
-        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
-        body += 'Shape: ' + attributes['shape'] + '\r\n' +
-                'Line: ' + attributes['line'];
+      }
+      case 'clef': {
+        const attr = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI()) as ClefAttributes;
+
+        // If clef has been displaced, format and show the displacement as
+        // number of octaves not number of full steps
+        if (attr['dis.place'] && attr.dis !== undefined) {
+          // Combine and format `dis.place` and `dis`:
+          // E.g., format('above', 8) => '+1'
+          // E.g., format('below', 22) => '-22'
+          const format = (displace: string, dis: string) => {
+            const dir = displace === 'above' ? '+' : '-';
+            const octave = String(Math.floor(Number(dis) / 7));
+            return dir + octave;
+          };
+
+          body += 'Octave Displacement: ' + format(attr['dis.place'], attr.dis) + '\r\n';
+        }
+
+        body += 'Shape: ' + attr.shape + '\r\n' + 'Line: ' + attr.line;
+
         break;
-      case 'divLine':
+      }
+      case 'divLine': {
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         body += 'DivLine Type: ' + attributes['form'];
         break;
-      default:
+      }
+      default: {
         body += 'nothing';
         break;
+      }
     }
     body = `Type: ${elementClass}\n${body}`;
     this.updateInfoModule(body);
