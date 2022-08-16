@@ -15,18 +15,17 @@ export function InitUploadArea(): void {
 
   document.querySelector('#make_pair')!.addEventListener('click', handleMakePair);
 
-  document.querySelector('#upload_button')!.addEventListener('click', async function() {
+  document.querySelector('#upload_button')!.addEventListener('click', async function uploadAndUpdate() {
     handleUploadAllDocuments()
-      .then( (res) => {
-        console.log('Upload results: ', res);
-        updateAndClear();
+      .then( function(result) {
+        setTimeout(updateDocumentSelector, 2000);
+        modalWindow.hideModalWindow();
       })
-      .catch( (err) => {
-        console.log('One or more uploads rejected: ', err);
-        updateAndClear();
-      });
-
-    modalWindow.hideModalWindow();
+      .catch( (error) => {
+        console.log('One or more uploads rejected: ', error);
+        setTimeout(updateDocumentSelector, 2000);
+        modalWindow.hideModalWindow();
+      })
   });
 
   // File System selector when clicking on upload area
@@ -69,14 +68,4 @@ export function InitUploadArea(): void {
       window.alert(`The following files are not .mei, .png, .jpeg, or .jsonld files: \n\n${filenames.join('\n')}`);
     }
   };
-}
-
-
-async function updateAndClear() {
-  updateDocumentSelector().then( () => {
-    document.querySelector('#paired_list')!.innerHTML = '';
-    //document.querySelector('#manuscript_list')!.innerHTML = '';
-    fm.clearFolios();
-    // fm.clearManuscripts();
-  });
 }
