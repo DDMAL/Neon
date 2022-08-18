@@ -1,4 +1,4 @@
-Neon v5.0.0
+Neon v6.0.0
 =====
 [![Build_Status](https://travis-ci.org/DDMAL/Neon.svg?branch=master)](https://travis-ci.org/DDMAL/Neon)
 [![License: MIT](https://img.shields.io/github/license/DDMAL/Neon)](https://opensource.org/licenses/MIT)
