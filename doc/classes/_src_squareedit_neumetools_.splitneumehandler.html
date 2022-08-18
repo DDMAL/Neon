@@ -127,7 +127,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/NeumeTools.ts#L8">src/SquareEdit/NeumeTools.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/NeumeTools.ts#L8">src/SquareEdit/NeumeTools.ts:8</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -159,7 +159,7 @@
 					<div class="tsd-signature tsd-kind-icon">clickaway<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = ((evt: MouseEvent): void &#x3D;&gt; {const target &#x3D; evt.target as HTMLElement;if (target.closest(&#x27;.active-page&#x27;) &#x3D;&#x3D;&#x3D; null) {this.splitDisable();document.body.removeEventListener(&#x27;click&#x27;, this.handler, { capture: true });}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/NeumeTools.ts#L88">src/SquareEdit/NeumeTools.ts:88</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/NeumeTools.ts#L88">src/SquareEdit/NeumeTools.ts:88</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -174,7 +174,7 @@
 					<div class="tsd-signature tsd-kind-icon">handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = ((evt: MouseEvent): void &#x3D;&gt; {const id &#x3D; this.neume.id;// unselect();const nc &#x3D; (evt.target as SVGGElement).parentElement;const ncId &#x3D; nc.id;const editorAction: SplitNeumeAction &#x3D; {action: &#x27;splitNeume&#x27;,param: {elementId: id,ncId: ncId}};this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(async (result) &#x3D;&gt; {if (result) {await this.neonView.updateForCurrentPage();Notification.queueNotification(&#x27;Split action successful&#x27;, &#x27;success&#x27;);}else {await this.neonView.updateForCurrentPage();Notification.queueNotification(&#x27;Split action failed&#x27;, &#x27;error&#x27;);}// this.neonView.updateForCurrentPage();// const dragHandler &#x3D; new DragHandler(this.neonView, &#x27;.neume&#x27;);this.splitDisable();// selectAll([document.querySelector(&#x27;#&#x27; + id) as SVGGElement], this.neonView, dragHandler);// try {//   document.getElementById(&#x27;moreEdit&#x27;).innerHTML &#x3D; &#x27;&#x27;;//   document.getElementById(&#x27;moreEdit&#x27;).classList.add(&#x27;is-hidden&#x27;);// } catch (e) {}});}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/NeumeTools.ts#L42">src/SquareEdit/NeumeTools.ts:42</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/NeumeTools.ts#L42">src/SquareEdit/NeumeTools.ts:42</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -189,7 +189,7 @@
 					<div class="tsd-signature tsd-kind-icon">keydown<wbr>Listener<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = ((evt: KeyboardEvent): void &#x3D;&gt; {if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Escape&#x27;) {this.splitDisable();} else if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Shift&#x27;) {document.body.removeEventListener(&#x27;click&#x27;, this.handler, { capture: true });}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/NeumeTools.ts#L79">src/SquareEdit/NeumeTools.ts:79</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/NeumeTools.ts#L79">src/SquareEdit/NeumeTools.ts:79</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -204,7 +204,7 @@
 					<div class="tsd-signature tsd-kind-icon">neon<wbr>View<span class="tsd-signature-symbol">:</span> <a href="_src_neonview_.neonview.html" class="tsd-signature-type">NeonView</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/NeumeTools.ts#L7">src/SquareEdit/NeumeTools.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/NeumeTools.ts#L7">src/SquareEdit/NeumeTools.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -214,7 +214,7 @@
 					<div class="tsd-signature tsd-kind-icon">neume<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">SVGGElement</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/NeumeTools.ts#L8">src/SquareEdit/NeumeTools.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/NeumeTools.ts#L8">src/SquareEdit/NeumeTools.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -224,7 +224,7 @@
 					<div class="tsd-signature tsd-kind-icon">reset<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = ((evt: KeyboardEvent): void &#x3D;&gt; {if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Shift&#x27;) {document.body.addEventListener(&#x27;click&#x27;, this.handler, { capture: true });}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/NeumeTools.ts#L97">src/SquareEdit/NeumeTools.ts:97</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/NeumeTools.ts#L97">src/SquareEdit/NeumeTools.ts:97</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -246,7 +246,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/NeumeTools.ts#L34">src/SquareEdit/NeumeTools.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/NeumeTools.ts#L34">src/SquareEdit/NeumeTools.ts:34</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -263,7 +263,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/NeumeTools.ts#L21">src/SquareEdit/NeumeTools.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/NeumeTools.ts#L21">src/SquareEdit/NeumeTools.ts:21</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">

@@ -134,7 +134,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L16">src/SquareEdit/InsertHandler.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L16">src/SquareEdit/InsertHandler.ts:16</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -171,7 +171,7 @@
 					<div class="tsd-signature tsd-kind-icon">attributes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L14">src/SquareEdit/InsertHandler.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L14">src/SquareEdit/InsertHandler.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -181,7 +181,7 @@
 					<div class="tsd-signature tsd-kind-icon">clickaway<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = (function clickawayHandler (evt: MouseEvent): void {const target &#x3D; evt.target as HTMLElement;if (target.closest(&#x27;.active-page&#x27;) &#x3D;&#x3D;&#x3D; null &amp;&amp;target.closest(&#x27;#insert_controls&#x27;) &#x3D;&#x3D;&#x3D; null &amp;&amp;target.closest(&#x27;#svg_group&#x27;) &#x3D;&#x3D;&#x3D; null) {this.insertDisabled();document.body.removeEventListener(&#x27;keydown&#x27;,this.staffHandler);document.body.removeEventListener(&#x27;keydown&#x27;,this.handler);}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L170">src/SquareEdit/InsertHandler.ts:170</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L170">src/SquareEdit/InsertHandler.ts:170</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -197,7 +197,7 @@
 					<div class="tsd-signature tsd-kind-icon">coord<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_src_utils_coordinates_.point.html" class="tsd-signature-type">Point</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L13">src/SquareEdit/InsertHandler.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L13">src/SquareEdit/InsertHandler.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -207,7 +207,7 @@
 					<div class="tsd-signature tsd-kind-icon">first<wbr>Click<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L12">src/SquareEdit/InsertHandler.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L12">src/SquareEdit/InsertHandler.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -217,7 +217,7 @@
 					<div class="tsd-signature tsd-kind-icon">handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = (function handler (evt: MouseEvent): void {evt.stopPropagation();// If the cursor is out of bounds, nothing should be inserted.const cursor &#x3D; getSVGRelCoords(evt.clientX, evt.clientY);if (isOutOfSVGBounds(cursor.x, cursor.y))return queueNotification(&#x27;[FAIL] Glyph was placed out of bounds! Insertion failed.&#x27;, &#x27;error&#x27;);const editorAction: InsertAction &#x3D; {action: &#x27;insert&#x27;,param: {elementType: this.type,staffId: &#x27;auto&#x27;,ulx: cursor.x,uly: cursor.y,}};if (this.attributes !&#x3D;&#x3D; null) {editorAction.param.attributes &#x3D; this.attributes;if (this.attributes[&#x27;shape&#x27;] &#x3D;&#x3D;&#x3D; &#x27;F&#x27;) {editorAction[&#x27;param&#x27;][&#x27;ulx&#x27;] -&#x3D; 50;}}this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(() &#x3D;&gt; {return this.neonView.updateForCurrentPage();}).then(() &#x3D;&gt; {document.querySelector(this.selector).addEventListener(&#x27;click&#x27;, this.handler);});}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L211">src/SquareEdit/InsertHandler.ts:211</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L211">src/SquareEdit/InsertHandler.ts:211</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -232,7 +232,7 @@
 					<div class="tsd-signature tsd-kind-icon">insert<wbr>Disabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = (function insertDisabled (): void {this.type &#x3D; &#x27;&#x27;;this.removeInsertClickHandlers();document.body.removeEventListener(&#x27;keydown&#x27;, this.keydownListener);document.body.removeEventListener(&#x27;keyup&#x27;, this.resetInsertHandler);document.body.removeEventListener(&#x27;click&#x27;, this.clickawayHandler);this.firstClick &#x3D; true;try {document.getElementById(&#x27;returnToEditMode&#x27;).remove();} catch (e) {// console.debug(e);}const insertPanel &#x3D; document.getElementById(&#x27;insert_controls&#x27;);const insertHeading &#x3D; document.getElementById(&#x27;insertMenu&#x27;);const insertHeadingTitle &#x3D; insertHeading.querySelector(&#x27;.panel-heading-title&#x27;);const editPanel &#x3D; document.getElementById(&#x27;edit_controls&#x27;);const editHeading &#x3D; document.getElementById(&#x27;editMenu&#x27;);const displayHeadingTitle &#x3D; editHeading.querySelector(&#x27;.panel-heading-title&#x27;);insertHeadingTitle.classList.remove(&#x27;focused&#x27;);displayHeadingTitle.classList.add(&#x27;focused&#x27;);insertPanel.querySelector(&#x27;.side-panel-btn.insertel.is-active&#x27;).classList.add(&#x27;unfocused&#x27;);editPanel.querySelector(&#x27;.side-panel-btn.sel-by.is-active&#x27;).classList.remove(&#x27;unfocused&#x27;);}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L136">src/SquareEdit/InsertHandler.ts:136</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L136">src/SquareEdit/InsertHandler.ts:136</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -247,7 +247,7 @@
 					<div class="tsd-signature tsd-kind-icon">keydown<wbr>Listener<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = (function keydownListener (evt: KeyboardEvent): void {if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Escape&#x27;) {this.insertDisabled();document.body.removeEventListener(&#x27;keydown&#x27;, this.staffHandler);document.body.removeEventListener(&#x27;keydown&#x27;, this.handler);} else if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Shift&#x27;) {this.removeInsertClickHandlers();}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L198">src/SquareEdit/InsertHandler.ts:198</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L198">src/SquareEdit/InsertHandler.ts:198</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -263,7 +263,7 @@
 					<div class="tsd-signature tsd-kind-icon">neon<wbr>View<span class="tsd-signature-symbol">:</span> <a href="_src_neonview_.neonview.html" class="tsd-signature-type">NeonView</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L16">src/SquareEdit/InsertHandler.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L16">src/SquareEdit/InsertHandler.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -273,7 +273,7 @@
 					<div class="tsd-signature tsd-kind-icon">remove<wbr>Insert<wbr>Click<wbr>Handlers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = (function removeInsertClickHandlers (): void {try {document.querySelector(this.selector).removeEventListener(&#x27;click&#x27;, this.staffHandler);document.querySelector(this.selector).removeEventListener(&#x27;click&#x27;, this.handler);} catch (e) {}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L295">src/SquareEdit/InsertHandler.ts:295</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L295">src/SquareEdit/InsertHandler.ts:295</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -288,7 +288,7 @@
 					<div class="tsd-signature tsd-kind-icon">reset<wbr>Insert<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = (function resetInsertHandler (evt: KeyboardEvent): void {if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Shift&#x27;) {document.querySelector(this.selector).addEventListener(&#x27;click&#x27;, this.type &#x3D;&#x3D;&#x3D; &#x27;staff&#x27; ?this.staffHandler : this.handler);}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L186">src/SquareEdit/InsertHandler.ts:186</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L186">src/SquareEdit/InsertHandler.ts:186</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -303,7 +303,7 @@
 					<div class="tsd-signature tsd-kind-icon">selector<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L15">src/SquareEdit/InsertHandler.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L15">src/SquareEdit/InsertHandler.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -313,7 +313,7 @@
 					<div class="tsd-signature tsd-kind-icon">staff<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = (function staffHandler (evt: MouseEvent): void {const cursor &#x3D; getSVGRelCoords(evt.clientX, evt.clientY);if (isOutOfSVGBounds(cursor.x, cursor.y)) {return queueNotification(&#x27;Staff cannot be placed out of bounds!&#x27;, &#x27;error&#x27;);}const container &#x3D; document.querySelector(&#x27;.active-page &gt; .definition-scale&#x27;);if (this.firstClick) {this.coord &#x3D; cursor;d3.select(container).append(&#x27;circle&#x27;).attr(&#x27;cx&#x27;, cursor.x).attr(&#x27;cy&#x27;, cursor.y).attr(&#x27;r&#x27;, 10).attr(&#x27;id&#x27;, &#x27;staff-circle&#x27;).attr(&#x27;fill&#x27;, &#x27;green&#x27;);this.firstClick &#x3D; false;} else {let ul: Point, lr: Point;if (cursor.x &lt; this.coord.x || cursor.y &lt; this.coord.y) { // second point is not lrul &#x3D; cursor;lr &#x3D; this.coord;} else {ul &#x3D; this.coord;lr &#x3D; cursor;}document.getElementById(&#x27;staff-circle&#x27;).remove();const action: EditorAction &#x3D; {action: &#x27;insert&#x27;,param: {elementType: &#x27;staff&#x27;,staffId: &#x27;auto&#x27;,ulx: ul.x,uly: ul.y,lrx: lr.x,lry: lr.y}};this.neonView.edit(action, this.neonView.view.getCurrentPageURI()).then(() &#x3D;&gt; {this.neonView.updateForCurrentPage();this.firstClick &#x3D; true;});}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L246">src/SquareEdit/InsertHandler.ts:246</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L246">src/SquareEdit/InsertHandler.ts:246</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -328,7 +328,7 @@
 					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L11">src/SquareEdit/InsertHandler.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L11">src/SquareEdit/InsertHandler.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -345,7 +345,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L32">src/SquareEdit/InsertHandler.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L32">src/SquareEdit/InsertHandler.ts:32</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -377,7 +377,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/InsertHandler.ts#L302">src/SquareEdit/InsertHandler.ts:302</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/InsertHandler.ts#L302">src/SquareEdit/InsertHandler.ts:302</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>

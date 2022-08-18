@@ -127,7 +127,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/StaffTools.ts#L11">src/SquareEdit/StaffTools.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/StaffTools.ts#L11">src/SquareEdit/StaffTools.ts:11</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -159,7 +159,7 @@
 					<div class="tsd-signature tsd-kind-icon">clickaway<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = ((evt: MouseEvent): void &#x3D;&gt; {const target &#x3D; evt.target as HTMLElement;if (target.closest(&#x27;.active-page&#x27;) &#x3D;&#x3D;&#x3D; null) {this.splitDisable();document.body.removeEventListener(&#x27;click&#x27;, this.handler, { capture: true });}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/StaffTools.ts#L85">src/SquareEdit/StaffTools.ts:85</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/StaffTools.ts#L85">src/SquareEdit/StaffTools.ts:85</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -174,7 +174,7 @@
 					<div class="tsd-signature tsd-kind-icon">handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = ((evt: MouseEvent): void &#x3D;&gt; {// Find staff point corresponds to if one exists// TODOconst id &#x3D; this.staff.id;const cursor &#x3D; getSVGRelCoords(evt.clientX, evt.clientY);const editorAction: SplitAction &#x3D; {action: &#x27;split&#x27;,param: {elementId: id,x: cursor.x}};this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(async (result) &#x3D;&gt; {if (result) {await this.neonView.updateForCurrentPage();Notification.queueNotification(&#x27;Split action successful&#x27;, &#x27;success&#x27;);}const dragHandler &#x3D; new DragHandler(this.neonView, &#x27;.staff&#x27;);this.splitDisable();selectAll([document.querySelector(&#x60;#${id}&#x60;)], this.neonView, dragHandler);const moreEdit &#x3D; document.getElementById(&#x27;moreEdit&#x27;);if (moreEdit) {moreEdit.innerHTML &#x3D; &#x27;&#x27;;moreEdit.parentElement.classList.add(&#x27;hidden&#x27;);}});}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/StaffTools.ts#L45">src/SquareEdit/StaffTools.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/StaffTools.ts#L45">src/SquareEdit/StaffTools.ts:45</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -189,7 +189,7 @@
 					<div class="tsd-signature tsd-kind-icon">keydown<wbr>Listener<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = ((evt: KeyboardEvent): void &#x3D;&gt; {if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Escape&#x27;) {this.splitDisable();} else if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Shift&#x27;) {document.body.removeEventListener(&#x27;click&#x27;, this.handler, { capture: true });}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/StaffTools.ts#L76">src/SquareEdit/StaffTools.ts:76</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/StaffTools.ts#L76">src/SquareEdit/StaffTools.ts:76</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -204,7 +204,7 @@
 					<div class="tsd-signature tsd-kind-icon">neon<wbr>View<span class="tsd-signature-symbol">:</span> <a href="_src_neonview_.neonview.html" class="tsd-signature-type">NeonView</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/StaffTools.ts#L10">src/SquareEdit/StaffTools.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/StaffTools.ts#L10">src/SquareEdit/StaffTools.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -214,7 +214,7 @@
 					<div class="tsd-signature tsd-kind-icon">reset<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = ((evt: KeyboardEvent): void &#x3D;&gt; {if (evt.key &#x3D;&#x3D;&#x3D; &#x27;Shift&#x27;) {document.body.addEventListener(&#x27;click&#x27;, this.handler, { capture: true });}}).bind(this)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/StaffTools.ts#L94">src/SquareEdit/StaffTools.ts:94</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/StaffTools.ts#L94">src/SquareEdit/StaffTools.ts:94</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -229,7 +229,7 @@
 					<div class="tsd-signature tsd-kind-icon">staff<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">SVGGElement</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/StaffTools.ts#L11">src/SquareEdit/StaffTools.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/StaffTools.ts#L11">src/SquareEdit/StaffTools.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -246,7 +246,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/StaffTools.ts#L37">src/SquareEdit/StaffTools.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/StaffTools.ts#L37">src/SquareEdit/StaffTools.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -263,7 +263,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/a12b2f96/src/SquareEdit/StaffTools.ts#L24">src/SquareEdit/StaffTools.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/DDMAL/Neon/blob/2db982ab/src/SquareEdit/StaffTools.ts#L24">src/SquareEdit/StaffTools.ts:24</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
