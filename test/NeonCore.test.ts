@@ -784,7 +784,7 @@ test('Test chain action', async () => {
   };
   expect(await neon.edit(editorAction, pathToPNG)).toBeTruthy();
   const dragAtts = await neon.getElementAttr('m-044e7093-895e-4a78-bbda-7f1779a896d4', pathToPNG);
-  const insertAtts = await neon.getElementAttr((await neon.info(pathToPNG))['1'].uuid, pathToPNG);
+  const insertAtts = await neon.getElementAttr(((await neon.info(pathToPNG))['1'] as any).uuid, pathToPNG);
   expect(dragAtts.pname).toBe('b');
   expect(dragAtts.oct).toBe('2');
   expect(insertAtts.pname).toBe('e');

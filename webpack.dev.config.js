@@ -21,7 +21,7 @@ module.exports = {
   node: {
     fs: 'empty'
   },
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
   devServer: {
     static: './deployment/server',
     hot: true,
@@ -32,7 +32,7 @@ module.exports = {
       {
         test: /\.tsx?$/,
         use: [
-          'awesome-typescript-loader'
+          'ts-loader'
         ],
         exclude: /node_modules/
       },

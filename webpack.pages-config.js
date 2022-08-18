@@ -19,12 +19,12 @@ module.exports = {
   node: {
     fs: 'empty',
   },
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: ['awesome-typescript-loader'],
+        use: ['ts-loader'],
         exclude: /node_modules/,
       },
       {
