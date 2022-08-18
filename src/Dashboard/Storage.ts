@@ -31,8 +31,7 @@ export function fetchSampleDocuments(): string[] {
 
 export function createManifest(name: string, mei: File, bg: File): Promise<any> {
   return new Promise(async (resolve) => {
-    // get up-to-date manifest, else use local copy
-    const manifest = localManifest;
+    const manifest = JSON.parse(JSON.stringify(localManifest));
     manifest['@id'] = uuidv4();
     manifest['title'] = name;
     manifest['timestamp'] = (new Date()).toISOString();

@@ -92,20 +92,17 @@ class FileManager {
   //   return this.manuscripts.map( manuscript => this.getFile(manuscript));
   // }
 
-  public clearFolios(): void {
-    this.folios.forEach( (folio: folio) => {
-      this.removeFile(folio.mei_filename);
-      this.removeFile(folio.image_filename);
-    });
-    this.folios = [];
-  }
-
   // public clearManuscripts(): void {
   //   this.manuscripts.forEach( filename => {
   //     this.removeFile(filename);
   //   });
   //   this.manuscripts = [];
   // }
+  
+  public clear(): void {
+    this.allFiles.clear();
+    this.folios.splice(0);
+  }
 
   public print(): void {
     console.log(this.allFiles);

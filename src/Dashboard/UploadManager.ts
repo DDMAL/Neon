@@ -128,6 +128,8 @@ export async function handleUploadAllDocuments(): Promise<any> {
       const newName = renameFile(name, allFolios);
       return await uploadFolio(newName, mei, image)
     });
+  
+  fm.clear();
 
   const promises = 
     folioPromises
@@ -138,7 +140,7 @@ export async function handleUploadAllDocuments(): Promise<any> {
           )
       );
   
-  return await Promise.all(promises);
+  return Promise.all(promises);
 }
 
 async function uploadFolio(name: string, mei: File, image: File): Promise<boolean> {
