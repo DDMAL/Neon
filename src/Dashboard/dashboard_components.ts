@@ -40,7 +40,10 @@ export const uploadAreaHTML =
         <div class="tile_list" id="paired_list"></div>
 
         <div id="upload_button_container">
-          <div class="action_button" id="upload_button">Upload</div>
+          <div class="action_button" id="upload_button">
+            Upload
+            <div id="uploading_spinner">↻</div>
+          </div>
         </div>
 
       </div>

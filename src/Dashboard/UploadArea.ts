@@ -16,15 +16,24 @@ export function InitUploadArea(): void {
   document.querySelector('#make_pair')!.addEventListener('click', handleMakePair);
 
   document.querySelector('#upload_button')!.addEventListener('click', async function uploadAndUpdate() {
+    const spinner = document.querySelector('#uploading_spinner');
+    spinner.classList.add('visible');
+
     handleUploadAllDocuments()
-      .then( function(result) {
-        setTimeout(updateDocumentSelector, 2000);
-        modalWindow.hideModalWindow();
+      .then( (result) => {
+        setTimeout( async () => {
+          await updateDocumentSelector();
+          spinner.classList.remove('visible');
+          modalWindow.hideModalWindow();
+        }, 2000);
       })
       .catch( (error) => {
         console.log('One or more uploads rejected: ', error);
-        setTimeout(updateDocumentSelector, 2000);
-        modalWindow.hideModalWindow();
+        setTimeout( async () => {
+          await updateDocumentSelector();
+          spinner.classList.remove('visible');
+          modalWindow.hideModalWindow();
+        }, 2000);
       })
   });
 

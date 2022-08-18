@@ -124,13 +124,21 @@ export async function handleUploadAllDocuments(): Promise<any> {
   const allFolios = uploads.concat(samples);
 
   const folioPromises = fm.getFolios()
-    .map( ([name, mei, image]: [string, File, File]) => {
+    .map( async ([name, mei, image]: [string, File, File]) => {
       const newName = renameFile(name, allFolios);
-      uploadFolio(newName, mei, image)
+      return await uploadFolio(newName, mei, image)
     });
-  // const manuscriptPromises = fm.getManuscripts().map( manuscript => uploadManuscript(manuscript));
-  const promises = folioPromises; // .concat(manuscriptPromises);
-  return PromiseAllSettled(promises);
+
+  const promises = 
+    folioPromises
+      .map(p => 
+        Promise.resolve(p)
+          .then(value => ({ status: 'fulfilled', value }),
+                reason => ({ status: 'rejected', reason })
+          )
+      );
+  
+  return await Promise.all(promises);
 }
 
 async function uploadFolio(name: string, mei: File, image: File): Promise<boolean> {
@@ -144,9 +152,3 @@ async function uploadFolio(name: string, mei: File, image: File): Promise<boolea
 // async function uploadManuscript(manuscript: File): Promise<boolean> {
 //   return addEntry(manuscript.name, manuscript, false);
 // }
-
-function PromiseAllSettled(promises) {
-  const fulfilled = value => ({ status: 'fulfilled', value });
-  const rejected = reason => ({ status: 'rejected', reason });
-  return Promise.all([...promises].map(p => Promise.resolve(p).then(fulfilled, rejected)));
-}

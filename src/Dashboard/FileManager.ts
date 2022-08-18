@@ -5,7 +5,7 @@ class FileManager {
   private static instance: FileManager;
 
   private allFiles = new Map<string, {file: File, count: number}>();
-  private folios = new Array<[string, string, string]>(); // filename, mei_filename, image_filename
+  private folios = new Array<folio>(); // filename, mei_filename, image_filename
   // private manuscripts = new Array<string>();
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -56,7 +56,12 @@ class FileManager {
   }
 
   public addFolio(name: string, mei: string, image: string): void {
-    this.folios.push([name, mei, image]);
+    const newFolio: folio = {
+      filename: name,
+      mei_filename: mei,
+      image_filename: image
+    }
+    this.folios.push(newFolio);
   }
 
   // public addManuscript(filename: string): void {
@@ -64,7 +69,7 @@ class FileManager {
   // }
 
   public removeFolio(filename: string): void {
-    const idx = this.folios.findIndex( folio => folio[0] === filename);
+    const idx = this.folios.findIndex( folio => folio.filename === filename);
     this.folios.splice(idx, 1);
   }
 
@@ -76,9 +81,9 @@ class FileManager {
 
   public getFolios(): [string, File, File][] {
     return this.folios.map( folio => {
-      const filename = folio[0];
-      const mei_filename = folio[1];
-      const image_filename = folio[2];
+      const filename = folio.filename;
+      const mei_filename = folio.mei_filename;
+      const image_filename = folio.image_filename;
       return [filename, this.getFile(mei_filename), this.getFile(image_filename)];
     });
   }
@@ -88,9 +93,9 @@ class FileManager {
   // }
 
   public clearFolios(): void {
-    this.folios.forEach( ([_, mei_filename, image_filename]: [string,string,string]) => {
-      this.removeFile(mei_filename);
-      this.removeFile(image_filename);
+    this.folios.forEach( (folio: folio) => {
+      this.removeFile(folio.mei_filename);
+      this.removeFile(folio.image_filename);
     });
     this.folios = [];
   }
@@ -110,3 +115,9 @@ class FileManager {
 }
 
 export default FileManager;
+
+type folio = {
+    filename: string,
+    mei_filename: string,
+    image_filename: string
+}
