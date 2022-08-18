@@ -64,8 +64,8 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<a href="#neon-v411" id="neon-v411" style="color: inherit; text-decoration: none;">
-					<h1>Neon v4.1.1</h1>
+				<a href="#neon-v600" id="neon-v600" style="color: inherit; text-decoration: none;">
+					<h1>Neon v6.0.0</h1>
 				</a>
 				<p><a href="https://travis-ci.org/DDMAL/Neon"><img src="https://travis-ci.org/DDMAL/Neon.svg?branch=master" alt="Build_Status"></a>
 					<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/github/license/DDMAL/Neon" alt="License: MIT"></a>
@@ -88,11 +88,14 @@
 				</a>
 				<ol>
 					<li><p>Install the dependencies using yarn:</p>
-					<pre><code>yarn <span class="hljs-keyword">install</span></code></pre></li>
+						<pre><code>yarn <span class="hljs-keyword">install</span></code></pre>
+					</li>
 					<li><p>Build webpack:</p>
-					<pre><code><span class="hljs-attribute">yarn build</span></code></pre></li>
+						<pre><code><span class="hljs-attribute">yarn build</span></code></pre>
+					</li>
 					<li><p>Start the server:</p>
-					<pre><code>yarn <span class="hljs-literal">start</span></code></pre></li>
+						<pre><code>yarn <span class="hljs-literal">start</span></code></pre>
+					</li>
 					<li><p>Access the page at: <a href="http://localhost:8080">http://localhost:8080</a>.</p>
 					</li>
 				</ol>
@@ -100,16 +103,12 @@
 					<h2>Instructions</h2>
 				</a>
 				<p>Neon has two main modes: viewer and editor. To learn how to use both, <a href="https://github.com/DDMAL/Neon/wiki/Instructions">read the instructions on our wiki.</a></p>
-				<a href="#test" id="test" style="color: inherit; text-decoration: none;">
-					<h2>Test</h2>
+				<a href="#testing" id="testing" style="color: inherit; text-decoration: none;">
+					<h2>Testing</h2>
 				</a>
-				<p>Follow the instructions from above first. The tests for Neon use <a href="https://docs.seleniumhq.org/">Selenium</a> and use Firefox, Safari, and Chrome. Their respective webdrivers are required. Safari 12 or greater is required. On Mac, Firefox and Chrome can be installed by:</p>
-				<pre><code class="language-shell">brew cask install firefox
-brew cask install google-chrome
-brew install geckodriver
-brew cask install chromedriver</code></pre>
-				<p>Then you can run the tests locally using <code>yarn test</code>. We use <a href="https://facebook.github.io/jest/">jest</a> to script our tests.</p>
-				<p><em>These tests require the server to be running on <code>localhost:8080</code></em></p>
+				<p>Follow the instructions from above first.</p>
+				<p>We use <a href="https://www.cypress.io/">Cypress</a> for E2E testing.</p>
+				<p>Run the command <code>yarn test</code>. <a href="https://github.com/DDMAL/Neon/wiki/Testing-with-Cypress">Read more about testing on our wiki.</a></p>
 				<a href="#verovio" id="verovio" style="color: inherit; text-decoration: none;">
 					<h2>Verovio</h2>
 				</a>
@@ -122,116 +121,170 @@ brew cask install chromedriver</code></pre>
 					<li class="globals  ">
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_displaypanel_displaycontrols_.html">&quot;<wbr>Display<wbr>Panel/<wbr>Display<wbr>Controls&quot;</a>
+					<li class="label tsd-is-external">
+						<span>Internals</span>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_displaypanel_displaypanel_.html">&quot;<wbr>Display<wbr>Panel/<wbr>Display<wbr>Panel&quot;</a>
+						<a href="modules/_src_dashboard_documentselector_.html">&quot;src/<wbr>Dashboard/<wbr>Document<wbr>Selector&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_divaview_.html">&quot;<wbr>Diva<wbr>View&quot;</a>
+						<a href="modules/_src_dashboard_filemanager_.html">&quot;src/<wbr>Dashboard/<wbr>File<wbr>Manager&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_infomodule_.html">&quot;<wbr>Info<wbr>Module&quot;</a>
+						<a href="modules/_src_dashboard_uploadmanager_.html">&quot;src/<wbr>Dashboard/<wbr>Upload<wbr>Manager&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_interfaces_.html">&quot;<wbr>Interfaces&quot;</a>
+						<a href="modules/_src_dashboard_dashboard_components_.html">&quot;src/<wbr>Dashboard/dashboard_<wbr>components&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_neoncore_.html">&quot;<wbr>Neon<wbr>Core&quot;</a>
+						<a href="modules/_src_dashboard_documents_.html">&quot;src/<wbr>Dashboard/documents&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_neonview_.html">&quot;<wbr>Neon<wbr>View&quot;</a>
+						<a href="modules/_src_dashboard_functions_.html">&quot;src/<wbr>Dashboard/functions&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_singleview_singleview_.html">&quot;<wbr>Single<wbr>View/<wbr>Single<wbr>View&quot;</a>
+						<a href="modules/_src_dashboard_storage_.html">&quot;src/<wbr>Dashboard/storage&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_singleview_zoom_.html">&quot;<wbr>Single<wbr>View/<wbr>Zoom&quot;</a>
+						<a href="modules/_src_dashboard_uploadarea_.html">&quot;src/<wbr>Dashboard/upload<wbr>Area&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_squareedit_contents_.html">&quot;<wbr>Square<wbr>Edit/<wbr>Contents&quot;</a>
+						<a href="modules/_src_displaypanel_displaycontrols_.html">&quot;src/<wbr>Display<wbr>Panel/<wbr>Display<wbr>Controls&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_squareedit_controls_.html">&quot;<wbr>Square<wbr>Edit/<wbr>Controls&quot;</a>
+						<a href="modules/_src_displaypanel_displaypanel_.html">&quot;src/<wbr>Display<wbr>Panel/<wbr>Display<wbr>Panel&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_squareedit_divaeditmode_.html">&quot;<wbr>Square<wbr>Edit/<wbr>Diva<wbr>Edit<wbr>Mode&quot;</a>
+						<a href="modules/_src_divaview_.html">&quot;src/<wbr>Diva<wbr>View&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_squareedit_grouping_.html">&quot;<wbr>Square<wbr>Edit/<wbr>Grouping&quot;</a>
+						<a href="modules/_src_infomodule_.html">&quot;src/<wbr>Info<wbr>Module&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_squareedit_inserthandler_.html">&quot;<wbr>Square<wbr>Edit/<wbr>Insert<wbr>Handler&quot;</a>
+						<a href="modules/_src_interfaces_.html">&quot;src/<wbr>Interfaces&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_squareedit_selectoptions_.html">&quot;<wbr>Square<wbr>Edit/<wbr>Select<wbr>Options&quot;</a>
+						<a href="modules/_src_neoncore_.html">&quot;src/<wbr>Neon<wbr>Core&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_squareedit_singleeditmode_.html">&quot;<wbr>Square<wbr>Edit/<wbr>Single<wbr>Edit<wbr>Mode&quot;</a>
+						<a href="modules/_src_neonview_.html">&quot;src/<wbr>Neon<wbr>View&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_squareedit_stafftools_.html">&quot;<wbr>Square<wbr>Edit/<wbr>Staff<wbr>Tools&quot;</a>
+						<a href="modules/_src_singleview_singleview_.html">&quot;src/<wbr>Single<wbr>View/<wbr>Single<wbr>View&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_texteditmode_.html">&quot;<wbr>Text<wbr>Edit<wbr>Mode&quot;</a>
+						<a href="modules/_src_singleview_zoom_.html">&quot;src/<wbr>Single<wbr>View/<wbr>Zoom&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_textview_.html">&quot;<wbr>Text<wbr>View&quot;</a>
+						<a href="modules/_src_squareedit_contents_.html">&quot;src/<wbr>Square<wbr>Edit/<wbr>Contents&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_types_.html">&quot;<wbr>Types&quot;</a>
+						<a href="modules/_src_squareedit_controls_.html">&quot;src/<wbr>Square<wbr>Edit/<wbr>Controls&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_validation_.html">&quot;<wbr>Validation&quot;</a>
+						<a href="modules/_src_squareedit_divaeditmode_.html">&quot;src/<wbr>Square<wbr>Edit/<wbr>Diva<wbr>Edit<wbr>Mode&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_veroviowrapper_.html">&quot;<wbr>Verovio<wbr>Wrapper&quot;</a>
+						<a href="modules/_src_squareedit_grouping_.html">&quot;src/<wbr>Square<wbr>Edit/<wbr>Grouping&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_warnings_.html">&quot;<wbr>Warnings&quot;</a>
+						<a href="modules/_src_squareedit_inserthandler_.html">&quot;src/<wbr>Square<wbr>Edit/<wbr>Insert<wbr>Handler&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_color_.html">&quot;utils/<wbr>Color&quot;</a>
+						<a href="modules/_src_squareedit_neumetools_.html">&quot;src/<wbr>Square<wbr>Edit/<wbr>Neume<wbr>Tools&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_convertmei_.html">&quot;utils/<wbr>Convert<wbr>Mei&quot;</a>
+						<a href="modules/_src_squareedit_selectoptions_.html">&quot;src/<wbr>Square<wbr>Edit/<wbr>Select<wbr>Options&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_draghandler_.html">&quot;utils/<wbr>Drag<wbr>Handler&quot;</a>
+						<a href="modules/_src_squareedit_singleeditmode_.html">&quot;src/<wbr>Square<wbr>Edit/<wbr>Single<wbr>Edit<wbr>Mode&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_editcontents_.html">&quot;utils/<wbr>Edit<wbr>Contents&quot;</a>
+						<a href="modules/_src_squareedit_stafftools_.html">&quot;src/<wbr>Square<wbr>Edit/<wbr>Staff<wbr>Tools&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_editcontrols_.html">&quot;utils/<wbr>Edit<wbr>Controls&quot;</a>
+						<a href="modules/_src_texteditmode_.html">&quot;src/<wbr>Text<wbr>Edit<wbr>Mode&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_neonmanifest_.html">&quot;utils/<wbr>Neon<wbr>Manifest&quot;</a>
+						<a href="modules/_src_textview_.html">&quot;src/<wbr>Text<wbr>View&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_notification_.html">&quot;utils/<wbr>Notification&quot;</a>
+						<a href="modules/_src_types_.html">&quot;src/<wbr>Types&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_resize_.html">&quot;utils/<wbr>Resize&quot;</a>
+						<a href="modules/_src_validation_.html">&quot;src/<wbr>Validation&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_select_.html">&quot;utils/<wbr>Select&quot;</a>
+						<a href="modules/_src_veroviowrapper_.html">&quot;src/<wbr>Verovio<wbr>Wrapper&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_selecttools_.html">&quot;utils/<wbr>Select<wbr>Tools&quot;</a>
+						<a href="modules/_src_warnings_.html">&quot;src/<wbr>Warnings&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_random_.html">&quot;utils/random&quot;</a>
+						<a href="modules/_src_utils_color_.html">&quot;src/utils/<wbr>Color&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_template_template_.html">&quot;utils/template/<wbr>Template&quot;</a>
+						<a href="modules/_src_utils_convertmei_.html">&quot;src/utils/<wbr>Convert<wbr>Mei&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_workers_verovioworker_.html">&quot;workers/<wbr>Verovio<wbr>Worker&quot;</a>
+						<a href="modules/_src_utils_coordinates_.html">&quot;src/utils/<wbr>Coordinates&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_workers_worker_.html">&quot;workers/<wbr>Worker&quot;</a>
+						<a href="modules/_src_utils_draghandler_.html">&quot;src/utils/<wbr>Drag<wbr>Handler&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_editcontents_.html">&quot;src/utils/<wbr>Edit<wbr>Contents&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_editcontrols_.html">&quot;src/utils/<wbr>Edit<wbr>Controls&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_errorlog_.html">&quot;src/utils/<wbr>Error<wbr>Log&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_localsettings_.html">&quot;src/utils/<wbr>Local<wbr>Settings&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_modalwindow_.html">&quot;src/utils/<wbr>Modal<wbr>Window&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_neonmanifest_.html">&quot;src/utils/<wbr>Neon<wbr>Manifest&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_notification_.html">&quot;src/utils/<wbr>Notification&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_resize_.html">&quot;src/utils/<wbr>Resize&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_select_.html">&quot;src/utils/<wbr>Select&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_selecttools_.html">&quot;src/utils/<wbr>Select<wbr>Tools&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_unsaved_.html">&quot;src/utils/<wbr>Unsaved&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_random_.html">&quot;src/utils/random&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_template_template_.html">&quot;src/utils/template/<wbr>Template&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_workers_verovioworker_.html">&quot;src/workers/<wbr>Verovio<wbr>Worker&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_workers_worker_.html">&quot;src/workers/<wbr>Worker&quot;</a>
+					</li>
+					<li class="label tsd-is-external">
+						<span>Externals</span>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_assets_manifest_.html">&quot;assets/manifest&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_deployment_scripts_dashboard_.html">&quot;deployment/scripts/dashboard&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -252,6 +305,9 @@ brew cask install chromedriver</code></pre>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>

@@ -1,6 +1,7 @@
 import { NeonManifest } from './Types';
 import NeonView from './NeonView';
 import ZoomHandler from './SingleView/Zoom';
+import { ModalWindowView } from './utils/ModalWindow';
 
 export interface DisplayConstructable {
   new (a: ViewInterface, b: string, c: string, d?: ZoomHandler): DisplayInterface;
@@ -8,11 +9,12 @@ export interface DisplayConstructable {
 
 export interface DisplayInterface {
   view: ViewInterface;
-  className: string;
+  meiClass: string;
   background: string;
   zoomHandler: ZoomHandler;
   setDisplayListeners (): void;
   updateVisualization (): void;
+  loadSettings (): void;
 }
 
 export interface ViewConstructable {
@@ -26,6 +28,7 @@ export interface ViewInterface {
   getCurrentPage (): number;
   getCurrentPageURI (): string;
   getPageName (): string;
+  onSVGLoad? (): void;
 }
 
 export interface NeumeEditConstructable {
@@ -47,6 +50,12 @@ export interface TextEditInterface {
   initSelectByBBoxButton (): void;
 }
 
+export interface ModalWindowInterface {
+  setModalWindowView(view: ModalWindowView): void;
+  openModalWindow(): void;
+  hideModalWindow(): void;
+}
+
 export interface TextViewConstructable {
   new (a: NeonView): TextViewInterface;
 }
@@ -64,7 +73,7 @@ export interface InfoInterface {
   getPitches (ncs: Iterable<SVGGraphicsElement>): Promise<string>;
   pitchNameToNum (pname: string): number;
   getContourByValue (value: string): string;
-  updateInfoModule (a: string, b: string): void;
+  updateInfoModule (body: string): void;
   infoListeners (): void;
   stopListeners (): void;
   resetInfoListeners (): void;

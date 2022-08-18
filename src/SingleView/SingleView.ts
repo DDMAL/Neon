@@ -1,10 +1,11 @@
-import { updateHighlight, setOpacityFromSlider } from '../DisplayPanel/DisplayControls';
+import { updateHighlight, setOpacityFromSlider, setBgOpacityFromSlider } from '../DisplayPanel/DisplayControls';
 import NeonView from '../NeonView';
 import DisplayPanel from '../DisplayPanel/DisplayPanel';
 import ZoomHandler from './Zoom';
 import { ViewInterface, DisplayConstructable } from '../Interfaces';
 
 import * as d3 from 'd3';
+import { getSettings } from '../utils/LocalSettings';
 
 /**
  * A view module for displaying a single page of a manuscript.
@@ -15,7 +16,7 @@ class SingleView implements ViewInterface {
   private updateCallbacks: Array<() => void>;
   private group: SVGSVGElement;
   private bg: SVGImageElement;
-  private mei: SVGSVGElement;
+  private svg: SVGSVGElement;
   zoomHandler: ZoomHandler;
   private displayPanel: DisplayPanel;
   readonly pageURI: string;
@@ -46,7 +47,22 @@ class SingleView implements ViewInterface {
           this.bg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', reader.result.toString());
           const bbox = this.bg.getBBox();
           if (!this.group.hasAttribute('viewBox')) {
-            this.group.setAttribute('viewBox', '0 0 ' + bbox.width.toString() + ' ' + bbox.height.toString());
+            /*
+              If the SVG does not have a viewBox, load the previous viewBox
+              value from localStorage. If none has been stored (viewBox is null),
+              set it to the default value of the width and height of the background image
+              
+              Note: an SVG's viewBox gives the "box" that the user can see the SVG through.
+              The user may be zoomed into a very specific section of the SVG, in which case the
+              viewBox should give coordinates of that specific box.
+
+              See more: https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/viewBox
+            */
+            let { viewBox } = getSettings();
+            if (!viewBox)
+              viewBox = '0 0 ' + bbox.width.toString() + ' ' + bbox.height.toString();
+
+            this.group.setAttribute('viewBox', viewBox);
           }
         });
         return result.blob();
@@ -55,23 +71,26 @@ class SingleView implements ViewInterface {
       reader.readAsDataURL(blob);
     });
 
-    this.mei = document.createElementNS('http://www.w3.org/svg', 'svg') as SVGSVGElement;
-    this.mei.id = 'mei_output';
-    this.mei.classList.add('neon-container', 'active-page');
+    // It is better named svg, to avoid confusion with the actual MEI file.
+    this.svg = document.createElementNS('http://www.w3.org/svg', 'svg') as SVGSVGElement;
+    this.svg.id = 'mei_output';
+    this.svg.classList.add('neon-container', 'active-page');
 
     this.group.appendChild(this.bg);
-    this.group.appendChild(this.mei);
+    this.group.appendChild(this.svg);
     this.container.appendChild(this.group);
 
     this.zoomHandler = new ZoomHandler();
     this.displayPanel = new panel(this, 'neon-container', 'background', this.zoomHandler);
 
-    this.setViewEventHandlers();
-    this.displayPanel.setDisplayListeners();
-
     this.pageURI = image;
 
     document.getElementById('loading').style.display = 'none';
+  }
+
+  onSVGLoad (): void {
+    this.setViewEventHandlers();
+    this.displayPanel.setDisplayListeners();
   }
 
   /**
@@ -79,16 +98,22 @@ class SingleView implements ViewInterface {
    * @param svg - New rendered SVG to use.
    */
   updateSVG (svg: SVGSVGElement): void {
-    this.group.replaceChild(svg, this.mei);
-    this.mei = svg;
-    this.mei.id = 'mei_output';
-    this.mei.classList.add('neon-container', 'active-page');
-    const height = parseInt(this.mei.getAttribute('height'));
-    const width = parseInt(this.mei.getAttribute('width'));
+    this.group.replaceChild(svg, this.svg);
+    this.svg = svg;
+    this.svg.id = 'mei_output';
+    this.svg.classList.add('neon-container', 'active-page');
+    const height = parseInt(this.svg.getAttribute('height'));
+    const width = parseInt(this.svg.getAttribute('width'));
 
     this.bg.setAttribute('height', height.toString());
     this.bg.setAttribute('width', width.toString());
-    this.group.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+
+    const { viewBox } = getSettings();
+    if (!viewBox)
+      this.group.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+    else
+      this.group.setAttribute('viewBox', viewBox);
+
     updateHighlight();
     this.resetTransformations();
     this.updateCallbacks.forEach(callback => callback());
@@ -130,6 +155,7 @@ class SingleView implements ViewInterface {
   resetTransformations (): void {
     this.displayPanel.zoomHandler.restoreTransformation();
     setOpacityFromSlider();
+    setBgOpacityFromSlider();
   }
 
   /**

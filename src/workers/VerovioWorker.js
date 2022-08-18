@@ -44,7 +44,7 @@ var Module = {
 
     toolkit = new verovio.toolkit();
     toolkit.setOptions({
-      from: 'mei',
+      inputFrom: 'mei',
       footer: 'none',
       header: 'none',
       pageMarginLeft: 0,
@@ -52,7 +52,7 @@ var Module = {
       font: 'Bravura',
       useFacsimile: true,
     });
-    console.debug("READY");
+    console.debug('READY');
     onmessage = handleNeonEvent;
     for (const message of backlog) {
       handleNeonEvent(message);

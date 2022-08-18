@@ -3,6 +3,7 @@ import NeonView from './NeonView';
 import { unselect } from './utils/SelectTools';
 import { updateHighlight } from './DisplayPanel/DisplayControls';
 import { TextViewInterface } from './Interfaces';
+import { getSettings, setSettings } from './utils/LocalSettings';
 
 /*
  * Class that manages getting the text for syllables in Neon from the mei file
@@ -20,17 +21,17 @@ class TextView implements TextViewInterface {
     this.notificationSent = false;
 
     // add checkbox to enable/disable the view
-    const block = document.getElementById('extensible-block');
+    const checkboxesContainer = document.getElementById('display-single-container');
     const textLabel = document.createElement('label');
     const bboxLabel = document.createElement('label');
     const textButton = document.createElement('input');
     const bboxButton = document.createElement('input');
-    textLabel.classList.add('checkbox');
-    bboxLabel.classList.add('checkbox');
-    textLabel.textContent = 'Display Text: ';
-    bboxLabel.textContent = 'Display Text BBoxes: ';
     textButton.classList.add('checkbox');
     bboxButton.classList.add('checkbox');
+    textLabel.classList.add('checkbox-container', 'side-panel-btn');
+    bboxLabel.classList.add('checkbox-container', 'side-panel-btn');
+    textLabel.textContent = 'Text';
+    bboxLabel.textContent = 'BBoxes';
     textButton.id = 'displayText';
     textButton.type = 'checkbox';
     bboxButton.id = 'displayBBox';
@@ -39,9 +40,10 @@ class TextView implements TextViewInterface {
     bboxButton.checked = false;
     textLabel.appendChild(textButton);
     bboxLabel.appendChild(bboxButton);
-    block.prepend(bboxLabel);
-    block.prepend(textLabel);
+    checkboxesContainer.prepend(bboxLabel);
+    checkboxesContainer.prepend(textLabel);
 
+    this.loadSettings();
     this.setTextViewControls();
     this.neonView.view.addUpdateCallback(this.updateTextViewVisibility.bind(this));
     this.neonView.view.addUpdateCallback(this.updateBBoxViewVisibility.bind(this));
@@ -58,15 +60,31 @@ class TextView implements TextViewInterface {
     this.updateBBoxViewVisibility();
     document.getElementById('displayText')
       .addEventListener('click', textViewVis.bind(this));
-    document.getElementById('displayBBox')
+    document.getElementById('displayBBox') // Why is BBox logic is inside TextView.ts ???
       .addEventListener('click', bboxViewVis.bind(this));
+  }
+
+  loadSettings (): void {
+    const { displayText, displayBBox } = getSettings();
+    document.querySelector<HTMLInputElement>('#displayText').checked = displayText;
+    document.querySelector<HTMLInputElement>('#displayBBox').checked = displayBBox;
   }
 
   /**
    * Update visibility of text bounding boxes
    */
   updateBBoxViewVisibility (): void {
-    if ((document.getElementById('displayBBox')as HTMLInputElement).checked) {
+
+    const displayAllBtn = document.getElementById('display-all-btn');
+    const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
+    const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
+    const displayText = document.getElementById('displayText') as HTMLInputElement;
+    const displayErrLog = document.getElementById('display-errors') as HTMLInputElement;
+
+    // save to localStorage
+    setSettings({ displayBBox: displayBBoxes.checked });
+
+    if (displayBBoxes.checked) {
       document.querySelectorAll('.sylTextRect').forEach(rect => {
         rect.classList.add('sylTextRect-display');
         rect.classList.remove('sylTextRect');
@@ -77,23 +95,41 @@ class TextView implements TextViewInterface {
       if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
         this.neonView.TextEdit.initSelectByBBoxButton();
       }
-    } else {
-      if ((document.getElementById('selByBBox') !== null) &&
-        document.getElementById('selByBBox').classList.contains('is-active')) {
+
+      // if this is the 3rd option to be checked (all three are selected),
+      // set "Display/Hide All" button to "Hide All".
+      if (displayInfo?.checked && displayBBoxes?.checked && 
+          displayText?.checked && displayErrLog?.checked) {
+        displayAllBtn.classList.add('selected');
+        displayAllBtn.innerHTML = 'Hide All';
+      }
+    } 
+    else {
+      if (document.getElementById('selByBBox')?.classList.contains('is-active')) {
         unselect();
         document.getElementById('selByBBox').classList.remove('is-active');
-        document.getElementById('selBySyl').classList.add('is-active');
+        document.getElementById('selBySyllable').classList.add('is-active');
       }
+
       document.querySelectorAll('.sylTextRect-display').forEach(rect => {
         rect.classList.add('sylTextRect');
         rect.classList.remove('sylTextRect-display');
       });
+
       document.querySelectorAll('.syl.selected .sylTextRect').forEach((rect: HTMLElement) => {
         rect.style.fill = 'none';
       });
+
       try {
         document.getElementById('selByBBox').style.display = 'none';
-      } catch (e) {}
+      } 
+      catch (e) {}
+
+      // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
+      if (displayAllBtn.classList.contains('selected')) {
+        displayAllBtn.classList.remove('selected');
+        displayAllBtn.innerHTML = 'Display All';
+      }
     }
     updateHighlight();
   }
@@ -103,13 +139,27 @@ class TextView implements TextViewInterface {
   * and add the event listeners to make sure the syl highlights when moused over
   */
   updateTextViewVisibility (): void {
-    if ((document.getElementById('displayText') as HTMLInputElement).checked) {
+
+    const displayAllBtn = document.getElementById('display-all-btn');
+    const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
+    const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
+    const displayText = document.getElementById('displayText') as HTMLInputElement;
+    const displayErrLog = document.getElementById('display-errors') as HTMLInputElement;
+
+    // save to localStorage
+    setSettings({ displayText: displayText.checked });
+
+    if (displayText.checked) {
       const sylText = document.getElementById('syl_text');
       sylText.style.display = '';
-      sylText.innerHTML = '<p>' + this.getSylText() + '</p>';
-      const spans = sylText.querySelectorAll('p > span');
+      sylText.innerHTML = 
+        `<div class="info-bubble-container">
+          <div class="info-bubble-header">Syllables on this page</div>
+          <div class="info-bubble-body">${this.getSylText()}</div>
+        </div>`;
+      const spans = sylText.querySelectorAll('span');
       spans.forEach(span => {
-        const syllable = document.getElementById(span.className);
+        const syllable = document.getElementById(span.classList[0]);
         const syl = syllable.querySelector('.syl');
         const text = syl.querySelector('text');
         const rect = syl.querySelector('rect');
@@ -118,6 +168,9 @@ class TextView implements TextViewInterface {
         }
 
         span.addEventListener('mouseover', () => {
+          if (syllable.classList.contains('syllable-highlighted'))
+            return;
+
           syllable.classList.add('selected');
           syllable.querySelectorAll('.neume').forEach(neume => {
             neume.classList.add('selected');
@@ -130,6 +183,9 @@ class TextView implements TextViewInterface {
         });
 
         span.addEventListener('mouseleave', () => {
+          if (syllable.classList.contains('syllable-highlighted'))
+            return;
+
           syllable.classList.remove('selected');
           syllable.querySelectorAll('.neume').forEach(neume => {
             neume.classList.remove('selected');
@@ -145,11 +201,29 @@ class TextView implements TextViewInterface {
           // this.removeBoundingBox(span);
         });
       });
+
       if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
         this.neonView.TextEdit.initTextEdit();
       }
-    } else {
+
+      // scroll the syllable text bubble into view
+      //sylText.scrollIntoView({ behavior: 'smooth' });
+
+      // if this is the 3rd option to be checked (all three are selected),
+      // set "Display/Hide All" button to "Hide All".
+      if (displayInfo?.checked && displayBBoxes?.checked && 
+          displayText?.checked && displayErrLog?.checked) {
+        displayAllBtn.classList.add('selected');
+        displayAllBtn.innerHTML = 'Hide All';
+      }
+    } 
+    else {
       document.getElementById('syl_text').style.display = 'none';
+      // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
+      if (displayAllBtn.classList.contains('selected')) {
+        displayAllBtn.classList.remove('selected');
+        displayAllBtn.innerHTML = 'Display All';
+      }
     }
   }
 
@@ -163,7 +237,7 @@ class TextView implements TextViewInterface {
     syllables.forEach(syllable => {
       if (syllable.querySelector('.syl') !== null) {
         const syl = syllable.querySelector('.syl');
-        lyrics += '<span class=\'' + syllable.id + '\'>';
+        lyrics += `<span class="${syllable.id} syl-text-side-panel">`;
         if (syl.textContent.trim() === '') {
           lyrics += '&#x25CA; ';
         } else {
@@ -175,7 +249,7 @@ class TextView implements TextViewInterface {
       }
     });
     if (!this.notificationSent) {
-      Notification.queueNotification('Blank syllables are represented by &#x25CA;!');
+      Notification.queueNotification('Blank syllables are represented by ◊!');
       this.notificationSent = true;
     }
     return lyrics.replace(uniToDash, '-');

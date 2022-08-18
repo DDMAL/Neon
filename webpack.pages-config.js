@@ -8,49 +8,49 @@ let commitHash = childProcess.execSync('git rev-parse --short HEAD').toString();
 module.exports = {
   mode: 'production',
   entry: {
-    editor: './deployment/pages/editor.js',
+    landing: './deployment/scripts/landing.ts',
+    editor: './deployment/scripts/editor.ts',
+    dashboard: './deployment/scripts/dashboard.ts',
   },
   output: {
-    path: path.resolve(__dirname, 'dist', 'Neon-gh'),
-    filename: '[name].js'
+    path: path.resolve(__dirname, 'dist', 'Neon', 'Neon-gh'),
+    filename: '[name].js',
   },
   node: {
-    fs: 'empty'
+    fs: 'empty',
   },
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: [
-          'awesome-typescript-loader'
-        ],
-        exclude: /node_modules/
+        use: ['ts-loader'],
+        exclude: /node_modules/,
       },
       {
         test: /Worker\.js$/,
         use: [
           {
             loader: 'worker-loader',
-            options: { publicPath: '/Neon/Neon-gh/' }
-          }
-        ]
-      }
-    ]
+            options: { publicPath: '/Neon/Neon-gh/' },
+          },
+        ],
+      },
+    ],
   },
   resolve: {
-    extensions: [ '.ts', '.js' ]
+    extensions: ['.ts', '.js'],
   },
   externals: {
     'verovio-dev': 'verovio',
-    d3: 'd3'
+    d3: 'd3',
   },
   plugins: [
     new HardSourceWebpackPlugin(),
     new webpack.DefinePlugin({
       __LINK_LOCATION__: JSON.stringify('https://ddmal.music.mcgill.ca/Neon'),
-      __NEON_VERSION__: JSON.stringify('v4.1.1'),
-      __ASSET_PREFIX__: JSON.stringify('/Neon/Neon-gh/')
-    })
-  ]
+      __NEON_VERSION__: JSON.stringify(commitHash),
+      __ASSET_PREFIX__: JSON.stringify('/Neon/Neon-gh/'),
+    }),
+  ],
 };

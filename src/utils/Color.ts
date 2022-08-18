@@ -1,3 +1,5 @@
+import { GroupingType } from '../Types';
+
 /**
  * Adapted from color palette from Figure 2 (Colors optimized for color-blind
  * individuals) from
@@ -17,7 +19,7 @@ const ColorPalette: string[] = [
  * Remove the highlight from a staff.
  * @param staff If undefined, the all staves are unhighlighted.
  */
-export function unhighlight (staff?: SVGGElement): void {
+export function unhighlight(staff?: SVGGElement): void {
   let children: NodeListOf<Element>;
   if (staff) {
     children = staff.querySelectorAll(':not(.selected) .highlighted');
@@ -39,9 +41,11 @@ export function unhighlight (staff?: SVGGElement): void {
       }
       rects.forEach(function (rect: HTMLElement) {
         if (rect.closest('.syllable').classList.contains('selected') ||
-            rect.closest('.staff').classList.contains('selected') ||
-            rect.closest('.syl').classList.contains('selected')) {
-          rect.style.fill = 'red';
+          rect.closest('.staff').classList.contains('selected') ||
+          rect.closest('.syl').classList.contains('selected')
+          // rect.closest('.layer').classList.contains('selected')
+        ){
+          rect.style.fill = '#d00';
         } else {
           rect.style.fill = 'blue';
         }
@@ -55,19 +59,19 @@ export function unhighlight (staff?: SVGGElement): void {
 /**
  * Remove the highlight from each staff.
  */
-export function unsetStaffHighlight (): void {
+export function unsetStaffHighlight(): void {
   unhighlight();
 }
 
 /**
  * Unset highlight for all grouping types
  */
-export function unsetGroupingHighlight (): void {
+export function unsetGroupingHighlight(): void {
   unsetStaffHighlight();
   const highlighted = Array.from(document.getElementsByClassName('highlighted'))
     .filter((elem: HTMLElement) => !elem.parentElement.classList.contains('selected'));
   highlighted.forEach((elem: HTMLElement) => {
-    elem.setAttribute('fill', null);
+    elem.setAttribute('#d00', null);
     let rects = elem.querySelectorAll('.sylTextRect-display');
     if (!rects.length) {
       if (elem.closest('.syllable') !== null) {
@@ -75,8 +79,10 @@ export function unsetGroupingHighlight (): void {
       }
     }
     rects.forEach(function (rect: HTMLElement) {
-      if (rect.closest('.syllable').classList.contains('selected') || rect.closest('.syl').classList.contains('selected')) {
-        rect.style.fill = 'red';
+      if (rect.closest('.syllable').classList.contains('selected') || 
+      rect.closest('.syl').classList.contains('selected')
+      ){
+        rect.style.fill = '#d00';
       } else {
         rect.style.fill = 'blue';
       }
@@ -87,13 +93,13 @@ export function unsetGroupingHighlight (): void {
       rect.classList.remove('highlighted');
     });
   });
-  Array.from(document.getElementsByClassName('selected')).forEach((el) => {el.setAttribute('fill', '');});
+  Array.from(document.getElementsByClassName('selected')).forEach((el) => { el.setAttribute('fill', ''); });
 }
 
 /**
  * Highlight a staff a certain color.
  */
-export function highlight (staff: SVGGElement, color: string): void {
+export function highlight(staff: SVGGElement, color: string): void {
   const children = Array.from(staff.children);
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
@@ -119,8 +125,10 @@ export function highlight (staff: SVGGElement, color: string): void {
       }
       rects.forEach(function (rect: HTMLElement) {
         if (!(rect.closest('.syllable').classList.contains('selected') ||
-              rect.closest('.syl').classList.contains('selected') ||
-              rect.closest('.staff').classList.contains('selected'))) {
+          rect.closest('.syl').classList.contains('selected') ||
+          rect.closest('.staff').classList.contains('selected')
+          // rect.closest('.layer').classList.contains('selected')
+        )) {
           rect.style.fill = color;
           rect.classList.add('highlighted');
         }
@@ -139,12 +147,12 @@ export function highlight (staff: SVGGElement, color: string): void {
   if (width !== undefined && height !== undefined) {
     // idk looks good :')
     // TODO find a better way of calculating this as this actually doesn't work as well as 30px
-    stroke = (width*height/1000000).toString();
+    stroke = (width * height / 1000000).toString();
   }
   else {
     stroke = '30px';
   }
-  staff.querySelectorAll('.nc, .custos, .clef').forEach(el => {
+  staff.querySelectorAll('.nc, .custos, .clef, .accid, .divLine').forEach(el => {
     el.setAttribute('stroke', 'black');
     el.setAttribute('stroke-width', stroke);
   });
@@ -153,7 +161,7 @@ export function highlight (staff: SVGGElement, color: string): void {
 /**
  * Highlight each staff a different color.
  */
-export function setStaffHighlight (): void {
+export function setStaffHighlight(): void {
   const staves = Array.from(document.getElementsByClassName('staff')) as SVGGElement[];
   for (let i = 0; i < staves.length; i++) {
     const staffColor = ColorPalette[i % ColorPalette.length];
@@ -163,9 +171,9 @@ export function setStaffHighlight (): void {
 
 /**
  * Set a highlight by a different grouping.
- * @param grouping - Either "staff", "syllable", or "neume".
+ * @param grouping - Either "staff", "syllable", "neume", "selection", or "layerElement".
  */
-export function setGroupingHighlight (grouping: string): void {
+export function setGroupingHighlight(grouping: GroupingType): void {
   unsetGroupingHighlight();
   if (grouping === 'staff') {
     setStaffHighlight();
@@ -173,13 +181,17 @@ export function setGroupingHighlight (grouping: string): void {
   } else if (grouping === 'selection') {
     const temp = document.querySelector('.sel-by.is-active').id;
     switch (temp) {
-      case 'selBySyl':
+      case 'selBySyllable':
       case 'selByBBox':
         grouping = 'syllable';
         break;
       case 'selByStaff':
         grouping = 'staff';
         break;
+      case 'selByLayerElement':
+        grouping = 'layerElement';
+        break;
+      case 'selByNeume':
       default:
         grouping = 'neume';
         break;
@@ -187,8 +199,15 @@ export function setGroupingHighlight (grouping: string): void {
     setGroupingHighlight(grouping);
     return;
   }
+  let groups;
 
-  const groups = document.getElementsByClassName(grouping) as HTMLCollectionOf<HTMLElement>;
+  if (grouping == 'layerElement') {
+    groups = document.querySelectorAll('.accid, .clef, .custos, .divLine');
+  }
+  else {
+    groups = document.getElementsByClassName(grouping) as HTMLCollectionOf<HTMLElement>;
+  }
+
   for (let i = 0; i < groups.length; i++) {
     const groupColor = ColorPalette[i % ColorPalette.length];
     if ((groups[i].closest('.selected') === null) && !groups[i].classList.contains('selected')) {
@@ -196,8 +215,10 @@ export function setGroupingHighlight (grouping: string): void {
       const rects = groups[i].querySelectorAll('.sylTextRect-display') as NodeListOf<HTMLElement>;
       rects.forEach(function (rect) {
         if (rect.closest('.syl').classList.contains('selected') ||
-            rect.closest('.syllable').classList.contains('selected') ||
-            rect.closest('.staff').classList.contains('selected')) {
+          rect.closest('.syllable').classList.contains('selected') ||
+          rect.closest('.staff').classList.contains('selected')
+          // rect.closest('.layer').classList.contains('selected')
+        ) {
           return;
         }
         rect.style.fill = groupColor;
@@ -215,7 +236,7 @@ export function setGroupingHighlight (grouping: string): void {
       groups[i].classList.remove('highlighted');
     }
   }
-  document.querySelectorAll('.nc, .custos, .clef').forEach(el => {
+  document.querySelectorAll('.nc, .custos, .clef, .accid, .divLine').forEach(el => {
     el.setAttribute('stroke', 'black');
     el.setAttribute('stroke-width', '30px');
   });

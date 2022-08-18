@@ -3,20 +3,24 @@
 import NeonView from './NeonView';
 import { InfoInterface } from './Interfaces';
 import { Attributes } from './Types';
+import { getSettings, setSettings } from './utils/LocalSettings';
 
 /**
  * Map of contours to neume names.
  */
 const neumeGroups = new Map(
   [['', 'Punctum'], ['u', 'Pes'], ['d', 'Clivis'], ['uu', 'Scandicus'], ['ud', 'Torculus'], ['du', 'Porrectus'], ['s', 'Distropha'], ['ss', 'Tristopha'],
-    ['sd', 'Pressus'], ['dd', 'Climacus'], ['ddu', 'Climacus resupinus'], ['udu', 'Torculus resupinus'], ['dud', 'Porrectus flexus'],
-    ['udd', 'Pes subpunctis'], ['uud', 'Scandicus flexus'], ['uudd', 'Scandicus subpunctis'], ['dudd', 'Porrectus subpunctis']]
+    ['sd', 'Pressus'], ['dd', 'Climacus'], ['ddu', 'ClimacusResupinus'], ['udu', 'TorculusResupinus'], ['dud', 'PorrectusFlexus'],
+    ['udd', 'PesSubpunctis'], ['uud', 'ScandicusFlexus'], ['uudd', 'ScandicusSubpunctis'], ['dudd', 'PorrectusSubpunctis']]
 );
 
 function startInfoVisibility (): void {
-  document.getElementById('neume_info').innerHTML =
-    '<article class=\'message\'><div class=\'message-header\'><p></p></div>' +
-      '<div class=\'message-body\'></div>';
+  const neumeInfo = document.getElementById('neume_info');
+  neumeInfo.innerHTML =
+    `<div class="info-bubble-container">
+      <div class="info-bubble-header">Element Info</div>
+      <div class="info-bubble-body"><i>Hover over any element to see its metadata</i></div>
+    </div>`;
   document.getElementById('neume_info').setAttribute('style', 'display: none');
 }
 
@@ -25,11 +29,44 @@ function startInfoVisibility (): void {
  */
 function updateInfoVisibility (): void {
   const neumeInfo = document.getElementById('neume_info');
-  if ((document.getElementById('displayInfo') as HTMLInputElement).checked) {
+
+  const displayAllBtn = document.getElementById('display-all-btn');
+  const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
+  const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
+  const displayText = document.getElementById('displayText') as HTMLInputElement;
+  const displayErrLog = document.getElementById('display-errors') as HTMLInputElement;
+
+  // save setting to localStorage
+  setSettings({ displayInfo: displayInfo.checked });
+
+  if (displayInfo.checked) {
     neumeInfo.setAttribute('style', '');
+    // scroll neume info into view
+    //neumeInfo.scrollIntoView({ behavior: 'smooth' });
+
+    // if this is the 3rd option to be checked (all three are selected),
+    // set "Display/Hide All" button to "Hide All".
+    if (displayInfo?.checked && displayBBoxes?.checked && 
+      displayText?.checked && displayErrLog?.checked) {
+      displayAllBtn.classList.add('selected');
+      displayAllBtn.innerHTML = 'Hide All';
+    }
   } else {
     neumeInfo.setAttribute('style', 'display: none');
+    // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
+    if (displayAllBtn.classList.contains('selected')) {
+      displayAllBtn.classList.remove('selected');
+      displayAllBtn.innerHTML = 'Display All';
+    }
   }
+}
+
+/**
+ * Load displayInfo settings from localStorage
+ */
+function loadSettings (): void {
+  const { displayInfo } = getSettings();
+  document.querySelector<HTMLInputElement>('#displayInfo').checked = displayInfo;
 }
 
 /**
@@ -37,6 +74,7 @@ function updateInfoVisibility (): void {
  */
 function setInfoControls (): void {
   startInfoVisibility();
+  loadSettings();
   updateInfoVisibility();
   document.getElementById('displayInfo').addEventListener('click', updateInfoVisibility);
 }
@@ -54,17 +92,17 @@ class InfoModule implements InfoInterface {
   constructor (neonView: NeonView) {
     this.neonView = neonView;
     // Add info box enable/disable check box
-    const block = document.getElementById('extensible-block');
+    const checkboxesContainer = document.getElementById('display-single-container');
     const label = document.createElement('label');
-    label.classList.add('checkbox');
-    label.textContent = 'Display Info: ';
+    label.classList.add('checkbox-container', 'side-panel-btn');
+    label.textContent = 'Info';
     const input = document.createElement('input');
-    input.classList.add('checkbox');
     input.id = 'displayInfo';
+    input.classList.add('checkbox');
     input.type = 'checkbox';
     input.checked = false;
     label.appendChild(input);
-    block.prepend(label);
+    checkboxesContainer.prepend(label);
 
     this.neonView.view.addUpdateCallback(this.resetInfoListeners.bind(this));
     setInfoControls();
@@ -78,7 +116,7 @@ class InfoModule implements InfoInterface {
   infoListeners (): void {
     try {
       document.getElementsByClassName('active-page')[0]
-        .querySelectorAll('.neume,.custos,.clef')
+        .querySelectorAll('.neume,.custos,.clef,.accid,.divLine')
         .forEach(node => {
           node.addEventListener('mouseover', this.updateInfo.bind(this));
         });
@@ -89,7 +127,7 @@ class InfoModule implements InfoInterface {
    * Stop listeners for the InfoModule.
    */
   stopListeners (): void {
-    document.querySelectorAll('.neume,.custos,.clef').forEach(node => {
+    document.querySelectorAll('.neume,.custos,.clef,.accid,.divLine').forEach(node => {
       node.removeEventListener('mouseover', this.updateInfo.bind(this));
     });
   }
@@ -119,7 +157,7 @@ class InfoModule implements InfoInterface {
     }
 
     const element = document.getElementById(id);
-    const classRe = /neume|nc|clef|custos|staff/;
+    const classRe = /neume|nc|clef|custos|staff|liquescent|accid|divLine/;
     const elementClass = element.getAttribute('class').match(classRe)[0];
     let body = '';
     let attributes: Attributes;
@@ -129,7 +167,39 @@ class InfoModule implements InfoInterface {
       case 'neume':
         // Select neume components of selected neume
         const ncs = element.querySelectorAll('.nc') as NodeListOf<SVGGraphicsElement>;
+        if (ncs.length === 1){
+          const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
+          if (attr.curve === 'a' || attr.curve === 'c'){
+            let pitches = await this.getPitches(ncs);
+
+            pitches = pitches.trim().toUpperCase();
+            body = 'Shape: Liquescent' + '\r\n' +
+                    'Pitch(es): ' + pitches;
+            break;
+          }
+
+        }
+
         let contour = await this.getContour(ncs);
+        if (ncs.length === 1){
+          const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
+          if(attr.tilt === 's'){
+            let pitches = await this.getPitches(ncs);
+
+            pitches = pitches.trim().toUpperCase();
+            body = 'Shape: Virga \r\n'  +
+                    'Pitch(es): ' + pitches;
+            break;
+          }
+          else if(attr.tilt === 'n'){
+            let pitches = await this.getPitches(ncs);
+
+            pitches = pitches.trim().toUpperCase();
+            body = 'Shape: Reversed Virga \r\n'  +
+                    'Pitch(es): ' + pitches;
+            break;
+          }
+        }
         if (contour === 'Clivis') {
           const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
           if (attr.ligated) {
@@ -146,16 +216,32 @@ class InfoModule implements InfoInterface {
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         body += 'Pitch: ' + (attributes['pname']).toUpperCase() + attributes['oct'];
         break;
+      case 'accid':
+        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
+        let type = '';
+        if ((attributes['accid']).toUpperCase() == 'F'){
+          type = 'Flat';
+        }
+        else if((attributes['accid']).toUpperCase() == 'N'){
+          type = 'Natural';
+        }
+        body += 'Accid Type: ' + type;
+        break;
       case 'clef':
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         body += 'Shape: ' + attributes['shape'] + '\r\n' +
                 'Line: ' + attributes['line'];
         break;
+      case 'divLine':
+        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
+        body += 'DivLine Type: ' + attributes['form'];
+        break;
       default:
         body += 'nothing';
         break;
     }
-    this.updateInfoModule(elementClass, body);
+    body = `Type: ${elementClass}\n${body}`;
+    this.updateInfoModule(body);
   }
 
   /**
@@ -206,16 +292,13 @@ class InfoModule implements InfoInterface {
 
   /**
    * Show and update the info box.
-   * @param title - The info box title.
    * @param body - The info box contents.
    */
-  updateInfoModule (title: string, body: string): void {
-    document.getElementsByClassName('message-header')[0].querySelector('p')
-      .textContent = title;
-    (document.getElementsByClassName('message-body')[0] as HTMLElement).innerText = body;
+  updateInfoModule (body: string): void {
+    (<HTMLElement> document.getElementsByClassName('info-bubble-body')[0]).innerText = body;
 
     if ((document.getElementById('displayInfo') as HTMLInputElement).checked) {
-      (document.getElementsByClassName('message')[0] as HTMLElement).style.display = '';
+      (document.getElementsByClassName('info-bubble-container')[0] as HTMLElement).style.display = '';
     }
   }
 
@@ -251,6 +334,7 @@ class InfoModule implements InfoInterface {
    * @returns Best guess name of the neume shape.
    */
   getContourByValue (value: string): string {
+    
     for (const [cont, v] of neumeGroups.entries()) {
       if (v === value) {
         return cont;

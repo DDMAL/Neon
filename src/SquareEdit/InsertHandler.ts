@@ -1,6 +1,8 @@
 import NeonView from '../NeonView';
-import { EditorAction } from '../Types';
+import { EditorAction, InsertAction } from '../Types';
 import * as d3 from 'd3';
+import { getSVGRelCoords, isOutOfSVGBounds, Point } from '../utils/Coordinates';
+import { queueNotification } from '../utils/Notification';
 
 /**
  * Class that handles insert mode, events, and actions.
@@ -8,8 +10,8 @@ import * as d3 from 'd3';
 class InsertHandler {
   type: string;
   firstClick = true;
-  coord: DOMPoint;
-  attributes: object;
+  coord: Point;
+  attributes: Record<string, string>;
   selector: string;
   neonView: NeonView;
 
@@ -36,11 +38,24 @@ class InsertHandler {
         break;
       case 'diamond':
         this.type = 'nc';
-        this.attributes = { 'tilt': 'se' };
+        this.attributes = { tilt: 'se' };
         break;
       case 'virga':
         this.type = 'nc';
-        this.attributes = { 'tilt': 'n' };
+        this.attributes = { tilt: 's' };
+        break;
+      //there are multiple possible liquescent combinations
+      case 'liquescentA':
+        this.type = 'nc';
+        this.attributes = { curve: 'a' };
+        break;
+      case 'liquescentC':
+        this.type = 'nc';
+        this.attributes = { curve: 'c' };
+        break;
+      case 'virgaReversed':
+        this.type = 'nc';
+        this.attributes = { tilt: 'n' };
         break;
       case 'pes':
       case 'clivis':
@@ -53,20 +68,32 @@ class InsertHandler {
           buttonId.charAt(0).toUpperCase() + buttonId.slice(1)
         );
         this.type = 'grouping';
-        this.attributes = { 'contour': contour };
+        this.attributes = { contour: contour };
         break;
       case 'cClef':
       case 'fClef':
         this.type = 'clef';
-        this.attributes = { 'shape': buttonId.charAt(0).toUpperCase() };
+        this.attributes = { shape: buttonId.charAt(0).toUpperCase() };
         break;
       case 'custos':
         this.type = 'custos';
         this.attributes = null;
         break;
+      case 'divLineMaxima':
+        this.type = 'divLine';
+        this.attributes = { form: 'maxima' };
+        break;
       case 'staff':
         this.type = 'staff';
         this.attributes = null;
+        break;
+      case 'flat':
+        this.type = 'accid';
+        this.attributes = { accid: 'f' };
+        break;
+      case 'natural':
+        this.type = 'accid';
+        this.attributes = { accid: 'n' };
         break;
       default:
         this.type = '';
@@ -76,34 +103,31 @@ class InsertHandler {
     }
 
     this.removeInsertClickHandlers();
-    if (this.type === 'staff') {
-      document.querySelector(this.selector)
-        .addEventListener('click', this.staffHandler);
-    } else {
-      document.querySelector(this.selector)
-        .addEventListener('click', this.handler);
-    }
+    try {
+      if (this.type === 'staff') {
+        document.querySelector(this.selector)
+          .addEventListener('click', this.staffHandler);
+      } else {
+        document.querySelector(this.selector)
+          .addEventListener('click', this.handler);
+      }
+    } catch (e) {}
 
     // Disable edit mode listeners
     document.body.addEventListener('keydown', this.keydownListener);
     document.body.addEventListener('keyup', this.resetInsertHandler);
-    document.body.addEventListener('click', this.clickawayHandler);
 
     // Add 'return to edit mode' button
     if (!alreadyInInsertMode) {
       const editModeButton = document.createElement('button');
       editModeButton.id = 'returnToEditMode';
-      editModeButton.classList.add('button');
+      editModeButton.classList.add('side-panel-btn');
       editModeButton.innerHTML = 'Return to Edit Mode';
       document.getElementById('redo').parentNode.appendChild(editModeButton);
       editModeButton.addEventListener('click', this.insertDisabled);
     }
-    const editMenu = document.getElementById('editMenu');
-    editMenu.style.backgroundColor = 'whitesmoke';
-    editMenu.style.fontWeight = '';
-    const insertMenu = document.getElementById('insertMenu');
-    insertMenu.style.backgroundColor = '#ffc7c7';
-    insertMenu.style.fontWeight = 'bold';
+
+    document.getElementById('editContents').addEventListener('click', this.clickawayHandler);
   }
 
   /**
@@ -115,22 +139,28 @@ class InsertHandler {
     document.body.removeEventListener('keydown', this.keydownListener);
     document.body.removeEventListener('keyup', this.resetInsertHandler);
     document.body.removeEventListener('click', this.clickawayHandler);
-    const selected = document.querySelector('.insertel.is-active');
-    if (selected !== null) {
-      selected.classList.remove('is-active');
-    }
+
     this.firstClick = true;
     try {
       document.getElementById('returnToEditMode').remove();
     } catch (e) {
       // console.debug(e);
     }
-    const editMenu = document.getElementById('editMenu');
-    const insertMenu = document.getElementById('insertMenu');
-    editMenu.style.backgroundColor = '#ffc7c7';
-    editMenu.style.fontWeight = 'bold';
-    insertMenu.style.backgroundColor = 'whitesmoke';
-    insertMenu.style.fontWeight = '';
+
+    const insertPanel = document.getElementById('insert_controls');
+    const insertHeading = document.getElementById('insertMenu');
+    const insertHeadingTitle = insertHeading.querySelector('.panel-heading-title');
+
+    const editPanel = document.getElementById('edit_controls');
+    const editHeading = document.getElementById('editMenu');
+    const displayHeadingTitle = editHeading.querySelector('.panel-heading-title');
+
+    insertHeadingTitle.classList.remove('focused');
+    displayHeadingTitle.classList.add('focused');
+
+    insertPanel.querySelector('.side-panel-btn.insertel.is-active').classList.add('unfocused');
+    editPanel.querySelector('.side-panel-btn.sel-by.is-active').classList.remove('unfocused');
+    
   }).bind(this);
 
   /**
@@ -180,26 +210,24 @@ class InsertHandler {
    */
   handler = (function handler (evt: MouseEvent): void {
     evt.stopPropagation();
-    const container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0] as SVGSVGElement;
-    const pt = container.createSVGPoint();
-    pt.x = evt.clientX;
-    pt.y = evt.clientY;
-    // Transform pt to SVG context
-    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGraphicsElement).getScreenCTM();
-    const cursorpt = pt.matrixTransform(transformMatrix.inverse());
 
-    const editorAction: EditorAction = {
-      'action': 'insert',
-      'param': {
-        'elementType': this.type,
-        'staffId': 'auto',
-        'ulx': cursorpt.x,
-        'uly': cursorpt.y
+    // If the cursor is out of bounds, nothing should be inserted.
+    const cursor = getSVGRelCoords(evt.clientX, evt.clientY);
+    if (isOutOfSVGBounds(cursor.x, cursor.y))
+      return queueNotification('[FAIL] Glyph was placed out of bounds! Insertion failed.', 'error');
+
+    const editorAction: InsertAction = {
+      action: 'insert',
+      param: {
+        elementType: this.type,
+        staffId: 'auto',
+        ulx: cursor.x,
+        uly: cursor.y,
       }
     };
 
     if (this.attributes !== null) {
-      editorAction['param']['attributes'] = this.attributes;
+      editorAction.param.attributes = this.attributes;
       if (this.attributes['shape'] === 'F') {
         editorAction['param']['ulx'] -= 50;
       }
@@ -216,40 +244,41 @@ class InsertHandler {
    * Event handler to insert a staff.
    */
   staffHandler = (function staffHandler (evt: MouseEvent): void {
-    const container = document.getElementsByClassName('active-page')[0].getElementsByClassName('definition-scale')[0] as SVGSVGElement;
-    const pt = container.createSVGPoint();
-    pt.x = evt.clientX;
-    pt.y = evt.clientY;
-    const transformMatrix = (container.getElementsByClassName('system')[0] as SVGGraphicsElement).getScreenCTM();
-    const cursorpt = pt.matrixTransform(transformMatrix.inverse());
+    const cursor = getSVGRelCoords(evt.clientX, evt.clientY);
+
+    if (isOutOfSVGBounds(cursor.x, cursor.y)) {
+      return queueNotification('Staff cannot be placed out of bounds!', 'error');
+    }
+
+    const container = document.querySelector('.active-page > .definition-scale');
 
     if (this.firstClick) {
-      this.coord = cursorpt;
-      d3.select(container).append('circle').attr('cx', cursorpt.x)
-        .attr('cy', cursorpt.y)
+      this.coord = cursor;
+      d3.select(container).append('circle').attr('cx', cursor.x)
+        .attr('cy', cursor.y)
         .attr('r', 10)
         .attr('id', 'staff-circle')
         .attr('fill', 'green');
       this.firstClick = false;
     } else {
-      let ul, lr;
-      if (cursorpt.x < this.coord.x || cursorpt.y < this.coord.y) { // second point is not lr
-        ul = cursorpt;
+      let ul: Point, lr: Point;
+      if (cursor.x < this.coord.x || cursor.y < this.coord.y) { // second point is not lr
+        ul = cursor;
         lr = this.coord;
       } else {
         ul = this.coord;
-        lr = cursorpt;
+        lr = cursor;
       }
       document.getElementById('staff-circle').remove();
       const action: EditorAction = {
-        'action': 'insert',
-        'param': {
-          'elementType': 'staff',
-          'staffId': 'auto',
-          'ulx': ul.x,
-          'uly': ul.y,
-          'lrx': lr.x,
-          'lry': lr.y
+        action: 'insert',
+        param: {
+          elementType: 'staff',
+          staffId: 'auto',
+          ulx: ul.x,
+          uly: ul.y,
+          lrx: lr.x,
+          lry: lr.y
         }
       };
 
@@ -264,12 +293,15 @@ class InsertHandler {
    * Remove the insert listeners while not leaving insert mode entirely.
    */
   removeInsertClickHandlers = (function removeInsertClickHandlers (): void {
-    document.querySelector(this.selector).removeEventListener('click', this.staffHandler);
-    document.querySelector(this.selector).removeEventListener('click', this.handler);
+    try {
+      document.querySelector(this.selector).removeEventListener('click', this.staffHandler);
+      document.querySelector(this.selector).removeEventListener('click', this.handler);
+    } catch (e) {}
   }).bind(this);
 
   isInsertMode (): boolean {
     return (this.type !== '');
   }
 }
+
 export { InsertHandler as default };

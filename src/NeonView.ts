@@ -1,10 +1,21 @@
 import NeonCore from './NeonCore';
-
+import * as Validation from './Validation';
 import { parseManifest } from './utils/NeonManifest';
-import { prepareEditMode } from './utils/EditControls';
 import setBody from './utils/template/Template';
-import * as Types from './Types';
-import * as Interfaces from './Interfaces';
+import { ModalWindow } from './utils/ModalWindow';
+import { NeonManifest, EditorAction, Attributes } from './Types';
+import {
+  InfoInterface,
+  ModalWindowInterface,
+  NeonViewParams,
+  NeumeEditInterface,
+  TextEditInterface,
+  TextViewInterface,
+  ViewInterface
+} from './Interfaces';
+import { initErrorLog } from '../src/utils/ErrorLog';
+import { setSavedStatus, listenUnsavedChanges } from './utils/Unsaved';
+import LocalSettings, { getSettings } from './utils/LocalSettings';
 
 
 /**
@@ -13,29 +24,33 @@ import * as Interfaces from './Interfaces';
  */
 class NeonView {
   /** The manifest describing what to load and where to find it. */
-  manifest: Types.NeonManifest;
+  manifest: NeonManifest;
   /** Module that displays rendered MEI. */
-  view: Interfaces.ViewInterface;
+  view: ViewInterface;
   /** Name of the document loaded. */
   name: string;
   /** Module that handles managing resources, rendering SVGs. */
   core: NeonCore;
   /** Module that provides additional information on musical elements. */
-  info: Interfaces.InfoInterface;
+  info: InfoInterface;
   /** Module that allows editing of musical elements. */
-  NeumeEdit: Interfaces.NeumeEditInterface;
+  NeumeEdit: NeumeEditInterface;
   /** Module that allows viewing of syllable text. */
-  textView: Interfaces.TextViewInterface;
+  textView: TextViewInterface;
   /** Module that allows editing of syllable text. */
-  TextEdit: Interfaces.TextEditInterface;
+  TextEdit: TextEditInterface;
+  /** Module that controls state and content of Neon modal windows */
+  modal: ModalWindowInterface;
+  /** Module that handles user's settings stored in localStorage */
+  localSettings: LocalSettings;
 
-  params: Interfaces.NeonViewParams;
+  params: NeonViewParams;
 
 
   /**
    * Constructor for NeonView. Sets mode and passes constructors.
    */
-  constructor (params: Interfaces.NeonViewParams) {
+  constructor (params: NeonViewParams) {
     if (!parseManifest(params.manifest)) {
       console.error('Unable to parse the manifest');
     }
@@ -47,12 +62,8 @@ class NeonView {
   /**
    * Set up Neon for any provided editing modules.
    */
-  setupEdit(params: Interfaces.NeonViewParams): void {
-    if (params.NeumeEdit !== undefined || (params.TextEdit !== undefined && params.TextView !== undefined)) {
-      // Set up display for edit button
-      prepareEditMode(this);
-    }
-
+  setupEdit(params: NeonViewParams): void {
+    // Set up and start the correct editing mode
     if (params.NeumeEdit !== undefined) {
       this.NeumeEdit = new params.NeumeEdit(this);
     }
@@ -76,17 +87,26 @@ class NeonView {
         this.updateForCurrentPage();
       }
     }); */
-    setBody().then(() => {
+    setBody(this).then(() => {
+      // load the components
+      this.localSettings = new LocalSettings(this.manifest['@id']);
       this.view = new this.params.View(this, this.params.Display, this.manifest.image);
       this.name = this.manifest.title;
-
       this.core = new NeonCore(this.manifest);
       this.info = new this.params.Info(this);
+      this.modal = new ModalWindow(this);
+      Validation.init(this); // initialize validation
+      initErrorLog(); // initialize notifications logs
+      listenUnsavedChanges();
 
-      window.setTimeout(this.setupEdit.bind(this), 2000, this.params);
+      this.setupEdit(this.params);
       return this.core.initDb();
     }).then(() => {
-      this.updateForCurrentPage(true);
+      // load the SVG
+      return this.updateForCurrentPage(true);
+    }).then(() => {
+      // add the event listeners dependent on the SVG
+      this.view.onSVGLoad();
     });
   }
 
@@ -103,6 +123,7 @@ class NeonView {
    * Redo an action performed on the current page (if there is one).
    */
   redo (): Promise<boolean> {
+    setSavedStatus(false);
     return this.core.redo(this.view.getCurrentPageURI());
   }
 
@@ -110,6 +131,7 @@ class NeonView {
    * Undo the last action performed on the current page (if there is one).
    */
   undo (): Promise<boolean> {
+    setSavedStatus(false);
     return this.core.undo(this.view.getCurrentPageURI());
   }
 
@@ -132,7 +154,7 @@ class NeonView {
    * @param action - The editor toolkit action object.
    * @param pageURI - The URI of the page to perform the action on
    */
-  edit (action: Types.EditorAction, pageURI: string): Promise<boolean> {
+  edit (action: EditorAction, pageURI: string): Promise<boolean> {
     return this.core.edit(action, pageURI);
   }
 
@@ -141,7 +163,7 @@ class NeonView {
    * @param elementId - The unique ID of the musical element.
    * @param pageURI - The URI of the page the element is found on.
    */
-  getElementAttr (elementID: string, pageURI: string): Promise<Types.Attributes> {
+  getElementAttr (elementID: string, pageURI: string): Promise<Attributes> {
     return this.core.getElementAttr(elementID, pageURI);
   }
 
@@ -168,13 +190,14 @@ class NeonView {
    * Save the current state to the browser database.
    */
   save (): Promise<void> {
+    setSavedStatus(true);
     return this.core.updateDatabase();
   }
 
   /**
    * Deletes the local database of the loaded MEI file(s).
    */
-  deleteDb (): Promise<{}[]> {
+  deleteDb (): Promise<void[]> {
     return this.core.deleteDb();
   }
 

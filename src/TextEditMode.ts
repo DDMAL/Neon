@@ -1,33 +1,38 @@
-import { unselect } from './utils/SelectTools';
+import { selectBBox, unselect } from './utils/SelectTools';
 import DragHandler from './utils/DragHandler';
 import NeonView from './NeonView';
 import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select';
 import { setGroupingHighlight } from './utils/Color';
 import { TextEditInterface } from './Interfaces';
+import  { ModalWindowView } from './utils/ModalWindow';
 
 /**
  * Format a string for prompting the user.
  * @param rawString - The unformatted string.
  */
+/*
 function formatRaw (rawString: string): string {
   const removeSymbol = /\u{25CA}/u;
   return rawString.replace(removeSymbol, '').trim();
 }
+*/
 
-function selBySylListener (): void {
+function selBySyllableListener (): void {
   if (!document.getElementById('selByBBox').classList.contains('is-active')) {
     unselect();
     try {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
-      document.getElementById('extraEdit').classList.add('is-invisible');
+      document.getElementById('moreEdit').parentElement.classList.add('hidden');
+      document.getElementById('extraEdit').parentElement.classList.add('hidden');
     } catch (e) {}
     document.getElementById('selByBBox').classList.add('is-active');
     try {
       document.getElementById('selByNc').classList.remove('is-active');
       document.getElementById('selByNeume').classList.remove('is-active');
       document.getElementById('selByStaff').classList.remove('is-active');
-      document.getElementById('selBySyl').classList.remove('is-active');
+      document.getElementById('selBySyllable').classList.remove('is-active');
+      document.getElementById('selByLayerElement').classList.remove('is-active');
     } catch (e) {}
     try {
       if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
@@ -36,6 +41,19 @@ function selBySylListener (): void {
     } catch (e) {}
   }
   this.addBBoxListeners();
+}
+
+export function updateSelectedBBox (span: HTMLSpanElement, dragHandler: DragHandler, neonView: NeonView) {
+  unselect();
+
+  const bboxId = Array.from(span.classList).find(e => e !== 'text-select' && e !== 'selected-to-edit');
+
+  if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
+    if (document.getElementById(bboxId)) {
+      const displayRect = document.getElementById(bboxId).querySelector('.sylTextRect-display') as SVGGraphicsElement;
+      selectBBox(displayRect, dragHandler, neonView);
+    }
+  }
 }
 
 /**
@@ -51,35 +69,46 @@ export default class TextEditMode implements TextEditInterface {
    */
   constructor (neonView: NeonView) {
     this.neonView = neonView;
-    this.initEditModeControls();
+    this.initTextEdit();
   }
 
+
   /**
-   * Set listener on edit mode button to start editing.
+   * Update the bounding box selected when the edit text modal has been clicked 
    */
-  initEditModeControls (): void {
-    document.getElementById('edit_mode').addEventListener('click', () => {
-      this.initTextEdit();
-      if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
-        this.initSelectByBBoxButton();
+  updateSelectedBBox (span: HTMLSpanElement): void {
+    unselect();
+
+    const bboxId = Array.from(span.classList).find(e => e !== 'text-select' && e !== 'selected-to-edit');
+
+    if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
+      if (document.getElementById(bboxId)) {
+        const displayRect = document.getElementById(bboxId).querySelector('.sylTextRect-display') as SVGGraphicsElement;
+        selectBBox(displayRect, this.dragHandler, this.neonView);
       }
-    });
+    }
   }
+
 
   /**
   * Set text to edit mode
   */
   initTextEdit (): void {
-    const spans = document.getElementById('syl_text').querySelectorAll('p > span');
-    spans.forEach(span => {
-      function updateSylText (): void {
-        this.updateSylText(span);
+    const spans = document.getElementById('syl_text').querySelectorAll('span');
+    const modal = this.neonView.modal;
+    spans.forEach((span: HTMLSpanElement) => {
+      function selectSylText (): void {
+        span.classList.add('selected-to-edit');
+        modal.setModalWindowView(ModalWindowView.EDIT_TEXT);
+        modal.openModalWindow();
+        updateSelectedBBox(span, this.dragHandler, this.neonView);
       }
 
-      span.removeEventListener('click', updateSylText.bind(this));
-      span.addEventListener('click', updateSylText.bind(this));
+      span.removeEventListener('click', selectSylText);
+      span.addEventListener('click', selectSylText);
     });
   }
+
 
   /**
   * Add the selectByBBox button.
@@ -95,22 +124,17 @@ export default class TextEditMode implements TextEditInterface {
         return;
       }
 
-      const block = document.getElementById('selBySyl')
-        .closest('.control')
-        .closest('.field');
-      const p = document.createElement('p');
-      p.classList.add('control');
+      const block = document.getElementById('selection-mode-btns-container');
       const button = document.createElement('button');
-      button.classList.add('button', 'sel-by');
+      button.classList.add('side-panel-btn', 'sel-by');
       button.id = 'selByBBox';
       button.textContent = 'BBox';
-      p.appendChild(button);
-      block.appendChild(p);
-      button.addEventListener('click', selBySylListener.bind(this));
+      block.appendChild(button);
+      button.addEventListener('click', selBySyllableListener.bind(this));
       document.body.addEventListener('keydown', (evt) => {
-        if (evt.key === '5') {
+        if (evt.key === '6') {
           if (document.getElementById('selByBBox').style.display === '') {
-            selBySylListener.bind(this)();
+            selBySyllableListener.bind(this)();
           }
         }
       });
@@ -120,7 +144,7 @@ export default class TextEditMode implements TextEditInterface {
       const p = document.createElement('p');
       p.classList.add('control');
       const button = document.createElement('button');
-      button.classList.add('button', 'sel-by');
+      button.classList.add('side-panel-btn', 'sel-by');
       button.id = 'selByBBox';
       button.textContent = 'BBox';
       p.appendChild(button);
@@ -150,28 +174,6 @@ export default class TextEditMode implements TextEditInterface {
           dragSelect('.active-page svg');
         }
       }
-    }
-  }
-
-  /**
-  * Update the text for a single syl element
-  */
-  updateSylText (span: HTMLSpanElement): void {
-    const orig = formatRaw(span.textContent);
-    const corrected = window.prompt('', orig);
-    if (corrected !== null && corrected !== orig) {
-      const editorAction = {
-        'action': 'setText',
-        'param': {
-          'elementId': [...span.classList.entries()].filter(e => e[1] !== 'text-select')[0][1],
-          'text': corrected
-        }
-      };
-      this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then((response) => {
-        if (response) {
-          this.neonView.updateForCurrentPage();
-        }
-      });
     }
   }
 }
