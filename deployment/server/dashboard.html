@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Neon</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.10.0/d3.min.js"
+      integrity="sha256-Sx36P52/SeHWhm86q2b4uGB4FLu/aFPyBQqggucUvao="
+      crossorigin="anonymous"
+    ></script>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="stylesheet" href="css/default-styles.css"/>
+    <link rel="stylesheet" href="css/modal-window.css"/>
+    <link rel="stylesheet" href="css/dashboard.css"/>
+    <script
+      defer
+      type="text/javascript"
+      src="./Neon-gh/dashboard.js"
+    ></script>
+  </head>
+  <body>
+
+    <div class="navbar-section">
+
+        <div class="navbar-content-container">
+            
+            <div class="neon-content-wrapper">
+                <a class="navbar-btn" id="home-link">
+                    <!-- Image src attributes are ste programatically because paths are not the same in dev and prod -->
+                    <img id="neon-main-icon" src="Neon-gh/assets/img/Neon-Icon.svg">
+                </a>
+            </div>
+
+            <div class="neon-content-wrapper">
+                <a href="https://ddmal.music.mcgill.ca/">
+                    <div class="navbar-link">DDMAL</div>
+                </a>
+                <a href="https://github.com/DDMAL/Neon/wiki">
+                    <div class="navbar-link">Wiki</div>
+                </a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfspol99BxJmIuZuSO-dVFDoo_absttgAo7czk9ecqDT4uF1A/viewform">
+                    <div class="navbar-link">Feedback Form</div>
+                </a>
+            </div>
+            
+        </div>
+
+    </div>
+
+    <div class="main-section">
+
+        <div class="main-section-content">
+
+            <div id="uploaded-docs-container" class="dashboard-subsection">
+
+                <div id="uploaded-docs-title" class="dashboard-subsection-title">Uploaded Documents</div>
+                <div id="uploaded-docs-content" class="dashboard-subsection-content"></div>
+
+            </div>
+
+            <div id="sample-docs-container" class="dashboard-subsection">
+                <div id="sample-docs-title" class="dashboard-subsection-title">Sample Documents</div>
+                <div id="sample-docs-content" class="dashboard-subsection-content"></div>
+
+            </div>
+
+        </div>
+
+        <div class="main-section-action-bar">
+            <img id="upload-new-doc-button" class="action-bar-item-container active" src="./Neon-gh/assets/img/new-doc.svg" title="upload">
+            <div class="dividing-line action-bar-item-container active"></div>
+            <img id="remove-doc" class="action-bar-item-container" src="./Neon-gh/assets/img/remove-doc.svg" title="delete">
+            <img id="open-doc" class="action-bar-item-container" src="./Neon-gh/assets/img/open-doc.svg" title="open">
+        </div>
+    </div>
+
+
+
+
+    <!-- Neon modal window -->
+    <div id="neon-modal-window-container">
+        <div tabindex="0" id="neon-modal-window">
+        
+            <div id="neon-modal-window-header">
+                <div id="neon-modal-window-header-title"></div>
+                <div id="neon-modal-window-header-close">x</div>
+            </div>
+        
+            <!-- Neon modal window content section -->
+            <div id="neon-modal-window-content-container"></div>
+        </div>
+    </div>
+
+  </body>
+</html>

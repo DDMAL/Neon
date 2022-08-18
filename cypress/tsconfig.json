@@ -1,0 +1,7 @@
+// tsconfig.json set up as recommended:
+// https://docs.cypress.io/guides/tooling/typescript-support#Configure-tsconfig-json
+{
+    "compilerOptions": {
+        "types": ["cypress", "node"]
+    }
+}

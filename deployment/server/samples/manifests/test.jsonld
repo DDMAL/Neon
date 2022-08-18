@@ -1,0 +1,15 @@
+{
+    "@context": "https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld",
+    "@id": "samples/manifests/test.jsonld",
+    "title": "test",
+    "timestamp": "2022-07-25T17:35:19.360Z",
+    "image": "samples/img/test.png",
+    "mei_annotations": [
+        {
+            "id": "urn:uuid:fb71e86d-380c-465f-9271-78e82173eb0a",
+            "type": "Annotation",
+            "body": "samples/mei/test.mei",
+            "target": "samples/img/test.png"
+        }
+    ]
+}
