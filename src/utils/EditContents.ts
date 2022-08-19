@@ -41,7 +41,7 @@ meiActionsNavbarContents.id = 'navbar-dropdown-options';
 const meiActionsDropdownContents = [
   ['remove-empty-syls', 'Remove Empty Syllables'],
   ['remove-empty-neumes', 'Remove Empty Neumes'],
-  ['revert', 'Revert']
+  // ['revert', 'Revert']
 ];
 
 meiActionsDropdownContents.forEach(content => {

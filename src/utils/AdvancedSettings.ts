@@ -2,13 +2,12 @@
   `AdvancedSettings.ts`
   Module that handles everything to do with advanced settings.
 
-  Any file that imports `AdvancedSettings` can only access the `init` function.
+  Any file that imports `AdvancedSettings` can only access the `init` and `isEnabled` functions.
 
   I'm using the module design pattern, since that's what
   JavaScript does internally with classes anyway.
 
-  We keep track of NeonView since it's a hassle to pass it around
-  all the time.
+  We keep track of NeonView since it's a hassle to pass it around all the time.
 */
 
 import Validation from '../Validation';
@@ -32,7 +31,8 @@ function init(neonView: NeonView): void {
   const { displayAdvanced } = getSettings();
   checkbox.checked = displayAdvanced;
 
-  handleClick();
+  toggle(checkbox.checked);
+  updateDisplayAll();
 }
 
 function handleClick() {
@@ -51,34 +51,46 @@ function handleClick() {
     }
   }
 
-  setSettings({ displayAdvanced: checkbox.checked });
   toggle(checkbox.checked);
   updateDisplayAll();
 }
 
+function isEnabled(): boolean {
+  return document.querySelector<HTMLInputElement>('#display-advanced').checked;
+}
+
 function toggle(isChecked: boolean) {
+  setSettings({ displayAdvanced: isChecked });
+
   if (isChecked)
     enable();
   else
     disable();
 }
 
+function $<T extends HTMLElement>(query: string) {
+  return document.querySelector<T>(query);
+}
+
 async function enable() {
   ErrorLog.init();
-
   await Validation.init(view);
 
   // Retrieve the page MEI as a trivial action to do
   // to activate validation of the current page
   const uri = view.view.getCurrentPageURI();
   const mei = await view.getPageMEI(uri);
-
   await Validation.sendForValidation(mei);
+
+  // Show MEI actions dropdown
+  $('#mei-actions-dropdown').style.display = '';
 }
 
 function disable() {
   ErrorLog.stop();
   Validation.stop();
+
+  $('#mei-actions-dropdown').style.display = 'none';
 }
 
-export default { init };
+export default { init, isEnabled };

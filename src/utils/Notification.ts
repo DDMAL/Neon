@@ -1,3 +1,4 @@
+import AdvancedSettings from './AdvancedSettings';
 import { recordNotification } from './ErrorLog';
 import { uuidv4 } from './random';
 
@@ -132,7 +133,8 @@ export function queueNotification (notification: string, type: NotificationType 
   const notif = new Notification(notification, type);
   notifications.push(notif);
 
-  if (notif.type == 'error' || notif.type == 'warning') {
+  // It would be better if we actually had a persistent store of Neon's notifications.
+  if ((notif.type == 'error' || notif.type == 'warning') && AdvancedSettings.isEnabled()) {
     recordNotification(notif);
   }
 
