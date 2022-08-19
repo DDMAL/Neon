@@ -7,6 +7,8 @@ describe('test: error log', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8080/editor.html?manifest=test');
     cy.clearLocalStorage();
+
+    cy.get('#display-advanced').check({ force: true });
   });
 
   it('startup: error log should not be visible', () => {
