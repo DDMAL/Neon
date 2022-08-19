@@ -1,5 +1,5 @@
-import NeonView from "./NeonView";
-import { ModalWindow, ModalWindowView } from "./utils/ModalWindow";
+import NeonView from './NeonView';
+import { ModalWindowView } from './utils/ModalWindow';
 
 const schemaResponse = fetch(__ASSET_PREFIX__ + 'assets/mei-all.rng');
 let worker: Worker, schema: string, statusField: HTMLSpanElement;
@@ -47,7 +47,7 @@ export async function init (neonView: NeonView): Promise<void> {
   if (fileStatusDiv !== null) {
     const statusTitle = document.createElement('div');
     statusTitle.textContent = 'MEI Status:';
-    statusTitle.id = "validation_status_title";
+    statusTitle.id = 'validation_status_title';
     const status = document.createElement('span');
     status.id = 'validation_status';
     status.textContent = 'unknown';
@@ -59,11 +59,23 @@ export async function init (neonView: NeonView): Promise<void> {
   }
 }
 
+async function stop (): Promise<void> {
+  if (worker) {
+    worker.terminate();
+    worker = null;
+  }
+
+  const fileStatusDiv = document.getElementById('file-status');
+  fileStatusDiv.innerHTML = '';
+}
+
 /**
  * Send the contents of an MEI file to the WebWorker for validation.
  * @param {string} meiData
  */
 export async function sendForValidation (meiData: string): Promise<void> {
+  if (!worker) return;
+
   if (statusField === undefined) {
     return;
   }
@@ -89,3 +101,5 @@ export function blankPage (): void {
   statusField.textContent = 'No MEI';
   statusField.style.color = 'color:gray';
 }
+
+export default { init, stop, sendForValidation };

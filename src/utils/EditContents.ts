@@ -34,14 +34,14 @@ export const navbarDropdownMEIActionsMenu: HTMLDivElement = document.createEleme
 navbarDropdownMEIActionsMenu.classList.add('navbar-item', 'has-dropdown', 'is-hoverable');
 const meiActionsDropdownBtn = document.createElement('div');
 meiActionsDropdownBtn.classList.add('navbar-btn');
-meiActionsDropdownBtn.innerHTML = `<div>MEI Actions</div>`;
+meiActionsDropdownBtn.innerHTML = '<div>MEI Actions</div>';
 const meiActionsNavbarContents = document.createElement('div');
 meiActionsNavbarContents.classList.add('navbar-dropdown');
 meiActionsNavbarContents.id = 'navbar-dropdown-options';
 const meiActionsDropdownContents = [
   ['remove-empty-syls', 'Remove Empty Syllables'],
   ['remove-empty-neumes', 'Remove Empty Neumes'],
-  ['revert', 'Revert']
+  // ['revert', 'Revert']
 ];
 
 meiActionsDropdownContents.forEach(content => {

@@ -2,13 +2,11 @@ import * as Notification from './Notification';
 import NeonView from '../NeonView';
 import { convertStaffToSb } from './ConvertMei';
 import { EditorAction } from '../Types';
-import ZoomHandler from '../SingleView/Zoom';
 
 /**
  * Set top navbar event listeners.
  */
 export function initNavbar (neonView: NeonView): void {
-
   // setup navbar listeners
   const navbarDropdowns = document.querySelectorAll('.navbar-item.has-dropdown.is-hoverable');
   Array.from(navbarDropdowns).forEach((dropDown) => {
@@ -235,7 +233,7 @@ export function initNavbar (neonView: NeonView): void {
     });
   });
 
-  // Event listener for "Revert" button inside "MEI Actions" dropdown
+  // Event listener for "Revert" button inside "File" dropdown
   document.getElementById('revert').addEventListener('click', function () {
     if (window.confirm('Reverting will cause all changes to be lost. Press OK to continue.')) {
       neonView.deleteDb().then(() => {

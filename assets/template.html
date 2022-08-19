@@ -39,6 +39,7 @@
             <div id="export" class="navbar-dropdown-item">
               <div class="navbar-dropdown-item-text">Save and Export to File</div>
             </div>
+            <div id="revert" class="navbar-dropdown-item">Revert</div>
             <a id="getmei" class="navbar-dropdown-item">
              <div class="navbar-dropdown-item-text">Download MEI</div>
             </a>
@@ -97,7 +98,7 @@
         </div>
         -->
 
-        <div class="navbar-item has-dropdown is-hoverable">
+        <div id="mei-actions-dropdown" class="navbar-item has-dropdown is-hoverable" style="display: none;">
           <div class="navbar-element navbar-btn">
             <div class="navbar-btn-text">MEI Actions</div>
           </div>
@@ -105,7 +106,6 @@
             <div id="remove-empty-syls" class="navbar-dropdown-item">Remove Empty Syllables</div>
             <div id="remove-empty-neumes" class="navbar-dropdown-item">Remove Empty Neumes</div>
             <div id="remove-out-of-bounds-glyphs" class="navbar-dropdown-item">Remove Out-of-bounds Glyphs</div>
-            <div id="revert" class="navbar-dropdown-item">Revert</div>
           </div>
         </div>
       
@@ -131,6 +131,16 @@
             </div>
             <div class="navbar-dropdown-item">
               <div id="neon-version"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-element navbar-btn">
+            <div class="navbar-btn-text">
+              <input class="checkbox" type="checkbox"
+              id="display-advanced">
+              Enable Advanced Settings
             </div>
           </div>
         </div>

@@ -1,5 +1,4 @@
 import NeonCore from './NeonCore';
-import * as Validation from './Validation';
 import { parseManifest } from './utils/NeonManifest';
 import setBody from './utils/template/Template';
 import { ModalWindow } from './utils/ModalWindow';
@@ -13,9 +12,10 @@ import {
   TextViewInterface,
   ViewInterface
 } from './Interfaces';
-import { initErrorLog } from '../src/utils/ErrorLog';
-import { setSavedStatus, listenUnsavedChanges } from './utils/Unsaved';
-import LocalSettings, { getSettings } from './utils/LocalSettings';
+import ErrorLog from '../src/utils/ErrorLog';
+import Unsaved from './utils/Unsaved';
+import LocalSettings from './utils/LocalSettings';
+import AdvancedSettings from './utils/AdvancedSettings';
 
 
 /**
@@ -95,9 +95,9 @@ class NeonView {
       this.core = new NeonCore(this.manifest);
       this.info = new this.params.Info(this);
       this.modal = new ModalWindow(this);
-      Validation.init(this); // initialize validation
-      initErrorLog(); // initialize notifications logs
-      listenUnsavedChanges();
+
+      AdvancedSettings.init(this);
+      Unsaved.init();
 
       this.setupEdit(this.params);
       return this.core.initDb();
@@ -123,7 +123,7 @@ class NeonView {
    * Redo an action performed on the current page (if there is one).
    */
   redo (): Promise<boolean> {
-    setSavedStatus(false);
+    Unsaved.setSavedStatus(false);
     return this.core.redo(this.view.getCurrentPageURI());
   }
 
@@ -131,7 +131,7 @@ class NeonView {
    * Undo the last action performed on the current page (if there is one).
    */
   undo (): Promise<boolean> {
-    setSavedStatus(false);
+    Unsaved.setSavedStatus(false);
     return this.core.undo(this.view.getCurrentPageURI());
   }
 
@@ -190,7 +190,7 @@ class NeonView {
    * Save the current state to the browser database.
    */
   save (): Promise<void> {
-    setSavedStatus(true);
+    Unsaved.setSavedStatus(true);
     return this.core.updateDatabase();
   }
 
@@ -219,10 +219,10 @@ class NeonView {
 
   /**
    * Get the page's MEI file as a string.
-   * @param pageNo - The identifying URI of the page.
+   * @param pageURI - The identifying URI of the page.
    */
-  getPageMEI (pageNo: string): Promise<string> {
-    return this.core.getMEI(pageNo);
+  getPageMEI (pageURI: string): Promise<string> {
+    return this.core.getMEI(pageURI);
   }
 
   /**

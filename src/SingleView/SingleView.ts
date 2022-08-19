@@ -1,6 +1,6 @@
 import { updateHighlight, setOpacityFromSlider, setBgOpacityFromSlider } from '../DisplayPanel/DisplayControls';
 import NeonView from '../NeonView';
-import DisplayPanel from '../DisplayPanel/DisplayPanel';
+import { DisplayPanel } from '../DisplayPanel/DisplayPanel';
 import ZoomHandler from './Zoom';
 import { ViewInterface, DisplayConstructable } from '../Interfaces';
 
