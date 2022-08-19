@@ -55,9 +55,12 @@ function createUnpairedItem(filename: string, group: string): HTMLDivElement {
   const label = document.createElement('label');
   label.className = 'unpaired_item_label';
   label.setAttribute('for', id);
-  label.innerText = formatFilename(filename, 28);
 
-  node.appendChild(radio);
+  const text = document.createElement('span');
+  text.innerText = formatFilename(filename, 28);
+
+  label.appendChild(radio);
+  label.appendChild(text);
   node.appendChild(label);
   return node;
 }
@@ -79,8 +82,8 @@ export function handleMakePair(): void {
   // reflect in file manager
   fm.addFolio(filename, mei_filename, image_filename);
   // remove from unpaired mei and image lists
-  selectedMeiElement.parentElement.remove();
-  selectedImageElement.parentElement.remove();
+  selectedMeiElement.parentElement.parentElement.remove();
+  selectedImageElement.parentElement.parentElement.remove();
 }
 
 function createPairedTile(filename: string, mei_filename: string, image_filename: string): HTMLDivElement {
