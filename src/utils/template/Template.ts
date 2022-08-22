@@ -3,17 +3,18 @@ import { ModalWindowView } from '../ModalWindow';
 
 async function setBody (neonView: NeonView): Promise<void> {
 
-  const response = await fetch(__ASSET_PREFIX__ + 'assets/template.html');
+  const response = await fetch(`${__ASSET_PREFIX__}assets/template.html`);
   document.body.innerHTML = await response.text();
   (document.getElementById('home-link') as HTMLAnchorElement).href = __LINK_LOCATION__;
   document.getElementById('neon-version').textContent = __NEON_VERSION__;
-  (<HTMLImageElement> document.getElementById('neon-main-icon')).src = `${__ASSET_PREFIX__}/assets/img/Neon_Icon_3.svg`;
+  (<HTMLImageElement> document.getElementById('neon-main-icon')).src = `${__ASSET_PREFIX__}assets/img/Neon_Icon_3.svg`;
   Array.from(document.getElementsByClassName('external-link-icon')).forEach((el) => {
-    (<HTMLImageElement> el).src = `${__ASSET_PREFIX__}/assets/img/external-link.svg`;
+    (<HTMLImageElement> el).src = `${__ASSET_PREFIX__}assets/img/external-link.svg`;
   });
 
-  document.getElementById('filename').innerText = `${neonView.manifest.title}`;
-
+  document.getElementById('filename').innerText = neonView.manifest.title;
+  document.title = neonView.manifest.title;
+  
   // hotkey btn onclick event listener
   document.getElementById('navbar-item-hotkeys').addEventListener('click', function() {
     neonView.modal.setModalWindowView(ModalWindowView.HOTKEYS);

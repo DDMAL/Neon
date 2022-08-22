@@ -1,15 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import FileManager from './FileManager';
-import { formatFilename } from './functions';
-import { createManifest, addEntry } from './storage';
+import { formatFilename, renameFile } from './functions';
+import { createManifest, addEntry, fetchSampleDocuments, fetchUploadedDocuments } from './Storage';
 
 const fm = FileManager.getInstance();
 
 export function addNewFiles( files: File[] ): File[] {
   const mei_container: HTMLDivElement = document.querySelector('#mei_list');
   const image_container: HTMLDivElement = document.querySelector('#image_list');
-  // const paired_container: HTMLDivElement = document.querySelector('#paired_list');
-  // const manuscript_container: HTMLDivElement = document.querySelector('#manuscript_list');
 
   const rejectFiles: File[] = [];
   files.forEach( file => {
@@ -26,15 +24,13 @@ export function addNewFiles( files: File[] ): File[] {
       fm.addFile(file);
     }
     else if ( ext === 'jsonld' ) {
-      /*
-      const manuscriptTile = createManuscriptTile(file.name);
-      manuscript_container.appendChild(manuscriptTile);
-      fm.addFile(file);
-      fm.addManuscript(file.name);
-      */
+      // // remove manuscript support for the immediate future!
+      // const manuscriptTile = createManuscriptTile(file.name);
+      // manuscript_container.appendChild(manuscriptTile);
+      // fm.addFile(file);
+      // fm.addManuscript(file.name);
     }
     else {
-      console.log(`Unknown file type for: ${file.name}`);
       rejectFiles.push(file);
     }
   });
@@ -59,9 +55,12 @@ function createUnpairedItem(filename: string, group: string): HTMLDivElement {
   const label = document.createElement('label');
   label.className = 'unpaired_item_label';
   label.setAttribute('for', id);
-  label.innerText = formatFilename(filename, 28);
 
-  node.appendChild(radio);
+  const text = document.createElement('span');
+  text.innerText = formatFilename(filename, 28);
+
+  label.appendChild(radio);
+  label.appendChild(text);
   node.appendChild(label);
   return node;
 }
@@ -76,21 +75,20 @@ export function handleMakePair(): void {
   
   const mei_filename = selectedMeiElement.value;
   const image_filename = selectedImageElement.value;
+  const filename = mei_filename.substring(0, mei_filename.length-4);
   // make and append UI element
-  const paired_el = createPairedTile(mei_filename, image_filename);
+  const paired_el = createPairedTile(filename, mei_filename, image_filename);
   paired_container.appendChild(paired_el);
   // reflect in file manager
-  fm.addFolio(mei_filename, image_filename);
+  fm.addFolio(filename, mei_filename, image_filename);
   // remove from unpaired mei and image lists
-  selectedMeiElement.parentElement.remove();
-  selectedImageElement.parentElement.remove();
+  selectedMeiElement.parentElement.parentElement.remove();
+  selectedImageElement.parentElement.parentElement.remove();
 }
 
-function createPairedTile(mei_filename: string, image_filename: string): HTMLDivElement {
-
+function createPairedTile(filename: string, mei_filename: string, image_filename: string): HTMLDivElement {
   const mei_container: HTMLDivElement = document.querySelector('#mei_list');
   const image_container: HTMLDivElement = document.querySelector('#image_list');
-
 
   const tile = document.createElement('div');
   tile.className = 'tile_item';
@@ -99,14 +97,14 @@ function createPairedTile(mei_filename: string, image_filename: string): HTMLDiv
 
   const tile_filename = document.createElement('div');
   tile_filename.classList.add('tile-filename');
-  tile_filename.innerHTML = formatFilename(mei_filename, 20);
+  tile_filename.innerHTML = formatFilename(filename, 25);
   tile.appendChild(tile_filename); 
 
   function handleUnpair() {
     // remove tile from UI
     tile.remove();
     // remove folio from file manager
-    fm.removeFolio(mei_filename);
+    fm.removeFolio(filename);
     // add items back to unpaired containers
     const meiItem = createUnpairedItem(mei_filename, 'mei');
     mei_container.appendChild(meiItem);
@@ -123,50 +121,39 @@ function createPairedTile(mei_filename: string, image_filename: string): HTMLDiv
   return tile;
 }
 
-// function createManuscriptTile( filename: string ) {
-//   const tile = document.createElement('div');
-//   tile.className = 'tile_item';
-//   tile.setAttribute('value', filename);
-//   tile.innerText = formatFilename(filename, 20);
+export async function handleUploadAllDocuments(): Promise<any> {
+  const uploads = await fetchUploadedDocuments();
+  const samples = fetchSampleDocuments();
+  const allFolios = uploads.concat(samples);
 
-//   function handleDelete() {
-//     // remove tile from UI
-//     tile.remove();
-//     // remove from file manager
-//     fm.removeManuscript(filename); 
-//     fm.removeFile(filename);
-//   }
+  const folioPromises = fm.getFolios()
+    .map( async ([name, mei, image]: [string, File, File]) => {
+      const newName = renameFile(name, allFolios);
+      return await uploadFolio(newName, mei, image)
+    });
+  
+  fm.clear();
 
-//   const deleteButton = document.createElement('button');
-//   deleteButton.innerText = '⌫';
-//   deleteButton.className = 'delete_button';
-//   deleteButton.addEventListener('click', handleDelete);
-//   tile.appendChild(deleteButton);
-
-//   return tile;
-// }
-
-export function handleUploadAllDocuments(): Promise<any> {
-  const folioPromises = fm.getFolios().map( ([mei, image]: [File, File]) => uploadFolio(mei, image));
-  const manuscriptPromises = fm.getManuscripts().map( manuscript => uploadManuscript(manuscript));
-  const promises = folioPromises.concat(manuscriptPromises);
-  return PromiseAllSettled(promises);
+  const promises = 
+    folioPromises
+      .map(p => 
+        Promise.resolve(p)
+          .then(value => ({ status: 'fulfilled', value }),
+                reason => ({ status: 'rejected', reason })
+          )
+      );
+  
+  return Promise.all(promises);
 }
 
-async function uploadFolio(mei: File, image: File): Promise<boolean> {
-  return createManifest(mei, image)
+async function uploadFolio(name: string, mei: File, image: File): Promise<boolean> {
+  return createManifest(name, mei, image)
     .then(manifest => {
       const manifestBlob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/ld+json' });
-      return addEntry(mei.name, manifestBlob, true);
+      return addEntry(name, manifestBlob, true);
     });
 }
 
-async function uploadManuscript(manuscript: File): Promise<boolean> {
-  return addEntry(manuscript.name, manuscript, false);
-}
-
-function PromiseAllSettled(promises) {
-  const fulfilled = value => ({ status: 'fulfilled', value });
-  const rejected = reason => ({ status: 'rejected', reason });
-  return Promise.all([...promises].map(p => Promise.resolve(p).then(fulfilled, rejected)));
-}
+// async function uploadManuscript(manuscript: File): Promise<boolean> {
+//   return addEntry(manuscript.name, manuscript, false);
+// }

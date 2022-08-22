@@ -1,4 +1,4 @@
-export const documents = [
+export const samples = [
   'CF-005',
   'CF-009',
   'CF-010',
