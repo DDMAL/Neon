@@ -246,6 +246,9 @@ class InfoModule implements InfoInterface {
 
           body += 'Octave Displacement: ' + format(attr['dis.place'], attr.dis) + '\r\n';
         }
+        else {
+          body += 'Octave Displacement: None\r\n';
+        }
 
         body += 'Shape: ' + attr.shape + '\r\n' + 'Line: ' + attr.line;
 
