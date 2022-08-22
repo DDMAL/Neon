@@ -124,11 +124,12 @@ function createPairedTile(filename: string, mei_filename: string, image_filename
 export async function handleUploadAllDocuments(): Promise<any> {
   const uploads = await fetchUploadedDocuments();
   const samples = fetchSampleDocuments();
-  const allFolios = uploads.concat(samples);
+  const existingNames = uploads.concat(samples);
 
   const folioPromises = fm.getFolios()
     .map( async ([name, mei, image]: [string, File, File]) => {
-      const newName = renameFile(name, allFolios);
+      const newName = renameFile(name, existingNames);
+      existingNames.push(newName);
       return await uploadFolio(newName, mei, image)
     });
   
