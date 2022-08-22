@@ -509,9 +509,7 @@ a:hover {
     height: 60%;
 }
 #reset-zoom.slider-btn{
-    padding-bottom: 1.4%;
-    padding-right: 0.6%;
-    font-size: 160%;
+    font-size: 120%;
 }
 .side-panel-btn:hover {
     border: 1px solid #c6c6c6;
@@ -637,10 +635,10 @@ a:hover {
     color: #848484;
 }
 /* Error logs panel */
-#notification_log {
+#error_log {
     display: none;
 }
-#notification_log.visible {
+#error_log.visible {
     display: block;
 }
 .notification-container {
