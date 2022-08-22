@@ -128,7 +128,7 @@ function select(tile: Element, idx?: number) {
   }
   else return;
   tile.classList.add('selected');
-  orderedSelection[idx] = true;
+  orderedSelection[idx] = true;  
 }
 
 // Determines whether to set delete doc or open doc to active
@@ -208,7 +208,6 @@ export async function updateDocumentSelector(): Promise<void> {
   // add onclick event listener to docs
   orderedDocuments.forEach((filename, idx) => {
     const tile = document.getElementById(`${filename}`);
-    const isSelected = orderedSelection[idx];
 
     // double click event immediately opens document
     tile.addEventListener('dblclick', handleOpenDocuments, false);
@@ -225,7 +224,7 @@ export async function updateDocumentSelector(): Promise<void> {
       }
       // Meta key pressed (default behaviour if both meta and shift are pressed)
       else if (metaKeyIsPressed) {
-        if (isSelected) {
+        if (orderedSelection[idx]) {
           unselect(tile, idx);
           shift.setStart(orderedSelection.lastIndexOf(true)); // MacOS behaviour: shift start goes to largest idx selected item
         }
