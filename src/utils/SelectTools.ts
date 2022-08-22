@@ -197,7 +197,7 @@ export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dra
  */
 export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): Promise<boolean> {
   const attributes: Attributes = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPageURI());
-  return (attributes.ligated);
+  return Boolean(attributes.ligated);
 }
 
 
@@ -239,7 +239,7 @@ export function areAdjacent(selectionType: string, elements: SVGGraphicsElement[
   
   // Sort SELECTED elements in order of appearance by 
   // matching to order of ALL elements of selection type
-  let sortedElements = [];
+  const sortedElements = [];
   for (let i=0; i<allElemsOfSelectionType.length; i++) {
     for (let j=0; j<elements.length; j++) {
       if (allElemsOfSelectionType[i].isSameNode(elements[j])) {
@@ -257,7 +257,7 @@ export function areAdjacent(selectionType: string, elements: SVGGraphicsElement[
     const index1 = allElemsOfSelectionType.indexOf(firstElem);
     const index2 = allElemsOfSelectionType.indexOf(secondElem);
 
-    if (Math.abs(index1 - index2) !== 1) return false
+    if (Math.abs(index1 - index2) !== 1) return false;
   }
 
   return true;
@@ -371,7 +371,7 @@ export function sharedSecondLevelParent (elements: SVGGraphicsElement[]): boolea
  * @returns true if selection is accross multiple staves, false otherwise
  */
 export function isMultiStaveSelection(elements: SVGElement[]): boolean {
-  let elementsArray = Array.from(elements);
+  const elementsArray = Array.from(elements);
 
   for (let i=0; i<elementsArray.length; i++) {
     const staff = elementsArray[i].closest('.staff');
@@ -715,10 +715,10 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       console.error('Unknown selection type. This should not have occurred.');
   }
   
-  function changeStaffListener(): void {
-    try {
-      document.getElementById('changeStaff')
-        .addEventListener('click', SelectOptions.changeStaffHandler);
-    } catch (e) {console.debug(e);}
-  }
+  // function changeStaffListener(): void {
+  // try {
+  // document.getElementById('changeStaff')
+  // .addEventListener('click', SelectOptions.changeStaffHandler);
+  // } catch (e) {console.debug(e);}
+  // }
 }

@@ -15,7 +15,7 @@ import {
 } from './Interfaces';
 import { initErrorLog } from '../src/utils/ErrorLog';
 import { setSavedStatus, listenUnsavedChanges } from './utils/Unsaved';
-import LocalSettings, { getSettings } from './utils/LocalSettings';
+import LocalSettings from './utils/LocalSettings';
 
 
 /**
