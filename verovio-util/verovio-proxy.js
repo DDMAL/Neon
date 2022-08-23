@@ -75,6 +75,9 @@ verovio.vrvToolkit.renderToMIDI = Module.cwrap( 'vrvToolkit_renderToMIDI', 'stri
 // char *renderToSvg(Toolkit *ic, int pageNo, const char *rendering_options)
 verovio.vrvToolkit.renderToSVG = Module.cwrap( 'vrvToolkit_renderToSVG', 'string', ['number', 'number', 'string'] );
 
+// char *renderChangesToSvg(Toolkit *ic, int pageNo, const char *rendering_options)
+verovio.vrvToolkit.renderChangesToSVG = Module.cwrap( 'vrvToolkit_renderChangesToSVG', 'string', ['number', 'number', 'string'] );
+
 // char *renderToTimemap(Toolkit *ic)
 verovio.vrvToolkit.renderToTimemap = Module.cwrap( 'vrvToolkit_renderToTimemap', 'string', ['number'] );
 
@@ -233,6 +236,11 @@ verovio.toolkit.prototype.renderToMidi = function ( options )
 verovio.toolkit.prototype.renderToSVG = function ( pageNo, options )
 {
     return verovio.vrvToolkit.renderToSVG( this.ptr, pageNo, JSON.stringify( options ) );
+};
+
+verovio.toolkit.prototype.renderChangesToSVG = function ( pageNo, options )
+{
+    return verovio.vrvToolkit.renderChangesToSVG( this.ptr, pageNo, JSON.stringify( options ) );
 };
 
 verovio.toolkit.prototype.renderToTimemap = function ()

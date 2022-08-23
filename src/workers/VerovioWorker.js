@@ -32,6 +32,7 @@ function handleNeonEvent (evt) {
       break;
     case 'renderToSVG':
       result.svg = toolkit.renderToSVG(1);
+      console.log(toolkit.renderChangesToSVG(1));
       break;
     default:
       break;

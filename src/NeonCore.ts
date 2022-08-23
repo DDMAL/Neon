@@ -321,7 +321,7 @@ class NeonCore {
 
   /**
    * Perform an editor action on a specific page.
-   * @param action - The editor toolkit action object.
+   * @param editorAction - The editor toolkit action object.
    * @param pageURI - The URI of the selected page.
    */
   edit (editorAction: EditorAction, pageURI: string): Promise<boolean> {
