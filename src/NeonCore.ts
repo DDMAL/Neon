@@ -324,42 +324,45 @@ class NeonCore {
    * @param editorAction - The editor toolkit action object.
    * @param pageURI - The URI of the selected page.
    */
-  edit (editorAction: EditorAction, pageURI: string): Promise<boolean> {
-    let promise: Promise<CacheEntry>;
-    if (this.lastPageLoaded === pageURI) {
-      promise = Promise.resolve(this.neonCache.get(pageURI));
-    } else {
-      promise = this.loadPage(pageURI);
-    }
-    return new Promise((resolve): void => {
-      promise.then(entry => {
-        // delete unnecessary SVG object reference;
-        // otherwise, this is not garbage collected!
-        entry.svg = null;
+  async edit (editorAction: EditorAction, pageURI: string): Promise<boolean> {
+    const getPage = async () => {
+      return this.lastPageLoaded === pageURI
+        ? this.neonCache.get(pageURI)
+        : this.loadPage(pageURI);
+    };
 
-        const currentMEI = entry.mei;
-        const message: VerovioMessage = {
-          id: uuidv4(),
-          action: 'edit',
-          editorAction: editorAction
-        };
-        function handle (evt: MessageEvent): void {
-          if (evt.data.id === message.id) {
-            if (evt.data.result) {
-              if (!this.undoStacks.has(pageURI)) {
-                this.undoStacks.set(pageURI, []);
-              }
-              this.undoStacks.get(pageURI).push(currentMEI);
-              this.redoStacks.set(pageURI, []);
+    const entry = await getPage();
+
+    // delete unnecessary SVG object reference;
+    // otherwise, this is not garbage collected!
+    entry.svg = null;
+
+    const currentMEI = entry.mei;
+    const message: VerovioMessage = {
+      id: uuidv4(),
+      action: 'edit',
+      editorAction: editorAction
+    };
+
+    return new Promise(resolve => {
+      function handle (evt: MessageEvent): void {
+        if (evt.data.id === message.id) {
+          if (evt.data.result) {
+            if (!this.undoStacks.has(pageURI)) {
+              this.undoStacks.set(pageURI, []);
             }
-            evt.target.removeEventListener('message', handle);
-            this.updateCache(pageURI, true).then(() => { resolve(evt.data.result); });
-            setSavedStatus(false);
+            this.undoStacks.get(pageURI).push(currentMEI);
+            this.redoStacks.set(pageURI, []);
           }
+
+          evt.target.removeEventListener('message', handle);
+          // UPDATE CACHE IS THE CULPRIT!!!
+          this.updateCache(pageURI, true).then(() => resolve(evt.data.result));
+          setSavedStatus(false);
         }
-        this.verovioWrapper.addEventListener('message', handle.bind(this));
-        this.verovioWrapper.postMessage(message);
-      });
+      }
+      this.verovioWrapper.addEventListener('message', handle.bind(this));
+      this.verovioWrapper.postMessage(message);
     });
   }
 
@@ -407,6 +410,9 @@ class NeonCore {
           svgText,
           'image/svg+xml'
         ).documentElement as HTMLElement & SVGSVGElement;
+        
+        console.log(svg.querySelector('parsererror'));
+
         this.neonCache.set(pageURI, {
           mei: mei,
           svg: svg,
