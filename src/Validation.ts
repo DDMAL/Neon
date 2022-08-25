@@ -47,7 +47,7 @@ export async function init (neonView: NeonView): Promise<void> {
   if (fileStatusDiv !== null) {
     const statusTitle = document.createElement('div');
     statusTitle.textContent = 'MEI Status:';
-    statusTitle.id = "validation_status_title";
+    statusTitle.id = 'validation_status_title';
     const status = document.createElement('span');
     status.id = 'validation_status';
     status.textContent = 'unknown';

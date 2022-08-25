@@ -13,8 +13,8 @@ export default class VerovioWrapper {
   /**
    * Set an event listener onto the actual web worker.
    */
-  addEventListener (type: string, handler: EventListenerOrEventListenerObject): void {
-    return this.verovioWorker.addEventListener(type, handler);
+  addEventListener (type: string, handler: EventListenerOrEventListenerObject, options?: AddEventListenerOptions): void {
+    return this.verovioWorker.addEventListener(type, handler, options);
   }
 
   /**

@@ -1,7 +1,7 @@
 import { checkOutOfBoundsGlyphs, convertSbToStaff } from './utils/ConvertMei';
 import * as Validation from './Validation';
 import VerovioWrapper from './VerovioWrapper';
-import { WebAnnotation, Attributes, EditorAction, NeonManifest, VerovioMessage } from './Types';
+import { WebAnnotation, Attributes, EditorAction, NeonManifest, VerovioMessage, HTMLSVGElement } from './Types';
 import { uuidv4 } from './utils/random';
 
 import PouchDB from 'pouchdb';
@@ -345,23 +345,30 @@ class NeonCore {
     };
 
     return new Promise(resolve => {
-      function handle (evt: MessageEvent): void {
+      const handle = (evt: MessageEvent) => {
         if (evt.data.id === message.id) {
           if (evt.data.result) {
             if (!this.undoStacks.has(pageURI)) {
               this.undoStacks.set(pageURI, []);
             }
+
+            if (this.undoStacks.get(pageURI).length > 0) {
+              const old = this.undoStacks.get(pageURI).at(-1);
+              console.log(old);
+            }
+
             this.undoStacks.get(pageURI).push(currentMEI);
             this.redoStacks.set(pageURI, []);
           }
 
           evt.target.removeEventListener('message', handle);
+          setSavedStatus(false);
+
           // UPDATE CACHE IS THE CULPRIT!!!
           this.updateCache(pageURI, true).then(() => resolve(evt.data.result));
-          setSavedStatus(false);
         }
-      }
-      this.verovioWrapper.addEventListener('message', handle.bind(this));
+      };
+      this.verovioWrapper.addEventListener('message', handle);
       this.verovioWrapper.postMessage(message);
     });
   }
@@ -371,56 +378,48 @@ class NeonCore {
    * @param pageURI - Page to be updated in cache.
    * @param dirty - If the entry should be marked as dirty
    */
-  updateCache (pageURI: string, dirty: boolean): Promise<void> {
-    return new Promise((resolve): void => {
-      // Must get MEI and then get SVG then finish.
-      let mei: string, svgText: string;
-      const meiPromise = new Promise((resolve): void => {
-        const message: VerovioMessage = {
-          id: uuidv4(),
-          action: 'getMEI'
-        };
-        this.verovioWrapper.addEventListener('message', function handle (evt: MessageEvent) {
-          if (evt.data.id === message.id) {
-            mei = evt.data.mei;
-            evt.target.removeEventListener('message', handle);
-            Validation.sendForValidation(mei);
-            resolve('');
-          }
-        });
-        this.verovioWrapper.postMessage(message);
-      });
-      const svgPromise = new Promise((resolve): void => {
-        const message: VerovioMessage = {
-          id: uuidv4(),
-          action: 'renderToSVG'
-        };
-        this.verovioWrapper.addEventListener('message', function handle (evt: MessageEvent) {
-          if (evt.data.id === message.id) {
-            svgText = evt.data.svg;
-            evt.target.removeEventListener('message', handle);
-            resolve('');
-          }
-        });
-        this.verovioWrapper.postMessage(message);
-      });
+  async updateCache (pageURI: string, dirty: boolean): Promise<void> {
+    // Must get MEI and then get SVG then finish.
+    const meiPromise: Promise<string> = new Promise((resolve) => {
+      const message: VerovioMessage = {
+        id: uuidv4(),
+        action: 'getMEI'
+      };
 
-      meiPromise.then(() => { return svgPromise; }).then(() => {
-        const svg = this.parser.parseFromString(
-          svgText,
-          'image/svg+xml'
-        ).documentElement as HTMLElement & SVGSVGElement;
-        
-        console.log(svg.querySelector('parsererror'));
-
-        this.neonCache.set(pageURI, {
-          mei: mei,
-          svg: svg,
-          dirty: dirty
-        });
-        resolve();
-      });
+      this.verovioWrapper.addEventListener('message', (evt: MessageEvent) => {
+        if (evt.data.id === message.id) {
+          Validation.sendForValidation(evt.data.mei);
+          resolve(evt.data.mei);
+        }
+      }, { once: true });
+      this.verovioWrapper.postMessage(message);
     });
+
+    const svgPromise: Promise<string> = new Promise((resolve): void => {
+      const message: VerovioMessage = {
+        id: uuidv4(),
+        action: 'renderToSVG'
+      };
+      this.verovioWrapper.addEventListener('message', function handle(evt: MessageEvent) {
+        if (evt.data.id === message.id) {
+          evt.target.removeEventListener('message', handle);
+          resolve(evt.data.svg);
+        }
+      });
+      this.verovioWrapper.postMessage(message);
+    });
+
+    const mei = await meiPromise;
+    const svgText = await svgPromise;
+    const svg = this.parser.parseFromString(svgText, 'image/svg+xml').documentElement as HTMLSVGElement;
+
+    this.neonCache.set(pageURI, {
+      mei: mei,
+      svg: svg,
+      dirty: dirty
+    });
+
+    return;
   }
 
   /**
@@ -456,22 +455,17 @@ class NeonCore {
    * @param pageURI - The URI of the selected page.
    * @returns If the action was undone.
    */
-  undo (pageURI: string): Promise<boolean> {
-    return new Promise((resolve): void => {
-      if (this.undoStacks.has(pageURI)) {
-        const state = this.undoStacks.get(pageURI).pop();
-        if (state !== undefined) {
-          this.getMEI(pageURI).then(mei => {
-            this.redoStacks.get(pageURI).push(mei);
-            return this.loadData(pageURI, state, true);
-          }).then(() => {
-            resolve(true);
-          });
-          return;
-        }
-      }
-      resolve(false);
-    });
+  async undo (pageURI: string): Promise<boolean> {
+    if (!this.undoStacks.has(pageURI))
+      return false;
+
+    const state = this.undoStacks.get(pageURI).pop();
+    if (!state) return false;
+
+    const mei = await this.getMEI(pageURI);
+    this.redoStacks.get(pageURI).push(mei);
+    await this.loadData(pageURI, state, true);
+    return true;
   }
 
   /**
