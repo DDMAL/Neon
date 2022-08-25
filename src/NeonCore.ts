@@ -6,6 +6,7 @@ import { uuidv4 } from './utils/random';
 
 import PouchDB from 'pouchdb';
 import { setSavedStatus } from './utils/Unsaved';
+import Version from './utils/Version';
 
 /**
  * A cache is used to keep track of what has happened
@@ -355,6 +356,7 @@ class NeonCore {
             if (this.undoStacks.get(pageURI).length > 0) {
               const old = this.undoStacks.get(pageURI).at(-1);
               console.log(old);
+              Version.compare(old, currentMEI);
             }
 
             this.undoStacks.get(pageURI).push(currentMEI);
