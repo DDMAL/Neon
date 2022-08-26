@@ -354,8 +354,7 @@ class NeonCore {
             }
 
             if (this.undoStacks.get(pageURI).length > 0) {
-              const old = this.undoStacks.get(pageURI).at(-1);
-              console.log(old);
+              const old = this.undoStacks.get(pageURI)[this.undoStacks.get(pageURI).length - 1];
               Version.compare(old, currentMEI);
             }
 
@@ -363,7 +362,7 @@ class NeonCore {
             this.redoStacks.set(pageURI, []);
           }
 
-          evt.target.removeEventListener('message', handle);
+          evt.target.removeEventListener('message', handle.bind(this));
           setSavedStatus(false);
 
           // UPDATE CACHE IS THE CULPRIT!!!
