@@ -118,23 +118,6 @@ class DragHandler {
       };
 
       paramArray.push(dragAction);
-
-      if (el.classList.contains('divLine') || el.classList.contains('accid') || el.classList.contains('custos')) {
-        // Else, also add the ChangeStaffAction (for divline, accid, or custo)
-        const { clientX, clientY } = d3.event.sourceEvent;
-        const newStaff = getStaffIdByCoords(clientX, clientY);
-        const staffAction: ChangeStaffToAction = {
-          action: 'changeStaffTo',
-          param: {
-            elementId: id,
-            // if divline is moved to the background (and not a staff),
-            // set the staffId to the original staff
-            staffId: newStaff || el.closest('.staff').id,
-          }
-        };
-
-        paramArray.push(staffAction);
-      }
     });
     const editorAction: EditorAction = {
       action: 'chain',
