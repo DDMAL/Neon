@@ -486,7 +486,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     return;
   }
   let selectionClass;
-  let containsClefOrCustosOrAccidOrDivLine = false;
+  let containsLayerElements = false;
   let containsNc = false;
 
   switch (selectionType) {
@@ -525,7 +525,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
         console.warn('Element ' + element.id + ' is not part of specified group and is not a clef or custos or accid or divLine.');
         continue;
       }
-      containsClefOrCustosOrAccidOrDivLine = containsClefOrCustosOrAccidOrDivLine || true;
+      containsLayerElements = containsLayerElements || true;
     } else {
       containsNc = containsNc || true;
     }
@@ -549,7 +549,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
   const groups = Array.from(groupsToSelect.values()) as SVGGraphicsElement[];
 
   // Handle occurance of clef or custos or accid or divLine
-  if (containsClefOrCustosOrAccidOrDivLine && !containsNc) {
+  if (containsLayerElements && !containsNc) {
     // A context menu will only be displayed if there is a single clef
     if (groupsToSelect.size === 1 && groups[0].classList.contains('clef')) {
       SelectOptions.triggerClefActions(groups[0]);
