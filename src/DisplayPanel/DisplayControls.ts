@@ -251,6 +251,14 @@ function updateHighlightOption (group: GroupingType): void {
 }
 
 /**
+ * @returns The highlight mode chosen by the user.
+ */
+export function getHighlightType (): GroupingType {
+  const highlightType = document.getElementById('highlight-type');
+  return highlightType.textContent.slice(3).toLowerCase() as GroupingType;
+}
+
+/**
  * Set click listener for each highlight dropdown option
  * @param group - GroupingType / The DOM element's id as `highlight-${id}`
  */

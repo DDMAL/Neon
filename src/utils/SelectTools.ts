@@ -1,5 +1,5 @@
 import * as Color from './Color';
-import { updateHighlight } from '../DisplayPanel/DisplayControls';
+import { updateHighlight, getHighlightType } from '../DisplayPanel/DisplayControls';
 import * as Grouping from '../SquareEdit/Grouping';
 import { resize } from './Resize';
 import { Attributes, SelectionType } from '../Types';
@@ -39,6 +39,10 @@ export function unselect (): void {
   // Set the strokes of all divlines back to black
   Array.from(document.getElementsByClassName('divLine')).forEach((syllable: HTMLElement) => {
     syllable.style.stroke = 'black';
+  });
+
+  Array.from(document.getElementsByClassName('neume')).forEach((syllable: HTMLElement) => {
+    syllable.style.fill = '';
   });
 
   Array.from(document.getElementsByClassName('text-select')).forEach((el: SVGElement) => {
@@ -135,6 +139,12 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler, needs
     if (el.querySelectorAll('.divLine').length) {
       el.querySelectorAll('.divLine').forEach((elem: HTMLElement) => {
         elem.style.stroke = '#d00';
+      });
+    }
+
+    if(el.classList.contains('syllable') && getHighlightType() == 'neume') {
+      el.querySelectorAll('.neume').forEach((elem: HTMLElement) => {
+        elem.style.fill = '#d00';
       });
     }
 
