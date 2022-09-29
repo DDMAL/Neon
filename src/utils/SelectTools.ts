@@ -1,5 +1,5 @@
 import * as Color from './Color';
-import { updateHighlight } from '../DisplayPanel/DisplayControls';
+import { updateHighlight, getHighlightType } from '../DisplayPanel/DisplayControls';
 import * as Grouping from '../SquareEdit/Grouping';
 import { resize } from './Resize';
 import { Attributes, SelectionType } from '../Types';
@@ -39,6 +39,10 @@ export function unselect (): void {
   // Set the strokes of all divlines back to black
   Array.from(document.getElementsByClassName('divLine')).forEach((syllable: HTMLElement) => {
     syllable.style.stroke = 'black';
+  });
+
+  Array.from(document.getElementsByClassName('neume')).forEach((syllable: HTMLElement) => {
+    syllable.style.fill = '';
   });
 
   Array.from(document.getElementsByClassName('text-select')).forEach((el: SVGElement) => {
@@ -135,6 +139,12 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler, needs
     if (el.querySelectorAll('.divLine').length) {
       el.querySelectorAll('.divLine').forEach((elem: HTMLElement) => {
         elem.style.stroke = '#d00';
+      });
+    }
+
+    if(el.classList.contains('syllable') && getHighlightType() == 'neume') {
+      el.querySelectorAll('.neume').forEach((elem: HTMLElement) => {
+        elem.style.fill = '#d00';
       });
     }
 
@@ -486,7 +496,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     return;
   }
   let selectionClass;
-  let containsClefOrCustosOrAccidOrDivLine = false;
+  let containsLayerElements = false;
   let containsNc = false;
 
   switch (selectionType) {
@@ -525,7 +535,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
         console.warn('Element ' + element.id + ' is not part of specified group and is not a clef or custos or accid or divLine.');
         continue;
       }
-      containsClefOrCustosOrAccidOrDivLine = containsClefOrCustosOrAccidOrDivLine || true;
+      containsLayerElements = containsLayerElements || true;
     } else {
       containsNc = containsNc || true;
     }
@@ -549,7 +559,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
   const groups = Array.from(groupsToSelect.values()) as SVGGraphicsElement[];
 
   // Handle occurance of clef or custos or accid or divLine
-  if (containsClefOrCustosOrAccidOrDivLine && !containsNc) {
+  if (containsLayerElements && !containsNc) {
     // A context menu will only be displayed if there is a single clef
     if (groupsToSelect.size === 1 && groups[0].classList.contains('clef')) {
       SelectOptions.triggerClefActions(groups[0]);
