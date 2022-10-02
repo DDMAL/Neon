@@ -368,10 +368,8 @@ export function sharedSecondLevelParent (elements: SVGGraphicsElement[]): boolea
   const tempElements = Array.from(elements);
   const firstElement = tempElements.pop();
   const secondParent = firstElement.parentElement.parentElement;
-  console.log(secondParent);
   for (const element of tempElements) {
     const secPar = element.parentElement.parentElement;
-    console.log(secPar);
     if (secPar.id !== secondParent.id) {
       return false;
     }
