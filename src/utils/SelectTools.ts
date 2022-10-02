@@ -232,8 +232,12 @@ export function areAdjacent(selectionType: string, elements: SVGGraphicsElement[
       break;
 
     case 'selByNeume':
-      allElemsOfSelectionType = Array.from(document.querySelectorAll('.neume'));
-      break;
+      // We automatically return 'true' for neumes because we want the user to be 
+      // allowed to group two neumes in separate syllabes without having to parform other
+      // steps first. Yes, there is a trade-off - this allows users to try and group any 
+      // two non-adjacent neumes, but it was decided that the benefits (speed and efficiency)
+      // outweigh the costs (user trying an illegal edit).
+      return true;
 
     case 'selByNc':
       allElemsOfSelectionType = Array.from(document.querySelectorAll('.nc'));
