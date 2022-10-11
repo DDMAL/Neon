@@ -290,6 +290,7 @@ export function areAdjacent(selectionType: string, elements: SVGGraphicsElement[
  * @returns true if all elements share the same logical parent, false otherwise.
  */
 export function sharedLogicalParent(selectionType: string, elements: SVGGraphicsElement[]): boolean {
+  elements = elements.filter(elem => !(elem.classList.contains('divLine') || elem.classList.contains('accid') || elem.classList.contains('clef')));
 
   if (!elementsHaveCorrectType(selectionType, elements)) return false;
 
