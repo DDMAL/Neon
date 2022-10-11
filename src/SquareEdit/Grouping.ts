@@ -196,6 +196,7 @@ export function initGroupingListeners (): void {
 
   try {
     document.getElementById('mergeSyls').addEventListener('click', () => {
+      console.log(getChildrenIds());
       const elementIds = getChildrenIds().filter(e =>
         document.getElementById(e).classList.contains('neume')
       );
@@ -513,7 +514,7 @@ function getChildrenIds (): string[] {
   const childrenIds = [];
   const elements = Array.from(document.getElementsByClassName('selected'));
   elements.forEach(el => {
-    if (el.classList.contains('divLine') || el.classList.contains('accid')) {
+    if (el.classList.contains('divLine') || el.classList.contains('accid') || el.classList.contains('clef')) {
       return;
     }
     const children = Array.from(el.children);
