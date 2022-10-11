@@ -306,6 +306,9 @@ export function sharedLogicalParent(selectionType: string, elements: SVGGraphics
       const referenceParentSyllable = elements[0].closest('.syllable');
       for (let i=0; i<elements.length; i++) {
         const elem = elements[i];
+        if (elem.classList.contains('divLine') || elem.classList.contains('accid') || elem.classList.contains('clef')) {
+          return false;
+        }
         if (!elem.closest('.syllable').isSameNode(referenceParentSyllable)) return false;
       }
       return true;

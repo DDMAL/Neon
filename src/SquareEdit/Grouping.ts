@@ -196,7 +196,6 @@ export function initGroupingListeners (): void {
 
   try {
     document.getElementById('mergeSyls').addEventListener('click', () => {
-      console.log(getChildrenIds());
       const elementIds = getChildrenIds().filter(e =>
         document.getElementById(e).classList.contains('neume')
       );
