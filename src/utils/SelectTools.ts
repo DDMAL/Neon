@@ -25,6 +25,8 @@ export function getSelectionType (): SelectionType {
  * actions.
  */
 export function unselect (): void {
+  document.querySelectorAll('.no-moving').forEach((selected: SVGGElement) => 
+    selected.classList.remove('no-moving'));
   document.querySelectorAll('.selected').forEach((selected: SVGGElement) => {
     selected.classList.remove('selected');
     if (selected.classList.contains('staff')) {
@@ -547,10 +549,12 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     // Check for precedes/follows
     const follows = grouping.getAttribute('mei:follows');
     if (follows) {
+      document.querySelector('#' + follows.slice(1)).classList.add('no-moving');
       groupsToSelect.add(document.querySelector('#' + follows.slice(1)));
     }
     const precedes = grouping.getAttribute('mei:precedes');
     if (precedes) {
+      document.querySelector('#' + precedes.slice(1)).classList.add('no-moving');
       groupsToSelect.add(document.querySelector('#' + precedes.slice(1)));
     }
   }

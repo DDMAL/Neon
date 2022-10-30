@@ -9,6 +9,7 @@ class DragHandler {
   readonly neonView: NeonView;
   private selector: string;
   private selection: SVGGraphicsElement[];
+  private noMovePrecedes: SVGGraphicsElement[];
 
   private dragStartCoords: [number, number] = [-1, -1];
   private resetToAction: (selection: d3.Selection<d3.BaseType, unknown, HTMLElement, unknown>, args: unknown[]) => void;
@@ -48,7 +49,13 @@ class DragHandler {
     const activeNc = d3.selectAll('.selected');
     activeNc.call(dragBehaviour);
 
-    const selection = Array.from(document.querySelectorAll<SVGGraphicsElement>('.selected'));
+    let selection = Array.from(document.querySelectorAll<SVGGraphicsElement>('.selected'));
+
+    // if the user drags the follows syllable in a toggle-linked syllable, 
+    // cancel the compensation for syl movement in dragging.
+    this.noMovePrecedes = selection.filter((el) => el.classList.contains('no-moving') && el.hasAttribute('mei:precedes'));
+    selection = selection.filter(el => !el.classList.contains('no-moving'));
+
     this.selection = selection.concat(Array.from(document.querySelectorAll<SVGGraphicsElement>('.resizePoint')));
   }
 
@@ -65,7 +72,7 @@ class DragHandler {
      * so we cancel that movement out here
      */
     const syls = this.selection.filter((el) => el.classList.contains('syl'));
-    if (syls.length === 0) {
+    if (syls.length === 0 && this.noMovePrecedes.length === 0) {
       const bboxes = Array.from(document.querySelectorAll('.syllable.selected'))
         .map(el => el.querySelector('.sylTextRect-display'));
       this.moveElements(bboxes, -this.dx, -this.dy);
@@ -131,7 +138,9 @@ class DragHandler {
         // Neon re-renders the entire SVG, and hence, before we do so,
         // we need to store all the elements (IDs) we need to select again
         // Then, we need to reselect them by calling `this.reselect()`
-        const toReselect = Array.from(document.querySelectorAll('.selected')).map(el => el.id);
+        const toReselect = Array.from(document.querySelectorAll('.selected'))
+          .filter(el => !el.classList.contains('no-moving'))
+          .map(el => el.id);
 
         // CAUTION: `updateForCurrentPage()` is an asynchronous function!
         // It requires an `await` keyword.
