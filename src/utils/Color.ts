@@ -29,7 +29,10 @@ export function unhighlight(staff?: SVGGElement): void {
   children.forEach(elem => {
     if (elem.tagName === 'path' && !elem.closest('.staff').classList.contains('selected')) {
       elem.setAttribute('stroke', '#000000');
-    } else {
+    } else if (elem.classList.contains('divLine') && !elem.closest('.staff').classList.contains('selected')) {
+      elem.setAttribute('stroke', '#000000');
+    }
+    else {
       elem.removeAttribute('fill');
       let rects = elem.querySelectorAll('.sylTextRect-display');
       if (!rects.length) {
@@ -105,6 +108,9 @@ export function highlight(staff: SVGGElement, color: string): void {
     const child = children[i];
     if (child.tagName === 'path') {
       child.setAttribute('stroke', color);
+    } else if (child.classList.contains('divLine')) {
+      child.setAttribute('stroke', color);
+      child.setAttribute('stroke-width', '30px');
     } else if (child.classList.contains('resizePoint') || child.id === 'resizeRect' || child.classList.contains('rotatePoint')) {
       return;
     } else if (child.classList.contains('layer')) {
@@ -152,7 +158,7 @@ export function highlight(staff: SVGGElement, color: string): void {
   else {
     stroke = '30px';
   }
-  staff.querySelectorAll('.nc, .custos, .clef, .accid, .divLine').forEach(el => {
+  staff.querySelectorAll('.nc, .custos, .clef, .accid').forEach(el => {
     el.setAttribute('stroke', 'black');
     el.setAttribute('stroke-width', stroke);
   });

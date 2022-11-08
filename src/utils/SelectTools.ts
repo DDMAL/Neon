@@ -39,9 +39,11 @@ export function unselect (): void {
   });
 
   // Set the strokes of all divlines back to black
-  Array.from(document.getElementsByClassName('divLine')).forEach((syllable: HTMLElement) => {
-    syllable.style.stroke = 'black';
-  });
+  if (getSelectionType() == 'selBySyllable') {
+    Array.from(document.getElementsByClassName('divLine')).forEach((syllable: HTMLElement) => {
+      syllable.style.stroke = 'black';
+    });
+  }
 
   Array.from(document.getElementsByClassName('neume')).forEach((syllable: HTMLElement) => {
     syllable.style.fill = '';
