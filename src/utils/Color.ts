@@ -223,7 +223,6 @@ export function setGroupingHighlight(grouping: GroupingType): void {
         if (rect.closest('.syl').classList.contains('selected') ||
           rect.closest('.syllable').classList.contains('selected') ||
           rect.closest('.staff').classList.contains('selected')
-          // rect.closest('.layer').classList.contains('selected')
         ) {
           return;
         }
@@ -241,8 +240,13 @@ export function setGroupingHighlight(grouping: GroupingType): void {
       }
       groups[i].classList.remove('highlighted');
     }
+
+    if (groups[i].classList.contains('divLine')) {
+      groups[i].setAttribute('stroke', groupColor);
+      groups[i].setAttribute('stroke-width', '30px');
+    }
   }
-  document.querySelectorAll('.nc, .custos, .clef, .accid, .divLine').forEach(el => {
+  document.querySelectorAll('.nc, .custos, .clef, .accid').forEach(el => {
     el.setAttribute('stroke', 'black');
     el.setAttribute('stroke-width', '30px');
   });
