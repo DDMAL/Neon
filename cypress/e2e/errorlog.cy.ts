@@ -35,7 +35,7 @@ describe('test: error log', () => {
     cy.get('#display-errors').click({ timeout: 100, force: true });
 
     // This should cause an error (out of bounds)!
-    cy.get('#mei_output', { timeout: 50000 }).should('be.visible');
+    cy.get('#mei_output', { timeout: 100000 }).should('be.visible');
     cy.get('#punctum').click({ timeout: 100, force: true });
     cy.get('#svg_group').click(5, 5, { timeout: 100, force: true });
 
