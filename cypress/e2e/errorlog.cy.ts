@@ -5,8 +5,10 @@
 
 describe('test: error log', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8080/editor.html?manifest=test');
+    cy.viewport('macbook-13');
     cy.clearLocalStorage();
+    cy.visit('http://localhost:8080/editor.html?manifest=test');
+    cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
   });
 
   it('startup: error log should not be visible', () => {
@@ -35,7 +37,6 @@ describe('test: error log', () => {
     cy.get('#display-errors').click({ timeout: 100, force: true });
 
     // This should cause an error (out of bounds)!
-    cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
     cy.get('#punctum').click({ timeout: 100, force: true });
     cy.get('#svg_group').click(5, 5, { timeout: 100, force: true });
 
