@@ -7,6 +7,7 @@ describe('test: zoom', () => {
   const ORIGIN_VIEWBOX = [0, 0, 4872, 6496];
 
   beforeEach(() => {
+    cy.viewport('macbook-13');
     // Visit the website, and wait until the MEI SVG is visible:
     cy.visit('http://localhost:8080/editor.html?manifest=test');
     cy.get('#mei_output', { timeout: 10000 }).should('be.visible');

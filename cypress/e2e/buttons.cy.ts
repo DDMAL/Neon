@@ -2,7 +2,9 @@
 
 describe('visual: activate sidebar buttons', () => {
   beforeEach(() => {
+    cy.viewport('macbook-13');
     cy.visit('http://localhost:8080/editor.html?manifest=test');
+    cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
   });
 
   it('class: buttons should have `is-active` class when clicked', () => {
