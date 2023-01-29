@@ -118,7 +118,8 @@ export function convertSbToStaff(sbBasedMei: string): string {
   for (const neume of neumes) {
     if (neume.getElementsByTagName('nc').length === 0) {
       // neume.remove();
-      Notification.queueNotification('This file contains a neume without neume component!', 'warning');
+      const id = neume.getAttribute('xml:id');
+      Notification.queueNotification(`This file contains a neume without neume component!<br/>ID: ${id}`, 'warning');
     }
   }
 
