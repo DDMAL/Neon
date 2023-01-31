@@ -21,7 +21,7 @@ Neon has two main modes: viewer and editor. To learn how to use both, [read the 
 
 Neon for Developers
 -----------
-### To run Neon locally
+### To Run Neon locally
 #### Requirements
  * [yarn](https://yarnpkg.com/en/docs/install):
     * `brew install yarn` on Mac
