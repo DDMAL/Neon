@@ -25,7 +25,7 @@ describe('drag: syllables', () => {
 
   // Select by syllable before each test
   beforeEach(() => {
-    cy.get('#selBySyllable').click();
+    cy.get('#selBySyllable').click().should('have.class', 'is-active');
   });
 
   it('error: move out of bounds LEFT', () => {
