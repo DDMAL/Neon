@@ -1,7 +1,7 @@
 import NeonView from '../NeonView';
-import { ChangeStaffToAction, DragAction, EditorAction } from '../Types';
+import { DragAction, EditorAction } from '../Types';
 import * as d3 from 'd3';
-import { BBox, isOutOfSVGBounds, getGlyphBBox, getStaffIdByCoords } from './Coordinates';
+import { BBox, isOutOfSVGBounds, getGlyphBBox } from './Coordinates';
 import { queueNotification } from './Notification';
 import { selectAll, selectBBox, selectStaff } from './SelectTools';
 

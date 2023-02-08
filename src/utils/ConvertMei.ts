@@ -118,7 +118,8 @@ export function convertSbToStaff(sbBasedMei: string): string {
   for (const neume of neumes) {
     if (neume.getElementsByTagName('nc').length === 0) {
       // neume.remove();
-      Notification.queueNotification('This file contains a neume without neume component!', 'warning');
+      const id = neume.getAttribute('xml:id');
+      Notification.queueNotification(`This file contains a neume without neume component!<br/>ID: ${id}`, 'warning');
     }
   }
 
@@ -127,7 +128,8 @@ export function convertSbToStaff(sbBasedMei: string): string {
   for (const syllable of syllables) {
     if (syllable.getElementsByTagName('neume').length === 0) {
       // syllable.remove();
-      Notification.queueNotification('This file contains a syllable without neume!', 'warning');
+      const id = syllable.getAttribute('xml:id');
+      Notification.queueNotification(`This file contains a syllable without neume!<br/>ID: ${id}`, 'warning');
     }
   }
 
@@ -240,7 +242,12 @@ export function convertSbToStaff(sbBasedMei: string): string {
 
     // For each toggle-linked syllable
     // Set @precedes and @follows to make sure pointing to the correct syllable
-    if (syllable.hasAttribute('precedes')) {
+    if (syllable.hasAttribute('precedes') && syllable.hasAttribute('follows')) {
+      // Check if the syllable has both @precedes and @follows
+      const sylId = syllable.getAttribute('xml:id');
+      Notification.queueNotification(`This file contains a syllable that has both @precedes and @follows!<br/>ID: ${sylId}`, 'error');
+    }
+    else if (syllable.hasAttribute('precedes')) {
       // Get xml:id of the next syllable (without the #, if it exists)
       const nextSyllableId = syllable.getAttribute('precedes').replace('#', '');
 
@@ -258,21 +265,24 @@ export function convertSbToStaff(sbBasedMei: string): string {
       // Condition 1: The next (following) syllable cannot be found
       if (!nextSyllable) {
         const sylText = getSyllableText(syllable);
-        Notification.queueNotification(`Missing the 2nd part of the toggle-linked syllable (${sylText})`, 'error');
+        const sylId = syllable.getAttribute('xml:id');
+        Notification.queueNotification(`Missing the 2nd part of the toggle-linked syllable (${sylText})<br/>ID: ${sylId}`, 'error');
         continue;
       }
 
       // Condition 2: The next syllable has been found, but the @follows attribute does NOT EXIST
       if (!nextSyllable.hasAttribute('follows')) {
         const sylText = getSyllableText(syllable);
-        Notification.queueNotification(`The 2nd part of the toggle-linked syllable (${sylText}) does not link to any syllable`, 'error');
+        const sylId = syllable.getAttribute('xml:id');
+        Notification.queueNotification(`The 2nd part of the toggle-linked syllable (${sylText}) does not link to any syllable<br/>ID: ${sylId}`, 'error');
         continue;
       }
 
       // Condition 3: The next syllable's @follows attribute exists, but it is not in the correct format #id
       if (nextSyllable.getAttribute('follows') != '#' + syllable.getAttribute('xml:id')) {
         const sylText = getSyllableText(syllable);
-        Notification.queueNotification(`The 2nd part of the toggle-linked syllable (${sylText}) links to the wrong syllable`, 'error');
+        const sylId = syllable.getAttribute('xml:id');
+        Notification.queueNotification(`The 2nd part of the toggle-linked syllable (${sylText}) links to the wrong syllable<br/>ID: ${sylId}`, 'error');
         continue;
       }
 
@@ -286,7 +296,8 @@ export function convertSbToStaff(sbBasedMei: string): string {
           .map((syllable) => getSyllableText(syllable));
 
         const sylsText = [sylText, ...unexpectedSylsText].join(' - ');
-        Notification.queueNotification(`Unexpected syllable(s) inside toggle-linked syllable: ${sylsText}`, 'error');
+        const sylId = syllable.getAttribute('xml:id');
+        Notification.queueNotification(`Unexpected syllable(s) inside toggle-linked syllable: ${sylsText}<br/>ID: ${sylId}`, 'error');
       }
     }
     // Toggle-linked syllables: Check the FOLLOWING syllable
@@ -297,21 +308,24 @@ export function convertSbToStaff(sbBasedMei: string): string {
       // Condition 1: The previous syllable does not exist
       if (!prevSyllable) {
         const sylText = getSyllableText(syllable);
-        Notification.queueNotification(`Missing the 1st part of the toggle-linked syllable (${sylText})`, 'error');
+        const sylId = syllable.getAttribute('xml:id');
+        Notification.queueNotification(`Missing the 1st part of the toggle-linked syllable (${sylText})<br/>ID: ${sylId}`, 'error');
         continue;
       }
 
       // Condition 2: The previous syllable exists, but the @precedes attribute does NOT EXIST
       if (!prevSyllable.hasAttribute('precedes')) {
         const sylText = getSyllableText(prevSyllable);
-        Notification.queueNotification(`The 1st part of the toggle-linked syllable (${sylText}) does not link to any syllable`, 'error');
+        const sylId = syllable.getAttribute('xml:id');
+        Notification.queueNotification(`The 1st part of the toggle-linked syllable (${sylText}) does not link to any syllable<br/>ID: ${sylId}`, 'error');
         continue;
       }
 
       // Condition 3: The previous syllable's @precedes attribute exists, but it is not in the correct format #id
       if (prevSyllable.getAttribute('precedes') != '#' + syllable.getAttribute('xml:id')) {
         const sylText = getSyllableText(prevSyllable);
-        Notification.queueNotification(`The 1st part of the toggle-linked syllable (${sylText}) links to the wrong syllable`, 'error');
+        const sylId = syllable.getAttribute('xml:id');
+        Notification.queueNotification(`The 1st part of the toggle-linked syllable (${sylText}) links to the wrong syllable<br/>ID: ${sylId}`, 'error');
       }
     }
   }
