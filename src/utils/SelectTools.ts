@@ -38,13 +38,6 @@ export function unselect (): void {
     }
   });
 
-  // Set the strokes of all divlines back to black
-  if (getSelectionType() == 'selBySyllable') {
-    Array.from(document.getElementsByClassName('divLine')).forEach((syllable: HTMLElement) => {
-      syllable.style.stroke = 'black';
-    });
-  }
-
   Array.from(document.getElementsByClassName('neume')).forEach((syllable: HTMLElement) => {
     syllable.style.fill = '';
   });
@@ -168,10 +161,11 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler, needs
       });
     }
   }
-
-  if (needsHighlightUpdate)
+  if (needsHighlightUpdate) {
     updateHighlight();
+  }
 }
+    
 
 /**
  * Select an nc.
