@@ -38,8 +38,13 @@ export function unselect (): void {
     }
   });
 
-  Array.from(document.getElementsByClassName('neume')).forEach((syllable: HTMLElement) => {
-    syllable.style.fill = '';
+  Array.from(document.getElementsByClassName('divLine')).forEach((divLine: HTMLElement) => {
+    divLine.setAttribute('stroke', 'black');
+    divLine.setAttribute('stroke-width', '30px');
+  });
+
+  Array.from(document.getElementsByClassName('neume')).forEach((neume: HTMLElement) => {
+    neume.style.fill = '';
   });
 
   Array.from(document.getElementsByClassName('text-select')).forEach((el: SVGElement) => {
