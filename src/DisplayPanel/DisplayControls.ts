@@ -342,9 +342,6 @@ function setHighlightKeyControls (): void {
   });
 }
 
-
-
-// Why does this exist separately?
 export function setHighlightSelectionControls (): void {
   const highlightSelection = document.getElementById('highlight-selection');
   highlightSelection.addEventListener('click', () => {

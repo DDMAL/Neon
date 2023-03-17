@@ -214,6 +214,11 @@ export function setGroupingHighlight(grouping: GroupingType): void {
     groups = document.getElementsByClassName(grouping) as HTMLCollectionOf<HTMLElement>;
   }
 
+  document.querySelectorAll('.nc, .custos, .clef, .accid, .divLine').forEach(el => {
+    el.setAttribute('stroke', 'black');
+    el.setAttribute('stroke-width', '30px');
+  });
+
   for (let i = 0; i < groups.length; i++) {
     const groupColor = ColorPalette[i % ColorPalette.length];
     if ((groups[i].closest('.selected') === null) && !groups[i].classList.contains('selected')) {
@@ -243,11 +248,7 @@ export function setGroupingHighlight(grouping: GroupingType): void {
 
     if (groups[i].classList.contains('divLine')) {
       groups[i].setAttribute('stroke', groupColor);
-      groups[i].setAttribute('stroke-width', '30px');
     }
   }
-  document.querySelectorAll('.nc, .custos, .clef, .accid').forEach(el => {
-    el.setAttribute('stroke', 'black');
-    el.setAttribute('stroke-width', '30px');
-  });
+  
 }

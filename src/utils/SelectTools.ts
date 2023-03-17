@@ -38,15 +38,13 @@ export function unselect (): void {
     }
   });
 
-  // Set the strokes of all divlines back to black
-  if (getSelectionType() == 'selBySyllable') {
-    Array.from(document.getElementsByClassName('divLine')).forEach((syllable: HTMLElement) => {
-      syllable.style.stroke = 'black';
-    });
-  }
+  Array.from(document.getElementsByClassName('divLine')).forEach((divLine: HTMLElement) => {
+    divLine.setAttribute('stroke', 'black');
+    divLine.setAttribute('stroke-width', '30px');
+  });
 
-  Array.from(document.getElementsByClassName('neume')).forEach((syllable: HTMLElement) => {
-    syllable.style.fill = '';
+  Array.from(document.getElementsByClassName('neume')).forEach((neume: HTMLElement) => {
+    neume.style.fill = '';
   });
 
   Array.from(document.getElementsByClassName('text-select')).forEach((el: SVGElement) => {
@@ -168,10 +166,11 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler, needs
       });
     }
   }
-
-  if (needsHighlightUpdate)
+  if (needsHighlightUpdate) {
     updateHighlight();
+  }
 }
+    
 
 /**
  * Select an nc.

@@ -14,8 +14,7 @@ describe('resize: bounding boxes', () => {
 
   const BBOX_ID = '#m-8e6837fc-19d4-42c9-8266-cd54bb6f1dea';
 
-  // TODO: Fix in https://github.com/DDMAL/Neon/pull/937
-  it.skip('oob: bbox should return to original size', () => {
+  it('oob: bbox should return to original size', () => {
     cy.get(BBOX_ID)
       .click()
       .should('have.class', 'selected');
