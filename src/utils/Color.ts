@@ -246,8 +246,12 @@ export function setGroupingHighlight(grouping: GroupingType): void {
       groups[i].classList.remove('highlighted');
     }
 
-    if (groups[i].classList.contains('divLine')) {
-      groups[i].setAttribute('stroke', groupColor);
+    const divLineChildren = groups[i].querySelectorAll('.divLine');
+    if (divLineChildren) {
+      for (let j = 0; j < divLineChildren.length; j++) {
+        divLineChildren[j].setAttribute('stroke', groupColor);
+        divLineChildren[j].setAttribute('stroke-width', '30px');
+      }
     }
   }
   
