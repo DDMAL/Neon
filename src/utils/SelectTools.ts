@@ -36,37 +36,39 @@ export function unselect (): void {
       selected.removeAttribute('style');
       selected.style.fill = '';
     }
+
+    Array.from(selected.querySelectorAll('.divLine')).forEach((divLine: HTMLElement) => {
+      divLine.style.stroke = '';
+      divLine.setAttribute('stroke-width', '30px');
+    });
+  
+    Array.from(selected.querySelectorAll('.neume')).forEach((neume: HTMLElement) => {
+      neume.style.fill = '';
+    });
+  
+    Array.from(selected.querySelectorAll('.text-select')).forEach((el: SVGElement) => {
+      el.style.color = '';
+      el.style.fontWeight = '';
+      el.classList.remove('text-select');
+    });
+  
+    Array.from(selected.querySelectorAll('.sylTextRect-display')).forEach((sylRect: HTMLElement) => {
+      sylRect.style.fill = 'blue';
+    });
+
+    if (selected.parentElement.classList.contains('syllable-highlighted')) {
+      selected.parentElement.style.fill = '';
+      selected.parentElement.classList.add('syllable');
+      selected.parentElement.classList.remove('syllable-highlighted');
+    }
+    
+    d3.selectAll('#resizeRect').remove();
+    d3.selectAll('.resizePoint').remove();
+    d3.selectAll('.rotatePoint').remove();
+  
   });
 
-  Array.from(document.getElementsByClassName('divLine')).forEach((divLine: HTMLElement) => {
-    divLine.style.stroke = '';
-    divLine.setAttribute('stroke-width', '30px');
-  });
-
-  Array.from(document.getElementsByClassName('neume')).forEach((neume: HTMLElement) => {
-    neume.style.fill = '';
-  });
-
-  Array.from(document.getElementsByClassName('text-select')).forEach((el: SVGElement) => {
-    el.style.color = '';
-    el.style.fontWeight = '';
-    el.classList.remove('text-select');
-  });
-
-  Array.from(document.getElementsByClassName('sylTextRect-display')).forEach((sylRect: HTMLElement) => {
-    sylRect.style.fill = 'blue';
-  });
-
-  Array.from(document.getElementsByClassName('syllable-highlighted')).forEach((syllable: HTMLElement) => {
-    syllable.style.fill = '';
-    syllable.classList.add('syllable');
-    syllable.classList.remove('syllable-highlighted');
-  });
-
-  d3.selectAll('#resizeRect').remove();
-  d3.selectAll('.resizePoint').remove();
-  d3.selectAll('.rotatePoint').remove();
-
+    
   if (!document.getElementById('selByStaff').classList.contains('is-active')) {
     Grouping.endGroupingSelection();
   } else {
