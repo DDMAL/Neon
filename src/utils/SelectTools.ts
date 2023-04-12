@@ -39,7 +39,7 @@ export function unselect (): void {
   });
 
   Array.from(document.getElementsByClassName('divLine')).forEach((divLine: HTMLElement) => {
-    divLine.setAttribute('stroke', 'black');
+    divLine.style.stroke = '';
     divLine.setAttribute('stroke-width', '30px');
   });
 
