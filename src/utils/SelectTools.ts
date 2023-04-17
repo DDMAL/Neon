@@ -61,7 +61,7 @@ export function unselect (): void {
       selected.parentElement.classList.add('syllable');
       selected.parentElement.classList.remove('syllable-highlighted');
     }
-    
+
     d3.selectAll('#resizeRect').remove();
     d3.selectAll('.resizePoint').remove();
     d3.selectAll('.rotatePoint').remove();
@@ -146,7 +146,7 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler, needs
       });
     }
 
-    if(el.classList.contains('syllable') && getHighlightType() == 'neume') {
+    if(el.classList.contains('syllable')) {
       el.querySelectorAll('.neume').forEach((elem: HTMLElement) => {
         elem.style.fill = '#d00';
       });

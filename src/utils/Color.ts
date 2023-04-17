@@ -111,7 +111,7 @@ export function highlight(staff: SVGGElement, color: string): void {
     } else if (child.classList.contains('divLine')) {
       child.setAttribute('stroke', color);
       child.setAttribute('stroke-width', '30px');
-    } else if (child.querySelectorAll('.divLine').length>0 && child.classList.contains('syllable')) {
+    } else if (child.querySelectorAll('.divLine').length && child.classList.contains('syllable')) {
       Array.from(child.children).filter(el => el.querySelectorAll('.divLine')).forEach(cchild => { children.push(cchild); });
     }
     else if (child.classList.contains('resizePoint') || child.id === 'resizeRect' || child.classList.contains('rotatePoint')) {
