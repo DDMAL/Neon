@@ -60,6 +60,15 @@ export function unselect (): void {
       selected.parentElement.style.fill = '';
       selected.parentElement.classList.add('syllable');
       selected.parentElement.classList.remove('syllable-highlighted');
+      
+      Array.from(selected.parentElement.querySelectorAll('.divLine')).forEach((divLine: HTMLElement) => {
+        divLine.style.stroke = '';
+        divLine.setAttribute('stroke-width', '30px');
+      });
+    
+      Array.from(selected.parentElement.querySelectorAll('.neume')).forEach((neume: HTMLElement) => {
+        neume.style.fill = '';
+      });
     }
 
     d3.selectAll('#resizeRect').remove();
@@ -463,6 +472,15 @@ export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, ne
     const closest = el.closest('.syllable') as HTMLElement;
     closest.style.fill = '#d00';
     closest.classList.add('syllable-highlighted');
+    if(closest.querySelectorAll('.divLine').length) {
+      closest.querySelectorAll('.neume').forEach((elem: HTMLElement) => {
+        elem.style.fill = '#d00';
+      });
+      closest.querySelectorAll('.divLine').forEach((elem: HTMLElement) => {
+        elem.style.stroke = '#d00';
+      });
+    }
+
     if (neonView !== undefined ){
       resize(syl as SVGGraphicsElement, neonView, dragHandler);
     }
