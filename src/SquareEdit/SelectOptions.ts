@@ -825,6 +825,10 @@ export function triggerLayerElementActions (element: SVGGraphicsElement): void {
     ? Contents.layerElementInActionContents
     : Contents.layerElementOutActionContents;
   setEditControls('moreEdit', layerElementActions, false);
+  if (element.classList.contains('divLine')) {
+    setEditControls('extraEdit', Contents.divLineActionContents);
+    initOptionsListeners();
+  }
   addDeleteListener();
 
   addChangeStaffListener();
