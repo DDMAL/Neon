@@ -589,13 +589,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
   // Handle occurance of clef or custos or accid or divLine
   if (containsLayerElements && !containsNc) {
     // A context menu will only be displayed if there is a single clef
-    if (groupsToSelect.size === 1 && groups[0].classList.contains('clef')) {
-      SelectOptions.triggerClefActions(groups[0]);
-    } else if (groupsToSelect.size === 1 && groups[0].classList.contains('custos')) {
-      SelectOptions.triggerCustosActions();
-    } else if (groupsToSelect.size === 1 && groups[0].classList.contains('accid')) {
-      SelectOptions.triggerAccidActions(groups[0]);
-    } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divLine')) {
+    if (groupsToSelect.size === 1 ) {
       SelectOptions.triggerLayerElementActions(groups[0]);
     }else {
       if (selectionType == 'selBySyllable') {
@@ -622,13 +616,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       break;
 
     case 'selByLayerElement':
-      if (groupsToSelect.size === 1 && groups[0].classList.contains('clef')) {
-        SelectOptions.triggerClefActions(groups[0]);
-      } else if (groupsToSelect.size === 1 && groups[0].classList.contains('custos')) {
-        SelectOptions.triggerCustosActions();
-      } else if (groupsToSelect.size === 1 && groups[0].classList.contains('accid')) {
-        SelectOptions.triggerAccidActions(groups[0]);
-      } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divLine')) {
+      if (groupsToSelect.size === 1) {
         SelectOptions.triggerLayerElementActions(groups[0]);
       }else {
         SelectOptions.triggerDefaultActions();
