@@ -46,12 +46,6 @@ export function unselect (): void {
       neume.style.fill = '';
     });
   
-    Array.from(selected.querySelectorAll('.text-select')).forEach((el: SVGElement) => {
-      el.style.color = '';
-      el.style.fontWeight = '';
-      el.classList.remove('text-select');
-    });
-  
     Array.from(selected.querySelectorAll('.sylTextRect-display')).forEach((sylRect: HTMLElement) => {
       sylRect.style.fill = 'blue';
     });
@@ -77,7 +71,12 @@ export function unselect (): void {
   
   });
 
-    
+  Array.from(document.querySelectorAll('.text-select')).forEach((el: SVGElement) => {
+    el.style.color = '';
+    el.style.fontWeight = '';
+    el.classList.remove('text-select');
+  });
+  
   if (!document.getElementById('selByStaff').classList.contains('is-active')) {
     Grouping.endGroupingSelection();
   } else {
