@@ -245,24 +245,6 @@ export function moveOutsideSyllableHandler(): void {
   });
 }
 
-/**
- * Trigger the extra layer element action menu for a selection.
- */
-//  export function triggerLayerElementActions (): void {
-//   endOptionsSelection();
-//   try {
-//     const moreEdit = document.getElementById('moreEdit');
-//     moreEdit.classList.remove('is-hidden');
-//     moreEdit.innerHTML = Contents.defaultActionContents;
-//   } catch (e) {}
-
-//   try {
-//     const del = document.getElementById('delete');
-//     del.removeEventListener('click', removeHandler);
-//     del.addEventListener('click', removeHandler);
-//     document.body.addEventListener('keydown', deleteButtonHandler);
-//   } catch (e) {}
-// }
 
 function addDeleteListener(): void {
   const del = document.getElementById('delete');
@@ -639,31 +621,106 @@ export function triggerSyllableActions (selectionType: string): void {
   Grouping.initGroupingListeners();
 }
 
+
 /**
- * Trigger extra clef actions for a specific clef.
- * @param clef - The clef on which to trigger additional actions.
+ * Trigger extra layer element (accid, divLine, custos, clef) actions.
  */
-export function triggerClefActions (clef: SVGGraphicsElement): void {
+export function triggerLayerElementActions (element: SVGGraphicsElement): void {
   endOptionsSelection();
 
-  const isClefInSyllable = clef.parentElement.classList.contains('syllable');
-  const moreEditContents = (isClefInSyllable)
+  if (element.classList.contains('custos')) {
+    setEditControls('moreEdit', Contents.custosActionContents);
+    addChangeStaffListener();
+    addDeleteListener();
+
+    return;
+  }
+  
+  const parentIsSyllable = element.parentElement.classList.contains('syllable');
+  const layerElementActions = parentIsSyllable
     ? Contents.layerElementInActionContents
     : Contents.layerElementOutActionContents;
-  setEditControls('moreEdit', moreEditContents);
-  setEditControls('extraEdit', Contents.clefActionContents);
+  
+  setEditControls('moreEdit', layerElementActions, false);
+  
+  // extra actions for accid and divLine
+  if (element.classList.contains('accid')) {
+    setEditControls('extraEdit', Contents.accidActionContents);
+    accidOptionsListener(element);
+  }
+  else if (element.classList.contains('clef')) {
+    setEditControls('extraEdit', Contents.clefActionContents);
+    clefOptionsListener(element);
+  }
+  else if (element.classList.contains('divLine')) {
+    setEditControls('extraEdit', Contents.divLineActionContents);
+    divLineOptionsListener(element);
+  }
+  addChangeStaffListener();
+  document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
+  document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
+
+ 
   addDeleteListener();
 
   addChangeStaffListener();
   document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
   document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
+}
 
+function accidOptionsListener(element: SVGGraphicsElement): void {
+  document.querySelector('#ChangeToFlat.dropdown-item')
+    .addEventListener('click', () => {
+      const changeToFlat: SetAction = {
+        action: 'set',
+        param: {
+          elementId: element.id,
+          attrType: 'accid',
+          attrValue: 'f'
+        }
+      };
+      neonView.edit(changeToFlat, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Shape Changed', 'success');
+        } else {
+          Notification.queueNotification('Shape Change Failed', 'error');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
+    });
+  document.querySelector('#ChangeToNatural.dropdown-item')
+    .addEventListener('click', () => {
+      const changeToNatural: EditorAction = {
+        action: 'set',
+        param: {
+          elementId: element.id,
+          attrType: 'accid',
+          attrValue: 'n'
+        }
+      };
+      neonView.edit(changeToNatural, neonView.view.getCurrentPageURI()).then((result) => {
+        if (result) {
+          Notification.queueNotification('Shape Changed', 'success');
+        } else {
+          Notification.queueNotification('Shape Change Failed', 'error');
+        }
+        endOptionsSelection();
+        neonView.updateForCurrentPage();
+      });
+    });
+
+  initOptionsListeners();
+
+}
+
+function clefOptionsListener(element: SVGGraphicsElement): void {
   document.querySelector('#increment-octave')
     .addEventListener('click', () => {
       const incrementOctave: DisplaceClefOctaveAction = {
         action: 'displaceClefOctave',
         param: {
-          elementId: clef.id,
+          elementId: element.id,
           direction: 'above'
         }
       };
@@ -684,7 +741,7 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
       const incrementOctave: DisplaceClefOctaveAction = {
         action: 'displaceClefOctave',
         param: {
-          elementId: clef.id,
+          elementId: element.id,
           direction: 'below'
         }
       };
@@ -705,7 +762,7 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
       const setCClef: SetClefAction = {
         action: 'setClef',
         param: {
-          elementId: clef.id,
+          elementId: element.id,
           shape: 'C'
         }
       };
@@ -724,7 +781,7 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
       const setFClef: SetClefAction = {
         action: 'setClef',
         param: {
-          elementId: clef.id,
+          elementId: element.id,
           shape: 'F'
         }
       };
@@ -742,96 +799,10 @@ export function triggerClefActions (clef: SVGGraphicsElement): void {
   initOptionsListeners();
 }
 
-/**
- * Trigger extra custos actions.
- */
-export function triggerCustosActions (): void {
-  endOptionsSelection();
-  setEditControls('moreEdit', Contents.custosActionContents);
-  addChangeStaffListener();
-  addDeleteListener();
-}
-
-/**
- * Trigger extra accid actions.
- */
-export function triggerAccidActions (accid: SVGGraphicsElement): void {
-  endOptionsSelection();
-
-  const isSyllableInAccid = accid.parentElement.classList.contains('syllable');
-  const moreEditContents = (isSyllableInAccid)
-    ? Contents.layerElementInActionContents
-    : Contents.layerElementOutActionContents;
-  setEditControls('moreEdit', moreEditContents, false);
-  setEditControls('extraEdit', Contents.accidActionContents);
-  addDeleteListener();
-
-  addChangeStaffListener();
-  document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
-  document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
-
-  document.querySelector('#ChangeToFlat.dropdown-item')
-    .addEventListener('click', () => {
-      const changeToFlat: SetAction = {
-        action: 'set',
-        param: {
-          elementId: accid.id,
-          attrType: 'accid',
-          attrValue: 'f'
-        }
-      };
-      neonView.edit(changeToFlat, neonView.view.getCurrentPageURI()).then((result) => {
-        if (result) {
-          Notification.queueNotification('Shape Changed', 'success');
-        } else {
-          Notification.queueNotification('Shape Change Failed', 'error');
-        }
-        endOptionsSelection();
-        neonView.updateForCurrentPage();
-      });
-    });
-  document.querySelector('#ChangeToNatural.dropdown-item')
-    .addEventListener('click', () => {
-      const changeToNatural: EditorAction = {
-        action: 'set',
-        param: {
-          elementId: accid.id,
-          attrType: 'accid',
-          attrValue: 'n'
-        }
-      };
-      neonView.edit(changeToNatural, neonView.view.getCurrentPageURI()).then((result) => {
-        if (result) {
-          Notification.queueNotification('Shape Changed', 'success');
-        } else {
-          Notification.queueNotification('Shape Change Failed', 'error');
-        }
-        endOptionsSelection();
-        neonView.updateForCurrentPage();
-      });
-    });
-
+function divLineOptionsListener(element: SVGGraphicsElement): void {
+  // TODO: wait on verovio actions
   initOptionsListeners();
 }
-
-/**
- * Trigger extra layer element (accid, divLine, custos) actions.
- */
-export function triggerLayerElementActions (element: SVGGraphicsElement): void {
-  endOptionsSelection();
-
-  const parentIsSyllable = element.parentElement.classList.contains('syllable');
-  const layerElementActions = parentIsSyllable
-    ? Contents.layerElementInActionContents
-    : Contents.layerElementOutActionContents;
-  setEditControls('moreEdit', layerElementActions, false);
-  addDeleteListener();
-
-  addChangeStaffListener();
-  document.getElementById('insertToSyllable')?.addEventListener('click', insertToSyllableHandler);
-  document.getElementById('moveOutsideSyllable')?.addEventListener('click', moveOutsideSyllableHandler);
-}
-
 
 /**
  * Trigger extra staff actions.
