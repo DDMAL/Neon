@@ -337,6 +337,29 @@ export const clefActionContents =
     `;
 
 /**
+ * Contents of divLine type action menu.
+ */
+export const divLineActionContents =
+`<label>Change DivLine:</label>
+<div class="drop_select dropdown">
+    <div class="dropdown-trigger"overflow="auto">
+        <button id="select-options" class="side-panel-btn" aria-haspopup="true" aria-controls="dropdown-menu">
+            <span>Shapes</span>
+            <svg class="icon"><use xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use></svg>
+        </button>
+    </div>
+    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+            <a id="ChangeToMinima" class="dropdown-item">Minima</a>
+            <a id="ChangeToMaior" class="dropdown-item">Maior</a>
+            <a id="ChangeToMaxima" class="dropdown-item">Maxima</a>
+            <a id="ChangeToFinalis" class="dropdown-item">Finalis</a>
+            <a id="ChangeToCaesura" class="dropdown-item">Caesura</a>
+        </div>
+    </div>
+</div>`;
+
+/**
  * HTML for grouping selection menu.
  */
 export const groupingMenu = {

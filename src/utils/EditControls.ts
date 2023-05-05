@@ -2,7 +2,6 @@ import * as Notification from './Notification';
 import NeonView from '../NeonView';
 import { convertStaffToSb } from './ConvertMei';
 import { EditorAction } from '../Types';
-import ZoomHandler from '../SingleView/Zoom';
 
 /**
  * Set top navbar event listeners.
@@ -292,7 +291,8 @@ export function initUndoRedoPanel (neonView: NeonView): void {
       if (result) {
         neonView.updateForCurrentPage();
       } else {
-        console.error('Failed to undo action');
+        Notification.queueNotification('There is nothing left to undo.');
+        console.warn('Failed to undo action');
       }
     });
   }
@@ -305,7 +305,8 @@ export function initUndoRedoPanel (neonView: NeonView): void {
       if (result) {
         neonView.updateForCurrentPage();
       } else {
-        console.error('Failed to redo action');
+        Notification.queueNotification('There is nothing left to redo.');
+        console.warn('Failed to redo action');
       }
     });
   }

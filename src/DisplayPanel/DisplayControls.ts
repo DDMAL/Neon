@@ -78,7 +78,7 @@ export function setOpacityFromSlider (meiClassName?: string): void {
   // this is where we load glyph opacity from localStorage on page-load
   setSettings({ glyphOpacity: Number(opacityOutput.value) });
 
-  // dispay correct slider tiggle display icon
+  // dispay correct slider toggle display icon
   const hideGlyphsImg = document.querySelector('#toggle-glyph-opacity > img');
   if (Number(opacityOutput.value) === 0) {
     hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/show-icon.svg`);
@@ -109,7 +109,6 @@ function setOpacityControls (meiClassName: string): void {
   opacitySlider.value = String(glyphOpacity);
   opacityOutput.value = String(glyphOpacity);
 
-
   function inputChangeOpacity (): void {
     opacityOutput.value = opacitySlider.value;
     lastGlyphOpacity = Number(opacitySlider.value);
@@ -117,6 +116,11 @@ function setOpacityControls (meiClassName: string): void {
   }
 
   const toggleOpacityBtn = document.getElementById('toggle-glyph-opacity');
+
+  if (glyphOpacity == 100) {
+    toggleOpacityBtn.classList.add('hide-icon');
+  }
+
   toggleOpacityBtn?.addEventListener('click', () => {
 
     let newOpacity;
@@ -172,6 +176,11 @@ function setBackgroundOpacityControls (background: string): void {
 
 
   const toggleBgOpacityBtn = document.getElementById('toggle-bg-opacity');
+
+  if (imageOpacity == 100) {
+    toggleBgOpacityBtn.classList.add('hide-icon');
+  }
+
   toggleBgOpacityBtn.addEventListener('click', () => {
 
     let newOpacity;
@@ -251,6 +260,14 @@ function updateHighlightOption (group: GroupingType): void {
 }
 
 /**
+ * @returns The highlight mode chosen by the user.
+ */
+export function getHighlightType (): GroupingType {
+  const highlightType = document.getElementById('highlight-type');
+  return highlightType.textContent.slice(3).toLowerCase() as GroupingType;
+}
+
+/**
  * Set click listener for each highlight dropdown option
  * @param group - GroupingType / The DOM element's id as `highlight-${id}`
  */
@@ -325,9 +342,6 @@ function setHighlightKeyControls (): void {
   });
 }
 
-
-
-// Why does this exist separately?
 export function setHighlightSelectionControls (): void {
   const highlightSelection = document.getElementById('highlight-selection');
   highlightSelection.addEventListener('click', () => {

@@ -29,7 +29,10 @@ export function unhighlight(staff?: SVGGElement): void {
   children.forEach(elem => {
     if (elem.tagName === 'path' && !elem.closest('.staff').classList.contains('selected')) {
       elem.setAttribute('stroke', '#000000');
-    } else {
+    } else if (elem.classList.contains('divLine') && !elem.closest('.staff').classList.contains('selected')) {
+      elem.setAttribute('stroke', '#000000');
+    }
+    else {
       elem.removeAttribute('fill');
       let rects = elem.querySelectorAll('.sylTextRect-display');
       if (!rects.length) {
@@ -105,7 +108,13 @@ export function highlight(staff: SVGGElement, color: string): void {
     const child = children[i];
     if (child.tagName === 'path') {
       child.setAttribute('stroke', color);
-    } else if (child.classList.contains('resizePoint') || child.id === 'resizeRect' || child.classList.contains('rotatePoint')) {
+    } else if (child.classList.contains('divLine')) {
+      child.setAttribute('stroke', color);
+      child.setAttribute('stroke-width', '30px');
+    } else if (child.querySelectorAll('.divLine').length && child.classList.contains('syllable')) {
+      Array.from(child.children).filter(el => el.querySelectorAll('.divLine')).forEach(cchild => { children.push(cchild); });
+    }
+    else if (child.classList.contains('resizePoint') || child.id === 'resizeRect' || child.classList.contains('rotatePoint')) {
       return;
     } else if (child.classList.contains('layer')) {
       Array.from(child.children).forEach(cchild => { children.push(cchild); });
@@ -152,7 +161,7 @@ export function highlight(staff: SVGGElement, color: string): void {
   else {
     stroke = '30px';
   }
-  staff.querySelectorAll('.nc, .custos, .clef, .accid, .divLine').forEach(el => {
+  staff.querySelectorAll('.nc, .custos, .clef, .accid').forEach(el => {
     el.setAttribute('stroke', 'black');
     el.setAttribute('stroke-width', stroke);
   });
@@ -208,6 +217,11 @@ export function setGroupingHighlight(grouping: GroupingType): void {
     groups = document.getElementsByClassName(grouping) as HTMLCollectionOf<HTMLElement>;
   }
 
+  document.querySelectorAll('.nc, .custos, .clef, .accid, .divLine').forEach(el => {
+    el.setAttribute('stroke', 'black');
+    el.setAttribute('stroke-width', '30px');
+  });
+
   for (let i = 0; i < groups.length; i++) {
     const groupColor = ColorPalette[i % ColorPalette.length];
     if ((groups[i].closest('.selected') === null) && !groups[i].classList.contains('selected')) {
@@ -217,7 +231,6 @@ export function setGroupingHighlight(grouping: GroupingType): void {
         if (rect.closest('.syl').classList.contains('selected') ||
           rect.closest('.syllable').classList.contains('selected') ||
           rect.closest('.staff').classList.contains('selected')
-          // rect.closest('.layer').classList.contains('selected')
         ) {
           return;
         }
@@ -235,9 +248,14 @@ export function setGroupingHighlight(grouping: GroupingType): void {
       }
       groups[i].classList.remove('highlighted');
     }
+
+    const divLineChildren = groups[i].querySelectorAll('.divLine');
+    if (divLineChildren) {
+      for (let j = 0; j < divLineChildren.length; j++) {
+        divLineChildren[j].setAttribute('stroke', groupColor);
+        divLineChildren[j].setAttribute('stroke-width', '30px');
+      }
+    }
   }
-  document.querySelectorAll('.nc, .custos, .clef, .accid, .divLine').forEach(el => {
-    el.setAttribute('stroke', 'black');
-    el.setAttribute('stroke-width', '30px');
-  });
+  
 }

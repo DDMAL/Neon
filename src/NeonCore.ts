@@ -343,13 +343,23 @@ class NeonCore {
           action: 'edit',
           editorAction: editorAction
         };
-        function handle (evt: MessageEvent): void {
+        function handle (this: NeonCore, evt: MessageEvent): void {
           if (evt.data.id === message.id) {
             if (evt.data.result) {
               if (!this.undoStacks.has(pageURI)) {
                 this.undoStacks.set(pageURI, []);
               }
-              this.undoStacks.get(pageURI).push(currentMEI);
+
+              // Add to undo stack:
+              // Remove the bottommost MEI string on the stack
+              // if the stack is > 10 strings
+              const undoStack = this.undoStacks.get(pageURI);
+              const len = undoStack.push(currentMEI);
+
+              if (len > 10)
+                this.undoStacks.set(pageURI, undoStack.slice(1));
+
+              // Clear redo stack:
               this.redoStacks.set(pageURI, []);
             }
             evt.target.removeEventListener('message', handle);
@@ -451,20 +461,18 @@ class NeonCore {
    * @returns If the action was undone.
    */
   undo (pageURI: string): Promise<boolean> {
-    return new Promise((resolve): void => {
-      if (this.undoStacks.has(pageURI)) {
-        const state = this.undoStacks.get(pageURI).pop();
-        if (state !== undefined) {
-          this.getMEI(pageURI).then(mei => {
-            this.redoStacks.get(pageURI).push(mei);
-            return this.loadData(pageURI, state, true);
-          }).then(() => {
-            resolve(true);
-          });
-          return;
-        }
-      }
-      resolve(false);
+    return new Promise(async (resolve) => {
+      if (!this.undoStacks.has(pageURI))
+        return resolve(false);
+
+      const state = this.undoStacks.get(pageURI).pop();
+      if (!state) return resolve(false);
+
+      const mei = await this.getMEI(pageURI);
+      this.redoStacks.get(pageURI).push(mei);
+      await this.loadData(pageURI, state, true);
+
+      return resolve(true);
     });
   }
 
@@ -474,20 +482,18 @@ class NeonCore {
    * @returns If the action was redone.
    */
   redo (pageURI: string): Promise<boolean> {
-    return new Promise((resolve): void => {
-      if (this.redoStacks.has(pageURI)) {
-        const state = this.redoStacks.get(pageURI).pop();
-        if (state !== undefined) {
-          this.getMEI(pageURI).then((mei) => {
-            this.undoStacks.get(pageURI).push(mei);
-            return this.loadData(pageURI, state, true);
-          }).then(() => {
-            resolve(true);
-          });
-          return;
-        }
-      }
-      resolve(false);
+    return new Promise(async (resolve) => {
+      if (!this.redoStacks.has(pageURI))
+        return resolve(false);
+
+      const state = this.redoStacks.get(pageURI).pop();
+      if (!state) return resolve(false);
+
+      const mei = await this.getMEI(pageURI);
+      this.undoStacks.get(pageURI).push(mei);
+      await this.loadData(pageURI, state, true);
+
+      return resolve(true);
     });
   }
 

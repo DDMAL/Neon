@@ -315,8 +315,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         if (element.classList.contains('syl')) {
           selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
         } else {
-          selectStaff(document.querySelector(`#${element.id}`), dragHandler);
-
+          selectAll([document.querySelector(`#${element.id}`)], neonView, dragHandler);
           const moreEdit = document.querySelector('moreEdit');
 
           if (moreEdit) {

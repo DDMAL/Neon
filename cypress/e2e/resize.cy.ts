@@ -3,6 +3,7 @@ describe('resize: bounding boxes', () => {
   // Wait for the SVG to be visible, have bounding boxes displayed,
   // have selection mode to bounding boxes, and expect there to be bounding boxes.
   beforeEach(() => {
+    cy.viewport('macbook-13');
     cy.visit('http://localhost:8080/editor.html?manifest=test');
     cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
     cy.get('#displayBBox').click();
@@ -13,8 +14,7 @@ describe('resize: bounding boxes', () => {
 
   const BBOX_ID = '#m-8e6837fc-19d4-42c9-8266-cd54bb6f1dea';
 
-  // TODO: Fix in https://github.com/DDMAL/Neon/pull/937
-  it.skip('oob: bbox should return to original size', () => {
+  it('oob: bbox should return to original size', () => {
     cy.get(BBOX_ID)
       .click()
       .should('have.class', 'selected');

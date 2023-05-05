@@ -1,7 +1,7 @@
 import NeonView from '../NeonView';
-import { ChangeStaffToAction, DragAction, EditorAction } from '../Types';
+import { DragAction, EditorAction } from '../Types';
 import * as d3 from 'd3';
-import { BBox, isOutOfSVGBounds, getGlyphBBox, getStaffIdByCoords } from './Coordinates';
+import { BBox, isOutOfSVGBounds, getGlyphBBox } from './Coordinates';
 import { queueNotification } from './Notification';
 import { selectAll, selectBBox, selectStaff } from './SelectTools';
 
@@ -9,6 +9,7 @@ class DragHandler {
   readonly neonView: NeonView;
   private selector: string;
   private selection: SVGGraphicsElement[];
+  private noMovePrecedes: SVGGraphicsElement[];
 
   private dragStartCoords: [number, number] = [-1, -1];
   private resetToAction: (selection: d3.Selection<d3.BaseType, unknown, HTMLElement, unknown>, args: unknown[]) => void;
@@ -48,7 +49,13 @@ class DragHandler {
     const activeNc = d3.selectAll('.selected');
     activeNc.call(dragBehaviour);
 
-    const selection = Array.from(document.querySelectorAll<SVGGraphicsElement>('.selected'));
+    let selection = Array.from(document.querySelectorAll<SVGGraphicsElement>('.selected'));
+
+    // if the user drags the follows syllable in a toggle-linked syllable, 
+    // cancel the compensation for syl movement in dragging.
+    this.noMovePrecedes = selection.filter((el) => el.classList.contains('no-moving') && el.hasAttribute('mei:precedes'));
+    selection = selection.filter(el => !el.classList.contains('no-moving'));
+
     this.selection = selection.concat(Array.from(document.querySelectorAll<SVGGraphicsElement>('.resizePoint')));
   }
 
@@ -65,7 +72,7 @@ class DragHandler {
      * so we cancel that movement out here
      */
     const syls = this.selection.filter((el) => el.classList.contains('syl'));
-    if (syls.length === 0) {
+    if (syls.length === 0 && this.noMovePrecedes.length === 0) {
       const bboxes = Array.from(document.querySelectorAll('.syllable.selected'))
         .map(el => el.querySelector('.sylTextRect-display'));
       this.moveElements(bboxes, -this.dx, -this.dy);
@@ -118,23 +125,6 @@ class DragHandler {
       };
 
       paramArray.push(dragAction);
-
-      if (el.classList.contains('divLine') || el.classList.contains('accid') || el.classList.contains('custos')) {
-        // Else, also add the ChangeStaffAction (for divline, accid, or custo)
-        const { clientX, clientY } = d3.event.sourceEvent;
-        const newStaff = getStaffIdByCoords(clientX, clientY);
-        const staffAction: ChangeStaffToAction = {
-          action: 'changeStaffTo',
-          param: {
-            elementId: id,
-            // if divline is moved to the background (and not a staff),
-            // set the staffId to the original staff
-            staffId: newStaff || el.closest('.staff').id,
-          }
-        };
-
-        paramArray.push(staffAction);
-      }
     });
     const editorAction: EditorAction = {
       action: 'chain',
@@ -148,7 +138,9 @@ class DragHandler {
         // Neon re-renders the entire SVG, and hence, before we do so,
         // we need to store all the elements (IDs) we need to select again
         // Then, we need to reselect them by calling `this.reselect()`
-        const toReselect = Array.from(document.querySelectorAll('.selected')).map(el => el.id);
+        const toReselect = Array.from(document.querySelectorAll('.selected'))
+          .filter(el => !el.classList.contains('no-moving'))
+          .map(el => el.id);
 
         // CAUTION: `updateForCurrentPage()` is an asynchronous function!
         // It requires an `await` keyword.
@@ -244,7 +236,9 @@ class DragHandler {
   isDragOutOfBounds (selection: SVGGraphicsElement[]): boolean {
     // Get the bounding boxes of all glyphs (<use> elements) within the selection array
     const isBBoxDisplayed = document.querySelector<HTMLInputElement>('#displayBBox').checked;
-    const glyphSelector = isBBoxDisplayed ? 'use, rect' : 'use';
+    let glyphSelector = isBBoxDisplayed ? 'use, rect' : 'use';
+
+    if (selection[0].classList.contains('staff')) glyphSelector = 'path';
 
     const glyphs: SVGUseElement[] = selection.reduce(
       (acc, el) => acc.concat(...el.querySelectorAll(glyphSelector)), []

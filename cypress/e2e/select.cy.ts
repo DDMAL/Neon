@@ -4,6 +4,7 @@
 
 // Load page and wait for SVG to be visible
 beforeEach(() => {
+  cy.viewport('macbook-13');
   cy.visit('http://localhost:8080/editor.html?manifest=test');
   cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
 });
@@ -51,9 +52,8 @@ describe('select: staff', () => {
       });
   });
 
-  // TODO: This test should work after fixing https://github.com/DDMAL/Neon/issues/940
   // Check whether divlines show up as red when a staff is selected
-  it.skip('highlight: divlines', () => {
+  it('highlight: divlines', () => {
     const staffId = '#m-bb55180f-699b-4266-bf98-99f75d5ba995';
 
     cy.get(staffId)
