@@ -6,6 +6,7 @@ export default defineConfig({
       // implement node event listeners here
     },
     video: false,
-    numTestsKeptInMemory: 0
+    numTestsKeptInMemory: 0,
+    retries: 2
   },
 });

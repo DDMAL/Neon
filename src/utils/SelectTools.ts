@@ -1,5 +1,5 @@
 import * as Color from './Color';
-import { updateHighlight } from '../DisplayPanel/DisplayControls';
+import { updateHighlight, getHighlightType } from '../DisplayPanel/DisplayControls';
 import * as Grouping from '../SquareEdit/Grouping';
 import { resize } from './Resize';
 import { Attributes, SelectionType } from '../Types';
@@ -25,6 +25,8 @@ export function getSelectionType (): SelectionType {
  * actions.
  */
 export function unselect (): void {
+  document.querySelectorAll('.no-moving').forEach((selected: SVGGElement) => 
+    selected.classList.remove('no-moving'));
   document.querySelectorAll('.selected').forEach((selected: SVGGElement) => {
     selected.classList.remove('selected');
     if (selected.classList.contains('staff')) {
@@ -34,33 +36,47 @@ export function unselect (): void {
       selected.removeAttribute('style');
       selected.style.fill = '';
     }
+
+    Array.from(selected.querySelectorAll('.divLine')).forEach((divLine: HTMLElement) => {
+      divLine.style.stroke = '';
+      divLine.setAttribute('stroke-width', '30px');
+    });
+  
+    Array.from(selected.querySelectorAll('.neume')).forEach((neume: HTMLElement) => {
+      neume.style.fill = '';
+    });
+  
+    Array.from(selected.querySelectorAll('.sylTextRect-display')).forEach((sylRect: HTMLElement) => {
+      sylRect.style.fill = 'blue';
+    });
+
+    if (selected.parentElement.classList.contains('syllable-highlighted')) {
+      selected.parentElement.style.fill = '';
+      selected.parentElement.classList.add('syllable');
+      selected.parentElement.classList.remove('syllable-highlighted');
+      
+      Array.from(selected.parentElement.querySelectorAll('.divLine')).forEach((divLine: HTMLElement) => {
+        divLine.style.stroke = '';
+        divLine.setAttribute('stroke-width', '30px');
+      });
+    
+      Array.from(selected.parentElement.querySelectorAll('.neume')).forEach((neume: HTMLElement) => {
+        neume.style.fill = '';
+      });
+    }
+
+    d3.selectAll('#resizeRect').remove();
+    d3.selectAll('.resizePoint').remove();
+    d3.selectAll('.rotatePoint').remove();
+  
   });
 
-  // Set the strokes of all divlines back to black
-  Array.from(document.getElementsByClassName('divLine')).forEach((syllable: HTMLElement) => {
-    syllable.style.stroke = 'black';
-  });
-
-  Array.from(document.getElementsByClassName('text-select')).forEach((el: SVGElement) => {
+  Array.from(document.querySelectorAll('.text-select')).forEach((el: SVGElement) => {
     el.style.color = '';
     el.style.fontWeight = '';
     el.classList.remove('text-select');
   });
-
-  Array.from(document.getElementsByClassName('sylTextRect-display')).forEach((sylRect: HTMLElement) => {
-    sylRect.style.fill = 'blue';
-  });
-
-  Array.from(document.getElementsByClassName('syllable-highlighted')).forEach((syllable: HTMLElement) => {
-    syllable.style.fill = '';
-    syllable.classList.add('syllable');
-    syllable.classList.remove('syllable-highlighted');
-  });
-
-  d3.selectAll('#resizeRect').remove();
-  d3.selectAll('.resizePoint').remove();
-  d3.selectAll('.rotatePoint').remove();
-
+  
   if (!document.getElementById('selByStaff').classList.contains('is-active')) {
     Grouping.endGroupingSelection();
   } else {
@@ -138,6 +154,12 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler, needs
       });
     }
 
+    if(el.classList.contains('syllable')) {
+      el.querySelectorAll('.neume').forEach((elem: HTMLElement) => {
+        elem.style.fill = '#d00';
+      });
+    }
+
     // Set color of the corresponding text in the text panel to red
     let sylId;
     if (el.classList.contains('syllable')) {
@@ -154,10 +176,11 @@ export function select (el: SVGGraphicsElement, dragHandler?: DragHandler, needs
       });
     }
   }
-
-  if (needsHighlightUpdate)
+  if (needsHighlightUpdate) {
     updateHighlight();
+  }
 }
+    
 
 /**
  * Select an nc.
@@ -197,7 +220,7 @@ export async function selectNcs (el: SVGGraphicsElement, neonView: NeonView, dra
  */
 export async function isLigature (nc: SVGGraphicsElement, neonView: NeonView): Promise<boolean> {
   const attributes: Attributes = await neonView.getElementAttr(nc.id, neonView.view.getCurrentPageURI());
-  return (attributes.ligated);
+  return Boolean(attributes.ligated);
 }
 
 
@@ -222,8 +245,12 @@ export function areAdjacent(selectionType: string, elements: SVGGraphicsElement[
       break;
 
     case 'selByNeume':
-      allElemsOfSelectionType = Array.from(document.querySelectorAll('.neume'));
-      break;
+      // We automatically return 'true' for neumes because we want the user to be 
+      // allowed to group two neumes in separate syllabes without having to parform other
+      // steps first. Yes, there is a trade-off - this allows users to try and group any 
+      // two non-adjacent neumes, but it was decided that the benefits (speed and efficiency)
+      // outweigh the costs (user trying an illegal edit).
+      return true;
 
     case 'selByNc':
       allElemsOfSelectionType = Array.from(document.querySelectorAll('.nc'));
@@ -239,7 +266,7 @@ export function areAdjacent(selectionType: string, elements: SVGGraphicsElement[
   
   // Sort SELECTED elements in order of appearance by 
   // matching to order of ALL elements of selection type
-  let sortedElements = [];
+  const sortedElements = [];
   for (let i=0; i<allElemsOfSelectionType.length; i++) {
     for (let j=0; j<elements.length; j++) {
       if (allElemsOfSelectionType[i].isSameNode(elements[j])) {
@@ -257,7 +284,7 @@ export function areAdjacent(selectionType: string, elements: SVGGraphicsElement[
     const index1 = allElemsOfSelectionType.indexOf(firstElem);
     const index2 = allElemsOfSelectionType.indexOf(secondElem);
 
-    if (Math.abs(index1 - index2) !== 1) return false
+    if (Math.abs(index1 - index2) !== 1) return false;
   }
 
   return true;
@@ -276,6 +303,7 @@ export function areAdjacent(selectionType: string, elements: SVGGraphicsElement[
  * @returns true if all elements share the same logical parent, false otherwise.
  */
 export function sharedLogicalParent(selectionType: string, elements: SVGGraphicsElement[]): boolean {
+  elements = elements.filter(elem => !(elem.classList.contains('divLine') || elem.classList.contains('accid') || elem.classList.contains('clef')));
 
   if (!elementsHaveCorrectType(selectionType, elements)) return false;
 
@@ -354,10 +382,8 @@ export function sharedSecondLevelParent (elements: SVGGraphicsElement[]): boolea
   const tempElements = Array.from(elements);
   const firstElement = tempElements.pop();
   const secondParent = firstElement.parentElement.parentElement;
-  console.log(secondParent);
   for (const element of tempElements) {
     const secPar = element.parentElement.parentElement;
-    console.log(secPar);
     if (secPar.id !== secondParent.id) {
       return false;
     }
@@ -371,7 +397,7 @@ export function sharedSecondLevelParent (elements: SVGGraphicsElement[]): boolea
  * @returns true if selection is accross multiple staves, false otherwise
  */
 export function isMultiStaveSelection(elements: SVGElement[]): boolean {
-  let elementsArray = Array.from(elements);
+  const elementsArray = Array.from(elements);
 
   for (let i=0; i<elementsArray.length; i++) {
     const staff = elementsArray[i].closest('.staff');
@@ -445,6 +471,15 @@ export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, ne
     const closest = el.closest('.syllable') as HTMLElement;
     closest.style.fill = '#d00';
     closest.classList.add('syllable-highlighted');
+    if(closest.querySelectorAll('.divLine').length) {
+      closest.querySelectorAll('.neume').forEach((elem: HTMLElement) => {
+        elem.style.fill = '#d00';
+      });
+      closest.querySelectorAll('.divLine').forEach((elem: HTMLElement) => {
+        elem.style.stroke = '#d00';
+      });
+    }
+
     if (neonView !== undefined ){
       resize(syl as SVGGraphicsElement, neonView, dragHandler);
     }
@@ -486,7 +521,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     return;
   }
   let selectionClass;
-  let containsClefOrCustosOrAccidOrDivLine = false;
+  let containsLayerElements = false;
   let containsNc = false;
 
   switch (selectionType) {
@@ -525,7 +560,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
         console.warn('Element ' + element.id + ' is not part of specified group and is not a clef or custos or accid or divLine.');
         continue;
       }
-      containsClefOrCustosOrAccidOrDivLine = containsClefOrCustosOrAccidOrDivLine || true;
+      containsLayerElements = containsLayerElements || true;
     } else {
       containsNc = containsNc || true;
     }
@@ -534,10 +569,12 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     // Check for precedes/follows
     const follows = grouping.getAttribute('mei:follows');
     if (follows) {
+      document.querySelector('#' + follows.slice(1)).classList.add('no-moving');
       groupsToSelect.add(document.querySelector('#' + follows.slice(1)));
     }
     const precedes = grouping.getAttribute('mei:precedes');
     if (precedes) {
+      document.querySelector('#' + precedes.slice(1)).classList.add('no-moving');
       groupsToSelect.add(document.querySelector('#' + precedes.slice(1)));
     }
   }
@@ -549,15 +586,9 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
   const groups = Array.from(groupsToSelect.values()) as SVGGraphicsElement[];
 
   // Handle occurance of clef or custos or accid or divLine
-  if (containsClefOrCustosOrAccidOrDivLine && !containsNc) {
+  if (containsLayerElements && !containsNc) {
     // A context menu will only be displayed if there is a single clef
-    if (groupsToSelect.size === 1 && groups[0].classList.contains('clef')) {
-      SelectOptions.triggerClefActions(groups[0]);
-    } else if (groupsToSelect.size === 1 && groups[0].classList.contains('custos')) {
-      SelectOptions.triggerCustosActions();
-    } else if (groupsToSelect.size === 1 && groups[0].classList.contains('accid')) {
-      SelectOptions.triggerAccidActions(groups[0]);
-    } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divLine')) {
+    if (groupsToSelect.size === 1 ) {
       SelectOptions.triggerLayerElementActions(groups[0]);
     }else {
       if (selectionType == 'selBySyllable') {
@@ -584,13 +615,7 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       break;
 
     case 'selByLayerElement':
-      if (groupsToSelect.size === 1 && groups[0].classList.contains('clef')) {
-        SelectOptions.triggerClefActions(groups[0]);
-      } else if (groupsToSelect.size === 1 && groups[0].classList.contains('custos')) {
-        SelectOptions.triggerCustosActions();
-      } else if (groupsToSelect.size === 1 && groups[0].classList.contains('accid')) {
-        SelectOptions.triggerAccidActions(groups[0]);
-      } else if (groupsToSelect.size === 1 && groups[0].classList.contains('divLine')) {
+      if (groupsToSelect.size === 1) {
         SelectOptions.triggerLayerElementActions(groups[0]);
       }else {
         SelectOptions.triggerDefaultActions();
@@ -715,10 +740,10 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
       console.error('Unknown selection type. This should not have occurred.');
   }
   
-  function changeStaffListener(): void {
-    try {
-      document.getElementById('changeStaff')
-        .addEventListener('click', SelectOptions.changeStaffHandler);
-    } catch (e) {console.debug(e);}
-  }
+  // function changeStaffListener(): void {
+  // try {
+  // document.getElementById('changeStaff')
+  // .addEventListener('click', SelectOptions.changeStaffHandler);
+  // } catch (e) {console.debug(e);}
+  // }
 }

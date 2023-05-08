@@ -1,6 +1,6 @@
 import * as Notification from '../utils/Notification';
 import NeonView from '../NeonView';
-import { EditorAction, SplitNeumeAction } from '../Types';
+import { SplitNeumeAction } from '../Types';
 
 /** Handle splitting a neume into two neumes through Verovio. */
 export class SplitNeumeHandler {

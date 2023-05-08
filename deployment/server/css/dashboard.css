@@ -23,6 +23,26 @@
   }
 }
 
+@-ms-keyframes spin {
+  from { -ms-transform: rotate(0deg); }
+  to { -ms-transform: rotate(360deg); }
+}
+@-moz-keyframes spin {
+  from { -moz-transform: rotate(0deg); }
+  to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+  from { -webkit-transform: rotate(0deg); }
+  to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+  from {
+      transform:rotate(0deg);
+  }
+  to {
+      transform:rotate(360deg);
+  }
+}
 
 /* Section: Action Bar */
 .action-bar-section {
@@ -47,6 +67,11 @@
 .main-section-content {
   width: 94vw;
   height: 100%;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 .dashboard-subsection {
   margin: 5vh 0;
@@ -146,7 +171,6 @@
   position: absolute;
   width: 30vw;
   min-width: 15rem;
-  /* background-color: red; */
 }
 
 #document-upload-container {
@@ -163,7 +187,6 @@
 #title_heading {
   font-size: 8rem;
   font-weight: 500;
-  /* text-shadow: 0.3rem 0.3rem #589ED5; */
 }
 
 #selection_button {
@@ -175,7 +198,6 @@
 #select_documents_container {
   width: inherit;
   min-width: inherit;
-  /* background-color: beige; */
   margin-bottom: 2rem;
 }
 
@@ -213,13 +235,11 @@
   height: 2rem;
 }
 
-#open_documents:hover,
-#delete_documents:hover,
 #initial_upload_area:hover,
 .over {
   cursor: pointer;
-  /* background-color: #589ed5; */
-  transition: 0.1s ease-in-out;
+  background-color: #dffcff;
+  transition: 0.1s;
 }
 
 .action_button {
@@ -273,20 +293,20 @@
 
 .file_container {
   border: 1px solid #bebcbc;
-  width: 48%;
   height: 100%;
   border-radius: 4px;
-  box-shadow: 0px 0px 10px 3px lightgrey;
   min-width: 200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
 }
 
 #unpaired_container {
-  
+  margin-right: 5%;
+  width: 65%
 }
+
+#paired_container {
+  width: 30%
+}
+
 
 .file-container-title {
   width: 100%;
@@ -310,8 +330,6 @@
   width: 50%;   
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
 }
 
 #image_container {
@@ -327,46 +345,26 @@
   border-bottom: 1px solid #dfdfdf;
 }
 
-#mei_list,
-#image_list {
-
-}
-
 .file_list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 90%;
-  width: 95%;
+  height: 100%;
+  width: 98%;
   overflow: scroll;
 }
 
 .unpaired_item_container {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  align-content: center;
-  margin-top: 0.4vw;
-  margin-bottom: 0.4vw;
-  width: 97%;
-  height: 30px;
-  min-height: 30px;
-  border-radius: 3px;
-  justify-content: space-around;
-  border: 1px solid #d5d5d5;
-  cursor: pointer;
+    width: 95%;
+    min-height: 30px;
+    cursor: pointer;
+    white-space: nowrap;
 }
 
 .unpaired_item_radio {
   width: 10%;
-  margin: 0;
   cursor: pointer;
 }
 
 .unpaired_item_label {
   font-size: 12px;
-  width: 80%;
   cursor: pointer;
 }
 
@@ -382,31 +380,23 @@
 
 .tile_list {
   height: 80%;
-  display: flex;
   width: 100%;
   overflow: scroll;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  align-content: center;
 }
 
 .tile_item {
-  width: 70%;
   border: 1px solid #d5d5d5;
-  border-radius: 3px;
-  margin-top: 0.4vw;
+  border-radius: 4px;
   height: 30px;
   min-height: 30px;
-  margin-bottom: 0.4vw;
+  margin: 5px;
+  padding: 0 5px;
   display: flex;
-  justify-content: space-evenly;
   align-items: center;
-  align-content: center;
 }
 
 .tile-filename {
-  width: 80%;
+  width: 100%;
   font-size: 12px;
 }
 
@@ -417,7 +407,6 @@
   font-size: large;
   cursor: pointer;
   background-color: transparent;
-  width: 10%;
 }
 
 #upload_button_container {
@@ -431,4 +420,32 @@
   display: inline-flex;
   width: 100%;
   height: 100%;
+}
+
+#uploading_spinner {
+  opacity: 0;
+  color: rgb(255, 0, 187);
+  font-size: x-large;
+  font-weight: 100; 
+}
+
+#uploading_spinner.visible {
+  opacity: 100;  
+
+  -webkit-animation-name: spin;
+  -webkit-animation-duration: 1234ms;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-name: spin;
+  -moz-animation-duration: 1234ms;
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-timing-function: linear;
+  -ms-animation-name: spin;
+  -ms-animation-duration: 1234ms;
+  -ms-animation-iteration-count: infinite;
+  -ms-animation-timing-function: linear;
+  animation-name: spin;
+  animation-duration: 1234ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }

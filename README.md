@@ -47,6 +47,7 @@ yarn start
 
 For more information, [read the instructions on our wiki.](https://github.com/DDMAL/Neon/wiki/Dev%3A-Set-up-Neon-and-Verovio-Locally)
 
+
 ### Testing
 
 We use [Cypress](https://www.cypress.io/) for E2E testing.
