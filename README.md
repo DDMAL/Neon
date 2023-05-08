@@ -45,7 +45,8 @@ yarn start
 
 4. Access the page at: <http://localhost:8080>.
 
-For more information, [read the instructions on our wiki.](https://github.com/DDMAL/Neon/wiki/Overview)
+For more information, [read the instructions on our wiki.](https://github.com/DDMAL/Neon/wiki/Dev%3A-Set-up-Neon-and-Verovio-Locally)
+
 
 ### Testing
 
