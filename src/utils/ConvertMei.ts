@@ -40,6 +40,16 @@ export function convertStaffToSb(staffBasedMei: string): string {
       sb.setAttribute('n', staff.getAttribute('n'));
       sb.setAttribute('facs', staff.getAttribute('facs'));
       sb.setAttribute('xml:id', staff.getAttribute('xml:id'));
+      
+      // remove temporary text content
+      for (const syllable of layer.getElementsByTagName('syllable')) {
+        const syl = syllable.getElementsByTagName('syl')[0];
+        if (syl) {
+          if (syl.textContent.trim() === '&#x25CA;') {
+            syl.textContent = '';
+          }
+        }
+      }
 
       // Handle custos
       let custos: Element = undefined;
@@ -130,6 +140,17 @@ export function convertSbToStaff(sbBasedMei: string): string {
       // syllable.remove();
       const id = syllable.getAttribute('xml:id');
       Notification.queueNotification(`This file contains a syllable without neume!<br/>ID: ${id}`, 'warning');
+    }
+
+    // (moved from verovio iomei.cpp)
+    // We want bounding boxes to appear even if there is no text associated with
+    // the <syl>. In order to draw the bounding box, we add temporary text to <syl>.
+    // We may need a better way to do this
+    const syl = syllable.getElementsByTagName('syl')[0];
+    if (syl) {
+      if (syl.textContent.trim() === '') {
+        syl.textContent = '&#x25CA;';
+      }
     }
   }
 
