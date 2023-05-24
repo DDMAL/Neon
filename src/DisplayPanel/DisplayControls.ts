@@ -82,9 +82,11 @@ export function setOpacityFromSlider (meiClassName?: string): void {
   const hideGlyphsImg = document.querySelector('#toggle-glyph-opacity > img');
   if (Number(opacityOutput.value) === 0) {
     hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/show-icon.svg`);
+    hideGlyphsImg.parentElement.setAttribute('title', 'Show glyph');
   }
   else {
     hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/hide-icon.svg`);
+    hideGlyphsImg.parentElement.setAttribute('title', 'Hide glyph');
   }
 
   try {
@@ -220,9 +222,11 @@ export function setBgOpacityFromSlider (background?: string): void {
   const hideGlyphsImg = document.querySelector('#toggle-bg-opacity > img');
   if (Number(bgOpacityOutput.value) === 0) {
     hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/show-icon.svg`);
+    hideGlyphsImg.parentElement.setAttribute('title', 'Show background image');
   }
   else {
     hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/hide-icon.svg`);
+    hideGlyphsImg.parentElement.setAttribute('title', 'Hide background image');
   }
 
   const bg: HTMLElement = document.querySelector(`.${background}`);
