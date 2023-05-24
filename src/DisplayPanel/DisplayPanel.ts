@@ -212,7 +212,7 @@ class DisplayPanel implements DisplayInterface {
    * Update SVG based on visualization settings
    */
   updateVisualization (): void {
-    DisplayControls.setOpacityFromSlider(this.meiClass);
+    DisplayControls.setGlyphOpacityFromSlider(this.meiClass);
     DisplayControls.setBgOpacityFromSlider(this.background);
     DisplayControls.updateHighlight();
   }

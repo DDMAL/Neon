@@ -70,7 +70,7 @@ export function setZoomControls (zoomHandler?: ZoomHandler): void {
  * Update MEI opacity to value from the slider.
  * @param meiClassName - Class that contains the rendered MEI.
  */
-export function setOpacityFromSlider (meiClassName?: string): void {
+export function setGlyphOpacityFromSlider (meiClassName?: string): void {
   const opacityOutput = document.getElementById('opacityOutput') as HTMLOutputElement;
   const opacitySlider = document.getElementById('opacitySlider') as HTMLInputElement;
 
@@ -79,14 +79,14 @@ export function setOpacityFromSlider (meiClassName?: string): void {
   setSettings({ glyphOpacity: Number(opacityOutput.value) });
 
   // dispay correct slider toggle display icon
-  const hideGlyphsImg = document.querySelector('#toggle-glyph-opacity > img');
+  const hideGlyphImg = document.querySelector('#toggle-glyph-opacity > img');
   if (Number(opacityOutput.value) === 0) {
-    hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/show-icon.svg`);
-    hideGlyphsImg.parentElement.setAttribute('title', 'Show glyph');
+    hideGlyphImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/show-icon.svg`);
+    hideGlyphImg.parentElement.setAttribute('title', 'Show glyph');
   }
   else {
-    hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/hide-icon.svg`);
-    hideGlyphsImg.parentElement.setAttribute('title', 'Hide glyph');
+    hideGlyphImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/hide-icon.svg`);
+    hideGlyphImg.parentElement.setAttribute('title', 'Hide glyph');
   }
 
   try {
@@ -114,7 +114,7 @@ function setOpacityControls (meiClassName: string): void {
   function inputChangeOpacity (): void {
     opacityOutput.value = opacitySlider.value;
     lastGlyphOpacity = Number(opacitySlider.value);
-    setOpacityFromSlider(meiClassName);
+    setGlyphOpacityFromSlider(meiClassName);
   }
 
   const toggleOpacityBtn = document.getElementById('toggle-glyph-opacity');
@@ -219,14 +219,14 @@ export function setBgOpacityFromSlider (background?: string): void {
   setSettings({ imageOpacity: Number(bgOpacityOutput.value) });
 
   // dispay correct slider tiggle display icon
-  const hideGlyphsImg = document.querySelector('#toggle-bg-opacity > img');
+  const hideBgImg = document.querySelector('#toggle-bg-opacity > img');
   if (Number(bgOpacityOutput.value) === 0) {
-    hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/show-icon.svg`);
-    hideGlyphsImg.parentElement.setAttribute('title', 'Show background image');
+    hideBgImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/show-icon.svg`);
+    hideBgImg.parentElement.setAttribute('title', 'Show background image');
   }
   else {
-    hideGlyphsImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/hide-icon.svg`);
-    hideGlyphsImg.parentElement.setAttribute('title', 'Hide background image');
+    hideBgImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/hide-icon.svg`);
+    hideBgImg.parentElement.setAttribute('title', 'Hide background image');
   }
 
   const bg: HTMLElement = document.querySelector(`.${background}`);
