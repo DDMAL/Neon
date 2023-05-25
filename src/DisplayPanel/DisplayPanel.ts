@@ -25,10 +25,10 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
         <div class="slider-and-slider-actions-container display-panel" style="cursor: default">
           <div class="slider-actions-container">
             <div class="display-slider-title">Zoom</div>
-            <button class="side-panel-btn slider-btn" id="reset-zoom">
+            <button class="side-panel-btn slider-btn" id="reset-zoom" title="Reset zoom setting">
               <img class="slider-btn-img" src="${__ASSET_PREFIX__}assets/img/arrow-rotate-left-solid.svg">
             </button>
-            <button class="side-panel-btn slider-btn" id="set-zoom-easy-edit">
+            <button class="side-panel-btn slider-btn" id="set-zoom-easy-edit" title="Fit to page">
               <img class="slider-btn-img" src="${__ASSET_PREFIX__}assets/img/expand-icon.svg">
             </button>
           </div>
@@ -212,7 +212,7 @@ class DisplayPanel implements DisplayInterface {
    * Update SVG based on visualization settings
    */
   updateVisualization (): void {
-    DisplayControls.setOpacityFromSlider(this.meiClass);
+    DisplayControls.setGlyphOpacityFromSlider(this.meiClass);
     DisplayControls.setBgOpacityFromSlider(this.background);
     DisplayControls.updateHighlight();
   }
