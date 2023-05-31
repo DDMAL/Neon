@@ -191,8 +191,10 @@ class DisplayPanel implements DisplayInterface {
     const { zoom, glyphOpacity, imageOpacity, highlightMode } = getSettings();
     
     // Zoom
-    document.querySelector<HTMLInputElement>('#zoomOutput').value = String(zoom);
-    document.querySelector<HTMLInputElement>('#zoomSlider').value = String(zoom);
+    if (document.querySelector<HTMLInputElement>('#zoomOutput')) {
+      document.querySelector<HTMLInputElement>('#zoomOutput').value = String(zoom);
+      document.querySelector<HTMLInputElement>('#zoomSlider').value = String(zoom);
+    }    
 
     // Image opacity
     document.querySelector<HTMLInputElement>('#bgOpacityOutput').value = String(imageOpacity);
