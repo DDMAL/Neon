@@ -39,7 +39,7 @@ class DivaView implements ViewInterface {
     this.displayPanel = new Display(this, 'neon-container', 'diva-viewer-canvas');
     this.loadDelay = 500; // in milliseconds
     this.initDivaEvents();
-    this.setViewEventHandlers();
+    // this.setViewEventHandlers();
 
     window.onresize = (): void => {
       const height = window.innerHeight;
@@ -133,6 +133,10 @@ class DivaView implements ViewInterface {
           elem.style.display = '';
         });
     });
+  }
+
+  onSVGLoad (): void {
+    this.setViewEventHandlers();
   }
 
   /**
