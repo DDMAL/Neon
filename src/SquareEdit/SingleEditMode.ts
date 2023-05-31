@@ -35,16 +35,6 @@ class SingleEditMode implements NeumeEditInterface {
   initEditMode (): void {
 
     initNavbar(this.neonView);
-
-    const selectionHighlight = document.createElement('a');
-    const divider = document.createElement('hr');
-    divider.classList.add('dropdown-divider');
-    selectionHighlight.classList.add('dropdown-item');
-    selectionHighlight.id = 'highlight-selection';
-    selectionHighlight.textContent = 'By Selection Mode';
-    document.getElementsByClassName('dropdown-content')[0].prepend(divider);
-    document.getElementsByClassName('dropdown-content')[0].prepend(selectionHighlight);
-
     document.getElementById('insert_controls').innerHTML += Contents.insertControlsPanel;
     document.getElementById('edit_controls').innerHTML += Contents.editControlsPanel;
     document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;

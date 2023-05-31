@@ -39,7 +39,6 @@ class DivaView implements ViewInterface {
     this.displayPanel = new Display(this, 'neon-container', 'diva-viewer-canvas');
     this.loadDelay = 500; // in milliseconds
     this.initDivaEvents();
-    this.setViewEventHandlers();
 
     window.onresize = (): void => {
       const height = window.innerHeight;
@@ -135,6 +134,10 @@ class DivaView implements ViewInterface {
     });
   }
 
+  onSVGLoad (): void {
+    this.setViewEventHandlers();
+  }
+
   /**
    * Update the SVG being displayed for the specified page.
    * @param svg - The SVG of the page to update to.
@@ -179,7 +182,6 @@ class DivaView implements ViewInterface {
     this.divaReady = true;
     this.displayPanel.setDisplayListeners();
     document.getElementById('loading').style.display = 'none';
-    console.log(this.diva);
   }
 
   /**

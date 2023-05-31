@@ -100,6 +100,8 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
           </div>
           <div class="dropdown-menu" id="highlight-menu" role="menu">
             <div class="dropdown-content">
+              <a aria-role="menuitem" class="dropdown-item" id="highlight-selection">By Selection Mode</a>
+              <hr class="dropdown-divider"/>
               <a aria-role="menuitem" class="dropdown-item" id="highlight-staff">Staff</a>
               <a aria-role="menuitem" class="dropdown-item" id="highlight-syllable">Syllable</a>
               <a aria-role="menuitem" class="dropdown-item" id="highlight-neume">Neume</a>
@@ -191,8 +193,10 @@ class DisplayPanel implements DisplayInterface {
     const { zoom, glyphOpacity, imageOpacity, highlightMode } = getSettings();
     
     // Zoom
-    document.querySelector<HTMLInputElement>('#zoomOutput').value = String(zoom);
-    document.querySelector<HTMLInputElement>('#zoomSlider').value = String(zoom);
+    if (document.querySelector<HTMLInputElement>('#zoomOutput')) {
+      document.querySelector<HTMLInputElement>('#zoomOutput').value = String(zoom);
+      document.querySelector<HTMLInputElement>('#zoomSlider').value = String(zoom);
+    }    
 
     // Image opacity
     document.querySelector<HTMLInputElement>('#bgOpacityOutput').value = String(imageOpacity);
