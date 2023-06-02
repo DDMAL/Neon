@@ -39,6 +39,7 @@ class DivaView implements ViewInterface {
     this.displayPanel = new Display(this, 'neon-container', 'diva-viewer-canvas');
     this.loadDelay = 500; // in milliseconds
     this.initDivaEvents();
+    (document.querySelector('.diva-inner') as HTMLElement).style.cursor = 'auto';
 
     window.onresize = (): void => {
       const height = window.innerHeight;
