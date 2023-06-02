@@ -832,6 +832,20 @@ function divLineOptionsListener(element: SVGGraphicsElement): void {
       };
       parseShapeChangeAction(ChangeToCaesura);
     });
+
+  document.querySelector('#ChangeToVirgula.dropdown-item')
+    .addEventListener('click', () => {
+      const ChangeToVirgula: EditorAction = {
+        action: 'set',
+        param: {
+          elementId: element.id,
+          attrType: 'form',
+          attrValue: 'virgula'
+        }
+      };
+      parseShapeChangeAction(ChangeToVirgula);
+    });
+    
   initOptionsListeners();
 }
 

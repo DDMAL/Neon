@@ -355,6 +355,7 @@ export const divLineActionContents =
             <a id="ChangeToMaxima" class="dropdown-item">Maxima</a>
             <a id="ChangeToFinalis" class="dropdown-item">Finalis</a>
             <a id="ChangeToCaesura" class="dropdown-item">Caesura</a>
+            <a id="ChangeToVirgula" class="dropdown-item">Virgula</a>
         </div>
     </div>
 </div>`;
