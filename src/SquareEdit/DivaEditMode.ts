@@ -8,6 +8,7 @@ import DragHandler from '../utils/DragHandler';
 import { NeumeEditInterface } from '../Interfaces';
 import * as Contents from './Contents';
 import { undoRedoPanel } from '../utils/EditContents';
+import { getSettings } from '../utils/LocalSettings';
 
 class DivaEdit implements NeumeEditInterface {
   neonView: NeonView;
@@ -37,6 +38,8 @@ class DivaEdit implements NeumeEditInterface {
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
 
     document.getElementById('edit_controls').click(); // focus display panel
+    const { selectionMode } = getSettings();
+    document.getElementById(selectionMode).click();
   }
 
   /**
