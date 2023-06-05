@@ -25,10 +25,10 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
         <div class="slider-and-slider-actions-container display-panel" style="cursor: default">
           <div class="slider-actions-container">
             <div class="display-slider-title">Zoom</div>
-            <button class="side-panel-btn slider-btn" id="reset-zoom">
+            <button class="side-panel-btn slider-btn" id="reset-zoom" title="Reset zoom setting">
               <img class="slider-btn-img" src="${__ASSET_PREFIX__}assets/img/arrow-rotate-left-solid.svg">
             </button>
-            <button class="side-panel-btn slider-btn" id="set-zoom-easy-edit">
+            <button class="side-panel-btn slider-btn" id="set-zoom-easy-edit" title="Fit to page">
               <img class="slider-btn-img" src="${__ASSET_PREFIX__}assets/img/expand-icon.svg">
             </button>
           </div>
@@ -100,6 +100,8 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
           </div>
           <div class="dropdown-menu" id="highlight-menu" role="menu">
             <div class="dropdown-content">
+              <a aria-role="menuitem" class="dropdown-item" id="highlight-selection">By Selection Mode</a>
+              <hr class="dropdown-divider"/>
               <a aria-role="menuitem" class="dropdown-item" id="highlight-staff">Staff</a>
               <a aria-role="menuitem" class="dropdown-item" id="highlight-syllable">Syllable</a>
               <a aria-role="menuitem" class="dropdown-item" id="highlight-neume">Neume</a>
@@ -191,8 +193,10 @@ class DisplayPanel implements DisplayInterface {
     const { zoom, glyphOpacity, imageOpacity, highlightMode } = getSettings();
     
     // Zoom
-    document.querySelector<HTMLInputElement>('#zoomOutput').value = String(zoom);
-    document.querySelector<HTMLInputElement>('#zoomSlider').value = String(zoom);
+    if (document.querySelector<HTMLInputElement>('#zoomOutput')) {
+      document.querySelector<HTMLInputElement>('#zoomOutput').value = String(zoom);
+      document.querySelector<HTMLInputElement>('#zoomSlider').value = String(zoom);
+    }    
 
     // Image opacity
     document.querySelector<HTMLInputElement>('#bgOpacityOutput').value = String(imageOpacity);
@@ -212,7 +216,7 @@ class DisplayPanel implements DisplayInterface {
    * Update SVG based on visualization settings
    */
   updateVisualization (): void {
-    DisplayControls.setOpacityFromSlider(this.meiClass);
+    DisplayControls.setGlyphOpacityFromSlider(this.meiClass);
     DisplayControls.setBgOpacityFromSlider(this.background);
     DisplayControls.updateHighlight();
   }
