@@ -15,7 +15,7 @@ let orderedDocuments: string[];
 let orderedSelection: boolean[];
 
 // Shift selection mimics MacOS behaviour
-class shiftSelection { 
+class shiftSelection {
   private start;
   private end;
   private prevSelection = [];
@@ -59,13 +59,13 @@ class shiftSelection {
       end = this.end + 1;
     }
     const range = Array.from({ length: (end - start) }, (v, k) => k + start);
-    // For each shift selection action: if the Shift key is still held, the end shift pos can change 
+    // For each shift selection action: if the Shift key is still held, the end shift pos can change
     // with the previously (before-shift) selected elements still selected while the current shift selections unselect.
     const specificSelection = range.filter(idx => !(orderedSelection[idx]));
     this.prevSelection = specificSelection;
     return specificSelection;
   }
-} 
+}
 
 const shift = new shiftSelection();
 
@@ -74,7 +74,7 @@ function getSelectionTiles() {
   return getSelectionFilenames().map(filename => document.getElementById(filename));
 }
 
-// gets user selected filenames 
+// gets user selected filenames
 function getSelectionFilenames() {
   return orderedDocuments.filter((_, idx) => orderedSelection[idx]);
 }
@@ -128,7 +128,7 @@ function select(tile: Element, idx?: number) {
   }
   else return;
   tile.classList.add('selected');
-  orderedSelection[idx] = true;  
+  orderedSelection[idx] = true;
 }
 
 // Determines whether to set delete doc or open doc to active
@@ -160,13 +160,13 @@ export async function updateDocumentSelector(): Promise<void> {
 
   if (uploadedDocs.length === 0) {
     const doc = document.createElement('div');
-    doc.id = 'no-docs-msg';
+    doc.setAttribute('id', 'no-uploaded-docs');
     doc.innerHTML = 'No Documents Uploaded';
     uploadedDocsContainer.appendChild(doc);
-  } 
+  }
   else uploadedDocs.forEach(filename => {
     const doc = document.createElement('div');
-    doc.id = filename; // unique id
+    doc.setAttribute('id', filename);
     doc.classList.add('document-entry');
     doc.classList.add('uploaded-doc');
 
@@ -183,15 +183,16 @@ export async function updateDocumentSelector(): Promise<void> {
 
   const sampleDocs = fetchSampleDocuments();
   sampleDocs.sort();
-  
+
   if (sampleDocs.length === 0) {
     const doc = document.createElement('div');
+    doc.setAttribute('id', 'no-sample-docs');
     doc.innerHTML = 'No Documents Uploaded';
     sampleDocsContainer.appendChild(doc);
-  } 
+  }
   else sampleDocs.forEach(filename => {
     const doc = document.createElement('div');
-    doc.id = filename;
+    doc.setAttribute('id', filename);
     doc.classList.add('document-entry');
 
     const name = document.createElement('div');
@@ -214,7 +215,7 @@ export async function updateDocumentSelector(): Promise<void> {
 
     // Single click selects document or adds document to existing selection
     tile.addEventListener('click', function(e) {
-      // No Shift or Meta pressed 
+      // No Shift or Meta pressed
       if (!metaKeyIsPressed && !shiftKeyIsPressed) {
         // Selected or not selected -> clear selection and select cur tile
         unselectAll();
@@ -243,7 +244,7 @@ export async function updateDocumentSelector(): Promise<void> {
         })
         // Select new shift select
         shift.setEnd(idx);
-        shift.getSelection().forEach((index) => {   
+        shift.getSelection().forEach((index) => {
           select(null, index);
         });
         setSidebarActions();
@@ -269,7 +270,7 @@ function handleDeleteDocuments() {
   const filenameFormatted = filenames.join('\n');
   const alertMessage = 'Are you sure you want to delete:\n' + filenameFormatted + '\n\nThis action is irreversible.';
   const isConfirmed = window.confirm(alertMessage);
-  
+
   if (isConfirmed) {
     const promises = filenames.map(filename => deleteEntry(filename));
     Promise.all(promises)
@@ -277,7 +278,7 @@ function handleDeleteDocuments() {
         updateDocumentSelector();
       })
       .catch( err => console.debug('failed to delete files: ', err));
-    
+
     unselectAll();
     shift.reset();
   }
@@ -314,6 +315,6 @@ export const InitDocumentSelector = (): void => {
       setSidebarActions();
     }
   });
-  
+
   updateDocumentSelector();
 }
