@@ -679,15 +679,7 @@ function accidOptionsListener(element: SVGGraphicsElement): void {
           attrValue: 'f'
         }
       };
-      neonView.edit(changeToFlat, neonView.view.getCurrentPageURI()).then((result) => {
-        if (result) {
-          Notification.queueNotification('Shape Changed', 'success');
-        } else {
-          Notification.queueNotification('Shape Change Failed', 'error');
-        }
-        endOptionsSelection();
-        neonView.updateForCurrentPage();
-      });
+      parseShapeChangeAction(changeToFlat);
     });
   document.querySelector('#ChangeToNatural.dropdown-item')
     .addEventListener('click', () => {
@@ -699,15 +691,7 @@ function accidOptionsListener(element: SVGGraphicsElement): void {
           attrValue: 'n'
         }
       };
-      neonView.edit(changeToNatural, neonView.view.getCurrentPageURI()).then((result) => {
-        if (result) {
-          Notification.queueNotification('Shape Changed', 'success');
-        } else {
-          Notification.queueNotification('Shape Change Failed', 'error');
-        }
-        endOptionsSelection();
-        neonView.updateForCurrentPage();
-      });
+      parseShapeChangeAction(changeToNatural);
     });
 
   initOptionsListeners();
@@ -766,15 +750,7 @@ function clefOptionsListener(element: SVGGraphicsElement): void {
           shape: 'C'
         }
       };
-      neonView.edit(setCClef, neonView.view.getCurrentPageURI()).then((result) => {
-        if (result) {
-          Notification.queueNotification('Shape Changed', 'success');
-        } else {
-          Notification.queueNotification('Shape Change Failed', 'error');
-        }
-        endOptionsSelection();
-        neonView.updateForCurrentPage();
-      });
+      parseShapeChangeAction(setCClef);
     });
   document.querySelector('#FClef.dropdown-item')
     .addEventListener('click', () => {
@@ -785,23 +761,107 @@ function clefOptionsListener(element: SVGGraphicsElement): void {
           shape: 'F'
         }
       };
-      neonView.edit(setFClef, neonView.view.getCurrentPageURI()).then((result) => {
-        if (result) {
-          Notification.queueNotification('Shape Changed', 'success');
-        } else {
-          Notification.queueNotification('Shape Change Failed', 'error');
-        }
-        endOptionsSelection();
-        neonView.updateForCurrentPage();
-      });
+      parseShapeChangeAction(setFClef);
     });
 
   initOptionsListeners();
 }
 
 function divLineOptionsListener(element: SVGGraphicsElement): void {
-  // TODO: wait on verovio actions
+  document.querySelector('#ChangeToMinima.dropdown-item')
+    .addEventListener('click', () => {
+      const ChangeToMinima: SetAction = {
+        action: 'set',
+        param: {
+          elementId: element.id,
+          attrType: 'form',
+          attrValue: 'minima'
+        }
+      };
+      parseShapeChangeAction(ChangeToMinima);
+    });
+
+  document.querySelector('#ChangeToMaior.dropdown-item')
+    .addEventListener('click', () => {
+      const ChangeToMaior: EditorAction = {
+        action: 'set',
+        param: {
+          elementId: element.id,
+          attrType: 'form',
+          attrValue: 'maior'
+        }
+      };
+      parseShapeChangeAction(ChangeToMaior);
+    });
+
+  document.querySelector('#ChangeToMaxima.dropdown-item')
+    .addEventListener('click', () => {
+      const ChangeToMaxima: EditorAction = {
+        action: 'set',
+        param: {
+          elementId: element.id,
+          attrType: 'form',
+          attrValue: 'maxima'
+        }
+      };
+      parseShapeChangeAction(ChangeToMaxima);
+    });
+
+  document.querySelector('#ChangeToFinalis.dropdown-item')
+    .addEventListener('click', () => {
+      const ChangeToFinalis: EditorAction = {
+        action: 'set',
+        param: {
+          elementId: element.id,
+          attrType: 'form',
+          attrValue: 'finalis'
+        }
+      };
+      parseShapeChangeAction(ChangeToFinalis);
+    });
+
+  document.querySelector('#ChangeToCaesura.dropdown-item')
+    .addEventListener('click', () => {
+      const ChangeToCaesura: EditorAction = {
+        action: 'set',
+        param: {
+          elementId: element.id,
+          attrType: 'form',
+          attrValue: 'caesura'
+        }
+      };
+      parseShapeChangeAction(ChangeToCaesura);
+    });
+
+  document.querySelector('#ChangeToVirgula.dropdown-item')
+    .addEventListener('click', () => {
+      const ChangeToVirgula: EditorAction = {
+        action: 'set',
+        param: {
+          elementId: element.id,
+          attrType: 'form',
+          attrValue: 'virgula'
+        }
+      };
+      parseShapeChangeAction(ChangeToVirgula);
+    });
+    
   initOptionsListeners();
+}
+
+/**
+ * Parse actions regarding shape changes to editor action
+ */
+function parseShapeChangeAction(action: SetAction | SetClefAction) {
+  neonView.edit(action, neonView.view.getCurrentPageURI()).then((result) => {
+    if (result) {
+      Notification.queueNotification('Shape Changed', 'success');
+    } else {
+      Notification.queueNotification('Shape Change Failed', 'error');
+    }
+    endOptionsSelection();
+    neonView.updateForCurrentPage();
+  });
 }
 
 /**

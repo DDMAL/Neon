@@ -160,12 +160,12 @@ export const ncActionContents =
         </div>
         <div class="dropdown-menu" id="dropdown-menu" role="menu">
             <div class="dropdown-content">
+                <a id="Inclinatum" class="dropdown-item">Inclinatum</a>
+                <a id="LiquescentAnticlockwise" class="dropdown-item">Liquescent A</a>
+                <a id="LiquescentClockwise" class="dropdown-item">Liquescent C</a>
                 <a id="Punctum" class="dropdown-item">Punctum</a>
                 <a id="Virga" class="dropdown-item">Virga</a> 
                 <a id="VirgaReversed" class="dropdown-item">Reversed Virga</a>
-                <a id="LiquescentClockwise" class="dropdown-item">Liquescent C</a>
-                <a id="LiquescentAnticlockwise" class="dropdown-item">Liquescent A</a>
-                <a id="Inclinatum" class="dropdown-item">Inclinatum</a>
             </div>
         </div>
     </div>`;
@@ -196,20 +196,20 @@ export const neumeActionContents =
             </div>
             <div class="dropdown-menu" id="dropdown-menu" role="menu">
             <div class="dropdown-content scrollable-dropdown">
-                <a id="Pes" class="dropdown-item grouping">Pes</a>
-                <a id="PesSubpunctis" class="dropdown-item grouping">Pes Subpunctis</a>
-                <a id="Clivis" class="dropdown-item grouping">Clivis</a>
-                <a id="Scandicus" class="dropdown-item grouping">Scandicus</a>
-                <a id="ScandicusFlexus" class="dropdown-item grouping">Scandicus Flexus</a>
-                <a id="ScandicusSubpunctis" class="dropdown-item grouping">Scandicus Subpunctis</a>
                 <a id="Climacus" class="dropdown-item grouping">Climacus</a>
                 <a id="ClimacusResupinus" class="dropdown-item grouping">Climacus Resupinus</a>
-                <a id="Torculus" class="dropdown-item grouping">Torculus</a>
-                <a id="TorculusResupinus" class="dropdown-item grouping">Torculus Resupinus</a>
+                <a id="Clivis" class="dropdown-item grouping">Clivis</a>
+                <a id="Pes" class="dropdown-item grouping">Pes</a>
+                <a id="PesSubpunctis" class="dropdown-item grouping">Pes Subpunctis</a>
                 <a id="Porrectus" class="dropdown-item grouping">Porrectus</a>
                 <a id="PorrectusFlexus" class="dropdown-item grouping">Porrectus Flexus</a>
                 <a id="PorrectusSubpunctis" class="dropdown-item grouping">Porrectus Subpunctis</a>
                 <a id="Pressus" class="dropdown-item grouping">Pressus</a>
+                <a id="Scandicus" class="dropdown-item grouping">Scandicus</a>
+                <a id="ScandicusFlexus" class="dropdown-item grouping">Scandicus Flexus</a>
+                <a id="ScandicusSubpunctis" class="dropdown-item grouping">Scandicus Subpunctis</a>
+                <a id="Torculus" class="dropdown-item grouping">Torculus</a>
+                <a id="TorculusResupinus" class="dropdown-item grouping">Torculus Resupinus</a>
             </div>
         </div>
     </div>
@@ -350,11 +350,12 @@ export const divLineActionContents =
     </div>
     <div class="dropdown-menu" id="dropdown-menu" role="menu">
         <div class="dropdown-content">
+            <a id="ChangeToCaesura" class="dropdown-item">Caesura</a>
+            <a id="ChangeToFinalis" class="dropdown-item">Finalis</a>
             <a id="ChangeToMinima" class="dropdown-item">Minima</a>
             <a id="ChangeToMaior" class="dropdown-item">Maior</a>
             <a id="ChangeToMaxima" class="dropdown-item">Maxima</a>
-            <a id="ChangeToFinalis" class="dropdown-item">Finalis</a>
-            <a id="ChangeToCaesura" class="dropdown-item">Caesura</a>
+            <a id="ChangeToVirgula" class="dropdown-item">Virgula</a>
         </div>
     </div>
 </div>`;
