@@ -142,16 +142,6 @@ export function convertSbToStaff(sbBasedMei: string): string {
       Notification.queueNotification(`This file contains a syllable without neume!<br/>ID: ${id}`, 'warning');
     }
 
-    // (moved from verovio iomei.cpp)
-    // We want bounding boxes to appear even if there is no text associated with
-    // the <syl>. In order to draw the bounding box, we add temporary text to <syl>.
-    // We may need a better way to do this
-    const syl = syllable.getElementsByTagName('syl')[0];
-    if (syl) {
-      if (syl.textContent.trim() === '') {
-        syl.textContent = '&#x25CA;';
-      }
-    }
   }
 
   // Go section by section just in case
