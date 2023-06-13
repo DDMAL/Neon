@@ -433,9 +433,10 @@
 
 #uploading_spinner {
   opacity: 0;
-  color: rgb(255, 0, 187);
+  color: gray;
   font-size: x-large;
   font-weight: 100; 
+  margin-left: 1em;
 }
 
 #uploading_spinner.visible {
