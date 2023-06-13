@@ -354,8 +354,10 @@
 .unpaired_item_container {
     width: 95%;
     min-height: 30px;
-    cursor: pointer;
     white-space: nowrap;
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
 }
 
 .unpaired_item_radio {
@@ -365,6 +367,13 @@
 
 .unpaired_item_label {
   font-size: 12px;
+  cursor: pointer;
+}
+
+.unpaired_del_btn {
+  width: 7%;
+  opacity: 0.4;
+  margin-left: auto;
   cursor: pointer;
 }
 
