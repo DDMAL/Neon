@@ -69,8 +69,8 @@ class shiftSelection {
 
 const shift = new shiftSelection();
 
-// Gets user selected document tile elements
-function getSelectionTiles() {
+// Gets user selected document folio elements
+function getSelectionFolios() {
   return getSelectionFilenames().map(filename => document.getElementById(filename));
 }
 
@@ -88,10 +88,10 @@ function openEditorTab(filename: string, isUploaded: boolean) {
   window.open(`./editor.html?${query}`, '_blank');
 }
 
-// Opens editor tab given a document tile element
-function openTile(tile: Element) {
-  const isUploaded = (tile.classList.contains('uploaded-doc')) ? true : false;
-  const filename = tile.id;
+// Opens editor tab given a document folio element
+function openFolio(folio: Element) {
+  const isUploaded = (folio.classList.contains('uploaded-doc')) ? true : false;
+  const filename = folio.id;
   openEditorTab(filename, isUploaded);
 }
 
@@ -101,33 +101,33 @@ function makeQuery(obj): string {
   }).join('&');
 }
 
-function unselect(tile: Element, idx?: number) {
-  if (tile != null) {
-    idx = (idx != undefined) ? idx : orderedDocuments.indexOf(tile.id);
+function unselect(folio: Element, idx?: number) {
+  if (folio != null) {
+    idx = (idx != undefined) ? idx : orderedDocuments.indexOf(folio.id);
   }
   else if (idx != undefined) {
-    tile = document.getElementById(orderedDocuments[idx]);
+    folio = document.getElementById(orderedDocuments[idx]);
   }
   else return;
-  tile.classList.remove('selected');
+  folio.classList.remove('selected');
   orderedSelection[idx] = false;
 }
 
 function unselectAll() {
   Array.from(document.querySelectorAll('.document-entry.selected'))
-    .forEach((tile) => tile.classList.remove('selected'));
+    .forEach((folio) => folio.classList.remove('selected'));
   orderedSelection.fill(false);
 }
 
-function select(tile: Element, idx?: number) {
-  if (tile != null) {
-    idx = (idx != undefined) ? idx : orderedDocuments.indexOf(tile.id);
+function select(folio: Element, idx?: number) {
+  if (folio != null) {
+    idx = (idx != undefined) ? idx : orderedDocuments.indexOf(folio.id);
   }
   else if (idx != undefined) {
-    tile = document.getElementById(orderedDocuments[idx]);
+    folio = document.getElementById(orderedDocuments[idx]);
   }
   else return;
-  tile.classList.add('selected');
+  folio.classList.add('selected');
   orderedSelection[idx] = true;
 }
 
@@ -208,30 +208,30 @@ export async function updateDocumentSelector(): Promise<void> {
 
   // add onclick event listener to docs
   orderedDocuments.forEach((filename, idx) => {
-    const tile = document.getElementById(`${filename}`);
+    const folio = document.getElementById(`${filename}`);
 
     // double click event immediately opens document
-    tile.addEventListener('dblclick', handleOpenDocuments, false);
+    folio.addEventListener('dblclick', handleOpenDocuments, false);
 
     // Single click selects document or adds document to existing selection
-    tile.addEventListener('click', function(e) {
+    folio.addEventListener('click', function(e) {
       // No Shift or Meta pressed
       if (!metaKeyIsPressed && !shiftKeyIsPressed) {
-        // Selected or not selected -> clear selection and select cur tile
+        // Selected or not selected -> clear selection and select cur folio
         unselectAll();
-        select(tile, idx);
+        select(folio, idx);
         shift.setStart(idx); // Track start of shift selection
         setSidebarActions();
       }
       // Meta key pressed (default behaviour if both meta and shift are pressed)
       else if (metaKeyIsPressed) {
         if (orderedSelection[idx]) {
-          unselect(tile, idx);
+          unselect(folio, idx);
           shift.setStart(orderedSelection.lastIndexOf(true)); // MacOS behaviour: shift start goes to largest idx selected item
         }
-        // Tile is not selected -> Add to selection
+        // Folio is not selected -> Add to selection
         else {
-          select(tile, idx);
+          select(folio, idx);
           shift.setStart(idx); // Track start of shift selection
         }
         setSidebarActions();
@@ -255,8 +255,8 @@ export async function updateDocumentSelector(): Promise<void> {
 
 function handleOpenDocuments() {
   if (!openButton.classList.contains('active')) return;
-  getSelectionTiles().forEach(tile => {
-    openTile(tile);
+  getSelectionFolios().forEach(folio => {
+    openFolio(folio);
   });
   shift.reset();
   unselectAll();

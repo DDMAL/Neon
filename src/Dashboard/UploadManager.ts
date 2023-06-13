@@ -25,8 +25,8 @@ export function addNewFiles( files: File[] ): File[] {
     }
     else if ( ext === 'jsonld' ) {
       // // remove manuscript support for the immediate future!
-      // const manuscriptTile = createManuscriptTile(file.name);
-      // manuscript_container.appendChild(manuscriptTile);
+      // const manuscriptFolio = createManuscriptFolio(file.name);
+      // manuscript_container.appendChild(manuscriptFolio);
       // fm.addFile(file);
       // fm.addManuscript(file.name);
     }
@@ -77,7 +77,7 @@ export function handleMakePair(): void {
   const image_filename = selectedImageElement.value;
   const filename = mei_filename.substring(0, mei_filename.length-4);
   // make and append UI element
-  const paired_el = createPairedTile(filename, mei_filename, image_filename);
+  const paired_el = createPairedFolio(filename, mei_filename, image_filename);
   paired_container.appendChild(paired_el);
   // reflect in file manager
   fm.addFolio(filename, mei_filename, image_filename);
@@ -86,23 +86,23 @@ export function handleMakePair(): void {
   selectedImageElement.parentElement.parentElement.remove();
 }
 
-function createPairedTile(filename: string, mei_filename: string, image_filename: string): HTMLDivElement {
+function createPairedFolio(filename: string, mei_filename: string, image_filename: string): HTMLDivElement {
   const mei_container: HTMLDivElement = document.querySelector('#mei_list');
   const image_container: HTMLDivElement = document.querySelector('#image_list');
 
-  const tile = document.createElement('div');
-  tile.className = 'tile_item';
-  tile.setAttribute('mei', mei_filename);
-  tile.setAttribute('image', image_filename);
+  const folio = document.createElement('div');
+  folio.className = 'folio_item';
+  folio.setAttribute('mei', mei_filename);
+  folio.setAttribute('image', image_filename);
 
-  const tile_filename = document.createElement('div');
-  tile_filename.classList.add('tile-filename');
-  tile_filename.innerHTML = formatFilename(filename, 25);
-  tile.appendChild(tile_filename); 
+  const folio_filename = document.createElement('div');
+  folio_filename.classList.add('folio-filename');
+  folio_filename.innerHTML = formatFilename(filename, 25);
+  folio.appendChild(folio_filename); 
 
   function handleUnpair() {
-    // remove tile from UI
-    tile.remove();
+    // remove folio from UI
+    folio.remove();
     // remove folio from file manager
     fm.removeFolio(filename);
     // add items back to unpaired containers
@@ -116,9 +116,9 @@ function createPairedTile(filename: string, mei_filename: string, image_filename
   deleteButton.innerText = '⌫';
   deleteButton.className = 'delete_button';
   deleteButton.addEventListener('click', handleUnpair);
-  tile.appendChild(deleteButton);
+  folio.appendChild(deleteButton);
 
-  return tile;
+  return folio;
 }
 
 export async function handleUploadAllDocuments(): Promise<any> {
