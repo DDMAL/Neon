@@ -409,13 +409,13 @@
   font-size: 12px;
 }
 
-.delete_button {
+.unpair_btn {
+  width: 9%;
   border: none;
-  color: rgb(255, 0, 187);
   font-weight: 100;
   font-size: large;
   cursor: pointer;
-  background-color: transparent;
+  opacity: 0.4;
 }
 
 #upload_button_container {
