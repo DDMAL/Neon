@@ -124,11 +124,12 @@ function createPairedFolio(filename: string, mei_filename: string, image_filenam
     image_container.appendChild(imageItem);
   }
 
-  const deleteButton = document.createElement('button');
-  deleteButton.innerText = '⌫';
-  deleteButton.className = 'delete_button';
-  deleteButton.addEventListener('click', handleUnpair);
-  folio.appendChild(deleteButton);
+  const unpairBtn = document.createElement('img');
+  unpairBtn.className = 'unpair_btn';
+  unpairBtn.src = `${__ASSET_PREFIX__}assets/img/unpair-doc.svg`;
+  unpairBtn.title = 'unpair';
+  unpairBtn.addEventListener('click', handleUnpair);
+  folio.appendChild(unpairBtn);
 
   return folio;
 }
