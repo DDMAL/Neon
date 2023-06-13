@@ -58,10 +58,22 @@ function createUnpairedItem(filename: string, group: string): HTMLDivElement {
 
   const text = document.createElement('span');
   text.innerText = formatFilename(filename, 28);
+  text.setAttribute('style', 'margin-top: auto');
+
+  const delBtn = document.createElement('img');
+  delBtn.className = 'unpaired_del_btn';
+  delBtn.src = `${__ASSET_PREFIX__}assets/img/unpaired-remove-doc.svg`;
+  delBtn.title = 'delete';
 
   label.appendChild(radio);
   label.appendChild(text);
   node.appendChild(label);
+  node.appendChild(delBtn);
+
+  delBtn.addEventListener('click', function() {
+    node.remove();
+  });
+
   return node;
 }
 
