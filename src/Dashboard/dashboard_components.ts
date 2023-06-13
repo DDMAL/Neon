@@ -37,7 +37,7 @@ export const uploadAreaHTML =
 
         <div class="file-container-title">Paired Folios</div>
         
-        <div class="tile_list" id="paired_list"></div>
+        <div class="folio_list" id="paired_list"></div>
 
         <div id="upload_button_container">
           <div class="action_button" id="upload_button">
@@ -51,7 +51,7 @@ export const uploadAreaHTML =
       <!--
       <div class="file_container" id="manuscripts_container">
         <h2 class="file_heading">Manuscripts</h2>
-        <div class="tile_list" id="manuscript_list"></div>
+        <div class="folio_list" id="manuscript_list"></div>
       </div>
       -->
 
