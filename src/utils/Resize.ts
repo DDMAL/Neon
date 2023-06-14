@@ -415,11 +415,11 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
           await neonView.updateForCurrentPage();
         }
         element = document.getElementById(element.id) as unknown as SVGGraphicsElement;
-        ulx = undefined;
-        uly = undefined;
-        lrx = undefined;
-        lry = undefined;
+        ulx = undefined, uly = undefined, lrx = undefined, lry = undefined;
         dy = undefined;
+        d3.selectAll('.resizePoint').remove();
+        d3.selectAll('#resizeRect').remove();
+        d3.selectAll('.rotatePoint').remove();
         drawInitialRect();
         selectAll([element], neonView, dragHandler);
         if (element.classList.contains('syl')) {
