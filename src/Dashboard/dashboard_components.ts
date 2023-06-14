@@ -1,5 +1,3 @@
-
-
 export const uploadAreaHTML = 
   `<div id="document-upload-container">
 

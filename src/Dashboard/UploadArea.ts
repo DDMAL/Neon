@@ -2,7 +2,6 @@ import { addNewFiles } from './UploadManager';
 import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
 import { handleUploadAllDocuments, handleMakePair } from './UploadManager';
 import { updateDocumentSelector } from './DocumentSelector';
-import { fm } from '../../deployment/scripts/dashboard';
 
 
 
@@ -20,7 +19,7 @@ export function InitUploadArea(): void {
     spinner.classList.add('visible');
 
     handleUploadAllDocuments()
-      .then( (result) => {
+      .then( () => {
         setTimeout( async () => {
           await updateDocumentSelector();
           spinner.classList.remove('visible');
@@ -34,7 +33,7 @@ export function InitUploadArea(): void {
           spinner.classList.remove('visible');
           modalWindow.hideModalWindow();
         }, 2000);
-      })
+      });
   });
 
   // File System selector when clicking on upload area
