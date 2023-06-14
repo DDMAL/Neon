@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import PouchDB from 'pouchdb';
-import { NeonManifest, allDocs } from '../Types';
+import { allDocs } from '../Types';
 import * as localManifest from '../../assets/manifest.json';
 import { samples } from './samples_filenames';
 

@@ -116,5 +116,5 @@ export default FileManager;
 type folio = {
   filename: string,
   mei_filename: string,
-  image_filename: string
+  image_filename: string,
 };
