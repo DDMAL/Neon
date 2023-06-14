@@ -354,17 +354,25 @@
 .unpaired_item_container {
     width: 95%;
     min-height: 30px;
-    cursor: pointer;
     white-space: nowrap;
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
 }
 
 .unpaired_item_radio {
-  width: 10%;
   cursor: pointer;
 }
 
 .unpaired_item_label {
   font-size: 12px;
+  cursor: pointer;
+}
+
+.unpaired_del_btn {
+  width: 7%;
+  opacity: 0.4;
+  margin-left: auto;
   cursor: pointer;
 }
 
@@ -378,13 +386,13 @@
   border-top: 1px solid #dfdfdf;
 }
 
-.tile_list {
+.folio_list {
   height: 80%;
   width: 100%;
   overflow: scroll;
 }
 
-.tile_item {
+.folio_item {
   border: 1px solid #d5d5d5;
   border-radius: 4px;
   height: 30px;
@@ -395,18 +403,18 @@
   align-items: center;
 }
 
-.tile-filename {
+.folio-filename {
   width: 100%;
   font-size: 12px;
 }
 
-.delete_button {
+.unpair_btn {
+  width: 9%;
   border: none;
-  color: rgb(255, 0, 187);
   font-weight: 100;
   font-size: large;
   cursor: pointer;
-  background-color: transparent;
+  opacity: 0.4;
 }
 
 #upload_button_container {
@@ -424,9 +432,10 @@
 
 #uploading_spinner {
   opacity: 0;
-  color: rgb(255, 0, 187);
+  color: gray;
   font-size: x-large;
   font-weight: 100; 
+  margin-left: 1em;
 }
 
 #uploading_spinner.visible {
