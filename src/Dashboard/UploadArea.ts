@@ -3,10 +3,7 @@ import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
 import { handleUploadAllDocuments, handleMakePair, sortFileByName } from './UploadManager';
 import { updateDocumentSelector } from './DocumentSelector';
 
-
-
 export function InitUploadArea(): void {
-
   // generate modal window
   const modalWindow = new ModalWindow();
   modalWindow.setModalWindowView(ModalWindowView.DOCUMENT_UPLOAD);
