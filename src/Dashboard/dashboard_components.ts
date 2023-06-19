@@ -18,11 +18,19 @@ export const uploadAreaHTML =
 
           <div id="mei_container">
             <div class="file_heading">MEI</div>
+            <div class="file_sort_name">
+              <div>Name</div>
+              <div class="sort_name arrow_btn">&#x22C0;</div>
+            </div>
             <div class="file_list" id="mei_list"></div>
           </div>
 
           <div id="image_container">
             <div class="file_heading">Images</div>
+            <div class="file_sort_name">
+              <div>Name</div>
+              <div class="sort_name arrow_btn">&#x22C0;</div>
+            </div>
             <div class="file_list" id="image_list"></div>
           </div>
 
@@ -36,7 +44,10 @@ export const uploadAreaHTML =
       <div class="file_container" id="paired_container">
 
         <div class="file-container-title">Paired Folios</div>
-        
+        <div class="file_sort_name">
+          <div>Name</div>
+          <div class="sort_name arrow_btn">&#x22C0;</div>
+        </div>
         <div class="folio_list" id="paired_list"></div>
 
         <div id="upload_button_container">
