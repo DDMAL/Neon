@@ -171,3 +171,34 @@ async function uploadFolio(name: string, mei: File, image: File): Promise<boolea
 // async function uploadManuscript(manuscript: File): Promise<boolean> {
 //   return addEntry(manuscript.name, manuscript, false);
 // }
+
+export async function sortFileByName(sortByNameBtn: Element): Promise<void>  {
+  const fileList = sortByNameBtn.parentElement.nextElementSibling;
+  const fileElements = Array.from(fileList.children);
+  
+  let isAscending = sortByNameBtn.classList.contains('arrow-up');
+
+  if (isAscending) {
+    sortByNameBtn.classList.remove('arrow-up');
+    sortByNameBtn.classList.add('arrow-down');
+    sortByNameBtn.innerHTML = '&#x22C1;';
+  } else {
+    sortByNameBtn.classList.remove('arrow-down');
+    sortByNameBtn.classList.add('arrow-up');
+    sortByNameBtn.innerHTML = '&#x22C0;';
+  }
+
+  isAscending = !isAscending;
+
+  fileElements.sort((a, b) => {
+    const nameA = a.textContent.trim();
+    const nameB = b.textContent.trim();
+    return isAscending ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+  });
+
+  fileElements.forEach(element => {
+    fileList.appendChild(element);
+  });
+
+  sortByNameBtn.setAttribute('style', 'color: black');
+}

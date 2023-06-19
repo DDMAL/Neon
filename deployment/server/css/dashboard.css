@@ -300,11 +300,13 @@
 
 #unpaired_container {
   margin-right: 5%;
-  width: 65%
+  width: 65%;
 }
 
 #paired_container {
-  width: 30%
+  width: 30%;
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -343,6 +345,21 @@
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid #dfdfdf;
+}
+
+.file_sort_name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color:rgba(123, 177, 183, 0.1);
+  border-bottom: 1px solid #dfdfdf;
+  font-size: 80%;
+}
+
+.arrow_btn {
+  margin-left: 4px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
 .file_list {
