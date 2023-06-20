@@ -4,7 +4,8 @@ import * as Contents from './Contents';
 import { setGroupingHighlight } from '../utils/Color';
 import { unselect } from '../utils/SelectTools';
 import InsertHandler from './InsertHandler';
-import { setSettings } from '../utils/LocalSettings';
+import { getSettings, setSettings } from '../utils/LocalSettings';
+import { InsertTabType, InsertType } from '../Types';
 
 /**
  * Bind listeners to insert tabs.'
@@ -30,11 +31,17 @@ export function bindInsertTabs (insertHandler: InsertHandler): void {
     document.getElementById(tab).addEventListener('click', () => {
       deactivate('.insertTab');
       activate(tab, insertHandler);
+      setSettings({ insertTab: tab as InsertTabType });
       document.getElementById('insert_data').innerHTML = Contents.insertTabHtml[tab];
       bindElements(insertHandler);
       deactivate('.insertel');
-      const firstOption = document.getElementsByClassName('insertel')[0];
-      activate(firstOption.id, insertHandler);
+      try {
+        const { insertMode } = getSettings();
+        activate(insertMode, insertHandler);
+      } catch (e) {
+        const firstOption = document.getElementsByClassName('insertel')[0];
+        activate(firstOption.id, insertHandler);
+      }
     });
   });
 }
@@ -63,6 +70,8 @@ export function initInsertEditControls (): void {
     displayHeadingTitle.classList.remove('focused');
     insertHeadingTitle.classList.add('focused');
 
+    setSettings({ userMode: 'insert' });
+
     (<HTMLButtonElement> document.querySelector('.insertel.is-active')).click();
     editPanel.querySelector('.side-panel-btn.sel-by.is-active').classList.add('unfocused');
     insertPanel.querySelector('.side-panel-btn.insertel.is-active').classList.remove('unfocused');
@@ -73,6 +82,8 @@ export function initInsertEditControls (): void {
   editPanel.addEventListener('click', () => {
     insertHeadingTitle.classList.remove('focused');
     displayHeadingTitle.classList.add('focused');
+    
+    setSettings({ userMode: 'edit' });
 
     insertPanel.querySelector('.side-panel-btn.insertel.is-active').classList.add('unfocused');
     editPanel.querySelector('.side-panel-btn.sel-by.is-active').classList.remove('unfocused');
@@ -139,6 +150,7 @@ function activate (id: string, insertHandler: InsertHandler): void {
   selectedTab.classList.add('is-active');
   if (document.getElementById(id).classList.contains('insertel')) {
     insertHandler.insertActive(id);
+    setSettings({ insertMode: id as InsertType });
   }
 }
 
