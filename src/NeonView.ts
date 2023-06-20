@@ -3,7 +3,7 @@ import * as Validation from './Validation';
 import { parseManifest } from './utils/NeonManifest';
 import setBody from './utils/template/Template';
 import { ModalWindow } from './utils/ModalWindow';
-import { NeonManifest, EditorAction, Attributes } from './Types';
+import { NeonManifest, EditorAction, Attributes, UserType } from './Types';
 import {
   InfoInterface,
   ModalWindowInterface,
@@ -15,7 +15,7 @@ import {
 } from './Interfaces';
 import { initErrorLog } from '../src/utils/ErrorLog';
 import { setSavedStatus, listenUnsavedChanges } from './utils/Unsaved';
-import LocalSettings from './utils/LocalSettings';
+import LocalSettings, { getSettings } from './utils/LocalSettings';
 
 
 /**
@@ -139,14 +139,9 @@ class NeonView {
    * Get the mode Neon is in.
    * @returns Value is "viewer", "insert", or "edit".
    */
-  getUserMode (): string {
-    if (this.NeumeEdit !== undefined) {
-      return this.NeumeEdit.getUserMode();
-    } else if (this.TextEdit !== undefined) {
-      return 'edit';
-    } else {
-      return 'viewer';
-    }
+  getUserMode (): UserType {
+    const { userMode } = getSettings();
+    return userMode;
   }
 
   /**
