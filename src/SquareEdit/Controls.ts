@@ -5,7 +5,6 @@ import { setGroupingHighlight } from '../utils/Color';
 import { unselect } from '../utils/SelectTools';
 import InsertHandler from './InsertHandler';
 import { setSettings } from '../utils/LocalSettings';
-import { GroupingType, SelectionType } from '../Types';
 
 /**
  * Bind listeners to insert tabs.'
