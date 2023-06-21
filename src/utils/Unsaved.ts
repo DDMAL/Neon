@@ -10,6 +10,9 @@ function updateIndicator (): void {
   const indicator = document.querySelector<HTMLDivElement>('#file-saved');
   const path = saved? `${__ASSET_PREFIX__}assets/img/saved-icon.svg` : `${__ASSET_PREFIX__}assets/img/unsaved-icon.svg`;
   indicator.setAttribute('src', path);
+  // set the alt attribute message depending on whether latest changes are save or not
+  const altMessage = saved? "Your work is saved" : "You have unsaved work";
+  indicator.setAttribute('alt', altMessage);
 }
 
 

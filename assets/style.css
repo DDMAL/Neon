@@ -21,6 +21,7 @@ body {
     margin: 0px;
     display: flex;
     flex-direction: column;
+    overflow: scroll;
 }
 
 a {
@@ -209,43 +210,86 @@ a:hover {
     display: block;
 }
 
-/* Tablet and mobile styles for navbar */
+/* Neon document-editor-navbar styles  for smaller devices */
 @media screen and (max-width: 1023px) {
     .navbar-menu.is-active {
         display: flex;
         flex-direction: column;
         background-color: #e2e2e2;
+        min-height: 91vh;
+        justify-content: space-between;
+        overflow: scroll;
+        gap: 30px;
+        padding: 0;
+    }
+    .navbar-start {
+        gap: 20px;
     }
     .navbar-main-content-container {
         display: flex;
-        flex-direction: column;
-        height: 50%;
+        flex-direction: row;
+        height: fit-content;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        align-content: space-between;
+        gap: 40px 0px;
+    }
+    #unsaved-changes-container {
+        transform: scale(0.5);
     }
     .navbar-item.has-dropdown.is-hoverable {
         color: #68A7AD;
-        margin-top: 3vh;
+        /* margin-top: 3vh; */
+        flex-grow: 1;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        /* font-size: 40px; */
+        align-items: flex-start;
     }
     .navbar-item.has-dropdown.is-hoverable:hover {
         background-color: #e2e2e2 !important;
         color: #68A7AD !important;
         border-radius: 0px;
     }
+    .navbar-element.navbar-btn {
+        cursor: pointer;
+        /* border-radius: 2px; */
+        overflow: hidden;
+        border-bottom: 1px solid #7cb1b7;
+        font-size: 1.2rem;
+        width: 100%;
+    }
+    .navbar-btn-text {
+        font-weight: bold;
+    }
     .navbar-dropdown {
-        border-top: 1px solid #7cb1b7;
+        border-top: none;
         box-shadow: none;
         min-width: 13vw;
+        gap: 5px;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
     }
-    .navbar-element.navbar-btn:hover {
-        background-color: #e2e2e2;
-        color: #7cb1b7 !important;
-        cursor: auto;
+    .navbar-dropdown-item {
+        font-size: 1rem;
+    }
+    #feedback-form-btn-container {
+        margin: 0;
+        border: none;
+        border-radius: 0;
+        /* font-weight: bold; */
+        /* padding: 0; */
     }
 }
-@media only screen and (max-width: 900px) {
+/* @media only screen and (max-width: 900px) {
     #navMenu {
         height: 100%;
     }
-}
+} */
 
 /* Section: Editor Main Body */
 
