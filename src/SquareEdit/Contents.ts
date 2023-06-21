@@ -113,7 +113,7 @@ export const editControlsPanel =
                 <div class="panel-sub-title">Selection Mode:</div>
                 <div id="selection-mode-btns-container"  class="right-side-panel-btns-container" style="overflow-x: auto;">
                     
-                        <button class="side-panel-btn sel-by is-active" id="selBySyllable">Syllable</button>
+                        <button class="side-panel-btn sel-by" id="selBySyllable">Syllable</button>
                         <button class="side-panel-btn sel-by" id="selByNeume">Neume</button>
                         <button class="side-panel-btn sel-by" id="selByNc">Neume Component</button>
                         <button class="side-panel-btn sel-by" id="selByStaff">Staff</button>
