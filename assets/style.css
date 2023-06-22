@@ -1,12 +1,14 @@
 /* 
-    Note: Bulma styles are a mess. We need to get rid of it eventually. 
-    In the meantime, we use !important occasionally to override Bulma.
+    Note: Bulma styles are outdated and are not up to industry standards. 
+    We need to get rid of it eventually. 
+    In the meantime, we use '!important' occasionally to override Bulma.
 */
 
 @import url("https://unpkg.com/diva.js@6.0.2/build/diva.css");
 
-
-/* Section: General styles */
+/* ----------------------- */
+/* General styles
+/* ----------------------- */
 
 html {
     overflow: hidden;
@@ -37,8 +39,10 @@ a:hover {
     justify-content: flex-end;
 }
 
+/* ----------------------- */
+/* Section: Top Navbar 
+/* ----------------------- */
 
-/* Section: Top Navbar */
 /* CSS in here could use a little clean-up */
 
 .navbar.is-light {
@@ -239,13 +243,11 @@ a:hover {
     }
     .navbar-item.has-dropdown.is-hoverable {
         color: #68A7AD;
-        /* margin-top: 3vh; */
         flex-grow: 1;
         width: 100%;
         display: flex;
         flex-direction: column;
         gap: 5px;
-        /* font-size: 40px; */
         align-items: flex-start;
     }
     .navbar-item.has-dropdown.is-hoverable:hover {
@@ -255,7 +257,6 @@ a:hover {
     }
     .navbar-element.navbar-btn {
         cursor: pointer;
-        /* border-radius: 2px; */
         overflow: hidden;
         border-bottom: 1px solid #7cb1b7;
         font-size: 1.2rem;
@@ -281,17 +282,12 @@ a:hover {
         margin: 0;
         border: none;
         border-radius: 0;
-        /* font-weight: bold; */
-        /* padding: 0; */
     }
 }
-/* @media only screen and (max-width: 900px) {
-    #navMenu {
-        height: 100%;
-    }
-} */
 
-/* Section: Editor Main Body */
+/* ----------------------- */
+/* Editor Main Body
+/* ----------------------- */
 
 #editor-body-container {
     overflow: hidden;
@@ -338,8 +334,10 @@ a:hover {
     height: 100%;
 }
 
+/* ----------------------- */
+/* Section: Editor Panel
+/* ----------------------- */
 
-/* Section: Editor Panel */
 /* Could use a little clean-up */
 
 #right-column {
@@ -369,7 +367,6 @@ a:hover {
 .panel-heading.focused {
     text-decoration: underline;
     text-decoration-thickness: 2px;
-    /* background-color: #b6d8f2; */
 }
 .panel-heading-title {
     max-width: 0px;
@@ -694,10 +691,7 @@ a:hover {
     margin: 5px 0px;
 }
 .notification-wrapper {
-    /* padding-left: 10px; */
-    /* padding-right: 10px; */
     padding: 10px;
-    /* border: 1px solid lightgray; */
     background-color: #efefef;
     border-radius: 4px;
     display: flex;
@@ -713,7 +707,9 @@ a:hover {
     cursor: pointer;
 }
 
-/* Section: Neon Notifications */
+/* ----------------------- */
+/* Neon Notifications
+/* ----------------------- */
 
 /* notification keyframes */
 @keyframes slideInFromLeft {
@@ -752,7 +748,6 @@ a:hover {
 }
 
 .neon-notification-warning {
-    /* background: #fae095; */
     background: #f5c144;
 }
 
@@ -760,8 +755,9 @@ a:hover {
     background: #6dc492;
 }
 
-
-/* Section: Loading Animation */ 
+/* ---------------------------- */
+/* Section: Loading Animation
+/* ---------------------------- */ 
 
 /* loading animation keyframes */
 @keyframes spin {
@@ -794,7 +790,9 @@ a:hover {
     animation: spin 2s linear infinite;
 }
 
-/* Section: Modal Windows */
+/* ----------------------- */
+/* Section: Modal Windows
+/* ----------------------- */
 
 /* neon modal veil */
 #neon-modal-window-container {
