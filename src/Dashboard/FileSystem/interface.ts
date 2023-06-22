@@ -2,15 +2,11 @@ export enum EntryType {
     Folder = 'folder',
     Folio = 'folio',
     Manuscript = 'manuscript',
-    Root = 'root',
-
 }
-
 export interface IEntry {
     name: string;
     type: EntryType;
     content: IEntry[] | string;
-    path: string[];
     parent: IEntry;
 }
 

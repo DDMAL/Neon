@@ -2,7 +2,6 @@ import { v4 as uuidv4 } from 'uuid';
 import PouchDB from 'pouchdb';
 import { allDocs } from '../Types';
 import * as localManifest from '../../assets/manifest.json';
-import { samples } from './samples_filenames';
 
 const db = new PouchDB('Neon-User-Storage');
 
@@ -25,9 +24,10 @@ export async function fetchUploadedDocuments(): Promise<string[]> {
     });
 }
 
-export function fetchSampleDocuments(): string[] {
-  return samples;
-}
+// DELETEONCEDONE
+// export function fetchSampleDocuments(): string[] {
+//   return samples;
+// }
 
 export function createManifest(name: string, mei: File, bg: File): Promise<any> {
   return new Promise(async (resolve) => {
