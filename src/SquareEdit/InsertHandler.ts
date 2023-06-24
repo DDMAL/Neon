@@ -3,6 +3,7 @@ import { EditorAction, InsertAction } from '../Types';
 import * as d3 from 'd3';
 import { getSVGRelCoords, isOutOfSVGBounds, Point } from '../utils/Coordinates';
 import { queueNotification } from '../utils/Notification';
+import { setSettings } from '../utils/LocalSettings';
 
 /**
  * Class that handles insert mode, events, and actions.
@@ -160,6 +161,8 @@ class InsertHandler {
 
     insertPanel.querySelector('.side-panel-btn.insertel.is-active').classList.add('unfocused');
     editPanel.querySelector('.side-panel-btn.sel-by.is-active').classList.remove('unfocused');
+
+    setSettings({ userMode: 'edit' });
     
   }).bind(this);
 
