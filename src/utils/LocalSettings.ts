@@ -44,7 +44,7 @@ const DEFAULT_SETTINGS: Settings = {
   glyphOpacity: 100,
   imageOpacity: 100,
   highlightMode: 'none',
-  userMode: 'viewer',
+  userMode: 'edit',
   insertMode: 'punctum',
   insertTab: 'primitiveTab',
   selectionMode: 'selBySyllable',

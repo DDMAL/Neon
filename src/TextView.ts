@@ -92,7 +92,7 @@ class TextView implements TextViewInterface {
       document.querySelectorAll('.syl.selected .sylTextRect-display')
         .forEach((rect: HTMLElement) => { rect.style.fill = 'red'; });
 
-      if (this.neonView.TextEdit !== undefined) {
+      if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
         this.neonView.TextEdit.initSelectByBBoxButton();
       }
 
