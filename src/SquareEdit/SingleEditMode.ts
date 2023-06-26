@@ -59,14 +59,13 @@ class SingleEditMode implements NeumeEditInterface {
     document.getElementById(insertMode).classList.add('is-active');
     document.getElementById(selectionMode).classList.add('is-active');
     switch (userMode) {
-      case 'edit':
-        document.getElementById(selectionMode).click();
-        break;
       case 'insert':
         document.getElementById(insertMode).click();
         break;
+      case 'edit':
       default:
-        return;
+        document.getElementById(selectionMode).click();
+        break;
     }
   }
 
