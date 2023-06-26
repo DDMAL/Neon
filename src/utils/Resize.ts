@@ -122,6 +122,10 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
   function drawInitialRect (): void {
     if (element === null) return;
 
+    d3.selectAll('.resizePoint').remove();
+    d3.selectAll('#resizeRect').remove();
+    d3.selectAll('.rotatePoint').remove();
+
     // if it's a boundingbox just get the coordinates
     if (element.classList.contains('syl')) {
       const rect = element.querySelector('.sylTextRect-display');
@@ -307,9 +311,6 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         }
         element = document.querySelector(`#${element.id}`);
         ulx = undefined, uly = undefined, lrx = undefined, lry = undefined;
-        d3.selectAll('.resizePoint').remove();
-        d3.selectAll('#resizeRect').remove();
-        d3.selectAll('.rotatePoint').remove();
         drawInitialRect();
         
         if (element.classList.contains('syl')) {
@@ -417,11 +418,8 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         element = document.getElementById(element.id) as unknown as SVGGraphicsElement;
         ulx = undefined, uly = undefined, lrx = undefined, lry = undefined;
         dy = undefined;
-        d3.selectAll('.resizePoint').remove();
-        d3.selectAll('#resizeRect').remove();
-        d3.selectAll('.rotatePoint').remove();
         drawInitialRect();
-        selectAll([element], neonView, dragHandler);
+        
         if (element.classList.contains('syl')) {
           selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
         } else {
