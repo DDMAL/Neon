@@ -214,8 +214,8 @@ a:hover {
     display: block;
 }
 
-/* Neon document-editor-navbar styles  for smaller devices */
-@media screen and (max-width: 1023px) {
+/* Tov navbar styles styles for smaller devices */
+@media screen and (max-width: 1023px) {    
     .navbar-menu.is-active {
         display: flex;
         flex-direction: column;
@@ -496,6 +496,7 @@ a:hover {
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
+    flex-wrap: wrap;
 }
 #display-options-separator {
     border-right: 2px solid rgb(232 232 232);
@@ -568,6 +569,7 @@ a:hover {
     font-size: 0.875em;
     justify-content: center;
     width: 100%;
+    flex-wrap: wrap;
 }
 #displayContents .button {
     width: 10.5em;
@@ -687,8 +689,10 @@ a:hover {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 95%;
+    width: 98%;
+    flex-wrap: wrap;
     margin: 5px 0px;
+    gap: 10px;
 }
 .notification-wrapper {
     padding: 10px;
@@ -698,14 +702,27 @@ a:hover {
     justify-content: space-between;
     align-items: center;
     width: 85%;
+    flex-grow: 1;
 }
 .remove-notif-icon-wrapper {
-    height: 100%;
-    width: 7%;
+    /* height: 100%; */
+    width: 30px;
 }
 .remove-notif-icon {
     cursor: pointer;
 }
+
+/* Navigation panel styles for smaller devices */
+@media screen and (max-width: 1023px) {
+    .notification-container {
+        justify-content: center;
+        gap: 7px;
+    }
+    .remove-notif-icon-wrapper {
+        min-width: 30px;
+    }
+}
+
 
 /* ----------------------- */
 /* Neon Notifications
