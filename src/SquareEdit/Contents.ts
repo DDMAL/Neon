@@ -553,4 +553,4 @@ export const errorLogsPanelContents =
             <use id="toggleErrorLog" xlink:href="${__ASSET_PREFIX__}/assets/img/icons.svg#dropdown-down"></use>
         </svg>
     </div>
-    <div class="panel-contents" id="errorLogContents" style="overflow: visible; padding: 0.5em 0.75em;"><div>`;
+    <div class="panel-contents" id="errorLogContents" style="overflow: scroll; padding: 0.5em 0.75em;"><div>`;
