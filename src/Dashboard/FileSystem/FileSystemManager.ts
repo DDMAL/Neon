@@ -2,11 +2,21 @@ import { IFolder, IEntry, fs_functions } from '.';
 import { fetchUploadedDocuments } from '../Storage';
 import { samples_names } from '../samples';
 
-const FileSystemManager = () => {
+// Manager is used for accessing local storage and tracking the position of current folder
+const FileSystemManager = async () => {
+
+    const root = await getFileSystem();
+    let currentFolder: IFolder = root;
+
+    const getRoot = (): IFolder => root;
+
     // Save filesystem into local storage
     function setFileSystem(fs: IFolder): boolean {
         try {
+            console.log(1);
+            console.log(fs);
             const save_fs = fs_functions.createRoot(fs.name, fs.content);
+            console.log(2);
             window.localStorage.setItem('neon-fs', JSON.stringify(save_fs));
         } catch (e) {
             console.error(e);
@@ -78,12 +88,20 @@ const FileSystemManager = () => {
         return root;
     }
 
-    const root = getFileSystem();
+    function setCurrentFolder(folder: IFolder) {
+        currentFolder = folder;
+    }
+
+    function getCurrentFolder(): IFolder {
+        return currentFolder;
+    }
 
     const FileSystemProps = {
-        root: root,
+        getRoot: getRoot,
         setFileSystem: setFileSystem,
         getFileSystem: getFileSystem,
+        setCurrentFolder: setCurrentFolder,
+        getCurrentFolder: getCurrentFolder
     }
 
     return FileSystemProps;

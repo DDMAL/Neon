@@ -1,11 +1,15 @@
 import { EntryType, IEntry, IFolder, IFile } from '.';
 
+/*
+*   File System Functions that are used to create, move, and delete file system entries
+*   Does not depend on state 
+*/
+
 const createEntry = (name: string, type: EntryType, content: IEntry[] | string): IEntry => {
     return {
         name,
         type,
         content,
-        parent: null,
     };
 }
 
@@ -39,8 +43,6 @@ const moveEntry = (entry: IEntry, parent: IFolder, newParent: IFolder): boolean 
 
 const AddEntry = (entry: IEntry, parent: IFolder): boolean => {
     try {
-        const AssignedEntry = { ...entry, parent: parent };
-
         // Check for duplicate name
         const isDuplicate = parent.content.some((e) => e.name === entry.name);
         if (isDuplicate) {
@@ -49,7 +51,7 @@ const AddEntry = (entry: IEntry, parent: IFolder): boolean => {
         }
 
         // Add entry to parent
-        parent.content.push(AssignedEntry);
+        parent.content.push(entry);
         parent.content.sort((a, b) => a.type.localeCompare(b.type));
         parent.content.sort((a, b) => a.name.localeCompare(b.name));
     } catch (e) {
@@ -78,8 +80,6 @@ const RemoveEntry = (entry: IEntry, parent: IFolder): boolean => {
     }
     return true;
 }
-
-
 
 export const fs_functions = {
     createRoot: createRoot,
