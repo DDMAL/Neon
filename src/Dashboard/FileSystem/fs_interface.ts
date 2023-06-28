@@ -7,7 +7,6 @@ export interface IEntry {
     name: string;
     type: EntryType;
     content: IEntry[] | string;
-    parent: IEntry;
 }
 
 export interface IFolder extends IEntry {
