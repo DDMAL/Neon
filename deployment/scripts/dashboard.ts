@@ -1,8 +1,5 @@
 import { InitDocumentSelector } from '../../src/Dashboard/DocumentSelector';
 import { InitUploadArea } from '../../src/Dashboard/UploadArea';
-import FileManager from '../../src/Dashboard/FileManager';
-
-export const fm = FileManager.getInstance();
 
 InitDocumentSelector();
 
