@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import FileManager from './FileManager';
 import { formatFilename, renameFile } from './functions';
-import { createManifest, addEntry, fetchSampleDocuments, fetchUploadedDocuments } from './Storage';
+import { createManifest, addEntry, fetchUploadedDocuments } from './Storage';
 
 const fm = FileManager.getInstance();
 
@@ -123,13 +123,11 @@ function createPairedTile(filename: string, mei_filename: string, image_filename
 
 export async function handleUploadAllDocuments(): Promise<any> {
   const uploads = await fetchUploadedDocuments();
-  const samples = fetchSampleDocuments();
-  const existingNames = uploads.concat(samples);
 
   const folioPromises = fm.getFolios()
     .map( async ([name, mei, image]: [string, File, File]) => {
-      const newName = renameFile(name, existingNames);
-      existingNames.push(newName);
+      const newName = renameFile(name, uploads);
+      uploads.push(newName);
       return await uploadFolio(newName, mei, image)
     });
   
