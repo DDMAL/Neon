@@ -6,33 +6,41 @@ import { EntryType, IEntry, IFolder, IFile } from '.';
 */
 
 const createEntry = (name: string, type: EntryType, content: IEntry[] | string): IEntry => {
-    return {
-        name,
-        type,
-        content,
-    };
+    const metadata = {};
+    const entry = { name, type, content, metadata } as IEntry;
+    return entry;
 }
 
 const createFolder = (name: string): IFolder => {
     return createEntry(name, EntryType.Folder, []) as IFolder;
 }
 
-const createFolio = (name: string, content: string): IFile => {
-    return createEntry(name, EntryType.Folio, content) as IFile;
-}
-
-const createManuscript = (name: string, content: string): IFile=> {
-    return createEntry(name, EntryType.Manuscript, content) as IFile;
+const createFile = (name: string, content: string): IFile => {
+    return createEntry(name, EntryType.File, content) as IFile;
 }
 
 const createRoot = (name: string, content: IEntry[]): IFolder => {
     return createEntry(name, EntryType.Folder, content) as IFolder;
 }
 
-const moveEntry = (entry: IEntry, parent: IFolder, newParent: IFolder): boolean => {
+function addMetadata(entry: IEntry, metadata: Record<string, any>): IEntry {
+    Object.entries(metadata).forEach(([key, value]) => {
+        entry.metadata[key] = value
+    });
+    return entry;
+}
+
+function removeMetadata(entry: IEntry, keys: string[]): IEntry {
+    keys.forEach((key) => {
+        delete entry.metadata[key];
+    });
+    return entry;
+}
+    
+function moveEntry(entry: IEntry, parent: IFolder, newParent: IFolder): boolean {
     try {
-        AddEntry(entry, newParent);
-        RemoveEntry(entry, parent);
+        addEntry(entry, newParent);
+        removeEntry(entry, parent);
     } catch (e) {
         console.error(e);
         window.alert(`Error moving ${entry.name} to ${newParent.name}`);
@@ -41,7 +49,7 @@ const moveEntry = (entry: IEntry, parent: IFolder, newParent: IFolder): boolean 
     return true;
 }
 
-const AddEntry = (entry: IEntry, parent: IFolder): boolean => {
+const addEntry = (entry: IEntry, parent: IFolder): boolean => {
     try {
         // Check for duplicate name
         const isDuplicate = parent.content.some((e) => e.name === entry.name);
@@ -62,7 +70,7 @@ const AddEntry = (entry: IEntry, parent: IFolder): boolean => {
     return true;
 }
 
-const RemoveEntry = (entry: IEntry, parent: IFolder): boolean => {
+const removeEntry = (entry: IEntry, parent: IFolder): boolean => {
     try {
         // Check if entry exists in parent
         const idx = parent.content.findIndex((e) => e.name === entry.name);
@@ -84,9 +92,10 @@ const RemoveEntry = (entry: IEntry, parent: IFolder): boolean => {
 export const fs_functions = {
     createRoot: createRoot,
     createFolder: createFolder,
-    createFolio: createFolio,
-    createManuscript: createManuscript,
+    createFile: createFile,
     moveEntry: moveEntry,
-    AddEntry: AddEntry,
-    RemoveEntry: RemoveEntry,
+    addEntry: addEntry,
+    removeEntry: removeEntry,
+    addMetadata: addMetadata,
+    removeMetadata: removeMetadata
 }

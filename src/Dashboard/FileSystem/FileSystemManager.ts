@@ -6,18 +6,14 @@ import { samples_names } from '../samples';
 const FileSystemManager = async () => {
 
     const root = await getFileSystem();
-    let currentFolder: IFolder = root;
 
     const getRoot = (): IFolder => root;
 
     // Save filesystem into local storage
-    function setFileSystem(fs: IFolder): boolean {
+    function setFileSystem(root: IFolder): boolean {
         try {
-            console.log(1);
-            console.log(fs);
-            const save_fs = fs_functions.createRoot(fs.name, fs.content);
-            console.log(2);
-            window.localStorage.setItem('neon-fs', JSON.stringify(save_fs));
+            console.log(root);
+            window.localStorage.setItem('neon-fs', JSON.stringify(root));
         } catch (e) {
             console.error(e);
             window.alert('Error saving file system');
@@ -30,20 +26,23 @@ const FileSystemManager = async () => {
     async function getFileSystem(): Promise<IFolder> {
         try {
             const fs = window.localStorage.getItem('neon-fs');
-            const localFileSystem = JSON.parse(fs) as IFolder;
-
-            // If no file system exists, create a new one
-            if (localFileSystem === null) {
-                const newRoot = fs_functions.createRoot('root', []);
-                const rootSamples = loadSamples(newRoot);
-                const rootSamplesUploads = await loadPreviousUploads(rootSamples);
-                setFileSystem(rootSamplesUploads);
-                return rootSamplesUploads;
+            
+            // if localstorage exists, load previous root
+            if (fs) {
+                const localFileSystem = JSON.parse(fs) as IFolder;
+                return localFileSystem;
             }
-
-            // If file system exists, return it
-            return localFileSystem;
-
+            // else, create new root
+            else {
+                const root = fs_functions.createRoot('root', []);
+                console.log(root);
+                loadSamples(root);
+                console.log(root);
+                await loadPreviousUploads(root);
+                console.log(root);
+                setFileSystem(root);
+                return root;
+            }
         } catch (e) {
             console.error(e);
             window.alert('Error loading file system');
@@ -54,19 +53,24 @@ const FileSystemManager = async () => {
     function loadSamples(root: IFolder) {
         // Make sample entries
         const sampleEntries = samples_names.map(([name, type]) => {
+            const entry = fs_functions.createFile(name, name);
             if (type === 'folio') {
-                return fs_functions.createFolio(name, name);
+                fs_functions.addMetadata(entry, { type: 'folio', document: 'sample', immutable: true });
             }
             else if (type === 'manuscript') {
-                return fs_functions.createManuscript(name, name);
+                fs_functions.addMetadata(entry, { type: 'manuscript', document: 'sample', immutable: true });
             }
+            return entry;
         });
+
         // Make samples folder and add to root
         const samplesFolder = fs_functions.createFolder('Samples');
-        fs_functions.AddEntry(samplesFolder, root);
+        fs_functions.addMetadata(samplesFolder, { immutable: true });
+        fs_functions.addEntry(samplesFolder, root);
+
         // Add sample entries to samples folder
         sampleEntries.forEach((sample) => {
-            fs_functions.AddEntry(sample, samplesFolder);
+            fs_functions.addEntry(sample, samplesFolder);
         });
 
         return root;
@@ -78,30 +82,20 @@ const FileSystemManager = async () => {
 
         // Make upload entries
         const uploadEntries = uploads.map((upload) => {
-            return fs_functions.createFolio(upload, upload);
+            return fs_functions.createFile(upload, upload);
         });
 
         uploadEntries.forEach((upload) => {
-            fs_functions.AddEntry(upload, root);
+            fs_functions.addEntry(upload, root);
         });
 
         return root;
-    }
-
-    function setCurrentFolder(folder: IFolder) {
-        currentFolder = folder;
-    }
-
-    function getCurrentFolder(): IFolder {
-        return currentFolder;
     }
 
     const FileSystemProps = {
         getRoot: getRoot,
         setFileSystem: setFileSystem,
         getFileSystem: getFileSystem,
-        setCurrentFolder: setCurrentFolder,
-        getCurrentFolder: getCurrentFolder
     }
 
     return FileSystemProps;

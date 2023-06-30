@@ -1,12 +1,13 @@
 export enum EntryType {
     Folder = 'folder',
-    Folio = 'folio',
-    Manuscript = 'manuscript',
+    File = 'file'
 }
+
 export interface IEntry {
     name: string;
     type: EntryType;
     content: IEntry[] | string;
+    metadata: { [key: string]: any };
 }
 
 export interface IFolder extends IEntry {
@@ -15,6 +16,6 @@ export interface IFolder extends IEntry {
 }
 
 export interface IFile extends IEntry {
-    type: EntryType.Folio | EntryType.Manuscript;
+    type: EntryType.File
     content: string;
 }
