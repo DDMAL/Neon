@@ -458,6 +458,14 @@ export const hotkeysModal = `
                 </div>
                 <div class="hotkey-entry-description">Hide Glyph</div>
             </div>
+            <div class="hotkey-entry-container">
+                <div class="hotkey-container">
+                    <div class="hotkey-entry">Shift</div>
+                    <div>+</div>
+                    <div class="hotkey-entry">T</div>
+                </div>
+                <div class="hotkey-entry-description">Scroll To Syllable Text</div>
+            </div>
         </div>
 
         <!-- "Edit" hotkeys -->
@@ -501,10 +509,10 @@ export const hotkeysModal = `
             </div>
             <div class="hotkey-entry-container">
                 <div class="hotkey-container">
-                    <div class="hotkey-entry">1/2/3/4</div>
+                    <div class="hotkey-entry">1/2/3/4/5/6</div>
                 </div>
                 <div class="hotkey-entry-description">
-                    Select by Syllable/Neume/Neume Component/Staff
+                    Select by Syllable/Neume/Neume Component/Staff/Layer Element/BBox
                 </div>
             </div>
             <div class="hotkey-entry-container">
