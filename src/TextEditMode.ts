@@ -107,6 +107,15 @@ export default class TextEditMode implements TextEditInterface {
       span.removeEventListener('click', selectSylText);
       span.addEventListener('click', selectSylText);
     });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.shiftKey && event.key === 'T') {
+        const selectedSylText = document.querySelector('.text-select');
+        if (selectedSylText) {
+          selectedSylText.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
   }
 
 
