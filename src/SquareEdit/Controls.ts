@@ -190,7 +190,7 @@ export function initSelectionButtons (): void {
   const selByStaff = document.getElementById('selByStaff');
   const selByLayerElement = document.getElementById('selByLayerElement');
 
-  selBySyllable.addEventListener('click', selectBySylHandler);
+  selBySyllable.addEventListener('click', selectBySyllableHandler);
   selByNeume.addEventListener('click', selectByNeumeHandler);
   selByNc.addEventListener('click', selectByNcHandler);
   selByStaff.addEventListener('click', selectByStaffHandler);
@@ -205,7 +205,7 @@ export function initSelectionButtons (): void {
   });
 
 
-  function selectBySylHandler () {
+  function selectBySyllableHandler () {
     if (!selBySyllable.classList.contains('is-active')) {
       setSettings({ selectionMode: 'selBySyllable' });
 
