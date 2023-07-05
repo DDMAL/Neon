@@ -8,7 +8,7 @@ const openButton: HTMLButtonElement = document.querySelector('#open-doc');
 const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
 
 const navBackButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
-const navPathContainer: HTMLDivElement = document.querySelector('#fs-path-container');
+const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
 
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
@@ -295,6 +295,36 @@ function handleNavigateBack() {
   updateDocumentSelector(newPath);
 }
 
+function updateNavPath(currentPath: IFolder[]) {
+  navPathContainer.innerHTML = '';
+
+  function handleNavClick(targetPath: IFolder[]): () => void {
+    return async () => await updateDocumentSelector(targetPath);
+  }
+
+  // create nav elements and add event listeners
+  const navElements = currentPath.map((folder, idx) => {
+    const navSection = document.createElement('div');
+    navSection.classList.add('nav-path-section');
+    navSection.innerHTML = folder.name;
+
+    const targetPath = currentPath.slice(0, idx + 1);
+    navSection.addEventListener('click', handleNavClick(targetPath));
+    return navSection
+  });
+
+  // add nav elements to nav path container
+  navElements.forEach((navElement, idx) => {
+    navPathContainer.appendChild(navElement);
+    if (idx !== navElements.length - 1) {
+      const seperator = document.createElement('div');
+      seperator.classList.add('nav-path-seperator');
+      seperator.innerHTML = ' / ';
+      navPathContainer.appendChild(seperator);
+    }
+  });
+}
+
 export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void> {
   if (!newPath) newPath = currentPath;
   currentPath = newPath;
@@ -316,23 +346,6 @@ export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void>
     documentsContainer.appendChild(tile);
     await addTileEventListener(index, entry, tile);
   }); 
-
-  function updateNavPath(currentPath: IFolder[]) {
-    navPathContainer.innerHTML = '';
-    
-    function handleNavClick(targetPath: IFolder[]): () => void {
-      return async () => await updateDocumentSelector(targetPath);
-    }
-
-    currentPath.forEach((folder, idx) => {
-      const navSection = document.createElement('div');
-      navSection.classList.add('nav-section');
-      navSection.innerHTML = folder.name;
-      navSection.addEventListener('dblclick', handleNavClick(currentPath.slice(0, idx + 1)));
-      navPathContainer.appendChild(navSection);
-      navPathContainer.appendChild(document.createTextNode(' / '));
-    });
-  }
 
   // update path display
   updateNavPath(currentPath);

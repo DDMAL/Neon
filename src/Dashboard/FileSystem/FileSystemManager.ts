@@ -34,7 +34,7 @@ const FileSystemManager = async () => {
             }
             // else, create new root
             else {
-                const root = fs_functions.createRoot('root', []);
+                const root = fs_functions.createRoot('Home', []);
                 console.log(root);
                 loadSamples(root);
                 console.log(root);
