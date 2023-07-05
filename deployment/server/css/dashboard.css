@@ -109,6 +109,15 @@
   animation: fade-in 2s ease-in-out forwards;
 }
 
+.fs-path-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  opacity: 0;
+  animation: fade-in 2s ease-in-out forwards;
+}
+
 .fs-content-container {
   padding: 4vw 0 0 0;
   display: flex;

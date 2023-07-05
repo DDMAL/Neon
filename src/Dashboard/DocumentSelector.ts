@@ -8,7 +8,7 @@ const openButton: HTMLButtonElement = document.querySelector('#open-doc');
 const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
 
 const navBackButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
-const navPath: HTMLDivElement = document.querySelector('#fs-path');
+const navPathContainer: HTMLDivElement = document.querySelector('#fs-path-container');
 
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
@@ -317,9 +317,25 @@ export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void>
     await addTileEventListener(index, entry, tile);
   }); 
 
+  function updateNavPath(currentPath: IFolder[]) {
+    navPathContainer.innerHTML = '';
+    
+    function handleNavClick(targetPath: IFolder[]): () => void {
+      return async () => await updateDocumentSelector(targetPath);
+    }
+
+    currentPath.forEach((folder, idx) => {
+      const navSection = document.createElement('div');
+      navSection.classList.add('nav-section');
+      navSection.innerHTML = folder.name;
+      navSection.addEventListener('dblclick', handleNavClick(currentPath.slice(0, idx + 1)));
+      navPathContainer.appendChild(navSection);
+      navPathContainer.appendChild(document.createTextNode(' / '));
+    });
+  }
+
   // update path display
-  const pathDisplay = newPath.map((entry) => entry.name).join(' / ');
-  navPath.innerHTML = pathDisplay;
+  updateNavPath(currentPath);
 
   // update back button if at root
   if (newPath.length === 1) {
