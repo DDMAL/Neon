@@ -109,13 +109,21 @@
   animation: fade-in 2s ease-in-out forwards;
 }
 
-.fs-path-container {
+.nav-path-container {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  opacity: 0;
-  animation: fade-in 2s ease-in-out forwards;
+  gap: 5px;
+}
+
+.nav-path-section {
+  text-decoration: solid underline red 3px;
+  cursor: pointer;
+}
+
+.nav-path-seperator {
+  color: green;
 }
 
 .fs-content-container {
