@@ -22,7 +22,7 @@ let currentPath: IFolder[];
 class shiftSelection {
   private start: number;
   private end: number;
-  private prevSelection = [];
+  private prevSelection: number[] = [];
 
   public constructor() {
     this.reset();
@@ -151,8 +151,10 @@ function createTile(entry: IEntry) {
   switch (entry.type) {
     case 'folder':
       doc.classList.add('folder-entry');
+      break;
     case 'file':
       doc.classList.add('file-entry');
+      break;
   }
 
   const name = document.createElement('div');
@@ -165,53 +167,53 @@ function createTile(entry: IEntry) {
 async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivElement) {
   // double click event immediately opens document
   if (entry.type === 'folder') {
-    const folder = entry as IFolder;
-    const enterFolder = async () => await updateDocumentSelector([...currentPath, folder]);
+    async function enterFolder() {
+      return await updateDocumentSelector([...currentPath, entry as IFolder]);
+    }
     tile.addEventListener('dblclick', enterFolder, false);
   }
   else {
     tile.addEventListener('dblclick', handleOpenDocuments, false);
-    addShiftSelectionBehaviour(tile, index);
   }
+  addShiftSelectionListener(tile, index);
 }
 
-// Single click selects document or adds document to existing selection, unless it's a folder in which case is ignored
-function addShiftSelectionBehaviour(tile: HTMLDivElement, index: number) {
+/**
+ * Add shift selection behaviour to html tile element
+ * 
+ * When no keys are pressed: erase any previous selections and select only current tile
+ * When meta key is pressed: add current tile to selection if not already selected, else remove from selection
+ * When shift key is pressed: select all tiles between current tile and previous tile
+ * 
+ * When there is a previous selection, the start of the shift selection is the last selected tile. Shift clicking after will add the shift selection to the previous selection.
+ */
+function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
   tile.addEventListener('click', function(e) {
-    // No Shift or Meta pressed
     if (!metaKeyIsPressed && !shiftKeyIsPressed) {
-      // Selected or not selected -> clear selection and select cur tile
       unselectAll();
       select(index, tile);
-      shift.setStart(index); // Track start of shift selection
-      setSidebarActions();
+      shift.setStart(index); 
     }
-    // Meta key pressed (default behaviour if both meta and shift are pressed)
     else if (metaKeyIsPressed) {
       if (orderedSelection[index]) {
         unselect(index, tile);
-        shift.setStart(orderedSelection.lastIndexOf(true)); // MacOS behaviour: shift start goes to largest index selected item
+        shift.setStart(orderedSelection.lastIndexOf(true));
       }
-      // Tile is not selected -> Add to selection
       else {
         select(index, tile);
-        shift.setStart(index); // Track start of shift selection
+        shift.setStart(index); 
       }
-      setSidebarActions();
     }
-    // Marks the end of shift selection
     else if (shiftKeyIsPressed) {
-      // Unselect previous shift selection if applicable
-      shift.getPrevSelection().forEach((index) => {
-        unselect(index);
-      })
-      // Select new shift select
-      shift.setEnd(index);
-      shift.getSelection().forEach((index) => {
-        select(index);
+      shift.getPrevSelection().forEach((idx) => {
+        unselect(idx);
       });
-      setSidebarActions();
+      shift.setEnd(index);
+      shift.getSelection().forEach((idx) => {
+        select(idx);
+      });
     }
+    setSidebarActions();
   }, false);
 }
 
@@ -226,48 +228,65 @@ function handleOpenDocuments() {
 }
 
 function handleDeleteDocuments() {
-  const selectedEntries = getSelectionFilenames();
-  const selectedSamples = selectedEntries.filter(entry => entry.metadata['document'] === 'sample');
-  const entriesWithoutSamples = selectedEntries.filter(entry => entry.metadata['document'] !== 'sample');
 
-  const filenameFormatted = entriesWithoutSamples.map(entry => entry.name).join('\n');
+  function deleteFileEntry(file: IFile): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      deleteEntry(file.content)
+        .then(() => {
+          fs_functions.removeEntry(file, currentPath.at(-1));
+          resolve(true);
+        })
+        .catch(() => reject(false));
+    });
+  }
 
-  const sampleMessage = (selectedSamples.length > 0) 
-                        ? '\nCannot delete sample documents:\n ' + selectedSamples.map(entry => entry.name).join('\n')
-                        : '';
+  function deleteFolderEntry(folder: IFolder): Promise<boolean> {
+    // only delete a folder if it is empty
+    const isEmpty = folder.content.length === 0;
 
-  const alertMessage = 'Are you sure you want to delete:\n' + filenameFormatted + '\n\nThis action is irreversible.' + sampleMessage;
+    return new Promise((resolve) => {
+      if (isEmpty) {
+        fs_functions.removeEntry(folder, currentPath.at(-1));
+        resolve(true);
+      }
+      else {
+        window.alert(`Cannot delete ${folder.name}. Folder is not empty.`);
+        resolve(false);
+      }
+    });
+  }
+
+  const allEntries = getSelectionFilenames();
+  const selectedEntries = allEntries.filter(entry => entry.metadata['document'] !== 'sample');
+  const selectedSamples = allEntries.filter(entry => entry.metadata['document'] === 'sample');
+
+  // Create a formatted list of filenames to display in alert message
+  const createList = (entryArray: IEntry[]) => entryArray.map(entry => `- ${entry.name} (${entry.type})`).join('\n');
+
+  let alertMessage = 'Are you sure you want to delete:\n' + createList(allEntries) + '\n\nThis action is irreversible.'
+  
+  if (selectedSamples.length > 0) {
+    const sampleMessage = '\nCannot delete sample documents:\n ' + createList(selectedSamples);
+    alertMessage += sampleMessage;
+  }
+
   const isConfirmed = window.confirm(alertMessage);
 
   if (isConfirmed) {
-    const promises = selectedEntries.map(entry => {
+    const deletePromises = selectedEntries.map(entry => {
       if (entry.type === 'file') {
-        return deleteEntry((entry as IFile).content)
+        return deleteFileEntry(entry as IFile);
       }
-      // only delete a folder if it is empty
       else if (entry.type === 'folder') {
-        const isEmpty = (entry as IFolder).content.length === 0;
-
-        return new Promise((resolve) => {
-          if (isEmpty) {
-            fs_functions.removeEntry(entry, currentPath.at(-1));
-            resolve(true);
-          }
-          else {
-            window.alert(`Cannot delete ${entry.name}: folder is not empty.`);
-            resolve(false);
-          }
-        });
+        return deleteFolderEntry(entry as IFolder);
       }
     });
-    Promise.all(promises)
-      .then( () => {
+
+    Promise.all(deletePromises)
+      .then(() => {
         updateDocumentSelector(currentPath);
       })
       .catch( err => console.debug('failed to delete files: ', err));
-    unselectAll();
-    shift.reset();
-    setSidebarActions();
   }
 }
 
