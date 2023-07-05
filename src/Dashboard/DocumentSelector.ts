@@ -2,6 +2,7 @@ import { IEntry, IFile, IFolder, fs_functions } from './FileSystem';
 import { deleteEntry } from './Storage';
 import { formatFilename } from './functions';
 import FileSystemManager from './FileSystem/FileSystemManager';
+import ShiftSelectionManager from './ShiftSelectionManager';
 
 const documentsContainer = document.querySelector('#fs-content-container');
 const openButton: HTMLButtonElement = document.querySelector('#open-doc');
@@ -10,69 +11,16 @@ const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
 const navBackButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
 const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
 
-let metaKeyIsPressed = false;
-let shiftKeyIsPressed = false;
+const shiftSelection = new ShiftSelectionManager();
+
+let currentPath: IFolder[]; // to get current Folder: currentPath.at(-1)
 
 // Lists the documents in order as represented on dashboard
 let orderedEntries: IEntry[];
 let orderedSelection: boolean[];
-let currentPath: IFolder[];
 
-// Shift selection mimics MacOS behaviour
-class shiftSelection {
-  private start: number;
-  private end: number;
-  private prevSelection: number[] = [];
-
-  public constructor() {
-    this.reset();
-  }
-
-  public setStart(start: number) {
-    this.reset();
-    this.start = Math.max(start, 0);
-  }
-
-  public setEnd(end: number) {
-    this.end = end;
-  }
-
-  public reset() {
-    this.start = 0;
-    this.end = -1;
-    this.prevSelection.splice(0);
-  }
-
-  public getPrevSelection() {
-    return this.prevSelection;
-  }
-
-  public getSelection() {
-    let start: number;
-    let end: number;
-
-    if (this.end === -1) {
-      return [];
-    }
-    if (this.end < this.start) {
-      start = this.end;
-      end = this.start + 1;
-    }
-    else {
-      start = this.start;
-      end = this.end + 1;
-    }
-    const range = Array.from({ length: (end - start) }, (v, k) => k + start);
-
-    // For each shift selection action: if the Shift key is still held, the end shift pos can change
-    // with the previously (before-shift) selected elements still selected while the current shift selections unselect.
-    const specificSelection = range.filter(idx => !(orderedSelection[idx]));
-    this.prevSelection = specificSelection;
-    return specificSelection;
-  }
-}
-
-const shift = new shiftSelection();
+let metaKeyIsPressed = false;
+let shiftKeyIsPressed = false;
 
 // gets user selected filenames
 function getSelectionFilenames() {
@@ -192,24 +140,24 @@ function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
     if (!metaKeyIsPressed && !shiftKeyIsPressed) {
       unselectAll();
       select(index, tile);
-      shift.setStart(index); 
+      shiftSelection.setStart(index); 
     }
     else if (metaKeyIsPressed) {
       if (orderedSelection[index]) {
         unselect(index, tile);
-        shift.setStart(orderedSelection.lastIndexOf(true));
+        shiftSelection.setStart(orderedSelection.lastIndexOf(true));
       }
       else {
         select(index, tile);
-        shift.setStart(index); 
+        shiftSelection.setStart(index); 
       }
     }
     else if (shiftKeyIsPressed) {
-      shift.getPrevSelection().forEach((idx) => {
+      shiftSelection.getPrevSelection().forEach((idx) => {
         unselect(idx);
       });
-      shift.setEnd(index);
-      shift.getSelection().forEach((idx) => {
+      shiftSelection.setEnd(index);
+      shiftSelection.getSelection(orderedSelection).forEach((idx) => {
         select(idx);
       });
     }
@@ -222,7 +170,7 @@ function handleOpenDocuments() {
     // Open document if it is a file and not a folder
     if (entry.type === 'file') openFile(entry as IFile);
   });
-  shift.reset();
+  shiftSelection.reset();
   unselectAll();
   setSidebarActions();
 }
@@ -290,12 +238,14 @@ function handleDeleteDocuments() {
   }
 }
 
+// reloads document selector with previous folder
 function handleNavigateBack() {
   const newPath = currentPath.slice(0, -1);
   updateDocumentSelector(newPath);
 }
 
-function updateNavPath(currentPath: IFolder[]) {
+// updates nav path display, returns nothing
+function updateNavPath(currentPath: IFolder[]): void {
   navPathContainer.innerHTML = '';
 
   function handleNavClick(targetPath: IFolder[]): () => void {
@@ -328,19 +278,21 @@ function updateNavPath(currentPath: IFolder[]) {
 export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void> {
   if (!newPath) newPath = currentPath;
   currentPath = newPath;
-  const folder = newPath.at(-1);
+  const currentFolder = newPath.at(-1);
 
   // clear content
   documentsContainer.innerHTML = '';
-  shift.reset();
+
+  // clear selection
+  shiftSelection.reset();
 
   // update ordered items for current fs-contents
-  orderedEntries = folder.content;
+  orderedEntries = currentFolder.content;
   orderedSelection = new Array<boolean>(orderedEntries.length).fill(false);
-  shift.reset();
+  shiftSelection.reset();
 
   // populate folder contents
-  folder.content.forEach(async (entry, index) => {
+  currentFolder.content.forEach(async (entry, index) => {
     const { name, type } = entry;
     const tile = createTile(entry);
     documentsContainer.appendChild(tile);
@@ -372,7 +324,7 @@ export const InitDocumentSelector = async (): Promise<void> => {
     // Lose focus on esc key
     if (e.key === 'Escape') {
       unselectAll();
-      shift.reset();
+      shiftSelection.reset();
       setSidebarActions();
     }
   });
@@ -388,7 +340,7 @@ export const InitDocumentSelector = async (): Promise<void> => {
     const classList = (<Element>e.target).classList;
     if ( !['document-entry', 'filename-text'].some(className => classList.contains(className)) ) {
       unselectAll();
-      shift.reset();
+      shiftSelection.reset();
       setSidebarActions();
     }
   });
