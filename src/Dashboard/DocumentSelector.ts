@@ -1,8 +1,9 @@
 import { IEntry, IFile, IFolder, fs_functions } from './FileSystem';
 import { deleteEntry } from './Storage';
-import { formatFilename } from './functions';
+import { formatFilename } from './upload_functions';
 import FileSystemManager from './FileSystem/FileSystemManager';
 import ShiftSelectionManager from './ShiftSelectionManager';
+import { InitUploadArea } from './UploadArea';
 
 const documentsContainer: HTMLDivElement = document.querySelector('#fs-content-container');
 const backgroundArea: HTMLDivElement = document.querySelector('#main-section-content');
@@ -11,6 +12,8 @@ const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
 
 const navBackButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
 const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
+
+const uploadDocumentsButton = document.querySelector('#upload-new-doc-button');
 
 const shiftSelection = new ShiftSelectionManager();
 
@@ -52,6 +55,10 @@ backgroundArea!.addEventListener('click', (e) => {
     shiftSelection.reset();
     setSidebarActions();
   }
+});
+
+uploadDocumentsButton!.addEventListener('click', function() {
+  InitUploadArea(currentPath.at(-1));
 });
 
 // gets user selected filenames

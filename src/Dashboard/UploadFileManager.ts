@@ -1,8 +1,8 @@
 /**
- * Singleton management system, use getInstance() to retrieve instance.
+ * Manager for file uploading and pairing process
  */
-class FileManager {
-  private static instance: FileManager;
+class UploadFileManager {
+  private static instance: UploadFileManager;
 
   private allFiles = new Map<string, {file: File, count: number}>();
   private folios = new Array<folio>(); // filename, mei_filename, image_filename
@@ -11,11 +11,11 @@ class FileManager {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private constructor() {}
 
-  public static getInstance(): FileManager {
-    if (!FileManager.instance) {
-      FileManager.instance = new FileManager();
+  public static getInstance(): UploadFileManager {
+    if (!UploadFileManager.instance) {
+      UploadFileManager.instance = new UploadFileManager();
     }
-    return FileManager.instance;
+    return UploadFileManager.instance;
   }
 
   public addFile(file: File): void {
@@ -111,7 +111,7 @@ class FileManager {
   }
 }
 
-export default FileManager;
+export default UploadFileManager;
 
 type folio = {
   filename: string,

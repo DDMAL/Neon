@@ -1,10 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
-import FileManager from './FileManager';
-import { formatFilename, renameFile } from './functions';
-import { createManifest, addEntry, fetchUploadedDocuments } from './Storage';
+import UploadFileManager from './UploadFileManager';
+import { createManifest, addEntry } from './Storage';
+import { IFolder, fs_functions } from './FileSystem';
 
-const fm = FileManager.getInstance();
+const fm = UploadFileManager.getInstance();
 
+// Adds new files to upload pairing container and filemanager, returns list of rejected files
 export function addNewFiles( files: File[] ): File[] {
   const mei_container: HTMLDivElement = document.querySelector('#mei_list');
   const image_container: HTMLDivElement = document.querySelector('#image_list');
@@ -134,36 +135,49 @@ function createPairedFolio(filename: string, mei_filename: string, image_filenam
   return folio;
 }
 
-export async function handleUploadAllDocuments(): Promise<any> {
-  const uploads = await fetchUploadedDocuments();
-
+export async function handleUploadAllDocuments(currentFolder: IFolder): Promise<any> {
   const folioPromises = fm.getFolios()
     .map( async ([name, mei, image]: [string, File, File]) => {
-      const newName = renameFile(name, uploads);
-      uploads.push(newName);
-      return await uploadFolio(newName, mei, image)
+      const id = uuidv4()
+      return await uploadFolio(id, name, mei, image, currentFolder);
     });
   
-  fm.clear();
+  const manuscriptPromises = [] //fm.getManuscripts()
+  // .map( async (file: File) => {
+  //   return await uploadManuscript(file);
+  // });
 
-  const promises = 
-    folioPromises
-      .map(p => 
-        Promise.resolve(p)
-          .then(value => ({ status: 'fulfilled', value }),
-                reason => ({ status: 'rejected', reason })
-          )
-      );
+  const promises = [...folioPromises, ...manuscriptPromises]
+    .map(p => Promise.resolve(p)
+      .then(value => ({ status: 'fulfilled', value }), reason => ({ status: 'rejected', reason }))
+    );
   
+  fm.clear();
   return Promise.all(promises);
 }
 
-async function uploadFolio(name: string, mei: File, image: File): Promise<boolean> {
-  return createManifest(name, mei, image)
+async function uploadFolio(id: string, name: string, mei: File, image: File, currentFolder: IFolder): Promise<boolean> {
+  return createManifest(id, name, mei, image)
     .then(manifest => {
       const manifestBlob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/ld+json' });
-      return addEntry(name, manifestBlob, true);
-    });
+      const isSingle = true;
+      return addEntry(id, name, manifestBlob, isSingle);
+    })
+    // add to dashboard FileSystem
+    .then(succeeded => {
+      if (succeeded) {
+        const newName = renameFile(name, fs_functions.getAllNames(currentFolder));
+        const datetime = new Date().toLocaleString();
+        const fileEntry = fs_functions.createFile(newName, id);
+        const folioEntry = fs_functions.addMetadata(fileEntry, { type: 'folio', created_on: datetime });
+        const isAdded = fs_functions.addEntry(folioEntry, currentFolder);
+        return isAdded;
+      }
+      else {
+        console.log('failed to uploadFolio: ' + name);
+        return false;
+      }
+    })
 }
 
 // async function uploadManuscript(manuscript: File): Promise<boolean> {
@@ -199,4 +213,70 @@ export async function sortFileByName(sortByNameBtn: Element): Promise<void>  {
   });
 
   sortByNameBtn.setAttribute('style', 'color: black');
+}
+
+async function uploadManuscript(manuscript: File, currentFolder: IFolder, existingNames: string[]): Promise<boolean> {
+  const isSingle = false;
+  const id = manuscript['@id'] !== null ? manuscript['@id'] : manuscript.name;
+  return addEntry(id, manuscript.name, manuscript, isSingle)
+    // add to dashboard FileSystem
+    .then(succeeded => {
+      if (succeeded) {
+        const newName = renameFile(manuscript.name, existingNames);
+        const datetime = new Date().toLocaleString();
+        const fileEntry = fs_functions.createFile(newName, id);
+        const manuscriptEntry = fs_functions.addMetadata(fileEntry, { type: 'manuscript', created_on: datetime });
+        const isAdded = fs_functions.addEntry(manuscriptEntry, currentFolder);
+        return isAdded;
+      }
+      else {
+        console.log('failed to uploadFolio: ' + name);
+        return false;
+      }
+    })
+}
+
+export function formatFilename(filename: string, maxLen: number): string {
+  const chunkLen = Math.floor(maxLen/2);
+  const len = filename.length;
+  if (len <= maxLen) return filename;
+  else return `${filename.substring(0,chunkLen-1)}...${filename.substring(len-chunkLen+2, len)}`;
+}
+
+// Renames file if there are naming conflicts, in the form of 'foobar (1)'
+export function renameFile(filename: string, comparisons: string[]): string {
+  const reg = new RegExp(filename);
+  const results = comparisons.filter((comparison: string) => reg.test(comparison));
+
+  if (results.length !== 0) {
+    // Find lowest digit to name
+    const digitsReg = /\(\d+\),/g;
+    const soup = results.join().concat(',');
+    const digitsResults = soup.match(digitsReg);
+    
+    // If no digit matches then go to else statement
+    if (digitsResults !== null) {
+      const digits: number[] = digitsResults.map(str => {
+        const stripped = str.substring(1, str.length-2);
+        return Number(stripped);
+      });
+      digits.sort();
+
+      const idx = digits.indexOf(1);
+      if (idx === -1) return `${filename}(1)`;
+      else {
+        let prev = 1;
+        for (let i = idx+1 ; i < digits.length ; i++) {
+          const cur = digits[i];
+          if (cur !== prev + 1) {
+            break;
+          }
+          prev += 1;
+        }
+        return `${filename}(${prev+1})`;
+      }
+    }
+    else return `${filename}(1)`;
+  } 
+  else return filename;
 }
