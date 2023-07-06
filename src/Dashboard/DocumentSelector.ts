@@ -14,6 +14,7 @@ const navBackButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
 const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
 
 const uploadDocumentsButton = document.querySelector('#upload-new-doc-button');
+const newFolderButton = document.querySelector('#add-folder-button');
 
 const shiftSelection = new ShiftSelectionManager();
 const fsm = FileSystemManager();
@@ -27,9 +28,11 @@ let orderedSelection: boolean[];
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
 
+navBackButton!.addEventListener('click', handleNavigateBack);
 openButton!.addEventListener('click', handleOpenDocuments);
 deleteButton!.addEventListener('click', handleDeleteDocuments);
-navBackButton!.addEventListener('click', handleNavigateBack);
+uploadDocumentsButton!.addEventListener('click', () => InitUploadArea(currentPath.at(-1)));
+newFolderButton!.addEventListener('click', handleCreateFolder)
 
 window.addEventListener('keydown', (e) => {
   if (e.metaKey) metaKeyIsPressed = true;
@@ -56,10 +59,6 @@ backgroundArea!.addEventListener('click', (e) => {
     shiftSelection.reset();
     setSidebarActions();
   }
-});
-
-uploadDocumentsButton!.addEventListener('click', function() {
-  InitUploadArea(currentPath.at(-1));
 });
 
 // gets user selected filenames
@@ -216,6 +215,13 @@ function handleOpenDocuments() {
 }
 
 function handleDeleteDocuments() {
+  // abort if parent folder is immutable
+  const isImmutable = currentPath.at(-1).metadata['immutable'];
+  if (isImmutable) {
+    window.alert(`Cannot delete documents. ${currentPath.join('/')} is immutable.`);
+    return;
+  }
+
   function deleteFileEntry(file: IFile): Promise<boolean> {
     return new Promise((resolve, reject) => {
       deleteEntry(file.content)
@@ -250,7 +256,7 @@ function handleDeleteDocuments() {
   // Create a formatted list of filenames to display in alert message
   const createList = (entryArray: IEntry[]) => entryArray.map(entry => `- ${entry.name} (${entry.type})`).join('\n');
 
-  let alertMessage: string;
+  let alertMessage = '';
   
   if (immutableEntries.length > 0) {
     const immutableMessage = `The following files cannot be deleted:\n${createList(immutableEntries)}\n`;
@@ -314,6 +320,19 @@ function updateNavPath(currentPath: IFolder[]): void {
       navPathContainer.appendChild(seperator);
     }
   });
+}
+
+function handleCreateFolder() {
+  // abort if parent folder is immutable
+  const isImmutable = currentPath.at(-1).metadata['immutable'];
+  if (isImmutable) {
+    window.alert(`Cannot add folder. ${currentPath.join('/')} is immutable.`);
+    return;
+  }
+
+  const folder = fs_functions.createFolder('new file');
+  fs_functions.addEntry(folder, currentPath.at(-1));
+  updateDocumentSelector();
 }
 
 export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void> {
