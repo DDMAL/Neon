@@ -58,10 +58,14 @@ const addEntry = (entry: IEntry, parent: IFolder): boolean => {
             return false;
         }
 
-        // Add entry to parent
+        // Add entry to parent, sort by alphanumerical and folders before files
         parent.content.push(entry);
-        parent.content.sort((a, b) => a.type.localeCompare(b.type));
         parent.content.sort((a, b) => a.name.localeCompare(b.name));
+        parent.content.sort((a, b) => {
+            if (a.type === EntryType.File && b.type === EntryType.Folder) return 1
+            else if (a.type === EntryType.Folder && b.type === EntryType.File) return -1;
+            else return 0;
+        });
     } catch (e) {
         console.error(e);
         window.alert(`Error adding ${entry.name} to ${parent.name}`);
