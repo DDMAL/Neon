@@ -89,6 +89,11 @@ const removeEntry = (entry: IEntry, parent: IFolder): boolean => {
     return true;
 }
 
+const getAllNames = (folder: IFolder) => {
+    const names = folder.content.map(entry => entry.name);
+    return names;
+}
+
 export const fs_functions = {
     createRoot: createRoot,
     createFolder: createFolder,
@@ -97,5 +102,6 @@ export const fs_functions = {
     addEntry: addEntry,
     removeEntry: removeEntry,
     addMetadata: addMetadata,
-    removeMetadata: removeMetadata
+    removeMetadata: removeMetadata,
+    getAllNames: getAllNames
 }

@@ -1,39 +1,40 @@
-import { addNewFiles } from './UploadManager';
 import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
-import { handleUploadAllDocuments, handleMakePair } from './UploadManager';
+import { addNewFiles, handleUploadAllDocuments, handleMakePair } from './upload_functions';
 import { updateDocumentSelector } from './DocumentSelector';
+import { IFolder } from './FileSystem';
 
-export function InitUploadArea(): void {
+async function handleUploadUpdate(modalWindow: ModalWindow, currentFolder: IFolder) {
+  const spinner = document.querySelector('#uploading_spinner');
+  spinner.classList.add('visible');
+
+  handleUploadAllDocuments(currentFolder)
+    .then( () => {
+      setTimeout( async () => {
+        await updateDocumentSelector();
+        spinner.classList.remove('visible');
+        modalWindow.hideModalWindow();
+      }, 2000);
+    })
+    .catch( (error) => {
+      console.log('One or more uploads rejected: ', error);
+      setTimeout( async () => {
+        await updateDocumentSelector();
+        spinner.classList.remove('visible');
+        modalWindow.hideModalWindow();
+      }, 2000);
+    });
+}
+
+export function InitUploadArea(currentFolder: IFolder): void {
   // generate modal window
   const modalWindow = new ModalWindow();
   modalWindow.setModalWindowView(ModalWindowView.DOCUMENT_UPLOAD);
   modalWindow.openModalWindow();
 
   document.querySelector('#make_pair')!.addEventListener('click', handleMakePair);
+  document.querySelector('#upload_button')!.addEventListener('click', () => handleUploadUpdate(modalWindow, currentFolder));
 
-  document.querySelector('#upload_button')!.addEventListener('click', async function uploadAndUpdate() {
-    const spinner = document.querySelector('#uploading_spinner');
-    spinner.classList.add('visible');
-
-    handleUploadAllDocuments()
-      .then( () => {
-        setTimeout( async () => {
-          await updateDocumentSelector();
-          spinner.classList.remove('visible');
-          modalWindow.hideModalWindow();
-        }, 2000);
-      })
-      .catch( (error) => {
-        console.log('One or more uploads rejected: ', error);
-        setTimeout( async () => {
-          await updateDocumentSelector();
-          spinner.classList.remove('visible');
-          modalWindow.hideModalWindow();
-        }, 2000);
-      });
-  });
-
-  // File System selector when clicking on upload area
+  // request user file system when clicking on upload area
   const fileSelector = document.createElement('input');
   fileSelector.type = 'file';
   fileSelector.multiple = true;
