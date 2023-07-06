@@ -4,7 +4,8 @@ import { formatFilename } from './functions';
 import FileSystemManager from './FileSystem/FileSystemManager';
 import ShiftSelectionManager from './ShiftSelectionManager';
 
-const documentsContainer = document.querySelector('#fs-content-container');
+const documentsContainer: HTMLDivElement = document.querySelector('#fs-content-container');
+const backgroundArea: HTMLDivElement = document.querySelector('#main-section-content');
 const openButton: HTMLButtonElement = document.querySelector('#open-doc');
 const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
 
@@ -21,6 +22,37 @@ let orderedSelection: boolean[];
 
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
+
+openButton!.addEventListener('click', handleOpenDocuments);
+deleteButton!.addEventListener('click', handleDeleteDocuments);
+navBackButton!.addEventListener('click', handleNavigateBack);
+
+window.addEventListener('keydown', (e) => {
+  if (e.metaKey) metaKeyIsPressed = true;
+  if (e.shiftKey) shiftKeyIsPressed = true;
+  // Lose focus on esc key
+  if (e.key === 'Escape') {
+    unselectAll();
+    shiftSelection.reset();
+    setSidebarActions();
+  }
+});
+
+window.addEventListener('keyup', (e) => {
+  if (!e.metaKey) metaKeyIsPressed = false;
+  if (!e.shiftKey) shiftKeyIsPressed = false;
+});
+
+backgroundArea!.addEventListener('click', (e) => {
+  const target = e.target as Element;
+  // Lose focus if click event in main section is not a document tile
+  const isDocument = Boolean(target.closest('.document-entry'))
+  if (!isDocument) {
+    unselectAll();
+    shiftSelection.reset();
+    setSidebarActions();
+  }
+});
 
 // gets user selected filenames
 function getSelectionFilenames() {
@@ -176,7 +208,6 @@ function handleOpenDocuments() {
 }
 
 function handleDeleteDocuments() {
-
   function deleteFileEntry(file: IFile): Promise<boolean> {
     return new Promise((resolve, reject) => {
       deleteEntry(file.content)
@@ -280,10 +311,8 @@ export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void>
   currentPath = newPath;
   const currentFolder = newPath.at(-1);
 
-  // clear content
+  // clear content and selection
   documentsContainer.innerHTML = '';
-
-  // clear selection
   shiftSelection.reset();
 
   // update ordered items for current fs-contents
@@ -293,7 +322,6 @@ export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void>
 
   // populate folder contents
   currentFolder.content.forEach(async (entry, index) => {
-    const { name, type } = entry;
     const tile = createTile(entry);
     documentsContainer.appendChild(tile);
     await addTileEventListener(index, entry, tile);
@@ -313,38 +341,6 @@ export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void>
 
 export const InitDocumentSelector = async (): Promise<void> => {
   const fsm = await FileSystemManager();
-
-  openButton!.addEventListener('click', handleOpenDocuments);
-  deleteButton!.addEventListener('click', handleDeleteDocuments);
-  navBackButton!.addEventListener('click', handleNavigateBack);
-
-  window.addEventListener('keydown', (e) => {
-    if (e.metaKey) metaKeyIsPressed = true;
-    if (e.shiftKey) shiftKeyIsPressed = true;
-    // Lose focus on esc key
-    if (e.key === 'Escape') {
-      unselectAll();
-      shiftSelection.reset();
-      setSidebarActions();
-    }
-  });
-
-  window.addEventListener('keyup', (e) => {
-    if (!e.metaKey) metaKeyIsPressed = false;
-    if (!e.shiftKey) shiftKeyIsPressed = false;
-  });
-
-  // Lose focus if click event in main section is not a button
-  const background: HTMLElement = document.querySelector('.main-section-content');
-  background.addEventListener('click', function(e) {
-    const classList = (<Element>e.target).classList;
-    if ( !['document-entry', 'filename-text'].some(className => classList.contains(className)) ) {
-      unselectAll();
-      shiftSelection.reset();
-      setSidebarActions();
-    }
-  });
-
   const root = fsm.getRoot();
   updateDocumentSelector([root]);
 }
