@@ -16,6 +16,7 @@ const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-conta
 const uploadDocumentsButton = document.querySelector('#upload-new-doc-button');
 
 const shiftSelection = new ShiftSelectionManager();
+const fsm = FileSystemManager();
 
 let currentPath: IFolder[]; // to get current Folder: currentPath.at(-1)
 
@@ -243,23 +244,25 @@ function handleDeleteDocuments() {
   }
 
   const allEntries = getSelectionFilenames();
-  const selectedEntries = allEntries.filter(entry => entry.metadata['document'] !== 'sample');
-  const selectedSamples = allEntries.filter(entry => entry.metadata['document'] === 'sample');
+  const deletableEntries = allEntries.filter(entry => entry.metadata['immutable'] !== true);
+  const immutableEntries = allEntries.filter(entry => entry.metadata['immutable'] === true);
 
   // Create a formatted list of filenames to display in alert message
   const createList = (entryArray: IEntry[]) => entryArray.map(entry => `- ${entry.name} (${entry.type})`).join('\n');
 
-  let alertMessage = 'Are you sure you want to delete:\n' + createList(allEntries) + '\n\nThis action is irreversible.'
+  let alertMessage: string;
   
-  if (selectedSamples.length > 0) {
-    const sampleMessage = '\nCannot delete sample documents:\n ' + createList(selectedSamples);
-    alertMessage += sampleMessage;
+  if (immutableEntries.length > 0) {
+    const immutableMessage = `The following files cannot be deleted:\n${createList(immutableEntries)}\n`;
+    alertMessage = immutableMessage + alertMessage;
   }
+
+  alertMessage += `Are you sure you want to delete:\n${createList(deletableEntries)}\nThis action is irreversible.`;
 
   const isConfirmed = window.confirm(alertMessage);
 
   if (isConfirmed) {
-    const deletePromises = selectedEntries.map(entry => {
+    const deletePromises = deletableEntries.map(entry => {
       if (entry.type === 'file') {
         return deleteFileEntry(entry as IFile);
       }
@@ -344,10 +347,11 @@ export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void>
   else {
     navBackButton.disabled = false;
   }
+
+  fsm.setFileSystem(currentPath.at(0));
 }
 
 export const InitDocumentSelector = async (): Promise<void> => {
-  const fsm = await FileSystemManager();
-  const root = fsm.getRoot();
+  const root = await fsm.getRoot();
   updateDocumentSelector([root]);
 }

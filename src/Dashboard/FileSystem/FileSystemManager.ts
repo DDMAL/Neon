@@ -1,13 +1,13 @@
-import { IFolder, IEntry, fs_functions } from '.';
+import { IFolder, fs_functions } from '.';
 import { fetchUploadedDocuments } from '../Storage';
 import { samples_names } from '../samples';
 
 // Manager is used for accessing local storage and tracking the position of current folder
-const FileSystemManager = async () => {
+const FileSystemManager = () => {
 
-    const root = await getFileSystem();
-
-    const getRoot = (): IFolder => root;
+    async function getRoot(): Promise<IFolder> { 
+        return await getFileSystem() 
+    }
 
     // Save filesystem into local storage
     function setFileSystem(root: IFolder): boolean {
@@ -35,11 +35,8 @@ const FileSystemManager = async () => {
             // else, create new root
             else {
                 const root = fs_functions.createRoot('Home', []);
-                console.log(root);
                 loadSamples(root);
-                console.log(root);
                 await loadPreviousUploads(root);
-                console.log(root);
                 setFileSystem(root);
                 return root;
             }
