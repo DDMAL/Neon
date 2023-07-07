@@ -201,6 +201,13 @@ export type ChangeGroupAction = {
   };
 };
 
+export type MatchHeightAction = {
+  action: 'matchHeight',
+  param: {
+    elementId: string;
+  };
+};
+
 /** An editing action sent to verovio as described [here](https://github.com/DDMAL/Neon/wiki/Toolkit-Actions). */
 export type EditorAction =
   | DragAction
@@ -224,7 +231,8 @@ export type EditorAction =
   | ChangeStaffAction
   | ChangeStaffToAction
   | ChangeGroupAction
-  | ChainAction;
+  | ChainAction
+  | MatchHeightAction;
 
 export type ChainAction = {
   action: 'chain',
