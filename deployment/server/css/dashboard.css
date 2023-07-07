@@ -102,6 +102,14 @@
   width: 90%;
 }
 
+.fs-top-zone {
+  padding-bottom: 20px;
+}
+
+.fs-middle-zone {
+  padding-bottom: 20px;
+}
+
 .fs-title {
   font-size: calc(15px + 1vw);
   font-weight: 500;
@@ -118,22 +126,39 @@
 }
 
 .nav-path-section {
-  text-decoration: solid underline red 3px;
+  text-decoration: solid underline #589ed5 2px;
   cursor: pointer;
 }
 
 .nav-path-seperator {
-  color: green;
+  color: #589ed5;
+}
+
+#fs-back-btn {
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  padding: 2px 6px;
+  border-color: #7ab2b7;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 5px;
+  color: #7ab2b7;
+  opacity: 20%;
+  animation: fade-in 2s ease-in-out forwards;
+}
+
+#fs-back-btn.active {
+  cursor: pointer;
+  opacity: 100%;
 }
 
 .fs-content-container {
-  padding: 4vw 0 0 0;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
-  border: lightgrey 1px solid;
 }
 
 #no-docs-msg {

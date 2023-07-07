@@ -361,10 +361,10 @@ export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void>
 
   // update back button if at root
   if (newPath.length === 1) {
-    navBackButton.disabled = true;
+    navBackButton.classList.remove('active');
   }
   else {
-    navBackButton.disabled = false;
+    navBackButton.classList.add('active');
   }
 
   fsm.setFileSystem(currentPath.at(0));
