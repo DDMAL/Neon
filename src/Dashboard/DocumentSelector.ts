@@ -32,7 +32,7 @@ let shiftKeyIsPressed = false;
 openButton!.addEventListener('click', handleOpenDocuments);
 deleteButton!.addEventListener('click', handleDeleteDocuments);
 uploadDocumentsButton!.addEventListener('click', handleUploadDocuments);
-newFolderButton!.addEventListener('click', handleCreateFolder)
+newFolderButton!.addEventListener('click', handleAddFolder)
 
 function handleUploadDocuments() {
   const isImmutable = currentPath.at(-1).metadata['immutable'];
@@ -348,7 +348,7 @@ function updateNavPath(currentPath: IFolder[]): void {
   });
 }
 
-function handleCreateFolder() {
+function handleAddFolder() {
   // abort if parent folder
   const isImmutable = currentPath.at(-1).metadata['immutable'];
   if (isImmutable) {
@@ -357,9 +357,16 @@ function handleCreateFolder() {
     return false;
   }
 
-  const folder = fs_functions.createFolder('new file');
-  fs_functions.addEntry(folder, currentPath.at(-1));
-  updateDocumentSelector();
+  const folderName = promptNewName();
+  if (folderName) {
+    const folder = fs_functions.createFolder(folderName);
+    const succeeded = fs_functions.addEntry(folder, currentPath.at(-1));
+    if (succeeded) {
+      updateDocumentSelector();
+      return true;
+    }
+  }
+  return false;
 }
 
 // opens prompt to rename entry in file system, persist in local storage, and updates tile name
