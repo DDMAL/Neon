@@ -9,6 +9,7 @@ import {
   ChangeStaffAction,
   DisplaceClefOctaveAction,
   EditorAction,
+  MatchHeightAction,
   RemoveAction,
   SetAction,
   SetClefAction
@@ -245,6 +246,31 @@ export function moveOutsideSyllableHandler(): void {
   });
 }
 
+/**
+ * Function to match bbox height to the selected bbox
+ */
+export function matchHeightHandler(): void {
+  const selected = Array.from(document.getElementsByClassName('selected'));
+  if (selected.length > 1) {
+    Notification.queueNotification('Cannot match height to multiple bbox', 'error');
+  }
+  const toChange: MatchHeightAction = {
+    action: 'matchHeight',
+    param: {
+      elementId: selected[0].id
+    }
+  };
+
+  neonView.edit(toChange, neonView.view.getCurrentPageURI()).then((result) => { 
+    if (result) {
+      Notification.queueNotification('Height Match Success', 'success');
+    } else {
+      Notification.queueNotification('Height Match Failed XoX', 'error');
+    }
+    endOptionsSelection();
+    neonView.updateForCurrentPage(); 
+  });
+}
 
 function addDeleteListener(): void {
   const del = document.getElementById('delete');
@@ -938,6 +964,18 @@ export function triggerSplitActions (): void {
         endOptionsSelection();
       }
     });
+}
+
+/**
+ * Trigger bbox option.
+ */
+export function triggerBBoxActions (): void {
+  endOptionsSelection();
+  setEditControls('moreEdit', Contents.bboxActionContents);
+  addDeleteListener();
+  document.getElementById('matchHeight').addEventListener('click', () => {
+    matchHeightHandler();
+  });
 }
 
 /**
