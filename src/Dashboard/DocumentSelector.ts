@@ -10,7 +10,7 @@ const backgroundArea: HTMLDivElement = document.querySelector('#main-section-con
 const openButton: HTMLButtonElement = document.querySelector('#open-doc');
 const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
 
-const navBackButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
+// const navBackButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
 const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
 
 const uploadDocumentsButton = document.querySelector('#upload-new-doc-button');
@@ -28,7 +28,7 @@ let orderedSelection: boolean[];
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
 
-navBackButton!.addEventListener('click', handleNavigateBack);
+// navBackButton!.addEventListener('click', handleNavigateBack);
 openButton!.addEventListener('click', handleOpenDocuments);
 deleteButton!.addEventListener('click', handleDeleteDocuments);
 uploadDocumentsButton!.addEventListener('click', () => InitUploadArea(currentPath.at(-1)));
@@ -326,7 +326,7 @@ function handleCreateFolder() {
   // abort if parent folder is immutable
   const isImmutable = currentPath.at(-1).metadata['immutable'];
   if (isImmutable) {
-    const stringPath = currentPath.map(folder => folder.name).join('/');
+    const stringPath = currentPath.map(folder => folder.name).join('>');
     window.alert(`Cannot add folder. ${stringPath} is immutable.`);
     return;
   }
@@ -360,15 +360,15 @@ export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void>
   // update path display
   updateNavPath(currentPath);
 
-  // update back button if at root
-  if (newPath.length === 1) {
-    navBackButton.classList.remove('active');
-    navBackButton.disabled = true;
-  }
-  else {
-    navBackButton.classList.add('active');
-    navBackButton.disabled = false;
-  }
+  // // update back button if at root
+  // if (newPath.length === 1) {
+  //   navBackButton.classList.remove('active');
+  //   navBackButton.disabled = true;
+  // }
+  // else {
+  //   navBackButton.classList.add('active');
+  //   navBackButton.disabled = false;
+  // }
 
   fsm.setFileSystem(currentPath.at(0));
 }
