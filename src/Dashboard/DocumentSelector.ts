@@ -326,7 +326,8 @@ function handleCreateFolder() {
   // abort if parent folder is immutable
   const isImmutable = currentPath.at(-1).metadata['immutable'];
   if (isImmutable) {
-    window.alert(`Cannot add folder. ${currentPath.join('/')} is immutable.`);
+    const stringPath = currentPath.map(folder => folder.name).join('/');
+    window.alert(`Cannot add folder. ${stringPath} is immutable.`);
     return;
   }
 
