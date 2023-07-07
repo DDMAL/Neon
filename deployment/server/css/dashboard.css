@@ -65,23 +65,6 @@
   }
 }
 
-/* Section: Action Bar */
-.action-bar-section {
-  max-height: 0px;
-  overflow: hidden;
-  transition: 0.3s ease-in-out;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.action-bar-section.visible {
-  max-height: 5vh;
-  min-height: 3vh;
-}
-
 /* Section: Main (Content) */
 .main-section {
   height: 92vh;
@@ -134,7 +117,7 @@
   color: #589ed5;
 }
 
-#fs-back-btn {
+/* #fs-back-btn {
   font-size: 14px;
   font-weight: 900;
   letter-spacing: 3px;
@@ -150,7 +133,7 @@
 #fs-back-btn.active {
   cursor: pointer;
   opacity: 100%;
-}
+} */
 
 .fs-content-container {
   display: flex;
@@ -229,6 +212,7 @@
   align-items: center;
   justify-content: center;
   opacity: 0.4;
+  cursor: auto;
 }
 
 .action-bar-item-container.active {
@@ -242,7 +226,6 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
   font-size: 30px;
   width: 50%;
 }

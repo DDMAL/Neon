@@ -3,7 +3,7 @@ import { fetchUploadedDocuments } from '../Storage';
 import { samples_names } from '../samples';
 
 // Manager is used for accessing local storage and tracking the position of current folder
-const FileSystemManager = () => {
+export const FileSystemManager = () => {
 
     async function getRoot(): Promise<IFolder> { 
         return await getFileSystem() 
@@ -97,5 +97,3 @@ const FileSystemManager = () => {
 
     return FileSystemProps;
 }
-    
-export default FileSystemManager;

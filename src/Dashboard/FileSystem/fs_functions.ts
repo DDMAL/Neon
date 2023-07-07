@@ -93,6 +93,23 @@ const removeEntry = (entry: IEntry, parent: IFolder): boolean => {
     return true;
 }
 
+const renameEntry = (entry: IEntry, parent: IFolder, newName: string): boolean => {
+    try {
+        // Check if newName already exists in parent
+        const names = getAllNames(parent);
+        if (names.includes(newName)) {
+            window.alert(`Duplicate name: ${newName} already exists in ${parent.name}.`);
+            return false;
+        }
+        entry.name = newName;
+    } catch (e) {
+        console.error(e);
+        window.alert(`Error renaming ${entry.name} to ${newName}`);
+        return false;
+    }
+    return true;
+}   
+
 const getAllNames = (folder: IFolder) => {
     const names = folder.content.map(entry => entry.name);
     return names;
@@ -107,5 +124,6 @@ export const fs_functions = {
     removeEntry: removeEntry,
     addMetadata: addMetadata,
     removeMetadata: removeMetadata,
-    getAllNames: getAllNames
+    getAllNames: getAllNames,
+    renameEntry: renameEntry,
 }

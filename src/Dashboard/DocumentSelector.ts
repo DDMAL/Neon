@@ -1,7 +1,7 @@
 import { IEntry, IFile, IFolder, fs_functions } from './FileSystem';
 import { deleteEntry } from './Storage';
 import { formatFilename } from './upload_functions';
-import FileSystemManager from './FileSystem/FileSystemManager';
+import { FileSystemManager } from './FileSystem';
 import ShiftSelectionManager from './ShiftSelectionManager';
 import { InitUploadArea } from './UploadArea';
 
@@ -13,8 +13,8 @@ const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
 // const navBackButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
 const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
 
-const uploadDocumentsButton = document.querySelector('#upload-new-doc-button');
-const newFolderButton = document.querySelector('#add-folder-button');
+const uploadDocumentsButton: HTMLButtonElement = document.querySelector('#upload-new-doc-button');
+const newFolderButton: HTMLButtonElement = document.querySelector('#add-folder-button');
 
 const shiftSelection = new ShiftSelectionManager();
 const fsm = FileSystemManager();
@@ -31,8 +31,19 @@ let shiftKeyIsPressed = false;
 // navBackButton!.addEventListener('click', handleNavigateBack);
 openButton!.addEventListener('click', handleOpenDocuments);
 deleteButton!.addEventListener('click', handleDeleteDocuments);
-uploadDocumentsButton!.addEventListener('click', () => InitUploadArea(currentPath.at(-1)));
+uploadDocumentsButton!.addEventListener('click', handleUploadDocuments);
 newFolderButton!.addEventListener('click', handleCreateFolder)
+
+function handleUploadDocuments() {
+  const isImmutable = currentPath.at(-1).metadata['immutable'];
+  if (isImmutable) {
+    const stringPath = currentPath.map(folder => folder.name).join('/');
+    window.alert(`Cannot upload documents. ${stringPath} is immutable.`);
+    return false;
+  }
+  InitUploadArea(currentPath.at(-1));
+}
+
 
 window.addEventListener('keydown', (e) => {
   if (e.metaKey) metaKeyIsPressed = true;
@@ -41,13 +52,23 @@ window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     unselectAll();
     shiftSelection.reset();
-    setSidebarActions();
+    updateActionBarButtons();
   }
 });
 
 window.addEventListener('keyup', (e) => {
   if (!e.metaKey) metaKeyIsPressed = false;
   if (!e.shiftKey) shiftKeyIsPressed = false;
+});
+
+window.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    const selections = getSelectionEntries();
+    if (selections.length === 1) {
+      const selected = selections[0];
+      handleRenaming(selected);
+    }
+  }
 });
 
 backgroundArea!.addEventListener('click', (e) => {
@@ -57,12 +78,12 @@ backgroundArea!.addEventListener('click', (e) => {
   if (!isDocument) {
     unselectAll();
     shiftSelection.reset();
-    setSidebarActions();
+    updateActionBarButtons();
   }
 });
 
 // gets user selected filenames
-function getSelectionFilenames() {
+function getSelectionEntries() {
   return orderedEntries.filter((_, idx) => orderedSelection[idx]);
 }
 
@@ -115,12 +136,11 @@ function select(idx: number, tile?: Element) {
   orderedSelection[idx] = true;
 }
 
-// Determines whether to set delete doc or open doc to active
-function setSidebarActions() {
-  // -1 if no selection, some value i if selected.
-  // if (idx=i) > orderedDocuments.length - samples.length, then no user uploads are selected.
-  const lastIdx = orderedSelection.lastIndexOf(true);
-  if (lastIdx === -1) {
+// Determines whether to set action bar
+function updateActionBarButtons() {
+  // set active if there is a selection
+  const nothingSelected = orderedSelection.every((selected) => !selected)
+  if (nothingSelected) {
     openButton.classList.remove('active');
     deleteButton.classList.remove('active');
   }
@@ -128,19 +148,32 @@ function setSidebarActions() {
     openButton.classList.add('active');
     deleteButton.classList.add('active');
   }
+
+  // update upload doc/add folder to active if parent folder isn't immutable
+  const isImmutable = currentPath.at(-1).metadata['immutable'];
+  if (isImmutable) {
+    uploadDocumentsButton.classList.remove('active');
+    newFolderButton.classList.remove('active');
+    deleteButton.classList.remove('active');
+  }
+  else {
+    uploadDocumentsButton.classList.add('active');
+    newFolderButton.classList.add('active');
+  }
 }
 
 // Creates a folder, folio, or manuscript tile element
 function createTile(entry: IEntry) {
   const doc = document.createElement('div');
-  doc.setAttribute('id', entry.name);
   doc.classList.add('document-entry');
   switch (entry.type) {
     case 'folder':
       doc.classList.add('folder-entry');
+      doc.setAttribute('id', entry.name);
       break;
     case 'file':
       doc.classList.add('file-entry');
+      doc.setAttribute('id', (entry as IFile).content);
       break;
   }
 
@@ -200,28 +233,21 @@ function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
         select(idx);
       });
     }
-    setSidebarActions();
+    updateActionBarButtons();
   }, false);
 }
 
 function handleOpenDocuments() {
-  getSelectionFilenames().forEach((entry: IEntry) => {
+  getSelectionEntries().forEach((entry: IEntry) => {
     // Open document if it is a file and not a folder
     if (entry.type === 'file') openFile(entry as IFile);
   });
   shiftSelection.reset();
   unselectAll();
-  setSidebarActions();
+  updateActionBarButtons();
 }
 
 function handleDeleteDocuments() {
-  // abort if parent folder is immutable
-  const isImmutable = currentPath.at(-1).metadata['immutable'];
-  if (isImmutable) {
-    window.alert(`Cannot delete documents. ${currentPath.join('/')} is immutable.`);
-    return;
-  }
-
   function deleteFileEntry(file: IFile): Promise<boolean> {
     return new Promise((resolve, reject) => {
       deleteEntry(file.content)
@@ -249,7 +275,7 @@ function handleDeleteDocuments() {
     });
   }
 
-  const allEntries = getSelectionFilenames();
+  const allEntries = getSelectionEntries();
   const deletableEntries = allEntries.filter(entry => entry.metadata['immutable'] !== true);
   const immutableEntries = allEntries.filter(entry => entry.metadata['immutable'] === true);
 
@@ -323,17 +349,61 @@ function updateNavPath(currentPath: IFolder[]): void {
 }
 
 function handleCreateFolder() {
-  // abort if parent folder is immutable
+  // abort if parent folder
   const isImmutable = currentPath.at(-1).metadata['immutable'];
   if (isImmutable) {
-    const stringPath = currentPath.map(folder => folder.name).join('>');
-    window.alert(`Cannot add folder. ${stringPath} is immutable.`);
-    return;
+    const stringPath = currentPath.map(folder => folder.name).join('/');
+    window.alert(`Cannot add Folder. ${stringPath} is immutable.`);
+    return false;
   }
 
   const folder = fs_functions.createFolder('new file');
   fs_functions.addEntry(folder, currentPath.at(-1));
   updateDocumentSelector();
+}
+
+// opens prompt to rename entry in file system, persist in local storage, and updates tile name
+function handleRenaming(entry: IEntry): boolean {
+  // abort if parent folder
+  const isImmutable = currentPath.at(-1).metadata['immutable'];
+  if (isImmutable) {
+    const stringPath = currentPath.map(folder => folder.name).join('/');
+    window.alert(`Cannot rename ${entry.name}. ${stringPath} is immutable.`);
+    return false;
+  }
+  // or entry is immutable
+  const immutable = entry.metadata['immutable'];
+  if (immutable) {
+    window.alert(`Cannot rename ${entry.name}. Entry is immutable.`);
+    return false;
+  }
+  
+  const oldName = entry.name;
+  const newName = promptNewName();
+  if (newName) {
+    const succeeded = fs_functions.renameEntry(entry, currentPath.at(-1), newName);
+    if (succeeded) {
+      fsm.setFileSystem(currentPath.at(0));
+      updateTileName(entry, oldName, newName);
+      return true;
+    }
+  }
+  return false;
+}
+
+function promptNewName() {
+  const newName = window.prompt('Enter new name:');
+  return newName;
+}
+
+// updates text and if applicable, id of tile element
+function updateTileName(entry: IEntry, oldName: string, newName: string) {
+  const isFolder = (entry.type === 'folder');
+  // get tile element
+  const id: string = isFolder ? oldName : (entry as IFile).content;
+  const tile = document.getElementById(id);
+  if (isFolder) tile.setAttribute('id', newName);
+  tile.querySelector('.filename-text').innerHTML = formatFilename(newName, 25);
 }
 
 export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void> {
@@ -359,6 +429,9 @@ export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void>
 
   // update path display
   updateNavPath(currentPath);
+
+  // update action bar 
+  updateActionBarButtons();
 
   // // update back button if at root
   // if (newPath.length === 1) {
