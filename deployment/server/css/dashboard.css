@@ -97,6 +97,49 @@
   user-select: none;
 }
 
+.right-click-file-menu {
+  position: absolute;
+  /* width: 200px;
+  height: 100px; */
+  z-index: 999;
+  background-color: rgb(255, 255, 255);
+  /* border: 1px solid rgb(183, 183, 183); */
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 5px 1px #d6d6d6;
+}
+
+.right-click-file-menu.hidden {
+  display: none;
+}
+
+.right-click-file-menu-items-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  width: 100%;
+}
+
+.right-click-file-menu-item {
+  width: 100%;
+  min-height: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 10px 25px;
+  box-sizing: border-box;
+}
+
+.right-click-file-menu-item:hover {
+  background-color: rgb(244, 244, 244);
+  /* color: white; */
+}
+
 .documents-container {
   margin: 5vh 0;
   width: 90%;
@@ -151,6 +194,30 @@
   cursor: pointer;
   opacity: 100%;
 }
+.fs-nav-zone {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.fs-path {
+  font-size: 1.5rem;
+}
+
+.fs-back-btn {
+  color: dimgrey;
+  background-color: #f6f6f6;
+  outline: none;
+  border: none;
+  border-radius: 3px;
+  padding: 10px;
+  cursor: pointer;
+}
+.fs-back-btn.inactive {
+  display: none;
+}
 
 .fs-content-container {
   display: flex;
@@ -187,12 +254,12 @@
 }
 
 .folder-entry {
+  color: white;
   background-color: #589ed5;
-  color: #ffffff;
-  /* background-image: url(../Neon-gh/assets/img/folder-top.svg);
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: 3vw -9px; */
+
+  &:hover {
+    border-color: #4c8aba;
+  }
 }
 
 .folio-entry {
@@ -203,6 +270,11 @@
 
 }
 
+.filename-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .doc-multiselect-btn {
   transform: translateX(-4.95vw) translateY(-20px);

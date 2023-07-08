@@ -20,6 +20,10 @@ const shiftSelection = new ShiftSelectionManager();
 const fsm = FileSystemManager();
 
 let currentPath: IFolder[]; // to get current Folder: currentPath.at(-1)
+const mainSection: HTMLElement = document.querySelector('.main-section-content');
+const rightClickMenu: HTMLElement = document.querySelector('.right-click-file-menu');
+
+let currentFolder: IFolder;
 
 // Lists the documents in order as represented on dashboard
 let orderedEntries: IEntry[];
@@ -61,12 +65,18 @@ backgroundArea!.addEventListener('click', (e) => {
   }
 });
 
-// gets user selected filenames
+
+/**
+ * gets user selected filenames
+ */
 function getSelectionFilenames() {
   return orderedEntries.filter((_, idx) => orderedSelection[idx]);
 }
 
-// Open editor tab
+
+/**
+ * Open editor tab
+ */
 function openEditorTab(filename: string, isSample: boolean) {
   const params = (isSample)
     ? { manifest: filename }
@@ -75,7 +85,10 @@ function openEditorTab(filename: string, isSample: boolean) {
   window.open(`./editor.html?${query}`, '_blank');
 }
 
-// Opens editor tab given a document tile element
+
+/**
+ * Opens editor tab given a document tile element
+ */
 function openFile(entry: IFile) {
   console.log(entry);
   const documentType = entry.metadata['document'];
@@ -85,11 +98,13 @@ function openFile(entry: IFile) {
   }
 }
 
+
 function makeQuery(obj): string {
   return Object.keys(obj).map(key => {
     return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
   }).join('&');
 }
+
 
 function unselect(idx: number, tile?: Element) {
   if (!tile) {
@@ -115,7 +130,9 @@ function select(idx: number, tile?: Element) {
   orderedSelection[idx] = true;
 }
 
-// Determines whether to set delete doc or open doc to active
+/**
+ * Determines whether to set delete doc or open doc to active
+ */
 function setSidebarActions() {
   // -1 if no selection, some value i if selected.
   // if (idx=i) > orderedDocuments.length - samples.length, then no user uploads are selected.
@@ -130,10 +147,16 @@ function setSidebarActions() {
   }
 }
 
-// Creates a folder, folio, or manuscript tile element
+
+/**
+ * Creates a folder, folio, or manuscript tile element
+ */
 function createTile(entry: IEntry) {
+
   const doc = document.createElement('div');
   doc.setAttribute('id', entry.name);
+  doc.setAttribute('draggable', 'true');
+
   doc.classList.add('document-entry');
   switch (entry.type) {
     case 'folder':
@@ -150,6 +173,7 @@ function createTile(entry: IEntry) {
   doc.appendChild(name);
   return doc;
 }
+
 
 async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivElement) {
   // double click event immediately opens document
@@ -364,10 +388,12 @@ export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void>
   if (newPath.length === 1) {
     navBackButton.classList.remove('active');
     navBackButton.disabled = true;
+    navBackButton.classList.add('inactive');
   }
   else {
     navBackButton.classList.add('active');
     navBackButton.disabled = false;
+    navBackButton.classList.remove('inactive');
   }
 
   fsm.setFileSystem(currentPath.at(0));
@@ -377,3 +403,41 @@ export const InitDocumentSelector = async (): Promise<void> => {
   const root = await fsm.getRoot();
   updateDocumentSelector([root]);
 }
+
+document.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+
+  rightClickMenu.style.left = `${e.clientX}px`;
+  rightClickMenu.style.top = `${e.clientY}px`;
+  console.log(e.screenX);
+  rightClickMenu.classList.remove('hidden');
+});
+
+mainSection.addEventListener('click', (e) => {
+  rightClickMenu.classList.add('hidden');
+});
+
+Array.from(document.querySelectorAll('.document-entry')).forEach( (elem) => {
+  elem.addEventListener('contextmenu', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    console.log('hey there buddy');
+  })
+})
+
+
+Array.from(document.querySelectorAll('.folder-entry')).forEach((elem) => {
+  elem.addEventListener("dragenter", (e) => {
+    e.preventDefault();
+  });
+  
+  elem.addEventListener("dragover", (e) => {
+    e.preventDefault();
+  });
+
+  elem.addEventListener("drop", (e) => {
+    e.preventDefault();
+
+    console.log('dropped!!!');
+  });
+})

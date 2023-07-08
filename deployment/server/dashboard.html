@@ -51,12 +51,13 @@
         <div id="main-section-content" class="main-section-content">
 
             <div id="documents-container" class="documents-container">
-                <div id="fs-top-zone" class="fs-top-zone">
-                    <div id="nav-path-container" class="fs-title nav-path-container"></div>
+                <!-- <div id="fs-top-zone" class="fs-top-zone">
+                    <div class="fs-title">Documents</div>
                     <div id="fs-search-container" class="fs-search-container"></div>
-                </div>
-                <div id="fs-middle-zone" class="fs-middle-zone">
-                    <button id="fs-back-btn" class="fs-back-btn">Back↵</button>
+                </div> -->
+                <div id="fs-nav-zone" class="fs-nav-zone">
+                    <div id="fs-path" class="fs-path"></div>
+                    <button id="fs-back-btn" class="fs-back-btn">Back ←</button>
                     <div id="fs-results-title" class="fs-results-results"></div>
                 </div>
                 <div id="fs-content-container" class="fs-content-container"></div>
@@ -87,6 +88,15 @@
         
             <!-- Neon modal window content section -->
             <div id="neon-modal-window-content-container"></div>
+        </div>
+    </div>
+
+
+    <!-- Right-click menu -->
+    <div class="right-click-file-menu hidden">
+        <div class="right-click-file-menu-items-wrapper">
+            <div id="right-click-upload-file" class="right-click-file-menu-item">Upload file</div>
+            <div id="right-click-new-folder" class="right-click-file-menu-item">New folder</div>
         </div>
     </div>
 
