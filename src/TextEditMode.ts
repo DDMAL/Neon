@@ -45,7 +45,7 @@ function selByBBoxListener (): void {
   this.addBBoxListeners();
 }
 
-export function updateSelectedBBox (span: HTMLSpanElement, dragHandler: DragHandler, neonView: NeonView) {
+export function updateSelectedBBox (span: HTMLSpanElement, dragHandler: DragHandler, neonView: NeonView): void {
   unselect();
 
   const bboxId = Array.from(span.classList).find(e => e !== 'text-select' && e !== 'selected-to-edit');
