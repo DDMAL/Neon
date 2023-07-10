@@ -53,15 +53,16 @@ class TextView implements TextViewInterface {
   * Set listeners on textview visibility checkbox
   */
   setTextViewControls (): void {
-    function textViewVis (): void { this.updateTextViewVisibility(); }
-    function bboxViewVis (): void { this.updateBBoxViewVisibility(); }
-
     this.updateTextViewVisibility();
     this.updateBBoxViewVisibility();
-    document.getElementById('displayText')
-      .addEventListener('click', textViewVis.bind(this));
-    document.getElementById('displayBBox') // Why is BBox logic is inside TextView.ts ???
-      .addEventListener('click', bboxViewVis.bind(this));
+  
+    document.getElementById('displayText').addEventListener('click', () => {
+      this.updateTextViewVisibility();
+    });
+  
+    document.getElementById('displayBBox').addEventListener('click', () => {
+      this.updateBBoxViewVisibility();
+    });
   }
 
   loadSettings (): void {
