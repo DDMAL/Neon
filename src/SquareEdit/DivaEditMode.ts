@@ -38,20 +38,6 @@ class DivaEdit implements NeumeEditInterface {
     initSelectionButtons();
     setHighlightSelectionControls();
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
-
-    const { userMode, insertMode, selectionMode } = getSettings();
-    document.getElementById(insertMode).classList.add('is-active');
-    document.getElementById(selectionMode).classList.add('is-active');
-    switch (userMode) {
-      case 'edit':
-        document.getElementById(selectionMode).click();
-        break;
-      case 'insert':
-        document.getElementById(insertMode).click();
-        break;
-      default:
-        return;
-    }
   }
 
   /**

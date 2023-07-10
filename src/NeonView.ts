@@ -64,13 +64,26 @@ class NeonView {
    */
   setupEdit(params: NeonViewParams): void {
     // Set up and start the correct editing mode
-    if (params.NeumeEdit !== undefined) {
-      this.NeumeEdit = new params.NeumeEdit(this);
-    }
     if (params.TextView !== undefined) {
       this.textView = new params.TextView(this);
       if (params.TextEdit !== undefined) {
         this.TextEdit = new params.TextEdit(this);
+      }
+    }
+    if (params.NeumeEdit !== undefined) {
+      this.NeumeEdit = new params.NeumeEdit(this);
+      this.textView.updateBBoxViewVisibility();
+      const { userMode, insertMode, selectionMode } = getSettings();
+      document.getElementById(insertMode).classList.add('is-active');
+      document.getElementById(selectionMode).classList.add('is-active');
+      switch (userMode) {
+        case 'insert':
+          document.getElementById(insertMode).click();
+          break;
+        case 'edit':
+        default:
+          document.getElementById(selectionMode).click();
+          break;
       }
     }
   }

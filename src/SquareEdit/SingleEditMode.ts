@@ -54,19 +54,6 @@ class SingleEditMode implements NeumeEditInterface {
     initUndoRedoPanel(this.neonView);
     setHighlightOption('selection');
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
-
-    const { userMode, insertMode, selectionMode } = getSettings();
-    document.getElementById(insertMode).classList.add('is-active');
-    document.getElementById(selectionMode).classList.add('is-active');
-    switch (userMode) {
-      case 'insert':
-        document.getElementById(insertMode).click();
-        break;
-      case 'edit':
-      default:
-        document.getElementById(selectionMode).click();
-        break;
-    }
   }
 
   /**
