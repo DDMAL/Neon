@@ -2,48 +2,47 @@ import { IEntry, IFile, IFolder, fs_functions } from './FileSystem';
 import { deleteEntry } from './Storage';
 import { formatFilename } from './upload_functions';
 import { FileSystemManager } from './FileSystem';
-import ShiftSelectionManager from './ShiftSelectionManager';
+import { ShiftSelectionManager, dashboardState } from './dashboard_functions';
 import { InitUploadArea } from './UploadArea';
 
 const documentsContainer: HTMLDivElement = document.querySelector('#fs-content-container');
 const backgroundArea: HTMLDivElement = document.querySelector('#main-section-content');
 const openButton: HTMLButtonElement = document.querySelector('#open-doc');
 const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
-
-// const navBackButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
 const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
-
 const uploadDocumentsButton: HTMLButtonElement = document.querySelector('#upload-new-doc-button');
 const newFolderButton: HTMLButtonElement = document.querySelector('#add-folder-button');
 
 const shiftSelection = new ShiftSelectionManager();
 const fsm = FileSystemManager();
-
-let currentPath: IFolder[]; // to get current Folder: currentPath.at(-1)
-
-// Lists the documents in order as represented on dashboard
-let orderedEntries: IEntry[];
-let orderedSelection: boolean[];
+const state = dashboardState();
 
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
 
-// navBackButton!.addEventListener('click', handleNavigateBack);
 openButton!.addEventListener('click', handleOpenDocuments);
 deleteButton!.addEventListener('click', handleDeleteDocuments);
-uploadDocumentsButton!.addEventListener('click', handleUploadDocuments);
+uploadDocumentsButton!.addEventListener('click', handleOpenUploadArea);
 newFolderButton!.addEventListener('click', handleAddFolder)
 
-function handleUploadDocuments() {
-  const isImmutable = currentPath.at(-1).metadata['immutable'];
+// Sorting algorithms
+const sortByAlphanumerical = (a: IEntry, b: IEntry) => a.name.localeCompare(b.name);
+const sortByTime = (a: IEntry, b: IEntry) => {
+  const aTime = a.metadata['created_on'];
+  const bTime = b.metadata['created_on'];
+  if (aTime && bTime) return aTime - bTime;
+  else if (aTime) return -1;
+}
+
+function handleOpenUploadArea() {
+  const isImmutable = state.getParentFolder().metadata['immutable'];
   if (isImmutable) {
-    const stringPath = currentPath.map(folder => folder.name).join('/');
+    const stringPath = state.getFolderPath().map(folder => folder.name).join('/');
     window.alert(`Cannot upload documents. ${stringPath} is immutable.`);
     return false;
   }
-  InitUploadArea(currentPath.at(-1));
+  InitUploadArea(state.getParentFolder());
 }
-
 
 window.addEventListener('keydown', (e) => {
   if (e.metaKey) metaKeyIsPressed = true;
@@ -63,7 +62,7 @@ window.addEventListener('keyup', (e) => {
 
 window.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') {
-    const selections = getSelectionEntries();
+    const selections = state.getSelectedEntries();
     if (selections.length === 1) {
       const selected = selections[0];
       handleRenaming(selected);
@@ -82,11 +81,6 @@ backgroundArea!.addEventListener('click', (e) => {
   }
 });
 
-// gets user selected filenames
-function getSelectionEntries() {
-  return orderedEntries.filter((_, idx) => orderedSelection[idx]);
-}
-
 // Open editor tab
 function openEditorTab(filename: string, isSample: boolean) {
   const params = (isSample)
@@ -98,7 +92,6 @@ function openEditorTab(filename: string, isSample: boolean) {
 
 // Opens editor tab given a document tile element
 function openFile(entry: IFile) {
-  console.log(entry);
   const documentType = entry.metadata['document'];
   if (typeof documentType !== undefined) {
     const isSample = documentType === 'sample';
@@ -112,34 +105,32 @@ function makeQuery(obj): string {
   }).join('&');
 }
 
-function unselect(idx: number, tile?: Element) {
-  if (!tile) {
-    const tileId = orderedEntries[idx].name;
-    tile = document.getElementById(tileId);
-  }
+function select(index: number) {
+  const id = state.getEntries().at(index).name;
+  state.setSelection(index, true);
+  const tile = document.getElementById(id);
+  tile.classList.add('selected');
+}
+
+function unselect(index: number) {
+  const id = state.getEntries().at(index).name;
+  state.setSelection(index, false);
+  const tile = document.getElementById(id);
   tile.classList.remove('selected');
-  orderedSelection[idx] = false;
 }
 
 function unselectAll() {
   Array.from(document.querySelectorAll('.document-entry.selected'))
-    .forEach((folio) => folio.classList.remove('selected'));
-  orderedSelection.fill(false);
+    .forEach((tile) => tile.classList.remove('selected'));
+  state.resetSelection();
 }
 
-function select(idx: number, tile?: Element) {
-  if (!tile) {
-    const tileId = orderedEntries[idx].name;
-    tile = document.getElementById(tileId);
-  }
-  tile.classList.add('selected');
-  orderedSelection[idx] = true;
-}
-
-// Determines whether to set action bar
+/**
+ * Updates the visibility of action bar buttons based on current selections
+ */
 function updateActionBarButtons() {
   // set active if there is a selection
-  const nothingSelected = orderedSelection.every((selected) => !selected)
+  const nothingSelected = state.getSelection().every((selected) => !selected)
   if (nothingSelected) {
     openButton.classList.remove('active');
     deleteButton.classList.remove('active');
@@ -150,7 +141,7 @@ function updateActionBarButtons() {
   }
 
   // update upload doc/add folder to active if parent folder isn't immutable
-  const isImmutable = currentPath.at(-1).metadata['immutable'];
+  const isImmutable = state.getParentFolder().metadata['immutable'];
   if (isImmutable) {
     uploadDocumentsButton.classList.remove('active');
     newFolderButton.classList.remove('active');
@@ -162,7 +153,9 @@ function updateActionBarButtons() {
   }
 }
 
-// Creates a folder, folio, or manuscript tile element
+/** 
+ * Creates a folder or file tile element given an entry
+ */
 function createTile(entry: IEntry) {
   const doc = document.createElement('div');
   doc.classList.add('document-entry');
@@ -188,7 +181,7 @@ async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivE
   // double click event immediately opens document
   if (entry.type === 'folder') {
     async function enterFolder() {
-      return await updateDashboard([...currentPath, entry as IFolder]);
+      return await updateDashboard([...state.getFolderPath(), entry as IFolder]);
     }
     tile.addEventListener('dblclick', enterFolder, false);
   }
@@ -211,16 +204,16 @@ function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
   tile.addEventListener('click', function(e) {
     if (!metaKeyIsPressed && !shiftKeyIsPressed) {
       unselectAll();
-      select(index, tile);
+      select(index);
       shiftSelection.setStart(index); 
     }
     else if (metaKeyIsPressed) {
-      if (orderedSelection[index]) {
-        unselect(index, tile);
-        shiftSelection.setStart(orderedSelection.lastIndexOf(true));
+      if (state.getSelection()[index]) {
+        unselect(index);
+        shiftSelection.setStart(state.getSelection().lastIndexOf(true));
       }
       else {
-        select(index, tile);
+        select(index);
         shiftSelection.setStart(index); 
       }
     }
@@ -229,7 +222,7 @@ function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
         unselect(idx);
       });
       shiftSelection.setEnd(index);
-      shiftSelection.getSelection(orderedSelection).forEach((idx) => {
+      shiftSelection.getSelection(state.getSelection()).forEach((idx) => {
         select(idx);
       });
     }
@@ -237,8 +230,15 @@ function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
   }, false);
 }
 
+/**
+ * Opens current selection of documents on dashboard.
+ * 
+ * If a folder is selected, opens folder.
+ * If a file(s) is selected, opens file(s).
+ * If a folder and file(s) are selected, opens file(s).
+ */
 function handleOpenDocuments() {
-  getSelectionEntries().forEach((entry: IEntry) => {
+  state.getSelectedEntries().forEach((entry: IEntry) => {
     // Open document if it is a file and not a folder
     if (entry.type === 'file') openFile(entry as IFile);
   });
@@ -247,12 +247,19 @@ function handleOpenDocuments() {
   updateActionBarButtons();
 }
 
+/**
+ * Deletes current selection of documents on dashboard. 
+ * 
+ * If a folder is selected, deletes folder.
+ * If a file(s) is selected, deletes file(s).
+ * If a folder and file(s) are selected, deletes all.
+ */
 function handleDeleteDocuments() {
   function deleteFileEntry(file: IFile): Promise<boolean> {
     return new Promise((resolve, reject) => {
       deleteEntry(file.content)
         .then(() => {
-          fs_functions.removeEntry(file, currentPath.at(-1));
+          fs_functions.removeEntry(file, state.getParentFolder());
           resolve(true);
         })
         .catch(() => reject(false));
@@ -265,7 +272,7 @@ function handleDeleteDocuments() {
 
     return new Promise((resolve) => {
       if (isEmpty) {
-        fs_functions.removeEntry(folder, currentPath.at(-1));
+        fs_functions.removeEntry(folder, state.getParentFolder());
         resolve(true);
       }
       else {
@@ -275,7 +282,7 @@ function handleDeleteDocuments() {
     });
   }
 
-  const allEntries = getSelectionEntries();
+  const allEntries = state.getSelectedEntries();
   const deletableEntries = allEntries.filter(entry => entry.metadata['immutable'] !== true);
   const immutableEntries = allEntries.filter(entry => entry.metadata['immutable'] === true);
 
@@ -305,20 +312,14 @@ function handleDeleteDocuments() {
 
     Promise.all(deletePromises)
       .then(() => {
-        updateDashboard(currentPath);
+        updateDashboard(state.getFolderPath());
       })
       .catch( err => console.debug('failed to delete files: ', err));
   }
 }
 
-// reloads document selector with previous folder
-function handleNavigateBack() {
-  const newPath = currentPath.slice(0, -1);
-  updateDashboard(newPath);
-}
-
 // updates nav path display, returns nothing
-function updateNavPath(currentPath: IFolder[]): void {
+function updateNavPath(): void {
   navPathContainer.innerHTML = '';
 
   function handleNavClick(targetPath: IFolder[]): () => void {
@@ -326,12 +327,12 @@ function updateNavPath(currentPath: IFolder[]): void {
   }
 
   // create nav elements and add event listeners
-  const navElements = currentPath.map((folder, idx) => {
+  const navElements = state.getFolderPath().map((folder, idx) => {
     const navSection = document.createElement('div');
     navSection.classList.add('nav-path-section');
     navSection.innerHTML = folder.name;
 
-    const targetPath = currentPath.slice(0, idx + 1);
+    const targetPath = state.getFolderPath().slice(0, idx + 1);
     navSection.addEventListener('click', handleNavClick(targetPath));
     return navSection
   });
@@ -342,17 +343,17 @@ function updateNavPath(currentPath: IFolder[]): void {
     if (idx !== navElements.length - 1) {
       const seperator = document.createElement('div');
       seperator.classList.add('nav-path-seperator');
-      seperator.innerHTML = ' / ';
+      seperator.innerHTML = ' > ';
       navPathContainer.appendChild(seperator);
     }
   });
 }
 
 function handleAddFolder() {
-  // abort if parent folder
-  const isImmutable = currentPath.at(-1).metadata['immutable'];
+  // abort if parent folder is immutable
+  const isImmutable = state.getParentFolder().metadata['immutable'];
   if (isImmutable) {
-    const stringPath = currentPath.map(folder => folder.name).join('/');
+    const stringPath = state.getFolderPath().map(folder => folder.name).join('/');
     window.alert(`Cannot add Folder. ${stringPath} is immutable.`);
     return false;
   }
@@ -360,7 +361,7 @@ function handleAddFolder() {
   const folderName = promptNewName();
   if (folderName) {
     const folder = fs_functions.createFolder(folderName);
-    const succeeded = fs_functions.addEntry(folder, currentPath.at(-1));
+    const succeeded = fs_functions.addEntry(folder, state.getParentFolder());
     if (succeeded) {
       updateDashboard();
       return true;
@@ -372,9 +373,9 @@ function handleAddFolder() {
 // opens prompt to rename entry in file system, persist in local storage, and updates tile name
 function handleRenaming(entry: IEntry): boolean {
   // abort if parent folder
-  const isImmutable = currentPath.at(-1).metadata['immutable'];
+  const isImmutable = state.getParentFolder().metadata['immutable'];
   if (isImmutable) {
-    const stringPath = currentPath.map(folder => folder.name).join('/');
+    const stringPath = state.getFolderPath().map(folder => folder.name).join('/');
     window.alert(`Cannot rename ${entry.name}. ${stringPath} is immutable.`);
     return false;
   }
@@ -388,9 +389,9 @@ function handleRenaming(entry: IEntry): boolean {
   const oldName = entry.name;
   const newName = promptNewName();
   if (newName) {
-    const succeeded = fs_functions.renameEntry(entry, currentPath.at(-1), newName);
+    const succeeded = fs_functions.renameEntry(entry, state.getParentFolder(), newName);
     if (succeeded) {
-      fsm.setFileSystem(currentPath.at(0));
+      fsm.setFileSystem(state.getFolderPath().at(0));
       updateTileName(entry, oldName, newName);
       return true;
     }
@@ -414,7 +415,7 @@ function updateTileName(entry: IEntry, oldName: string, newName: string) {
 }
 
 function getEntryById(id: string): IEntry {
-  const targetEntry = orderedEntries.find(entry => {
+  const targetEntry = state.getEntries().find(entry => {
     if (entry.type === 'folder') return entry.name === id;
     else return (entry as IFile).content === id;
   });
@@ -422,8 +423,8 @@ function getEntryById(id: string): IEntry {
 }
 
 export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
-  if (!newPath) newPath = currentPath;
-  currentPath = newPath;
+  if (!newPath) newPath = state.getFolderPath();
+  state.setFolderPath(newPath);
   const currentFolder = newPath.at(-1);
 
   // clear content and selection
@@ -431,8 +432,7 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   shiftSelection.reset();
 
   // update ordered items for current fs-contents
-  orderedEntries = currentFolder.content;
-  orderedSelection = new Array<boolean>(orderedEntries.length).fill(false);
+  state.setEntries(currentFolder.content);
   shiftSelection.reset();
 
   // populate folder contents
@@ -442,23 +442,9 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
     await addTileEventListener(index, entry, tile);
   }); 
 
-  // update path display
-  updateNavPath(currentPath);
-
-  // update action bar 
+  updateNavPath();
   updateActionBarButtons();
-
-  // // update back button if at root
-  // if (newPath.length === 1) {
-  //   navBackButton.classList.remove('active');
-  //   navBackButton.disabled = true;
-  // }
-  // else {
-  //   navBackButton.classList.add('active');
-  //   navBackButton.disabled = false;
-  // }
-
-  fsm.setFileSystem(currentPath.at(0));
+  fsm.setFileSystem(state.getFolderPath().at(0));
 }
 
 export const loadDashboard = async (): Promise<void> => {

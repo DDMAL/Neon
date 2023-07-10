@@ -12,7 +12,6 @@ export const FileSystemManager = () => {
     // Save filesystem into local storage
     function setFileSystem(root: IFolder): boolean {
         try {
-            console.log(root);
             window.localStorage.setItem('neon-fs', JSON.stringify(root));
         } catch (e) {
             console.error(e);
