@@ -496,6 +496,7 @@ export function selectBBox (el: SVGGraphicsElement, dragHandler: DragHandler, ne
       }
     }
   }
+  SelectOptions.triggerBBoxActions();
 }
 
 /**
