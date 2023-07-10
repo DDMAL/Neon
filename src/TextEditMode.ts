@@ -5,6 +5,7 @@ import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select'
 import { setGroupingHighlight } from './utils/Color';
 import { TextEditInterface } from './Interfaces';
 import  { ModalWindowView } from './utils/ModalWindow';
+import { setSettings } from './utils/LocalSettings';
 
 /**
  * Format a string for prompting the user.
@@ -20,6 +21,7 @@ function formatRaw (rawString: string): string {
 function selByBBoxListener (): void {
   if (!document.getElementById('selByBBox').classList.contains('is-active')) {
     unselect();
+    setSettings({ selectionMode : 'selByBBox' });
     try {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
