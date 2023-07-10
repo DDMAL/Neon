@@ -17,7 +17,7 @@ function formatRaw (rawString: string): string {
 }
 */
 
-function selBySyllableListener (): void {
+function selByBBoxListener (): void {
   if (!document.getElementById('selByBBox').classList.contains('is-active')) {
     unselect();
     try {
@@ -139,11 +139,11 @@ export default class TextEditMode implements TextEditInterface {
       button.id = 'selByBBox';
       button.textContent = 'BBox';
       block.appendChild(button);
-      button.addEventListener('click', selBySyllableListener.bind(this));
+      button.addEventListener('click', selByBBoxListener.bind(this));
       document.body.addEventListener('keydown', (evt) => {
         if (evt.key === '6') {
           if (document.getElementById('selByBBox').style.display === '') {
-            selBySyllableListener.bind(this)();
+            selByBBoxListener.bind(this)();
           }
         }
       });
