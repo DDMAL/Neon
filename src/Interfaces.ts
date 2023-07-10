@@ -61,6 +61,7 @@ export interface TextViewConstructable {
 }
 
 export interface TextViewInterface {
+  updateBBoxViewVisibility (): void;
   getSylText (): string;
 }
 
