@@ -106,7 +106,8 @@ function makeQuery(obj): string {
 }
 
 function select(index: number) {
-  const id = state.getEntries().at(index).name;
+  const entry = state.getEntries().at(index)
+  const id = getEntryId(entry);
   state.setSelection(index, true);
   const tile = document.getElementById(id);
   tile.classList.add('selected');
@@ -420,6 +421,11 @@ function getEntryById(id: string): IEntry {
     else return (entry as IFile).content === id;
   });
   return targetEntry;
+}
+
+function getEntryId(entry: IEntry): string {
+  if (entry.type === 'folder') return entry.name;
+  else return (entry as IFile).content;
 }
 
 export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
