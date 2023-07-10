@@ -188,7 +188,7 @@ async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivE
   // double click event immediately opens document
   if (entry.type === 'folder') {
     async function enterFolder() {
-      return await updateDocumentSelector([...currentPath, entry as IFolder]);
+      return await updateDashboard([...currentPath, entry as IFolder]);
     }
     tile.addEventListener('dblclick', enterFolder, false);
   }
@@ -305,7 +305,7 @@ function handleDeleteDocuments() {
 
     Promise.all(deletePromises)
       .then(() => {
-        updateDocumentSelector(currentPath);
+        updateDashboard(currentPath);
       })
       .catch( err => console.debug('failed to delete files: ', err));
   }
@@ -314,7 +314,7 @@ function handleDeleteDocuments() {
 // reloads document selector with previous folder
 function handleNavigateBack() {
   const newPath = currentPath.slice(0, -1);
-  updateDocumentSelector(newPath);
+  updateDashboard(newPath);
 }
 
 // updates nav path display, returns nothing
@@ -322,7 +322,7 @@ function updateNavPath(currentPath: IFolder[]): void {
   navPathContainer.innerHTML = '';
 
   function handleNavClick(targetPath: IFolder[]): () => void {
-    return async () => await updateDocumentSelector(targetPath);
+    return async () => await updateDashboard(targetPath);
   }
 
   // create nav elements and add event listeners
@@ -362,7 +362,7 @@ function handleAddFolder() {
     const folder = fs_functions.createFolder(folderName);
     const succeeded = fs_functions.addEntry(folder, currentPath.at(-1));
     if (succeeded) {
-      updateDocumentSelector();
+      updateDashboard();
       return true;
     }
   }
@@ -413,7 +413,15 @@ function updateTileName(entry: IEntry, oldName: string, newName: string) {
   tile.querySelector('.filename-text').innerHTML = formatFilename(newName, 25);
 }
 
-export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void> {
+function getEntryById(id: string): IEntry {
+  const targetEntry = orderedEntries.find(entry => {
+    if (entry.type === 'folder') return entry.name === id;
+    else return (entry as IFile).content === id;
+  });
+  return targetEntry;
+}
+
+export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   if (!newPath) newPath = currentPath;
   currentPath = newPath;
   const currentFolder = newPath.at(-1);
@@ -453,7 +461,7 @@ export async function updateDocumentSelector(newPath?: IFolder[]): Promise<void>
   fsm.setFileSystem(currentPath.at(0));
 }
 
-export const InitDocumentSelector = async (): Promise<void> => {
+export const loadDashboard = async (): Promise<void> => {
   const root = await fsm.getRoot();
-  updateDocumentSelector([root]);
+  updateDashboard([root]);
 }

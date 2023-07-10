@@ -1,6 +1,6 @@
 import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
-import { handleUploadAllDocuments, handleMakePair, sortFileByName } from './upload_functions';
-import { updateDocumentSelector } from './DocumentSelector';
+import {  addNewFiles, handleUploadAllDocuments, handleMakePair, sortFileByName } from './upload_functions';
+import { updateDashboard } from './Dashboard';
 import { IFolder } from './FileSystem';
 
 async function handleUploadUpdate(modalWindow: ModalWindow, currentFolder: IFolder) {
@@ -10,7 +10,7 @@ async function handleUploadUpdate(modalWindow: ModalWindow, currentFolder: IFold
   handleUploadAllDocuments(currentFolder)
     .then( () => {
       setTimeout( async () => {
-        await updateDocumentSelector();
+        await updateDashboard();
         spinner.classList.remove('visible');
         modalWindow.hideModalWindow();
       }, 2000);
@@ -18,7 +18,7 @@ async function handleUploadUpdate(modalWindow: ModalWindow, currentFolder: IFold
     .catch( (error) => {
       console.log('One or more uploads rejected: ', error);
       setTimeout( async () => {
-        await updateDocumentSelector();
+        await updateDashboard();
         spinner.classList.remove('visible');
         modalWindow.hideModalWindow();
       }, 2000);

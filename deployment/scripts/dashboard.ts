@@ -1,4 +1,4 @@
-import { InitDocumentSelector } from '../../src/Dashboard/DocumentSelector';
+import { loadDashboard } from '../../src/Dashboard/Dashboard';
 
-InitDocumentSelector();
+loadDashboard();
 document.querySelector('#home-link')?.setAttribute('href', __LINK_LOCATION__);
