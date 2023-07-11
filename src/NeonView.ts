@@ -72,7 +72,7 @@ class NeonView {
     }
     if (params.NeumeEdit !== undefined) {
       this.NeumeEdit = new params.NeumeEdit(this);
-      this.textView.updateBBoxViewVisibility();
+      this.textView.updateBBoxVisibility();
       const { userMode, insertMode, selectionMode } = getSettings();
       document.getElementById(insertMode).classList.add('is-active');
       document.getElementById(selectionMode).classList.add('is-active');
