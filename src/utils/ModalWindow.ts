@@ -232,6 +232,9 @@ export class ModalWindow implements ModalWindowInterface {
           });
         }
       });
+    } else {
+      // reselect if no change is made
+      updateSelectedBBox(span, this.dragHandler, this.neonView);
     }
     // close modal window
     this.hideModalWindow();
