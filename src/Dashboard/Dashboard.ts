@@ -23,7 +23,6 @@ const mainSection: HTMLElement = document.querySelector('.main-section-content')
 const contextMenu: HTMLElement = document.querySelector('.right-click-file-menu');
 const contextMenuContentWrapper: HTMLElement = document.querySelector('.context-menu-items-wrapper');
 
-
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
 let currentDragTarget = null;
@@ -172,7 +171,7 @@ function unselectAll() {
 function createTile(entry: IEntry) {
   const doc = document.createElement('div');
   doc.classList.add('document-entry');
-  doc.setAttribute('draggable', 'true'); // make file or folder draggable
+  doc.setAttribute('draggable', 'true');
   
   switch (entry.type) {
     case 'folder':
@@ -494,6 +493,7 @@ function handleAddFolder() {
 
 /**
  * Prompts user to rename entry in file system, and if successful: persist in local storage, and updates tile name
+ * 
  * @param entry IEntry to rename
  */
 function rename(entry: IEntry) {
@@ -526,6 +526,7 @@ function rename(entry: IEntry) {
 
 /**
  * Allow user to rename tile by focusing on dynamically generated input element in the selected tile.
+ * 
  * @param tile HTMLDivElement
  * @param oldName string
  * @param fs_callback callback function to update file system
@@ -594,6 +595,7 @@ function focusForInput(tile: HTMLDivElement, oldName: string, fs_callback: (name
 
 /**
  * If only one tile is selected, starts renaming process on Enter key press
+ * 
  * @param e KeyboardEvent
  */
 function handleEnterRename(e: KeyboardEvent) {
@@ -638,6 +640,7 @@ function getEntryById(id: string): IEntry {
 
 /**
  * Given an entry, returns the entry id depending on entry type
+ * 
  * @param entry IEntry
  * @returns id string
  */
@@ -648,6 +651,7 @@ function getEntryId(entry: IEntry): string {
 
 /**
  * Reflects changes in file system in dashboard UI
+ * 
  * @param newPath If provided, uses this path to update dashboard. Otherwise, uses current path.
  */
 export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
@@ -674,9 +678,7 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   updateActionBarButtons();
   fsm.setFileSystem(state.getFolderPath().at(0));
 
-
   addSpecificContextMenuListeners();
-
 
   // Add dragstart events for every item in the current folder.
   // Set the current drag target (element that is being dragged)
