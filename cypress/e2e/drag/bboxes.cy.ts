@@ -10,6 +10,7 @@ beforeEach(() => {
 describe('drag: bounding boxes', () => {
   beforeEach(() => {
     cy.get('#displayBBox').click();
+    cy.get('#editMenu').scrollIntoView();
     cy.get('#selByBBox').should('be.visible').click();
 
     cy.get('.sylTextRect-display').should('have.length.gt', 0);
