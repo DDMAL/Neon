@@ -21,6 +21,10 @@ const state = dashboardState();
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
 
+const mainSection: HTMLElement = document.querySelector('.main-section-content');
+const rightClickMenu: HTMLElement = document.querySelector('.right-click-file-menu');
+let currentDragTarget = null;
+
 openButton!.addEventListener('click', handleOpenDocuments);
 deleteButton!.addEventListener('click', handleDeleteDocuments);
 uploadDocumentsButton!.addEventListener('click', handleOpenUploadArea);
@@ -33,16 +37,6 @@ const sortByTime = (a: IEntry, b: IEntry) => {
   const bTime = b.metadata['created_on'];
   if (aTime && bTime) return aTime - bTime;
   else if (aTime) return -1;
-}
-
-function handleOpenUploadArea() {
-  const isImmutable = state.getParentFolder().metadata['immutable'];
-  if (isImmutable) {
-    const stringPath = state.getFolderPath().map(folder => folder.name).join('/');
-    window.alert(`Cannot upload documents. ${stringPath} is immutable.`);
-    return false;
-  }
-  InitUploadArea(state.getParentFolder());
 }
 
 window.addEventListener('keydown', (e) => {
@@ -76,7 +70,23 @@ backgroundArea!.addEventListener('click', (e) => {
 });
 
 /**
+ * 
+ * @returns 
+ */
+function handleOpenUploadArea() {
+  const isImmutable = state.getParentFolder().metadata['immutable'];
+  if (isImmutable) {
+    const stringPath = state.getFolderPath().map(folder => folder.name).join('/');
+    window.alert(`Cannot upload documents. ${stringPath} is immutable.`);
+    return false;
+  }
+  InitUploadArea(state.getParentFolder());
+}
+
+
+/**
  * Opens a new tab with the Neon editor for the given filename
+ * 
  * @param filename key of file in PouchDB or manifest url
  * @param isSample boolean to decide where to fetch file
  */
@@ -88,7 +98,12 @@ function openEditorTab(filename: string, isSample: boolean) {
   window.open(`./editor.html?${query}`, '_blank');
 }
 
-// Opens editor tab given a document tile element
+
+/**
+ * Opens editor tab given a document tile element
+ * 
+ * @param entry 
+ */
 function openFile(entry: IFile) {
   const documentType = entry.metadata['document'];
   if (typeof documentType !== undefined) {
@@ -97,12 +112,23 @@ function openFile(entry: IFile) {
   }
 }
 
+
+/**
+ * 
+ * @param obj 
+ * @returns 
+ */
 function makeQuery(obj): string {
   return Object.keys(obj).map(key => {
     return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
   }).join('&');
 }
 
+
+/**
+ * 
+ * @param index 
+ */
 function select(index: number) {
   const entry = state.getEntries().at(index)
   const id = getEntryId(entry);
@@ -111,6 +137,11 @@ function select(index: number) {
   tile.classList.add('selected');
 }
 
+
+/**
+ * 
+ * @param index 
+ */
 function unselect(index: number) {
   const id = state.getEntries().at(index).name;
   state.setSelection(index, false);
@@ -118,6 +149,10 @@ function unselect(index: number) {
   tile.classList.remove('selected');
 }
 
+
+/**
+ * 
+ */
 function unselectAll() {
   Array.from(document.querySelectorAll('.document-entry.selected'))
     .forEach((tile) => tile.classList.remove('selected'));
@@ -132,6 +167,8 @@ function unselectAll() {
 function createTile(entry: IEntry) {
   const doc = document.createElement('div');
   doc.classList.add('document-entry');
+  doc.setAttribute('draggable', 'true');
+  
   switch (entry.type) {
     case 'folder':
       doc.classList.add('folder-entry');
@@ -178,6 +215,9 @@ async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivE
  * When shift key is pressed: select all tiles between current tile and previous tile
  * 
  * When there is a previous selection, the start of the shift selection is the last selected tile. Shift clicking after will add the shift selection to the previous selection.
+ * 
+ * @param tile 
+ * @param index 
  */
 function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
   tile.addEventListener('click', function(e) {
@@ -209,6 +249,7 @@ function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
   }, false);
 }
 
+
 /**
  * Opens current selection of documents on dashboard.
  * 
@@ -225,6 +266,7 @@ function handleOpenDocuments() {
   unselectAll();
   updateActionBarButtons();
 }
+
 
 /**
  * Deletes current selection of documents on dashboard. 
@@ -245,6 +287,12 @@ function handleDeleteDocuments() {
     });
   }
 
+  /**
+   * function within a function
+   * 
+   * @param folder 
+   * @returns 
+   */
   function deleteFolderEntry(folder: IFolder): Promise<boolean> {
     // only delete a folder if it is empty
     const isEmpty = folder.content.length === 0;
@@ -260,6 +308,7 @@ function handleDeleteDocuments() {
       }
     });
   }
+
 
   const allEntries = state.getSelectedEntries();
   const deletableEntries = allEntries.filter(entry => entry.metadata['immutable'] !== true);
@@ -331,6 +380,12 @@ function updateActionBarButtons() {
 function updateNavPath(): void {
   navPathContainer.innerHTML = '';
 
+  /**
+   * function within a function
+   * 
+   * @param targetPath 
+   * @returns 
+   */
   function handleNavClick(targetPath: IFolder[]): () => void {
     return async () => await updateDashboard(targetPath);
   }
@@ -352,7 +407,7 @@ function updateNavPath(): void {
     if (idx !== navElements.length - 1) {
       const seperator = document.createElement('div');
       seperator.classList.add('nav-path-seperator');
-      seperator.innerHTML = ' > ';
+      seperator.innerHTML = ' / ';
       navPathContainer.appendChild(seperator);
     }
   });
@@ -542,12 +597,30 @@ function handleEnterRename(e: KeyboardEvent) {
     }
   }
 }
+/**
+ * updates text and if applicable, id of tile element
+ * 
+ * @param entry 
+ * @param oldName 
+ * @param newName 
+ */
+function updateTileName(entry: IEntry, oldName: string, newName: string) {
+  const isFolder = (entry.type === 'folder');
+  // get tile element
+  const id: string = isFolder ? oldName : (entry as IFile).content;
+  const tile = document.getElementById(id);
+  if (isFolder) tile.setAttribute('id', newName);
+  tile.querySelector('.filename-text').innerHTML = formatFilename(newName, 25);
+}
+
+
 
 /**
  * Given an entry id, returns the entry from the current folder
+ * 
  * @param id 
  * @returns IEntry
- */
+*/
 function getEntryById(id: string): IEntry {
   const targetEntry = state.getEntries().find(entry => {
     if (entry.type === 'folder') return entry.name === id;
@@ -593,6 +666,102 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   updateBackButton();
   updateActionBarButtons();
   fsm.setFileSystem(state.getFolderPath().at(0));
+
+
+  // Add dragstart events for every item in the current folder.
+  // Set the current drag target (element that is being dragged)
+  Array.from(document.querySelectorAll('.document-entry')).forEach((elem) => {
+    elem.addEventListener('dragstart', (e) => {
+      (<DragEvent> e).dataTransfer.effectAllowed = 'move';
+      currentDragTarget = e.target;
+    });
+  }); 
+
+  // Add dragenter, dragover, and drop events for every folder in the current folder
+  Array.from(document.querySelectorAll('.folder-entry')).forEach((elem) => {
+  
+    /**
+     * The dragenter and dragover events need to be overriden
+     * in order to implement the drag-and-drop functionality.
+     * Read more at:
+     * https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
+     */
+    elem.addEventListener('dragenter', (e) => e.preventDefault());    
+    elem.addEventListener('dragover', (e) => e.preventDefault());
+  
+    elem.addEventListener('drop', (e) => {
+      e.preventDefault();
+
+      let dropTargetID = null;
+  
+      // Determine if user dropped on .filename-text element or its parent.
+      // They are both acceptable drop locations, but only the parent has the necessary 
+      // id in order to locate the drop target Entry in the FS.
+      if ((<HTMLElement> e.target).classList.contains('filename-text')) {
+        dropTargetID = (<HTMLElement> e.target).parentElement.getAttribute('id');
+      }
+      else {
+        dropTargetID = (<HTMLElement> e.target).getAttribute('id');
+      }
+      
+      // get the ID of the element being dragged
+      const dragTargetID = (<HTMLElement> currentDragTarget).getAttribute('id');
+      const folderContents = currentFolder.content;
+
+      let folderEntry = null; // Folder object representation
+      let fileEntry = null; // File object representation
+
+      // Using dropTargetID, find the object that represents the Folder being dropped into.
+      for (let i=0; i<folderContents.length; i++) {
+        const folderItem = folderContents[i];
+        if (folderItem.type === 'folder' && folderItem.name === dropTargetID) {
+          folderEntry = folderItem;
+        }
+      }
+
+      // Using dragTargetID, find the object that represents the File being dropped.
+      for (let i=0; i<folderContents.length; i++) {
+        const folderItem = folderContents[i];
+        if (folderItem.type === 'file' && folderItem.content === dragTargetID) {
+          fileEntry = folderItem;
+        }
+      }
+
+      // If both folder and file were found, move the file into the folder. Great success!
+      if (folderEntry && fileEntry) {
+        fs_functions.moveEntry(fileEntry, currentFolder, folderEntry);
+      }
+    });
+  })
+}
+
+/**
+ * Initialize dashboard context menu (right click menu).
+ * This will set up all necessary event listeners as well as
+ * the logic to determine the content of the context menu, which
+ * may change depending on where the user right-clicks (file, files, folder, background, etc.)
+ */
+function initializeContextMenu() {
+  document.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+  
+    rightClickMenu.style.left = `${e.clientX}px`;
+    rightClickMenu.style.top = `${e.clientY}px`;
+    console.log(e.screenX);
+    rightClickMenu.classList.remove('hidden');
+  });
+  
+  mainSection.addEventListener('click', (e) => {
+    rightClickMenu.classList.add('hidden');
+  });
+  
+  Array.from(document.querySelectorAll('.document-entry')).forEach( (elem) => {
+    elem.addEventListener('contextmenu', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      console.log('hey there buddy');
+    })
+  })
 }
 
 /**
@@ -601,4 +770,5 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
 export const loadDashboard = async (): Promise<void> => {
   const root = await fsm.getRoot();
   updateDashboard([root]);
+  initializeContextMenu();
 }
