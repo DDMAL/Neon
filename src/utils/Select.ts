@@ -85,6 +85,12 @@ function arrowKeyListener (evt: KeyboardEvent): void {
     const bbox = bboxSyllables[ind + 1].querySelector('.sylTextRect-display');
     selectAll([bbox as SVGGraphicsElement], neonView, dragHandler);
   }
+  
+  // Auto scroll to highlighted text
+  const selectedSylText = document.querySelector('.text-select');
+  if (selectedSylText) {
+    selectedSylText.scrollIntoView({ behavior: 'smooth' });
+  }
 }
 
 function isSelByBBox (): boolean {
