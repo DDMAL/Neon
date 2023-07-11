@@ -1,4 +1,4 @@
-import { selectBBox, unselect } from './utils/SelectTools';
+import { unselect } from './utils/SelectTools';
 import DragHandler from './utils/DragHandler';
 import NeonView from './NeonView';
 import { setSelectHelperObjects, dragSelect, clickSelect } from './utils/Select';
@@ -45,19 +45,6 @@ function selByBBoxListener (): void {
   this.addBBoxListeners();
 }
 
-export function updateSelectedBBox (span: HTMLSpanElement, dragHandler: DragHandler, neonView: NeonView): void {
-  unselect();
-
-  const bboxId = Array.from(span.classList).find(e => e !== 'text-select' && e !== 'selected-to-edit');
-
-  if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
-    if (document.getElementById(bboxId)) {
-      const displayRect = document.getElementById(bboxId).querySelector('.sylTextRect-display') as SVGGraphicsElement;
-      selectBBox(displayRect, dragHandler, neonView);
-    }
-  }
-}
-
 /**
  * A Text editing module that works with the SingleView and DivaView modules
  */
@@ -74,24 +61,6 @@ export default class TextEditMode implements TextEditInterface {
     this.initTextEdit();
   }
 
-
-  /**
-   * Update the bounding box selected when the edit text modal has been clicked 
-   */
-  updateSelectedBBox (span: HTMLSpanElement): void {
-    unselect();
-
-    const bboxId = Array.from(span.classList).find(e => e !== 'text-select' && e !== 'selected-to-edit');
-
-    if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
-      if (document.getElementById(bboxId)) {
-        const displayRect = document.getElementById(bboxId).querySelector('.sylTextRect-display') as SVGGraphicsElement;
-        selectBBox(displayRect, this.dragHandler, this.neonView);
-      }
-    }
-  }
-
-
   /**
   * Set text to edit mode
   */
@@ -103,7 +72,6 @@ export default class TextEditMode implements TextEditInterface {
         span.classList.add('selected-to-edit');
         modal.setModalWindowView(ModalWindowView.EDIT_TEXT);
         modal.openModalWindow();
-        updateSelectedBBox(span, this.dragHandler, this.neonView);
       }
 
       span.removeEventListener('click', selectSylText);

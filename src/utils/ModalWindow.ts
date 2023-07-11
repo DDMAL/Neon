@@ -3,7 +3,8 @@ import { SetTextAction } from '../Types';
 import { ModalWindowInterface } from '../Interfaces';
 import { hotkeysModal, editTextModal } from '../SquareEdit/Contents';
 import { uploadAreaHTML } from '../Dashboard/dashboard_components';
-import { updateSelectedBBox } from '../TextEditMode';
+import DragHandler from './DragHandler';
+import { selectBBox, unselect } from './SelectTools';
 
 
 /**
@@ -228,17 +229,33 @@ export class ModalWindow implements ModalWindowInterface {
             // An update to the page will reload the entire svg;
             // We would like to then reselect the same selected syllable
             // if bboxes are enabled
-            updateSelectedBBox(span, this.dragHandler, this.neonView);
+            this.updateSelectedBBox(span, this.dragHandler, this.neonView);
           });
         }
       });
     } else {
       // reselect if no change is made
-      updateSelectedBBox(span, this.dragHandler, this.neonView);
+      this.updateSelectedBBox(span, this.dragHandler, this.neonView);
     }
     // close modal window
     this.hideModalWindow();
   };
+
+  /**
+   * Update the bounding box selected when the edit text modal has been clicked 
+  */
+  updateSelectedBBox (span: HTMLSpanElement, dragHandler: DragHandler, neonView: NeonView): void {
+    unselect();
+
+    const bboxId = Array.from(span.classList).find(e => e !== 'text-select' && e !== 'selected-to-edit');
+
+    if ((document.getElementById('displayBBox') as HTMLInputElement).checked) {
+      if (document.getElementById(bboxId)) {
+        const displayRect = document.getElementById(bboxId).querySelector('.sylTextRect-display') as SVGGraphicsElement;
+        selectBBox(displayRect, dragHandler, neonView);
+      }
+    }
+  }
 
 
   /**
