@@ -428,6 +428,31 @@ function setDisplayAllListener(): void {
   });
 }
 
+/** 
+ * Update `Display All` button status
+*/
+export function updateDisplayAllBtn(): void {
+  const displayAllBtn = document.getElementById('display-all-btn');
+  const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
+  const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
+  const displayText = document.getElementById('displayText') as HTMLInputElement;
+  const displayErrLog = document.getElementById('display-errors') as HTMLInputElement;
+
+  // if all options are selected,
+  // set "Display/Hide All" button to "Hide All".
+  if (displayInfo?.checked && displayBBoxes?.checked && 
+    displayText?.checked && displayErrLog?.checked) {
+    displayAllBtn.classList.add('selected');
+    displayAllBtn.innerHTML = 'Hide All';
+  } else {
+    // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
+    if (displayAllBtn.classList.contains('selected')) {
+      displayAllBtn.classList.remove('selected');
+      displayAllBtn.innerHTML = 'Display All';
+    }
+  }
+}
+
 /**
  * Load highlight settings from localStorage
  */

@@ -1,7 +1,7 @@
 import * as Notification from './utils/Notification';
 import NeonView from './NeonView';
 import { unselect } from './utils/SelectTools';
-import { updateHighlight } from './DisplayPanel/DisplayControls';
+import { updateDisplayAllBtn, updateHighlight } from './DisplayPanel/DisplayControls';
 import { TextViewInterface } from './Interfaces';
 import { getSettings, setSettings } from './utils/LocalSettings';
 
@@ -76,12 +76,8 @@ class TextView implements TextViewInterface {
    */
   updateBBoxVisibility (): void {
 
-    const displayAllBtn = document.getElementById('display-all-btn');
-    const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
     const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
-    const displayText = document.getElementById('displayText') as HTMLInputElement;
-    const displayErrLog = document.getElementById('display-errors') as HTMLInputElement;
-
+    
     // save to localStorage
     setSettings({ displayBBox: displayBBoxes.checked });
 
@@ -95,14 +91,6 @@ class TextView implements TextViewInterface {
 
       if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
         this.neonView.TextEdit.initSelectByBBoxButton();
-      }
-
-      // if this is the 3rd option to be checked (all three are selected),
-      // set "Display/Hide All" button to "Hide All".
-      if (displayInfo?.checked && displayBBoxes?.checked && 
-          displayText?.checked && displayErrLog?.checked) {
-        displayAllBtn.classList.add('selected');
-        displayAllBtn.innerHTML = 'Hide All';
       }
     } 
     else {
@@ -125,13 +113,9 @@ class TextView implements TextViewInterface {
         document.getElementById('selByBBox').style.display = 'none';
       } 
       catch (e) {}
-
-      // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
-      if (displayAllBtn.classList.contains('selected')) {
-        displayAllBtn.classList.remove('selected');
-        displayAllBtn.innerHTML = 'Display All';
-      }
     }
+
+    updateDisplayAllBtn();
     updateHighlight();
   }
 
@@ -141,12 +125,8 @@ class TextView implements TextViewInterface {
   */
   updateTextViewVisibility (): void {
 
-    const displayAllBtn = document.getElementById('display-all-btn');
-    const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
-    const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
     const displayText = document.getElementById('displayText') as HTMLInputElement;
-    const displayErrLog = document.getElementById('display-errors') as HTMLInputElement;
-
+    
     // save to localStorage
     setSettings({ displayText: displayText.checked });
 
@@ -209,23 +189,12 @@ class TextView implements TextViewInterface {
 
       // scroll the syllable text bubble into view
       //sylText.scrollIntoView({ behavior: 'smooth' });
-
-      // if this is the 3rd option to be checked (all three are selected),
-      // set "Display/Hide All" button to "Hide All".
-      if (displayInfo?.checked && displayBBoxes?.checked && 
-          displayText?.checked && displayErrLog?.checked) {
-        displayAllBtn.classList.add('selected');
-        displayAllBtn.innerHTML = 'Hide All';
-      }
     } 
     else {
       document.getElementById('syl_text').style.display = 'none';
-      // if "Display/Hide All" button is in "Hide All" mode, set it to "Display All" mode
-      if (displayAllBtn.classList.contains('selected')) {
-        displayAllBtn.classList.remove('selected');
-        displayAllBtn.innerHTML = 'Display All';
-      }
     }
+
+    updateDisplayAllBtn();
   }
 
   /**
