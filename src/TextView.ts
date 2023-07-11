@@ -46,7 +46,7 @@ class TextView implements TextViewInterface {
     this.loadSettings();
     this.setTextViewControls();
     this.neonView.view.addUpdateCallback(this.updateTextViewVisibility.bind(this));
-    this.neonView.view.addUpdateCallback(this.updateBBoxViewVisibility.bind(this));
+    this.neonView.view.addUpdateCallback(this.updateBBoxVisibility.bind(this));
   }
 
   /**
@@ -54,14 +54,14 @@ class TextView implements TextViewInterface {
   */
   setTextViewControls (): void {
     this.updateTextViewVisibility();
-    this.updateBBoxViewVisibility();
+    this.updateBBoxVisibility();
   
     document.getElementById('displayText').addEventListener('click', () => {
       this.updateTextViewVisibility();
     });
   
     document.getElementById('displayBBox').addEventListener('click', () => {
-      this.updateBBoxViewVisibility();
+      this.updateBBoxVisibility();
     });
   }
 
@@ -74,7 +74,7 @@ class TextView implements TextViewInterface {
   /**
    * Update visibility of text bounding boxes
    */
-  updateBBoxViewVisibility (): void {
+  updateBBoxVisibility (): void {
 
     const displayAllBtn = document.getElementById('display-all-btn');
     const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
