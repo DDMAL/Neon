@@ -171,7 +171,7 @@ function unselectAll() {
 function createTile(entry: IEntry) {
   const doc = document.createElement('div');
   doc.classList.add('document-entry');
-  doc.setAttribute('draggable', 'true');
+  doc.setAttribute('draggable', 'true'); // make file or folder draggable
   
   switch (entry.type) {
     case 'folder':
@@ -193,6 +193,7 @@ function createTile(entry: IEntry) {
 
 /**
  * Adds dblclick event listener to tile element and adds shift selection behaviour
+ * 
  * @param index as displayed on dashboard to user
  * @param entry corresponding entry in current folder
  * @param tile HTMLDivElement
@@ -679,6 +680,9 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   fsm.setFileSystem(state.getFolderPath().at(0));
 
   addSpecificContextMenuListeners();
+
+  addSpecificContextMenuListeners();
+
 
   // Add dragstart events for every item in the current folder.
   // Set the current drag target (element that is being dragged)
