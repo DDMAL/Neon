@@ -74,7 +74,11 @@ backgroundArea!.addEventListener('click', (e) => {
   }
 });
 
-// Open editor tab
+/**
+ * Opens a new tab with the Neon editor for the given filename
+ * @param filename key of file in PouchDB or manifest url
+ * @param isSample boolean to decide where to fetch file
+ */
 function openEditorTab(filename: string, isSample: boolean) {
   const params = (isSample)
     ? { manifest: filename }
@@ -149,6 +153,8 @@ function updateActionBarButtons() {
 
 /** 
  * Creates a folder or file tile element given an entry
+ * @param entry IEntry
+ * @returns HTMLDivElement tile element
  */
 function createTile(entry: IEntry) {
   const doc = document.createElement('div');
@@ -171,6 +177,12 @@ function createTile(entry: IEntry) {
   return doc;
 }
 
+/**
+ * Adds dblclick event listener to tile element and adds shift selection behaviour
+ * @param index as displayed on dashboard to user
+ * @param entry corresponding entry in current folder
+ * @param tile HTMLDivElement
+ */
 async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivElement) {
   // double click event immediately opens document
   if (entry.type === 'folder') {
@@ -312,7 +324,9 @@ function handleDeleteDocuments() {
   }
 }
 
-// updates nav path display, returns nothing
+/**
+ * Updates the nav path with current folder path
+ */
 function updateNavPath(): void {
   navPathContainer.innerHTML = '';
 
@@ -426,9 +440,10 @@ function rename(entry: IEntry) {
 
 /**
  * Allow user to rename tile by focusing on dynamically generated input element in the selected tile.
- * @param tile HTMLDivElement to change
- * @param oldName string of old name
- * @param callback function to run after user submits new name; to reflect changes file system
+ * @param tile HTMLDivElement
+ * @param oldName string
+ * @param fs_callback callback function to update file system
+ * @param failure_callback cleanup function to run on any failure
  */
 function focusForInput(tile: HTMLDivElement, oldName: string, fs_callback: (name: string) => boolean, failure_callback?: () => void) {
   window.removeEventListener('keypress', handleEnterRename, false); // temporarily remove Enter key press listener for renaming
@@ -491,6 +506,10 @@ function focusForInput(tile: HTMLDivElement, oldName: string, fs_callback: (name
   window.addEventListener('keypress', handleKeyPress);
 }
 
+/**
+ * If only one tile is selected, starts renaming process on Enter key press
+ * @param e KeyboardEvent
+ */
 function handleEnterRename(e: KeyboardEvent) {
   if (e.key === 'Enter') {
     const selections = state.getSelectedEntries();
@@ -500,6 +519,11 @@ function handleEnterRename(e: KeyboardEvent) {
   }
 }
 
+/**
+ * Given an entry id, returns the entry from the current folder
+ * @param id 
+ * @returns IEntry
+ */
 function getEntryById(id: string): IEntry {
   const targetEntry = state.getEntries().find(entry => {
     if (entry.type === 'folder') return entry.name === id;
@@ -508,11 +532,20 @@ function getEntryById(id: string): IEntry {
   return targetEntry;
 }
 
+/**
+ * Given an entry, returns the entry id depending on entry type
+ * @param entry IEntry
+ * @returns id string
+ */
 function getEntryId(entry: IEntry): string {
   if (entry.type === 'folder') return entry.name;
   else return (entry as IFile).content;
 }
 
+/**
+ * Reflects changes in file system in dashboard UI
+ * @param newPath If provided, uses this path to update dashboard. Otherwise, uses current path.
+ */
 export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   if (!newPath) newPath = state.getFolderPath();
   state.setFolderPath(newPath);
@@ -538,6 +571,9 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   fsm.setFileSystem(state.getFolderPath().at(0));
 }
 
+/**
+ * Loads root folder into dashboard on startup. 
+ */
 export const loadDashboard = async (): Promise<void> => {
   const root = await fsm.getRoot();
   updateDashboard([root]);
