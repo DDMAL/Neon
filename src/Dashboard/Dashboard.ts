@@ -343,39 +343,57 @@ function updateNavPath(): void {
   });
 }
 
+/**
+ * Prompts user for a new fondler name with in-tile text input.
+ */
 function handleAddFolder() {
   // abort if parent folder is immutable
   const isImmutable = state.getParentFolder().metadata['immutable'];
   if (isImmutable) {
     const stringPath = state.getFolderPath().map(folder => folder.name).join('/');
     window.alert(`Cannot add Folder. ${stringPath} is immutable.`);
-    return false;
+    return;
   }
 
-  // push new folder tile onto dashboard
+  // create new folder element
   const newFolderTile = document.createElement('div');
   newFolderTile.classList.add('document-entry');
   newFolderTile.classList.add('folder-entry');
+  newFolderTile.setAttribute('id', 'new-folder');
+
+  // add new folder text
   const newFolderText = document.createElement('div');
   newFolderText.classList.add('filename-text');
-  newFolderText.innerHTML = '';
   newFolderTile.appendChild(newFolderText);
+
+  // push folder to start of dashboard
   documentsContainer.childNodes[0].before(newFolderTile);
 
+  // lets user input new folder name on newly created folder; no file system changes yet
+  // on successful text input, add new folder to file system and update dashboard
+  // on failure, removes newFolderTile completely
   focusForInput(newFolderTile, '', (newName: string) => {
     const newFolder = fs_functions.createFolder(newName);
     const succeeded = fs_functions.addEntry(newFolder, state.getParentFolder());
     if (succeeded) {
+      newFolderTile.setAttribute('id', newName);
       fsm.setFileSystem(state.getFolderPath().at(0));
       updateDashboard(); // todo: replace with sort()
       return true;
     }
-    return false;
+    else {
+      newFolderTile.remove();
+      return false;
+    }
+  },
+  // failure callback: remove newFolderTile completely
+  () => {
+    newFolderTile.remove();
   });
 }
 
 /**
- * opens prompt to rename entry in file system, persist in local storage, and updates tile name
+ * Prompts user to rename entry in file system, and if successful: persist in local storage, and updates tile name
  * @param entry IEntry to rename
  */
 function rename(entry: IEntry) {
@@ -384,13 +402,13 @@ function rename(entry: IEntry) {
   if (isImmutable) {
     const stringPath = state.getFolderPath().map(folder => folder.name).join('/');
     window.alert(`Cannot rename ${entry.name}. ${stringPath} is immutable.`);
-    return false;
+    return;
   }
   // or entry is immutable
   const immutable = entry.metadata['immutable'];
   if (immutable) {
     window.alert(`Cannot rename ${entry.name}. Entry is immutable.`);
-    return false;
+    return;
   }
   
   const id = getEntryId(entry);
@@ -412,7 +430,7 @@ function rename(entry: IEntry) {
  * @param oldName string of old name
  * @param callback function to run after user submits new name; to reflect changes file system
  */
-function focusForInput(tile: HTMLDivElement, oldName: string, callback: (name: string) => boolean) {
+function focusForInput(tile: HTMLDivElement, oldName: string, fs_callback: (name: string) => boolean, failure_callback?: () => void) {
   window.removeEventListener('keypress', handleEnterRename, false); // temporarily remove Enter key press listener for renaming
   tile.innerHTML = ''; // clear tile contents
 
@@ -436,16 +454,26 @@ function focusForInput(tile: HTMLDivElement, oldName: string, callback: (name: s
     const newName = input.value;
 
     // rename tile
-    if (newName) {
+    if (newName && newName.length > 0) {
+      console.log('a');
       // run callback to update file system
-      const succeeded = callback(newName);
+      const succeeded = fs_callback(newName);
       // put updated text back into tile
       if (succeeded) {
         text.innerHTML = formatFilename(newName, 25);
       }
+      else {
+        input.remove();
+        tile.appendChild(text);
+        if (failure_callback) failure_callback();
+      }
     }
-    input.remove();
-    tile.appendChild(text);
+    else {
+      input.remove();
+      tile.appendChild(text);
+      if (failure_callback) failure_callback();
+    }
+
     // re-add Enter key press listener for renaming
     window.addEventListener('keypress', handleEnterRename, false);
   }
