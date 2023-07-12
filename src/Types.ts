@@ -201,6 +201,13 @@ export type ChangeGroupAction = {
   };
 };
 
+export type MatchHeightAction = {
+  action: 'matchHeight',
+  param: {
+    elementId: string;
+  };
+};
+
 /** An editing action sent to verovio as described [here](https://github.com/DDMAL/Neon/wiki/Toolkit-Actions). */
 export type EditorAction =
   | DragAction
@@ -224,7 +231,8 @@ export type EditorAction =
   | ChangeStaffAction
   | ChangeStaffToAction
   | ChangeGroupAction
-  | ChainAction;
+  | ChainAction
+  | MatchHeightAction;
 
 export type ChainAction = {
   action: 'chain',
@@ -312,3 +320,13 @@ export type SelectionType = 'selByStaff' | 'selByNeume' | 'selByNc' | 'selByLaye
 /** Highlight grouping type  */
 export type GroupingType = 'staff' | 'syllable' | 'neume' | 'layerElement' | 'selection' | 'none';
 
+/** User mode type  */
+export type UserType = 'insert' | 'edit' | 'viewer';
+
+/** Insert mode type  */
+export type InsertType = 'punctum' | 'virga' | 'virgaReversed' | 'diamond' | 'custos' 
+| 'cClef' | 'fClef' | 'liquescentA' | 'liquescentC' | 'flat' | 'natural' | 'divLineMaxima' 
+| 'pes' | 'clivis' | 'scandicus' | 'climacus' | 'torculus' | 'porrectus' | 'pressus' | 'staff';
+
+/** Insert tab type  */
+export type InsertTabType = 'primitiveTab' | 'groupingTab' | 'systemTab';

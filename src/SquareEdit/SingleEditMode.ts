@@ -11,6 +11,7 @@ import * as Contents from './Contents';
 import { undoRedoPanel } from '../utils/EditContents';
 import { initNavbar } from '../utils/EditControls';
 import { getSettings } from '../utils/LocalSettings';
+import { UserType } from '../Types';
 
 /**
  * An Edit Module for a single page of a manuscript.
@@ -42,7 +43,8 @@ class SingleEditMode implements NeumeEditInterface {
     this.dragHandler = new DragHandler(this.neonView, '#svg_group');
     this.insertHandler = new InsertHandler(this.neonView, '#svg_group');
     bindInsertTabs(this.insertHandler);
-    document.getElementById('primitiveTab').click();
+    const { insertTab } = getSettings();
+    document.getElementById(insertTab).click();
     Select.setSelectHelperObjects(this.neonView, this.dragHandler);
     this.setSelectListeners();
 
@@ -53,23 +55,27 @@ class SingleEditMode implements NeumeEditInterface {
     setHighlightOption('selection');
     this.neonView.view.addUpdateCallback(this.setSelectListeners.bind(this));
 
-    // focus display panel by clicking on the stored selection mode
-    const { selectionMode } = getSettings();
-    document.getElementById(selectionMode).click();
+    const { userMode, insertMode, selectionMode } = getSettings();
+    document.getElementById(insertMode).classList.add('is-active');
+    document.getElementById(selectionMode).classList.add('is-active');
+    switch (userMode) {
+      case 'insert':
+        document.getElementById(insertMode).click();
+        break;
+      case 'edit':
+      default:
+        document.getElementById(selectionMode).click();
+        break;
+    }
   }
 
   /**
    * Get the user mode that Neon is in. Either insert, edit, or viewer.
-   * @returns {string}
+   * @returns {UserType}
    */
-  getUserMode (): string {
-    if (this.insertHandler !== undefined) {
-      if (this.insertHandler.isInsertMode()) {
-        return 'insert';
-      }
-      return 'edit';
-    }
-    return 'viewer';
+  getUserMode (): UserType {
+    const { userMode } = getSettings();
+    return userMode;
   }
 
   setSelectListeners (): void {

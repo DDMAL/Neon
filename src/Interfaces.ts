@@ -1,4 +1,4 @@
-import { NeonManifest } from './Types';
+import { NeonManifest, UserType } from './Types';
 import NeonView from './NeonView';
 import ZoomHandler from './SingleView/Zoom';
 import { ModalWindowView } from './utils/ModalWindow';
@@ -37,7 +37,7 @@ export interface NeumeEditConstructable {
 
 export interface NeumeEditInterface {
   initEditMode (): void;
-  getUserMode (): string;
+  getUserMode (): UserType;
   setSelectListeners (): void;
 }
 

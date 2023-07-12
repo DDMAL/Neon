@@ -1,6 +1,6 @@
 import { addNewFiles } from './UploadManager';
 import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
-import { handleUploadAllDocuments, handleMakePair } from './UploadManager';
+import { handleUploadAllDocuments, handleMakePair, sortFileByName } from './UploadManager';
 import { updateDocumentSelector } from './DocumentSelector';
 import { fm } from '../../deployment/scripts/dashboard';
 
@@ -77,4 +77,10 @@ export function InitUploadArea(): void {
       window.alert(`The following files are not .mei, .png, .jpeg, or .jsonld files: \n\n${filenames.join('\n')}`);
     }
   };
+
+  // Listener for sorting file/folio
+  const sortByNameBtns = document.querySelectorAll('.sort_name');
+  sortByNameBtns.forEach(sortByNameBtn => {
+    sortByNameBtn.addEventListener('click', () => sortFileByName(sortByNameBtn));
+  });
 }

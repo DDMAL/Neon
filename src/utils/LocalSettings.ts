@@ -1,4 +1,4 @@
-import { GroupingType, SelectionType } from '../Types';
+import { GroupingType, SelectionType, UserType, InsertType, InsertTabType } from '../Types';
 
 /**
  * The one instance of LocalSettings that will be created and
@@ -21,6 +21,9 @@ export interface Settings {
   glyphOpacity: number;
   imageOpacity: number;
   highlightMode: GroupingType;
+  userMode: UserType;
+  insertMode: InsertType;
+  insertTab: InsertTabType;
   selectionMode: SelectionType;
   displayBBox: boolean;
   displayText: boolean;
@@ -41,6 +44,9 @@ const DEFAULT_SETTINGS: Settings = {
   glyphOpacity: 100,
   imageOpacity: 100,
   highlightMode: 'none',
+  userMode: 'edit',
+  insertMode: 'punctum',
+  insertTab: 'primitiveTab',
   selectionMode: 'selBySyllable',
   displayBBox: false,
   displayText: false,

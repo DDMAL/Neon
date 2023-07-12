@@ -113,7 +113,7 @@ export const editControlsPanel =
                 <div class="panel-sub-title">Selection Mode:</div>
                 <div id="selection-mode-btns-container"  class="right-side-panel-btns-container" style="overflow-x: auto;">
                     
-                        <button class="side-panel-btn sel-by is-active" id="selBySyllable">Syllable</button>
+                        <button class="side-panel-btn sel-by" id="selBySyllable">Syllable</button>
                         <button class="side-panel-btn sel-by" id="selByNeume">Neume</button>
                         <button class="side-panel-btn sel-by" id="selByNc">Neume Component</button>
                         <button class="side-panel-btn sel-by" id="selByStaff">Staff</button>
@@ -361,6 +361,15 @@ export const divLineActionContents =
 </div>`;
 
 /**
+ * Contents of bbox action menu.
+ */
+export const bboxActionContents =
+    `<div class="right-side-panel-btns-container">
+        <button class="side-panel-btn" id="matchHeight">Match Height</button>
+        <button class="side-panel-btn" id="delete">Delete</button>
+    </div>`;
+
+/**
  * HTML for grouping selection menu.
  */
 export const groupingMenu = {
@@ -458,6 +467,14 @@ export const hotkeysModal = `
                 </div>
                 <div class="hotkey-entry-description">Hide Glyph</div>
             </div>
+            <div class="hotkey-entry-container">
+                <div class="hotkey-container">
+                    <div class="hotkey-entry">Shift</div>
+                    <div>+</div>
+                    <div class="hotkey-entry">T</div>
+                </div>
+                <div class="hotkey-entry-description">Scroll To Syllable Text</div>
+            </div>
         </div>
 
         <!-- "Edit" hotkeys -->
@@ -501,10 +518,10 @@ export const hotkeysModal = `
             </div>
             <div class="hotkey-entry-container">
                 <div class="hotkey-container">
-                    <div class="hotkey-entry">1/2/3/4</div>
+                    <div class="hotkey-entry">1/2/3/4/5/6</div>
                 </div>
                 <div class="hotkey-entry-description">
-                    Select by Syllable/Neume/Neume Component/Staff
+                    Select by Syllable/Neume/Neume Component/Staff/Layer Element/BBox
                 </div>
             </div>
             <div class="hotkey-entry-container">
@@ -553,4 +570,4 @@ export const errorLogsPanelContents =
             <use id="toggleErrorLog" xlink:href="${__ASSET_PREFIX__}/assets/img/icons.svg#dropdown-down"></use>
         </svg>
     </div>
-    <div class="panel-contents" id="errorLogContents" style="overflow: visible; padding: 0.5em 0.75em;"><div>`;
+    <div class="panel-contents" id="errorLogContents" style="overflow: scroll; padding: 0.5em 0.75em;"><div>`;

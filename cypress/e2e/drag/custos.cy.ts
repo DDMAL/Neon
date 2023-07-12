@@ -13,6 +13,7 @@ function drag (selector: string, offsetX = 0, offsetY = 0): void {
 }
 
 beforeEach(() => {
+  cy.viewport('macbook-11');
   cy.visit('http://localhost:8080/editor.html?manifest=test', {
     onBeforeLoad(win) {
       cy.stub(win.console, 'log').as('consoleLog');
