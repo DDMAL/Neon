@@ -98,6 +98,7 @@ export function dashboardState() {
     return orderedEntries.filter((_, idx) => orderedSelection[idx]);
   }
 
+  // TODO:
   function sortEntries() {}
 
   return {

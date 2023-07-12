@@ -1,19 +1,78 @@
-// When user right-clicks on background and nothing is selected
-const defaultOptions: String = 
-    `<div class="right-click-file-menu-item">Upload file</div>
-    <div class="right-click-file-menu-item">New folder</div>`;
+// If user right-clicks on background and nothing is selected
+export const defaultOptions: string = 
+    `<div id="cm-upload-doc-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Upload document</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/new-doc.svg">
+    </div>
+    <div id="cm-new-folder-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">New folder</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/new-folder.svg">
+    </div>`;
 
-const singleFileOptions: String = 
-    `<div class="right-click-file-menu-item">Open file</div>
-    <div class="right-click-file-menu-item">Delete file</div>`;
+// If a single file is selected
+export const singleFileOptions: string = 
+    `<div id="cm-open-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Open</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/open-doc.svg">
+    </div>
+    <div id="cm-delete-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Delete</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
+    </div>
+    <div id="cm-move-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Move</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/move-doc-icon.svg">
+    </div>`;
 
-const singleFolderOptions: String = 
-    `<div class="right-click-file-menu-item">Open folder</div>
-    <div class="right-click-file-menu-item">Delete folder</div>`;
+// If multiple files are selected
+export const multiFileOptions: string = 
+    `<div id="cm-open-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Open</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/open-doc.svg">
+    </div>
+    <div id="cm-delete-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Delete</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
+    </div>
+    <div id="cm-move-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Move</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/move-doc-icon.svg">
+    </div>`;
 
-const multiFileOptions: String = 
-    `<div class="right-click-file-menu-item">Open files</div>
-    <div class="right-click-file-menu-item">Delete files</div>`;
+// If 1 or more files and 1 or more folders are selected
+export const folderAndFileOptions: string = 
+    `<div id="cm-delete-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Delete</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
+    </div>
+    <div id="cm-move-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Move</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/move-doc-icon.svg">
+    </div>`;
 
-const folderAndFileOptions: String = 
-    `<div class="right-click-file-menu-item">Delete</div>`;
+// If one folder is selected
+export const singleFolderOptions: string = 
+    `<div id="cm-open-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Open</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/open-doc.svg">
+    </div>
+    <div id="cm-delete-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Delete</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
+    </div>
+    <div id="cm-move-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Move</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/move-doc-icon.svg">
+    </div>`;
+
+// If multiple folders are selected
+export const multiFolderOptions: string = 
+    `<div id="cm-delete-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Delete</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
+    </div>
+    <div id="cm-move-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Move</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/move-doc-icon.svg">
+    </div>`;
+

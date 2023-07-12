@@ -4,6 +4,7 @@ import { formatFilename } from './upload_functions';
 import { FileSystemManager } from './FileSystem';
 import { ShiftSelectionManager, dashboardState } from './dashboard_functions';
 import { InitUploadArea } from './UploadArea';
+import * as contextMenuContent from './ContextMenuContent';
 
 const documentsContainer: HTMLDivElement = document.querySelector('#fs-content-container');
 const backgroundArea: HTMLDivElement = document.querySelector('#main-section-content');
@@ -18,12 +19,16 @@ const shiftSelection = new ShiftSelectionManager();
 const fsm = FileSystemManager();
 const state = dashboardState();
 
+const mainSection: HTMLElement = document.querySelector('.main-section-content');
+const contextMenu: HTMLElement = document.querySelector('.right-click-file-menu');
+const contextMenuContentWrapper: HTMLElement = document.querySelector('.context-menu-items-wrapper');
+
+
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
-
-const mainSection: HTMLElement = document.querySelector('.main-section-content');
-const rightClickMenu: HTMLElement = document.querySelector('.right-click-file-menu');
 let currentDragTarget = null;
+const currentFileSelection = []; // currently user-selected files
+const currentFolderSelection = []; // currently user-selected folders
 
 openButton!.addEventListener('click', handleOpenDocuments);
 deleteButton!.addEventListener('click', handleDeleteDocuments);
@@ -167,7 +172,7 @@ function unselectAll() {
 function createTile(entry: IEntry) {
   const doc = document.createElement('div');
   doc.classList.add('document-entry');
-  doc.setAttribute('draggable', 'true');
+  doc.setAttribute('draggable', 'true'); // make file or folder draggable
   
   switch (entry.type) {
     case 'folder':
@@ -205,16 +210,18 @@ async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivE
     tile.addEventListener('dblclick', handleOpenDocuments, false);
   }
   addShiftSelectionListener(tile, index);
+  addSpecificContextMenuListeners();
 }
 
 /**
  * Add shift selection behaviour to html tile element
  * 
  * When no keys are pressed: erase any previous selections and select only current tile
- * When meta key is pressed: add current tile to selection if not already selected, else remove from selection
- * When shift key is pressed: select all tiles between current tile and previous tile
+ * When meta key is pressed: add current tile to selection if not already selected, else remove from
+ * selection. When shift key is pressed: select all tiles between current tile and previous tile
  * 
- * When there is a previous selection, the start of the shift selection is the last selected tile. Shift clicking after will add the shift selection to the previous selection.
+ * When there is a previous selection, the start of the shift selection is the last selected tile. 
+ * Shift clicking after will add the shift selection to the previous selection.
  * 
  * @param tile 
  * @param index 
@@ -224,7 +231,7 @@ function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
     if (!metaKeyIsPressed && !shiftKeyIsPressed) {
       unselectAll();
       select(index);
-      shiftSelection.setStart(index); 
+      shiftSelection.setStart(index);
     }
     else if (metaKeyIsPressed) {
       if (state.getSelection()[index]) {
@@ -668,6 +675,9 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   fsm.setFileSystem(state.getFolderPath().at(0));
 
 
+  addSpecificContextMenuListeners();
+
+
   // Add dragstart events for every item in the current folder.
   // Set the current drag target (element that is being dragged)
   Array.from(document.querySelectorAll('.document-entry')).forEach((elem) => {
@@ -736,32 +746,253 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
 }
 
 /**
+ * Displays dashboard context menu with the appropriate content 
+ * 
+ * @param view context menu view (determines content of context menu)
+ */
+function showContextMenu(view: string, clientX: number, clientY: number) {
+
+  console.log(view);
+
+  switch (view) {
+    // Context menu options when files/folders are right-clicked
+    case 'selection-options':
+
+      // Need to determine selection category before displaying options
+      let numberOfSelectedFolders = currentFolderSelection.length;
+      let numberOfSelectedFiles = currentFileSelection.length;
+
+      // Loop through selected items to see if they include files and/or folders
+      for (let i=0; i<state.getSelectedEntries().length; i++) {
+        const entry = state.getSelectedEntries()[i];
+        if (entry.type === 'file') numberOfSelectedFiles++;
+        else if (entry.type === 'folder') numberOfSelectedFolders++;
+      }
+
+      /**
+       * Context menu options conditions:
+       *    1) 1 file -> open, delete, move
+       *    2) 2+ files -> open, delete, move
+       *    3) file(s) + folder(s) -> delete, move
+       *    4) 1 folder -> open, delete, move
+       *    5) 2+ folders -> delete, move
+       */
+
+      // 1 file
+      if (numberOfSelectedFiles === 1 && numberOfSelectedFolders === 0) {
+        contextMenuContentWrapper.innerHTML = contextMenuContent.singleFileOptions;
+        setContextMenuItemsEventListeners('single-file-options');
+      }
+      // 2+ files
+      else if (numberOfSelectedFiles > 1 && numberOfSelectedFolders === 0) {
+        contextMenuContentWrapper.innerHTML = contextMenuContent.multiFileOptions;
+        setContextMenuItemsEventListeners('multi-file-options');
+      }
+      // file(s) + folder(s)
+      else if (numberOfSelectedFiles >= 1 && numberOfSelectedFolders >= 1) {
+        contextMenuContentWrapper.innerHTML = contextMenuContent.folderAndFileOptions;
+        setContextMenuItemsEventListeners('folder-and-file-options');
+      }
+      // 1 folder
+      else if (numberOfSelectedFiles === 0 && numberOfSelectedFolders === 1) {
+        contextMenuContentWrapper.innerHTML = contextMenuContent.singleFolderOptions;
+        setContextMenuItemsEventListeners('single-folder-options');
+      }
+      // 2+ folders
+      else if (numberOfSelectedFiles === 0 && numberOfSelectedFolders > 1) {
+        contextMenuContentWrapper.innerHTML = contextMenuContent.multiFolderOptions;
+        setContextMenuItemsEventListeners('multi-folder-options');
+      }
+      break;
+
+    // Default context menu (righ-clicking on dashboard background)
+    default:
+      contextMenuContentWrapper.innerHTML = contextMenuContent.defaultOptions;
+      setContextMenuItemsEventListeners('default');
+  }
+
+  // get the position of the user's mouse
+  contextMenu.style.left = `${clientX}px`;
+  contextMenu.style.top = `${clientY}px`;
+
+  // display context menu
+  contextMenu.classList.remove('hidden');
+}
+
+
+/**
+ * Set event listeners for the menu items in a particular context menu.
+ * 
+ * @param view The name of the context menu view that is being displayed.
+ */
+function setContextMenuItemsEventListeners(view: string) {
+  // All the buttons that will have events attached to them have the same classname.
+  const btnClassname = 'context-menu-item-wrapper';
+
+  switch (view) {
+
+    case 'single-file-options':
+      // "Open" menu item
+      document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        handleOpenDocuments();
+      });
+
+      // "Delete" menu item
+      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        handleDeleteDocuments();
+      });
+
+      // "Move" menu item
+      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        // TODO:
+        //handleMoveDocuments();
+      });
+
+      break;
+    
+    case 'multi-file-options':
+      // "Open" menu item
+      document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        handleOpenDocuments();
+      });
+
+      // "Delete" menu item
+      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        handleDeleteDocuments();
+      });
+
+      // "Move" menu item
+      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        // TODO:
+        //handleMoveDocuments();
+      });      
+
+      break;
+
+    case 'folder-and-file-options':
+      // "Delete" menu item
+      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        handleDeleteDocuments();
+      });
+
+      // "Move" menu item
+      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        // TODO:
+        //handleMoveDocuments();
+      });
+
+      break;
+    
+    case 'single-folder-options':
+      // "Open" menu item
+      document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        handleOpenDocuments();
+      });
+
+      // "Delete" menu item
+      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        handleDeleteDocuments();
+      });
+
+      // "Move" menu item
+      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        // TODO:
+        //handleMoveDocuments();
+      });      
+
+      break;
+
+    case 'multi-folder-options':
+      // "Delete" menu item
+      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        handleDeleteDocuments();
+      });
+
+      // "Move" menu item
+      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        // TODO:
+        //handleMoveDocuments();
+      });
+
+      break;
+
+    default:
+      // "Upload document" menu item
+      document.querySelector(`.${btnClassname}#cm-upload-doc-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        handleOpenUploadArea();
+      });
+
+      // "New folder" menu item
+      document.querySelector(`.${btnClassname}#cm-new-folder-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        handleAddFolder();
+      });
+
+  }
+
+}
+
+
+/**
  * Initialize dashboard context menu (right click menu).
  * This will set up all necessary event listeners as well as
  * the logic to determine the content of the context menu, which
  * may change depending on where the user right-clicks (file, files, folder, background, etc.)
  */
-function initializeContextMenu() {
-  document.addEventListener('contextmenu', (e) => {
+function initializeDefaultContextMenu() {
+
+  // right-click on dashboard background
+  document.querySelector('.main-section').addEventListener('contextmenu', (e) => {
     e.preventDefault();
-  
-    rightClickMenu.style.left = `${e.clientX}px`;
-    rightClickMenu.style.top = `${e.clientY}px`;
-    console.log(e.screenX);
-    rightClickMenu.classList.remove('hidden');
+    showContextMenu(
+      'default', 
+      (<MouseEvent> e).clientX, 
+      (<MouseEvent> e).clientY
+    );
   });
-  
-  mainSection.addEventListener('click', (e) => {
-    rightClickMenu.classList.add('hidden');
-  });
-  
+}
+
+
+/**
+ * Add listeners for specific context menus.
+ * Specific context menus appear when user right-clicks on selected files/folders.
+ * The actual menu that is shown depends on the type of selection.
+ */
+function addSpecificContextMenuListeners() {
+    
+  // right-click on folder item (file or folder)
   Array.from(document.querySelectorAll('.document-entry')).forEach( (elem) => {
     elem.addEventListener('contextmenu', (e) => {
       e.stopPropagation();
       e.preventDefault();
-      console.log('hey there buddy');
+
+      showContextMenu(
+        'selection-options', 
+        (<MouseEvent> e).clientX, 
+        (<MouseEvent> e).clientY
+      );
+      contextMenu.classList.remove('hidden');
     })
-  })
+  });
+
+  // hide context menu if user clicks away
+  mainSection.addEventListener('click', (e) => {
+    contextMenu.classList.add('hidden');
+  });
 }
 
 /**
@@ -770,5 +1001,5 @@ function initializeContextMenu() {
 export const loadDashboard = async (): Promise<void> => {
   const root = await fsm.getRoot();
   updateDashboard([root]);
-  initializeContextMenu();
+  initializeDefaultContextMenu();
 }
