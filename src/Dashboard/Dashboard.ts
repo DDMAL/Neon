@@ -10,6 +10,7 @@ const backgroundArea: HTMLDivElement = document.querySelector('#main-section-con
 const openButton: HTMLButtonElement = document.querySelector('#open-doc');
 const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
 const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
+const backButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
 const uploadDocumentsButton: HTMLButtonElement = document.querySelector('#upload-new-doc-button');
 const newFolderButton: HTMLButtonElement = document.querySelector('#add-folder-button');
 
@@ -121,34 +122,6 @@ function unselectAll() {
   Array.from(document.querySelectorAll('.document-entry.selected'))
     .forEach((tile) => tile.classList.remove('selected'));
   state.resetSelection();
-}
-
-/**
- * Updates the visibility of action bar buttons based on current selections
- */
-function updateActionBarButtons() {
-  // set active if there is a selection
-  const nothingSelected = state.getSelection().every((selected) => !selected)
-  if (nothingSelected) {
-    openButton.classList.remove('active');
-    deleteButton.classList.remove('active');
-  }
-  else {
-    openButton.classList.add('active');
-    deleteButton.classList.add('active');
-  }
-
-  // update upload doc/add folder to active if parent folder isn't immutable
-  const isImmutable = state.getParentFolder().metadata['immutable'];
-  if (isImmutable) {
-    uploadDocumentsButton.classList.remove('active');
-    newFolderButton.classList.remove('active');
-    deleteButton.classList.remove('active');
-  }
-  else {
-    uploadDocumentsButton.classList.add('active');
-    newFolderButton.classList.add('active');
-  }
 }
 
 /** 
@@ -325,6 +298,34 @@ function handleDeleteDocuments() {
 }
 
 /**
+ * Updates the visibility of action bar buttons based on current selections
+ */
+function updateActionBarButtons() {
+  // set active if there is a selection
+  const nothingSelected = state.getSelection().every((selected) => !selected)
+  if (nothingSelected) {
+    openButton.classList.remove('active');
+    deleteButton.classList.remove('active');
+  }
+  else {
+    openButton.classList.add('active');
+    deleteButton.classList.add('active');
+  }
+
+  // update upload doc/add folder to active if parent folder isn't immutable
+  const isImmutable = state.getParentFolder().metadata['immutable'];
+  if (isImmutable) {
+    uploadDocumentsButton.classList.remove('active');
+    newFolderButton.classList.remove('active');
+    deleteButton.classList.remove('active');
+  }
+  else {
+    uploadDocumentsButton.classList.add('active');
+    newFolderButton.classList.add('active');
+  }
+}
+
+/**
  * Updates the nav path with current folder path
  */
 function updateNavPath(): void {
@@ -355,6 +356,29 @@ function updateNavPath(): void {
       navPathContainer.appendChild(seperator);
     }
   });
+}
+
+/**
+ * Updates the back button with click event listener to go back one folder if possible
+ */
+function updateBackButton() {
+  const isRoot = state.getFolderPath().length === 1;
+  if (isRoot) {
+    backButton.classList.remove('active');
+    backButton.removeEventListener('click', handleNavigateBack);
+  }
+  else {
+    backButton.classList.add('active');
+    backButton.addEventListener('click', handleNavigateBack);
+  }
+}
+
+/**
+ * Handles click event on back button to go back one folder if possible
+ */
+async function handleNavigateBack() {
+  const newPath = state.getFolderPath().slice(0, -1);
+  await updateDashboard(newPath);
 }
 
 /**
@@ -557,7 +581,6 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
 
   // update ordered items for current fs-contents
   state.setEntries(currentFolder.content);
-  shiftSelection.reset();
 
   // populate folder contents
   currentFolder.content.forEach(async (entry, index) => {
@@ -567,6 +590,7 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   }); 
 
   updateNavPath();
+  updateBackButton();
   updateActionBarButtons();
   fsm.setFileSystem(state.getFolderPath().at(0));
 }
