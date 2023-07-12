@@ -95,6 +95,10 @@ const removeEntry = (entry: IEntry, parent: IFolder): boolean => {
 
 const renameEntry = (entry: IEntry, parent: IFolder, newName: string): boolean => {
     try {
+        // if newName is the same then return
+        const isSameName = entry.name === newName;
+        if (isSameName) return true;
+
         // Check if newName already exists in parent
         const names = getAllNames(parent);
         if (names.includes(newName)) {

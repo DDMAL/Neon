@@ -60,15 +60,8 @@ window.addEventListener('keyup', (e) => {
   if (!e.shiftKey) shiftKeyIsPressed = false;
 });
 
-window.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') {
-    const selections = state.getSelectedEntries();
-    if (selections.length === 1) {
-      const selected = selections[0];
-      handleRenaming(selected);
-    }
-  }
-});
+// Listener for Enter key press on tiles to rename
+window.addEventListener('keypress', handleEnterRename, false);
 
 backgroundArea!.addEventListener('click', (e) => {
   const target = e.target as Element;
@@ -359,20 +352,33 @@ function handleAddFolder() {
     return false;
   }
 
-  const folderName = promptNewName();
-  if (folderName) {
-    const folder = fs_functions.createFolder(folderName);
-    const succeeded = fs_functions.addEntry(folder, state.getParentFolder());
+  // push new folder tile onto dashboard
+  const newFolderTile = document.createElement('div');
+  newFolderTile.classList.add('document-entry');
+  newFolderTile.classList.add('folder-entry');
+  const newFolderText = document.createElement('div');
+  newFolderText.classList.add('filename-text');
+  newFolderText.innerHTML = '';
+  newFolderTile.appendChild(newFolderText);
+  documentsContainer.childNodes[0].before(newFolderTile);
+
+  focusForInput(newFolderTile, '', (newName: string) => {
+    const newFolder = fs_functions.createFolder(newName);
+    const succeeded = fs_functions.addEntry(newFolder, state.getParentFolder());
     if (succeeded) {
-      updateDashboard();
+      fsm.setFileSystem(state.getFolderPath().at(0));
+      updateDashboard(); // todo: replace with sort()
       return true;
     }
-  }
-  return false;
+    return false;
+  });
 }
 
-// opens prompt to rename entry in file system, persist in local storage, and updates tile name
-function handleRenaming(entry: IEntry): boolean {
+/**
+ * opens prompt to rename entry in file system, persist in local storage, and updates tile name
+ * @param entry IEntry to rename
+ */
+function rename(entry: IEntry) {
   // abort if parent folder
   const isImmutable = state.getParentFolder().metadata['immutable'];
   if (isImmutable) {
@@ -387,32 +393,83 @@ function handleRenaming(entry: IEntry): boolean {
     return false;
   }
   
-  const oldName = entry.name;
-  const newName = promptNewName();
-  if (newName) {
+  const id = getEntryId(entry);
+  const tile = document.getElementById(id) as HTMLDivElement;
+  focusForInput(tile, entry.name, (newName: string) => {
     const succeeded = fs_functions.renameEntry(entry, state.getParentFolder(), newName);
     if (succeeded) {
       fsm.setFileSystem(state.getFolderPath().at(0));
-      updateTileName(entry, oldName, newName);
+      updateDashboard(); // todo: replace with sort()
       return true;
     }
+    return false;
+  });
+}
+
+/**
+ * Allow user to rename tile by focusing on dynamically generated input element in the selected tile.
+ * @param tile HTMLDivElement to change
+ * @param oldName string of old name
+ * @param callback function to run after user submits new name; to reflect changes file system
+ */
+function focusForInput(tile: HTMLDivElement, oldName: string, callback: (name: string) => boolean) {
+  window.removeEventListener('keypress', handleEnterRename, false); // temporarily remove Enter key press listener for renaming
+  tile.innerHTML = ''; // clear tile contents
+
+  // create new text element
+  const text = document.createElement('div');
+  text.classList.add('filename-text');
+  text.innerHTML = formatFilename(oldName, 25);
+
+  // create input element
+  const input = document.createElement('input');
+  input.classList.add('filename-input');
+  input.setAttribute('type', 'text');
+  input.setAttribute('value', oldName);
+  tile.appendChild(input);
+
+  function handleSubmit() {
+    // remove event listeners
+    input.removeEventListener('blur', handleSubmit);
+    window.removeEventListener('keypress', handleKeyPress);
+
+    const newName = input.value;
+
+    // rename tile
+    if (newName) {
+      // run callback to update file system
+      const succeeded = callback(newName);
+      // put updated text back into tile
+      if (succeeded) {
+        text.innerHTML = formatFilename(newName, 25);
+      }
+    }
+    input.remove();
+    tile.appendChild(text);
+    // re-add Enter key press listener for renaming
+    window.addEventListener('keypress', handleEnterRename, false);
   }
-  return false;
+
+  function handleKeyPress(e: KeyboardEvent) { 
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
+  }
+
+  input.focus();
+  input.select();
+
+  input.addEventListener('blur', handleSubmit);
+  window.addEventListener('keypress', handleKeyPress);
 }
 
-function promptNewName() {
-  const newName = window.prompt('Enter new name:');
-  return newName;
-}
-
-// updates text and if applicable, id of tile element
-function updateTileName(entry: IEntry, oldName: string, newName: string) {
-  const isFolder = (entry.type === 'folder');
-  // get tile element
-  const id: string = isFolder ? oldName : (entry as IFile).content;
-  const tile = document.getElementById(id);
-  if (isFolder) tile.setAttribute('id', newName);
-  tile.querySelector('.filename-text').innerHTML = formatFilename(newName, 25);
+function handleEnterRename(e: KeyboardEvent) {
+  if (e.key === 'Enter') {
+    const selections = state.getSelectedEntries();
+    if (selections.length === 1) {
+      rename(selections[0]);
+    }
+  }
 }
 
 function getEntryById(id: string): IEntry {
