@@ -149,16 +149,17 @@
 }
 
 .document-entry {
-  padding: 1.3vw;
-  background-color: #f6f6f6;
-  color: #696969;
-  border-radius: 4px;
   cursor: pointer;
+  padding: 12px;
   margin-right: 2vw;
   margin-bottom: 2vw;
   border: 2px solid transparent;
-  min-width: 10%;
+  border-radius: 4px;
   animation: settle 2s ease-in-out forwards;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
     border: 2px solid #d9d9d9;
@@ -170,22 +171,45 @@
 }
 
 .folder-entry {
-  background-color: #589ed5;
   color: #ffffff;
+  background-color: #589ed5;
   /* background-image: url(../Neon-gh/assets/img/folder-top.svg);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: 3vw -9px; */
 }
 
-.folio-entry {
+.file-entry {
+  color: #696969;
+  background-color: #f6f6f6;
+}
 
+.folio-entry {
 }
 
 .manuscript-entry {
-
 }
 
+.filename-text {
+  background-color: transparent;
+}
+
+input.filename-input, select.file-input, textarea.file-input {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  text-align: center;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.file-entry input.filename-input, .file-entry select.file-input, .file-entry textarea.file-input {
+  color: #696969;
+}
+
+.folder-entry input.filename-input, .folder-entry select.file-input, .folder-entry textarea.file-input {
+  color: #ffffff;
+}
 
 .doc-multiselect-btn {
   transform: translateX(-4.95vw) translateY(-20px);
