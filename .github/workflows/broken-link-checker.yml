@@ -71,7 +71,7 @@ jobs:
           echo "$output"
 
           # Fail the github actions only if there's a single HTTP 404 found
-          echo "$output" | grep -q 'HTTP_404' && flag=1
+          echo "$output" | grep -Eq 'HTTP_4[0-9]{2}' && flag=1
 
           if [ "$flag" -eq "1" ]; then
             echo "Broken links were found, exiting with an error."
