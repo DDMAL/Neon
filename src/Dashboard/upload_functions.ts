@@ -237,10 +237,8 @@ async function uploadManuscript(manuscript: File, currentFolder: IFolder, existi
 }
 
 export function formatFilename(filename: string, maxLen: number): string {
-  const chunkLen = Math.floor(maxLen/2);
-  const len = filename.length;
-  if (len <= maxLen) return filename;
-  else return `${filename.substring(0,chunkLen-1)}...${filename.substring(len-chunkLen+2, len)}`;
+  if (filename.length <= maxLen) return filename;
+  else return `${filename.substring(0,maxLen)}...`;
 }
 
 // Renames file if there are naming conflicts, in the form of 'foobar (1)'
