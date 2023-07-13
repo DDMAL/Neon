@@ -46,7 +46,8 @@ function removeMetadata(entry: IEntry, keys: string[]): IEntry {
 const canAddEntry = (entry: IEntry, parent: IFolder): boolean => {
     // Check for duplicate name
     const isDuplicate = parent.content.some((e) => e.name === entry.name);
-    if (isDuplicate) return false;
+    const isImmutable = parent.metadata['immutable'];
+    if (isDuplicate || isImmutable) return false;
     else return true;
 }       
 
@@ -54,21 +55,27 @@ const canAddEntry = (entry: IEntry, parent: IFolder): boolean => {
  * Checks if entry can be removed from parent folder
  * @param entry 
  * @param parent 
- * @returns canRemove: boolean, index: number
+ * @returns boolean
  */
-const canRemoveEntry = (entry: IEntry, parent: IFolder) => {
+const canRemoveEntry = (entry: IEntry, parent: IFolder): boolean => {
     // Check if entry exists in parent
     const idx = parent.content.findIndex((e) => e.name === entry.name);
-    return { canRemove: idx !== -1, index: idx };
+    const existsInParent = idx !== -1;
+    const isImmutableParent = parent.metadata['immutable'];
+    const isImmutableEntry = entry.metadata['immutable'];
+    if (!existsInParent || isImmutableParent || isImmutableEntry) return false;
+    else return true;
 }
 
 const canMoveEntry = (entry: IEntry, parent: IFolder, newParent: IFolder): boolean => {
-    // Check if entry exists in parent
-    const canAdd = canAddEntry(entry, newParent);
-    console.log('canAdd', canAdd);
-    const { canRemove, index }= canRemoveEntry(entry, parent);
-    console.log('canRemove', canRemove);
-    return (canAdd && canRemove);
+    const isDuplicate = newParent.content.some((e) => e.name === entry.name);
+    const isImmutableParent = parent.metadata['immutable'];
+    const isImmutableNewParent = newParent.metadata['immutable'];
+    const idx = parent.content.findIndex((e) => e.name === entry.name);
+    const existsInParent = idx !== -1;
+
+    if (isDuplicate || isImmutableParent || isImmutableNewParent  || !existsInParent) return false;
+    else return true;
 }
 
 const canRenameEntry = (entry: IEntry, parent: IFolder, newName: string): boolean => {
@@ -112,14 +119,16 @@ const addEntry = (entry: IEntry, parent: IFolder): boolean => {
  * Removes entry from parent folder
  * @param entry 
  * @param parent 
+ * @param force force a removal
  * @returns true if removed, else false
  */
-const removeEntry = (entry: IEntry, parent: IFolder): boolean => {
+const removeEntry = (entry: IEntry, parent: IFolder, force=false): boolean => {
     try {
         // Check if entry exists in parent
-        const { canRemove, index } = canRemoveEntry(entry, parent);
-        if (canRemove) {
-            parent.content.splice(index, 1);
+        const canRemove = canRemoveEntry(entry, parent);
+        if (canRemove || force) {
+            const idx = parent.content.findIndex((e) => e.name === entry.name);
+            parent.content.splice(idx, 1);
             return true;
         }
         else {
@@ -143,7 +152,7 @@ const removeEntry = (entry: IEntry, parent: IFolder): boolean => {
 function moveEntry(entry: IEntry, parent: IFolder, newParent: IFolder): boolean {
     try {
         addEntry(entry, newParent);
-        removeEntry(entry, parent);
+        removeEntry(entry, parent, true);
     } catch (e) {
         console.error(e);
         window.alert(`Error moving ${entry.name} to ${newParent.name}`);

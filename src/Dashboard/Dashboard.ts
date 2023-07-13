@@ -172,21 +172,24 @@ function createTile(entry: IEntry) {
   const doc = document.createElement('div');
   doc.classList.add('document-entry');
   doc.setAttribute('draggable', 'true'); // make file or folder draggable
-  
+
+  const name = document.createElement('div');
+  name.classList.add('filename-text');
+  name.innerHTML = formatFilename(entry.name, 25);
+
   switch (entry.type) {
     case 'folder':
       doc.classList.add('folder-entry');
       doc.setAttribute('id', entry.name);
+      doc.setAttribute('drop-id', entry.name);
+      doc.classList.add('drop-target');
+      name.classList.add('drop-target');
       break;
     case 'file':
       doc.classList.add('file-entry');
       doc.setAttribute('id', (entry as IFile).content);
       break;
   }
-
-  const name = document.createElement('div');
-  name.classList.add('filename-text');
-  name.innerHTML = formatFilename(entry.name, 25);
   doc.appendChild(name);
   return doc;
 }
@@ -713,36 +716,21 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
       // Determine if user dropped on .filename-text element or its parent.
       // They are both acceptable drop locations, but only the parent has the necessary 
       // id in order to locate the drop target Entry in the FS.
-      if ((<HTMLElement> e.target).classList.contains('filename-text')) {
-        dropTargetID = (<HTMLElement> e.target).parentElement.getAttribute('id');
-      }
-      else {
-        dropTargetID = (<HTMLElement> e.target).getAttribute('id');
+      if ((<HTMLElement> e.target).classList.contains('drop-target')) {
+        dropTargetID = (<HTMLElement> e.target).parentElement.getAttribute('drop-id');
       }
       
       // get the ID of the element being dragged
       const dragTargetID = (<HTMLElement> currentDragTarget).getAttribute('id');
-      const folderContents = currentFolder.content;
-
-      console.log('dropTargetID: ', dropTargetID);
-      console.log('dragTargetID: ', dragTargetID);
 
       // Using dropTargetID, find the object that represents the Folder being dropped into.
-      const dropEntry = folderContents.find(folder => folder.type === 'folder' && folder.name === dropTargetID) as IFolder;
+      const dropEntry = getEntryById(dropTargetID);
       // Using dragTargetID, find the object that represents the File being dropped.
-      const dragEntry = folderContents.find(entry => {
-        console.log('entry: ', entry);
-        console.log('type: ', entry.type);
-        if (entry.type === 'file') return entry.content === dragTargetID;
-        else if (entry.type === 'folder') return entry.name === dragTargetID;
-      });
-
-      console.log(dropEntry);
-      console.log(dragEntry);
+      const dragEntry = getEntryById(dragTargetID);
 
       // If both folder and file were found, move the file into the folder. Great success!
       if (dropEntry && dragEntry) {
-        moveToFolder(dragEntry, currentFolder, dropEntry);
+        moveToFolder(dragEntry, currentFolder, dropEntry as IFolder);
       }
     });
   })
@@ -760,6 +748,9 @@ function moveToFolder(dragEntry: IEntry, parentFolder: IFolder, newFolder: IFold
     fs_functions.moveEntry(dragEntry, parentFolder, newFolder);
     // update dashboard
     updateDashboard();
+  }
+  else {
+    window.alert(`Cannot move ${dragEntry.name} into ${newFolder.name}.`);
   }
 }
 

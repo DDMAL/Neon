@@ -61,13 +61,12 @@ export const FileSystemManager = () => {
 
         // Make samples folder and add to root
         const samplesFolder = fs_functions.createFolder('Samples');
-        fs_functions.addMetadata(samplesFolder, { immutable: true });
-        fs_functions.addEntry(samplesFolder, root);
-
         // Add sample entries to samples folder
         sampleEntries.forEach((sample) => {
             fs_functions.addEntry(sample, samplesFolder);
         });
+        fs_functions.addEntry(samplesFolder, root);
+        fs_functions.addMetadata(samplesFolder, { immutable: true });
 
         return root;
     }
