@@ -708,7 +708,7 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
     elem.addEventListener('drop', (e) => {
       e.preventDefault();
 
-      let dropTargetID = null;
+      let dropTargetID: string = null;
   
       // Determine if user dropped on .filename-text element or its parent.
       // They are both acceptable drop locations, but only the parent has the necessary 
@@ -724,31 +724,43 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
       const dragTargetID = (<HTMLElement> currentDragTarget).getAttribute('id');
       const folderContents = currentFolder.content;
 
-      let folderEntry = null; // Folder object representation
-      let fileEntry = null; // File object representation
+      console.log('dropTargetID: ', dropTargetID);
+      console.log('dragTargetID: ', dragTargetID);
 
       // Using dropTargetID, find the object that represents the Folder being dropped into.
-      for (let i=0; i<folderContents.length; i++) {
-        const folderItem = folderContents[i];
-        if (folderItem.type === 'folder' && folderItem.name === dropTargetID) {
-          folderEntry = folderItem;
-        }
-      }
-
+      const dropEntry = folderContents.find(folder => folder.type === 'folder' && folder.name === dropTargetID) as IFolder;
       // Using dragTargetID, find the object that represents the File being dropped.
-      for (let i=0; i<folderContents.length; i++) {
-        const folderItem = folderContents[i];
-        if (folderItem.type === 'file' && folderItem.content === dragTargetID) {
-          fileEntry = folderItem;
-        }
-      }
+      const dragEntry = folderContents.find(entry => {
+        console.log('entry: ', entry);
+        console.log('type: ', entry.type);
+        if (entry.type === 'file') return entry.content === dragTargetID;
+        else if (entry.type === 'folder') return entry.name === dragTargetID;
+      });
+
+      console.log(dropEntry);
+      console.log(dragEntry);
 
       // If both folder and file were found, move the file into the folder. Great success!
-      if (folderEntry && fileEntry) {
-        fs_functions.moveEntry(fileEntry, currentFolder, folderEntry);
+      if (dropEntry && dragEntry) {
+        moveToFolder(dragEntry, currentFolder, dropEntry);
       }
     });
   })
+}
+
+/**
+ * Checks if dragEntry can be moved to newFolder, and if so, moves it and refreshes dashboard.
+ * @param dragEntry 
+ * @param parentFolder 
+ * @param newFolder 
+ */
+function moveToFolder(dragEntry: IEntry, parentFolder: IFolder, newFolder: IFolder) {
+  const canMove = fs_functions.canMoveEntry(dragEntry, parentFolder, newFolder);
+  if (canMove) {
+    fs_functions.moveEntry(dragEntry, parentFolder, newFolder);
+    // update dashboard
+    updateDashboard();
+  }
 }
 
 /**
