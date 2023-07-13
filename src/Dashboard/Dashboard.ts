@@ -5,13 +5,14 @@ import { FileSystemManager } from './FileSystem';
 import { ShiftSelectionManager, dashboardState } from './dashboard_functions';
 import { InitUploadArea } from './UploadArea';
 import * as contextMenuContent from './ContextMenuContent';
+import { get } from 'request';
 
 const documentsContainer: HTMLDivElement = document.querySelector('#fs-content-container');
 const backgroundArea: HTMLDivElement = document.querySelector('#main-section-content');
 const openButton: HTMLButtonElement = document.querySelector('#open-doc');
 const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
 const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
-const backButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
+let backButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
 const uploadDocumentsButton: HTMLButtonElement = document.querySelector('#upload-new-doc-button');
 const newFolderButton: HTMLButtonElement = document.querySelector('#add-folder-button');
 
@@ -408,6 +409,9 @@ function updateNavPath(): void {
 
     const targetPath = state.getFolderPath().slice(0, idx + 1);
     navSection.addEventListener('click', handleNavClick(targetPath));
+    // add drop target to move dragged element to the prospective folders
+    addDropTargetListeners(navSection, state.getParentFolder(), targetPath.at(-1));
+
     return navSection
   });
 
@@ -427,15 +431,23 @@ function updateNavPath(): void {
  * Updates the back button with click event listener to go back one folder if possible
  */
 function updateBackButton() {
+  // Erase previous event listeners
+  const buttonClone = backButton.cloneNode(true) as HTMLButtonElement;
+  backButton.parentNode.replaceChild(buttonClone, backButton);
+
+  // Disable back button if at root
   const isRoot = state.getFolderPath().length === 1;
   if (isRoot) {
-    backButton.classList.remove('active');
-    backButton.removeEventListener('click', handleNavigateBack);
+    buttonClone.classList.remove('active');
+    buttonClone.setAttribute('disabled', 'true');
   }
   else {
-    backButton.classList.add('active');
-    backButton.addEventListener('click', handleNavigateBack);
+    buttonClone.classList.add('active');
+    buttonClone.removeAttribute('disabled');
+    buttonClone.addEventListener('click', handleNavigateBack);
+    addDropTargetListeners(buttonClone, state.getParentFolder(), state.getFolderPath().at(-2));
   }
+  backButton = buttonClone;
 }
 
 /**
@@ -561,7 +573,6 @@ function focusForInput(tile: HTMLDivElement, oldName: string, fs_callback: (name
 
     // rename tile
     if (newName && newName.length > 0) {
-      console.log('a');
       // run callback to update file system
       const succeeded = fs_callback(newName);
       // put updated text back into tile
@@ -661,8 +672,7 @@ function getEntryId(entry: IEntry): string {
 export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   if (!newPath) newPath = state.getFolderPath();
   state.setFolderPath(newPath);
-  const currentFolder = newPath.at(-1);
-
+  const currentFolder = state.getParentFolder();
   // clear content and selection
   documentsContainer.innerHTML = '';
   shiftSelection.reset();
@@ -677,63 +687,58 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
     await addTileEventListener(index, entry, tile);
   }); 
 
+  addSpecificContextMenuListeners();
+  updateActionBarButtons();
   updateNavPath();
   updateBackButton();
-  updateActionBarButtons();
+
+  // add drag and drop listeners for current folder content
+  currentFolder.content.forEach((entry) => {
+    const id = getEntryId(entry);
+    const tile = document.getElementById(id);
+    addDragStartListener(tile);
+
+    if (entry.type === 'folder') { 
+      addDropTargetListeners(tile, currentFolder, entry as IFolder);
+    }
+  });
+  
   fsm.setFileSystem(state.getFolderPath().at(0));
+}
 
-  addSpecificContextMenuListeners();
+function addDragStartListener(elem: Element) {
+  elem.addEventListener('dragstart', (e: DragEvent) => {
+    e.dataTransfer.effectAllowed = 'move';
+    currentDragTarget = e.target;
+  });
+}
 
-  addSpecificContextMenuListeners();
-
-
-  // Add dragstart events for every item in the current folder.
-  // Set the current drag target (element that is being dragged)
-  Array.from(document.querySelectorAll('.document-entry')).forEach((elem) => {
-    elem.addEventListener('dragstart', (e) => {
-      (<DragEvent> e).dataTransfer.effectAllowed = 'move';
-      currentDragTarget = e.target;
-    });
-  }); 
-
-  // Add dragenter, dragover, and drop events for every folder in the current folder
-  Array.from(document.querySelectorAll('.folder-entry')).forEach((elem) => {
-  
-    /**
-     * The dragenter and dragover events need to be overriden
-     * in order to implement the drag-and-drop functionality.
-     * Read more at:
-     * https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
+function addDropTargetListeners(elem: Element, currentFolder: IFolder, destinationFolder: IFolder) {
+  /**
+     * The dragenter and dragover events need to be overriden in order to implement the drag-and-drop functionality.
+     * Read more at: https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
      */
-    elem.addEventListener('dragenter', (e) => e.preventDefault());    
-    elem.addEventListener('dragover', (e) => e.preventDefault());
-  
-    elem.addEventListener('drop', (e) => {
-      e.preventDefault();
+  elem.addEventListener('dragenter', (e) => e.preventDefault());    
+  elem.addEventListener('dragover', (e) => e.preventDefault());
 
-      let dropTargetID: string = null;
-  
-      // Determine if user dropped on .filename-text element or its parent.
-      // They are both acceptable drop locations, but only the parent has the necessary 
-      // id in order to locate the drop target Entry in the FS.
-      if ((<HTMLElement> e.target).classList.contains('drop-target')) {
-        dropTargetID = (<HTMLElement> e.target).parentElement.getAttribute('drop-id');
-      }
-      
-      // get the ID of the element being dragged
-      const dragTargetID = (<HTMLElement> currentDragTarget).getAttribute('id');
+  elem.addEventListener('drop', createHandleDrop(currentFolder, destinationFolder));
+}
 
-      // Using dropTargetID, find the object that represents the Folder being dropped into.
-      const dropEntry = getEntryById(dropTargetID);
-      // Using dragTargetID, find the object that represents the File being dropped.
-      const dragEntry = getEntryById(dragTargetID);
+function createHandleDrop(currentFolder: IFolder, destinationFolder: IFolder) {
+  return (e: Event) => {
+    e.preventDefault();
 
-      // If both folder and file were found, move the file into the folder. Great success!
-      if (dropEntry && dragEntry) {
-        moveToFolder(dragEntry, currentFolder, dropEntry as IFolder);
-      }
-    });
-  })
+    // get the ID of the element being dragged
+    const dragTargetID = (<HTMLElement> currentDragTarget).getAttribute('id');
+
+    // Using dragTargetID, find the object that represents the File being dropped.
+    const dragEntry = getEntryById(dragTargetID);
+
+    // If folder, destination, and file were found, move the file into the folder. Great success!
+    if (dragEntry) {
+      moveToFolder(dragEntry, currentFolder, destinationFolder);
+    }
+  }
 }
 
 /**
