@@ -365,7 +365,7 @@ export const divLineActionContents =
  */
 export const bboxActionContents =
     `<div class="right-side-panel-btns-container">
-        <button class="side-panel-btn" id="matchHeight">Match Height</button>
+        <button class="side-panel-btn" id="matchHeight">Match Height for Entire Row</button>
         <button class="side-panel-btn" id="delete">Delete</button>
     </div>`;
 
