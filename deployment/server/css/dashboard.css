@@ -169,9 +169,8 @@
 
 .fs-title {
   font-size: calc(15px + 1vw);
+  color: #589ed5;
   font-weight: 500;
-  opacity: 0;
-  animation: fade-in 2s ease-in-out forwards;
 }
 
 .nav-path-container {
@@ -190,8 +189,9 @@
   text-decoration: solid underline #589ed5 2px;
 }
 
-.nav-path-seperator {
-  color: #589ed5;
+.nav-path-section, .nav-path-seperator {
+  opacity: 0;
+  animation: settle 2s ease-in-out forwards;
 }
 
 #fs-back-btn {
@@ -205,12 +205,14 @@
   border-radius: 5px;
   color: #7ab2b7;
   opacity: 40%;
+  animation: settle 2s ease-in-out forwards;
 }
 
 #fs-back-btn.active {
   cursor: pointer;
   opacity: 100%;
 }
+
 .fs-nav-zone {
   display: flex;
   gap: 10px;
@@ -221,19 +223,7 @@
 
 .fs-path {
   font-size: 1.5rem;
-}
-
-.fs-back-btn {
-  color: dimgrey;
-  background-color: #f6f6f6;
-  outline: none;
-  border: none;
-  border-radius: 3px;
-  padding: 10px;
-  cursor: pointer;
-}
-.fs-back-btn.inactive {
-  display: none;
+  animation: settle 2s ease-in-out forwards;
 }
 
 .fs-content-container {
