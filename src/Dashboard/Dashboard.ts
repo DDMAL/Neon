@@ -735,7 +735,8 @@ function createHandleDrop(currentFolder: IFolder, destinationFolder: IFolder) {
     const dragEntry = getEntryById(dragTargetID);
 
     // If folder, destination, and file were found, move the file into the folder. Great success!
-    if (dragEntry) {
+    // Make sure that a folder is not being dropped into the same folder.
+    if (dragEntry && dragEntry !== destinationFolder) {
       moveToFolder(dragEntry, currentFolder, destinationFolder);
     }
   }

@@ -68,13 +68,14 @@ const canRemoveEntry = (entry: IEntry, parent: IFolder): boolean => {
 }
 
 const canMoveEntry = (entry: IEntry, parent: IFolder, newParent: IFolder): boolean => {
+    const isSame = entry === newParent;
     const isDuplicate = newParent.content.some((e) => e.name === entry.name);
     const isImmutableParent = parent.metadata['immutable'];
     const isImmutableNewParent = newParent.metadata['immutable'];
     const idx = parent.content.findIndex((e) => e.name === entry.name);
     const existsInParent = idx !== -1;
 
-    if (isDuplicate || isImmutableParent || isImmutableNewParent  || !existsInParent) return false;
+    if (isSame || isDuplicate || isImmutableParent || isImmutableNewParent  || !existsInParent) return false;
     else return true;
 }
 
