@@ -169,7 +169,7 @@
 
 .fs-top-zone, .fs-middle-zone {
   opacity: 0;
-  animation: settle 2s ease-in-out forwards;
+  animation: settle 0.5s ease-in-out forwards;
 }
 
 .fs-title {
@@ -220,11 +220,6 @@
   justify-content: center;
 }
 
-.fs-path {
-  font-size: 1.5rem;
-  animation: settle 2s ease-in-out forwards;
-}
-
 .fs-content-container {
   display: flex;
   flex-direction: row;
@@ -245,7 +240,7 @@
   margin-bottom: 2vw;
   border: 2px solid transparent;
   border-radius: 4px;
-  animation: settle 2s ease-in-out forwards;
+  animation: settle 0.5s ease-in-out forwards;
 
   display: flex;
   justify-content: center;
