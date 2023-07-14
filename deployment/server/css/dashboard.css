@@ -260,7 +260,11 @@
   background-color: #589ed5;
 
   &:hover {
-    border-color: #4c8aba;
+    border-color: #64bcff;
+  }
+
+  &.selected {
+    border: 2px solid #5e5e5e;
   }
 }
 
