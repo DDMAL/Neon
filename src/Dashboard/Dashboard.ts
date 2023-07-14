@@ -5,7 +5,6 @@ import { FileSystemManager } from './FileSystem';
 import { ShiftSelectionManager, dashboardState } from './dashboard_functions';
 import { InitUploadArea } from './UploadArea';
 import * as contextMenuContent from './ContextMenuContent';
-import { get } from 'request';
 
 const documentsContainer: HTMLDivElement = document.querySelector('#fs-content-container');
 const backgroundArea: HTMLDivElement = document.querySelector('#main-section-content');
@@ -269,7 +268,16 @@ function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
  * If a folder and file(s) are selected, opens file(s).
  */
 function handleOpenDocuments() {
-  state.getSelectedEntries().forEach((entry: IEntry) => {
+  const selectedEntries = state.getSelectedEntries();
+    
+  // Open folder if only one folder is selected
+  if (selectedEntries.length === 1 && selectedEntries[0].type === 'folder') {
+    updateDashboard([...state.getFolderPath(), selectedEntries[0] as IFolder]);
+    return;
+  }
+
+  // Open all files, ignoring if folders are selected
+  selectedEntries.forEach((entry: IEntry) => {
     // Open document if it is a file and not a folder
     if (entry.type === 'file') openFile(entry as IFile);
   });
