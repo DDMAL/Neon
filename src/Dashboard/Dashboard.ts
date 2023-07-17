@@ -26,8 +26,6 @@ const contextMenuContentWrapper: HTMLElement = document.querySelector('.context-
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
 let currentDragTarget = null;
-const currentFileSelection = []; // currently user-selected files
-const currentFolderSelection = []; // currently user-selected folders
 
 openButton!.addEventListener('click', handleOpenDocuments);
 deleteButton!.addEventListener('click', handleDeleteDocuments);
@@ -268,19 +266,15 @@ function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
  * If a folder and file(s) are selected, opens file(s).
  */
 function handleOpenDocuments() {
-  const selectedEntries = state.getSelectedEntries();
-    
   // Open folder if only one folder is selected
-  if (selectedEntries.length === 1 && selectedEntries[0].type === 'folder') {
-    updateDashboard([...state.getFolderPath(), selectedEntries[0] as IFolder]);
+  if (state.getSelectedFolders().length === 1) {
+    const newPath = [...state.getFolderPath(), state.getSelectedEntries()[0] as IFolder];
+    updateDashboard(newPath);
     return;
   }
 
   // Open all files, ignoring if folders are selected
-  selectedEntries.forEach((entry: IEntry) => {
-    // Open document if it is a file and not a folder
-    if (entry.type === 'file') openFile(entry as IFile);
-  });
+  state.getSelectedFiles().forEach((entry: IEntry) => openFile(entry as IFile));
   shiftSelection.reset();
   unselectAll();
   updateActionBarButtons();
@@ -787,15 +781,8 @@ function showContextMenu(view: string, clientX: number, clientY: number) {
     case 'selection-options':
 
       // Need to determine selection category before displaying options
-      let numberOfSelectedFolders = currentFolderSelection.length;
-      let numberOfSelectedFiles = currentFileSelection.length;
-
-      // Loop through selected items to see if they include files and/or folders
-      for (let i=0; i<state.getSelectedEntries().length; i++) {
-        const entry = state.getSelectedEntries()[i];
-        if (entry.type === 'file') numberOfSelectedFiles++;
-        else if (entry.type === 'folder') numberOfSelectedFolders++;
-      }
+      const numberOfSelectedFiles = state.getSelectedFiles().length;
+      const numberOfSelectedFolders = state.getSelectedFolders().length;
 
       /**
        * Context menu options conditions:

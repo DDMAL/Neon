@@ -58,6 +58,9 @@ export function dashboardState() {
   let orderedEntries: IEntry[] = [];
   let orderedSelection: boolean[] = [];
 
+  const currentFileSelection = []; // currently user-selected files
+  const currentFolderSelection = []; // currently user-selected folders
+
   // path leading to current folder
   let folderPath: IFolder[] = [];
 
@@ -98,6 +101,14 @@ export function dashboardState() {
     return orderedEntries.filter((_, idx) => orderedSelection[idx]);
   }
 
+  function getSelectedFolders() {
+    return getSelectedEntries().filter(entry => entry.type === 'folder');
+  }    
+
+  function getSelectedFiles() {
+    return getSelectedEntries().filter(entry => entry.type === 'file');
+  }
+
   // TODO:
   function sortEntries() {}
 
@@ -110,6 +121,8 @@ export function dashboardState() {
     setFolderPath: setFolderPath,
     getFolderPath: getFolderPath,
     getParentFolder: getParentFolder,
-    getSelectedEntries: getSelectedEntries
+    getSelectedEntries: getSelectedEntries,
+    getSelectedFolders: getSelectedFolders,
+    getSelectedFiles: getSelectedFiles,
   }
 }
