@@ -31,8 +31,11 @@ export function InitUploadArea(currentFolder: IFolder): void {
   modalWindow.setModalWindowView(ModalWindowView.DOCUMENT_UPLOAD);
   modalWindow.openModalWindow();
 
-  document.querySelector('#make_pair')!.addEventListener('click', handleMakePair);
-  document.querySelector('#upload_button')!.addEventListener('click', () => handleUploadUpdate(modalWindow, currentFolder));
+  const pairButton = document.querySelector('#make_pair');
+  const uploadButton =  document.querySelector('#upload_button');
+
+  pairButton.addEventListener('click', handleMakePair);
+  uploadButton.addEventListener('click', () => handleUploadUpdate(modalWindow, currentFolder));
 
   // request user file system when clicking on upload area
   const fileSelector = document.createElement('input');
