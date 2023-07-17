@@ -490,7 +490,12 @@ function handleAddFolder() {
   newFolderTile.appendChild(newFolderText);
 
   // push folder to start of dashboard
-  documentsContainer.childNodes[0].before(newFolderTile);
+  if (documentsContainer.firstChild) {
+    documentsContainer.insertBefore(newFolderTile, documentsContainer.firstChild);
+  }
+  else {
+    documentsContainer.append(newFolderTile);
+  }
 
   // lets user input new folder name on newly created folder; no file system changes yet
   // on successful text input, add new folder to file system and update dashboard
