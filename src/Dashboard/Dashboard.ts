@@ -5,6 +5,7 @@ import { FileSystemManager } from './FileSystem';
 import { ShiftSelectionManager, dashboardState } from './dashboard_functions';
 import { InitUploadArea } from './UploadArea';
 import * as contextMenuContent from './ContextMenuContent';
+import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
 
 const documentsContainer: HTMLDivElement = document.querySelector('#fs-content-container');
 const backgroundArea: HTMLDivElement = document.querySelector('#main-section-content');
@@ -26,6 +27,7 @@ const contextMenuContentWrapper: HTMLElement = document.querySelector('.context-
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
 let currentDragTarget = null;
+let root = null;
 
 openButton!.addEventListener('click', handleOpenDocuments);
 deleteButton!.addEventListener('click', handleDeleteDocuments);
@@ -750,20 +752,20 @@ function createHandleDrop(currentFolder: IFolder, destinationFolder: IFolder) {
 }
 
 /**
- * Checks if dragEntry can be moved to newFolder, and if so, moves it and refreshes dashboard.
- * @param dragEntry 
+ * Checks if entry can be moved to newFolder, and if so, moves it and refreshes dashboard.
+ * 
+ * @param entry 
  * @param parentFolder 
  * @param newFolder 
  */
-function moveToFolder(dragEntry: IEntry, parentFolder: IFolder, newFolder: IFolder) {
-  const canMove = fs_functions.canMoveEntry(dragEntry, parentFolder, newFolder);
+function moveToFolder(entry: IEntry, parentFolder: IFolder, newFolder: IFolder) {
+  const canMove = fs_functions.canMoveEntry(entry, parentFolder, newFolder);
   if (canMove) {
-    fs_functions.moveEntry(dragEntry, parentFolder, newFolder);
-    // update dashboard
+    fs_functions.moveEntry(entry, parentFolder, newFolder);
     updateDashboard();
   }
   else {
-    window.alert(`Cannot move ${dragEntry.name} into ${newFolder.name}.`);
+    window.alert(`Cannot move ${entry.name} into ${newFolder.name}.`);
   }
 }
 
@@ -862,8 +864,7 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Move" menu item
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
         contextMenu.classList.add('hidden');
-        // TODO:
-        //handleMoveDocuments();
+        openMoveToMenu();   
       });
 
       break;
@@ -885,7 +886,7 @@ function setContextMenuItemsEventListeners(view: string) {
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
         contextMenu.classList.add('hidden');
         // TODO:
-        //handleMoveDocuments();
+        openMoveToMenu()
       });      
 
       break;
@@ -901,7 +902,7 @@ function setContextMenuItemsEventListeners(view: string) {
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
         contextMenu.classList.add('hidden');
         // TODO:
-        //handleMoveDocuments();
+        openMoveToMenu()
       });
 
       break;
@@ -923,7 +924,7 @@ function setContextMenuItemsEventListeners(view: string) {
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
         contextMenu.classList.add('hidden');
         // TODO:
-        //handleMoveDocuments();
+        openMoveToMenu()
       });      
 
       break;
@@ -939,7 +940,7 @@ function setContextMenuItemsEventListeners(view: string) {
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
         contextMenu.classList.add('hidden');
         // TODO:
-        //handleMoveDocuments();
+        openMoveToMenu()
       });
 
       break;
@@ -1014,7 +1015,130 @@ function addSpecificContextMenuListeners() {
  * Loads root folder into dashboard on startup. 
  */
 export const loadDashboard = async (): Promise<void> => {
-  const root = await fsm.getRoot();
+  root = await fsm.getRoot();
   updateDashboard([root]);
   initializeDefaultContextMenu();
+}
+
+/**
+ * Opens Move-To menu modal window with UI for moving selected entries to a new folder.
+ */
+function openMoveToMenu() {
+  // generate modal window
+  const modalWindow = new ModalWindow();
+  modalWindow.setModalWindowView(ModalWindowView.MOVE_TO);
+  modalWindow.openModalWindow();
+
+  // Selected entries and string list
+  // TODO: add folder and file icons to string list
+  const selectedFolders = state.getSelectedFolders();
+  const selectedFiles = state.getSelectedFiles();
+  const folderStringList = selectedFolders.map(folder => folder.name).join('\n');
+  const fileStringList = selectedFiles.map(file => file.name).join('\n');
+  const movingEntriesList = `${folderStringList}\n${fileStringList}`;
+
+  const selectedEntries = state.getSelectedEntries();
+  const parentFolder = state.getParentFolder();
+
+  // Callback for when user double-clicks on a folder and moves selection
+  const moveToCallback = (newParentFolder: IFolder) => {
+    modalWindow.hideModalWindow();
+    handleMoveDocuments(selectedEntries, parentFolder, newParentFolder);
+  }
+
+  const rootTree = generateRootTree(moveToCallback);
+  const treeContainer = document.createElement('div');
+  treeContainer.classList.add('tree-container');
+  treeContainer.appendChild(rootTree);
+
+  const modalContainer = document.getElementById('neon-modal-window-content-container');
+  modalContainer.innerHTML = '<span class="move-menu-msg">Double-click the folder you want to move your items to!</span>';
+  modalContainer.appendChild(treeContainer);
+}
+
+/**
+ * Moves selected entries from parentFolder to destinationFolder and updates dashboard
+ * @param entries 
+ * @param parentFolder 
+ * @param destinationFolder 
+ */
+function handleMoveDocuments(entries: IEntry[], parentFolder: IFolder, destinationFolder: IFolder) {
+  console.log(`moving entries from ${parentFolder.name} to ${destinationFolder.name}`);
+  updateDashboard();
+}
+
+/**
+ * 
+ * @param folder 
+ * @param callback 
+ * @param degree 
+ * @returns 
+ */
+function generateFolderTree(folder: IFolder, moveToCallback: (newParentFolder :IFolder) => void, degree: number): HTMLLIElement {
+
+  const tree = document.createElement('li');
+  // container for folder name and arrow
+  const liContainer = document.createElement('div');
+  liContainer.classList.add('tree-li-container');
+
+  // Folder TEXT: click to select (for UX), double click to move items to folder
+  const folderName = document.createElement('div');
+  folderName.classList.add('tree-name');
+  folderName.innerHTML = folder.name;
+  folderName.addEventListener('click', () => {
+    console.log('clicked folder:', folder.name);
+    folderName.classList.toggle('selected');
+  });
+  folderName.addEventListener('dblclick', () => {
+    console.log('double clicked folder:', folder.name);
+    moveToCallback(folder);
+  });
+
+  // If Folder has no subfolders, return without nested ul
+  const isLeaf = folder.content.every(entry => entry.type !== 'folder');
+  if (isLeaf) {
+    tree.appendChild(liContainer);
+    liContainer.appendChild(folderName);
+    return tree;
+  }
+  // Otherwise Folder is not empty, make tree structure
+
+  // Unordered LIST (hiding or unhiding li)
+  const ul = document.createElement('ul');
+
+  // ARROW
+  const arrow = document.createElement('div');
+  arrow.classList.add('tree-arrow');
+  arrow.innerHTML = '▶';
+
+  // if more than ... subfolders down, hide by default
+  if (degree < 2) ul.classList.add('active');
+  if (degree < 2) arrow.classList.add('active');
+  
+  arrow.addEventListener('click', () => {
+    console.log('clicked arrow:', folder.name);
+    arrow.classList.toggle('active');
+    ul.classList.toggle('active');
+  });
+
+  tree.appendChild(liContainer);
+  liContainer.appendChild(arrow);
+  liContainer.appendChild(folderName);
+  tree.appendChild(ul);
+
+  // Append folder contents
+  folder.content.forEach((entry) => {
+    if (entry.type === 'folder') {
+      const folderTree = generateFolderTree(entry as IFolder, moveToCallback, degree + 1);
+      ul.appendChild(folderTree);
+    }
+  });
+  return tree;
+}
+
+function generateRootTree(moveToCallback: (newParentFolder :IFolder) => void): HTMLUListElement {
+  const rootTree = document.createElement('ul');
+  rootTree.id = 'tree-root';
+  rootTree.appendChild(generateFolderTree(root, moveToCallback, 0));
+  return rootTree;
 }

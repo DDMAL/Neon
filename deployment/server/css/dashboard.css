@@ -655,3 +655,60 @@ input.filename-input, select.file-input, textarea.file-input {
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }
+
+/* Move-To Folder Tree */
+.move-menu-msg {
+  font-size: 12px;
+  padding: 10px;
+}
+
+.tree-container {
+  width: 70vw;
+  height: 60vh;
+  padding: 20px 50px;
+  overflow: scroll;
+}
+.tree-li-container {
+  display: flex;
+  line-height: 15px;
+  align-items: center;
+}
+
+.tree-name {
+  border-radius: 3px;
+  padding: 5px;
+
+  &:hover {
+    background-color: #bce2ff
+  }
+
+  &.selected {
+    border: 2px solid #c5c5c5;
+  }
+}
+
+.tree-arrow {
+  cursor: pointer;
+  user-select: none;
+  margin-left: -12px;
+
+  &.active {
+    transform: rotate(90deg);
+  } 
+}
+#tree-root ul {
+  list-style-type: none;
+  margin-left: -15px;
+  display: none;
+
+  &.active {
+    display: block;
+  }
+}
+
+#tree-root {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
