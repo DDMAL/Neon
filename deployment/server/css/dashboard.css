@@ -542,7 +542,7 @@ input.filename-input, select.file-input, textarea.file-input {
 
 .file_list {
   height: 100%;
-  width: 98%;
+  width: 99%;
   overflow: scroll;
 }
 
@@ -551,6 +551,8 @@ input.filename-input, select.file-input, textarea.file-input {
   min-height: 30px;
   cursor: pointer;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
 }
 
 .unpaired_item_radio {
@@ -560,6 +562,8 @@ input.filename-input, select.file-input, textarea.file-input {
 .unpaired_item_label {
   font-size: 12px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .unpaired_del_btn {
