@@ -1,6 +1,6 @@
 import { IFolder, fs_functions } from '.';
 import { fetchUploadedDocuments } from '../Storage';
-import { samples_names } from '../samples';
+import { samples } from '../samples_filenames';
 
 // Manager is used for accessing local storage and tracking the position of current folder
 export const FileSystemManager = () => {
@@ -48,7 +48,7 @@ export const FileSystemManager = () => {
     // This next function is solely for loading samples into the root as a default for Neon
     function loadSamples(root: IFolder) {
         // Make sample entries
-        const sampleEntries = samples_names.map(([name, type]) => {
+        const sampleEntries = samples.map(([name, type]) => {
             const entry = fs_functions.createFile(name, name);
             if (type === 'folio') {
                 fs_functions.addMetadata(entry, { type: 'folio', document: 'sample', immutable: true });
