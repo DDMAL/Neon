@@ -67,7 +67,7 @@ const canRemoveEntry = (entry: IEntry, parent: IFolder): boolean => {
     else return true;
 }
 
-const canMoveEntry = (entry: IEntry, parent: IFolder, newParent: IFolder): boolean => {
+const canMoveEntry = (entry: IEntry, parent: IFolder, newParent: IFolder): { succeeded: boolean, error?: string} => {
     const isSame = entry === newParent;
     const isDuplicate = newParent.content.some((e) => e.name === entry.name);
     const isImmutableParent = parent.metadata['immutable'];
@@ -75,8 +75,26 @@ const canMoveEntry = (entry: IEntry, parent: IFolder, newParent: IFolder): boole
     const idx = parent.content.findIndex((e) => e.name === entry.name);
     const existsInParent = idx !== -1;
 
-    if (isSame || isDuplicate || isImmutableParent || isImmutableNewParent  || !existsInParent) return false;
-    else return true;
+    const returnObj = { succeeded: false, error: '' };
+    if (isSame) {
+        returnObj.error = `Cannot move ${entry.name} to itself.`;
+    }
+    else if (isDuplicate) {
+        returnObj.error = `Duplicate name: ${entry.name} already exists in ${newParent.name}.`;
+    }
+    else if (isImmutableParent) {
+        returnObj.error = `${parent.name} is immutable.`;
+    }
+    else if (isImmutableNewParent) {
+        returnObj.error = `${newParent.name} is immutable.`;
+    }
+    else if (!existsInParent) {
+        returnObj.error = `${entry.name} does not exist in ${parent.name}.`;
+    }
+    else {
+        returnObj.succeeded = true;
+    }
+    return returnObj;
 }
 
 const canRenameEntry = (entry: IEntry, parent: IFolder, newName: string): boolean => {

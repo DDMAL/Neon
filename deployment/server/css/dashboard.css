@@ -677,6 +677,7 @@ input.filename-input, select.file-input, textarea.file-input {
 .tree-name {
   border-radius: 3px;
   padding: 5px;
+  border: 2px solid transparent;
 
   &:hover {
     background-color: #bce2ff
