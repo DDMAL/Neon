@@ -57,12 +57,22 @@ export function dashboardState() {
   // as displayed on the dashboard
   let orderedEntries: IEntry[] = [];
   let orderedSelection: boolean[] = [];
-
   const currentFileSelection = []; // currently user-selected files
   const currentFolderSelection = []; // currently user-selected folders
 
   // path leading to current folder
   let folderPath: IFolder[] = [];
+  let _root: IFolder = null;
+
+  /** 
+   * Sets or gets the root folder
+   * @param rootFolder (optional) - the root folder to set
+   * @returns the root folder
+   */ 
+  function root(rootFolder?: IFolder) {
+    if (rootFolder) _root = rootFolder;
+    return _root;
+  }
 
   function setEntries(entries: IEntry[]) {
     orderedEntries = entries;
@@ -113,6 +123,7 @@ export function dashboardState() {
   function sortEntries() {}
 
   return {
+    root: root,
     setEntries: setEntries,
     getEntries: getEntries,
     setSelection: setSelection,

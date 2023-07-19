@@ -27,7 +27,6 @@ const contextMenuContentWrapper: HTMLElement = document.querySelector('.context-
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
 let currentDragTarget = null;
-let root = null;
 
 openButton!.addEventListener('click', handleOpenDocuments);
 deleteButton!.addEventListener('click', handleDeleteDocuments);
@@ -880,7 +879,7 @@ function generateFolderTree(folder: IFolder, moveToCallback: (newParentFolder :I
 function generateRootTree(moveToCallback: (newParentFolder :IFolder) => void): HTMLUListElement {
   const rootTree = document.createElement('ul');
   rootTree.id = 'tree-root';
-  rootTree.appendChild(generateFolderTree(root, moveToCallback, 0));
+  rootTree.appendChild(generateFolderTree(state.root(), moveToCallback, 0));
   return rootTree;
 }
 
@@ -1130,7 +1129,8 @@ function addSpecificContextMenuListeners() {
  * Loads root folder into dashboard on startup. 
  */
 export const loadDashboard = async (): Promise<void> => {
-  root = await fsm.getRoot();
+  const root = await fsm.getRoot();
+  state.root(root);
   updateDashboard([root]);
   initializeDefaultContextMenu();
 }

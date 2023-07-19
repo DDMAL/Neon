@@ -5,6 +5,11 @@ import { EntryType, IEntry, IFolder, IFile } from '.';
 *   Does not depend on state 
 */
 
+interface responseProp {
+    succeeded: boolean,
+    error: string,
+}
+
 const createEntry = (name: string, type: EntryType, content: IEntry[] | string): IEntry => {
     const metadata = {};
     const entry = { name, type, content, metadata } as IEntry;
@@ -41,33 +46,49 @@ function removeMetadata(entry: IEntry, keys: string[]): IEntry {
  * Checks if entry can be added to parent folder
  * @param entry 
  * @param parent 
- * @returns true if can add, else false
+ * @returns response object { succeeded: boolean, error: string }
  */
-const canAddEntry = (entry: IEntry, parent: IFolder): boolean => {
-    // Check for duplicate name
+const canAddEntry = (entry: IEntry, parent: IFolder): responseProp => {
     const isDuplicate = parent.content.some((e) => e.name === entry.name);
     const isImmutable = parent.metadata['immutable'];
-    if (isDuplicate || isImmutable) return false;
-    else return true;
+
+    const returnObj = { succeeded: false, error: '' };
+    if (isDuplicate)       returnObj.error = `Duplicate name: ${entry.name} already exists in ${parent.name}.`;
+    else if (isImmutable)  returnObj.error = `${parent.name} is immutable.`;
+    else returnObj.succeeded = true;
+
+    return returnObj;
 }       
 
 /**
  * Checks if entry can be removed from parent folder
  * @param entry 
  * @param parent 
- * @returns boolean
+ * @returns response object { succeeded: boolean, error?: string }
  */
-const canRemoveEntry = (entry: IEntry, parent: IFolder): boolean => {
-    // Check if entry exists in parent
+const canRemoveEntry = (entry: IEntry, parent: IFolder): responseProp => {
     const idx = parent.content.findIndex((e) => e.name === entry.name);
     const existsInParent = idx !== -1;
     const isImmutableParent = parent.metadata['immutable'];
     const isImmutableEntry = entry.metadata['immutable'];
-    if (!existsInParent || isImmutableParent || isImmutableEntry) return false;
-    else return true;
+
+    const returnObj = { succeeded: false, error: '' };
+    if (!existsInParent)            returnObj.error = `${entry.name} does not exist in ${parent.name}.`;
+    else if (isImmutableParent)     returnObj.error = `${parent.name} is immutable.`;
+    else if (isImmutableEntry)      returnObj.error = `${entry.name} is immutable.`;
+    else returnObj.succeeded = true;
+
+    return returnObj;
 }
 
-const canMoveEntry = (entry: IEntry, parent: IFolder, newParent: IFolder): { succeeded: boolean, error?: string} => {
+/**
+ * Checks if entry can be moved from parent to newParent (no duplicate, mutable parents, entry exists)
+ * @param entry 
+ * @param parent 
+ * @param newParent 
+ * @returns response object { succeeded: boolean, error: string }
+ */
+const canMoveEntry = (entry: IEntry, parent: IFolder, newParent: IFolder): responseProp => {
     const isSame = entry === newParent;
     const isDuplicate = newParent.content.some((e) => e.name === entry.name);
     const isImmutableParent = parent.metadata['immutable'];
@@ -76,35 +97,32 @@ const canMoveEntry = (entry: IEntry, parent: IFolder, newParent: IFolder): { suc
     const existsInParent = idx !== -1;
 
     const returnObj = { succeeded: false, error: '' };
-    if (isSame) {
-        returnObj.error = `Cannot move ${entry.name} to itself.`;
-    }
-    else if (isDuplicate) {
-        returnObj.error = `Duplicate name: ${entry.name} already exists in ${newParent.name}.`;
-    }
-    else if (isImmutableParent) {
-        returnObj.error = `${parent.name} is immutable.`;
-    }
-    else if (isImmutableNewParent) {
-        returnObj.error = `${newParent.name} is immutable.`;
-    }
-    else if (!existsInParent) {
-        returnObj.error = `${entry.name} does not exist in ${parent.name}.`;
-    }
-    else {
-        returnObj.succeeded = true;
-    }
+    if (isSame)                     returnObj.error = `Cannot move ${entry.name} to itself.`;
+    else if (isDuplicate)           returnObj.error = `Duplicate name: ${entry.name} already exists in ${newParent.name}.`;
+    else if (isImmutableParent)     returnObj.error = `${parent.name} is immutable.`;
+    else if (isImmutableNewParent)  returnObj.error = `${newParent.name} is immutable.`;
+    else if (!existsInParent)       returnObj.error = `${entry.name} does not exist in ${parent.name}.`;
+    else returnObj.succeeded = true;
+    
     return returnObj;
 }
 
-const canRenameEntry = (entry: IEntry, parent: IFolder, newName: string): boolean => {
-    // if newName is the same
-    const isSameName = entry.name === newName;
-    if (isSameName) return true;
+/**
+ * Checks if entry can be renamed (no duplicate)
+ * @param entry 
+ * @param parent 
+ * @param newName 
+ * @returns response object { succeeded: boolean, error: string }
+ */
+const canRenameEntry = (entry: IEntry, parent: IFolder, newName: string): responseProp => {
     // Check if newName already exists in parent
-    const names = getAllNames(parent);
-    if (names.includes(newName)) return false;
-    else return true;
+    const isDuplicate = parent.content.some((e, idx, arr) => e.name === entry.name && idx !== arr.indexOf(e));
+    
+    const returnObj = { succeeded: false, error: '' };
+    if (isDuplicate) returnObj.error = `Duplicate name: ${newName} already exists in ${parent.name}.`;
+    else returnObj.succeeded = true;
+
+    return returnObj;
 }
 
 /**
@@ -114,22 +132,15 @@ const canRenameEntry = (entry: IEntry, parent: IFolder, newName: string): boolea
  * @returns true if added, else false
  */
 const addEntry = (entry: IEntry, parent: IFolder): boolean => {
-    try {
-        const canAdd = canAddEntry(entry, parent);
-
-        if (canAdd) {
-            // Add entry to parent, sort by alphanumerical and folders before files
-            parent.content.push(entry);
-            sortFolder(parent);
-            return true;
-        }
-        else {
-            window.alert(`Duplicate name: ${entry.name} already exists in ${parent.name}.`);
-            return false;
-        }
-    } catch (e) {
-        console.error(e);
-        window.alert(`Error adding ${entry.name} to ${parent.name}`);
+    const { succeeded, error } = canAddEntry(entry, parent);
+    if (succeeded) {
+        // Add entry to parent, sort by alphanumerical and folders before files
+        parent.content.push(entry);
+        sortFolder(parent);
+        return true;
+    }
+    else {
+        console.error(error);
         return false;
     }
 }
@@ -142,21 +153,14 @@ const addEntry = (entry: IEntry, parent: IFolder): boolean => {
  * @returns true if removed, else false
  */
 const removeEntry = (entry: IEntry, parent: IFolder, force=false): boolean => {
-    try {
-        // Check if entry exists in parent
-        const canRemove = canRemoveEntry(entry, parent);
-        if (canRemove || force) {
-            const idx = parent.content.findIndex((e) => e.name === entry.name);
-            parent.content.splice(idx, 1);
-            return true;
-        }
-        else {
-            window.alert(`${entry.name} does not exist in ${parent.name}.`);
-            return false;
-        }
-    } catch (e) {
-        console.error(e);
-        window.alert(`Error removing ${entry.name} from ${parent.name}`);
+    const { succeeded, error } = canRemoveEntry(entry, parent);
+    if (succeeded || force) {
+        const idx = parent.content.indexOf(entry);
+        parent.content.splice(idx, 1);
+        return true;
+    }
+    else {
+        console.error(error);
         return false;
     }
 }
@@ -169,15 +173,25 @@ const removeEntry = (entry: IEntry, parent: IFolder, force=false): boolean => {
  * @returns true if moved, else false
  */
 function moveEntry(entry: IEntry, parent: IFolder, newParent: IFolder): boolean {
-    try {
-        addEntry(entry, newParent);
-        removeEntry(entry, parent, true);
-    } catch (e) {
-        console.error(e);
-        window.alert(`Error moving ${entry.name} to ${newParent.name}`);
-        return false;
+    const addResponse = canAddEntry(entry, newParent);
+    const removeResponse = canRemoveEntry(entry, parent);
+    const canMove = addResponse.succeeded && removeResponse.succeeded;
+
+    if (canMove) {
+        const removed = removeEntry(entry, parent, true);
+        if (removed) {
+            const added = addEntry(entry, newParent);
+            if (added) return true;
+            else console.error(`Moving: failed to add ${entry.name} to ${newParent.name}`);
+        }
+        else {
+            console.error(`Moving: failed to remove ${entry.name} from ${parent.name}`);
+        }
+    } else {
+        console.error(addResponse.error);
+        console.error(removeResponse.error);
     }
-    return true;
+    return false;
 }
 
 /**
@@ -188,20 +202,14 @@ function moveEntry(entry: IEntry, parent: IFolder, newParent: IFolder): boolean 
  * @returns true if renamed, else false
  */
 const renameEntry = (entry: IEntry, parent: IFolder, newName: string): boolean => {
-    try {
-        const canRename = canRenameEntry(entry, parent, newName);
+    const { succeeded, error } = canRenameEntry(entry, parent, newName);
 
-        if (canRename) {
-            entry.name = newName;
-            return true;
-        }
-        else {
-            window.alert(`Duplicate name: ${newName} already exists in ${parent.name}.`);
-            return false;
-        }
-    } catch (e) {
-        console.error(e);
-        window.alert(`Error renaming ${entry.name} to ${newName}`);
+    if (succeeded) {
+        entry.name = newName;
+        return true;
+    }
+    else {
+        console.error(error);
         return false;
     }
 }   
