@@ -172,10 +172,7 @@ function createTile(entry: IEntry) {
   const doc = document.createElement('div');
   doc.classList.add('document-entry');
   doc.setAttribute('draggable', 'true'); // make file or folder draggable
-
-  const name = document.createElement('div');
-  name.classList.add('filename-text');
-  name.innerHTML = formatFilename(entry.name, 25);
+  doc.innerHTML = formatFilename(entry.name, 25);
 
   switch (entry.type) {
     case 'folder':
@@ -183,14 +180,12 @@ function createTile(entry: IEntry) {
       doc.setAttribute('id', entry.name);
       doc.setAttribute('drop-id', entry.name);
       doc.classList.add('drop-target');
-      name.classList.add('drop-target');
       break;
     case 'file':
       doc.classList.add('file-entry');
       doc.setAttribute('id', (entry as IFile).content);
       break;
   }
-  doc.appendChild(name);
   return doc;
 }
 
@@ -472,11 +467,6 @@ function handleAddFolder() {
   newFolderTile.classList.add('folder-entry');
   newFolderTile.setAttribute('id', 'new-folder');
 
-  // add new folder text
-  const newFolderText = document.createElement('div');
-  newFolderText.classList.add('filename-text');
-  newFolderTile.appendChild(newFolderText);
-
   // push folder to start of dashboard
   if (documentsContainer.firstChild) {
     documentsContainer.insertBefore(newFolderTile, documentsContainer.firstChild);
@@ -549,12 +539,8 @@ function rename(entry: IEntry) {
  */
 function focusForInput(tile: HTMLDivElement, oldName: string, fs_callback: (name: string) => boolean, failure_callback?: () => void) {
   window.removeEventListener('keypress', handleEnterRename, false); // temporarily remove Enter key press listener for renaming
-  tile.innerHTML = ''; // clear tile contents
-
-  // create new text element
-  const text = document.createElement('div');
-  text.classList.add('filename-text');
-  text.innerHTML = formatFilename(oldName, 25);
+  // clear tile contents
+  tile.innerHTML = ''; 
 
   // create input element
   const input = document.createElement('input');
@@ -576,17 +562,17 @@ function focusForInput(tile: HTMLDivElement, oldName: string, fs_callback: (name
       const succeeded = fs_callback(newName);
       // put updated text back into tile
       if (succeeded) {
-        text.innerHTML = formatFilename(newName, 25);
+        tile.innerHTML = formatFilename(newName, 25);
       }
       else {
         input.remove();
-        tile.appendChild(text);
+        tile.innerHTML = formatFilename(oldName, 25);
         if (failure_callback) failure_callback();
       }
     }
     else {
       input.remove();
-      tile.appendChild(text);
+      tile.innerHTML = formatFilename(oldName, 25);
       if (failure_callback) failure_callback();
     }
 
@@ -619,21 +605,6 @@ function handleEnterRename(e: KeyboardEvent) {
       rename(selections[0]);
     }
   }
-}
-/**
- * updates text and if applicable, id of tile element
- * 
- * @param entry 
- * @param oldName 
- * @param newName 
- */
-function updateTileName(entry: IEntry, oldName: string, newName: string) {
-  const isFolder = (entry.type === 'folder');
-  // get tile element
-  const id: string = isFolder ? oldName : (entry as IFile).content;
-  const tile = document.getElementById(id);
-  if (isFolder) tile.setAttribute('id', newName);
-  tile.querySelector('.filename-text').innerHTML = formatFilename(newName, 25);
 }
 
 

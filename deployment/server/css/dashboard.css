@@ -282,19 +282,13 @@
   }
 }
 
-.folder-entry.dragenter, .folder-entry:has(> .dragenter) {
+.folder-entry.dragenter {
   border: 2px dashed #64bcff;
 }
 
 .file-entry {
   color: #696969;
   background-color: #f6f6f6;
-}
-
-.filename-text {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 input.filename-input, select.file-input, textarea.file-input {
