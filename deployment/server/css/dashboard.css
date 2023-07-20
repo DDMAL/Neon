@@ -188,10 +188,19 @@
 
 .nav-path-section {
   cursor: pointer;
+  padding: 3px;
+  margin: 2px;
 }
 
 .nav-path-section:hover {
   text-decoration: solid underline #589ed5 2px;
+}
+
+.nav-path-section.dragenter {
+  background-color: #c3e5ff;
+  border-radius: 5px;
+  border: 2px dashed #589ed5;
+  margin: 0px;
 }
 
 #fs-back-btn {
@@ -199,9 +208,7 @@
   font-weight: 900;
   letter-spacing: 3px;
   padding: 6px 8px;
-  border-color: #7ab2b7;
-  border-width: 2px;
-  border-style: solid;
+  border: 2px solid #7ab2b7;
   border-radius: 5px;
   color: #7ab2b7;
   opacity: 40%;
@@ -210,6 +217,13 @@
 #fs-back-btn.active {
   cursor: pointer;
   opacity: 100%;
+}
+
+#fs-back-btn.dragenter {
+  background-color: #cafbff;
+  border-radius: 5px;
+  border-style: dashed;
+  margin: 0px;
 }
 
 .fs-nav-zone {
@@ -264,8 +278,12 @@
   }
 
   &.selected {
-    border: 2px solid #5e5e5e;
+    border-color: #5e5e5e;
   }
+}
+
+.folder-entry.dragenter, .folder-entry:has(> .dragenter) {
+  border: 2px dashed #64bcff;
 }
 
 .file-entry {

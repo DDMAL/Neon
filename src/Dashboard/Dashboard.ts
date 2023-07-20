@@ -6,6 +6,7 @@ import { ShiftSelectionManager, dashboardState } from './dashboard_functions';
 import { InitUploadArea } from './UploadArea';
 import * as contextMenuContent from './ContextMenuContent';
 import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
+import { create } from 'd3';
 
 const documentsContainer: HTMLDivElement = document.querySelector('#fs-content-container');
 const backgroundArea: HTMLDivElement = document.querySelector('#main-section-content');
@@ -394,16 +395,6 @@ function updateActionBarButtons() {
 function updateNavPath(): void {
   navPathContainer.innerHTML = '';
 
-  /**
-   * function within a function
-   * 
-   * @param targetPath 
-   * @returns 
-   */
-  function handleNavClick(targetPath: IFolder[]): () => void {
-    return async () => await updateDashboard(targetPath);
-  }
-
   // create nav elements and add event listeners
   const navElements = state.getFolderPath().map((folder, idx) => {
     const navSection = document.createElement('div');
@@ -411,7 +402,7 @@ function updateNavPath(): void {
     navSection.innerHTML = folder.name;
 
     const targetPath = state.getFolderPath().slice(0, idx + 1);
-    navSection.addEventListener('click', handleNavClick(targetPath));
+    navSection.addEventListener('click', async () => await updateDashboard(targetPath));
     // add drop target to move dragged element to the prospective folders
     addDropTargetListeners(navSection, state.getParentFolder(), targetPath.at(-1));
 
@@ -448,6 +439,8 @@ function updateBackButton() {
     buttonClone.classList.add('active');
     buttonClone.removeAttribute('disabled');
     buttonClone.addEventListener('click', handleNavigateBack);
+    buttonClone.addEventListener('ondragenter', () => buttonClone.classList.add('active'));
+    buttonClone.addEventListener('ondragleave', () => buttonClone.classList.remove('active'));
     addDropTargetListeners(buttonClone, state.getParentFolder(), state.getFolderPath().at(-2));
   }
   backButton = buttonClone;
@@ -500,7 +493,6 @@ function handleAddFolder() {
     const succeeded = fs_functions.addEntry(newFolder, state.getParentFolder());
     if (succeeded) {
       newFolderTile.setAttribute('id', newName);
-      fsm.setFileSystem(state.getFolderPath().at(0));
       updateDashboard(); // todo: replace with sort()
       return true;
     }
@@ -540,7 +532,6 @@ function rename(entry: IEntry) {
   focusForInput(tile, entry.name, (newName: string) => {
     const succeeded = fs_functions.renameEntry(entry, state.getParentFolder(), newName);
     if (succeeded) {
-      fsm.setFileSystem(state.getFolderPath().at(0));
       updateDashboard(); // todo: replace with sort()
       return true;
     }
@@ -726,7 +717,14 @@ function addDropTargetListeners(elem: Element, currentFolder: IFolder, destinati
      * The dragenter and dragover events need to be overriden in order to implement the drag-and-drop functionality.
      * Read more at: https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
      */
-  elem.addEventListener('dragenter', (e) => e.preventDefault());    
+  elem.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    elem.classList.add('dragenter');
+  });    
+  elem.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    elem.classList.remove('dragenter');
+  });
   elem.addEventListener('dragover', (e) => e.preventDefault());
 
   elem.addEventListener('drop', createHandleDrop(currentFolder, destinationFolder));
@@ -818,13 +816,15 @@ function generateFolderTree(folder: IFolder, moveToCallback: (newParentFolder :I
   const folderName = document.createElement('div');
   folderName.classList.add('tree-name');
   folderName.innerHTML = folder.name;
+
+  // On single click, highlight/select folder name
   folderName.addEventListener('click', () => {
-    console.log('clicked folder:', folder.name);
     document.querySelectorAll('.tree-name').forEach(elem => elem.classList.remove('selected'));
     folderName.classList.add('selected');
   });
+
+  // On double click, move selected items to folder
   folderName.addEventListener('dblclick', () => {
-    console.log('double clicked folder:', folder.name);
     moveToCallback(folder);
   });
 
@@ -850,7 +850,6 @@ function generateFolderTree(folder: IFolder, moveToCallback: (newParentFolder :I
   if (degree < 2) arrow.classList.add('active');
   
   arrow.addEventListener('click', () => {
-    console.log('clicked arrow:', folder.name);
     arrow.classList.toggle('active');
     ul.classList.toggle('active');
   });
@@ -889,8 +888,6 @@ function generateRootTree(moveToCallback: (newParentFolder :IFolder) => void): H
  * @param view context menu view (determines content of context menu)
  */
 function showContextMenu(view: string, clientX: number, clientY: number) {
-
-  console.log(view);
 
   switch (view) {
     // Context menu options when files/folders are right-clicked
