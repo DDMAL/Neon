@@ -1,8 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import PouchDB from 'pouchdb';
-import { NeonManifest, allDocs } from '../Types';
+import { allDocs } from '../Types';
 import * as localManifest from '../../assets/manifest.json';
-import { samples } from './samples_filenames';
 
 const db = new PouchDB('Neon-User-Storage');
 
@@ -25,14 +24,10 @@ export async function fetchUploadedDocuments(): Promise<string[]> {
     });
 }
 
-export function fetchSampleDocuments(): string[] {
-  return samples;
-}
-
-export function createManifest(name: string, mei: File, bg: File): Promise<any> {
+export function createManifest(id: string, name: string, mei: File, bg: File) {
   return new Promise(async (resolve) => {
     const manifest = JSON.parse(JSON.stringify(localManifest));
-    manifest['@id'] = uuidv4();
+    manifest['@id'] = id;
     manifest['title'] = name;
     manifest['timestamp'] = (new Date()).toISOString();
 
@@ -43,6 +38,7 @@ export function createManifest(name: string, mei: File, bg: File): Promise<any> 
       });
       meiReader.readAsDataURL(mei);
     });
+
     const bgPromise = new Promise(resolve => {
       const bgReader = new FileReader();
       bgReader.addEventListener('load', () => {
@@ -53,6 +49,7 @@ export function createManifest(name: string, mei: File, bg: File): Promise<any> 
 
     const meiUri = await meiPromise;
     const bgUri = await bgPromise;
+
     manifest['image'] = bgUri;
     manifest['mei_annotations'] = [
       {
@@ -66,21 +63,21 @@ export function createManifest(name: string, mei: File, bg: File): Promise<any> 
   });
 }
 
-export function addEntry(title: string, content: Blob, single: boolean): Promise<boolean> {
+export function addEntry(id: string, title: string, content: Blob, single: boolean): Promise<boolean> {
   return new Promise((resolve, reject) => {
     db.put({
-      _id: title,
-      kind: single ? 'page' : 'manuscript',
+      _id: id,
+      kind: single ? 'page' : 'manuscript', // TODO: make enum file type
       _attachments: {
         manifest: {
           content_type: 'application/ld+json',
           data: content
         }
       }
-    }).then(_ => {
+    }).then(() => {
       resolve(true);
     }).catch(err => {
-      window.alert(`Error Uploading Document: ${err.message}, ${title}.`);
+      window.alert(`Error Uploading Document: ${err.message}, title: ${title}, id: ${id}.`);
       reject(false);
     });
   });

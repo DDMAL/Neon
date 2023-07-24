@@ -15,7 +15,8 @@ export enum ModalWindowView {
   EDIT_TEXT,
   HOTKEYS,
   VALIDATION_STATUS,
-  DOCUMENT_UPLOAD
+  DOCUMENT_UPLOAD,
+  MOVE_TO,
 }
 
 enum ModalWindowState {
@@ -91,7 +92,12 @@ export class ModalWindow implements ModalWindowInterface {
 
       case ModalWindowView.DOCUMENT_UPLOAD:
         // add function to pairing button
+        // break;
+
+      case ModalWindowView.MOVE_TO:
         
+        // break;
+
       default:
         document.getElementById('neon-modal-window-container').style.display = 'flex';
         this.focusModalWindow();
@@ -113,15 +119,20 @@ export class ModalWindow implements ModalWindowInterface {
       case ModalWindowView.EDIT_TEXT:
         const span = (<HTMLSpanElement> document.getElementById('syl_text').querySelectorAll('span.selected-to-edit')[0]);
         span.classList.remove('selected-to-edit');
+        break;
+        
+      case ModalWindowView.DOCUMENT_UPLOAD:
+      case ModalWindowView.MOVE_TO:
+        document.getElementById('neon-modal-window-content-container').innerHTML = '';
+        document.getElementById('neon-modal-window-container').style.display = 'none';
+        break;
 
       default:
         document.getElementById('neon-modal-window-container').style.display = 'none';
       
         // after the modal is closed, no keyboard shortcuts work because
         // the document hasn't been focused; this forcefully focuses the container
-        if (this.modalWindowView !== ModalWindowView.DOCUMENT_UPLOAD) {
-          document.getElementById('container').focus();
-        }
+        document.getElementById('container').focus();
     } 
     // reset scroll behavior of body
     document.body.style.overflowX = 'hidden';
@@ -168,6 +179,10 @@ export class ModalWindow implements ModalWindowInterface {
       case ModalWindowView.DOCUMENT_UPLOAD:
         document.getElementById('neon-modal-window-header-title').innerText = 'DOCUMENT UPLOAD';
         document.getElementById('neon-modal-window-content-container').innerHTML = uploadAreaHTML;
+        break;
+
+      case ModalWindowView.MOVE_TO:
+        document.getElementById('neon-modal-window-header-title').innerText = 'MOVE TO';
         break;
 
       default:
