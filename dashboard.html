@@ -48,24 +48,24 @@
 
     <div class="main-section">
 
-        <div class="main-section-content">
+        <div id="main-section-content" class="main-section-content">
 
-            <div id="uploaded-docs-container" class="dashboard-subsection">
-
-                <div id="uploaded-docs-title" class="dashboard-subsection-title">Uploaded Documents</div>
-                <div id="uploaded-docs-content" class="dashboard-subsection-content"></div>
-
-            </div>
-
-            <div id="sample-docs-container" class="dashboard-subsection">
-                <div id="sample-docs-title" class="dashboard-subsection-title">Sample Documents</div>
-                <div id="sample-docs-content" class="dashboard-subsection-content"></div>
-
+            <div id="documents-container" class="documents-container">
+                <div id="fs-top-zone" class="fs-top-zone">
+                    <div id="nav-path-container" class="fs-title nav-path-container"></div>
+                    <div id="fs-search-container" class="fs-search-container"></div>
+                </div>
+                <div id="fs-middle-zone" class="fs-middle-zone">
+                    <button id="fs-back-btn" class="fs-back-btn">Back↵</button>
+                    <div id="fs-results-title" class="fs-results-results"></div>
+                </div>
+                <div id="fs-content-container" class="fs-content-container"></div>
             </div>
 
         </div>
 
         <div class="main-section-action-bar">
+            <img id="add-folder-button" class="action-bar-item-container active" src="./Neon-gh/assets/img/new-folder.svg" title="folder">
             <img id="upload-new-doc-button" class="action-bar-item-container active" src="./Neon-gh/assets/img/new-doc.svg" title="upload">
             <div class="dividing-line action-bar-item-container active"></div>
             <img id="remove-doc" class="action-bar-item-container" src="./Neon-gh/assets/img/remove-doc.svg" title="delete">
@@ -90,5 +90,13 @@
         </div>
     </div>
 
+    <!-- Right-click menu -->
+    <div class="right-click-file-menu hidden">
+        <div class="context-menu-items-wrapper">
+            <!-- <div id="right-click-upload-file" class="context-menu-item">Upload file</div>
+            <div id="right-click-new-folder" class="context-menu-item">New folder</div> -->
+        </div>
+    </div>
+    
   </body>
 </html>
