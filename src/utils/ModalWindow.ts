@@ -124,16 +124,12 @@ export class ModalWindow implements ModalWindowInterface {
       case ModalWindowView.DOCUMENT_UPLOAD:
       case ModalWindowView.MOVE_TO:
         document.getElementById('neon-modal-window-content-container').innerHTML = '';
-        document.getElementById('neon-modal-window-container').style.display = 'none';
         break;
 
       default:
-        document.getElementById('neon-modal-window-container').style.display = 'none';
-      
-        // after the modal is closed, no keyboard shortcuts work because
-        // the document hasn't been focused; this forcefully focuses the container
-        document.getElementById('container').focus();
+        break;
     } 
+    document.getElementById('neon-modal-window-container').style.display = 'none';
     // reset scroll behavior of body
     document.body.style.overflowX = 'hidden';
     document.body.style.overflowY = 'scroll';
