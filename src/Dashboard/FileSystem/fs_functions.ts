@@ -89,19 +89,33 @@ const canRemoveEntry = (entry: IEntry, parent: IFolder): responseProp => {
  * @returns response object { succeeded: boolean, error: string }
  */
 const canMoveEntry = (entry: IEntry, parent: IFolder, newParent: IFolder): responseProp => {
+    // is A a child of B
+    function isChildOf(a: IEntry, b: IFolder) {
+        return b.content
+            .filter((e) => e.type === EntryType.Folder)
+            .map((c: IFolder) => {
+                if (c === a) return true;
+                else return isChildOf(a, c);
+            })
+            .some((e) => e === true);
+    }
+    
     const isSame = entry === newParent;
     const isDuplicate = newParent.content.some((e) => e.name === entry.name);
     const isImmutableParent = parent.metadata['immutable'];
     const isImmutableNewParent = newParent.metadata['immutable'];
-    const idx = parent.content.findIndex((e) => e.name === entry.name);
-    const existsInParent = idx !== -1;
+    const existsInParent = parent.content.findIndex((e) => e.name === entry.name) !== -1;
+    // if entry is a folder, check if newParent is a subfolder of entry
+    const newParentIsChildOfEntry = (entry.type == EntryType.Folder) ? isChildOf(newParent, entry as IFolder) : false;
+
 
     const returnObj = { succeeded: false, error: '' };
-    if (isSame)                     returnObj.error = `Cannot move ${entry.name} to itself.`;
-    else if (isDuplicate)           returnObj.error = `Duplicate name: ${entry.name} already exists in ${newParent.name}.`;
-    else if (isImmutableParent)     returnObj.error = `${parent.name} is immutable.`;
-    else if (isImmutableNewParent)  returnObj.error = `${newParent.name} is immutable.`;
-    else if (!existsInParent)       returnObj.error = `${entry.name} does not exist in ${parent.name}.`;
+    if (isSame)                         returnObj.error = `Cannot move ${entry.name} to itself.`;
+    else if (isDuplicate)               returnObj.error = `Duplicate name: ${entry.name} already exists in ${newParent.name}.`;
+    else if (isImmutableParent)         returnObj.error = `${parent.name} is immutable.`;
+    else if (isImmutableNewParent)      returnObj.error = `${newParent.name} is immutable.`;
+    else if (!existsInParent)           returnObj.error = `${entry.name} does not exist in ${parent.name}.`;
+    else if (newParentIsChildOfEntry)   returnObj.error = `Cannot move ${entry.name} into a its own subfolder, ${newParent.name}.`;
     else returnObj.succeeded = true;
     
     return returnObj;
@@ -173,11 +187,9 @@ const removeEntry = (entry: IEntry, parent: IFolder, force=false): boolean => {
  * @returns true if moved, else false
  */
 function moveEntry(entry: IEntry, parent: IFolder, newParent: IFolder): boolean {
-    const addResponse = canAddEntry(entry, newParent);
-    const removeResponse = canRemoveEntry(entry, parent);
-    const canMove = addResponse.succeeded && removeResponse.succeeded;
+    const moveResponse = canMoveEntry(entry, parent, newParent);
 
-    if (canMove) {
+    if (moveResponse.succeeded) {
         const removed = removeEntry(entry, parent, true);
         if (removed) {
             const added = addEntry(entry, newParent);
@@ -188,8 +200,7 @@ function moveEntry(entry: IEntry, parent: IFolder, newParent: IFolder): boolean 
             console.error(`Moving: failed to remove ${entry.name} from ${parent.name}`);
         }
     } else {
-        console.error(addResponse.error);
-        console.error(removeResponse.error);
+        console.error(moveResponse.error);
     }
     return false;
 }
