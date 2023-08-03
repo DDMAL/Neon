@@ -684,12 +684,14 @@ input.filename-input, select.file-input, textarea.file-input {
   display: flex;
   line-height: 15px;
   align-items: center;
+  gap: 7px;
 }
 
 .tree-name {
   border-radius: 3px;
   padding: 5px;
   border: 2px solid transparent;
+  cursor: pointer;
 
   &:hover {
     background-color: #bce2ff
@@ -703,7 +705,8 @@ input.filename-input, select.file-input, textarea.file-input {
 .tree-arrow {
   cursor: pointer;
   user-select: none;
-  margin-left: -12px;
+  padding-left: 5px;
+  box-sizing: border-box;
 
   &.active {
     transform: rotate(90deg);
@@ -716,6 +719,7 @@ input.filename-input, select.file-input, textarea.file-input {
 
   &.active {
     display: block;
+    box-sizing: border-box;
   }
 }
 
