@@ -64,7 +64,7 @@ function enterKeyListener (evt: KeyboardEvent): void {
 }
 
 function arrowKeyListener (evt: KeyboardEvent): void {
-  if (getSelectionType() !== 'selByBBox' || (evt.key !== 'ArrowLeft' && evt.key !== 'ArrowRight'))
+  if (getSelectionType() !== 'selByBBox' || (evt.key !== 'ArrowLeft' && evt.key !== 'ArrowRight' && evt.key !== 'Tab' && evt.shiftKey))
     return;
 
   const selected = document.querySelector('.syllable-highlighted');
@@ -74,12 +74,12 @@ function arrowKeyListener (evt: KeyboardEvent): void {
   const bboxSyllables = syllables.filter(syl => syl.querySelector('.sylTextRect-display') !== null);
   const ind = bboxSyllables.indexOf(selected);
 
-  if (evt.key === 'ArrowLeft' && ind > 0) {
+  if ((evt.key === 'ArrowLeft' || (evt.key === 'Tab' && evt.shiftKey)) && ind > 0) {
     unselect();
 
     const bbox = bboxSyllables[ind - 1].querySelector('.sylTextRect-display');
     selectAll([bbox as SVGGraphicsElement], neonView, dragHandler);
-  } else if (evt.key === 'ArrowRight' && ind < bboxSyllables.length - 1) {
+  } else if ((evt.key === 'ArrowRight' || (evt.key === 'Tab' && !evt.shiftKey)) && ind < bboxSyllables.length - 1) {
     unselect();
 
     const bbox = bboxSyllables[ind + 1].querySelector('.sylTextRect-display');
