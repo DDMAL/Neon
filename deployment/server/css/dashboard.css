@@ -259,14 +259,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
-  &:hover {
-    border: 2px solid #d9d9d9;
-  }
-
-  &.selected {
-    border: 2px solid #7ab2b7;
-  }
 }
 
 .folder-entry {
@@ -288,7 +280,22 @@
 
 .file-entry {
   color: #696969;
-  background-color: #f6f6f6;
+  border-color: #adadad;
+  background-color: transparent;
+
+  &:hover {
+    border-color: #7ab2b7;
+  }
+
+  &.selected {
+    border-color: #5e5e5e;
+  }
+}
+
+.document-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 15px;
 }
 
 input.filename-input, select.file-input, textarea.file-input {
@@ -308,9 +315,9 @@ input.filename-input, select.file-input, textarea.file-input {
   color: #ffffff;
 }
 
-.doc-multiselect-btn {
+/* .doc-multiselect-btn {
   transform: translateX(-4.95vw) translateY(-20px);
-}
+} */
 
 /* Action bar */
 .main-section-action-bar {

@@ -6,7 +6,6 @@ import { ShiftSelectionManager, dashboardState } from './dashboard_functions';
 import { InitUploadArea } from './UploadArea';
 import * as contextMenuContent from './ContextMenuContent';
 import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
-import { create } from 'd3';
 
 const documentsContainer: HTMLDivElement = document.querySelector('#fs-content-container');
 const backgroundArea: HTMLDivElement = document.querySelector('#main-section-content');
@@ -169,24 +168,57 @@ function unselectAll() {
  * @returns HTMLDivElement tile element
  */
 function createTile(entry: IEntry) {
-  const doc = document.createElement('div');
-  doc.classList.add('document-entry');
-  doc.setAttribute('draggable', 'true'); // make file or folder draggable
-  doc.innerHTML = formatFilename(entry.name, 25);
+  const container = document.createElement('div');
+  container.classList.add('document-entry');
+  container.setAttribute('draggable', 'true'); // make file or folder draggable
+
+  const icon = document.createElement('img');
+  icon.classList.add('document-icon');
+  const name = document.createElement('div');
+  name.innerText = formatFilename(entry.name, 25);
 
   switch (entry.type) {
     case 'folder':
-      doc.classList.add('folder-entry');
-      doc.setAttribute('id', entry.name);
-      doc.setAttribute('drop-id', entry.name);
-      doc.classList.add('drop-target');
+      // set type attrib and id
+      container.classList.add('folder-entry');
+      container.setAttribute('id', entry.name);
+      // set icon
+      icon.src = './Neon-gh/assets/img/folder-icon.svg';
+      // set drop target attrib
+      container.setAttribute('drop-id', entry.name);
+      container.classList.add('drop-target');
       break;
     case 'file':
-      doc.classList.add('file-entry');
-      doc.setAttribute('id', (entry as IFile).content);
+      container.classList.add('file-entry');
+      container.setAttribute('id', (entry as IFile).content);
+
+      // determine which icon and class to add depending on existing metadata
+      if (entry.metadata['type'] === 'manuscript') {
+        // set type attrib and id
+        container.classList.add('manuscript-entry');
+        // set icon
+        icon.src = './Neon-gh/assets/img/manuscript-icon.svg';
+      }
+      else if (entry.metadata['type'] === 'folio') {
+        // set type attrib and id
+        container.classList.add('folio-entry');
+        // set icon
+        icon.src = './Neon-gh/assets/img/folio-icon.svg';
+      }
+      else {
+        // set type attrib and id
+        // set icon
+        icon.src = './Neon-gh/assets/img/warning-icon.svg';
+      }
+
       break;
   }
-  return doc;
+
+
+  container.appendChild(icon);
+  container.appendChild(name);
+
+  return container;
 }
 
 /**
