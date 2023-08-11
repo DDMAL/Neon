@@ -66,7 +66,8 @@ function enterKeyListener (evt: KeyboardEvent): void {
 function arrowKeyListener (evt: KeyboardEvent): void {
   if (getSelectionType() !== 'selByBBox' || (evt.key !== 'ArrowLeft' && evt.key !== 'ArrowRight' && evt.key !== 'Tab' && evt.shiftKey))
     return;
-
+  evt.preventDefault(); // prevent default for tab key
+  
   const selected = document.querySelector('.syllable-highlighted');
   const syllables = Array.from(document.querySelectorAll('.syllable'));
 
