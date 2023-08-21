@@ -389,6 +389,17 @@ function handleDeleteDocuments() {
 }
 
 /**
+ * Rename current selection of document on dashboard 
+ * 
+ */
+function handleRenameDocument() {
+  const selections = state.getSelectedEntries();
+  if (selections.length === 1) {
+    rename(selections[0]);
+  }
+}
+
+/**
  * Updates the visibility of action bar buttons based on current selections
  */
 function updateActionBarButtons() {
@@ -632,10 +643,7 @@ function focusForInput(tile: HTMLDivElement, oldName: string, fs_callback: (name
  */
 function handleEnterRename(e: KeyboardEvent) {
   if (e.key === 'Enter') {
-    const selections = state.getSelectedEntries();
-    if (selections.length === 1) {
-      rename(selections[0]);
-    }
+    handleRenameDocument();
   }
 }
 
@@ -975,6 +983,12 @@ function setContextMenuItemsEventListeners(view: string) {
         handleDeleteDocuments();
       });
 
+      // "Rename" menu item
+      document.querySelector(`.${btnClassname}#cm-rename-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        handleRenameDocument();
+      });
+
       // "Move" menu item
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
         contextMenu.classList.add('hidden');
@@ -1032,6 +1046,12 @@ function setContextMenuItemsEventListeners(view: string) {
       document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (e) => {
         contextMenu.classList.add('hidden');
         handleDeleteDocuments();
+      });
+
+      // "Rename" menu item
+      document.querySelector(`.${btnClassname}#cm-rename-btn`).addEventListener('click', (e) => {
+        contextMenu.classList.add('hidden');
+        handleRenameDocument();
       });
 
       // "Move" menu item
