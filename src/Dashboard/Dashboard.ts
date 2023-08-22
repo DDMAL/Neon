@@ -28,19 +28,19 @@ let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
 let currentDragTarget = null;
 
-openButton!.addEventListener('click', handleOpenDocuments);
-deleteButton!.addEventListener('click', handleDeleteDocuments);
-uploadDocumentsButton!.addEventListener('click', handleOpenUploadArea);
-newFolderButton!.addEventListener('click', handleAddFolder)
+openButton?.addEventListener('click', handleOpenDocuments);
+deleteButton?.addEventListener('click', handleDeleteDocuments);
+uploadDocumentsButton?.addEventListener('click', handleOpenUploadArea);
+newFolderButton?.addEventListener('click', handleAddFolder);
 
 // Sorting algorithms
-const sortByAlphanumerical = (a: IEntry, b: IEntry) => a.name.localeCompare(b.name);
-const sortByTime = (a: IEntry, b: IEntry) => {
-  const aTime = a.metadata['created_on'];
-  const bTime = b.metadata['created_on'];
-  if (aTime && bTime) return aTime - bTime;
-  else if (aTime) return -1;
-}
+// const sortByAlphanumerical = (a: IEntry, b: IEntry) => a.name.localeCompare(b.name);
+// const sortByTime = (a: IEntry, b: IEntry) => {
+//   const aTime = a.metadata['created_on'];
+//   const bTime = b.metadata['created_on'];
+//   if (aTime && bTime) return aTime - bTime;
+//   else if (aTime) return -1;
+// };
 
 window.addEventListener('keydown', (e) => {
   if (e.metaKey) metaKeyIsPressed = true;
@@ -61,10 +61,10 @@ window.addEventListener('keyup', (e) => {
 // Listener for Enter key press on tiles to rename
 window.addEventListener('keypress', handleEnterRename, false);
 
-backgroundArea!.addEventListener('click', (e) => {
+backgroundArea?.addEventListener('click', (e) => {
   const target = e.target as Element;
   // Lose focus if click event in main section is not a document tile
-  const isDocument = Boolean(target.closest('.document-entry'))
+  const isDocument = Boolean(target.closest('.document-entry'));
   if (!isDocument) {
     unselectAll();
     shiftSelection.reset();
@@ -133,7 +133,7 @@ function makeQuery(obj): string {
  * @param index 
  */
 function select(index: number) {
-  const entry = state.getEntries().at(index)
+  const entry = state.getEntries().at(index);
   const id = getEntryId(entry);
   state.setSelection(index, true);
   const tile = document.getElementById(id);
@@ -257,7 +257,7 @@ async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivE
  * @param index 
  */
 function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
-  tile.addEventListener('click', function(e) {
+  tile.addEventListener('click', function(_e) {
     if (!metaKeyIsPressed && !shiftKeyIsPressed) {
       unselectAll();
       select(index);
@@ -404,7 +404,7 @@ function handleRenameDocument() {
  */
 function updateActionBarButtons() {
   // set active if there is a selection
-  const nothingSelected = state.getSelection().every((selected) => !selected)
+  const nothingSelected = state.getSelection().every((selected) => !selected);
   if (nothingSelected) {
     openButton.classList.remove('active');
     deleteButton.classList.remove('active');
@@ -444,7 +444,7 @@ function updateNavPath(): void {
     // add drop target to move dragged element to the prospective folders
     addDropTargetListeners(navSection, state.getParentFolder(), targetPath.at(-1));
 
-    return navSection
+    return navSection;
   });
 
   // add nav elements to nav path container
@@ -756,7 +756,7 @@ function createHandleDrop(currentFolder: IFolder, destinationFolder: IFolder) {
     if (dragEntry && dragEntry !== destinationFolder) {
       moveToFolder([dragEntry], currentFolder, destinationFolder);
     }
-  }
+  };
 }
 
 /**
@@ -796,7 +796,7 @@ function openMoveToMenu() {
   const moveToCallback = (newParentFolder: IFolder) => {
     modalWindow.hideModalWindow();
     moveToFolder(selectedEntries, parentFolder, newParentFolder);
-  }
+  };
 
   const rootTree = generateRootTree(moveToCallback);
   const treeContainer = document.createElement('div');
@@ -972,25 +972,25 @@ function setContextMenuItemsEventListeners(view: string) {
 
     case 'single-file-options':
       // "Open" menu item
-      document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         handleOpenDocuments();
       });
 
       // "Delete" menu item
-      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         handleDeleteDocuments();
       });
 
       // "Rename" menu item
-      document.querySelector(`.${btnClassname}#cm-rename-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-rename-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         handleRenameDocument();
       });
 
       // "Move" menu item
-      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         openMoveToMenu();   
       });
@@ -999,95 +999,95 @@ function setContextMenuItemsEventListeners(view: string) {
     
     case 'multi-file-options':
       // "Open" menu item
-      document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         handleOpenDocuments();
       });
 
       // "Delete" menu item
-      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         handleDeleteDocuments();
       });
 
       // "Move" menu item
-      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         // TODO:
-        openMoveToMenu()
+        openMoveToMenu();
       });      
 
       break;
 
     case 'folder-and-file-options':
       // "Delete" menu item
-      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         handleDeleteDocuments();
       });
 
       // "Move" menu item
-      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         // TODO:
-        openMoveToMenu()
+        openMoveToMenu();
       });
 
       break;
     
     case 'single-folder-options':
       // "Open" menu item
-      document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         handleOpenDocuments();
       });
 
       // "Delete" menu item
-      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         handleDeleteDocuments();
       });
 
       // "Rename" menu item
-      document.querySelector(`.${btnClassname}#cm-rename-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-rename-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         handleRenameDocument();
       });
 
       // "Move" menu item
-      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         // TODO:
-        openMoveToMenu()
+        openMoveToMenu();
       });      
 
       break;
 
     case 'multi-folder-options':
       // "Delete" menu item
-      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         handleDeleteDocuments();
       });
 
       // "Move" menu item
-      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         // TODO:
-        openMoveToMenu()
+        openMoveToMenu();
       });
 
       break;
 
     default:
       // "Upload document" menu item
-      document.querySelector(`.${btnClassname}#cm-upload-doc-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-upload-doc-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         handleOpenUploadArea();
       });
 
       // "New folder" menu item
-      document.querySelector(`.${btnClassname}#cm-new-folder-btn`).addEventListener('click', (e) => {
+      document.querySelector(`.${btnClassname}#cm-new-folder-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         handleAddFolder();
       });
@@ -1136,11 +1136,11 @@ function addSpecificContextMenuListeners() {
         (<MouseEvent> e).clientY
       );
       contextMenu.classList.remove('hidden');
-    })
+    });
   });
 
   // hide context menu if user clicks away
-  mainSection.addEventListener('click', (e) => {
+  mainSection.addEventListener('click', (_e) => {
     contextMenu.classList.add('hidden');
   });
 }
@@ -1153,4 +1153,4 @@ export const loadDashboard = async (): Promise<void> => {
   state.root(root);
   updateDashboard([root]);
   initializeDefaultContextMenu();
-}
+};
