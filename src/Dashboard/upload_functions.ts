@@ -135,14 +135,14 @@ function createPairedFolio(filename: string, mei_filename: string, image_filenam
   return folio;
 }
 
-export async function handleUploadAllDocuments(currentFolder: IFolder): Promise<any> {
+export async function handleUploadAllDocuments(currentFolder: IFolder): Promise<unknown> {
   const folioPromises = fm.getFolios()
     .map( async ([name, mei, image]: [string, File, File]) => {
-      const id = uuidv4()
+      const id = uuidv4();
       return await uploadFolio(id, name, mei, image, currentFolder);
     });
   
-  const manuscriptPromises = [] //fm.getManuscripts()
+  const manuscriptPromises = []; //fm.getManuscripts()
   // .map( async (file: File) => {
   //   return await uploadManuscript(file);
   // });
@@ -177,7 +177,7 @@ async function uploadFolio(id: string, name: string, mei: File, image: File, cur
         console.log('failed to uploadFolio: ' + name);
         return false;
       }
-    })
+    });
 }
 
 // async function uploadManuscript(manuscript: File): Promise<boolean> {
@@ -215,26 +215,26 @@ export async function sortFileByName(sortByNameBtn: Element): Promise<void>  {
   sortByNameBtn.setAttribute('style', 'color: black');
 }
 
-async function uploadManuscript(manuscript: File, currentFolder: IFolder, existingNames: string[]): Promise<boolean> {
-  const isSingle = false;
-  const id = manuscript['@id'] !== null ? manuscript['@id'] : manuscript.name;
-  return addEntry(id, manuscript.name, manuscript, isSingle)
-    // add to dashboard FileSystem
-    .then(succeeded => {
-      if (succeeded) {
-        const newName = renameFile(manuscript.name, existingNames);
-        const datetime = new Date().toLocaleString();
-        const fileEntry = fs_functions.createFile(newName, id);
-        const manuscriptEntry = fs_functions.addMetadata(fileEntry, { type: 'manuscript', created_on: datetime });
-        const isAdded = fs_functions.addEntry(manuscriptEntry, currentFolder);
-        return isAdded;
-      }
-      else {
-        console.log('failed to uploadFolio: ' + name);
-        return false;
-      }
-    })
-}
+// async function uploadManuscript(manuscript: File, currentFolder: IFolder, existingNames: string[]): Promise<boolean> {
+//   const isSingle = false;
+//   const id = manuscript['@id'] !== null ? manuscript['@id'] : manuscript.name;
+//   return addEntry(id, manuscript.name, manuscript, isSingle)
+//     // add to dashboard FileSystem
+//     .then(succeeded => {
+//       if (succeeded) {
+//         const newName = renameFile(manuscript.name, existingNames);
+//         const datetime = new Date().toLocaleString();
+//         const fileEntry = fs_functions.createFile(newName, id);
+//         const manuscriptEntry = fs_functions.addMetadata(fileEntry, { type: 'manuscript', created_on: datetime });
+//         const isAdded = fs_functions.addEntry(manuscriptEntry, currentFolder);
+//         return isAdded;
+//       }
+//       else {
+//         console.log('failed to uploadFolio: ' + name);
+//         return false;
+//       }
+//     });
+// }
 
 export function formatFilename(filename: string, maxLen: number): string {
   const chunkLen = Math.floor(maxLen/2);

@@ -19,6 +19,10 @@ export const singleFileOptions =
         <div class="context-menu-item">Delete</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>
+    <div id="cm-rename-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Rename</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/rename-doc.svg">
+    </div>
     <div id="cm-move-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Move</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/move-doc-icon.svg">
@@ -59,6 +63,10 @@ export const singleFolderOptions =
     <div id="cm-delete-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Delete</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
+    </div>
+    <div id="cm-rename-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Rename</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/rename-doc.svg">
     </div>
     <div id="cm-move-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Move</div>
