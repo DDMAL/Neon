@@ -91,6 +91,10 @@ class TextView implements TextViewInterface {
 
       if (this.neonView.getUserMode() !== 'viewer' && this.neonView.TextEdit !== undefined) {
         this.neonView.TextEdit.initSelectByBBoxButton();
+        this.neonView.TextEdit.initBBoxCircleSlider();
+        const { circleSize } = getSettings();
+        document.querySelector<HTMLInputElement>('#circleOutput').value = String(circleSize);
+        document.querySelector<HTMLInputElement>('#circleSlider').value = String(circleSize);
       }
     } 
     else {
@@ -111,6 +115,10 @@ class TextView implements TextViewInterface {
 
       try {
         document.getElementById('selByBBox').style.display = 'none';
+      } 
+      catch (e) {}
+      try {
+        document.getElementById('bbox-circle-slider').style.display = 'none';
       } 
       catch (e) {}
     }

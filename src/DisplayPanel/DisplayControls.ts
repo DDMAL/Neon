@@ -4,8 +4,9 @@ import * as Color from '../utils/Color';
 import ZoomHandler from '../SingleView/Zoom';
 import { GroupingType } from '../Types';
 import { getSettings, setSettings } from '../utils/LocalSettings';
+import * as d3 from 'd3';
 
-let lastGlyphOpacity: number, lastImageOpacity: number;
+let lastGlyphOpacity: number, lastImageOpacity: number, lastCircleSize: number;
 
 /**
  * Set zoom control listener for button and slider
@@ -231,6 +232,52 @@ export function setBgOpacityFromSlider (background?: string): void {
 
   const bg: HTMLElement = document.querySelector(`.${background}`);
   if (bg) bg.style.opacity = String(Number(bgOpacityOutput.value) / 100);
+}
+
+/**
+ * Set background image opacity button and slider listeners.
+ * @param background - The background image selector.
+ */
+export function setCircleSizeControls (): void {
+  const circleSlider = document.getElementById('circleSlider') as HTMLInputElement;
+  const circleOutput = document.getElementById('circleOutput') as HTMLOutputElement;
+
+  const { circleSize } = getSettings();
+  lastCircleSize = circleSize;
+  circleSlider.value = String(circleSize);
+  circleOutput.value = String(circleSize);
+
+  function circleSizeInputChangeHandler (): void {
+    circleOutput.value = circleSlider.value;
+    lastCircleSize = Number(circleSlider.value);
+    setSettings({ circleSize: Number(lastCircleSize) });
+    const resizePoints = d3.selectAll('.resizePoint');
+    if (!resizePoints.empty()) {
+      resizePoints.attr('r', lastCircleSize);
+    }
+  }
+
+  const resetBtn = document.getElementById('reset-circle-size');
+  resetBtn.addEventListener('click', () => {
+    const defaultSize = 25; 
+    // if has resizePoints displayed
+    const resizePoints = d3.selectAll('.resizePoint');
+    if (!resizePoints.empty()) {
+      resizePoints.attr('r', defaultSize);
+    }
+
+    lastCircleSize = Number(defaultSize);
+    circleSlider.value = String(defaultSize);
+    circleOutput.value = String(defaultSize);
+
+    setSettings({ circleSize: Number(defaultSize) });
+    circleSizeInputChangeHandler();
+  });
+
+  circleSlider.addEventListener('input', circleSizeInputChangeHandler);
+  circleSlider.addEventListener('change', circleSizeInputChangeHandler);
+
+  circleSlider.disabled = false;
 }
 
 /**

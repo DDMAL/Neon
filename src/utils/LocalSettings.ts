@@ -20,6 +20,7 @@ export interface Settings {
   zoom: number;
   glyphOpacity: number;
   imageOpacity: number;
+  circleSize: number;
   highlightMode: GroupingType;
   userMode: UserType;
   insertMode: InsertType;
@@ -43,6 +44,7 @@ const DEFAULT_SETTINGS: Settings = {
   zoom: 100,
   glyphOpacity: 100,
   imageOpacity: 100,
+  circleSize: 25,
   highlightMode: 'none',
   userMode: 'edit',
   insertMode: 'punctum',

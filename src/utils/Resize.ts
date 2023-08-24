@@ -6,6 +6,7 @@ import * as d3 from 'd3';
 import { EditorAction, ResizeAction } from '../Types';
 import { isOutOfSVGBounds } from './Coordinates';
 import { queueNotification } from './Notification';
+import { getSettings } from './LocalSettings';
 
 /**
  * Resize a staff or a syllable text bounding box.
@@ -178,12 +179,14 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       .style('cursor', 'move')
       .style('stroke-dasharray', '20 10');
 
+    const { circleSize } = getSettings();
+
     for (const pointName in PointNames) {
       const point: Point = points[PointNames[pointName]];
       d3.select(element.viewportElement).append('circle')
         .attr('cx', point.x)
         .attr('cy', point.y)
-        .attr('r', 25)
+        .attr('r', circleSize)
         .attr('stroke', 'black')
         .attr('stroke-width', 4)
         .attr('fill', '#0099ff')
