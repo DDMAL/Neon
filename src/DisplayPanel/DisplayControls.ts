@@ -103,7 +103,7 @@ export function setGlyphOpacityFromSlider (meiClassName?: string): void {
  * Set rendered MEI opacity button and slider listeners.
  * @param meiClassName - Class that contains the rendered MEI.
  */
-function setOpacityControls (meiClassName: string): void {
+function setGlyphOpacityControls (meiClassName: string): void {
   const opacitySlider = document.getElementById('opacitySlider') as HTMLInputElement;
   const opacityOutput = document.getElementById('opacityOutput') as HTMLOutputElement;
 
@@ -162,7 +162,7 @@ function setOpacityControls (meiClassName: string): void {
  * Set background image opacity button and slider listeners.
  * @param background - The background image selector.
  */
-function setBackgroundOpacityControls (background: string): void {
+function setBgOpacityControls (background: string): void {
   const bgOpacitySlider = document.getElementById('bgOpacitySlider') as HTMLInputElement;
   const bgOpacityOutput = document.getElementById('bgOpacityOutput') as HTMLOutputElement;
 
@@ -514,8 +514,8 @@ export function loadHighlightSettings (): void {
  * @param {string} background - The class used to signify the background.
  */
 export function initDisplayControls (meiClassName: string, background: string): void {
-  setOpacityControls(meiClassName);
-  setBackgroundOpacityControls(background);
+  setGlyphOpacityControls(meiClassName);
+  setBgOpacityControls(background);
   setHighlightControls();
   setBurgerControls();
   setHighlightKeyControls();
