@@ -24,11 +24,11 @@ export async function fetchUploadedDocuments(): Promise<string[]> {
     });
 }
 
-export function createManifest(id: string, name: string, mei: File, bg: File) {
+export function createManifest(id: string, title: string, mei: File, bg: File) {
   return new Promise(async (resolve) => {
     const manifest = JSON.parse(JSON.stringify(localManifest));
     manifest['@id'] = id;
-    manifest['title'] = name;
+    manifest['title'] = title;
     manifest['timestamp'] = (new Date()).toISOString();
 
     const meiPromise = new Promise(resolve => {
@@ -63,11 +63,20 @@ export function createManifest(id: string, name: string, mei: File, bg: File) {
   });
 }
 
-export function addEntry(id: string, title: string, content: Blob, single: boolean): Promise<boolean> {
+
+/**
+ * Add new entry to the database
+ * @param id 
+ * @param title 
+ * @param content 
+ * @param single is it a single page or a manuscript
+ * @returns Promise<boolean>
+ */
+export function addDocument(id: string, title: string, content: Blob, single: boolean): Promise<boolean> {
   return new Promise((resolve, reject) => {
     db.put({
       _id: id,
-      kind: single ? 'page' : 'manuscript', // TODO: make enum file type
+      kind: single ? 'page' : 'manuscript',
       _attachments: {
         manifest: {
           content_type: 'application/ld+json',
@@ -83,7 +92,12 @@ export function addEntry(id: string, title: string, content: Blob, single: boole
   });
 }
 
-export function deleteEntry(id: string): Promise<boolean> {
+/**
+ * Delete entry from the database
+ * @param id 
+ * @returns Promise<boolean>
+ */
+export function deleteDocument(id: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     db.get(id)
       .then(doc => {
@@ -100,5 +114,40 @@ export function deleteEntry(id: string): Promise<boolean> {
         console.log(err);
         reject(err);
       });
+  });
+}
+
+/**
+ * Rename the doc from the database
+ * @param id 
+ * @param title (optional)
+ * @param content (optional)
+ * @returns 
+ */
+export function updateDocument(id: string, title: string) {
+  return new Promise((resolve, reject) => {
+    // Retrieve doc from database (to get _rev)
+    db.get(id).then(doc => {
+
+      // Retrieve manifest from database
+      db.getAttachment(id, 'manifest').then((manifestBlob: Blob) => {
+          manifestBlob.text().then(manifestText => {
+            const manifest = JSON.parse(manifestText);
+    
+            // Update the manifest
+            manifest['title'] = title;
+    
+            // Convert back to blob
+            const updatedManifest = JSON.stringify(manifest, null, 2);
+            const updatedManifestBlob = new Blob([updatedManifest], { type: 'application/ld+json' });
+
+            // update the database, specify the id and _rev of the doc
+            db.putAttachment(id, 'manifest', doc._rev, updatedManifestBlob, 'application/ld+json')
+              .then(() => resolve(true))
+              .catch(err => reject(err)); // db.putAttachment
+              
+          }).catch(err => reject(err)); // manifestTextPromise
+        }).catch(err => reject(err)); // db.getAttachment
+    }).catch(err => reject(err)); // db.get
   });
 }

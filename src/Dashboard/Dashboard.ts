@@ -1,5 +1,5 @@
 import { IEntry, IFile, IFolder, fs_functions } from './FileSystem';
-import { deleteEntry } from './Storage';
+import { deleteDocument, updateDocument } from './Storage';
 import { formatFilename } from './upload_functions';
 import { FileSystemManager } from './FileSystem';
 import { ShiftSelectionManager, dashboardState } from './dashboard_functions';
@@ -57,9 +57,6 @@ window.addEventListener('keyup', (e) => {
   if (!e.metaKey) metaKeyIsPressed = false;
   if (!e.shiftKey) shiftKeyIsPressed = false;
 });
-
-// // Listener for Enter key press on tiles to rename
-// window.addEventListener('keypress', handleEnterRename, false);
 
 backgroundArea?.addEventListener('click', (e) => {
   const target = e.target as Element;
@@ -319,7 +316,7 @@ function handleOpenDocuments() {
 function handleDeleteDocuments() {
   function deleteFileEntry(file: IFile): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      deleteEntry(file.content)
+      deleteDocument(file.content)
         .then(() => {
           fs_functions.removeEntry(file, state.getParentFolder());
           resolve(true);
@@ -386,17 +383,6 @@ function handleDeleteDocuments() {
       .catch( err => console.debug('failed to delete files: ', err));
   }
 }
-
-// /**
-//  * Rename current selection of document on dashboard 
-//  * 
-//  */
-// function handleRenameDocument() {
-//   const selections = state.getSelectedEntries();
-//   if (selections.length === 1) {
-//     renameEntry(selections[0]);
-//   }
-// }
 
 /**
  * Updates the visibility of action bar buttons based on current selections
@@ -523,7 +509,7 @@ function handleAddFolder(folderName: string) {
 }
 
 /**
- * Renames current selection of document on dashboard
+ * Renames current selection of document on dashboard, updating the database for files
  * 
  * @param entry IEntry to rename
  */
@@ -544,7 +530,17 @@ function renameEntry(entry: IEntry, newName: string) {
   
   const succeeded = fs_functions.renameEntry(entry, state.getParentFolder(), newName);
     if (succeeded) {
-      updateDashboard(); // todo: replace with sort()
+      // Update database if entry is a file
+      if (entry.type === 'file') {
+        const file = entry as IFile;
+        updateDocument(file.content, newName)
+          .then(() => {
+            updateDashboard();
+          })
+      }
+      else {
+        updateDashboard();
+      }
     }
 }
 
@@ -764,10 +760,13 @@ function openRenameWindow() {
   input.focus();
 
   cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
+
+  // On confirmation, close modal window and rename entry (if file, database is updated)
   confirmButton.addEventListener('click', () => {
     input.select();
     const folderName = input.value;
     modalWindow.hideModalWindow();
+    const entry = state.getSelectedEntries()[0]
     renameEntry(state.getSelectedEntries()[0], folderName);
   });
 }
@@ -950,7 +949,6 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Rename" menu item
       document.querySelector(`.${btnClassname}#cm-rename-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        // handleRenameDocument();
         openRenameWindow();
       });
 
@@ -980,7 +978,6 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Move" menu item
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        // TODO:
         openMoveToWindow();
       });      
 
@@ -996,7 +993,6 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Move" menu item
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        // TODO:
         openMoveToWindow();
       });
 
@@ -1018,14 +1014,12 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Rename" menu item
       document.querySelector(`.${btnClassname}#cm-rename-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        // handleRenameDocument();
         openRenameWindow();
       });
 
       // "Move" menu item
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        // TODO:
         openMoveToWindow();
       });      
 
@@ -1041,7 +1035,6 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Move" menu item
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        // TODO:
         openMoveToWindow();
       });
 
