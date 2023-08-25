@@ -118,11 +118,10 @@ export function deleteDocument(id: string): Promise<boolean> {
 }
 
 /**
- * Rename the doc from the database
+ * Update the doc from the database (supports only title for now)
  * @param id 
- * @param title (optional)
- * @param content (optional)
- * @returns 
+ * @param title 
+ * @returns Promise<boolean>
  */
 export function updateDocument(id: string, title: string) {
   return new Promise((resolve, reject) => {
@@ -145,7 +144,7 @@ export function updateDocument(id: string, title: string) {
             db.putAttachment(id, 'manifest', doc._rev, updatedManifestBlob, 'application/ld+json')
               .then(() => resolve(true))
               .catch(err => reject(err)); // db.putAttachment
-              
+
           }).catch(err => reject(err)); // manifestTextPromise
         }).catch(err => reject(err)); // db.getAttachment
     }).catch(err => reject(err)); // db.get
