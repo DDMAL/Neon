@@ -17,7 +17,7 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
       </svg>
     </div>
     <div id="displayContents" class="panel-contents">
-      <div class="panel-content-subsection first-subsection">
+      <div class="panel-content-subsection first-subsection" id="display-slider-section">
   `;
 
   if (handleZoom !== undefined) {

@@ -6,6 +6,7 @@ import { setGroupingHighlight } from './utils/Color';
 import { TextEditInterface } from './Interfaces';
 import  { ModalWindowView } from './utils/ModalWindow';
 import { setSettings } from './utils/LocalSettings';
+import { setCircleSizeControls } from './DisplayPanel/DisplayControls';
 
 /**
  * Format a string for prompting the user.
@@ -154,5 +155,47 @@ export default class TextEditMode implements TextEditInterface {
         }
       }
     }
+  }
+
+  /**
+    * Add the bbox circle size slider.
+    */
+  initBBoxCircleSlider (): void {
+    const circleSlider = document.getElementById('bbox-circle-slider');
+    if (circleSlider) {
+      circleSlider.style.display = '';
+      return;
+    }
+
+    const sliderSection = document.getElementById('display-slider-section');
+    const circleSliderContainer = document.createElement('div');
+    circleSliderContainer.classList.add('slider-and-slider-actions-container', 'display-panel');
+    circleSliderContainer.style.cursor = 'default';
+    circleSliderContainer.id = 'bbox-circle-slider';
+    circleSliderContainer.innerHTML = `
+    <div class="slider-actions-container">
+        <div class="display-slider-title">BBox Circle</div>
+        <button class="side-panel-btn slider-btn" id="reset-circle-size" title="Reset circle size">
+            <img class="slider-btn-img" src="${__ASSET_PREFIX__}assets/img/arrow-rotate-left-solid.svg">
+        </button>
+    </div>
+    <div class="slider-container">
+        <input type="range"
+            step="1" min="0" max="25" value="25"
+            aria-labelledby="reset-circle-size"
+            class="slider is-fullwidth is-large"
+            id="circleSlider"
+            style="padding-left: 1rem; padding-right: 1rem;"
+            disabled="disabled"
+        />
+        <output id="circleOutput" for="circleSlider">25</output>
+    </div>`;
+    sliderSection.appendChild(circleSliderContainer);
+   
+    if (this.neonView.NeumeEdit === undefined) {
+      circleSliderContainer.style.display = 'none';
+    }
+
+    circleSliderContainer.addEventListener('click', setCircleSizeControls.bind(this));
   }
 }
