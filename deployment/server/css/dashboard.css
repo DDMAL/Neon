@@ -743,9 +743,10 @@ input.filename-input, select.file-input, textarea.file-input {
 
 #rename_buttons_container {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: right;
+  width: 100%;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-right: 20px;
 }
 
 #rename_input {
@@ -764,7 +765,7 @@ input.filename-input, select.file-input, textarea.file-input {
   border: none;
   border-radius: 8px;
   padding: 5px;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
 }
 
@@ -774,6 +775,6 @@ input.filename-input, select.file-input, textarea.file-input {
   border: none;
   border-radius: 8px;
   padding: 5px;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
 }
