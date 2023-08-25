@@ -206,9 +206,8 @@ function createTile(entry: IEntry) {
         icon.src = './Neon-gh/assets/img/folio-icon.svg';
       }
       else {
-        // set type attrib and id
-        // set icon
-        icon.src = './Neon-gh/assets/img/warning-icon.svg';
+        // set icon for no type
+        icon.src = './Neon-gh/assets/img/folio-icon.svg';
       }
 
       break;
