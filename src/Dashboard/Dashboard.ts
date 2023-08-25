@@ -493,7 +493,7 @@ async function handleNavigateBack() {
 }
 
 /**
- * Prompts user for a new fondler name with in-tile text input.
+ * Add new Folder to current folder and refresh dashboard
  */
 function handleAddFolder(folderName: string) {
   // abort if parent folder is immutable
@@ -521,35 +521,14 @@ function handleAddFolder(folderName: string) {
     newFolderTile.remove();
     return false;
   }
-  
-  // lets user input new folder name on newly created folder; no file system changes yet
-  // on successful text input, add new folder to file system and update dashboard
-  // on failure, removes newFolderTile completely
-  // focusForInput(newFolderTile, '', (newName: string) => {
-  //   const newFolder = fs_functions.createFolder(newName);
-  //   const succeeded = fs_functions.addEntry(newFolder, state.getParentFolder());
-  //   if (succeeded) {
-  //     newFolderTile.setAttribute('id', newName);
-  //     updateDashboard(); // todo: replace with sort()
-  //     return true;
-  //   }
-  //   else {
-  //     newFolderTile.remove();
-  //     return false;
-  //   }
-  // },
-  // // failure callback: remove newFolderTile completely
-  // () => {
-  //   newFolderTile.remove();
-  // });
 }
 
 /**
- * Prompts user to rename entry in file system, and if successful: persist in local storage, and updates tile name
+ * Renames current selection of document on dashboard
  * 
  * @param entry IEntry to rename
  */
-function renameEntry(entry: IEntry) {
+function renameEntry(entry: IEntry, newName: string) {
   // abort if parent folder
   const isImmutable = state.getParentFolder().metadata['immutable'];
   if (isImmutable) {
@@ -564,95 +543,11 @@ function renameEntry(entry: IEntry) {
     return;
   }
   
-  const id = getEntryId(entry);
-  const tile = document.getElementById(id) as HTMLDivElement;
-  // focusForInput(tile, entry.name, (newName: string) => {
-  //   const succeeded = fs_functions.renameEntry(entry, state.getParentFolder(), newName);
-  //   if (succeeded) {
-  //     updateDashboard(); // todo: replace with sort()
-  //     return true;
-  //   }
-  //   return false;
-  // });
-
-
+  const succeeded = fs_functions.renameEntry(entry, state.getParentFolder(), newName);
+    if (succeeded) {
+      updateDashboard(); // todo: replace with sort()
+    }
 }
-
-// /**
-//  * Allow user to rename tile by focusing on dynamically generated input element in the selected tile.
-//  * 
-//  * @param tile HTMLDivElement
-//  * @param oldName string
-//  * @param fs_callback callback function to update file system
-//  * @param failure_callback cleanup function to run on any failure
-//  */
-// function focusForInput(tile: HTMLDivElement, oldName: string, fs_callback: (name: string) => boolean, failure_callback?: () => void) {
-//   window.removeEventListener('keypress', handleEnterRename, false); // temporarily remove Enter key press listener for renaming
-//   // clear tile contents
-//   tile.innerHTML = ''; 
-
-//   // create input element
-//   const input = document.createElement('input');
-//   input.classList.add('filename-input');
-//   input.setAttribute('type', 'text');
-//   input.setAttribute('value', oldName);
-//   tile.appendChild(input);
-
-//   function handleSubmit() {
-//     // remove event listeners
-//     input.removeEventListener('blur', handleSubmit);
-//     window.removeEventListener('keypress', handleKeyPress);
-
-//     const newName = input.value;
-
-//     // rename tile
-//     if (newName && newName.length > 0) {
-//       // run callback to update file system
-//       const succeeded = fs_callback(newName);
-//       // put updated text back into tile
-//       if (succeeded) {
-//         tile.innerHTML = formatFilename(newName, 25);
-//       }
-//       else {
-//         input.remove();
-//         tile.innerHTML = formatFilename(oldName, 25);
-//         if (failure_callback) failure_callback();
-//       }
-//     }
-//     else {
-//       input.remove();
-//       tile.innerHTML = formatFilename(oldName, 25);
-//       if (failure_callback) failure_callback();
-//     }
-
-//     // re-add Enter key press listener for renaming
-//     window.addEventListener('keypress', handleEnterRename, false);
-//   }
-
-//   function handleKeyPress(e: KeyboardEvent) { 
-//     if (e.key === 'Enter') {
-//       handleSubmit();
-//     }
-//   }
-
-//   input.focus();
-//   input.select();
-
-//   input.addEventListener('blur', handleSubmit);
-//   window.addEventListener('keypress', handleKeyPress);
-// }
-
-// /**
-//  * If only one tile is selected, starts renaming process on Enter key press
-//  * 
-//  * @param e KeyboardEvent
-//  */
-// function handleEnterRename(e: KeyboardEvent) {
-//   if (e.key === 'Enter') {
-//     handleRenameDocument();
-//   }
-// }
-
 
 
 /**
@@ -814,6 +709,10 @@ function openMoveToWindow() {
   modalContainer.appendChild(treeContainer);
 }
 
+/**
+ * Opens New Folder menu modal window that prompts for a name.
+ * On clicking the Create button, closes modal window and creates new folder.
+ */
 function openNewFolderWindow() {
   // generate modal window
   const modalWindow = new ModalWindow();
@@ -828,11 +727,11 @@ function openNewFolderWindow() {
   const input = document.createElement('input');
   input.id = 'rename_input';
   input.type = 'text';
-  input.placeholder = 'New Folder Name';
+  input.placeholder = 'Untitled Folder';
   inputContainer.appendChild(input);
 
   input.focus();
-  
+
   cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
   confirmButton.addEventListener('click', () => {
     input.select();
@@ -842,11 +741,36 @@ function openNewFolderWindow() {
   });
 }
 
+/**
+ * Opens Rename menu modal window that prompts for a new name.
+ */
 function openRenameWindow() {
   // generate modal window
   const modalWindow = new ModalWindow();
   modalWindow.setModalWindowView(ModalWindowView.RENAME);
   modalWindow.openModalWindow();
+
+  const inputContainer = document.getElementById('rename_input_container') as HTMLDivElement;
+  const cancelButton = document.getElementById('cancel_rename') as HTMLButtonElement;
+  const confirmButton = document.getElementById('confirm_rename') as HTMLButtonElement;
+
+  const input = document.createElement('input');
+  input.id = 'rename_input';
+  input.type = 'text';
+  const prevName = state.getSelectedEntries()[0].name;
+  input.placeholder = prevName;
+  input.value = prevName;
+  inputContainer.appendChild(input);
+
+  input.focus();
+
+  cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
+  confirmButton.addEventListener('click', () => {
+    input.select();
+    const folderName = input.value;
+    modalWindow.hideModalWindow();
+    renameEntry(state.getSelectedEntries()[0], folderName);
+  });
 }
 
 /**
