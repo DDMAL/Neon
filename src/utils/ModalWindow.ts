@@ -2,7 +2,7 @@ import NeonView from '../NeonView';
 import { SetTextAction } from '../Types';
 import { ModalWindowInterface } from '../Interfaces';
 import { hotkeysModal, editTextModal } from '../SquareEdit/Contents';
-import { uploadAreaHTML } from '../Dashboard/dashboard_components';
+import { newFolderHTML, renameHTML, uploadAreaHTML } from '../Dashboard/dashboard_components';
 import DragHandler from './DragHandler';
 import { selectBBox, unselect } from './SelectTools';
 
@@ -17,6 +17,8 @@ export enum ModalWindowView {
   VALIDATION_STATUS,
   DOCUMENT_UPLOAD,
   MOVE_TO,
+  NEW_FOLDER,
+  RENAME
 }
 
 enum ModalWindowState {
@@ -97,6 +99,9 @@ export class ModalWindow implements ModalWindowInterface {
       case ModalWindowView.MOVE_TO:
         
         // break;
+      case ModalWindowView.NEW_FOLDER:
+
+      case ModalWindowView.RENAME:
 
       default:
         document.getElementById('neon-modal-window-container').style.display = 'flex';
@@ -123,6 +128,8 @@ export class ModalWindow implements ModalWindowInterface {
         
       case ModalWindowView.DOCUMENT_UPLOAD:
       case ModalWindowView.MOVE_TO:
+      case ModalWindowView.NEW_FOLDER:
+      case ModalWindowView.RENAME:
         document.getElementById('neon-modal-window-content-container').innerHTML = '';
         break;
 
@@ -179,6 +186,16 @@ export class ModalWindow implements ModalWindowInterface {
 
       case ModalWindowView.MOVE_TO:
         document.getElementById('neon-modal-window-header-title').innerText = 'MOVE TO';
+        break;
+
+      case ModalWindowView.NEW_FOLDER:
+        document.getElementById('neon-modal-window-header-title').innerText = 'NEW FOLDER';
+        document.getElementById('neon-modal-window-content-container').innerHTML = newFolderHTML;
+        break;
+
+      case ModalWindowView.RENAME:
+        document.getElementById('neon-modal-window-header-title').innerText = 'RENAME';
+        document.getElementById('neon-modal-window-content-container').innerHTML = renameHTML;
         break;
 
       default:
