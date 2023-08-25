@@ -31,7 +31,7 @@ let currentDragTarget = null;
 openButton?.addEventListener('click', handleOpenDocuments);
 deleteButton?.addEventListener('click', handleDeleteDocuments);
 uploadDocumentsButton?.addEventListener('click', handleOpenUploadArea);
-newFolderButton?.addEventListener('click', handleAddFolder);
+newFolderButton?.addEventListener('click', openNewFolderWindow);
 
 // Sorting algorithms
 // const sortByAlphanumerical = (a: IEntry, b: IEntry) => a.name.localeCompare(b.name);
@@ -58,8 +58,8 @@ window.addEventListener('keyup', (e) => {
   if (!e.shiftKey) shiftKeyIsPressed = false;
 });
 
-// Listener for Enter key press on tiles to rename
-window.addEventListener('keypress', handleEnterRename, false);
+// // Listener for Enter key press on tiles to rename
+// window.addEventListener('keypress', handleEnterRename, false);
 
 backgroundArea?.addEventListener('click', (e) => {
   const target = e.target as Element;
@@ -388,16 +388,16 @@ function handleDeleteDocuments() {
   }
 }
 
-/**
- * Rename current selection of document on dashboard 
- * 
- */
-function handleRenameDocument() {
-  const selections = state.getSelectedEntries();
-  if (selections.length === 1) {
-    rename(selections[0]);
-  }
-}
+// /**
+//  * Rename current selection of document on dashboard 
+//  * 
+//  */
+// function handleRenameDocument() {
+//   const selections = state.getSelectedEntries();
+//   if (selections.length === 1) {
+//     renameEntry(selections[0]);
+//   }
+// }
 
 /**
  * Updates the visibility of action bar buttons based on current selections
@@ -495,7 +495,7 @@ async function handleNavigateBack() {
 /**
  * Prompts user for a new fondler name with in-tile text input.
  */
-function handleAddFolder() {
+function handleAddFolder(folderName: string) {
   // abort if parent folder is immutable
   const isImmutable = state.getParentFolder().metadata['immutable'];
   if (isImmutable) {
@@ -510,34 +510,38 @@ function handleAddFolder() {
   newFolderTile.classList.add('folder-entry');
   newFolderTile.setAttribute('id', 'new-folder');
 
-  // push folder to start of dashboard
-  if (documentsContainer.firstChild) {
-    documentsContainer.insertBefore(newFolderTile, documentsContainer.firstChild);
+  const newFolder = fs_functions.createFolder(folderName);
+  const succeeded = fs_functions.addEntry(newFolder, state.getParentFolder());
+  if (succeeded) {
+    newFolderTile.setAttribute('id', folderName);
+    updateDashboard();
+    return true;
   }
   else {
-    documentsContainer.append(newFolderTile);
+    newFolderTile.remove();
+    return false;
   }
-
+  
   // lets user input new folder name on newly created folder; no file system changes yet
   // on successful text input, add new folder to file system and update dashboard
   // on failure, removes newFolderTile completely
-  focusForInput(newFolderTile, '', (newName: string) => {
-    const newFolder = fs_functions.createFolder(newName);
-    const succeeded = fs_functions.addEntry(newFolder, state.getParentFolder());
-    if (succeeded) {
-      newFolderTile.setAttribute('id', newName);
-      updateDashboard(); // todo: replace with sort()
-      return true;
-    }
-    else {
-      newFolderTile.remove();
-      return false;
-    }
-  },
-  // failure callback: remove newFolderTile completely
-  () => {
-    newFolderTile.remove();
-  });
+  // focusForInput(newFolderTile, '', (newName: string) => {
+  //   const newFolder = fs_functions.createFolder(newName);
+  //   const succeeded = fs_functions.addEntry(newFolder, state.getParentFolder());
+  //   if (succeeded) {
+  //     newFolderTile.setAttribute('id', newName);
+  //     updateDashboard(); // todo: replace with sort()
+  //     return true;
+  //   }
+  //   else {
+  //     newFolderTile.remove();
+  //     return false;
+  //   }
+  // },
+  // // failure callback: remove newFolderTile completely
+  // () => {
+  //   newFolderTile.remove();
+  // });
 }
 
 /**
@@ -545,7 +549,7 @@ function handleAddFolder() {
  * 
  * @param entry IEntry to rename
  */
-function rename(entry: IEntry) {
+function renameEntry(entry: IEntry) {
   // abort if parent folder
   const isImmutable = state.getParentFolder().metadata['immutable'];
   if (isImmutable) {
@@ -562,90 +566,92 @@ function rename(entry: IEntry) {
   
   const id = getEntryId(entry);
   const tile = document.getElementById(id) as HTMLDivElement;
-  focusForInput(tile, entry.name, (newName: string) => {
-    const succeeded = fs_functions.renameEntry(entry, state.getParentFolder(), newName);
-    if (succeeded) {
-      updateDashboard(); // todo: replace with sort()
-      return true;
-    }
-    return false;
-  });
+  // focusForInput(tile, entry.name, (newName: string) => {
+  //   const succeeded = fs_functions.renameEntry(entry, state.getParentFolder(), newName);
+  //   if (succeeded) {
+  //     updateDashboard(); // todo: replace with sort()
+  //     return true;
+  //   }
+  //   return false;
+  // });
+
+
 }
 
-/**
- * Allow user to rename tile by focusing on dynamically generated input element in the selected tile.
- * 
- * @param tile HTMLDivElement
- * @param oldName string
- * @param fs_callback callback function to update file system
- * @param failure_callback cleanup function to run on any failure
- */
-function focusForInput(tile: HTMLDivElement, oldName: string, fs_callback: (name: string) => boolean, failure_callback?: () => void) {
-  window.removeEventListener('keypress', handleEnterRename, false); // temporarily remove Enter key press listener for renaming
-  // clear tile contents
-  tile.innerHTML = ''; 
+// /**
+//  * Allow user to rename tile by focusing on dynamically generated input element in the selected tile.
+//  * 
+//  * @param tile HTMLDivElement
+//  * @param oldName string
+//  * @param fs_callback callback function to update file system
+//  * @param failure_callback cleanup function to run on any failure
+//  */
+// function focusForInput(tile: HTMLDivElement, oldName: string, fs_callback: (name: string) => boolean, failure_callback?: () => void) {
+//   window.removeEventListener('keypress', handleEnterRename, false); // temporarily remove Enter key press listener for renaming
+//   // clear tile contents
+//   tile.innerHTML = ''; 
 
-  // create input element
-  const input = document.createElement('input');
-  input.classList.add('filename-input');
-  input.setAttribute('type', 'text');
-  input.setAttribute('value', oldName);
-  tile.appendChild(input);
+//   // create input element
+//   const input = document.createElement('input');
+//   input.classList.add('filename-input');
+//   input.setAttribute('type', 'text');
+//   input.setAttribute('value', oldName);
+//   tile.appendChild(input);
 
-  function handleSubmit() {
-    // remove event listeners
-    input.removeEventListener('blur', handleSubmit);
-    window.removeEventListener('keypress', handleKeyPress);
+//   function handleSubmit() {
+//     // remove event listeners
+//     input.removeEventListener('blur', handleSubmit);
+//     window.removeEventListener('keypress', handleKeyPress);
 
-    const newName = input.value;
+//     const newName = input.value;
 
-    // rename tile
-    if (newName && newName.length > 0) {
-      // run callback to update file system
-      const succeeded = fs_callback(newName);
-      // put updated text back into tile
-      if (succeeded) {
-        tile.innerHTML = formatFilename(newName, 25);
-      }
-      else {
-        input.remove();
-        tile.innerHTML = formatFilename(oldName, 25);
-        if (failure_callback) failure_callback();
-      }
-    }
-    else {
-      input.remove();
-      tile.innerHTML = formatFilename(oldName, 25);
-      if (failure_callback) failure_callback();
-    }
+//     // rename tile
+//     if (newName && newName.length > 0) {
+//       // run callback to update file system
+//       const succeeded = fs_callback(newName);
+//       // put updated text back into tile
+//       if (succeeded) {
+//         tile.innerHTML = formatFilename(newName, 25);
+//       }
+//       else {
+//         input.remove();
+//         tile.innerHTML = formatFilename(oldName, 25);
+//         if (failure_callback) failure_callback();
+//       }
+//     }
+//     else {
+//       input.remove();
+//       tile.innerHTML = formatFilename(oldName, 25);
+//       if (failure_callback) failure_callback();
+//     }
 
-    // re-add Enter key press listener for renaming
-    window.addEventListener('keypress', handleEnterRename, false);
-  }
+//     // re-add Enter key press listener for renaming
+//     window.addEventListener('keypress', handleEnterRename, false);
+//   }
 
-  function handleKeyPress(e: KeyboardEvent) { 
-    if (e.key === 'Enter') {
-      handleSubmit();
-    }
-  }
+//   function handleKeyPress(e: KeyboardEvent) { 
+//     if (e.key === 'Enter') {
+//       handleSubmit();
+//     }
+//   }
 
-  input.focus();
-  input.select();
+//   input.focus();
+//   input.select();
 
-  input.addEventListener('blur', handleSubmit);
-  window.addEventListener('keypress', handleKeyPress);
-}
+//   input.addEventListener('blur', handleSubmit);
+//   window.addEventListener('keypress', handleKeyPress);
+// }
 
-/**
- * If only one tile is selected, starts renaming process on Enter key press
- * 
- * @param e KeyboardEvent
- */
-function handleEnterRename(e: KeyboardEvent) {
-  if (e.key === 'Enter') {
-    handleRenameDocument();
-  }
-}
+// /**
+//  * If only one tile is selected, starts renaming process on Enter key press
+//  * 
+//  * @param e KeyboardEvent
+//  */
+// function handleEnterRename(e: KeyboardEvent) {
+//   if (e.key === 'Enter') {
+//     handleRenameDocument();
+//   }
+// }
 
 
 
@@ -783,7 +789,7 @@ function moveToFolder(entries: IEntry[], parentFolder: IFolder, newFolder: IFold
 /**
  * Opens Move-To menu modal window with UI for moving selected entries to a new folder.
  */
-function openMoveToMenu() {
+function openMoveToWindow() {
   // generate modal window
   const modalWindow = new ModalWindow();
   modalWindow.setModalWindowView(ModalWindowView.MOVE_TO);
@@ -806,6 +812,41 @@ function openMoveToMenu() {
   const modalContainer = document.getElementById('neon-modal-window-content-container');
   modalContainer.innerHTML = '<span class="move-menu-msg">Double-click the folder you want to move your items to!</span>';
   modalContainer.appendChild(treeContainer);
+}
+
+function openNewFolderWindow() {
+  // generate modal window
+  const modalWindow = new ModalWindow();
+  modalWindow.setModalWindowView(ModalWindowView.NEW_FOLDER);
+  modalWindow.openModalWindow();
+
+  
+  const inputContainer = document.getElementById('rename_input_container') as HTMLDivElement;
+  const cancelButton = document.getElementById('cancel_rename') as HTMLButtonElement;
+  const confirmButton = document.getElementById('confirm_rename') as HTMLButtonElement;
+
+  const input = document.createElement('input');
+  input.id = 'rename_input';
+  input.type = 'text';
+  input.placeholder = 'New Folder Name';
+  inputContainer.appendChild(input);
+
+  input.focus();
+  
+  cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
+  confirmButton.addEventListener('click', () => {
+    input.select();
+    const folderName = input.value;
+    modalWindow.hideModalWindow();
+    handleAddFolder(folderName);
+  });
+}
+
+function openRenameWindow() {
+  // generate modal window
+  const modalWindow = new ModalWindow();
+  modalWindow.setModalWindowView(ModalWindowView.RENAME);
+  modalWindow.openModalWindow();
 }
 
 /**
@@ -986,14 +1027,17 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Rename" menu item
       document.querySelector(`.${btnClassname}#cm-rename-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleRenameDocument();
+        // handleRenameDocument();
+        openRenameWindow();
       });
 
       // "Move" menu item
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        openMoveToMenu();   
+        openMoveToWindow();   
       });
+
+
 
       break;
     
@@ -1014,7 +1058,7 @@ function setContextMenuItemsEventListeners(view: string) {
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         // TODO:
-        openMoveToMenu();
+        openMoveToWindow();
       });      
 
       break;
@@ -1030,7 +1074,7 @@ function setContextMenuItemsEventListeners(view: string) {
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         // TODO:
-        openMoveToMenu();
+        openMoveToWindow();
       });
 
       break;
@@ -1051,14 +1095,15 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Rename" menu item
       document.querySelector(`.${btnClassname}#cm-rename-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleRenameDocument();
+        // handleRenameDocument();
+        openRenameWindow();
       });
 
       // "Move" menu item
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         // TODO:
-        openMoveToMenu();
+        openMoveToWindow();
       });      
 
       break;
@@ -1074,7 +1119,7 @@ function setContextMenuItemsEventListeners(view: string) {
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         // TODO:
-        openMoveToMenu();
+        openMoveToWindow();
       });
 
       break;
@@ -1089,7 +1134,7 @@ function setContextMenuItemsEventListeners(view: string) {
       // "New folder" menu item
       document.querySelector(`.${btnClassname}#cm-new-folder-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleAddFolder();
+        openNewFolderWindow();
       });
 
   }

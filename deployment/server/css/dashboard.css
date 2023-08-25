@@ -732,3 +732,48 @@ input.filename-input, select.file-input, textarea.file-input {
   padding: 0;
 }
 
+#rename_container {
+  padding : 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+#rename_buttons_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: right;
+}
+
+#rename_input {
+  width: 100%;
+  padding: 12px 18px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  font-size: 16px;
+  border: 2px solid #589ed5;
+  border-radius: 5px;
+  color: #589ed5
+}
+
+#cancel_rename {
+  color: #589ed5;
+  border: none;
+  border-radius: 8px;
+  padding: 5px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#confirm_rename {
+  background-color: #589ed5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 5px;
+  font-size: 12px;
+  cursor: pointer;
+}
