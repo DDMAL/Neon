@@ -73,7 +73,7 @@ export const uploadAreaHTML =
       </div>
       <div id="rename_buttons_container">
         <button id="cancel_rename">Cancel</button>
-        <button id="confirm_rename">Rename</button>
+        <button id="confirm_rename">Create</button>
       </div>
     </div>
   `
