@@ -329,7 +329,9 @@ export class ModalWindow implements ModalWindowInterface {
       case ModalWindowView.EDIT_TEXT:
         (<HTMLInputElement> document.getElementById('neon-modal-window-edit-text-input')).select();
         break;
-
+      case ModalWindowView.NEW_FOLDER:
+      case ModalWindowView.RENAME:
+        break;
       default:
         document.getElementById('neon-modal-window').focus();
     }
