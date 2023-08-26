@@ -730,12 +730,21 @@ function openNewFolderWindow() {
   input.focus();
 
   cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
-  confirmButton.addEventListener('click', () => {
-    input.select();
-    const folderName = input.value;
-    modalWindow.hideModalWindow();
-    handleAddFolder(folderName);
+  confirmButton.addEventListener('click', () => confirmNewFolderAction(modalWindow, input));
+
+  inputContainer.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      modalWindow.hideModalWindow();
+    } else if (event.key === 'Enter') {
+      confirmNewFolderAction(modalWindow, input);
+    }
   });
+}
+
+function confirmNewFolderAction(modalWindow: ModalWindow, input: HTMLInputElement) {
+  const folderName = input.value;
+  modalWindow.hideModalWindow();
+  handleAddFolder(folderName);
 }
 
 /**
