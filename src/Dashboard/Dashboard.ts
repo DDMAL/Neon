@@ -730,21 +730,26 @@ function openNewFolderWindow() {
   input.focus();
 
   cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
-  confirmButton.addEventListener('click', () => confirmNewFolderAction(modalWindow, input));
+  confirmButton.addEventListener('click', () => confirmNewFolderAction(modalWindow, input.value));
 
   inputContainer.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       modalWindow.hideModalWindow();
     } else if (event.key === 'Enter') {
-      confirmNewFolderAction(modalWindow, input);
+      confirmNewFolderAction(modalWindow, input.value);
     }
   });
 }
 
-function confirmNewFolderAction(modalWindow: ModalWindow, input: HTMLInputElement) {
-  const folderName = input.value;
-  modalWindow.hideModalWindow();
-  handleAddFolder(folderName);
+function confirmNewFolderAction(modalWindow: ModalWindow, folderName: string) {
+  if (hasDuplicatedName(folderName)) {
+    modalWindow.hideModalWindow();
+    handleAddFolder(folderName);
+  } 
+  else {
+    window.alert('The folder name already exists in the current folder!');
+    openNewFolderWindow();
+  }
 }
 
 /**
@@ -791,23 +796,24 @@ function confirmRenameAction(modalWindow: ModalWindow, newName: string, prevName
     modalWindow.hideModalWindow();
   }
   else {
-    if (handleDuplicatedName(newName)) {
+    if (hasDuplicatedName(newName)) {
       modalWindow.hideModalWindow();
       const entry = state.getSelectedEntries()[0];
       renameEntry(entry, newName);
     }
+    else {
+      window.alert('The filename already exists in the current folder!');
+      openRenameWindow();
+    }
   }  
 }
 
-function handleDuplicatedName(filename: string): boolean {
+function hasDuplicatedName(filename: string): boolean {
   const existingNames = fs_functions.getAllNames(state.getParentFolder());
   const reg = new RegExp(filename);
   const results = existingNames.filter((existingName: string) => reg.test(existingName));
   if (results.length !== 0) {
-    // open warning window
-    const alertMessage = 'The filename already exists in the current folder!';
-    window.alert(alertMessage);
-    openRenameWindow();
+    return false;
   } 
   else {
     return true;
