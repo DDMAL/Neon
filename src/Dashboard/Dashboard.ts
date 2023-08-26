@@ -529,19 +529,19 @@ function renameEntry(entry: IEntry, newName: string) {
   }
   
   const succeeded = fs_functions.renameEntry(entry, state.getParentFolder(), newName);
-    if (succeeded) {
-      // Update database if entry is a file
-      if (entry.type === 'file') {
-        const file = entry as IFile;
-        updateDocument(file.content, newName)
-          .then(() => {
-            updateDashboard();
-          })
-      }
-      else {
-        updateDashboard();
-      }
+  if (succeeded) {
+    // Update database if entry is a file
+    if (entry.type === 'file') {
+      const file = entry as IFile;
+      updateDocument(file.content, newName)
+        .then(() => {
+          updateDashboard();
+        });
     }
+    else {
+      updateDashboard();
+    }
+  }
 }
 
 
