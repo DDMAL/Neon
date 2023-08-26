@@ -67,7 +67,7 @@ export const uploadAreaHTML =
     </div>
   </div>`;
 
-  export const newFolderHTML = `
+export const newFolderHTML = `
     <div id="rename_container">
       <div id="dashboard_input_container">
       </div>
@@ -76,9 +76,9 @@ export const uploadAreaHTML =
         <button id="confirm_dashboard">Create</button>
       </div>
     </div>
-  `
+  `;
 
-  export const renameHTML = `
+export const renameHTML = `
     <div id="rename_container">
       <div id="dashboard_input_container">
       </div>
@@ -87,4 +87,4 @@ export const uploadAreaHTML =
         <button id="confirm_dashboard">Confirm</button>
       </div>
     </div>
-  `
+  `;
