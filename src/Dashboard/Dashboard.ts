@@ -761,14 +761,24 @@ function openRenameWindow() {
   input.focus();
 
   cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
+  confirmButton.addEventListener('click', () => confirmRenameAction(modalWindow, input));
 
-  // On confirmation, close modal window and rename entry (if file, database is updated)
-  confirmButton.addEventListener('click', () => {
-    const folderName = input.value;
-    modalWindow.hideModalWindow();
-    const entry = state.getSelectedEntries()[0];
-    renameEntry(entry, folderName);
+  inputContainer.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      modalWindow.hideModalWindow();
+    } else if (event.key === 'Enter') {
+      confirmRenameAction(modalWindow, input);
+    }
   });
+  
+}
+
+// On confirmation, close modal window and rename entry (if file, database is updated)
+function confirmRenameAction(modalWindow: ModalWindow, input: HTMLInputElement) {
+  const folderName = input.value;
+  modalWindow.hideModalWindow();
+  const entry = state.getSelectedEntries()[0];
+  renameEntry(entry, folderName);
 }
 
 /**
