@@ -772,24 +772,46 @@ function openRenameWindow() {
   input.focus();
 
   cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
-  confirmButton.addEventListener('click', () => confirmRenameAction(modalWindow, input));
+  confirmButton.addEventListener('click', () => confirmRenameAction(modalWindow, input.value, prevName));
 
   inputContainer.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       modalWindow.hideModalWindow();
     } else if (event.key === 'Enter') {
-      confirmRenameAction(modalWindow, input);
+      confirmRenameAction(modalWindow, input.value, prevName);
     }
   });
   
 }
 
 // On confirmation, close modal window and rename entry (if file, database is updated)
-function confirmRenameAction(modalWindow: ModalWindow, input: HTMLInputElement) {
-  const newName = input.value;
-  modalWindow.hideModalWindow();
-  const entry = state.getSelectedEntries()[0];
-  renameEntry(entry, newName);
+function confirmRenameAction(modalWindow: ModalWindow, newName: string, prevName: string) {
+  // check for duplicated names
+  if (newName === prevName) {
+    modalWindow.hideModalWindow();
+  }
+  else {
+    if (handleDuplicatedName(newName)) {
+      modalWindow.hideModalWindow();
+      const entry = state.getSelectedEntries()[0];
+      renameEntry(entry, newName);
+    }
+  }  
+}
+
+function handleDuplicatedName(filename: string): boolean {
+  const existingNames = fs_functions.getAllNames(state.getParentFolder());
+  const reg = new RegExp(filename);
+  const results = existingNames.filter((existingName: string) => reg.test(existingName));
+  if (results.length !== 0) {
+    // open warning window
+    const alertMessage = 'The filename already exists in the current folder!';
+    window.alert(alertMessage);
+    openRenameWindow();
+  } 
+  else {
+    return true;
+  }  
 }
 
 /**
