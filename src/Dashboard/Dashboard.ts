@@ -786,10 +786,10 @@ function openRenameWindow() {
 
 // On confirmation, close modal window and rename entry (if file, database is updated)
 function confirmRenameAction(modalWindow: ModalWindow, input: HTMLInputElement) {
-  const folderName = input.value;
+  const newName = input.value;
   modalWindow.hideModalWindow();
   const entry = state.getSelectedEntries()[0];
-  renameEntry(entry, folderName);
+  renameEntry(entry, newName);
 }
 
 /**
