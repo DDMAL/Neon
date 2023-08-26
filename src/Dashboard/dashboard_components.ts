@@ -69,22 +69,22 @@ export const uploadAreaHTML =
 
   export const newFolderHTML = `
     <div id="rename_container">
-      <div id="rename_input_container">
+      <div id="dashboard_input_container">
       </div>
       <div id="rename_buttons_container">
-        <button id="cancel_rename">Cancel</button>
-        <button id="confirm_rename">Create</button>
+        <button id="cancel_dashboard">Cancel</button>
+        <button id="confirm_dashboard">Create</button>
       </div>
     </div>
   `
 
   export const renameHTML = `
     <div id="rename_container">
-      <div id="rename_input_container">
+      <div id="dashboard_input_container">
       </div>
       <div id="rename_buttons_container">
-        <button id="cancel_rename">Cancel</button>
-        <button id="confirm_rename">OK</button>
+        <button id="cancel_dashboard">Cancel</button>
+        <button id="confirm_dashboard">Confirm</button>
       </div>
     </div>
   `

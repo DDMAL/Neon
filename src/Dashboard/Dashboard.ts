@@ -715,12 +715,12 @@ function openNewFolderWindow() {
   modalWindow.openModalWindow();
 
   
-  const inputContainer = document.getElementById('rename_input_container') as HTMLDivElement;
-  const cancelButton = document.getElementById('cancel_rename') as HTMLButtonElement;
-  const confirmButton = document.getElementById('confirm_rename') as HTMLButtonElement;
+  const inputContainer = document.getElementById('dashboard_input_container') as HTMLDivElement;
+  const cancelButton = document.getElementById('cancel_dashboard') as HTMLButtonElement;
+  const confirmButton = document.getElementById('confirm_dashboard') as HTMLButtonElement;
 
   const input = document.createElement('input');
-  input.id = 'rename_input';
+  input.id = 'dashboard_input';
   input.type = 'text';
   input.placeholder = 'Untitled Folder';
   input.value = 'Untitled Folder';
@@ -756,12 +756,12 @@ function openRenameWindow() {
   modalWindow.setModalWindowView(ModalWindowView.RENAME);
   modalWindow.openModalWindow();
 
-  const inputContainer = document.getElementById('rename_input_container') as HTMLDivElement;
-  const cancelButton = document.getElementById('cancel_rename') as HTMLButtonElement;
-  const confirmButton = document.getElementById('confirm_rename') as HTMLButtonElement;
+  const inputContainer = document.getElementById('dashboard_input_container') as HTMLDivElement;
+  const cancelButton = document.getElementById('cancel_dashboard') as HTMLButtonElement;
+  const confirmButton = document.getElementById('confirm_dashboard') as HTMLButtonElement;
 
   const input = document.createElement('input');
-  input.id = 'rename_input';
+  input.id = 'dashboard_input';
   input.type = 'text';
   const prevName = state.getSelectedEntries()[0].name;
   input.placeholder = prevName;
