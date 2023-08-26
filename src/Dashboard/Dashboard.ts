@@ -757,17 +757,17 @@ function openRenameWindow() {
   input.value = prevName;
   inputContainer.appendChild(input);
 
+  input.select();
   input.focus();
 
   cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
 
   // On confirmation, close modal window and rename entry (if file, database is updated)
   confirmButton.addEventListener('click', () => {
-    input.select();
     const folderName = input.value;
     modalWindow.hideModalWindow();
-    const entry = state.getSelectedEntries()[0]
-    renameEntry(state.getSelectedEntries()[0], folderName);
+    const entry = state.getSelectedEntries()[0];
+    renameEntry(entry, folderName);
   });
 }
 
