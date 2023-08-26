@@ -723,8 +723,10 @@ function openNewFolderWindow() {
   input.id = 'rename_input';
   input.type = 'text';
   input.placeholder = 'Untitled Folder';
+  input.value = 'Untitled Folder';
   inputContainer.appendChild(input);
 
+  input.select();
   input.focus();
 
   cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
