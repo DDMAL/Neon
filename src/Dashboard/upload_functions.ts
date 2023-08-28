@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import UploadFileManager from './UploadFileManager';
-import { createManifest, addEntry } from './Storage';
+import { createManifest, addDocument } from './Storage';
 import { IFolder, fs_functions } from './FileSystem';
 
 const fm = UploadFileManager.getInstance();
@@ -161,7 +161,7 @@ async function uploadFolio(id: string, name: string, mei: File, image: File, cur
     .then(manifest => {
       const manifestBlob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/ld+json' });
       const isSingle = true;
-      return addEntry(id, name, manifestBlob, isSingle);
+      return addDocument(id, name, manifestBlob, isSingle);
     })
     // add to dashboard FileSystem
     .then(succeeded => {
