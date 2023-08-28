@@ -529,19 +529,19 @@ function renameEntry(entry: IEntry, newName: string) {
   }
   
   const succeeded = fs_functions.renameEntry(entry, state.getParentFolder(), newName);
-    if (succeeded) {
-      // Update database if entry is a file
-      if (entry.type === 'file') {
-        const file = entry as IFile;
-        updateDocument(file.content, newName)
-          .then(() => {
-            updateDashboard();
-          })
-      }
-      else {
-        updateDashboard();
-      }
+  if (succeeded) {
+    // Update database if entry is a file
+    if (entry.type === 'file') {
+      const file = entry as IFile;
+      updateDocument(file.content, newName)
+        .then(() => {
+          updateDashboard();
+        });
     }
+    else {
+      updateDashboard();
+    }
+  }
 }
 
 
@@ -715,25 +715,41 @@ function openNewFolderWindow() {
   modalWindow.openModalWindow();
 
   
-  const inputContainer = document.getElementById('rename_input_container') as HTMLDivElement;
-  const cancelButton = document.getElementById('cancel_rename') as HTMLButtonElement;
-  const confirmButton = document.getElementById('confirm_rename') as HTMLButtonElement;
+  const inputContainer = document.getElementById('dashboard_input_container') as HTMLDivElement;
+  const cancelButton = document.getElementById('cancel_dashboard') as HTMLButtonElement;
+  const confirmButton = document.getElementById('confirm_dashboard') as HTMLButtonElement;
 
   const input = document.createElement('input');
-  input.id = 'rename_input';
+  input.id = 'dashboard_input';
   input.type = 'text';
   input.placeholder = 'Untitled Folder';
+  input.value = 'Untitled Folder';
   inputContainer.appendChild(input);
 
+  input.select();
   input.focus();
 
   cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
-  confirmButton.addEventListener('click', () => {
-    input.select();
-    const folderName = input.value;
+  confirmButton.addEventListener('click', () => confirmNewFolderAction(modalWindow, input.value));
+
+  inputContainer.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      modalWindow.hideModalWindow();
+    } else if (event.key === 'Enter') {
+      confirmNewFolderAction(modalWindow, input.value);
+    }
+  });
+}
+
+function confirmNewFolderAction(modalWindow: ModalWindow, folderName: string) {
+  if (hasDuplicatedName(folderName)) {
     modalWindow.hideModalWindow();
     handleAddFolder(folderName);
-  });
+  } 
+  else {
+    window.alert('The folder name already exists in the current folder!');
+    openNewFolderWindow();
+  }
 }
 
 /**
@@ -745,30 +761,63 @@ function openRenameWindow() {
   modalWindow.setModalWindowView(ModalWindowView.RENAME);
   modalWindow.openModalWindow();
 
-  const inputContainer = document.getElementById('rename_input_container') as HTMLDivElement;
-  const cancelButton = document.getElementById('cancel_rename') as HTMLButtonElement;
-  const confirmButton = document.getElementById('confirm_rename') as HTMLButtonElement;
+  const inputContainer = document.getElementById('dashboard_input_container') as HTMLDivElement;
+  const cancelButton = document.getElementById('cancel_dashboard') as HTMLButtonElement;
+  const confirmButton = document.getElementById('confirm_dashboard') as HTMLButtonElement;
 
   const input = document.createElement('input');
-  input.id = 'rename_input';
+  input.id = 'dashboard_input';
   input.type = 'text';
   const prevName = state.getSelectedEntries()[0].name;
   input.placeholder = prevName;
   input.value = prevName;
   inputContainer.appendChild(input);
 
+  input.select();
   input.focus();
 
   cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
+  confirmButton.addEventListener('click', () => confirmRenameAction(modalWindow, input.value, prevName));
 
-  // On confirmation, close modal window and rename entry (if file, database is updated)
-  confirmButton.addEventListener('click', () => {
-    input.select();
-    const folderName = input.value;
-    modalWindow.hideModalWindow();
-    const entry = state.getSelectedEntries()[0]
-    renameEntry(state.getSelectedEntries()[0], folderName);
+  inputContainer.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      modalWindow.hideModalWindow();
+    } else if (event.key === 'Enter') {
+      confirmRenameAction(modalWindow, input.value, prevName);
+    }
   });
+  
+}
+
+// On confirmation, close modal window and rename entry (if file, database is updated)
+function confirmRenameAction(modalWindow: ModalWindow, newName: string, prevName: string) {
+  // check for duplicated names
+  if (newName === prevName) {
+    modalWindow.hideModalWindow();
+  }
+  else {
+    if (hasDuplicatedName(newName)) {
+      modalWindow.hideModalWindow();
+      const entry = state.getSelectedEntries()[0];
+      renameEntry(entry, newName);
+    }
+    else {
+      window.alert('The filename already exists in the current folder!');
+      openRenameWindow();
+    }
+  }  
+}
+
+function hasDuplicatedName(filename: string): boolean {
+  const existingNames = fs_functions.getAllNames(state.getParentFolder());
+  const reg = new RegExp(filename);
+  const results = existingNames.filter((existingName: string) => reg.test(existingName));
+  if (results.length !== 0) {
+    return false;
+  } 
+  else {
+    return true;
+  }  
 }
 
 /**
