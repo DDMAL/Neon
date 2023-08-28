@@ -102,6 +102,7 @@ class TextView implements TextViewInterface {
         unselect();
         document.getElementById('selByBBox').classList.remove('is-active');
         document.getElementById('selBySyllable').classList.add('is-active');
+        setSettings({ selectionMode:  'selBySyllable' });
       }
 
       document.querySelectorAll('.sylTextRect-display').forEach(rect => {
