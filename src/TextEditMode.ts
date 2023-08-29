@@ -196,6 +196,6 @@ export default class TextEditMode implements TextEditInterface {
       circleSliderContainer.style.display = 'none';
     }
 
-    circleSliderContainer.addEventListener('click', setCircleSizeControls.bind(this));
+    setCircleSizeControls();
   }
 }
