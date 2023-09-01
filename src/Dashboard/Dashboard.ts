@@ -27,6 +27,7 @@ const contextMenuContentWrapper: HTMLElement = document.querySelector('.context-
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
 let currentDragTarget = null;
+let rightClicked = false;
 
 openButton?.addEventListener('click', handleOpenDocuments);
 deleteButton?.addEventListener('click', handleDeleteDocuments);
@@ -236,7 +237,7 @@ async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivE
     tile.addEventListener('dblclick', handleOpenDocuments, false);
   }
   addShiftSelectionListener(tile, index);
-  addSpecificContextMenuListeners();
+  addSpecificContextMenuListeners(tile, index);
 }
 
 /**
@@ -254,35 +255,37 @@ async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivE
  */
 function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
   tile.addEventListener('click', function(_e) {
-    if (!metaKeyIsPressed && !shiftKeyIsPressed) {
-      unselectAll();
-      select(index);
-      shiftSelection.setStart(index);
-    }
-    else if (metaKeyIsPressed) {
-      if (state.getSelection()[index]) {
-        unselect(index);
-        shiftSelection.setStart(state.getSelection().lastIndexOf(true));
-      }
-      else {
-        select(index);
-        shiftSelection.setStart(index); 
-      }
-    }
-    else if (shiftKeyIsPressed) {
-      shiftSelection.getPrevSelection().forEach((idx) => {
-        unselect(idx);
-      });
-      shiftSelection.setEnd(index);
-      shiftSelection.getSelection(state.getSelection()).forEach((idx) => {
-        select(idx);
-      });
-    }
-    updateActionBarButtons();
+    shiftSelectionHandler(index);
   }, false);
 }
 
-
+function shiftSelectionHandler(index) {
+  if (!metaKeyIsPressed && !shiftKeyIsPressed) {
+    unselectAll();
+    select(index);
+    shiftSelection.setStart(index);
+  }
+  else if (metaKeyIsPressed) {
+    if (state.getSelection()[index]) {
+      unselect(index);
+      shiftSelection.setStart(state.getSelection().lastIndexOf(true));
+    }
+    else {
+      select(index);
+      shiftSelection.setStart(index); 
+    }
+  }
+  else if (shiftKeyIsPressed) {
+    shiftSelection.getPrevSelection().forEach((idx) => {
+      unselect(idx);
+    });
+    shiftSelection.setEnd(index);
+    shiftSelection.getSelection(state.getSelection()).forEach((idx) => {
+      select(idx);
+    });
+  }
+  updateActionBarButtons();
+}
 /**
  * Opens current selection of documents on dashboard.
  * 
@@ -593,7 +596,6 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
     await addTileEventListener(index, entry, tile);
   }); 
 
-  addSpecificContextMenuListeners();
   updateActionBarButtons();
   updateNavPath();
   updateBackButton();
@@ -1132,26 +1134,49 @@ function initializeDefaultContextMenu() {
  * Specific context menus appear when user right-clicks on selected files/folders.
  * The actual menu that is shown depends on the type of selection.
  */
-function addSpecificContextMenuListeners() {
-    
+function addSpecificContextMenuListeners(tile, index) {
+
   // right-click on folder item (file or folder)
-  Array.from(document.querySelectorAll('.document-entry')).forEach( (elem) => {
-    elem.addEventListener('contextmenu', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
+  tile.addEventListener('contextmenu', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
 
-      showContextMenu(
-        'selection-options', 
-        (<MouseEvent> e).clientX, 
-        (<MouseEvent> e).clientY
-      );
-      contextMenu.classList.remove('hidden');
-    });
+    if (rightClicked || state.getSelectedEntries().length === 1) {
+      unselectAll();
+    }
+
+    // select
+    select(index);
+
+    showContextMenu(
+      'selection-options', 
+      (<MouseEvent> e).clientX, 
+      (<MouseEvent> e).clientY
+    );
+    contextMenu.classList.remove('hidden');
+    rightClicked = true;
   });
-
+    
   // hide context menu if user clicks away
-  mainSection.addEventListener('click', (_e) => {
-    contextMenu.classList.add('hidden');
+  mainSection.addEventListener('click', (e) => {
+    if (rightClicked) {
+      let clickedElement = e.target as HTMLElement;
+      if (clickedElement.parentElement.classList.contains('document-entry')) {
+        clickedElement = clickedElement.parentElement;
+      }
+      
+      contextMenu.classList.add('hidden');
+      rightClicked = false;
+      if (!clickedElement.classList.contains('document-entry')) {
+        // if clicks on blank 
+        unselectAll();
+      }
+      else {
+        // if clicks on a file/folder, select it
+        const clickedEntry = getEntryById(clickedElement.id);
+        shiftSelectionHandler(state.getIndexByEntryName(clickedEntry.name));
+      }
+    }
   });
 }
 

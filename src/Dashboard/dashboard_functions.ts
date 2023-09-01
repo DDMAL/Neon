@@ -83,6 +83,10 @@ export function dashboardState() {
     return orderedEntries;
   }
 
+  function getIndexByEntryName(name) {
+    return orderedEntries.findIndex(entry => entry.name === name);
+  }
+
   function setSelection(index: number, bool: boolean) {
     orderedSelection[index] = bool;
   }
@@ -126,6 +130,7 @@ export function dashboardState() {
     root: root,
     setEntries: setEntries,
     getEntries: getEntries,
+    getIndexByEntryName: getIndexByEntryName,
     setSelection: setSelection,
     getSelection: getSelection,
     resetSelection: resetSelection,
