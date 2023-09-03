@@ -24,7 +24,7 @@ export async function fetchUploadedDocuments(): Promise<string[]> {
     });
 }
 
-export function createManifest(id: string, title: string, mei: File, bg: File) {
+export function createManifest(id: string, title: string, mei: File, bg: File): Promise<string> {
   return new Promise(async (resolve) => {
     const manifest = JSON.parse(JSON.stringify(localManifest));
     manifest['@id'] = id;
@@ -123,30 +123,30 @@ export function deleteDocument(id: string): Promise<boolean> {
  * @param title 
  * @returns Promise<boolean>
  */
-export function updateDocument(id: string, title: string) {
+export function updateDocument(id: string, title: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     // Retrieve doc from database (to get _rev)
     db.get(id).then(doc => {
 
       // Retrieve manifest from database
       db.getAttachment(id, 'manifest').then((manifestBlob: Blob) => {
-          manifestBlob.text().then(manifestText => {
-            const manifest = JSON.parse(manifestText);
+        manifestBlob.text().then(manifestText => {
+          const manifest = JSON.parse(manifestText);
     
-            // Update the manifest
-            manifest['title'] = title;
+          // Update the manifest
+          manifest['title'] = title;
     
-            // Convert back to blob
-            const updatedManifest = JSON.stringify(manifest, null, 2);
-            const updatedManifestBlob = new Blob([updatedManifest], { type: 'application/ld+json' });
+          // Convert back to blob
+          const updatedManifest = JSON.stringify(manifest, null, 2);
+          const updatedManifestBlob = new Blob([updatedManifest], { type: 'application/ld+json' });
 
-            // update the database, specify the id and _rev of the doc
-            db.putAttachment(id, 'manifest', doc._rev, updatedManifestBlob, 'application/ld+json')
-              .then(() => resolve(true))
-              .catch(err => reject(err)); // db.putAttachment
+          // update the database, specify the id and _rev of the doc
+          db.putAttachment(id, 'manifest', doc._rev, updatedManifestBlob, 'application/ld+json')
+            .then(() => resolve(true))
+            .catch(err => reject(err)); // db.putAttachment
 
-          }).catch(err => reject(err)); // manifestTextPromise
-        }).catch(err => reject(err)); // db.getAttachment
+        }).catch(err => reject(err)); // manifestTextPromise
+      }).catch(err => reject(err)); // db.getAttachment
     }).catch(err => reject(err)); // db.get
   });
 }
