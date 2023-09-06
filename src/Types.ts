@@ -297,11 +297,11 @@ export type NeonManifest = {
 };
 
 
-export type allDocs = {
+export type AllDocs = {
   offset?: number,
   total_rows?: number,
   rows?: {
-    doc?: PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> & { kind?: string; };
+    doc?: PouchDB.Core.ExistingDocument<PouchDB.Core.AllDocsMeta> & { type?: string; name?: string; };
     id: string;
     key: string;
     value: {
@@ -310,6 +310,23 @@ export type allDocs = {
     };
   }[];
 };
+
+export type Doc = {
+  _id: string,
+  name: string,
+  type: string,
+  _attachments: {
+    manifest: {
+      content_type: string,
+      data: Blob
+    }
+  },
+};
+
+export type uploadsInfo = {
+  id: string;
+  name: string;
+}[];
 
 /** An <svg> element from any DOM queries */
 export type HTMLSVGElement = HTMLElement & SVGSVGElement;

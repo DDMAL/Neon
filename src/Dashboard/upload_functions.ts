@@ -166,7 +166,7 @@ async function uploadFolio(id: string, name: string, mei: File, image: File, cur
     // add to dashboard FileSystem
     .then(succeeded => {
       if (succeeded) {
-        const newName = renameFile(name, fs_functions.getAllNames(currentFolder));
+        const newName = fnConflictHandler(name, fs_functions.getAllNames(currentFolder));
         const datetime = new Date().toLocaleString();
         const fileEntry = fs_functions.createFile(newName, id);
         const folioEntry = fs_functions.addMetadata(fileEntry, { type: 'folio', created_on: datetime });
@@ -222,7 +222,7 @@ export async function sortFileByName(sortByNameBtn: Element): Promise<void>  {
 //     // add to dashboard FileSystem
 //     .then(succeeded => {
 //       if (succeeded) {
-//         const newName = renameFile(manuscript.name, existingNames);
+//         const newName = fnConflictHandler(manuscript.name, existingNames);
 //         const datetime = new Date().toLocaleString();
 //         const fileEntry = fs_functions.createFile(newName, id);
 //         const manuscriptEntry = fs_functions.addMetadata(fileEntry, { type: 'manuscript', created_on: datetime });
@@ -244,7 +244,7 @@ export function formatFilename(filename: string, maxLen: number): string {
 }
 
 // Renames file if there are naming conflicts, in the form of 'foobar (1)'
-export function renameFile(filename: string, comparisons: string[]): string {
+export function fnConflictHandler(filename: string, comparisons: string[]): string {
   const reg = new RegExp(filename);
   const results = comparisons.filter((comparison: string) => reg.test(comparison));
 

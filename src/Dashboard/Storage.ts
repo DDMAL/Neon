@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import PouchDB from 'pouchdb';
-import { allDocs } from '../Types';
+import { AllDocs, Doc, uploadsInfo } from '../Types';
 import * as localManifest from '../../assets/manifest.json';
 
-const db = new PouchDB('Neon-User-Storage');
+export const db = new PouchDB('Neon-User-Storage');
 
-function getAllDocuments(): Promise<allDocs> {
+function getAllDocuments(): Promise<AllDocs> {
   return new Promise((resolve, reject) => {
     db.allDocs({ include_docs: true })
       .then(result => resolve(result))
@@ -13,15 +13,17 @@ function getAllDocuments(): Promise<allDocs> {
   });
 }
 
-export async function fetchUploadedDocuments(): Promise<string[]> {
-  return await getAllDocuments()
-    .then( (res: allDocs) => {
-      return res.rows.map( row => row.key);
-    })
-    .catch(err => {
-      console.log('Could\'nt fetch uploaded documents', err.message);
-      return [];
-    });
+export async function fetchUploads(): Promise<uploadsInfo> {
+  try {
+    const res = await getAllDocuments();
+    return res.rows.map(row => ({
+      id: row.id,
+      name: row.doc ? row.doc.name : 'undefined',
+    }));
+  } catch (err) {
+    console.log('Couldn\'t fetch uploaded documents', err.message);
+    return [];
+  }
 }
 
 export function createManifest(id: string, title: string, mei: File, bg: File): Promise<string> {
@@ -72,11 +74,12 @@ export function createManifest(id: string, title: string, mei: File, bg: File): 
  * @param single is it a single page or a manuscript
  * @returns Promise<boolean>
  */
-export function addDocument(id: string, title: string, content: Blob, single: boolean): Promise<boolean> {
+export function addDocument(id: string, name: string, content: Blob, single: boolean): Promise<boolean> {
   return new Promise((resolve, reject) => {
     db.put({
       _id: id,
-      kind: single ? 'page' : 'manuscript',
+      name: name,
+      type: single ? 'page' : 'manuscript',
       _attachments: {
         manifest: {
           content_type: 'application/ld+json',
@@ -86,7 +89,7 @@ export function addDocument(id: string, title: string, content: Blob, single: bo
     }).then(() => {
       resolve(true);
     }).catch(err => {
-      window.alert(`Error Uploading Document: ${err.message}, title: ${title}, id: ${id}.`);
+      window.alert(`Error Uploading Document: ${err.message}, title: ${name}, id: ${id}.`);
       reject(false);
     });
   });
@@ -120,13 +123,13 @@ export function deleteDocument(id: string): Promise<boolean> {
 /**
  * Update the doc from the database (supports only title for now)
  * @param id 
- * @param title 
+ * @param newName 
  * @returns Promise<boolean>
  */
-export function updateDocument(id: string, title: string): Promise<boolean> {
+export function updateDocName(id: string, newName: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     // Retrieve doc from database (to get _rev)
-    db.get(id).then(doc => {
+    db.get<Doc>(id).then(doc => {
 
       // Retrieve manifest from database
       db.getAttachment(id, 'manifest').then((manifestBlob: Blob) => {
@@ -134,17 +137,20 @@ export function updateDocument(id: string, title: string): Promise<boolean> {
           const manifest = JSON.parse(manifestText);
     
           // Update the manifest
-          manifest['title'] = title;
+          doc.name = newName;
+          manifest['title'] = newName;
     
           // Convert back to blob
-          const updatedManifest = JSON.stringify(manifest, null, 2);
-          const updatedManifestBlob = new Blob([updatedManifest], { type: 'application/ld+json' });
+          const newManifestBlob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/ld+json' });
 
-          // update the database, specify the id and _rev of the doc
-          db.putAttachment(id, 'manifest', doc._rev, updatedManifestBlob, 'application/ld+json')
+          doc._attachments['manifest'] = {
+            content_type: 'application/ld+json',
+            data: newManifestBlob
+          };
+          
+          db.put(doc)
             .then(() => resolve(true))
-            .catch(err => reject(err)); // db.putAttachment
-
+            .catch(err => reject(err)); // db.put
         }).catch(err => reject(err)); // manifestTextPromise
       }).catch(err => reject(err)); // db.getAttachment
     }).catch(err => reject(err)); // db.get

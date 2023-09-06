@@ -1,5 +1,5 @@
 import { IEntry, IFile, IFolder, fs_functions } from './FileSystem';
-import { deleteDocument, updateDocument } from './Storage';
+import { deleteDocument, updateDocName } from './Storage';
 import { formatFilename } from './upload_functions';
 import { FileSystemManager } from './FileSystem';
 import { ShiftSelectionManager, dashboardState } from './dashboard_functions';
@@ -88,13 +88,13 @@ function handleOpenUploadArea() {
 /**
  * Opens a new tab with the Neon editor for the given filename
  * 
- * @param filename key of file in PouchDB or manifest url
+ * @param id key of file in bbb or manifest url
  * @param isSample boolean to decide where to fetch file
  */
-function openEditorTab(filename: string, isSample: boolean) {
+function openEditorTab(id: string, isSample: boolean) {
   const params = (isSample)
-    ? { manifest: filename }
-    : { storage: filename };
+    ? { manifest: id }
+    : { storage: id };
   const query = makeQuery(params);
   window.open(`./editor.html?${query}`, '_blank');
 }
@@ -109,7 +109,7 @@ function openFile(entry: IFile) {
   const documentType = entry.metadata['document'];
   if (typeof documentType !== undefined) {
     const isSample = documentType === 'sample';
-    openEditorTab(entry.content, isSample);
+    openEditorTab(entry.id, isSample);
   }
 }
 
@@ -132,9 +132,8 @@ function makeQuery(obj): string {
  */
 function select(index: number) {
   const entry = state.getEntries().at(index);
-  const id = getEntryId(entry);
   state.setSelection(index, true);
-  const tile = document.getElementById(id);
+  const tile = document.getElementById(entry.id);
   tile.classList.add('selected');
 }
 
@@ -144,7 +143,7 @@ function select(index: number) {
  * @param index 
  */
 function unselect(index: number) {
-  const id = state.getEntries().at(index).name;
+  const id = state.getEntries().at(index).id;
   state.setSelection(index, false);
   const tile = document.getElementById(id);
   tile.classList.remove('selected');
@@ -179,16 +178,16 @@ function createTile(entry: IEntry) {
     case 'folder':
       // set type attrib and id
       container.classList.add('folder-entry');
-      container.setAttribute('id', entry.name);
+      container.setAttribute('id', entry.id);
       // set icon
       icon.src = './Neon-gh/assets/img/folder-icon.svg';
       // set drop target attrib
-      container.setAttribute('drop-id', entry.name);
+      container.setAttribute('drop-id', entry.id);
       container.classList.add('drop-target');
       break;
     case 'file':
       container.classList.add('file-entry');
-      container.setAttribute('id', (entry as IFile).content);
+      container.setAttribute('id', (entry as IFile).id);
 
       // determine which icon and class to add depending on existing metadata
       if (entry.metadata['type'] === 'manuscript') {
@@ -319,7 +318,7 @@ function handleOpenDocuments() {
 function handleDeleteDocuments() {
   function deleteFileEntry(file: IFile): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      deleteDocument(file.content)
+      deleteDocument(file.id)
         .then(() => {
           fs_functions.removeEntry(file, state.getParentFolder());
           resolve(true);
@@ -336,7 +335,7 @@ function handleDeleteDocuments() {
    */
   function deleteFolderEntry(folder: IFolder): Promise<boolean> {
     // only delete a folder if it is empty
-    const isEmpty = folder.content.length === 0;
+    const isEmpty = folder.children.length === 0;
 
     return new Promise((resolve) => {
       if (isEmpty) {
@@ -536,7 +535,7 @@ function renameEntry(entry: IEntry, newName: string) {
     // Update database if entry is a file
     if (entry.type === 'file') {
       const file = entry as IFile;
-      updateDocument(file.content, newName)
+      updateDocName(file.id, newName)
         .then(() => {
           updateDashboard();
         });
@@ -556,21 +555,9 @@ function renameEntry(entry: IEntry, newName: string) {
 */
 function getEntryById(id: string): IEntry {
   const targetEntry = state.getEntries().find(entry => {
-    if (entry.type === 'folder') return entry.name === id;
-    else return (entry as IFile).content === id;
+    return entry.id === id;
   });
   return targetEntry;
-}
-
-/**
- * Given an entry, returns the entry id depending on entry type
- * 
- * @param entry IEntry
- * @returns id string
- */
-function getEntryId(entry: IEntry): string {
-  if (entry.type === 'folder') return entry.name;
-  else return (entry as IFile).content;
 }
 
 /**
@@ -587,10 +574,10 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   shiftSelection.reset();
 
   // update ordered items for current fs-contents
-  state.setEntries(currentFolder.content);
+  state.setEntries(currentFolder.children);
 
   // populate folder contents
-  currentFolder.content.forEach(async (entry, index) => {
+  currentFolder.children.forEach(async (entry, index) => {
     const tile = createTile(entry);
     documentsContainer.appendChild(tile);
     await addTileEventListener(index, entry, tile);
@@ -601,9 +588,8 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   updateBackButton();
 
   // add drag and drop listeners for current folder content
-  currentFolder.content.forEach((entry) => {
-    const id = getEntryId(entry);
-    const tile = document.getElementById(id);
+  currentFolder.children.forEach((entry) => {
+    const tile = document.getElementById(entry.id);
     addDragStartListener(tile);
 
     if (entry.type === 'folder') { 
@@ -744,7 +730,7 @@ function openNewFolderWindow() {
 }
 
 function confirmNewFolderAction(modalWindow: ModalWindow, folderName: string) {
-  if (hasDuplicatedName(folderName)) {
+  if (!nameExists(folderName)) {
     modalWindow.hideModalWindow();
     handleAddFolder(folderName);
   } 
@@ -798,7 +784,7 @@ function confirmRenameAction(modalWindow: ModalWindow, newName: string, prevName
     modalWindow.hideModalWindow();
   }
   else {
-    if (hasDuplicatedName(newName)) {
+    if (!nameExists(newName)) {
       modalWindow.hideModalWindow();
       const entry = state.getSelectedEntries()[0];
       renameEntry(entry, newName);
@@ -810,16 +796,9 @@ function confirmRenameAction(modalWindow: ModalWindow, newName: string, prevName
   }  
 }
 
-function hasDuplicatedName(filename: string): boolean {
-  const existingNames = fs_functions.getAllNames(state.getParentFolder());
-  const reg = new RegExp(filename);
-  const results = existingNames.filter((existingName: string) => reg.test(existingName));
-  if (results.length !== 0) {
-    return false;
-  } 
-  else {
-    return true;
-  }  
+function nameExists(name: string): boolean {
+  const parent = state.getParentFolder();
+  return parent.children.some((e) => e.name === name);
 }
 
 /**
@@ -854,7 +833,7 @@ function generateFolderTree(folder: IFolder, moveToCallback: (newParentFolder :I
   });
 
   // If Folder has no subfolders, return without nested ul
-  const isLeaf = folder.content.every(entry => entry.type !== 'folder');
+  const isLeaf = folder.children.every(entry => entry.type !== 'folder');
   if (isLeaf) {
     tree.appendChild(liContainer);
     liContainer.appendChild(folderName);
@@ -885,7 +864,7 @@ function generateFolderTree(folder: IFolder, moveToCallback: (newParentFolder :I
   tree.appendChild(ul);
 
   // Append folder contents
-  folder.content.forEach((entry) => {
+  folder.children.forEach((entry) => {
     if (entry.type === 'folder') {
       const folderTree = generateFolderTree(entry as IFolder, moveToCallback, degree + 1);
       ul.appendChild(folderTree);

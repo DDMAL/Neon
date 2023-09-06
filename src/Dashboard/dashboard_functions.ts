@@ -9,22 +9,22 @@ export class ShiftSelectionManager {
     this.reset();
   }
 
-  public setStart(start: number) {
+  public setStart(start: number): void {
     this.reset();
     this.start = Math.max(start, 0);
   }
 
-  public setEnd(end: number) {
+  public setEnd(end: number): void {
     this.end = end;
   }
 
-  public reset() {
+  public reset(): void {
     this.start = 0;
     this.end = -1;
     this.prevSelection.splice(0);
   }
 
-  public getPrevSelection() {
+  public getPrevSelection(): number[] {
     return this.prevSelection;
   }
 
@@ -53,12 +53,28 @@ export class ShiftSelectionManager {
   }
 }
 
-export function dashboardState() {
+export interface DashboardState {
+  root(rootFolder?: IFolder): IFolder | null;
+  setEntries(entries: IEntry[]): void;
+  getEntries(): IEntry[];
+  getIndexByEntryName(name: string): number;
+  setSelection(index: number, bool: boolean): void;
+  getSelection(): boolean[];
+  resetSelection(): void;
+  setFolderPath(path: IFolder[]): void;
+  getFolderPath(): IFolder[];
+  getParentFolder(): IFolder | undefined;
+  getSelectedEntries(): IEntry[];
+  getSelectedFolders(): IEntry[];
+  getSelectedFiles(): IEntry[];
+}
+
+export function dashboardState(): DashboardState {
   // as displayed on the dashboard
   let orderedEntries: IEntry[] = [];
   let orderedSelection: boolean[] = [];
-  const currentFileSelection = []; // currently user-selected files
-  const currentFolderSelection = []; // currently user-selected folders
+  // const currentFileSelection = []; // currently user-selected files
+  // const currentFolderSelection = []; // currently user-selected folders
 
   // path leading to current folder
   let folderPath: IFolder[] = [];
@@ -83,7 +99,7 @@ export function dashboardState() {
     return orderedEntries;
   }
 
-  function getIndexByEntryName(name) {
+  function getIndexByEntryName(name: string) {
     return orderedEntries.findIndex(entry => entry.name === name);
   }
 
@@ -124,7 +140,7 @@ export function dashboardState() {
   }
 
   // TODO:
-  function sortEntries() {}
+  // function sortEntries() {}
 
   return {
     root: root,
@@ -140,5 +156,5 @@ export function dashboardState() {
     getSelectedEntries: getSelectedEntries,
     getSelectedFolders: getSelectedFolders,
     getSelectedFiles: getSelectedFiles,
-  }
+  };
 }
