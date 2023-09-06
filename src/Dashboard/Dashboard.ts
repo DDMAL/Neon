@@ -1120,11 +1120,18 @@ function initializeDefaultContextMenu() {
   // right-click on dashboard background
   document.querySelector('.main-section').addEventListener('contextmenu', (e) => {
     e.preventDefault();
+
+    unselectAll();
+
     showContextMenu(
       'default', 
       (<MouseEvent> e).clientX, 
       (<MouseEvent> e).clientY
     );
+  });
+
+  document.querySelector('.main-section').addEventListener('click', (_e) => {
+    contextMenu.classList.add('hidden');
   });
 }
 
