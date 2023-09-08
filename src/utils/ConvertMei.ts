@@ -81,6 +81,11 @@ export function convertSbToStaff(sbBasedMei: string): string {
   const meiDoc = parser.parseFromString(sbBasedMei, 'text/xml');
   const mei = meiDoc.documentElement;
 
+  // Check if there is <colLayout> element and remove them
+  // There will only be one <colLayout> element
+  const colLayout = Array.from(mei.getElementsByTagName('colLayout')).at(0);
+  if (colLayout) colLayout.parentNode.removeChild(colLayout);
+
   // Check if there are <pb> elements and remove them
   const pageBegins = Array.from(mei.getElementsByTagName('pb'));
   for (const pb of pageBegins) {
