@@ -81,6 +81,12 @@ export function convertSbToStaff(sbBasedMei: string): string {
   const meiDoc = parser.parseFromString(sbBasedMei, 'text/xml');
   const mei = meiDoc.documentElement;
 
+  // Check if there are <pb> elements and remove them
+  const pageBegins = Array.from(mei.getElementsByTagName('pb'));
+  for (const pb of pageBegins) {
+    pb.parentNode.removeChild(pb);
+  }
+
   // Check neume without neume component
   const neumes = Array.from(mei.getElementsByTagName('neume'));
   for (const neume of neumes) {
