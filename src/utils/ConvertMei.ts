@@ -118,6 +118,7 @@ export function convertSbToStaff(sbBasedMei: string): string {
           const sbIndex = childArray.indexOf(sb);
           for (const neume of origSyllable.getElementsByTagName('neume')) {
             const ind = childArray.indexOf(neume);
+            // Keep this check for files not produced by Rodan
             if (ind < sbIndex) {
               neumeBehind = true;
             }
