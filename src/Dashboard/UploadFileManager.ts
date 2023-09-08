@@ -60,7 +60,7 @@ class UploadFileManager {
       filename: name,
       mei_filename: mei,
       image_filename: image
-    }
+    };
     this.folios.push(newFolio);
   }
 

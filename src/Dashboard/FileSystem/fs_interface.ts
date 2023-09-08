@@ -6,16 +6,18 @@ export enum EntryType {
 export interface IEntry {
   name: string;
   type: EntryType;
-  content: IEntry[] | string;
+  id: string;
+  children: IEntry[];
   metadata: { [key: string]: unknown };
 }
 
 export interface IFolder extends IEntry {
   type: EntryType.Folder;
-  content: IEntry[];
+  id: string;
+  children: IEntry[];
 }
 
 export interface IFile extends IEntry {
   type: EntryType.File
-  content: string;
+  id: string;
 }

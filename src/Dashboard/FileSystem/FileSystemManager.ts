@@ -1,5 +1,5 @@
 import { IFolder, fs_functions } from '.';
-import { fetchUploadedDocuments } from '../Storage';
+import { fetchUploads, db } from '../Storage';
 import { samples } from '../samples_filenames';
 
 interface FileSystemProps {
@@ -36,11 +36,33 @@ export const FileSystemManager = (): FileSystemProps => {
       // if localstorage exists, load previous root
       if (fs) {
         const localFileSystem = JSON.parse(fs) as IFolder;
-        return localFileSystem;
+
+        // if old file system, clean local storage & db
+        if (!localFileSystem.children) {
+          window.localStorage.clear();
+
+          const result = await db.allDocs({ include_docs: true });
+          // Delete each document
+          const docsToDelete = result.rows.map((row) => ({
+            _id: row.id,
+            _rev: row.doc._rev,
+            _deleted: true,
+          }));
+          await db.bulkDocs(docsToDelete);
+
+          const root = fs_functions.createFolder('Home');
+          loadSamples(root);
+          setFileSystem(root);
+          return root;
+        }
+        else {
+          return localFileSystem;
+        }
+
       }
       // else, create new root
       else {
-        const root = fs_functions.createRoot('Home', []);
+        const root = fs_functions.createFolder('Home');
         loadSamples(root);
         await loadPreviousUploads(root);
         setFileSystem(root);
@@ -80,11 +102,11 @@ export const FileSystemManager = (): FileSystemProps => {
 
   async function loadPreviousUploads(root: IFolder) {
     // Get previous uploads from local storage
-    const uploads = await fetchUploadedDocuments();
+    const uploads = await fetchUploads();
 
     // Make upload entries
     const uploadEntries = uploads.map((upload) => {
-      return fs_functions.createFile(upload, upload);
+      return fs_functions.createFile(upload.name, upload.id);
     });
 
     uploadEntries.forEach((upload) => {
