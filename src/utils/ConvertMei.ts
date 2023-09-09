@@ -187,6 +187,7 @@ export function convertSbToStaff(sbBasedMei: string): string {
 
         const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
         copyAttributes(currentSb, newStaff);
+        newStaff.setAttribute('n', '1');
         const newLayer = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'layer');
         newLayer.setAttribute('n', '1');
         newLayer.setAttribute('xml:id', 'm-' + uuidv4());
