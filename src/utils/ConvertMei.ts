@@ -121,7 +121,8 @@ export function convertSbToStaff(sbBasedMei: string): string {
     const originalStaves = Array.from(section.getElementsByTagName('staff'));
     for (const staff of originalStaves) {
       const layer = staff.getElementsByTagName('layer')[0];
-      // First pass: get all sb elements as direct children of layer
+
+      // First pass: get all sb elements as direct children of cb
       const sbArray = Array.from(layer.getElementsByTagName('sb'));
       for (const sb of sbArray) {
         if (sb.parentElement.tagName !== 'layer') {
@@ -181,28 +182,52 @@ export function convertSbToStaff(sbBasedMei: string): string {
           }
         }
       }
-
-      const sbs = Array.from(layer.getElementsByTagName('sb'));
-      for (let i = 0; i < sbs.length; i++) {
-        const currentSb = sbs[i];
-        const nextSb = (sbs.length > i + 1) ? sbs[i + 1] : undefined;
-
-        const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
-        copyAttributes(currentSb, newStaff);
-        newStaff.setAttribute('n', '1');
-        const newLayer = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'layer');
-        newLayer.setAttribute('n', '1');
-        newLayer.setAttribute('xml:id', 'm-' + uuidv4());
-        newStaff.appendChild(newLayer);
-
-        const childrenArray = Array.from(layer.children);
-        const copyArray = childrenArray.slice(childrenArray.indexOf(currentSb) + 1, childrenArray.indexOf(nextSb));
-
-        for (const child of copyArray) {
-          newLayer.appendChild(child);
+      
+      // handle <cb> and <sb>
+      const colBegins = Array.from(layer.getElementsByTagName('cb'));
+      // if no cbs, create a dummy one
+      if (!colBegins.length) {
+        const dummyCb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'cb');
+        layer.insertAdjacentElement('afterbegin', dummyCb);
+        colBegins.push(dummyCb);
+      }
+      for (const cb of colBegins) {
+        // 3. Create a <page> element and move children.
+        const newPage = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'page');
+        newPage.setAttribute('xml:id', 'm-' + uuidv4());
+        let nextSibling = cb.nextSibling as Element;
+  
+        while (nextSibling) {
+          if (nextSibling.tagName === 'cb') {
+            // Found another <cb>, exit the loop for <page>.
+            break;
+          } else if (nextSibling.tagName === 'sb') {
+            // Found an <sb>, create a <staff> element and move children.
+            const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
+            copyAttributes(nextSibling, newStaff);
+            newStaff.setAttribute('n', '1');
+            const newLayer = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'layer');
+            newLayer.setAttribute('n', '1');
+            newLayer.setAttribute('xml:id', 'm-' + uuidv4());
+            newStaff.appendChild(newLayer);
+      
+            let sbNextSibling = nextSibling.nextSibling as Element;
+            while (sbNextSibling && sbNextSibling.tagName !== 'cb' && sbNextSibling.tagName !== 'sb') {
+              const child = sbNextSibling;
+              sbNextSibling = sbNextSibling.nextSibling as Element; // Advance to the next sibling before moving.
+              newLayer.appendChild(child);
+            }
+      
+            // Move new <staff> to <page>
+            newPage.insertAdjacentElement('beforeend', newStaff);
+            nextSibling = nextSibling.nextSibling as Element;
+          } else {
+            // Skip text nodes (whitespace) 
+            nextSibling = nextSibling.nextSibling as Element;
+          }
         }
-
-        section.insertBefore(newStaff, staff);
+        section.insertBefore(newPage, staff);
+        cb.remove();
       }
       staff.remove();
     }
