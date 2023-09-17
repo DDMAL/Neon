@@ -80,6 +80,8 @@ export function convertSbToStaff(sbBasedMei: string): string {
   const parser = new DOMParser();
   const meiDoc = parser.parseFromString(sbBasedMei, 'text/xml');
   const mei = meiDoc.documentElement;
+  const orgMdiv = Array.from(mei.getElementsByTagName('mdiv')).at(0);
+  const orgStaffDef = Array.from(mei.getElementsByTagName('staffDef')).at(0);
   let nCol = 0;
 
   // Check if there is <colLayout> element and remove them
@@ -114,8 +116,9 @@ export function convertSbToStaff(sbBasedMei: string): string {
     }
   }
 
+  const orgSections = Array.from(mei.getElementsByTagName('section'));
   // Go section by section just in case
-  for (const section of mei.getElementsByTagName('section')) {
+  for (const section of orgSections) {
     // In case there are multiple staves here we want to preserve those
     // A separate array is necessary as the HTMLCollection will update!
     const originalStaves = Array.from(section.getElementsByTagName('staff'));
@@ -191,10 +194,14 @@ export function convertSbToStaff(sbBasedMei: string): string {
         layer.insertAdjacentElement('afterbegin', dummyCb);
         colBegins.push(dummyCb);
       }
+      const newPages = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'pages');
+      newPages.setAttribute('xml:id', 'm-' + uuidv4());
+      newPages.setAttribute('type', 'facsimile');
+      orgMdiv.insertAdjacentElement('beforebegin', newPages);
       for (const cb of colBegins) {
         // 3. Create a <page> element and move children.
-        const newPage = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'page');
-        newPage.setAttribute('xml:id', 'm-' + uuidv4());
+        const newPage = createNewPage(meiDoc, orgStaffDef);
+        const newSection = newPage.getElementsByTagName('section').item(0);
         let nextSibling = cb.nextSibling as Element;
   
         while (nextSibling) {
@@ -218,20 +225,19 @@ export function convertSbToStaff(sbBasedMei: string): string {
               newLayer.appendChild(child);
             }
       
-            // Move new <staff> to <page>
-            newPage.insertAdjacentElement('beforeend', newStaff);
+            // Move new <staff> to <section> in <page>
+            newSection.appendChild(newStaff);
             nextSibling = nextSibling.nextSibling as Element;
           } else {
             // Skip text nodes (whitespace) 
             nextSibling = nextSibling.nextSibling as Element;
           }
         }
-        section.insertBefore(newPage, staff);
-        cb.remove();
+        newPages.appendChild(newPage);
       }
-      staff.remove();
     }
   }
+  orgMdiv.remove();
 
   // Second pass on all syllables to handle clefs and custos that might remain
   const newSyllables = Array.from(mei.getElementsByTagName('syllable'));
@@ -366,4 +372,34 @@ export function checkOutOfBoundsGlyphs (meiString: string): void {
 
   if (isOutOfBounds)
     Notification.queueNotification('This folio contains glyph(s) placed out-of-bounds!', 'warning');
+}
+
+function createNewPage (meiDoc: Document, staffDef: Element): Element {
+  const page = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'page');
+  page.setAttribute('xml:id', 'm-' + uuidv4());
+  const mdiv = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'mdiv');
+  mdiv.setAttribute('xml:id', 'm-' + uuidv4());
+  
+  const score = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'score');
+  score.setAttribute('xml:id', 'm-' + uuidv4());
+  const scoreDef = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'scoreDef');
+  scoreDef.setAttribute('xml:id', 'm-' + uuidv4());
+  const staffGrp = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staffGrp');
+  staffGrp.setAttribute('xml:id', 'm-' + uuidv4());
+  const newStaffDef = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staffDef');
+  copyAttributes(staffDef, newStaffDef);
+  newStaffDef.setAttribute('xml:id', 'm-' + uuidv4());
+
+  const section = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'section');
+  section.setAttribute('xml:id', 'm-' + uuidv4());
+
+  staffGrp.appendChild(newStaffDef);
+  scoreDef.appendChild(staffGrp);
+  score.appendChild(scoreDef);
+  score.appendChild(section);
+  // mdiv.appendChild(score);
+  // pages.appendChild(mdiv);
+  page.appendChild(score);
+
+  return page;
 }
