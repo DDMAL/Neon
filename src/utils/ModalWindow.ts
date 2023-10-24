@@ -45,14 +45,26 @@ export class ModalWindow implements ModalWindowInterface {
   constructor (neonView?: NeonView) {
     this.neonView = neonView;
     this.modalWindowState = ModalWindowState.CLOSED;
+    this.setupEventListeners();
+  }
 
-    // set event listeners that apply to all modal windows
+  /**
+   * Set event listeners that apply to all modal windows
+   */
+  private setupEventListeners() {
     document.getElementById('neon-modal-window-header-close').addEventListener('click', this.hideModalWindow.bind(this));
     document.getElementById('neon-modal-window').addEventListener('keydown', this.keydownListener.bind(this));
     document.getElementById('neon-modal-window-container').addEventListener('click', this.focusModalWindow.bind(this));
   }
 
-  
+  /**
+   * Remove event listeners associated with this modal window
+   */
+  private removeEventListeners() {
+    document.getElementById('neon-modal-window-header-close').removeEventListener('click', this.hideModalWindow.bind(this));
+    document.getElementById('neon-modal-window').removeEventListener('keydown', this.keydownListener.bind(this));
+    document.getElementById('neon-modal-window-container').removeEventListener('click', this.focusModalWindow.bind(this));
+  }
 
 
   /**
@@ -141,6 +153,7 @@ export class ModalWindow implements ModalWindowInterface {
     document.body.style.overflowX = 'hidden';
     document.body.style.overflowY = 'scroll';
     this.modalWindowState = ModalWindowState.CLOSED;
+    this.removeEventListeners();
   }
 
 
@@ -329,6 +342,7 @@ export class ModalWindow implements ModalWindowInterface {
       case ModalWindowView.EDIT_TEXT:
         (<HTMLInputElement> document.getElementById('neon-modal-window-edit-text-input')).select();
         break;
+      case ModalWindowView.DOCUMENT_UPLOAD:
       case ModalWindowView.NEW_FOLDER:
       case ModalWindowView.RENAME:
         break;
