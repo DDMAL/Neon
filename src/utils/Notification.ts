@@ -74,6 +74,7 @@ function clearNotification (currentId: string): void {
  * @param notification - Notification to display.
  */
 function displayNotification (notification: Notification): void {
+  // Not sure what it does, maybe related to rodan/neon
   if (notification.isModeMessage) {
     if (currentModeMessage === null) {
       currentModeMessage = notification;
@@ -82,6 +83,8 @@ function displayNotification (notification: Notification): void {
       return;
     }
   }
+
+  // Remove the top notification if exceeds maxmimum
   notifications.push(notification);
   if (notifications.length > NUMBER_TO_DISPLAY) {
     const toRemove = notifications.shift();
