@@ -11,6 +11,11 @@ let currentModeMessage: Notification = null;
  */
 const NUMBER_TO_DISPLAY = 3;
 
+/**
+ * Number of notifications to display at a time.
+ */
+const TIMEOUT = 5000;
+
 const notificationIcon: Record<NotificationType, string> = {
   default: '',
   warning: '⚠️ ',
@@ -60,7 +65,7 @@ export class Notification {
 }
 
 /**
- * Clear the notifications if no more exist or display another from the queue.
+ * Clear the notification
  * @param currentId - The ID of the notification to be cleared.
  */
 function clearNotification (currentId: string): void {
@@ -107,7 +112,7 @@ function displayNotification (notification: Notification): void {
 function startNotification (notification: Notification): void {
   displayNotification(notification);
   notification.setTimeoutId(
-    window.setTimeout(clearNotification, 5000, notification.getId())
+    window.setTimeout(clearNotification, TIMEOUT, notification.getId())
   );
   document
     .getElementById(notification.getId())
@@ -115,7 +120,6 @@ function startNotification (notification: Notification): void {
       window.clearTimeout(notification.timeoutID);
       clearNotification(notification.getId());
     });
-
 }
 
 /**
