@@ -4,8 +4,8 @@ import { uuidv4 } from './random';
 type NotificationType = 'default' | 'error' | 'warning' | 'success';
 
 const notifications: Notification[] = new Array(0);
+const displayingNotifications: Notification[] = new Array(0);
 let currentModeMessage: Notification = null;
-let notifying = false;
 
 /**
  * Number of notifications to display at a time.
@@ -64,17 +64,9 @@ export class Notification {
  * Clear the notifications if no more exist or display another from the queue.
  * @param currentId - The ID of the notification to be cleared.
  */
-function clearOrShowNextNotification (currentId: string): void {
-  document.getElementById(currentId).remove();
-  if (currentModeMessage !== null && currentModeMessage.getId() === currentId) {
-    currentModeMessage = null;
-  }
-  if (notifications.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    startNotification();
-  } else if (document.querySelectorAll('.neon-notification').length === 0) {
-    document.getElementById('notification-content').style.display = 'none';
-    notifying = false;
+function clearNotification (currentId: string): void {
+  if (document.getElementById(currentId)) {
+    document.getElementById(currentId).remove();
   }
 }
 
@@ -89,9 +81,13 @@ function displayNotification (notification: Notification): void {
     } else {
       window.clearTimeout(currentModeMessage.timeoutID);
       notifications.push(notification);
-      clearOrShowNextNotification(currentModeMessage.getId());
       return;
     }
+  }
+  displayingNotifications.push(notification);
+  if (displayingNotifications.length > NUMBER_TO_DISPLAY) {
+    const toRemove = displayingNotifications.shift();
+    clearNotification(toRemove.getId());
   }
   const notificationContent = document.getElementById('notification-content');
   const newNotification = document.createElement('div');
@@ -109,17 +105,16 @@ function displayNotification (notification: Notification): void {
  */
 function startNotification (): void {
   if (notifications.length > 0) {
-    notifying = true;
     const currentNotification = notifications.pop();
     displayNotification(currentNotification);
     currentNotification.setTimeoutId(
-      window.setTimeout(clearOrShowNextNotification, 5000, currentNotification.getId())
+      window.setTimeout(clearNotification, 5000, currentNotification.getId())
     );
     document
       .getElementById(currentNotification.getId())
       .addEventListener('click', () => {
         window.clearTimeout(currentNotification.timeoutID);
-        clearOrShowNextNotification(currentNotification.getId());
+        clearNotification(currentNotification.getId());
       });
   }
 }
@@ -136,9 +131,7 @@ export function queueNotification (notification: string, type: NotificationType 
     recordNotification(notif);
   }
 
-  if (!notifying || document.getElementById('notification-content').querySelectorAll('.neon-notification').length < NUMBER_TO_DISPLAY) {
-    startNotification();
-  }
+  startNotification();
 }
 
 export default { queueNotification };
