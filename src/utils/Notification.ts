@@ -4,7 +4,6 @@ import { uuidv4 } from './random';
 type NotificationType = 'default' | 'error' | 'warning' | 'success';
 
 const notifications: Notification[] = new Array(0);
-const displayingNotifications: Notification[] = new Array(0);
 let currentModeMessage: Notification = null;
 
 /**
@@ -80,13 +79,12 @@ function displayNotification (notification: Notification): void {
       currentModeMessage = notification;
     } else {
       window.clearTimeout(currentModeMessage.timeoutID);
-      notifications.push(notification);
       return;
     }
   }
-  displayingNotifications.push(notification);
-  if (displayingNotifications.length > NUMBER_TO_DISPLAY) {
-    const toRemove = displayingNotifications.shift();
+  notifications.push(notification);
+  if (notifications.length > NUMBER_TO_DISPLAY) {
+    const toRemove = notifications.shift();
     clearNotification(toRemove.getId());
   }
   const notificationContent = document.getElementById('notification-content');
@@ -103,35 +101,32 @@ function displayNotification (notification: Notification): void {
 /**
  * Start displaying notifications. Called automatically.
  */
-function startNotification (): void {
-  if (notifications.length > 0) {
-    const currentNotification = notifications.pop();
-    displayNotification(currentNotification);
-    currentNotification.setTimeoutId(
-      window.setTimeout(clearNotification, 5000, currentNotification.getId())
-    );
-    document
-      .getElementById(currentNotification.getId())
-      .addEventListener('click', () => {
-        window.clearTimeout(currentNotification.timeoutID);
-        clearNotification(currentNotification.getId());
-      });
-  }
+function startNotification (notification: Notification): void {
+  displayNotification(notification);
+  notification.setTimeoutId(
+    window.setTimeout(clearNotification, 5000, notification.getId())
+  );
+  document
+    .getElementById(notification.getId())
+    .addEventListener('click', () => {
+      window.clearTimeout(notification.timeoutID);
+      clearNotification(notification.getId());
+    });
+
 }
 
 /**
  * Add a notification to the queue.
  * @param notification - Notification content.
  */
-export function queueNotification (notification: string, type: NotificationType = 'default'): void {
-  const notif = new Notification(notification, type);
-  notifications.push(notif);
+export function queueNotification (notificationContent: string, type: NotificationType = 'default'): void {
+  const notification = new Notification(notificationContent, type);
 
-  if (notif.type == 'error' || notif.type == 'warning') {
-    recordNotification(notif);
+  if (notification.type == 'error' || notification.type == 'warning') {
+    recordNotification(notification);
   }
 
-  startNotification();
+  startNotification(notification);
 }
 
 export default { queueNotification };
