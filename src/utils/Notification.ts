@@ -5,12 +5,16 @@ type NotificationType = 'default' | 'error' | 'warning' | 'success';
 
 const notifications: Notification[] = new Array(0);
 let currentModeMessage: Notification = null;
-let notifying = false;
 
 /**
  * Number of notifications to display at a time.
  */
 const NUMBER_TO_DISPLAY = 3;
+
+/**
+ * Number of notifications to display at a time.
+ */
+const TIMEOUT = 5000;
 
 const notificationIcon: Record<NotificationType, string> = {
   default: '',
@@ -61,20 +65,12 @@ export class Notification {
 }
 
 /**
- * Clear the notifications if no more exist or display another from the queue.
+ * Clear the notification
  * @param currentId - The ID of the notification to be cleared.
  */
-function clearOrShowNextNotification (currentId: string): void {
-  document.getElementById(currentId).remove();
-  if (currentModeMessage !== null && currentModeMessage.getId() === currentId) {
-    currentModeMessage = null;
-  }
-  if (notifications.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    startNotification();
-  } else if (document.querySelectorAll('.neon-notification').length === 0) {
-    document.getElementById('notification-content').style.display = 'none';
-    notifying = false;
+function clearNotification (currentId: string): void {
+  if (document.getElementById(currentId)) {
+    document.getElementById(currentId).remove();
   }
 }
 
@@ -83,15 +79,21 @@ function clearOrShowNextNotification (currentId: string): void {
  * @param notification - Notification to display.
  */
 function displayNotification (notification: Notification): void {
+  // Not sure what it does, maybe related to rodan/neon
   if (notification.isModeMessage) {
     if (currentModeMessage === null) {
       currentModeMessage = notification;
     } else {
       window.clearTimeout(currentModeMessage.timeoutID);
-      notifications.push(notification);
-      clearOrShowNextNotification(currentModeMessage.getId());
       return;
     }
+  }
+
+  // Remove the top notification if exceeds maxmimum
+  notifications.push(notification);
+  if (notifications.length > NUMBER_TO_DISPLAY) {
+    const toRemove = notifications.shift();
+    clearNotification(toRemove.getId());
   }
   const notificationContent = document.getElementById('notification-content');
   const newNotification = document.createElement('div');
@@ -107,38 +109,31 @@ function displayNotification (notification: Notification): void {
 /**
  * Start displaying notifications. Called automatically.
  */
-function startNotification (): void {
-  if (notifications.length > 0) {
-    notifying = true;
-    const currentNotification = notifications.pop();
-    displayNotification(currentNotification);
-    currentNotification.setTimeoutId(
-      window.setTimeout(clearOrShowNextNotification, 5000, currentNotification.getId())
-    );
-    document
-      .getElementById(currentNotification.getId())
-      .addEventListener('click', () => {
-        window.clearTimeout(currentNotification.timeoutID);
-        clearOrShowNextNotification(currentNotification.getId());
-      });
-  }
+function startNotification (notification: Notification): void {
+  displayNotification(notification);
+  notification.setTimeoutId(
+    window.setTimeout(clearNotification, TIMEOUT, notification.getId())
+  );
+  document
+    .getElementById(notification.getId())
+    .addEventListener('click', () => {
+      window.clearTimeout(notification.timeoutID);
+      clearNotification(notification.getId());
+    });
 }
 
 /**
  * Add a notification to the queue.
  * @param notification - Notification content.
  */
-export function queueNotification (notification: string, type: NotificationType = 'default'): void {
-  const notif = new Notification(notification, type);
-  notifications.push(notif);
+export function queueNotification (notificationContent: string, type: NotificationType = 'default'): void {
+  const notification = new Notification(notificationContent, type);
 
-  if (notif.type == 'error' || notif.type == 'warning') {
-    recordNotification(notif);
+  if (notification.type == 'error' || notification.type == 'warning') {
+    recordNotification(notification);
   }
 
-  if (!notifying || document.getElementById('notification-content').querySelectorAll('.neon-notification').length < NUMBER_TO_DISPLAY) {
-    startNotification();
-  }
+  startNotification(notification);
 }
 
 export default { queueNotification };
