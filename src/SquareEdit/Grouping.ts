@@ -24,7 +24,7 @@ export function initNeonView (view: NeonView): void {
 
 /**
  * Check if selected elements can be grouped or not
- * @returns true if grouped, false otherwise
+ * @returns true if can be grouped, false otherwise
  */
 export function isGroupable(selectionType: string, elements: Array<SVGGraphicsElement>): boolean {
   const groups = Array.from(elements.values()) as SVGGraphicsElement[];
@@ -50,6 +50,40 @@ export function isGroupable(selectionType: string, elements: Array<SVGGraphicsEl
 
 }
 
+
+function containsLinked (selectionType:string, elements?: Array<SVGGraphicsElement>) {
+  if (!elements) {
+    elements = Array.from(document.querySelectorAll('.selected')) as SVGGraphicsElement[];
+  }
+  switch (selectionType) {
+    case 'selBySyllable':
+      for (const element of elements) {
+        if (element.hasAttribute('mei:follows') || element.hasAttribute('mei:precedes')) {
+          Notification.queueNotification('The action involves linked syllables, please untoggle them first', 'warning');
+          return true;
+        }
+      }
+      return false;
+    
+    case 'selByNeume':
+      for (const element of elements) {
+        if (element.parentElement.hasAttribute('mei:follows') || element.parentElement.hasAttribute('mei:precedes')) {
+          Notification.queueNotification('The action involves linked syllables, please untoggle them first', 'warning');
+          return true;
+        }
+      }
+      return false;
+    
+    case 'selByNc':
+      for (const element of elements) {
+        if (element.parentElement.parentElement.hasAttribute('mei:follows') || element.parentElement.parentElement.hasAttribute('mei:precedes')) {
+          Notification.queueNotification('The action involves linked syllables, please untoggle them first', 'warning');
+          return true;
+        }
+      }
+      return false;
+  }
+}
 
 /**
  * Checks to see is a selection of elements is already linked
@@ -196,6 +230,7 @@ export function initGroupingListeners (): void {
 
   try {
     document.getElementById('mergeSyls').addEventListener('click', () => {
+      if (containsLinked(SelectTools.getSelectionType())) return;
       const elementIds = getChildrenIds().filter(e =>
         document.getElementById(e).classList.contains('neume')
       );
@@ -205,6 +240,7 @@ export function initGroupingListeners (): void {
 
   try {
     document.getElementById('groupNeumes').addEventListener('click', () => {
+      if (containsLinked(SelectTools.getSelectionType())) return;
       const elementIds = getIds();
       groupingAction('group', 'neume', elementIds);
     });
@@ -271,6 +307,8 @@ const keydownListener = function(e) {
     if (elements.length == 0) return;
 
     const selectionType = SelectTools.getSelectionType();
+
+    if (containsLinked(selectionType, elements)) return;
 
     // Group/merge or ungroup/split based on selection type
     switch (selectionType) {
