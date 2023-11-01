@@ -943,6 +943,32 @@ function showContextMenu(view: string, clientX: number, clientY: number) {
       setContextMenuItemsEventListeners('default');
   }
 
+  // disable editor menu for the samples folder
+  if(state.getParentFolder().metadata['immutable'] || 
+  (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable'])) {
+    const deleteBtn = document.getElementById('cm-delete-btn');
+    const renameBtn = document.getElementById('cm-rename-btn');
+    const moveBtn = document.getElementById('cm-move-btn');
+    const updateDocBtn = document.getElementById('cm-upload-doc-btn');
+    const newFolderBtn = document.getElementById('cm-new-folder-btn');
+
+    if (deleteBtn) {
+      deleteBtn.classList.add('disabled');
+    }
+    if (renameBtn) {
+      renameBtn.classList.add('disabled');
+    }
+    if (moveBtn) {
+      moveBtn.classList.add('disabled');
+    }
+    if (updateDocBtn) {
+      updateDocBtn.classList.add('disabled');
+    }
+    if (newFolderBtn) {
+      newFolderBtn.classList.add('disabled');
+    }
+  }
+
   // get the position of the user's mouse
   contextMenu.style.left = `${clientX}px`;
   contextMenu.style.top = `${clientY}px`;
