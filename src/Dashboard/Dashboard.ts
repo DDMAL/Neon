@@ -387,7 +387,7 @@ function updateActionBarButtons() {
   }
 
   // update upload doc/add folder to active if parent folder isn't immutable
-  const isImmutable = state.getParentFolder().metadata['immutable'];
+  const isImmutable = state.getParentFolder().metadata['immutable'] || (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable']);
   if (isImmutable) {
     uploadDocumentsButton.classList.remove('active');
     newFolderButton.classList.remove('active');
