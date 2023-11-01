@@ -75,12 +75,6 @@ backgroundArea?.addEventListener('click', (e) => {
  * @returns 
  */
 function handleOpenUploadArea() {
-  const isImmutable = state.getParentFolder().metadata['immutable'];
-  if (isImmutable) {
-    const stringPath = state.getFolderPath().map(folder => folder.name).join('/');
-    window.alert(`Cannot upload documents. ${stringPath} is immutable.`);
-    return false;
-  }
   InitUploadArea(state.getParentFolder());
 }
 
@@ -351,25 +345,16 @@ function handleDeleteDocuments() {
 
 
   const allEntries = state.getSelectedEntries();
-  const deletableEntries = allEntries.filter(entry => entry.metadata['immutable'] !== true);
-  const immutableEntries = allEntries.filter(entry => entry.metadata['immutable'] === true);
 
   // Create a formatted list of filenames to display in alert message
   const createList = (entryArray: IEntry[]) => entryArray.map(entry => `- ${entry.name} (${entry.type})`).join('\n');
-
-  let alertMessage = '';
   
-  if (immutableEntries.length > 0) {
-    const immutableMessage = `The following files cannot be deleted:\n${createList(immutableEntries)}\n`;
-    alertMessage = immutableMessage + alertMessage;
-  }
-
-  alertMessage += `Are you sure you want to delete:\n${createList(deletableEntries)}\nThis action is irreversible.`;
+  const alertMessage = `Are you sure you want to delete:\n${createList(allEntries)}\nThis action is irreversible.`;
 
   const isConfirmed = window.confirm(alertMessage);
 
   if (isConfirmed) {
-    const deletePromises = deletableEntries.map(entry => {
+    const deletePromises = allEntries.map(entry => {
       if (entry.type === 'file') {
         return deleteFileEntry(entry as IFile);
       }
@@ -483,14 +468,6 @@ async function handleNavigateBack() {
  * Add new Folder to current folder and refresh dashboard
  */
 function handleAddFolder(folderName: string) {
-  // abort if parent folder is immutable
-  const isImmutable = state.getParentFolder().metadata['immutable'];
-  if (isImmutable) {
-    const stringPath = state.getFolderPath().map(folder => folder.name).join('/');
-    window.alert(`Cannot add Folder. ${stringPath} is immutable.`);
-    return;
-  }
-
   // create new folder element
   const newFolderTile = document.createElement('div');
   newFolderTile.classList.add('document-entry');
@@ -515,21 +492,7 @@ function handleAddFolder(folderName: string) {
  * 
  * @param entry IEntry to rename
  */
-function renameEntry(entry: IEntry, newName: string) {
-  // abort if parent folder
-  const isImmutable = state.getParentFolder().metadata['immutable'];
-  if (isImmutable) {
-    const stringPath = state.getFolderPath().map(folder => folder.name).join('/');
-    window.alert(`Cannot rename ${entry.name}. ${stringPath} is immutable.`);
-    return;
-  }
-  // or entry is immutable
-  const immutable = entry.metadata['immutable'];
-  if (immutable) {
-    window.alert(`Cannot rename ${entry.name}. Entry is immutable.`);
-    return;
-  }
-  
+function renameEntry(entry: IEntry, newName: string) {  
   const succeeded = fs_functions.renameEntry(entry, state.getParentFolder(), newName);
   if (succeeded) {
     // Update database if entry is a file
