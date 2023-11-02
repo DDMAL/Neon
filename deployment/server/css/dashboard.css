@@ -141,6 +141,12 @@
   background-color: rgb(244, 244, 244);
 }
 
+.context-menu-item-wrapper.disabled {
+  /* background-color: rgb(244, 244, 244); */
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .context-menu-item {
   width: 100%;
   min-height: 20px;

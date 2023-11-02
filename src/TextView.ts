@@ -58,10 +58,12 @@ class TextView implements TextViewInterface {
   
     document.getElementById('displayText').addEventListener('click', () => {
       this.updateTextViewVisibility();
+      updateDisplayAllBtn();
     });
   
     document.getElementById('displayBBox').addEventListener('click', () => {
       this.updateBBoxVisibility();
+      updateDisplayAllBtn();
     });
   }
 
@@ -124,7 +126,6 @@ class TextView implements TextViewInterface {
       catch (e) {}
     }
 
-    updateDisplayAllBtn();
     updateHighlight();
   }
 
@@ -202,8 +203,6 @@ class TextView implements TextViewInterface {
     else {
       document.getElementById('syl_text').style.display = 'none';
     }
-
-    updateDisplayAllBtn();
   }
 
   /**

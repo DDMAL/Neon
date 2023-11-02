@@ -75,12 +75,6 @@ backgroundArea?.addEventListener('click', (e) => {
  * @returns 
  */
 function handleOpenUploadArea() {
-  const isImmutable = state.getParentFolder().metadata['immutable'];
-  if (isImmutable) {
-    const stringPath = state.getFolderPath().map(folder => folder.name).join('/');
-    window.alert(`Cannot upload documents. ${stringPath} is immutable.`);
-    return false;
-  }
   InitUploadArea(state.getParentFolder());
 }
 
@@ -351,25 +345,16 @@ function handleDeleteDocuments() {
 
 
   const allEntries = state.getSelectedEntries();
-  const deletableEntries = allEntries.filter(entry => entry.metadata['immutable'] !== true);
-  const immutableEntries = allEntries.filter(entry => entry.metadata['immutable'] === true);
 
   // Create a formatted list of filenames to display in alert message
   const createList = (entryArray: IEntry[]) => entryArray.map(entry => `- ${entry.name} (${entry.type})`).join('\n');
-
-  let alertMessage = '';
   
-  if (immutableEntries.length > 0) {
-    const immutableMessage = `The following files cannot be deleted:\n${createList(immutableEntries)}\n`;
-    alertMessage = immutableMessage + alertMessage;
-  }
-
-  alertMessage += `Are you sure you want to delete:\n${createList(deletableEntries)}\nThis action is irreversible.`;
+  const alertMessage = `Are you sure you want to delete:\n${createList(allEntries)}\nThis action is irreversible.`;
 
   const isConfirmed = window.confirm(alertMessage);
 
   if (isConfirmed) {
-    const deletePromises = deletableEntries.map(entry => {
+    const deletePromises = allEntries.map(entry => {
       if (entry.type === 'file') {
         return deleteFileEntry(entry as IFile);
       }
@@ -402,7 +387,7 @@ function updateActionBarButtons() {
   }
 
   // update upload doc/add folder to active if parent folder isn't immutable
-  const isImmutable = state.getParentFolder().metadata['immutable'];
+  const isImmutable = state.getParentFolder().metadata['immutable'] || (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable']);
   if (isImmutable) {
     uploadDocumentsButton.classList.remove('active');
     newFolderButton.classList.remove('active');
@@ -483,14 +468,6 @@ async function handleNavigateBack() {
  * Add new Folder to current folder and refresh dashboard
  */
 function handleAddFolder(folderName: string) {
-  // abort if parent folder is immutable
-  const isImmutable = state.getParentFolder().metadata['immutable'];
-  if (isImmutable) {
-    const stringPath = state.getFolderPath().map(folder => folder.name).join('/');
-    window.alert(`Cannot add Folder. ${stringPath} is immutable.`);
-    return;
-  }
-
   // create new folder element
   const newFolderTile = document.createElement('div');
   newFolderTile.classList.add('document-entry');
@@ -515,21 +492,7 @@ function handleAddFolder(folderName: string) {
  * 
  * @param entry IEntry to rename
  */
-function renameEntry(entry: IEntry, newName: string) {
-  // abort if parent folder
-  const isImmutable = state.getParentFolder().metadata['immutable'];
-  if (isImmutable) {
-    const stringPath = state.getFolderPath().map(folder => folder.name).join('/');
-    window.alert(`Cannot rename ${entry.name}. ${stringPath} is immutable.`);
-    return;
-  }
-  // or entry is immutable
-  const immutable = entry.metadata['immutable'];
-  if (immutable) {
-    window.alert(`Cannot rename ${entry.name}. Entry is immutable.`);
-    return;
-  }
-  
+function renameEntry(entry: IEntry, newName: string) {  
   const succeeded = fs_functions.renameEntry(entry, state.getParentFolder(), newName);
   if (succeeded) {
     // Update database if entry is a file
@@ -941,6 +904,32 @@ function showContextMenu(view: string, clientX: number, clientY: number) {
     default:
       contextMenuContentWrapper.innerHTML = contextMenuContent.defaultOptions;
       setContextMenuItemsEventListeners('default');
+  }
+
+  // disable editor menu for the samples folder
+  if(state.getParentFolder().metadata['immutable'] || 
+  (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable'])) {
+    const deleteBtn = document.getElementById('cm-delete-btn');
+    const renameBtn = document.getElementById('cm-rename-btn');
+    const moveBtn = document.getElementById('cm-move-btn');
+    const updateDocBtn = document.getElementById('cm-upload-doc-btn');
+    const newFolderBtn = document.getElementById('cm-new-folder-btn');
+
+    if (deleteBtn) {
+      deleteBtn.classList.add('disabled');
+    }
+    if (renameBtn) {
+      renameBtn.classList.add('disabled');
+    }
+    if (moveBtn) {
+      moveBtn.classList.add('disabled');
+    }
+    if (updateDocBtn) {
+      updateDocBtn.classList.add('disabled');
+    }
+    if (newFolderBtn) {
+      newFolderBtn.classList.add('disabled');
+    }
   }
 
   // get the position of the user's mouse
