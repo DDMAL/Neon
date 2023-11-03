@@ -2,7 +2,7 @@ import NeonView from '../NeonView';
 import { SetTextAction } from '../Types';
 import { ModalWindowInterface } from '../Interfaces';
 import { hotkeysModal, editTextModal } from '../SquareEdit/Contents';
-import { newFolderHTML, renameHTML, uploadAreaHTML } from '../Dashboard/dashboard_components';
+import { newFolderHTML, renameHTML, uploadAreaHTML } from '../Dashboard/DashboardContent';
 import DragHandler from './DragHandler';
 import { selectBBox, unselect } from './SelectTools';
 
