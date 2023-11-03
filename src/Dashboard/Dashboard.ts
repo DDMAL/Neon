@@ -1,6 +1,6 @@
 import { IEntry, IFile, IFolder, fs_functions } from './FileSystem';
 import { deleteDocument, updateDocName } from './Storage';
-import { formatFilename } from './upload_functions';
+import { formatFilename } from './UploadTools';
 import { FileSystemManager } from './FileSystem';
 import { ShiftSelectionManager, dashboardState } from './DashboardTools';
 import { InitUploadArea } from './UploadArea';
