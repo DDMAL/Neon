@@ -2,7 +2,7 @@ import { IEntry, IFile, IFolder, fs_functions } from './FileSystem';
 import { deleteDocument, updateDocName } from './Storage';
 import { formatFilename } from './upload_functions';
 import { FileSystemManager } from './FileSystem';
-import { ShiftSelectionManager, dashboardState } from './dashboard_functions';
+import { ShiftSelectionManager, dashboardState } from './DashboardTools';
 import { InitUploadArea } from './UploadArea';
 import * as contextMenuContent from './ContextMenuContent';
 import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
