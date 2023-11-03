@@ -242,7 +242,7 @@ function sortFolder(folder: IFolder): IFolder {
   return folder;
 }
 
-export const fs_functions = {
+export const FileSystemTools = {
   createFolder: createFolder,
   createFile: createFile,
   moveEntry: moveEntry,

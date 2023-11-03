@@ -1,4 +1,4 @@
-import { IEntry, IFile, IFolder, fs_functions } from './FileSystem';
+import { IEntry, IFile, IFolder, FileSystemTools } from './FileSystem';
 import { deleteDocument, updateDocName } from './Storage';
 import { formatFilename } from './UploadTools';
 import { FileSystemManager } from './FileSystem';
@@ -314,7 +314,7 @@ function handleDeleteDocuments() {
     return new Promise((resolve, reject) => {
       deleteDocument(file.id)
         .then(() => {
-          fs_functions.removeEntry(file, state.getParentFolder());
+          FileSystemTools.removeEntry(file, state.getParentFolder());
           resolve(true);
         })
         .catch(() => reject(false));
@@ -333,7 +333,7 @@ function handleDeleteDocuments() {
 
     return new Promise((resolve) => {
       if (isEmpty) {
-        fs_functions.removeEntry(folder, state.getParentFolder());
+        FileSystemTools.removeEntry(folder, state.getParentFolder());
         resolve(true);
       }
       else {
@@ -474,8 +474,8 @@ function handleAddFolder(folderName: string) {
   newFolderTile.classList.add('folder-entry');
   newFolderTile.setAttribute('id', 'new-folder');
 
-  const newFolder = fs_functions.createFolder(folderName);
-  const succeeded = fs_functions.addEntry(newFolder, state.getParentFolder());
+  const newFolder = FileSystemTools.createFolder(folderName);
+  const succeeded = FileSystemTools.addEntry(newFolder, state.getParentFolder());
   if (succeeded) {
     newFolderTile.setAttribute('id', folderName);
     updateDashboard();
@@ -493,7 +493,7 @@ function handleAddFolder(folderName: string) {
  * @param entry IEntry to rename
  */
 function renameEntry(entry: IEntry, newName: string) {  
-  const succeeded = fs_functions.renameEntry(entry, state.getParentFolder(), newName);
+  const succeeded = FileSystemTools.renameEntry(entry, state.getParentFolder(), newName);
   if (succeeded) {
     // Update database if entry is a file
     if (entry.type === 'file') {
@@ -616,9 +616,9 @@ function createHandleDrop(currentFolder: IFolder, destinationFolder: IFolder) {
 function moveToFolder(entries: IEntry[], parentFolder: IFolder, newFolder: IFolder) {
   const errorMessages = [];
   entries.forEach((entry) => {
-    const response = fs_functions.canMoveEntry(entry, parentFolder, newFolder);
+    const response = FileSystemTools.canMoveEntry(entry, parentFolder, newFolder);
     if (!response.succeeded) errorMessages.push(response.error);
-    else fs_functions.moveEntry(entry, parentFolder, newFolder);
+    else FileSystemTools.moveEntry(entry, parentFolder, newFolder);
   });
   
   errorMessages.filter((msg, idx, arr) => arr.indexOf(msg) === idx);

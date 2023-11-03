@@ -1,4 +1,4 @@
-import { IFolder, fs_functions } from '.';
+import { IFolder, FileSystemTools } from '.';
 import { fetchUploads, db } from '../Storage';
 import { samples } from '../samples_filenames';
 
@@ -50,7 +50,7 @@ export const FileSystemManager = (): FileSystemProps => {
           }));
           await db.bulkDocs(docsToDelete);
 
-          const root = fs_functions.createFolder('Home');
+          const root = FileSystemTools.createFolder('Home');
           loadSamples(root);
           setFileSystem(root);
           return root;
@@ -62,7 +62,7 @@ export const FileSystemManager = (): FileSystemProps => {
       }
       // else, create new root
       else {
-        const root = fs_functions.createFolder('Home');
+        const root = FileSystemTools.createFolder('Home');
         loadSamples(root);
         await loadPreviousUploads(root);
         setFileSystem(root);
@@ -78,24 +78,24 @@ export const FileSystemManager = (): FileSystemProps => {
   function loadSamples(root: IFolder) {
     // Make sample entries
     const sampleEntries = samples.map(([name, type]) => {
-      const entry = fs_functions.createFile(name, name);
+      const entry = FileSystemTools.createFile(name, name);
       if (type === 'folio') {
-        fs_functions.addMetadata(entry, { type: 'folio', document: 'sample', immutable: true });
+        FileSystemTools.addMetadata(entry, { type: 'folio', document: 'sample', immutable: true });
       }
       else if (type === 'manuscript') {
-        fs_functions.addMetadata(entry, { type: 'manuscript', document: 'sample', immutable: true });
+        FileSystemTools.addMetadata(entry, { type: 'manuscript', document: 'sample', immutable: true });
       }
       return entry;
     });
 
     // Make samples folder and add to root
-    const samplesFolder = fs_functions.createFolder('Samples');
+    const samplesFolder = FileSystemTools.createFolder('Samples');
     // Add sample entries to samples folder
     sampleEntries.forEach((sample) => {
-      fs_functions.addEntry(sample, samplesFolder);
+      FileSystemTools.addEntry(sample, samplesFolder);
     });
-    fs_functions.addEntry(samplesFolder, root);
-    fs_functions.addMetadata(samplesFolder, { immutable: true });
+    FileSystemTools.addEntry(samplesFolder, root);
+    FileSystemTools.addMetadata(samplesFolder, { immutable: true });
 
     return root;
   }
@@ -106,11 +106,11 @@ export const FileSystemManager = (): FileSystemProps => {
 
     // Make upload entries
     const uploadEntries = uploads.map((upload) => {
-      return fs_functions.createFile(upload.name, upload.id);
+      return FileSystemTools.createFile(upload.name, upload.id);
     });
 
     uploadEntries.forEach((upload) => {
-      fs_functions.addEntry(upload, root);
+      FileSystemTools.addEntry(upload, root);
     });
 
     return root;
