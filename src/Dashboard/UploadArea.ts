@@ -1,5 +1,5 @@
 import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
-import {  addNewFiles, handleUploadAllDocuments, handleMakePair, sortFileByName } from './upload_functions';
+import {  addNewFiles, handleUploadAllDocuments, handleMakePair, sortFileByName } from './UploadTools';
 import { updateDashboard } from './Dashboard';
 import { IFolder } from './FileSystem';
 

@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import UploadFileManager from './UploadFileManager';
 import { createManifest, addDocument } from './Storage';
-import { IFolder, fs_functions } from './FileSystem';
+import { IFolder, FileSystemTools } from './FileSystem';
 
 const fm = UploadFileManager.getInstance();
 
@@ -166,11 +166,11 @@ async function uploadFolio(id: string, name: string, mei: File, image: File, cur
     // add to dashboard FileSystem
     .then(succeeded => {
       if (succeeded) {
-        const newName = fnConflictHandler(name, fs_functions.getAllNames(currentFolder));
+        const newName = fnConflictHandler(name, FileSystemTools.getAllNames(currentFolder));
         const datetime = new Date().toLocaleString();
-        const fileEntry = fs_functions.createFile(newName, id);
-        const folioEntry = fs_functions.addMetadata(fileEntry, { type: 'folio', created_on: datetime });
-        const isAdded = fs_functions.addEntry(folioEntry, currentFolder);
+        const fileEntry = FileSystemTools.createFile(newName, id);
+        const folioEntry = FileSystemTools.addMetadata(fileEntry, { type: 'folio', created_on: datetime });
+        const isAdded = FileSystemTools.addEntry(folioEntry, currentFolder);
         return isAdded;
       }
       else {
@@ -224,9 +224,9 @@ export async function sortFileByName(sortByNameBtn: Element): Promise<void>  {
 //       if (succeeded) {
 //         const newName = fnConflictHandler(manuscript.name, existingNames);
 //         const datetime = new Date().toLocaleString();
-//         const fileEntry = fs_functions.createFile(newName, id);
-//         const manuscriptEntry = fs_functions.addMetadata(fileEntry, { type: 'manuscript', created_on: datetime });
-//         const isAdded = fs_functions.addEntry(manuscriptEntry, currentFolder);
+//         const fileEntry = FileSystemTools.createFile(newName, id);
+//         const manuscriptEntry = FileSystemTools.addMetadata(fileEntry, { type: 'manuscript', created_on: datetime });
+//         const isAdded = FileSystemTools.addEntry(manuscriptEntry, currentFolder);
 //         return isAdded;
 //       }
 //       else {
