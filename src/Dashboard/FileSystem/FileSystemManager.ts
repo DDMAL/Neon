@@ -56,6 +56,9 @@ export const FileSystemManager = (): FileSystemProps => {
           return root;
         }
         else {
+          // force update sample files (To be removed in the future)
+          localFileSystem.children.splice(0, 1);
+          loadSamples(localFileSystem);
           return localFileSystem;
         }
 
