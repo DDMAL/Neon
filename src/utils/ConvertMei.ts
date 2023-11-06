@@ -108,6 +108,14 @@ export function getSyllableText (syllable: Element): string {
   return sylText;
 }
 
+/**
+ * Convert sb to staff for verovio
+ * Also do heuristic checks:
+ *    1. neume without neume component
+ *    2. syllable without neume
+ *    3. linked syllables not linked
+ *    4. incomplete linked syllable
+ */
 export function convertSbToStaff(sbBasedMei: string): string {
   const parser = new DOMParser();
   const meiDoc = parser.parseFromString(sbBasedMei, 'text/xml');
@@ -158,6 +166,8 @@ export function convertSbToStaff(sbBasedMei: string): string {
             }
           }
 
+          // Mark if a new staff begins before the current syllable, after it, or in the middle of it
+          // If in the middle, link syllables
           if (!neumeBehind && neumeAhead) {
             origSyllable.insertAdjacentElement('beforebegin', sb);
           }
