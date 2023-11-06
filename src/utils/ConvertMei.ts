@@ -246,6 +246,10 @@ export function convertSbToStaff(sbBasedMei: string): string {
       syllable.insertAdjacentElement('afterend', custos);
     }
 
+    // Check incomplete obliques
+    // Obliques always come as a pair
+    checkOblique(syllable);
+
     // Check syllables that contains @precedes or @follows
     // Update syllable arrays for each syllable
     const syllableIdx = newSyllables.indexOf(syllable);
@@ -375,5 +379,23 @@ function checkFollowsSyllable (syllable: Element, syllables: Element[]): void {
     const sylText = getSyllableText(prevSyllable);
     const sylId = syllable.getAttribute('xml:id');
     Notification.queueNotification(`The 1st part of the toggle-linked syllable (${sylText}) links to the wrong syllable<br/>ID: ${sylId}`, 'error');
+  }
+}
+
+function checkOblique (syllable: Element): void {
+  const ncs = syllable.querySelectorAll('nc');
+  let ncIdx = 0;
+  while (ncIdx < ncs.length) {
+    if (ncs[ncIdx].getAttribute('ligated')) {
+      if ((ncIdx < ncs.length-1 && !ncs[ncIdx+1].getAttribute('ligated')) || (ncIdx == ncs.length-1)) {
+        // If nc is ligated, and the next nc is not
+        // Or, nc is ligated, but already at the end (there is no next)
+        const sylText = getSyllableText(syllable);
+        const sylId = syllable.getAttribute('xml:id');
+        Notification.queueNotification(`The oblique in syllable (${sylText}) is incomplete!<br/>ID: ${sylId}`, 'error');
+      }
+      ncIdx += 2;
+    }
+    ncIdx += 1;
   }
 }
