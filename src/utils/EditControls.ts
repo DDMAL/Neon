@@ -1,6 +1,6 @@
 import * as Notification from './Notification';
 import NeonView from '../NeonView';
-import { convertStaffToSb } from './ConvertMei';
+import { convertToNeon } from './ConvertMei';
 import { EditorAction } from '../Types';
 
 /**
@@ -47,7 +47,7 @@ export function initNavbar (neonView: NeonView): void {
   document.getElementById('getmei').addEventListener('click', () => {
     const uri = neonView.view.getCurrentPageURI();
     neonView.getPageMEI(uri).then(mei => {
-      const data = 'data:application/mei+xml;base64,' + window.btoa(convertStaffToSb(mei));
+      const data = 'data:application/mei+xml;base64,' + window.btoa(convertToNeon(mei));
       document.getElementById('getmei').setAttribute('href', data);
       document.getElementById('getmei').setAttribute('download', neonView.view.getPageName() + '.mei');
     });

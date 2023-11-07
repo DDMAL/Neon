@@ -1,4 +1,4 @@
-import { checkOutOfBoundsGlyphs, convertSbToStaff } from './utils/ConvertMei';
+import { checkOutOfBoundsGlyphs, convertToVerovio } from './utils/ConvertMei';
 import * as Validation from './Validation';
 import VerovioWrapper from './VerovioWrapper';
 import { WebAnnotation, Attributes, EditorAction, NeonManifest, VerovioMessage } from './Types';
@@ -207,7 +207,7 @@ class NeonCore {
           }).then(data => {
             // Check if the MEI file is sb-based. If so, convert to staff-based.
             if (data.match(/<sb .+>/)) {
-              data = convertSbToStaff(data);
+              data = convertToVerovio(data);
             }
 
             checkOutOfBoundsGlyphs(data);

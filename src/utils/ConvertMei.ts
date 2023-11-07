@@ -16,7 +16,7 @@ function copyAttributes(src: Element, dst: Element): void {
   }
 }
 
-export function convertStaffToSb(staffBasedMei: string): string {
+export function convertToNeon(staffBasedMei: string): string {
   const parser = new DOMParser();
   const serializer = new XMLSerializer();
   const meiDoc = parser.parseFromString(staffBasedMei, 'text/xml');
@@ -116,7 +116,7 @@ export function getSyllableText (syllable: Element): string {
  *    3. linked syllables not linked
  *    4. incomplete linked syllable
  */
-export function convertSbToStaff(sbBasedMei: string): string {
+export function convertToVerovio(sbBasedMei: string): string {
   const parser = new DOMParser();
   const meiDoc = parser.parseFromString(sbBasedMei, 'text/xml');
   const mei = meiDoc.documentElement;
