@@ -37,7 +37,7 @@ export function isGroupable(selectionType: string, elements: Array<SVGGraphicsEl
   switch(selectionType) {
     case 'selByNeume':
       // if neumes are in same syllable, don't display grouping option
-      if (SelectTools.sharedLogicalParent(selectionType, elements)) return false;
+      if (!SelectTools.sharedLogicalParent(selectionType, elements)) return false;
 
     default:
       // check if all selected elements are adjacent to each other
