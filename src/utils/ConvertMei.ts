@@ -161,6 +161,8 @@ export function convertToVerovio(sbBasedMei: string): string {
       const layer = staff.getElementsByTagName('layer')[0];
       // First pass: get all sb elements as direct children of layer
       const sbArray = Array.from(layer.getElementsByTagName('sb'));
+      // Check if any syllables have sb inside (linked syllables)
+      // Keep this check for files not produced by Rodan
       for (const sb of sbArray) {
         if (sb.parentElement.tagName !== 'layer') {
           const origSyllable: Element = sb.parentElement;
