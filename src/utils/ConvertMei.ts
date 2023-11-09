@@ -234,6 +234,8 @@ export function convertToVerovio(sbBasedMei: string): string {
         if (hasCols) {
           if (layerChildren.at(currentIdx-1).tagName === 'cb') {
             nCol += 1;
+            const cb = layerChildren.at(currentIdx-1);
+            cb.parentNode.removeChild(cb);
           }
           newStaff.setAttribute('data_neon_column', nCol.toString());
         }
