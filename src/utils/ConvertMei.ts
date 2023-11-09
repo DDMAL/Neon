@@ -120,6 +120,21 @@ export function convertToVerovio(sbBasedMei: string): string {
   const parser = new DOMParser();
   const meiDoc = parser.parseFromString(sbBasedMei, 'text/xml');
   const mei = meiDoc.documentElement;
+  let hasCols = false;
+
+  // Check if there is <colLayout> element and remove them
+  // There will only be one <colLayout> element
+  const colLayout = Array.from(mei.getElementsByTagName('colLayout')).at(0);
+  if (colLayout) {
+    hasCols = true;
+    colLayout.parentNode.removeChild(colLayout);
+  }
+
+  // Check if there are <pb> elements and remove them
+  const pageBegins = Array.from(mei.getElementsByTagName('pb'));
+  for (const pb of pageBegins) {
+    pb.parentNode.removeChild(pb);
+  }
 
   // Check neume without neume component
   const neumes = Array.from(mei.getElementsByTagName('neume'));
@@ -211,12 +226,22 @@ export function convertToVerovio(sbBasedMei: string): string {
       }
 
       const sbs = Array.from(layer.getElementsByTagName('sb'));
+      const layerChildren = Array.from(layer.children);
+      let nCol = 0;
       for (let i = 0; i < sbs.length; i++) {
         const currentSb = sbs[i];
         const nextSb = (sbs.length > i + 1) ? sbs[i + 1] : undefined;
 
         const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
         copyAttributes(currentSb, newStaff);
+        const currentIdx = layerChildren.indexOf(currentSb);
+        if (hasCols) {
+          if (layerChildren.at(currentIdx-1).tagName === 'cb') {
+            nCol += 1;
+          }
+          newStaff.setAttribute('data_neon_column', nCol.toString());
+        }
+        
         const newLayer = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'layer');
         newLayer.setAttribute('n', '1');
         newLayer.setAttribute('xml:id', 'm-' + uuidv4());
