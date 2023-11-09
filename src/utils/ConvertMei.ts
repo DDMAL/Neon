@@ -38,8 +38,10 @@ export function convertToNeon(staffBasedMei: string): string {
     newLayer.appendChild(pb);
 
     const staves = Array.from(section.getElementsByTagName('staff'));
+    let nStaff = 0;
     
     for (const staff of staves) {
+      nStaff += 1;
       const layer = staff.getElementsByTagName('layer')[0];
 
       // if staff has a new data_neon_column value,
@@ -54,7 +56,7 @@ export function convertToNeon(staffBasedMei: string): string {
       }
 
       const sb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'sb');
-      sb.setAttribute('n', staff.getAttribute('n'));
+      sb.setAttribute('n', nStaff.toString());
       sb.setAttribute('facs', staff.getAttribute('facs'));
       sb.setAttribute('xml:id', staff.getAttribute('xml:id'));
 
@@ -230,6 +232,7 @@ export function convertToVerovio(sbBasedMei: string): string {
 
         const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
         copyAttributes(currentSb, newStaff);
+        newStaff.setAttribute('n', '1');
         const currentIdx = layerChildren.indexOf(currentSb);
         if (hasCols) {
           if (layerChildren.at(currentIdx-1).tagName === 'cb') {
