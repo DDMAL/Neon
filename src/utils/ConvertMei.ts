@@ -22,8 +22,6 @@ export function convertToNeon(staffBasedMei: string): string {
   const meiDoc = parser.parseFromString(staffBasedMei, 'text/xml');
   const mei = meiDoc.documentElement;
 
-  // const precedesSyllables: Set<Element> = new Set();
-
   for (const section of mei.getElementsByTagName('section')) {
     const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
     const newLayer = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'layer');
@@ -48,43 +46,11 @@ export function convertToNeon(staffBasedMei: string): string {
         custos = newLayer.removeChild(newLayer.lastElementChild);
       }
 
-      // Insert sb either as last child of layer or in the last syllable
-      // const lastElement = newLayer.lastElementChild;
-      // if ((lastElement !== null) && (lastElement.tagName === 'syllable') && lastElement.hasAttribute('precedes')) {
-      //   if (custos !== undefined) lastElement.appendChild(custos);
-      //   lastElement.appendChild(sb);
-      // }
-      // else {
       if (custos !== undefined) newLayer.appendChild(custos);
       newLayer.appendChild(sb);
-      // }
-
-      // Handle split syllables
-      // for (const precedes of precedesSyllables) {
-      //   const followsId = precedes.getAttribute('precedes');
-      //   const followsSyllable = Array.from(layer.getElementsByTagName('syllable'))
-      //     .filter(syllable => { return '#' + syllable.getAttribute('xml:id') === followsId; })
-      //     .pop();
-      //   if (followsSyllable !== undefined) {
-      //     // Check for preceeding clef
-      //     if ((followsSyllable.previousElementSibling !== null) &&
-      //     (followsSyllable.previousElementSibling.tagName === 'clef')) {
-      //       precedes.append(followsSyllable.previousElementSibling);
-      //     }
-      //     while (followsSyllable.firstChild !== null) {
-      //       precedes.append(followsSyllable.firstChild);
-      //     }
-      //     followsSyllable.remove();
-      //     precedes.removeAttribute('precedes');
-      //     precedesSyllables.delete(precedes);
-      //   }
-      // }
 
       // Add remaining elements of layer to newLayer
       while (layer.firstElementChild !== null) {
-        // if (layer.firstElementChild.hasAttribute('precedes')) {
-        //   precedesSyllables.add(layer.firstElementChild);
-        // }
         newLayer.appendChild(layer.firstElementChild);
       }
       staff.remove();
