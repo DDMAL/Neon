@@ -21,6 +21,7 @@ export function convertToNeon(staffBasedMei: string): string {
   const serializer = new XMLSerializer();
   const meiDoc = parser.parseFromString(staffBasedMei, 'text/xml');
   const mei = meiDoc.documentElement;
+  let nCol = 0;
 
   for (const section of mei.getElementsByTagName('section')) {
     const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
@@ -29,10 +30,28 @@ export function convertToNeon(staffBasedMei: string): string {
     newLayer.setAttribute('n', '1');
     newStaff.appendChild(newLayer);
 
-    const staves = Array.from(section.getElementsByTagName('staff'));
+    // Add <pb>
+    const surfaceId = mei.getElementsByTagName('surface')[0].getAttribute('xml:id');
+    const pb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'pb');
+    pb.setAttribute('xml:id', 'm-' + uuidv4());
+    pb.setAttribute('facs', '#' + surfaceId);
+    newLayer.appendChild(pb);
 
+    const staves = Array.from(section.getElementsByTagName('staff'));
+    
     for (const staff of staves) {
       const layer = staff.getElementsByTagName('layer')[0];
+
+      // if staff has a new data_neon_column value,
+      // add cb before sb
+      if (staff.hasAttribute('data_neon_column') && staff.getAttribute('data_neon_column') != nCol.toString()) {
+        nCol += 1;
+        const cb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'cb');
+        cb.setAttribute('n', nCol.toString());
+        cb.setAttribute('xml:id', 'm-' + uuidv4());
+        // calculate facs zone for cb
+        newLayer.appendChild(cb);
+      }
 
       const sb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'sb');
       sb.setAttribute('n', staff.getAttribute('n'));
@@ -57,6 +76,17 @@ export function convertToNeon(staffBasedMei: string): string {
     }
     section.appendChild(newStaff);
   }
+
+
+  // Add <colLayout>
+  if (nCol) {
+    const scoreDef = mei.getElementsByTagName('scoreDef')[0];
+    const colLayout = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'colLayout');
+    colLayout.setAttribute('xml:id', 'm-' + uuidv4());
+    colLayout.setAttribute('n', nCol.toString());
+    scoreDef.insertAdjacentElement('afterend', colLayout);
+  }
+    
 
   return vkbeautify.xml(serializer.serializeToString(meiDoc));
 }
