@@ -132,23 +132,21 @@ export function convertToVerovio(sbBasedMei: string): string {
     pb.parentNode.removeChild(pb);
   }
 
-  // Check neume without neume component
-  const neumes = Array.from(mei.getElementsByTagName('neume'));
-  for (const neume of neumes) {
-    if (neume.getElementsByTagName('nc').length === 0) {
-      // neume.remove();
-      const id = neume.getAttribute('xml:id');
-      Notification.queueNotification(`This file contains a neume without neume component!<br/>ID: ${id}`, 'warning');
-    }
-  }
-
   // Check syllable without neume 
   const syllables = Array.from(mei.getElementsByTagName('syllable'));
   for (const syllable of syllables) {
     if (syllable.getElementsByTagName('neume').length === 0) {
-      // syllable.remove();
       const id = syllable.getAttribute('xml:id');
       Notification.queueNotification(`This file contains a syllable without neume!<br/>ID: ${id}`, 'warning');
+    }
+
+    // Check neume without neume component
+    const neumes = syllable.getElementsByTagName('neume');
+    for (const neume of neumes) {
+      if (neume.getElementsByTagName('nc').length === 0) {
+        const id = neume.getAttribute('xml:id');
+        Notification.queueNotification(`This file contains a neume without neume component!<br/>ID: ${id}`, 'warning');
+      }
     }
   }
 
