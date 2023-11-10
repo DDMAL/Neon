@@ -16,31 +16,31 @@ const neumeGroups = new Map(
 );
 
 function startInfoVisibility (): void {
-  const neumeInfo = document.getElementById('neume_info');
-  neumeInfo.innerHTML =
+  const elementInfo = document.getElementById('element_info');
+  elementInfo.innerHTML =
     `<div class="info-bubble-container">
       <div class="info-bubble-header">Element Info</div>
       <div class="info-bubble-body"><i>Hover over any element to see its metadata</i></div>
     </div>`;
-  document.getElementById('neume_info').setAttribute('style', 'display: none');
+  document.getElementById('element_info').setAttribute('style', 'display: none');
 }
 
 /**
  * Update the visibility of infoBox
  */
 function updateInfoVisibility (): void {
-  const neumeInfo = document.getElementById('neume_info');
+  const elementInfo = document.getElementById('element_info');
   const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
   
   // save setting to localStorage
   setSettings({ displayInfo: displayInfo.checked });
 
   if (displayInfo.checked) {
-    neumeInfo.setAttribute('style', '');
+    elementInfo.setAttribute('style', '');
     // scroll neume info into view
-    //neumeInfo.scrollIntoView({ behavior: 'smooth' });
+    //elementInfo.scrollIntoView({ behavior: 'smooth' });
   } else {
-    neumeInfo.setAttribute('style', 'display: none');
+    elementInfo.setAttribute('style', 'display: none');
   }
   updateDisplayAllBtn();
 }
@@ -133,7 +133,7 @@ class InfoModule implements InfoInterface {
   // So we will simply return if ID does not exist for now
     const id = (event.currentTarget as HTMLElement).id;
     if (id === '') {
-      Array.from(document.getElementById('neume_info').children).forEach(child => {
+      Array.from(document.getElementById('element_info').children).forEach(child => {
         child.remove();
       });
       console.log('No id!');
