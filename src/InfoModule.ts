@@ -100,7 +100,7 @@ class InfoModule implements InfoInterface {
   infoListeners (): void {
     try {
       document.getElementsByClassName('active-page')[0]
-        .querySelectorAll('.neume,.custos,.clef,.accid,.divLine')
+        .querySelectorAll('.neume,.custos,.clef,.accid,.divLine,.staff')
         .forEach(node => {
           node.addEventListener('mouseover', this.updateInfo.bind(this));
         });
@@ -241,6 +241,11 @@ class InfoModule implements InfoInterface {
       case 'divLine': {
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         body += 'DivLine Type: ' + attributes['form'];
+        break;
+      }
+      case 'staff': {
+        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
+        body += 'Column: ' + attributes['data_neon_column'];
         break;
       }
       default: {
