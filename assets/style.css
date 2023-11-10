@@ -648,8 +648,8 @@ a:hover {
     background-color: #f2f2f2;
     padding: 10px;
 }
-/* neume info (metadata) */
-#neume_info {
+/* element info (metadata) */
+#element_info {
     width: 100%;
 }
 .smallel {
@@ -668,6 +668,9 @@ a:hover {
     display: none;
 }
 /* Syllable text side panel */
+#syl_text {
+    width: 100%;
+}
 .syl-text-side-panel {
     margin-right: 5px;
     cursor: pointer;
