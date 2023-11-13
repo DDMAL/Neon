@@ -425,3 +425,18 @@ function checkOblique (syllable: Element): void {
     ncIdx += 1;
   }
 }
+
+export function removeColumnLabel(mei: string): string {
+  const parser = new DOMParser();
+  const meiDoc = parser.parseFromString(mei, 'text/xml');
+  const meiForValidation = meiDoc.documentElement;
+
+  for (const staff of Array.from(meiForValidation.getElementsByTagName('staff'))) {
+    if (staff.hasAttribute('data_neon_column')) {
+      staff.removeAttribute('data_neon_column');
+    }
+  }
+
+  const serializer = new XMLSerializer();
+  return vkbeautify.xml(serializer.serializeToString(meiForValidation));
+}
