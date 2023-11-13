@@ -417,6 +417,9 @@ export function updateHighlight (): void {
     highlightId = '';
   }
   switch (highlightId) {
+    case 'highlight-column':
+      Color.setGroupingHighlight('column');
+      break;
     case 'highlight-staff':
       Color.setGroupingHighlight('staff');
       break;

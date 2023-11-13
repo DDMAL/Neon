@@ -102,6 +102,7 @@ function displayControlsPanel (handleZoom: ZoomHandler): string {
             <div class="dropdown-content">
               <a aria-role="menuitem" class="dropdown-item" id="highlight-selection">By Selection Mode</a>
               <hr class="dropdown-divider"/>
+              <a aria-role="menuitem" class="dropdown-item" id="highlight-column">Column</a>
               <a aria-role="menuitem" class="dropdown-item" id="highlight-staff">Staff</a>
               <a aria-role="menuitem" class="dropdown-item" id="highlight-syllable">Syllable</a>
               <a aria-role="menuitem" class="dropdown-item" id="highlight-neume">Neume</a>

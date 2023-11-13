@@ -194,6 +194,9 @@ export function setGroupingHighlight(grouping: GroupingType): void {
       case 'selByBBox':
         grouping = 'syllable';
         break;
+      case 'selByColumn':
+        grouping = 'column';
+        break;
       case 'selByStaff':
         grouping = 'staff';
         break;

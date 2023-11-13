@@ -335,7 +335,7 @@ export type HTMLSVGElement = HTMLElement & SVGSVGElement;
 export type SelectionType = 'selByStaff' | 'selByNeume' | 'selByNc' | 'selByLayerElement' | 'selBySyllable' | 'selByBBox' | 'selByLayerElement';
 
 /** Highlight grouping type  */
-export type GroupingType = 'staff' | 'syllable' | 'neume' | 'layerElement' | 'selection' | 'none';
+export type GroupingType = 'column' | 'staff' | 'syllable' | 'neume' | 'layerElement' | 'selection' | 'none';
 
 /** User mode type  */
 export type UserType = 'insert' | 'edit' | 'viewer';
