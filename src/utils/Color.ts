@@ -178,6 +178,29 @@ export function setStaffHighlight(): void {
   }
 }
 
+function setColumnHighlight(): void {
+  const  groups: { [key: number]: SVGGElement[] } = {};
+
+  document.querySelectorAll('.staff').forEach((staff) => {
+    console.log(staff);
+    const columnNum = Number(staff.getAttribute('data_neon_column'));
+    console.log(columnNum);
+
+    if (!groups[columnNum]) {
+      groups[columnNum] = [];
+    }
+
+    groups[columnNum].push(staff as SVGGElement);
+  });
+
+  for (const [column, staves] of Object.entries(groups)) {
+    const color = ColorPalette[Number(column) % ColorPalette.length];
+    for (const staff of staves) {
+      highlight(staff, color);
+    }
+  }
+}
+
 /**
  * Set a highlight by a different grouping.
  * @param grouping - Either "staff", "syllable", "neume", "selection", or "layerElement".
@@ -187,7 +210,12 @@ export function setGroupingHighlight(grouping: GroupingType): void {
   if (grouping === 'staff') {
     setStaffHighlight();
     return;
-  } else if (grouping === 'selection') {
+  }
+  else if (grouping === 'column') {
+    setColumnHighlight();
+    return;
+  } 
+  else if (grouping === 'selection') {
     const temp = document.querySelector('.sel-by.is-active').id;
     switch (temp) {
       case 'selBySyllable':
