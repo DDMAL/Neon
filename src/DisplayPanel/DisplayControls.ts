@@ -349,6 +349,7 @@ export function setHighlightControls (): void {
     if (dropdown.classList.contains('is-active')) {
       document.body.addEventListener('click', highlightClickaway);
 
+      setHighlightOption('column');
       setHighlightOption('staff');
       setHighlightOption('syllable');
       setHighlightOption('neume');
