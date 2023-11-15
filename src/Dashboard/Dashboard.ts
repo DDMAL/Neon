@@ -287,6 +287,8 @@ function shiftSelectionHandler(index) {
  * If a folder and file(s) are selected, opens file(s).
  */
 function handleOpenDocuments() {
+  if (!openButton.classList.contains('active')) return;
+
   // Open folder if only one folder is selected
   if (state.getSelectedFolders().length === 1) {
     const newPath = [...state.getFolderPath(), state.getSelectedEntries()[0] as IFolder];
@@ -310,6 +312,8 @@ function handleOpenDocuments() {
  * If a folder and file(s) are selected, deletes all.
  */
 function handleDeleteDocuments() {
+  if (!deleteButton.classList.contains('active')) return;
+  
   function deleteFileEntry(file: IFile): Promise<boolean> {
     return new Promise((resolve, reject) => {
       deleteDocument(file.id)
