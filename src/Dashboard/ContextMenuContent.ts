@@ -16,7 +16,7 @@ export const singleFileOptions =
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/open-doc.svg">
     </div>
     <div id="cm-delete-btn" class="context-menu-item-wrapper">
-        <div class="context-menu-item">Delete</div>
+        <div class="context-menu-item">Move to Trash</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>
     <div id="cm-rename-btn" class="context-menu-item-wrapper">
@@ -35,7 +35,7 @@ export const multiFileOptions =
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/open-doc.svg">
     </div>
     <div id="cm-delete-btn" class="context-menu-item-wrapper">
-        <div class="context-menu-item">Delete</div>
+        <div class="context-menu-item">Move to Trash</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>
     <div id="cm-move-btn" class="context-menu-item-wrapper">
@@ -61,7 +61,7 @@ export const singleFolderOptions =
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/open-doc.svg">
     </div>
     <div id="cm-delete-btn" class="context-menu-item-wrapper">
-        <div class="context-menu-item">Delete</div>
+        <div class="context-menu-item">Move to Trash</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>
     <div id="cm-rename-btn" class="context-menu-item-wrapper">
@@ -76,7 +76,7 @@ export const singleFolderOptions =
 // If multiple folders are selected
 export const multiFolderOptions = 
     `<div id="cm-delete-btn" class="context-menu-item-wrapper">
-        <div class="context-menu-item">Delete</div>
+        <div class="context-menu-item">Move to Trash</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>
     <div id="cm-move-btn" class="context-menu-item-wrapper">
