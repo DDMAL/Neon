@@ -64,6 +64,7 @@ export interface DashboardState {
   setFolderPath(path: IFolder[]): void;
   getFolderPath(): IFolder[];
   getParentFolder(): IFolder | undefined;
+  getTrashFolder(): IFolder;
   getSelectedEntries(): IEntry[];
   getSelectedFolders(): IEntry[];
   getSelectedFiles(): IEntry[];
@@ -127,6 +128,11 @@ export function dashboardState(): DashboardState {
     return folderPath.at(-1); 
   }
 
+  function getTrashFolder() {
+    const trashFolders = root().children.filter(entry => entry.type === 'trash') as IFolder[];
+    return trashFolders[0];
+  }
+
   function getSelectedEntries() {
     return orderedEntries.filter((_, idx) => orderedSelection[idx]);
   }
@@ -153,6 +159,7 @@ export function dashboardState(): DashboardState {
     setFolderPath: setFolderPath,
     getFolderPath: getFolderPath,
     getParentFolder: getParentFolder,
+    getTrashFolder: getTrashFolder,
     getSelectedEntries: getSelectedEntries,
     getSelectedFolders: getSelectedFolders,
     getSelectedFiles: getSelectedFiles,

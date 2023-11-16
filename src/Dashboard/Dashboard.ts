@@ -30,7 +30,7 @@ let currentDragTarget = null;
 let rightClicked = false;
 
 openButton?.addEventListener('click', openDocsHandler);
-removeButton?.addEventListener('click', deleteDocsHandler);
+removeButton?.addEventListener('click', removeDocsHandler);
 uploadDocumentsButton?.addEventListener('click', openUploadAreaHandler);
 newFolderButton?.addEventListener('click', openNewFolderWindow);
 
@@ -313,6 +313,19 @@ function openDocsHandler() {
   updateActionBarButtons();
 }
 
+/**
+ * Move current selection of documents on dashboard to trash. 
+ * 
+ */
+function removeDocsHandler() {
+  if (!removeButton.classList.contains('active')) return;
+
+  const selectedEntries = state.getSelectedEntries();
+  const parentFolder = state.getParentFolder();
+  const trashFolder = state.getTrashFolder();
+
+  moveToFolder(selectedEntries, parentFolder, trashFolder);
+}
 
 /**
  * Deletes current selection of documents on dashboard. 
@@ -973,10 +986,10 @@ function setContextMenuItemsEventListeners(view: string) {
         openDocsHandler();
       });
 
-      // "Delete" menu item
+      // "Move to Trash" menu item
       document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        deleteDocsHandler();
+        removeDocsHandler();
       });
 
       // "Rename" menu item
@@ -1002,10 +1015,10 @@ function setContextMenuItemsEventListeners(view: string) {
         openDocsHandler();
       });
 
-      // "Delete" menu item
+      // "Move to Trash" menu item
       document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        deleteDocsHandler();
+        removeDocsHandler();
       });
 
       // "Move" menu item
@@ -1017,10 +1030,10 @@ function setContextMenuItemsEventListeners(view: string) {
       break;
 
     case 'folder-and-file-options':
-      // "Delete" menu item
+      // "Move to Trash" menu item
       document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        deleteDocsHandler();
+        removeDocsHandler();
       });
 
       // "Move" menu item
@@ -1038,10 +1051,10 @@ function setContextMenuItemsEventListeners(view: string) {
         openDocsHandler();
       });
 
-      // "Delete" menu item
+      // "Move to Trash" menu item
       document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        deleteDocsHandler();
+        removeDocsHandler();
       });
 
       // "Rename" menu item
@@ -1059,10 +1072,10 @@ function setContextMenuItemsEventListeners(view: string) {
       break;
 
     case 'multi-folder-options':
-      // "Delete" menu item
+      // "Move to Trash" menu item
       document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        deleteDocsHandler();
+        removeDocsHandler();
       });
 
       // "Move" menu item
