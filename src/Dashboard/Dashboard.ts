@@ -29,7 +29,7 @@ let shiftKeyIsPressed = false;
 let currentDragTarget = null;
 let rightClicked = false;
 
-openButton?.addEventListener('click', handleOpenDocuments);
+openButton?.addEventListener('click', openDocsHandler);
 deleteButton?.addEventListener('click', handleDeleteDocuments);
 uploadDocumentsButton?.addEventListener('click', handleOpenUploadArea);
 newFolderButton?.addEventListener('click', openNewFolderWindow);
@@ -237,7 +237,7 @@ async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivE
     tile.addEventListener('dblclick', enterFolder, false);
   }
   else {
-    tile.addEventListener('dblclick', handleOpenDocuments, false);
+    tile.addEventListener('dblclick', openDocsHandler, false);
   }
   addShiftSelectionListener(tile, index);
   addSpecificContextMenuListeners(tile, index);
@@ -296,7 +296,7 @@ function shiftSelectionHandler(index) {
  * If a file(s) is selected, opens file(s).
  * If a folder and file(s) are selected, opens file(s).
  */
-function handleOpenDocuments() {
+function openDocsHandler() {
   if (!openButton.classList.contains('active')) return;
 
   // Open folder if only one folder is selected
@@ -970,7 +970,7 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Open" menu item
       document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleOpenDocuments();
+        openDocsHandler();
       });
 
       // "Delete" menu item
@@ -999,7 +999,7 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Open" menu item
       document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleOpenDocuments();
+        openDocsHandler();
       });
 
       // "Delete" menu item
@@ -1035,7 +1035,7 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Open" menu item
       document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleOpenDocuments();
+        openDocsHandler();
       });
 
       // "Delete" menu item
