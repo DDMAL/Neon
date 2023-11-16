@@ -1,5 +1,6 @@
 export enum EntryType {
   Folder = 'folder',
+  Trash = 'trash',
   File = 'file'
 }
 

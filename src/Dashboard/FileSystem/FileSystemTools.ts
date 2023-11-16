@@ -21,6 +21,10 @@ const createFolder = (name: string): IFolder => {
   return createEntry(name, EntryType.Folder, uuidv4(), []) as IFolder;
 };
 
+const createTrash = (name: string): IFolder => {
+  return createEntry(name, EntryType.Trash, uuidv4(), []) as IFolder;
+};
+
 const createFile = (name: string, id: string): IFile => {
   return createEntry(name, EntryType.File, id) as IFile;
 };
@@ -244,6 +248,7 @@ function sortFolder(folder: IFolder): IFolder {
 
 export const FileSystemTools = {
   createFolder: createFolder,
+  createTrash: createTrash,
   createFile: createFile,
   moveEntry: moveEntry,
   canAddEntry: canAddEntry,

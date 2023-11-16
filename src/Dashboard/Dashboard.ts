@@ -179,6 +179,16 @@ function createTile(entry: IEntry) {
       container.setAttribute('drop-id', entry.id);
       container.classList.add('drop-target');
       break;
+    case 'trash':
+      // set type attrib and id
+      container.classList.add('folder-entry');
+      container.setAttribute('id', entry.id);
+      // set icon
+      icon.src = './Neon-gh/assets/img/trash-icon.svg';
+      // set drop target attrib
+      container.setAttribute('drop-id', entry.id);
+      container.classList.add('drop-target');
+      break;
     case 'file':
       container.classList.add('file-entry');
       container.setAttribute('id', (entry as IFile).id);

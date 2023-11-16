@@ -64,6 +64,7 @@ export const FileSystemManager = (): FileSystemProps => {
       else {
         const root = FileSystemTools.createFolder('Home');
         loadSamples(root);
+        newTrash(root);
         await loadPreviousUploads(root);
         setFileSystem(root);
         return root;
@@ -98,6 +99,11 @@ export const FileSystemManager = (): FileSystemProps => {
     FileSystemTools.addMetadata(samplesFolder, { immutable: true });
 
     return root;
+  }
+
+  function newTrash(root: IFolder) {
+    const trashFolder = FileSystemTools.createTrash('Trash');
+    FileSystemTools.addEntry(trashFolder, root);
   }
 
   async function loadPreviousUploads(root: IFolder) {
