@@ -31,7 +31,7 @@ let rightClicked = false;
 
 openButton?.addEventListener('click', openDocsHandler);
 deleteButton?.addEventListener('click', deleteDocsHandler);
-uploadDocumentsButton?.addEventListener('click', handleOpenUploadArea);
+uploadDocumentsButton?.addEventListener('click', openUploadAreaHandler);
 newFolderButton?.addEventListener('click', openNewFolderWindow);
 
 // Sorting algorithms
@@ -74,7 +74,7 @@ backgroundArea?.addEventListener('click', (e) => {
  * 
  * @returns 
  */
-function handleOpenUploadArea() {
+function openUploadAreaHandler() {
   InitUploadArea(state.getParentFolder());
 }
 
@@ -1077,7 +1077,7 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Upload document" menu item
       document.querySelector(`.${btnClassname}#cm-upload-doc-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleOpenUploadArea();
+        openUploadAreaHandler();
       });
 
       // "New folder" menu item
