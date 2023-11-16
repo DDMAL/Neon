@@ -30,7 +30,7 @@ let currentDragTarget = null;
 let rightClicked = false;
 
 openButton?.addEventListener('click', openDocsHandler);
-deleteButton?.addEventListener('click', handleDeleteDocuments);
+deleteButton?.addEventListener('click', deleteDocsHandler);
 uploadDocumentsButton?.addEventListener('click', handleOpenUploadArea);
 newFolderButton?.addEventListener('click', openNewFolderWindow);
 
@@ -321,7 +321,7 @@ function openDocsHandler() {
  * If a file(s) is selected, deletes file(s).
  * If a folder and file(s) are selected, deletes all.
  */
-function handleDeleteDocuments() {
+function deleteDocsHandler() {
   if (!deleteButton.classList.contains('active')) return;
   
   function deleteFileEntry(file: IFile): Promise<boolean> {
@@ -976,7 +976,7 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Delete" menu item
       document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleDeleteDocuments();
+        deleteDocsHandler();
       });
 
       // "Rename" menu item
@@ -1005,7 +1005,7 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Delete" menu item
       document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleDeleteDocuments();
+        deleteDocsHandler();
       });
 
       // "Move" menu item
@@ -1020,7 +1020,7 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Delete" menu item
       document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleDeleteDocuments();
+        deleteDocsHandler();
       });
 
       // "Move" menu item
@@ -1041,7 +1041,7 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Delete" menu item
       document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleDeleteDocuments();
+        deleteDocsHandler();
       });
 
       // "Rename" menu item
@@ -1062,7 +1062,7 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Delete" menu item
       document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleDeleteDocuments();
+        deleteDocsHandler();
       });
 
       // "Move" menu item
