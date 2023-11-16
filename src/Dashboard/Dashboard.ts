@@ -10,7 +10,7 @@ import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
 const documentsContainer: HTMLDivElement = document.querySelector('#fs-content-container');
 const backgroundArea: HTMLDivElement = document.querySelector('#main-section-content');
 const openButton: HTMLButtonElement = document.querySelector('#open-doc');
-const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
+const removeButton: HTMLButtonElement = document.querySelector('#remove-doc');
 const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
 let backButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
 const uploadDocumentsButton: HTMLButtonElement = document.querySelector('#upload-new-doc-button');
@@ -30,7 +30,7 @@ let currentDragTarget = null;
 let rightClicked = false;
 
 openButton?.addEventListener('click', openDocsHandler);
-deleteButton?.addEventListener('click', deleteDocsHandler);
+removeButton?.addEventListener('click', deleteDocsHandler);
 uploadDocumentsButton?.addEventListener('click', openUploadAreaHandler);
 newFolderButton?.addEventListener('click', openNewFolderWindow);
 
@@ -322,7 +322,7 @@ function openDocsHandler() {
  * If a folder and file(s) are selected, deletes all.
  */
 function deleteDocsHandler() {
-  if (!deleteButton.classList.contains('active')) return;
+  if (!removeButton.classList.contains('active')) return;
   
   function deleteFileEntry(file: IFile): Promise<boolean> {
     return new Promise((resolve, reject) => {
@@ -393,11 +393,11 @@ function updateActionBarButtons() {
   const nothingSelected = state.getSelection().every((selected) => !selected);
   if (nothingSelected) {
     openButton.classList.remove('active');
-    deleteButton.classList.remove('active');
+    removeButton.classList.remove('active');
   }
   else {
     openButton.classList.add('active');
-    deleteButton.classList.add('active');
+    removeButton.classList.add('active');
   }
 
   // update upload doc/add folder to active if parent folder isn't immutable
@@ -405,7 +405,7 @@ function updateActionBarButtons() {
   if (isImmutable) {
     uploadDocumentsButton.classList.remove('active');
     newFolderButton.classList.remove('active');
-    deleteButton.classList.remove('active');
+    removeButton.classList.remove('active');
   }
   else {
     uploadDocumentsButton.classList.add('active');
