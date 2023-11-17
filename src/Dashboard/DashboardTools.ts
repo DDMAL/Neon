@@ -138,7 +138,7 @@ export function dashboardState(): DashboardState {
   }
 
   function getSelectedFolders() {
-    return getSelectedEntries().filter(entry => entry.type === 'folder');
+    return getSelectedEntries().filter(entry => entry.type === 'folder' || entry.type === 'trash');
   }    
 
   function getSelectedFiles() {
