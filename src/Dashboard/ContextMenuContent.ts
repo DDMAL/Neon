@@ -15,7 +15,7 @@ export const singleFileOptions =
         <div class="context-menu-item">Open</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/open-doc.svg">
     </div>
-    <div id="cm-delete-btn" class="context-menu-item-wrapper">
+    <div id="cm-remove-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Move to Trash</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>
@@ -34,7 +34,7 @@ export const multiFileOptions =
         <div class="context-menu-item">Open</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/open-doc.svg">
     </div>
-    <div id="cm-delete-btn" class="context-menu-item-wrapper">
+    <div id="cm-remove-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Move to Trash</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>
@@ -45,7 +45,7 @@ export const multiFileOptions =
 
 // If 1 or more files and 1 or more folders are selected
 export const folderAndFileOptions = 
-    `<div id="cm-delete-btn" class="context-menu-item-wrapper">
+    `<div id="cm-remove-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Delete</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>
@@ -60,7 +60,7 @@ export const singleFolderOptions =
         <div class="context-menu-item">Open</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/open-doc.svg">
     </div>
-    <div id="cm-delete-btn" class="context-menu-item-wrapper">
+    <div id="cm-remove-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Move to Trash</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>
@@ -75,12 +75,30 @@ export const singleFolderOptions =
 
 // If multiple folders are selected
 export const multiFolderOptions = 
-    `<div id="cm-delete-btn" class="context-menu-item-wrapper">
+    `<div id="cm-remove-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Move to Trash</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>
     <div id="cm-move-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Move</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/move-doc-icon.svg">
+    </div>`;
+
+// If trash folder is selected
+export const trashFolderOptions = 
+    `<div id="cm-delete-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Empty Trash</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
+    </div>`;
+
+// If entry in trash folder is selected
+export const trashEntryOptions = 
+    `<div id="cm-recover-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Recover</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/recover-doc.svg">
+    </div>
+    <div id="cm-delete-btn" class="context-menu-item-wrapper">
+        <div class="context-menu-item">Delete</div>
+        <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>`;
 
