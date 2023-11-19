@@ -300,7 +300,7 @@ function openDocsHandler() {
   if (!openButton.classList.contains('active')) return;
 
   // Open folder if only one folder is selected
-  if (state.getSelectedFolders().length === 1) {
+  if (state.getSelectedFolders().length === 1 || state.getSelectedTrash().length === 1) {
     const newPath = [...state.getFolderPath(), state.getSelectedEntries()[0] as IFolder];
     updateDashboard(newPath);
     return;

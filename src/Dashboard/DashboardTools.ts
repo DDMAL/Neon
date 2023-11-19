@@ -67,6 +67,7 @@ export interface DashboardState {
   getTrashFolder(): IFolder;
   getSelectedEntries(): IEntry[];
   getSelectedFolders(): IEntry[];
+  getSelectedTrash(): IEntry[];
   getSelectedFiles(): IEntry[];
 }
 
@@ -138,8 +139,12 @@ export function dashboardState(): DashboardState {
   }
 
   function getSelectedFolders() {
-    return getSelectedEntries().filter(entry => entry.type === 'folder' || entry.type === 'trash');
-  }    
+    return getSelectedEntries().filter(entry => entry.type === 'folder');
+  }
+
+  function getSelectedTrash() {
+    return getSelectedEntries().filter(entry => entry.type === 'trash');
+  }
 
   function getSelectedFiles() {
     return getSelectedEntries().filter(entry => entry.type === 'file');
@@ -162,6 +167,7 @@ export function dashboardState(): DashboardState {
     getTrashFolder: getTrashFolder,
     getSelectedEntries: getSelectedEntries,
     getSelectedFolders: getSelectedFolders,
+    getSelectedTrash: getSelectedTrash,
     getSelectedFiles: getSelectedFiles,
   };
 }
