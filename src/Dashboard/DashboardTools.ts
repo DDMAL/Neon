@@ -63,6 +63,8 @@ export interface DashboardState {
   resetSelection(): void;
   setFolderPath(path: IFolder[]): void;
   getFolderPath(): IFolder[];
+  getFolderPathNames(): string[];
+  getFolderPathByNames(folderNames: string[]): IFolder | void;
   getParentFolder(): IFolder | undefined;
   getTrashFolder(): IFolder;
   getSelectedEntries(): IEntry[];
@@ -125,6 +127,28 @@ export function dashboardState(): DashboardState {
     return folderPath;
   }
 
+  function getFolderPathNames() {
+    return folderPath.map(folder => folder.name);
+  }
+
+  function getFolderPathByNames(folderNames: string[]): IFolder | void {
+    let currentFolder = root();
+    folderNames = folderNames.slice(1);
+
+    for (const folderName of folderNames) {
+      const targetFolder = currentFolder.children.find(child => child.name === folderName);
+      if (targetFolder && targetFolder.type === 'folder') {
+        currentFolder = targetFolder as IFolder;
+      } else {
+        console.debug('failed to find folder: ', folderName);
+        return;
+      }
+    }
+
+    return currentFolder;
+  }
+
+
   function getParentFolder() { 
     return folderPath.at(-1); 
   }
@@ -163,6 +187,8 @@ export function dashboardState(): DashboardState {
     resetSelection: resetSelection,
     setFolderPath: setFolderPath,
     getFolderPath: getFolderPath,
+    getFolderPathNames: getFolderPathNames,
+    getFolderPathByNames: getFolderPathByNames,
     getParentFolder: getParentFolder,
     getTrashFolder: getTrashFolder,
     getSelectedEntries: getSelectedEntries,

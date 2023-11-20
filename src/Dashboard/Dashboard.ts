@@ -324,7 +324,26 @@ function removeDocsHandler() {
   const parentFolder = state.getParentFolder();
   const trashFolder = state.getTrashFolder();
 
+  const datetime = new Date().toLocaleString();
+  
+  for (let entry of selectedEntries) {
+    entry = FileSystemTools.addMetadata(entry, { removed_on: datetime, recover_folder: state.getFolderPathNames() });
+  }
+
   moveToFolder(selectedEntries, parentFolder, trashFolder);
+}
+
+function putBackDocsHandler() {
+  const selectedEntries = state.getSelectedEntries();
+  const parentFolder = state.getParentFolder();
+  
+  for (const entry of selectedEntries) {
+    const folderPathNames = entry.metadata['recover_folder'] as string[];
+    const targetFolder = state.getFolderPathByNames(folderPathNames);
+    if (targetFolder) {
+      moveToFolder([entry], parentFolder, targetFolder);
+    }    
+  }
 }
 
 /**
@@ -900,16 +919,18 @@ function showContextMenu(view: string, clientX: number, clientY: number) {
        *    4) 1 folder -> open, move to trash, move
        *    5) 2+ folders -> move to trash, move
        *    6) trash -> empty trash
-       *    7) entry in trash -> recover, delete
+       *    7) entry in trash -> put back, delete
        */
 
 
       // trash
       if (!numberOfSelectedFiles && !numberOfSelectedFolders && selectedTrash) {
         contextMenuContentWrapper.innerHTML = contextMenuContent.trashFolderOptions;
+        setContextMenuItemsEventListeners('trash-folder-options');
       }
       else if (state.getFolderPath().length > 1 && state.getFolderPath().at(1).name == 'Trash') {
         contextMenuContentWrapper.innerHTML = contextMenuContent.trashEntryOptions;
+        setContextMenuItemsEventListeners('trash-entry-options');
       }
       // 1 file
       else if (numberOfSelectedFiles === 1 && !numberOfSelectedFolders && !selectedTrash) {
@@ -1091,6 +1112,30 @@ function setContextMenuItemsEventListeners(view: string) {
       document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
         openMoveToWindow();
+      });
+
+      break;
+    
+    case 'trash-folder-options':
+      // "Empty Trash" menu item
+      document.querySelector(`.${btnClassname}#cm-remove-btn`).addEventListener('click', (_e) => {
+        contextMenu.classList.add('hidden');
+        // emptyTrashHandler();
+      });
+
+      break;
+
+    case 'trash-entry-options':
+      // "Put Back" menu item
+      document.querySelector(`.${btnClassname}#cm-recover-btn`).addEventListener('click', (_e) => {
+        contextMenu.classList.add('hidden');
+        putBackDocsHandler();
+      });
+
+      // "Delete" menu item
+      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
+        contextMenu.classList.add('hidden');
+        deleteDocsHandler();
       });
 
       break;

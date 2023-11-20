@@ -94,7 +94,7 @@ export const trashFolderOptions =
 // If entry in trash folder is selected
 export const trashEntryOptions = 
     `<div id="cm-recover-btn" class="context-menu-item-wrapper">
-        <div class="context-menu-item">Recover</div>
+        <div class="context-menu-item">Put Back</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/recover-doc.svg">
     </div>
     <div id="cm-delete-btn" class="context-menu-item-wrapper">
