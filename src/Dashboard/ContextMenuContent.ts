@@ -86,7 +86,7 @@ export const multiFolderOptions =
 
 // If trash folder is selected
 export const trashFolderOptions = 
-    `<div id="cm-delete-btn" class="context-menu-item-wrapper">
+    `<div id="cm-empty-trash-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Empty Trash</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>`;

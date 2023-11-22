@@ -347,6 +347,51 @@ function putBackDocsHandler() {
 }
 
 /**
+ * Delete a file
+ * 
+ * @param file 
+ * @param parentFolder 
+ * @returns 
+ */
+function deleteFileEntry(file: IFile, parentFolder: IFolder): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    deleteDocument(file.id)
+      .then(() => {
+        FileSystemTools.removeEntry(file, parentFolder);
+        resolve(true);
+      })
+      .catch(() => reject(false));
+  });
+}
+
+/**
+ * Delete a folder and its content
+ * 
+ * @param folder 
+ * @param parentFolder 
+ * @returns 
+ */
+function deleteFolderEntry(folder: IFolder, parentFolder: IFolder): Promise<boolean> {
+  return new Promise((resolve) => {
+    const deletePromises = folder.children.map((child) => {
+      if (child.type === 'file') {
+        return deleteFileEntry(child as IFile, folder); // Pass the current folder as the parent
+      } else if (child.type === 'folder') {
+        return deleteFolderEntry(child as IFolder, folder); // Pass the current folder as the parent
+      }
+      return Promise.resolve(false); // Shouldn't happen, but resolving for safety
+    });
+
+    Promise.all(deletePromises)
+      .then(() => {
+        FileSystemTools.removeEntry(folder, parentFolder); // Use the provided parent folder
+        resolve(true);
+      })
+      .catch(() => resolve(false));
+  });
+}
+
+/**
  * Deletes current selection of documents on dashboard. 
  * 
  * If a folder is selected, deletes folder.
@@ -355,43 +400,6 @@ function putBackDocsHandler() {
  */
 function deleteDocsHandler() {
   if (!removeButton.classList.contains('active')) return;
-  
-  function deleteFileEntry(file: IFile, parentFolder: IFolder): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      deleteDocument(file.id)
-        .then(() => {
-          FileSystemTools.removeEntry(file, parentFolder);
-          resolve(true);
-        })
-        .catch(() => reject(false));
-    });
-  }
-
-  /**
-   * function within a function
-   * 
-   * @param folder 
-   * @returns 
-   */
-  function deleteFolderEntry(folder: IFolder, parentFolder: IFolder): Promise<boolean> {
-    return new Promise((resolve) => {
-      const deletePromises = folder.children.map((child) => {
-        if (child.type === 'file') {
-          return deleteFileEntry(child as IFile, folder); // Pass the current folder as the parent
-        } else if (child.type === 'folder') {
-          return deleteFolderEntry(child as IFolder, folder); // Pass the current folder as the parent
-        }
-        return Promise.resolve(false); // Shouldn't happen, but resolving for safety
-      });
-
-      Promise.all(deletePromises)
-        .then(() => {
-          FileSystemTools.removeEntry(folder, parentFolder); // Use the provided parent folder
-          resolve(true);
-        })
-        .catch(() => resolve(false));
-    });
-  }
 
   const allEntries = state.getSelectedEntries();
 
@@ -419,6 +427,34 @@ function deleteDocsHandler() {
       .catch( err => console.debug('failed to delete files: ', err));
   }
 }
+
+
+function emptyTrashHandler() {
+  const trashFolder = state.getTrashFolder();
+
+  if (!trashFolder) {
+    console.error('Trash folder not found.');
+    return;
+  }
+
+  const deletePromises = trashFolder.children.map((entry) => {
+    if (entry.type === 'file') {
+      return deleteFileEntry(entry as IFile, trashFolder);
+    } else if (entry.type === 'folder') {
+      return deleteFolderEntry(entry as IFolder, trashFolder);
+    }
+
+    return Promise.resolve(false); // Shouldn't happen, but resolving for safety
+  });
+
+  Promise.all(deletePromises)
+    .then(() => {
+      // After deleting all content, update the dashboard
+      updateDashboard(state.getFolderPath());
+    })
+    .catch((err) => console.debug('failed to delete files: ', err));
+}
+
 
 /**
  * Updates the visibility of action bar buttons based on current selections
@@ -1121,9 +1157,9 @@ function setContextMenuItemsEventListeners(view: string) {
     
     case 'trash-folder-options':
       // "Empty Trash" menu item
-      document.querySelector(`.${btnClassname}#cm-remove-btn`).addEventListener('click', (_e) => {
+      document.querySelector(`.${btnClassname}#cm-empty-trash-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        // emptyTrashHandler();
+        emptyTrashHandler();
       });
 
       break;
