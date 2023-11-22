@@ -356,11 +356,11 @@ function putBackDocsHandler() {
 function deleteDocsHandler() {
   if (!removeButton.classList.contains('active')) return;
   
-  function deleteFileEntry(file: IFile): Promise<boolean> {
+  function deleteFileEntry(file: IFile, parentFolder: IFolder): Promise<boolean> {
     return new Promise((resolve, reject) => {
       deleteDocument(file.id)
         .then(() => {
-          FileSystemTools.removeEntry(file, state.getParentFolder());
+          FileSystemTools.removeEntry(file, parentFolder);
           resolve(true);
         })
         .catch(() => reject(false));
@@ -373,20 +373,20 @@ function deleteDocsHandler() {
    * @param folder 
    * @returns 
    */
-  function deleteFolderEntry(folder: IFolder): Promise<boolean> {
+  function deleteFolderEntry(folder: IFolder, parentFolder: IFolder): Promise<boolean> {
     return new Promise((resolve) => {
       const deletePromises = folder.children.map((child) => {
         if (child.type === 'file') {
-          return deleteFileEntry(child as IFile);
+          return deleteFileEntry(child as IFile, folder); // Pass the current folder as the parent
         } else if (child.type === 'folder') {
-          return deleteFolderEntry(child as IFolder);
+          return deleteFolderEntry(child as IFolder, folder); // Pass the current folder as the parent
         }
         return Promise.resolve(false); // Shouldn't happen, but resolving for safety
       });
 
       Promise.all(deletePromises)
         .then(() => {
-          FileSystemTools.removeEntry(folder, state.getParentFolder());
+          FileSystemTools.removeEntry(folder, parentFolder); // Use the provided parent folder
           resolve(true);
         })
         .catch(() => resolve(false));
@@ -405,10 +405,10 @@ function deleteDocsHandler() {
   if (isConfirmed) {
     const deletePromises = allEntries.map(entry => {
       if (entry.type === 'file') {
-        return deleteFileEntry(entry as IFile);
+        return deleteFileEntry(entry as IFile, state.getParentFolder());
       }
       else if (entry.type === 'folder') {
-        return deleteFolderEntry(entry as IFolder);
+        return deleteFolderEntry(entry as IFolder, state.getParentFolder());
       }
     });
 
