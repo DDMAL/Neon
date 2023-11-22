@@ -374,21 +374,24 @@ function deleteDocsHandler() {
    * @returns 
    */
   function deleteFolderEntry(folder: IFolder): Promise<boolean> {
-    // only delete a folder if it is empty
-    const isEmpty = folder.children.length === 0;
-
     return new Promise((resolve) => {
-      if (isEmpty) {
-        FileSystemTools.removeEntry(folder, state.getParentFolder());
-        resolve(true);
-      }
-      else {
-        window.alert(`Cannot delete ${folder.name}. Folder is not empty.`);
-        resolve(false);
-      }
+      const deletePromises = folder.children.map((child) => {
+        if (child.type === 'file') {
+          return deleteFileEntry(child as IFile);
+        } else if (child.type === 'folder') {
+          return deleteFolderEntry(child as IFolder);
+        }
+        return Promise.resolve(false); // Shouldn't happen, but resolving for safety
+      });
+
+      Promise.all(deletePromises)
+        .then(() => {
+          FileSystemTools.removeEntry(folder, state.getParentFolder());
+          resolve(true);
+        })
+        .catch(() => resolve(false));
     });
   }
-
 
   const allEntries = state.getSelectedEntries();
 
