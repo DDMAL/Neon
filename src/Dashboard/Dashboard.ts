@@ -458,34 +458,47 @@ function emptyTrashHandler() {
 
 /**
  * Updates the visibility of action bar buttons based on current selections
+ * 
+ * Note: better not to change the order
  */
 function updateActionBarButtons() {
-  // set active if there is a selection
-  const nothingSelected = state.getSelection().every((selected) => !selected);
-  if (nothingSelected) {
-    openButton.classList.remove('active');
-    removeButton.classList.remove('active');
-  }
-  else {
-    openButton.classList.add('active');
-    removeButton.classList.add('active');
-  }
-
-  // update upload doc/add folder to active if parent folder isn't immutable
-  const isImmutable = state.getParentFolder().metadata['immutable'] || (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable']);
-  if (isImmutable) {
+  // inside ./Samples or selecting the samples folder
+  if (state.getParentFolder().metadata['immutable'] || 
+    (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable'])) {
     uploadDocumentsButton.classList.remove('active');
     newFolderButton.classList.remove('active');
     removeButton.classList.remove('active');
+    if (state.getSelectedEntries().length) {
+      openButton.classList.add('active');
+    } else {
+      openButton.classList.remove('active');
+    }
   }
-  // all actions not available in trash
+  // inside ./Trash
   else if (state.isInTrash()) {
     uploadDocumentsButton.classList.remove('active');
     newFolderButton.classList.remove('active');
     removeButton.classList.remove('active');
     openButton.classList.remove('active');
   }
+  // selecting the trash folder
+  else if (state.getSelectedTrash().length) {
+    openButton.classList.add('active');
+    removeButton.classList.remove('active');
+    uploadDocumentsButton.classList.remove('active');
+    newFolderButton.classList.remove('active');
+  } 
+  // selecting entries
+  else if (state.getSelectedEntries().length) {
+    openButton.classList.add('active');
+    removeButton.classList.add('active');
+    uploadDocumentsButton.classList.remove('active');
+    newFolderButton.classList.remove('active');
+  }
+  // nothing selected, not in ./Samples or ./Trash
   else {
+    openButton.classList.remove('active');
+    removeButton.classList.remove('active');
     uploadDocumentsButton.classList.add('active');
     newFolderButton.classList.add('active');
   }

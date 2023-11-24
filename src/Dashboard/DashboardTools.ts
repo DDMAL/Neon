@@ -177,7 +177,7 @@ export function dashboardState(): DashboardState {
 
   function isInTrash() {
     const isTrashFolder = (folder: IFolder): boolean => folder.type === 'trash';
-    return getFolderPath().some(isTrashFolder);
+    return folderPath.some(isTrashFolder);
   }
 
   // TODO:
