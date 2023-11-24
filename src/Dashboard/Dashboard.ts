@@ -1011,9 +1011,10 @@ function showContextMenu(view: string, clientX: number, clientY: number) {
       setContextMenuItemsEventListeners('default');
   }
 
-  // disable editor menu for the samples folder
+  // disable editor menu for the samples folder and trash
   if(state.getParentFolder().metadata['immutable'] || 
-  (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable'])) {
+  (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable']) ||
+  state.isInTrash()) {
     const deleteBtn = document.getElementById('cm-remove-btn');
     const renameBtn = document.getElementById('cm-rename-btn');
     const moveBtn = document.getElementById('cm-move-btn');
