@@ -337,10 +337,12 @@ function putBackDocsHandler() {
   const selectedEntries = state.getSelectedEntries();
   const parentFolder = state.getParentFolder();
   
-  for (const entry of selectedEntries) {
+  for (let entry of selectedEntries) {
     const folderPathNames = entry.metadata['recover_folder'] as string[];
     const targetFolder = state.getFolderPathByNames(folderPathNames);
     if (targetFolder) {
+      entry = FileSystemTools.removeMetadata(entry, ['removed_on', 'recover_folder']);
+      console.log(entry);
       moveToFolder([entry], parentFolder, targetFolder);
     }    
   }
