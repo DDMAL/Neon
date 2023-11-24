@@ -1299,11 +1299,42 @@ function addSpecificContextMenuListeners(tile, index) {
 }
 
 /**
+ * Update the Trash folder by deleting entries that were deleted 30 days ago
+ */
+function updateTrash(): void {
+  const trashFolder = state.getTrashFolder();
+  const currentDate = new Date();
+  const thirtyDaysAgo = new Date(currentDate.getTime() - 30 * 24 * 60 * 60 * 1000); // 30 days in milliseconds
+
+  // Helper function to check if an entry was deleted 30 days ago
+  const toDelete = (entry: IEntry): boolean => {
+    if (entry.metadata && entry.metadata['removed_on']) {
+      const date = new Date(entry.metadata['removed_on'] as string);
+      return date <= thirtyDaysAgo;
+    }
+    return false;
+  };
+
+  // Iterate through the entries in the Trash
+  trashFolder.children.forEach((entry) => {
+    if (toDelete(entry)) {
+      // Delete entry if deleted 30 days ago
+      if (entry.type === 'file') {
+        deleteFileEntry(entry as IFile, trashFolder);
+      } else if (entry.type === 'folder') {
+        deleteFolderEntry(entry as IFolder, trashFolder); 
+      }
+    }
+  });
+}
+
+/**
  * Loads root folder into dashboard on startup. 
  */
 export const loadDashboard = async (): Promise<void> => {
   const root = await fsm.getRoot();
   state.root(root);
   updateDashboard([root]);
+  updateTrash();
   initializeDefaultContextMenu();
 };
