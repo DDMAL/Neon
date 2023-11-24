@@ -13,7 +13,7 @@ export interface IEntry {
 }
 
 export interface IFolder extends IEntry {
-  type: EntryType.Folder;
+  type: EntryType.Folder | EntryType.Trash;
   id: string;
   children: IEntry[];
 }

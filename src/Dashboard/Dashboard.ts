@@ -478,6 +478,13 @@ function updateActionBarButtons() {
     newFolderButton.classList.remove('active');
     removeButton.classList.remove('active');
   }
+  // all actions not available in trash
+  else if (state.isInTrash()) {
+    uploadDocumentsButton.classList.remove('active');
+    newFolderButton.classList.remove('active');
+    removeButton.classList.remove('active');
+    openButton.classList.remove('active');
+  }
   else {
     uploadDocumentsButton.classList.add('active');
     newFolderButton.classList.add('active');

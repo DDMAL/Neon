@@ -71,6 +71,7 @@ export interface DashboardState {
   getSelectedFolders(): IEntry[];
   getSelectedTrash(): IEntry[];
   getSelectedFiles(): IEntry[];
+  isInTrash(): boolean;
 }
 
 export function dashboardState(): DashboardState {
@@ -174,6 +175,11 @@ export function dashboardState(): DashboardState {
     return getSelectedEntries().filter(entry => entry.type === 'file');
   }
 
+  function isInTrash() {
+    const isTrashFolder = (folder: IFolder): boolean => folder.type === 'trash';
+    return getFolderPath().some(isTrashFolder);
+  }
+
   // TODO:
   // function sortEntries() {}
 
@@ -195,5 +201,6 @@ export function dashboardState(): DashboardState {
     getSelectedFolders: getSelectedFolders,
     getSelectedTrash: getSelectedTrash,
     getSelectedFiles: getSelectedFiles,
+    isInTrash: isInTrash,
   };
 }
