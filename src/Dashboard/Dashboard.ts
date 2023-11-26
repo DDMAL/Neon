@@ -400,8 +400,6 @@ function deleteFolderEntry(folder: IFolder, parentFolder: IFolder): Promise<bool
  * If a folder and file(s) are selected, deletes all.
  */
 function deleteDocsHandler() {
-  if (!removeButton.classList.contains('active')) return;
-
   const allEntries = state.getSelectedEntries();
 
   // Create a formatted list of filenames to display in alert message
