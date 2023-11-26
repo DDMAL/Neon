@@ -6,6 +6,7 @@ interface FileSystemProps {
   getRoot: () => Promise<IFolder>;
   setFileSystem: (root: IFolder) => boolean;
   getFileSystem: () => Promise<IFolder>;
+  newTrash: (root: IFolder) => void;
 }
   
 
@@ -104,6 +105,7 @@ export const FileSystemManager = (): FileSystemProps => {
     getRoot: getRoot,
     setFileSystem: setFileSystem,
     getFileSystem: getFileSystem,
+    newTrash: newTrash,
   };
 
   return FileSystemProps;

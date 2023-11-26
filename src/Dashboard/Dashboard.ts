@@ -342,7 +342,6 @@ function putBackDocsHandler() {
     const targetFolder = state.getFolderPathByNames(folderPathNames);
     if (targetFolder) {
       entry = FileSystemTools.removeMetadata(entry, ['removed_on', 'recover_folder']);
-      console.log(entry);
       moveToFolder([entry], parentFolder, targetFolder);
     }    
   }
@@ -1301,7 +1300,10 @@ function addSpecificContextMenuListeners(tile, index) {
 /**
  * Update the Trash folder by deleting entries that were deleted 30 days ago
  */
-function updateTrash(): void {
+function updateTrash(root: IFolder): void {
+  if (!state.getTrashFolder()) {
+    fsm.newTrash(root);
+  }
   const trashFolder = state.getTrashFolder();
   const currentDate = new Date();
   const thirtyDaysAgo = new Date(currentDate.getTime() - 30 * 24 * 60 * 60 * 1000); // 30 days in milliseconds
@@ -1334,7 +1336,7 @@ function updateTrash(): void {
 export const loadDashboard = async (): Promise<void> => {
   const root = await fsm.getRoot();
   state.root(root);
+  updateTrash(root);
   updateDashboard([root]);
-  updateTrash();
   initializeDefaultContextMenu();
 };
