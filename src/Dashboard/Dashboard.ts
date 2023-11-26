@@ -10,7 +10,7 @@ import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
 const documentsContainer: HTMLDivElement = document.querySelector('#fs-content-container');
 const backgroundArea: HTMLDivElement = document.querySelector('#main-section-content');
 const openButton: HTMLButtonElement = document.querySelector('#open-doc');
-const deleteButton: HTMLButtonElement = document.querySelector('#remove-doc');
+const removeButton: HTMLButtonElement = document.querySelector('#remove-doc');
 const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
 let backButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
 const uploadDocumentsButton: HTMLButtonElement = document.querySelector('#upload-new-doc-button');
@@ -29,9 +29,9 @@ let shiftKeyIsPressed = false;
 let currentDragTarget = null;
 let rightClicked = false;
 
-openButton?.addEventListener('click', handleOpenDocuments);
-deleteButton?.addEventListener('click', handleDeleteDocuments);
-uploadDocumentsButton?.addEventListener('click', handleOpenUploadArea);
+openButton?.addEventListener('click', openDocsHandler);
+removeButton?.addEventListener('click', removeDocsHandler);
+uploadDocumentsButton?.addEventListener('click', openUploadAreaHandler);
 newFolderButton?.addEventListener('click', openNewFolderWindow);
 
 // Sorting algorithms
@@ -74,7 +74,7 @@ backgroundArea?.addEventListener('click', (e) => {
  * 
  * @returns 
  */
-function handleOpenUploadArea() {
+function openUploadAreaHandler() {
   InitUploadArea(state.getParentFolder());
 }
 
@@ -179,6 +179,16 @@ function createTile(entry: IEntry) {
       container.setAttribute('drop-id', entry.id);
       container.classList.add('drop-target');
       break;
+    case 'trash':
+      // set type attrib and id
+      container.classList.add('folder-entry');
+      container.setAttribute('id', entry.id);
+      // set icon
+      icon.src = './Neon-gh/assets/img/trash-icon.svg';
+      // set drop target attrib
+      container.setAttribute('drop-id', entry.id);
+      container.classList.add('drop-target');
+      break;
     case 'file':
       container.classList.add('file-entry');
       container.setAttribute('id', (entry as IFile).id);
@@ -227,7 +237,7 @@ async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivE
     tile.addEventListener('dblclick', enterFolder, false);
   }
   else {
-    tile.addEventListener('dblclick', handleOpenDocuments, false);
+    tile.addEventListener('dblclick', openDocsHandler, false);
   }
   addShiftSelectionListener(tile, index);
   addSpecificContextMenuListeners(tile, index);
@@ -286,11 +296,11 @@ function shiftSelectionHandler(index) {
  * If a file(s) is selected, opens file(s).
  * If a folder and file(s) are selected, opens file(s).
  */
-function handleOpenDocuments() {
+function openDocsHandler() {
   if (!openButton.classList.contains('active')) return;
 
   // Open folder if only one folder is selected
-  if (state.getSelectedFolders().length === 1) {
+  if (state.getSelectedFolders().length === 1 || state.getSelectedTrash().length === 1) {
     const newPath = [...state.getFolderPath(), state.getSelectedEntries()[0] as IFolder];
     updateDashboard(newPath);
     return;
@@ -303,6 +313,84 @@ function handleOpenDocuments() {
   updateActionBarButtons();
 }
 
+/**
+ * Move current selection of documents on dashboard to trash. 
+ * 
+ */
+function removeDocsHandler() {
+  if (!removeButton.classList.contains('active')) return;
+
+  const selectedEntries = state.getSelectedEntries();
+  const parentFolder = state.getParentFolder();
+  const trashFolder = state.getTrashFolder();
+
+  const datetime = new Date().toLocaleString();
+  
+  for (let entry of selectedEntries) {
+    entry = FileSystemTools.addMetadata(entry, { removed_on: datetime, recover_folder: state.getFolderPathNames() });
+  }
+
+  moveToFolder(selectedEntries, parentFolder, trashFolder);
+}
+
+function putBackDocsHandler() {
+  const selectedEntries = state.getSelectedEntries();
+  const parentFolder = state.getParentFolder();
+  
+  for (let entry of selectedEntries) {
+    const folderPathNames = entry.metadata['recover_folder'] as string[];
+    const targetFolder = state.getFolderPathByNames(folderPathNames);
+    if (targetFolder) {
+      entry = FileSystemTools.removeMetadata(entry, ['removed_on', 'recover_folder']);
+      moveToFolder([entry], parentFolder, targetFolder);
+    }    
+  }
+}
+
+/**
+ * Delete a file
+ * 
+ * @param file 
+ * @param parentFolder 
+ * @returns 
+ */
+function deleteFileEntry(file: IFile, parentFolder: IFolder): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    deleteDocument(file.id)
+      .then(() => {
+        FileSystemTools.removeEntry(file, parentFolder);
+        resolve(true);
+      })
+      .catch(() => reject(false));
+  });
+}
+
+/**
+ * Delete a folder and its content
+ * 
+ * @param folder 
+ * @param parentFolder 
+ * @returns 
+ */
+function deleteFolderEntry(folder: IFolder, parentFolder: IFolder): Promise<boolean> {
+  return new Promise((resolve) => {
+    const deletePromises = folder.children.map((child) => {
+      if (child.type === 'file') {
+        return deleteFileEntry(child as IFile, folder); // Pass the current folder as the parent
+      } else if (child.type === 'folder') {
+        return deleteFolderEntry(child as IFolder, folder); // Pass the current folder as the parent
+      }
+      return Promise.resolve(false); // Shouldn't happen, but resolving for safety
+    });
+
+    Promise.all(deletePromises)
+      .then(() => {
+        FileSystemTools.removeEntry(folder, parentFolder); // Use the provided parent folder
+        resolve(true);
+      })
+      .catch(() => resolve(false));
+  });
+}
 
 /**
  * Deletes current selection of documents on dashboard. 
@@ -311,42 +399,8 @@ function handleOpenDocuments() {
  * If a file(s) is selected, deletes file(s).
  * If a folder and file(s) are selected, deletes all.
  */
-function handleDeleteDocuments() {
-  if (!deleteButton.classList.contains('active')) return;
-  
-  function deleteFileEntry(file: IFile): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      deleteDocument(file.id)
-        .then(() => {
-          FileSystemTools.removeEntry(file, state.getParentFolder());
-          resolve(true);
-        })
-        .catch(() => reject(false));
-    });
-  }
-
-  /**
-   * function within a function
-   * 
-   * @param folder 
-   * @returns 
-   */
-  function deleteFolderEntry(folder: IFolder): Promise<boolean> {
-    // only delete a folder if it is empty
-    const isEmpty = folder.children.length === 0;
-
-    return new Promise((resolve) => {
-      if (isEmpty) {
-        FileSystemTools.removeEntry(folder, state.getParentFolder());
-        resolve(true);
-      }
-      else {
-        window.alert(`Cannot delete ${folder.name}. Folder is not empty.`);
-        resolve(false);
-      }
-    });
-  }
-
+function deleteDocsHandler() {
+  if (!removeButton.classList.contains('active')) return;
 
   const allEntries = state.getSelectedEntries();
 
@@ -360,10 +414,10 @@ function handleDeleteDocuments() {
   if (isConfirmed) {
     const deletePromises = allEntries.map(entry => {
       if (entry.type === 'file') {
-        return deleteFileEntry(entry as IFile);
+        return deleteFileEntry(entry as IFile, state.getParentFolder());
       }
       else if (entry.type === 'folder') {
-        return deleteFolderEntry(entry as IFolder);
+        return deleteFolderEntry(entry as IFolder, state.getParentFolder());
       }
     });
 
@@ -375,29 +429,77 @@ function handleDeleteDocuments() {
   }
 }
 
-/**
- * Updates the visibility of action bar buttons based on current selections
- */
-function updateActionBarButtons() {
-  // set active if there is a selection
-  const nothingSelected = state.getSelection().every((selected) => !selected);
-  if (nothingSelected) {
-    openButton.classList.remove('active');
-    deleteButton.classList.remove('active');
-  }
-  else {
-    openButton.classList.add('active');
-    deleteButton.classList.add('active');
+
+function emptyTrashHandler() {
+  const trashFolder = state.getTrashFolder();
+
+  if (!trashFolder) {
+    console.error('Trash folder not found.');
+    return;
   }
 
-  // update upload doc/add folder to active if parent folder isn't immutable
-  const isImmutable = state.getParentFolder().metadata['immutable'] || (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable']);
-  if (isImmutable) {
+  const deletePromises = trashFolder.children.map((entry) => {
+    if (entry.type === 'file') {
+      return deleteFileEntry(entry as IFile, trashFolder);
+    } else if (entry.type === 'folder') {
+      return deleteFolderEntry(entry as IFolder, trashFolder);
+    }
+
+    return Promise.resolve(false); // Shouldn't happen, but resolving for safety
+  });
+
+  Promise.all(deletePromises)
+    .then(() => {
+      // After deleting all content, update the dashboard
+      updateDashboard(state.getFolderPath());
+    })
+    .catch((err) => console.debug('failed to delete files: ', err));
+}
+
+
+/**
+ * Updates the visibility of action bar buttons based on current selections
+ * 
+ * Note: better not to change the order
+ */
+function updateActionBarButtons() {
+  // inside ./Samples or selecting the samples folder
+  if (state.getParentFolder().metadata['immutable'] || 
+    (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable'])) {
     uploadDocumentsButton.classList.remove('active');
     newFolderButton.classList.remove('active');
-    deleteButton.classList.remove('active');
+    removeButton.classList.remove('active');
+    if (state.getSelectedEntries().length) {
+      openButton.classList.add('active');
+    } else {
+      openButton.classList.remove('active');
+    }
   }
+  // inside ./Trash
+  else if (state.isInTrash()) {
+    uploadDocumentsButton.classList.remove('active');
+    newFolderButton.classList.remove('active');
+    removeButton.classList.remove('active');
+    openButton.classList.remove('active');
+  }
+  // selecting the trash folder
+  else if (state.getSelectedTrash().length) {
+    openButton.classList.add('active');
+    removeButton.classList.remove('active');
+    uploadDocumentsButton.classList.remove('active');
+    newFolderButton.classList.remove('active');
+  } 
+  // selecting entries
+  else if (state.getSelectedEntries().length) {
+    openButton.classList.add('active');
+    removeButton.classList.add('active');
+    uploadDocumentsButton.classList.remove('active');
+    newFolderButton.classList.remove('active');
+  }
+  // nothing selected, not in ./Samples or ./Trash
   else {
+    openButton.classList.remove('active');
+    removeButton.classList.remove('active');
     uploadDocumentsButton.classList.add('active');
     newFolderButton.classList.add('active');
   }
@@ -867,38 +969,51 @@ function showContextMenu(view: string, clientX: number, clientY: number) {
       // Need to determine selection category before displaying options
       const numberOfSelectedFiles = state.getSelectedFiles().length;
       const numberOfSelectedFolders = state.getSelectedFolders().length;
+      const selectedTrash = state.getSelectedTrash().length;
 
       /**
        * Context menu options conditions:
-       *    1) 1 file -> open, delete, move
-       *    2) 2+ files -> open, delete, move
-       *    3) file(s) + folder(s) -> delete, move
-       *    4) 1 folder -> open, delete, move
-       *    5) 2+ folders -> delete, move
+       *    1) 1 file -> open, move to trash, move
+       *    2) 2+ files -> open, move to trash, move
+       *    3) file(s) + folder(s) -> move to trash, move
+       *    4) 1 folder -> open, move to trash, move
+       *    5) 2+ folders -> move to trash, move
+       *    6) trash -> empty trash
+       *    7) entry in trash -> put back, delete
        */
 
+
+      // trash
+      if (!numberOfSelectedFiles && !numberOfSelectedFolders && selectedTrash) {
+        contextMenuContentWrapper.innerHTML = contextMenuContent.trashFolderOptions;
+        setContextMenuItemsEventListeners('trash-folder-options');
+      }
+      else if (state.getFolderPath().length > 1 && state.getFolderPath().at(1).name == 'Trash') {
+        contextMenuContentWrapper.innerHTML = contextMenuContent.trashEntryOptions;
+        setContextMenuItemsEventListeners('trash-entry-options');
+      }
       // 1 file
-      if (numberOfSelectedFiles === 1 && numberOfSelectedFolders === 0) {
+      else if (numberOfSelectedFiles === 1 && !numberOfSelectedFolders && !selectedTrash) {
         contextMenuContentWrapper.innerHTML = contextMenuContent.singleFileOptions;
         setContextMenuItemsEventListeners('single-file-options');
       }
       // 2+ files
-      else if (numberOfSelectedFiles > 1 && numberOfSelectedFolders === 0) {
+      else if (numberOfSelectedFiles > 1 && !numberOfSelectedFolders && !selectedTrash) {
         contextMenuContentWrapper.innerHTML = contextMenuContent.multiFileOptions;
         setContextMenuItemsEventListeners('multi-file-options');
       }
       // file(s) + folder(s)
-      else if (numberOfSelectedFiles >= 1 && numberOfSelectedFolders >= 1) {
+      else if (numberOfSelectedFiles >= 1 && numberOfSelectedFolders >= 1 && !selectedTrash) {
         contextMenuContentWrapper.innerHTML = contextMenuContent.folderAndFileOptions;
         setContextMenuItemsEventListeners('folder-and-file-options');
       }
       // 1 folder
-      else if (numberOfSelectedFiles === 0 && numberOfSelectedFolders === 1) {
+      else if (!numberOfSelectedFiles && numberOfSelectedFolders === 1 && !selectedTrash) {
         contextMenuContentWrapper.innerHTML = contextMenuContent.singleFolderOptions;
         setContextMenuItemsEventListeners('single-folder-options');
       }
       // 2+ folders
-      else if (numberOfSelectedFiles === 0 && numberOfSelectedFolders > 1) {
+      else if (!numberOfSelectedFiles && numberOfSelectedFolders > 1 && !selectedTrash) {
         contextMenuContentWrapper.innerHTML = contextMenuContent.multiFolderOptions;
         setContextMenuItemsEventListeners('multi-folder-options');
       }
@@ -910,10 +1025,11 @@ function showContextMenu(view: string, clientX: number, clientY: number) {
       setContextMenuItemsEventListeners('default');
   }
 
-  // disable editor menu for the samples folder
+  // disable editor menu for the samples folder and trash
   if(state.getParentFolder().metadata['immutable'] || 
-  (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable'])) {
-    const deleteBtn = document.getElementById('cm-delete-btn');
+  (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable']) ||
+  state.isInTrash()) {
+    const deleteBtn = document.getElementById('cm-remove-btn');
     const renameBtn = document.getElementById('cm-rename-btn');
     const moveBtn = document.getElementById('cm-move-btn');
     const updateDocBtn = document.getElementById('cm-upload-doc-btn');
@@ -960,13 +1076,13 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Open" menu item
       document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleOpenDocuments();
+        openDocsHandler();
       });
 
-      // "Delete" menu item
-      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
+      // "Move to Trash" menu item
+      document.querySelector(`.${btnClassname}#cm-remove-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleDeleteDocuments();
+        removeDocsHandler();
       });
 
       // "Rename" menu item
@@ -981,21 +1097,19 @@ function setContextMenuItemsEventListeners(view: string) {
         openMoveToWindow();   
       });
 
-
-
       break;
     
     case 'multi-file-options':
       // "Open" menu item
       document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleOpenDocuments();
+        openDocsHandler();
       });
 
-      // "Delete" menu item
-      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
+      // "Move to Trash" menu item
+      document.querySelector(`.${btnClassname}#cm-remove-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleDeleteDocuments();
+        removeDocsHandler();
       });
 
       // "Move" menu item
@@ -1007,10 +1121,10 @@ function setContextMenuItemsEventListeners(view: string) {
       break;
 
     case 'folder-and-file-options':
-      // "Delete" menu item
-      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
+      // "Move to Trash" menu item
+      document.querySelector(`.${btnClassname}#cm-remove-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleDeleteDocuments();
+        removeDocsHandler();
       });
 
       // "Move" menu item
@@ -1025,13 +1139,13 @@ function setContextMenuItemsEventListeners(view: string) {
       // "Open" menu item
       document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleOpenDocuments();
+        openDocsHandler();
       });
 
-      // "Delete" menu item
-      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
+      // "Move to Trash" menu item
+      document.querySelector(`.${btnClassname}#cm-remove-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleDeleteDocuments();
+        removeDocsHandler();
       });
 
       // "Rename" menu item
@@ -1049,10 +1163,10 @@ function setContextMenuItemsEventListeners(view: string) {
       break;
 
     case 'multi-folder-options':
-      // "Delete" menu item
-      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
+      // "Move to Trash" menu item
+      document.querySelector(`.${btnClassname}#cm-remove-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleDeleteDocuments();
+        removeDocsHandler();
       });
 
       // "Move" menu item
@@ -1062,12 +1176,36 @@ function setContextMenuItemsEventListeners(view: string) {
       });
 
       break;
+    
+    case 'trash-folder-options':
+      // "Empty Trash" menu item
+      document.querySelector(`.${btnClassname}#cm-empty-trash-btn`).addEventListener('click', (_e) => {
+        contextMenu.classList.add('hidden');
+        emptyTrashHandler();
+      });
+
+      break;
+
+    case 'trash-entry-options':
+      // "Put Back" menu item
+      document.querySelector(`.${btnClassname}#cm-recover-btn`).addEventListener('click', (_e) => {
+        contextMenu.classList.add('hidden');
+        putBackDocsHandler();
+      });
+
+      // "Delete" menu item
+      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
+        contextMenu.classList.add('hidden');
+        deleteDocsHandler();
+      });
+
+      break;
 
     default:
       // "Upload document" menu item
       document.querySelector(`.${btnClassname}#cm-upload-doc-btn`).addEventListener('click', (_e) => {
         contextMenu.classList.add('hidden');
-        handleOpenUploadArea();
+        openUploadAreaHandler();
       });
 
       // "New folder" menu item
@@ -1160,11 +1298,45 @@ function addSpecificContextMenuListeners(tile, index) {
 }
 
 /**
+ * Update the Trash folder by deleting entries that were deleted 30 days ago
+ */
+function updateTrash(root: IFolder): void {
+  if (!state.getTrashFolder()) {
+    fsm.newTrash(root);
+  }
+  const trashFolder = state.getTrashFolder();
+  const currentDate = new Date();
+  const thirtyDaysAgo = new Date(currentDate.getTime() - 30 * 24 * 60 * 60 * 1000); // 30 days in milliseconds
+
+  // Helper function to check if an entry was deleted 30 days ago
+  const toDelete = (entry: IEntry): boolean => {
+    if (entry.metadata && entry.metadata['removed_on']) {
+      const date = new Date(entry.metadata['removed_on'] as string);
+      return date <= thirtyDaysAgo;
+    }
+    return false;
+  };
+
+  // Iterate through the entries in the Trash
+  trashFolder.children.forEach((entry) => {
+    if (toDelete(entry)) {
+      // Delete entry if deleted 30 days ago
+      if (entry.type === 'file') {
+        deleteFileEntry(entry as IFile, trashFolder);
+      } else if (entry.type === 'folder') {
+        deleteFolderEntry(entry as IFolder, trashFolder); 
+      }
+    }
+  });
+}
+
+/**
  * Loads root folder into dashboard on startup. 
  */
 export const loadDashboard = async (): Promise<void> => {
   const root = await fsm.getRoot();
   state.root(root);
+  updateTrash(root);
   updateDashboard([root]);
   initializeDefaultContextMenu();
 };

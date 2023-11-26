@@ -63,10 +63,15 @@ export interface DashboardState {
   resetSelection(): void;
   setFolderPath(path: IFolder[]): void;
   getFolderPath(): IFolder[];
+  getFolderPathNames(): string[];
+  getFolderPathByNames(folderNames: string[]): IFolder | void;
   getParentFolder(): IFolder | undefined;
+  getTrashFolder(): IFolder;
   getSelectedEntries(): IEntry[];
   getSelectedFolders(): IEntry[];
+  getSelectedTrash(): IEntry[];
   getSelectedFiles(): IEntry[];
+  isInTrash(): boolean;
 }
 
 export function dashboardState(): DashboardState {
@@ -123,8 +128,35 @@ export function dashboardState(): DashboardState {
     return folderPath;
   }
 
+  function getFolderPathNames() {
+    return folderPath.map(folder => folder.name);
+  }
+
+  function getFolderPathByNames(folderNames: string[]): IFolder | void {
+    let currentFolder = root();
+    folderNames = folderNames.slice(1);
+
+    for (const folderName of folderNames) {
+      const targetFolder = currentFolder.children.find(child => child.name === folderName);
+      if (targetFolder && targetFolder.type === 'folder') {
+        currentFolder = targetFolder as IFolder;
+      } else {
+        console.debug('failed to find folder: ', folderName);
+        return;
+      }
+    }
+
+    return currentFolder;
+  }
+
+
   function getParentFolder() { 
     return folderPath.at(-1); 
+  }
+
+  function getTrashFolder() {
+    const trashFolders = root().children.filter(entry => entry.type === 'trash') as IFolder[];
+    return trashFolders[0];
   }
 
   function getSelectedEntries() {
@@ -133,10 +165,19 @@ export function dashboardState(): DashboardState {
 
   function getSelectedFolders() {
     return getSelectedEntries().filter(entry => entry.type === 'folder');
-  }    
+  }
+
+  function getSelectedTrash() {
+    return getSelectedEntries().filter(entry => entry.type === 'trash');
+  }
 
   function getSelectedFiles() {
     return getSelectedEntries().filter(entry => entry.type === 'file');
+  }
+
+  function isInTrash() {
+    const isTrashFolder = (folder: IFolder): boolean => folder.type === 'trash';
+    return folderPath.some(isTrashFolder);
   }
 
   // TODO:
@@ -152,9 +193,14 @@ export function dashboardState(): DashboardState {
     resetSelection: resetSelection,
     setFolderPath: setFolderPath,
     getFolderPath: getFolderPath,
+    getFolderPathNames: getFolderPathNames,
+    getFolderPathByNames: getFolderPathByNames,
     getParentFolder: getParentFolder,
+    getTrashFolder: getTrashFolder,
     getSelectedEntries: getSelectedEntries,
     getSelectedFolders: getSelectedFolders,
+    getSelectedTrash: getSelectedTrash,
     getSelectedFiles: getSelectedFiles,
+    isInTrash: isInTrash,
   };
 }

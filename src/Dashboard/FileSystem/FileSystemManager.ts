@@ -6,6 +6,7 @@ interface FileSystemProps {
   getRoot: () => Promise<IFolder>;
   setFileSystem: (root: IFolder) => boolean;
   getFileSystem: () => Promise<IFolder>;
+  newTrash: (root: IFolder) => void;
 }
   
 
@@ -36,34 +37,13 @@ export const FileSystemManager = (): FileSystemProps => {
       // if localstorage exists, load previous root
       if (fs) {
         const localFileSystem = JSON.parse(fs) as IFolder;
-
-        // if old file system, clean local storage & db
-        if (!localFileSystem.children) {
-          window.localStorage.clear();
-
-          const result = await db.allDocs({ include_docs: true });
-          // Delete each document
-          const docsToDelete = result.rows.map((row) => ({
-            _id: row.id,
-            _rev: row.doc._rev,
-            _deleted: true,
-          }));
-          await db.bulkDocs(docsToDelete);
-
-          const root = FileSystemTools.createFolder('Home');
-          loadSamples(root);
-          setFileSystem(root);
-          return root;
-        }
-        else {
-          return localFileSystem;
-        }
-
+        return localFileSystem;
       }
       // else, create new root
       else {
         const root = FileSystemTools.createFolder('Home');
         loadSamples(root);
+        newTrash(root);
         await loadPreviousUploads(root);
         setFileSystem(root);
         return root;
@@ -100,6 +80,11 @@ export const FileSystemManager = (): FileSystemProps => {
     return root;
   }
 
+  function newTrash(root: IFolder) {
+    const trashFolder = FileSystemTools.createTrash('Trash');
+    FileSystemTools.addEntry(trashFolder, root);
+  }
+
   async function loadPreviousUploads(root: IFolder) {
     // Get previous uploads from local storage
     const uploads = await fetchUploads();
@@ -120,6 +105,7 @@ export const FileSystemManager = (): FileSystemProps => {
     getRoot: getRoot,
     setFileSystem: setFileSystem,
     getFileSystem: getFileSystem,
+    newTrash: newTrash,
   };
 
   return FileSystemProps;
