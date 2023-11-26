@@ -160,8 +160,17 @@
   height: 30px;
 }
 
+#info-badge {
+  height: 15px;
+  padding: 5px 0;
+  width: 100%;
+  text-align: center;
+  color: white;
+  opacity: 60%;
+  position: sticky;
+}
+
 .documents-container {
-  margin: 5vh 0;
   width: 90%;
 }
 

@@ -654,6 +654,15 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   updateNavPath();
   updateBackButton();
 
+  const infoBadge = document.getElementById('info-badge');
+  if (state.isInTrash()) {
+    infoBadge.textContent = 'Files will be deleted after 30 days';
+    infoBadge.style.background = '#9DB2BF';
+  } else {
+    infoBadge.textContent = '';
+    infoBadge.style.background = '';
+  }
+
   // add drag and drop listeners for current folder content
   currentFolder.children.forEach((entry) => {
     const tile = document.getElementById(entry.id);
