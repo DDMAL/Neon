@@ -13,6 +13,8 @@ const openButton: HTMLButtonElement = document.querySelector('#open-doc');
 const removeButton: HTMLButtonElement = document.querySelector('#remove-doc');
 const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
 let backButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
+let emptyButton: HTMLButtonElement = document.querySelector('#fs-empty-btn');
+let deleteButton: HTMLButtonElement = document.querySelector('#fs-delete-btn');
 const uploadDocumentsButton: HTMLButtonElement = document.querySelector('#upload-new-doc-button');
 const newFolderButton: HTMLButtonElement = document.querySelector('#add-folder-button');
 
@@ -51,6 +53,7 @@ window.addEventListener('keydown', (e) => {
     unselectAll();
     shiftSelection.reset();
     updateActionBarButtons();
+    updateFSButtons();
   }
 });
 
@@ -67,6 +70,7 @@ backgroundArea?.addEventListener('click', (e) => {
     unselectAll();
     shiftSelection.reset();
     updateActionBarButtons();
+    updateFSButtons();
   }
 });
 
@@ -288,6 +292,7 @@ function shiftSelectionHandler(index) {
     });
   }
   updateActionBarButtons();
+  updateFSButtons();
 }
 /**
  * Opens current selection of documents on dashboard.
@@ -400,8 +405,6 @@ function deleteFolderEntry(folder: IFolder, parentFolder: IFolder): Promise<bool
  * If a folder and file(s) are selected, deletes all.
  */
 function deleteDocsHandler() {
-  if (!removeButton.classList.contains('active')) return;
-
   const allEntries = state.getSelectedEntries();
 
   // Create a formatted list of filenames to display in alert message
@@ -438,22 +441,29 @@ function emptyTrashHandler() {
     return;
   }
 
-  const deletePromises = trashFolder.children.map((entry) => {
-    if (entry.type === 'file') {
-      return deleteFileEntry(entry as IFile, trashFolder);
-    } else if (entry.type === 'folder') {
-      return deleteFolderEntry(entry as IFolder, trashFolder);
-    }
+  const alertMessage = 'Are you sure you want to delete all the files in Trash Folder?\nThis action is irreversible.';
 
-    return Promise.resolve(false); // Shouldn't happen, but resolving for safety
-  });
+  const isConfirmed = window.confirm(alertMessage);
 
-  Promise.all(deletePromises)
-    .then(() => {
-      // After deleting all content, update the dashboard
-      updateDashboard(state.getFolderPath());
-    })
-    .catch((err) => console.debug('failed to delete files: ', err));
+  if (isConfirmed) {
+
+    const deletePromises = trashFolder.children.map((entry) => {
+      if (entry.type === 'file') {
+        return deleteFileEntry(entry as IFile, trashFolder);
+      } else if (entry.type === 'folder') {
+        return deleteFolderEntry(entry as IFolder, trashFolder);
+      }
+
+      return Promise.resolve(false); // Shouldn't happen, but resolving for safety
+    });
+
+    Promise.all(deletePromises)
+      .then(() => {
+        // After deleting all content, update the dashboard
+        updateDashboard(state.getFolderPath());
+      })
+      .catch((err) => console.debug('failed to delete files: ', err));
+  }
 }
 
 
@@ -562,6 +572,69 @@ function updateBackButton() {
   backButton = buttonClone;
 }
 
+function updateEmptyButton() {
+  // Erase previous event listeners
+  const buttonClone = emptyButton.cloneNode(true) as HTMLButtonElement;
+  emptyButton.parentNode.replaceChild(buttonClone, emptyButton);
+
+  const parentFolder = state.getParentFolder();
+
+  // Display if in trash
+  if (parentFolder.type === 'trash' || state.isInTrash()) {
+    buttonClone.style.display = '';
+
+    // Activate button if has content and not selecting when first level parent is trash
+    if (parentFolder.children.length && !state.getSelectedEntries().length && parentFolder.type === 'trash') {
+      buttonClone.classList.add('active');
+      buttonClone.removeAttribute('disabled');
+      buttonClone.addEventListener('click', emptyTrashHandler);
+    }
+    // Disable button if no content
+    else {
+      buttonClone.classList.remove('active');
+      buttonClone.setAttribute('disabled', 'true');
+    }
+  }
+  else {
+    buttonClone.style.display = 'none';
+  }
+  emptyButton = buttonClone;
+}
+
+function updateDeleteButton() {
+  // Erase previous event listeners
+  const buttonClone = deleteButton.cloneNode(true) as HTMLButtonElement;
+  deleteButton.parentNode.replaceChild(buttonClone, deleteButton);
+
+  const parentFolder = state.getParentFolder();
+  // Display if in trash
+  if (parentFolder.type === 'trash' || state.isInTrash()) {
+    buttonClone.style.display = '';
+
+    // Add listener if selects entries
+    if (state.getSelectedEntries().length) {
+      buttonClone.classList.add('active');
+      buttonClone.removeAttribute('disabled');
+      buttonClone.addEventListener('click', deleteDocsHandler);
+    }
+    // Disable if nothing selected
+    else {
+      buttonClone.classList.remove('active');
+      buttonClone.setAttribute('disabled', 'true');
+    }
+  }
+  else {
+    buttonClone.style.display = 'none';
+  }
+  deleteButton = buttonClone;
+}
+
+function updateFSButtons() {
+  updateBackButton();
+  updateEmptyButton();
+  updateDeleteButton();
+}
+
 /**
  * Handles click event on back button to go back one folder if possible
  */
@@ -654,7 +727,16 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
 
   updateActionBarButtons();
   updateNavPath();
-  updateBackButton();
+  updateFSButtons();
+
+  const infoBadge = document.getElementById('info-badge');
+  if (state.isInTrash()) {
+    infoBadge.textContent = 'Files will be deleted after 30 days';
+    infoBadge.style.background = '#9DB2BF';
+  } else {
+    infoBadge.textContent = '';
+    infoBadge.style.background = '';
+  }
 
   // add drag and drop listeners for current folder content
   currentFolder.children.forEach((entry) => {

@@ -49,6 +49,7 @@
     <div class="main-section">
 
         <div id="main-section-content" class="main-section-content">
+            <div id="info-badge"></div>
 
             <div id="documents-container" class="documents-container">
                 <div id="fs-top-zone" class="fs-top-zone">
@@ -56,7 +57,13 @@
                     <div id="fs-search-container" class="fs-search-container"></div>
                 </div>
                 <div id="fs-middle-zone" class="fs-middle-zone">
-                    <button id="fs-back-btn" class="fs-back-btn">Back↵</button>
+                    <div id="fs-btn-container">
+                        <button id="fs-back-btn" class="fs-btn">Back↵</button>
+                        <div class="fs-trash-btn">
+                            <button id="fs-empty-btn" class="fs-btn">Empty</button>
+                            <button id="fs-delete-btn" class="fs-btn">Delete</button>
+                        </div>
+                    </div>
                     <div id="fs-results-title" class="fs-results-results"></div>
                 </div>
                 <div id="fs-content-container" class="fs-content-container"></div>

@@ -160,8 +160,17 @@
   height: 30px;
 }
 
+#info-badge {
+  height: 15px;
+  padding: 5px 0;
+  width: 100%;
+  text-align: center;
+  color: white;
+  opacity: 60%;
+  position: sticky;
+}
+
 .documents-container {
-  margin: 5vh 0;
   width: 90%;
 }
 
@@ -209,7 +218,12 @@
   margin: 0px;
 }
 
-#fs-back-btn {
+#fs-btn-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.fs-btn {
   font-size: 14px;
   font-weight: 900;
   letter-spacing: 3px;
@@ -218,14 +232,15 @@
   border-radius: 5px;
   color: #7ab2b7;
   opacity: 40%;
+  margin-right: 5px;
 }
 
-#fs-back-btn.active {
+.fs-btn.active {
   cursor: pointer;
   opacity: 100%;
 }
 
-#fs-back-btn.dragenter {
+.fs-btn.dragenter {
   background-color: #cafbff;
   border-radius: 5px;
   border-style: dashed;
