@@ -218,6 +218,11 @@
   margin: 0px;
 }
 
+#fs-btn-container {
+  display: flex;
+  justify-content: space-between;
+}
+
 .fs-btn {
   font-size: 14px;
   font-weight: 900;
