@@ -49,6 +49,7 @@
     <div class="main-section">
 
         <div id="main-section-content" class="main-section-content">
+            <div id="info-badge"></div>
 
             <div id="documents-container" class="documents-container">
                 <div id="fs-top-zone" class="fs-top-zone">
@@ -56,7 +57,13 @@
                     <div id="fs-search-container" class="fs-search-container"></div>
                 </div>
                 <div id="fs-middle-zone" class="fs-middle-zone">
-                    <button id="fs-back-btn" class="fs-back-btn">Back↵</button>
+                    <div id="fs-btn-container">
+                        <button id="fs-back-btn" class="fs-btn">Back↵</button>
+                        <div class="fs-trash-btn">
+                            <button id="fs-empty-btn" class="fs-btn">Empty</button>
+                            <button id="fs-delete-btn" class="fs-btn">Delete</button>
+                        </div>
+                    </div>
                     <div id="fs-results-title" class="fs-results-results"></div>
                 </div>
                 <div id="fs-content-container" class="fs-content-container"></div>
@@ -68,7 +75,7 @@
             <img id="add-folder-button" class="action-bar-item-container active" src="./Neon-gh/assets/img/new-folder.svg" title="folder">
             <img id="upload-new-doc-button" class="action-bar-item-container active" src="./Neon-gh/assets/img/new-doc.svg" title="upload">
             <div class="dividing-line action-bar-item-container active"></div>
-            <img id="remove-doc" class="action-bar-item-container" src="./Neon-gh/assets/img/remove-doc.svg" title="delete">
+            <img id="remove-doc" class="action-bar-item-container" src="./Neon-gh/assets/img/remove-doc.svg" title="move to trash">
             <img id="open-doc" class="action-bar-item-container" src="./Neon-gh/assets/img/open-doc.svg" title="open">
         </div>
     </div>
@@ -98,5 +105,13 @@
         </div>
     </div>
     
+    <!-- icons -->
+    <div class="preload-icons-container" hidden>
+        <img id="preload-folder-icon" src="./Neon-gh/assets/img/folder-icon.svg">
+        <img id="preload-file-icon" src="./Neon-gh/assets/img/folio-icon.svg">
+        <img id="preload-manuscript-icon" src="./Neon-gh/assets/img/manuscript-icon.svg">
+        <img id="preload-warning-icon" src="./Neon-gh/assets/img/warning-icon.svg">
+    </div>
+
   </body>
 </html>
