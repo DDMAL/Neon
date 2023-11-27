@@ -13,6 +13,8 @@ const openButton: HTMLButtonElement = document.querySelector('#open-doc');
 const removeButton: HTMLButtonElement = document.querySelector('#remove-doc');
 const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
 let backButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
+let emptyButton: HTMLButtonElement = document.querySelector('#fs-empty-btn');
+let deleteButton: HTMLButtonElement = document.querySelector('#fs-delete-btn');
 const uploadDocumentsButton: HTMLButtonElement = document.querySelector('#upload-new-doc-button');
 const newFolderButton: HTMLButtonElement = document.querySelector('#add-folder-button');
 
@@ -51,6 +53,7 @@ window.addEventListener('keydown', (e) => {
     unselectAll();
     shiftSelection.reset();
     updateActionBarButtons();
+    updateFSButtons();
   }
 });
 
@@ -67,6 +70,7 @@ backgroundArea?.addEventListener('click', (e) => {
     unselectAll();
     shiftSelection.reset();
     updateActionBarButtons();
+    updateFSButtons();
   }
 });
 
@@ -288,6 +292,7 @@ function shiftSelectionHandler(index) {
     });
   }
   updateActionBarButtons();
+  updateFSButtons();
 }
 /**
  * Opens current selection of documents on dashboard.
@@ -560,6 +565,69 @@ function updateBackButton() {
   backButton = buttonClone;
 }
 
+function updateEmptyButton() {
+  // Erase previous event listeners
+  const buttonClone = emptyButton.cloneNode(true) as HTMLButtonElement;
+  emptyButton.parentNode.replaceChild(buttonClone, emptyButton);
+
+  const parentFolder = state.getParentFolder();
+
+  // Display if in trash
+  if (parentFolder.type === 'trash' || state.isInTrash()) {
+    buttonClone.style.display = '';
+
+    // Activate button if has content and not selecting when first level parent is trash
+    if (parentFolder.children.length && !state.getSelectedEntries().length && parentFolder.type === 'trash') {
+      buttonClone.classList.add('active');
+      buttonClone.removeAttribute('disabled');
+      buttonClone.addEventListener('click', emptyTrashHandler);
+    }
+    // Disable button if no content
+    else {
+      buttonClone.classList.remove('active');
+      buttonClone.setAttribute('disabled', 'true');
+    }
+  }
+  else {
+    buttonClone.style.display = 'none';
+  }
+  emptyButton = buttonClone;
+}
+
+function updateDeleteButton() {
+  // Erase previous event listeners
+  const buttonClone = deleteButton.cloneNode(true) as HTMLButtonElement;
+  deleteButton.parentNode.replaceChild(buttonClone, deleteButton);
+
+  const parentFolder = state.getParentFolder();
+  // Display if in trash
+  if (parentFolder.type === 'trash' || state.isInTrash()) {
+    buttonClone.style.display = '';
+
+    // Add listener if selects entries
+    if (state.getSelectedEntries().length) {
+      buttonClone.classList.add('active');
+      buttonClone.removeAttribute('disabled');
+      buttonClone.addEventListener('click', deleteDocsHandler);
+    }
+    // Disable if nothing selected
+    else {
+      buttonClone.classList.remove('active');
+      buttonClone.setAttribute('disabled', 'true');
+    }
+  }
+  else {
+    buttonClone.style.display = 'none';
+  }
+  deleteButton = buttonClone;
+}
+
+function updateFSButtons() {
+  updateBackButton();
+  updateEmptyButton();
+  updateDeleteButton();
+}
+
 /**
  * Handles click event on back button to go back one folder if possible
  */
@@ -652,7 +720,7 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
 
   updateActionBarButtons();
   updateNavPath();
-  updateBackButton();
+  updateFSButtons();
 
   const infoBadge = document.getElementById('info-badge');
   if (state.isInTrash()) {
