@@ -743,7 +743,7 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
     const tile = document.getElementById(entry.id);
     addDragStartListener(tile);
 
-    if (entry.type === 'folder') { 
+    if (entry.type === 'folder' || entry.type === 'trash') { 
       addDropTargetListeners(tile, currentFolder, entry as IFolder);
     }
   });
