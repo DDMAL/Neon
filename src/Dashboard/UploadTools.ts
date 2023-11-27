@@ -58,7 +58,7 @@ function createUnpairedItem(filename: string, group: string): HTMLDivElement {
   label.setAttribute('for', id);
 
   const text = document.createElement('span');
-  text.innerText = formatFilename(filename, 28);
+  text.innerText = formatFilename(filename, 50);
   text.setAttribute('style', 'margin-top: auto');
 
   const delBtn = document.createElement('img');
@@ -110,7 +110,7 @@ function createPairedFolio(filename: string, mei_filename: string, image_filenam
 
   const folio_filename = document.createElement('div');
   folio_filename.classList.add('folio-filename');
-  folio_filename.innerHTML = formatFilename(filename, 25);
+  folio_filename.innerHTML = formatFilename(filename, 50);
   folio.appendChild(folio_filename); 
 
   function handleUnpair() {

@@ -1,6 +1,5 @@
 import { IEntry, IFile, IFolder, FileSystemTools } from './FileSystem';
 import { deleteDocument, updateDocName } from './Storage';
-import { formatFilename } from './UploadTools';
 import { FileSystemManager } from './FileSystem';
 import { ShiftSelectionManager, dashboardState } from './DashboardTools';
 import { InitUploadArea } from './UploadArea';
@@ -170,7 +169,7 @@ function createTile(entry: IEntry) {
   const icon = document.createElement('img');
   icon.classList.add('document-icon');
   const name = document.createElement('div');
-  name.innerText = formatFilename(entry.name, 25);
+  name.innerText = entry.name;
 
   switch (entry.type) {
     case 'folder':
