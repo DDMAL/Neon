@@ -441,22 +441,29 @@ function emptyTrashHandler() {
     return;
   }
 
-  const deletePromises = trashFolder.children.map((entry) => {
-    if (entry.type === 'file') {
-      return deleteFileEntry(entry as IFile, trashFolder);
-    } else if (entry.type === 'folder') {
-      return deleteFolderEntry(entry as IFolder, trashFolder);
-    }
+  const alertMessage = 'Are you sure you want to delete all the files in Trash Folder?\nThis action is irreversible.';
 
-    return Promise.resolve(false); // Shouldn't happen, but resolving for safety
-  });
+  const isConfirmed = window.confirm(alertMessage);
 
-  Promise.all(deletePromises)
-    .then(() => {
-      // After deleting all content, update the dashboard
-      updateDashboard(state.getFolderPath());
-    })
-    .catch((err) => console.debug('failed to delete files: ', err));
+  if (isConfirmed) {
+
+    const deletePromises = trashFolder.children.map((entry) => {
+      if (entry.type === 'file') {
+        return deleteFileEntry(entry as IFile, trashFolder);
+      } else if (entry.type === 'folder') {
+        return deleteFolderEntry(entry as IFolder, trashFolder);
+      }
+
+      return Promise.resolve(false); // Shouldn't happen, but resolving for safety
+    });
+
+    Promise.all(deletePromises)
+      .then(() => {
+        // After deleting all content, update the dashboard
+        updateDashboard(state.getFolderPath());
+      })
+      .catch((err) => console.debug('failed to delete files: ', err));
+  }
 }
 
 
