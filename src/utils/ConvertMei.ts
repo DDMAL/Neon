@@ -240,7 +240,7 @@ export function convertToVerovio(sbBasedMei: string): string {
             const cb = layerChildren.at(currentIdx-1);
             cb.parentNode.removeChild(cb);
           }
-          newStaff.setAttribute('type', nCol.toString());
+          newStaff.setAttribute('type', 'column' + nCol.toString());
         }
         
         const newLayer = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'layer');

@@ -182,9 +182,11 @@ function setColumnHighlight(): void {
   const  groups: { [key: number]: SVGGElement[] } = {};
 
   document.querySelectorAll('.staff').forEach((staff) => {
-    console.log(staff);
-    const columnNum = Number(staff.getAttribute('type'));
-    console.log(columnNum);
+    const hasColumn = Array.from(staff.classList).join(' ').match(/\bcolumn(\d+)\b/);
+    let columnNum = 0;
+    if (hasColumn) {
+      columnNum = parseInt(hasColumn[1], 10) - 1;
+    }
 
     if (!groups[columnNum]) {
       groups[columnNum] = [];
