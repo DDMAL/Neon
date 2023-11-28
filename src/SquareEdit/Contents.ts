@@ -220,8 +220,10 @@ export const neumeActionContents =
  */
 export const staffActionContents =
     `<label>Merge Systems:</label>
-    <button id="merge-systems" class="side-panel-btn">Merge</button>
-    <button class="side-panel-btn" id="delete">Delete</button>`;
+    <div id="merge-system-btns-container" class="right-side-panel-btns-container">
+        <button id="merge-systems" class="side-panel-btn">Merge</button>
+        <button class="side-panel-btn" id="delete">Delete</button>
+    </div>`;
 
 /**
  * Contents of default action menu.
