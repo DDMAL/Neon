@@ -183,7 +183,7 @@ function setColumnHighlight(): void {
 
   document.querySelectorAll('.staff').forEach((staff) => {
     console.log(staff);
-    const columnNum = Number(staff.getAttribute('data_neon_column'));
+    const columnNum = Number(staff.getAttribute('type'));
     console.log(columnNum);
 
     if (!groups[columnNum]) {

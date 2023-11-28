@@ -44,9 +44,9 @@ export function convertToNeon(staffBasedMei: string): string {
       nStaff += 1;
       const layer = staff.getElementsByTagName('layer')[0];
 
-      // if staff has a new data_neon_column value,
+      // if staff has a new type value,
       // add cb before sb
-      if (staff.hasAttribute('data_neon_column') && staff.getAttribute('data_neon_column') != nCol.toString()) {
+      if (staff.hasAttribute('type') && staff.getAttribute('type') != nCol.toString()) {
         nCol += 1;
         const cb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'cb');
         cb.setAttribute('n', nCol.toString());
@@ -240,7 +240,7 @@ export function convertToVerovio(sbBasedMei: string): string {
             const cb = layerChildren.at(currentIdx-1);
             cb.parentNode.removeChild(cb);
           }
-          newStaff.setAttribute('data_neon_column', nCol.toString());
+          newStaff.setAttribute('type', nCol.toString());
         }
         
         const newLayer = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'layer');
@@ -432,8 +432,8 @@ export function removeColumnLabel(mei: string): string {
   const meiForValidation = meiDoc.documentElement;
 
   for (const staff of Array.from(meiForValidation.getElementsByTagName('staff'))) {
-    if (staff.hasAttribute('data_neon_column')) {
-      staff.removeAttribute('data_neon_column');
+    if (staff.hasAttribute('type')) {
+      staff.removeAttribute('type');
     }
   }
 
