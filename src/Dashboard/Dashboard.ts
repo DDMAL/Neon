@@ -1,6 +1,5 @@
 import { IEntry, IFile, IFolder, FileSystemTools } from './FileSystem';
 import { deleteDocument, updateDocName } from './Storage';
-import { formatFilename } from './UploadTools';
 import { FileSystemManager } from './FileSystem';
 import { ShiftSelectionManager, dashboardState } from './DashboardTools';
 import { InitUploadArea } from './UploadArea';
@@ -170,7 +169,7 @@ function createTile(entry: IEntry) {
   const icon = document.createElement('img');
   icon.classList.add('document-icon');
   const name = document.createElement('div');
-  name.innerText = formatFilename(entry.name, 25);
+  name.innerText = entry.name;
 
   switch (entry.type) {
     case 'folder':
@@ -347,6 +346,12 @@ function putBackDocsHandler() {
     const targetFolder = state.getFolderPathByNames(folderPathNames);
     if (targetFolder) {
       entry = FileSystemTools.removeMetadata(entry, ['removed_on', 'recover_folder']);
+      const dateTimePattern = / - \d{1,2}\/\d{1,2}\/\d{4}, \d{1,2}:\d{2}:\d{2} [APMapm]{2}$/;
+
+      // Check if the filename ends with the date time pattern
+      if (dateTimePattern.test(entry.name)) {
+        entry.name = entry.name.replace(dateTimePattern, '');
+      }
       moveToFolder([entry], parentFolder, targetFolder);
     }    
   }
@@ -743,7 +748,7 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
     const tile = document.getElementById(entry.id);
     addDragStartListener(tile);
 
-    if (entry.type === 'folder') { 
+    if (entry.type === 'folder' || entry.type === 'trash') { 
       addDropTargetListeners(tile, currentFolder, entry as IFolder);
     }
   });
@@ -804,6 +809,10 @@ function createHandleDrop(currentFolder: IFolder, destinationFolder: IFolder) {
 function moveToFolder(entries: IEntry[], parentFolder: IFolder, newFolder: IFolder) {
   const errorMessages = [];
   entries.forEach((entry) => {
+    // Handle name conflicts for trash folder
+    if (newFolder.type === 'trash' && newFolder.children.some((e) => e.name === entry.name)) {
+      entry.name = trashFNConflictHandler(entry.name);
+    }
     const response = FileSystemTools.canMoveEntry(entry, parentFolder, newFolder);
     if (!response.succeeded) errorMessages.push(response.error);
     else FileSystemTools.moveEntry(entry, parentFolder, newFolder);
@@ -813,6 +822,11 @@ function moveToFolder(entries: IEntry[], parentFolder: IFolder, newFolder: IFold
   if (errorMessages.length > 0) window.alert(errorMessages.join('\n'));
 
   updateDashboard();
+}
+
+function trashFNConflictHandler(filename: string): string {
+  const datetime = new Date().toLocaleString();
+  return filename + ' - ' + datetime;
 }
 
 /**
