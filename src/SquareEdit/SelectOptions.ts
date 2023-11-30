@@ -285,9 +285,9 @@ function addDeleteListener(): void {
 }
 
 export function addChangeStaffListener(): void {
-  const staff = document.getElementById('changeStaff');
-  staff?.removeEventListener('click', changeStaffHandler);
-  staff?.addEventListener('click', changeStaffHandler);
+  const changeStaff = document.getElementById('changeStaff');
+  changeStaff?.removeEventListener('click', changeStaffHandler);
+  changeStaff?.addEventListener('click', changeStaffHandler);
 }
 
 /**
