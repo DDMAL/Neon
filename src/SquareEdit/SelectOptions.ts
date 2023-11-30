@@ -893,9 +893,9 @@ function parseShapeChangeAction(action: SetAction | SetClefAction) {
 /**
  * Trigger extra staff actions.
  */
-export function triggerStaffActions (): void {
+export function triggerMultiStaffActions (): void {
   endOptionsSelection();
-  setEditControls('moreEdit', Contents.staffActionContents);
+  setEditControls('moreEdit', Contents.staffMergeActionContents);
   addDeleteListener();
 
   document.getElementById('merge-systems').addEventListener('click', () => {
@@ -921,12 +921,12 @@ export function triggerStaffSplitMode (): void {
 /**
  * Trigger split staff option
  */
-export function triggerSplitActions (): void {
+export function triggerSingleStaffActions (): void {
   endOptionsSelection();
-  setEditControls('moreEdit', Contents.splitActionContents);
+  setEditControls('moreEdit', Contents.staffSplitActionContents);
   addDeleteListener();
 
-  // TODO add trigger for split action
+  // Add trigger for split action
   document.getElementById('split-system')
     .addEventListener('click', () => {
       triggerStaffSplitMode();

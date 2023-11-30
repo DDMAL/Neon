@@ -216,16 +216,6 @@ export const neumeActionContents =
     <button class="side-panel-btn" id="ungroupNcs">Ungroup</button>`;
 
 /**
- * Contents of extra staff action menu.
- */
-export const staffActionContents =
-    `<label>Merge Systems:</label>
-    <div id="merge-system-btns-container" class="right-side-panel-btns-container">
-        <button id="merge-systems" class="side-panel-btn">Merge</button>
-        <button class="side-panel-btn" id="delete">Delete</button>
-    </div>`;
-
-/**
  * Contents of default action menu.
  */
 export const defaultActionContents = 
@@ -291,13 +281,23 @@ export const accidActionContents =
     </div>`;
 
 /**
- * Contents of split action menu.
+ * Contents of staff split action menu.
  */
-export const splitActionContents =
+export const staffSplitActionContents =
     `<div>Split System:</div>
     <div id="split-system-btns-container" class="right-side-panel-btns-container">
         <button id="split-system" class="side-panel-btn">Split</button>
         <button id="reset-rotate" class="side-panel-btn">Reset Rotate</button>
+        <button class="side-panel-btn" id="delete">Delete</button>
+    </div>`;
+
+/**
+ * Contents of extra staff action menu.
+ */
+export const staffMergeActionContents =
+    `<label>Merge Systems:</label>
+    <div id="merge-system-btns-container" class="right-side-panel-btns-container">
+        <button id="merge-systems" class="side-panel-btn">Merge</button>
         <button class="side-panel-btn" id="delete">Delete</button>
     </div>`;
 
