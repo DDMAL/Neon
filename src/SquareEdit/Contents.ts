@@ -302,6 +302,20 @@ export const staffMergeActionContents =
     </div>`;
 
 /**
+ * Contents of accid action menu.
+ */
+export const columnActionContents =
+    `<div class="col-edit-container">
+        Edit Column Information: 
+        <div id="col-stepper-btns-container" class="right-side-panel-btns-container">
+            <button id="col-decrement" class="side-panel-btn col-stepper-btn">–</button>
+            <input type="text" id="col-input" class="side-panel-stepper-input" value="0">
+            <button id="col-increment" class="side-panel-btn col-stepper-btn">+</button>
+            <button id="col-confirm" class="side-panel-btn side-panel-confirm-btn">Confirm</button>
+        </div>
+    </div>`;
+
+/**
  * Contents of extra clef action menu.
  */
 export const clefActionContents =

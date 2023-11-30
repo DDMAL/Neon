@@ -896,6 +896,7 @@ function parseShapeChangeAction(action: SetAction | SetClefAction) {
 export function triggerMultiStaffActions (): void {
   endOptionsSelection();
   setEditControls('moreEdit', Contents.staffMergeActionContents);
+  setEditControls('extraEdit', Contents.columnActionContents);
   addDeleteListener();
 
   document.getElementById('merge-systems').addEventListener('click', () => {
@@ -924,6 +925,7 @@ export function triggerStaffSplitMode (): void {
 export function triggerSingleStaffActions (): void {
   endOptionsSelection();
   setEditControls('moreEdit', Contents.staffSplitActionContents);
+  setEditControls('extraEdit', Contents.columnActionContents);
   addDeleteListener();
 
   // Add trigger for split action

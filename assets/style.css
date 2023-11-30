@@ -519,7 +519,7 @@ a:hover {
     flex-wrap: wrap;
 }
 
-#selection-mode-btns-container, #split-system-btns-container {
+#selection-mode-btns-container, #split-system-btns-container, #col-stepper-btns-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -601,6 +601,29 @@ a:hover {
 }
 .dropdown-content {
     box-shadow: none;
+}
+.col-stepper-btn {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    margin: 10px;
+}
+#col-decrement {
+    margin-left: 3px;
+}
+.side-panel-stepper-input {
+    border-radius: 4px;
+    border: 1px solid #afafaf;
+    height: 25px;
+    font-size: 20px;
+    color: grey;
+    outline: none;
+    margin-top: 10px;
+    width: 30px;
+    padding: 8px;
+}
+.side-panel-confirm-btn:hover {
+    background-color: #f2f2f2;
 }
 /* Insert Panel */
 #insert_data {
