@@ -245,7 +245,7 @@ class InfoModule implements InfoInterface {
       }
       case 'staff': {
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
-        body += 'Column: ' + attributes['type'].replace(/^column/, '');
+        if (attributes['type']) body += 'Column: ' + attributes['type'].replace(/^column/, '');
         break;
       }
       default: {

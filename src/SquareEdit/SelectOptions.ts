@@ -311,7 +311,7 @@ function updateColumnInfo(): void {
       }
     }
   } 
-  colInput.value = colInfo.toString();
+  if (colInfo) colInput.value = colInfo.toString();
 }
 
 /**
