@@ -331,7 +331,36 @@ function addColumnInfoStepHandler(): void {
     updateNumber(1);
   });
 
-  //TODO: Add column info edit handler
+  // Add column info edit handler
+  confirmButton.addEventListener('click', function () {
+    const toSetColumn: EditorAction[] = [];
+    const staves = document.querySelectorAll('.staff.selected');
+    staves.forEach(staff => {
+      toSetColumn.push(
+        {
+          action: 'set',
+          param: {
+            elementId: staff.id,
+            attrType: 'type',
+            attrValue: 'column' + colInput.value,
+          }
+        }
+      );
+    });
+    const chainAction: ChainAction = {
+      action: 'chain',
+      param: toSetColumn
+    };
+    neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => { 
+      if (result) {
+        Notification.queueNotification('Column Value Update Success', 'success');
+      } else {
+        Notification.queueNotification('Column Value Update Failed XoX', 'error');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage(); 
+    });
+  });
   
   function updateNumber(change: number) {
     const minNum = 1;
