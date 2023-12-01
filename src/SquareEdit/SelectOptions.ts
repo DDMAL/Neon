@@ -315,6 +315,37 @@ function updateColumnInfo(): void {
 }
 
 /**
+ * Add column info edit handler for column info editor
+ */
+function addColumnInfoStepHandler(): void {
+  const decrementButton = document.getElementById('col-decrement') as HTMLButtonElement;
+  const incrementButton = document.getElementById('col-increment') as HTMLButtonElement;
+  const confirmButton = document.getElementById('col-confirm') as HTMLButtonElement;
+  const colInput = document.getElementById('col-input') as HTMLInputElement;
+
+  decrementButton.addEventListener('click', function () {
+    updateNumber(-1);
+  });
+
+  incrementButton.addEventListener('click', function () {
+    updateNumber(1);
+  });
+
+  //TODO: Add column info edit handler
+  
+  function updateNumber(change: number) {
+    const minNum = 1;
+    const maxNum = 5;
+    let currentValue = parseInt(colInput.value, 10) || 0;
+    currentValue += change;
+
+    currentValue = Math.min(Math.max(currentValue, minNum), maxNum);
+    if (currentValue.toString() != colInput.value) confirmButton.style.display = '';
+    colInput.value = currentValue.toString();
+  }
+}
+
+/**
  * Function to set the HTML content of edit controls: either #moreEdit or #extraEdit
  *
  * @param {'moreEdit' | 'extraEdit'} editType - The type of edit controls
@@ -923,7 +954,9 @@ export function triggerMultiStaffActions (): void {
   setEditControls('extraEdit', Contents.columnActionContents);
   addDeleteListener();
 
+  // Column info editor
   updateColumnInfo();
+  addColumnInfoStepHandler();
 
   document.getElementById('merge-systems').addEventListener('click', () => {
     Grouping.mergeStaves();
@@ -954,7 +987,9 @@ export function triggerSingleStaffActions (): void {
   setEditControls('extraEdit', Contents.columnActionContents);
   addDeleteListener();
 
+  // Column info editor
   updateColumnInfo();
+  addColumnInfoStepHandler();
 
   // Add trigger for split action
   document.getElementById('split-system')
