@@ -312,6 +312,7 @@ export const columnActionContents =
             <input type="text" id="col-input" class="side-panel-stepper-input" value="0">
             <button id="col-increment" class="side-panel-btn col-stepper-btn">+</button>
             <button id="col-confirm" class="side-panel-btn side-panel-confirm-btn">Confirm</button>
+            <div id="col-warning" class="side-panel-warning"></div> 
         </div>
     </div>`;
 

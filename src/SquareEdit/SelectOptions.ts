@@ -291,6 +291,30 @@ export function addChangeStaffListener(): void {
 }
 
 /**
+ * Update the column number in the input
+ */
+function updateColumnInfo(): void {
+  const colInput = document.getElementById('col-input') as HTMLInputElement;
+  const staves = document.querySelectorAll('.staff.selected');
+  let colInfo: number;
+  for (const staff of staves) {
+    const hasColumn = Array.from(staff.classList).join(' ').match(/\bcolumn(\d+)\b/);
+    if (hasColumn) {
+      const staffCol = parseInt(hasColumn[1], 10);
+      if (colInfo && colInfo != staffCol) {
+        const warning = document.getElementById('col-warning');
+        warning.innerText = 'The selected staves are not of the same column!';
+        colInfo = 0;
+        break;
+      } else {
+        colInfo = staffCol;
+      }
+    }
+  } 
+  colInput.value = colInfo.toString();
+}
+
+/**
  * Function to set the HTML content of edit controls: either #moreEdit or #extraEdit
  *
  * @param {'moreEdit' | 'extraEdit'} editType - The type of edit controls
@@ -899,6 +923,8 @@ export function triggerMultiStaffActions (): void {
   setEditControls('extraEdit', Contents.columnActionContents);
   addDeleteListener();
 
+  updateColumnInfo();
+
   document.getElementById('merge-systems').addEventListener('click', () => {
     Grouping.mergeStaves();
   });
@@ -927,6 +953,8 @@ export function triggerSingleStaffActions (): void {
   setEditControls('moreEdit', Contents.staffSplitActionContents);
   setEditControls('extraEdit', Contents.columnActionContents);
   addDeleteListener();
+
+  updateColumnInfo();
 
   // Add trigger for split action
   document.getElementById('split-system')
