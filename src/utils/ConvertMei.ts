@@ -46,7 +46,7 @@ export function convertToNeon(staffBasedMei: string): string {
 
       // if staff has a new type value,
       // add cb before sb
-      if (staff.hasAttribute('type') && staff.getAttribute('type') != nCol.toString()) {
+      if (staff.hasAttribute('type') && staff.getAttribute('type') != 'column' + nCol.toString()) {
         nCol += 1;
         const cb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'cb');
         cb.setAttribute('n', nCol.toString());
@@ -79,7 +79,6 @@ export function convertToNeon(staffBasedMei: string): string {
     section.appendChild(newStaff);
   }
 
-
   // Add <colLayout>
   if (nCol) {
     const scoreDef = mei.getElementsByTagName('scoreDef')[0];
@@ -88,7 +87,6 @@ export function convertToNeon(staffBasedMei: string): string {
     colLayout.setAttribute('n', nCol.toString());
     scoreDef.insertAdjacentElement('afterend', colLayout);
   }
-    
 
   return vkbeautify.xml(serializer.serializeToString(meiDoc));
 }
@@ -237,8 +235,13 @@ export function convertToVerovio(sbBasedMei: string): string {
         if (hasCols) {
           if (layerChildren.at(currentIdx-1).tagName === 'cb') {
             nCol += 1;
+            // Remove cb element and its zone
             const cb = layerChildren.at(currentIdx-1);
+            const cbFacs = cb.getAttribute('facs');
+            const cbZone = Array.from(mei.querySelectorAll('facsimile > surface > zone'))
+              .find(zone => zone.getAttribute('xml:id') === cbFacs.slice(1));
             cb.parentNode.removeChild(cb);
+            cbZone.parentNode.removeChild(cbZone);
           }
           newStaff.setAttribute('type', 'column' + nCol.toString());
         }
