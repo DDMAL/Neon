@@ -271,7 +271,7 @@ class InfoModule implements InfoInterface {
         break;
       }
     }
-    body = `Type: ${elementClass}\n${body}`;
+    body = `Element Type: ${elementClass.charAt(0).toUpperCase() + elementClass.slice(1)}\n${body}`;
     this.updateInfoModule(body);
   }
 
