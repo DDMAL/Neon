@@ -68,6 +68,7 @@ function setInfoControls (): void {
  */
 class InfoModule implements InfoInterface {
   private neonView: NeonView;
+  isHoveringChild: boolean;
 
   /**
    * A constructor for an InfoModule.
@@ -102,7 +103,18 @@ class InfoModule implements InfoInterface {
       document.getElementsByClassName('active-page')[0]
         .querySelectorAll('.neume,.custos,.clef,.accid,.divLine,.staff')
         .forEach(node => {
-          node.addEventListener('mouseover', this.updateInfo.bind(this));
+          node.addEventListener('mouseover', (event: MouseEvent) => {
+            if (!node.classList.contains('staff')) this.isHoveringChild = true;
+            this.updateInfo(event);
+          });
+        });
+
+      document.getElementsByClassName('active-page')[0]
+        .querySelectorAll('.neume,.custos,.clef,.accid,.divLine')
+        .forEach(node => {
+          node.addEventListener('mouseleave', () => {
+            this.isHoveringChild = false;
+          });
         });
     } catch (e) {}
   }
@@ -111,8 +123,13 @@ class InfoModule implements InfoInterface {
    * Stop listeners for the InfoModule.
    */
   stopListeners (): void {
-    document.querySelectorAll('.neume,.custos,.clef,.accid,.divLine').forEach(node => {
+    document.querySelectorAll('.neume,.custos,.clef,.accid,.divLine,.staff').forEach(node => {
       node.removeEventListener('mouseover', this.updateInfo.bind(this));
+    });
+    document.querySelectorAll('.neume, .custos, .clef, .accid, .divLine').forEach(node => {
+      node.removeEventListener('mouseleave', () => {
+        this.isHoveringChild = false;
+      });
     });
   }
 
@@ -141,7 +158,7 @@ class InfoModule implements InfoInterface {
     }
 
     const element = document.getElementById(id);
-    const classRe = /neume|nc|clef|custos|staff|liquescent|accid|divLine/;
+    const classRe = /neume|clef|custos|staff|accid|divLine/;
     const elementClass = element.getAttribute('class').match(classRe)[0];
     let body = '';
     let attributes: Attributes;
@@ -244,6 +261,7 @@ class InfoModule implements InfoInterface {
         break;
       }
       case 'staff': {
+        if (this.isHoveringChild) return;
         attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
         if (attributes['type']) body += 'Column: ' + attributes['type'].replace(/^column/, '');
         break;
