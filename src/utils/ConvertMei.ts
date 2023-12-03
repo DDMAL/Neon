@@ -31,7 +31,8 @@ export function convertToNeon(staffBasedMei: string): string {
     newStaff.appendChild(newLayer);
 
     // Add <pb>
-    const surfaceId = mei.getElementsByTagName('surface')[0].getAttribute('xml:id');
+    const surface = mei.getElementsByTagName('surface')[0];
+    const surfaceId = surface.getAttribute('xml:id');
     const pb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'pb');
     pb.setAttribute('xml:id', 'm-' + uuidv4());
     pb.setAttribute('facs', '#' + surfaceId);
@@ -39,6 +40,7 @@ export function convertToNeon(staffBasedMei: string): string {
 
     const staves = Array.from(section.getElementsByTagName('staff'));
     let nStaff = 0;
+    let lastCb: Element = null;
     
     for (const staff of staves) {
       nStaff += 1;
@@ -51,8 +53,14 @@ export function convertToNeon(staffBasedMei: string): string {
         const cb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'cb');
         cb.setAttribute('n', nCol.toString());
         cb.setAttribute('xml:id', 'm-' + uuidv4());
-        // calculate facs zone for cb
+        cb.setAttribute('facs', '#m-' + uuidv4());
         newLayer.appendChild(cb);
+
+        // Calculate zone for previous cb
+        if (lastCb) {
+          calculateAndAddZone(lastCb, cb, surface);
+        }
+        lastCb = cb;
       }
 
       const sb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'sb');
@@ -76,6 +84,11 @@ export function convertToNeon(staffBasedMei: string): string {
       }
       staff.remove();
     }
+
+    // Calculate and add zone for the last cb in the section
+    if (lastCb) {
+      calculateAndAddZone(lastCb, null, surface);
+    }
     section.appendChild(newStaff);
   }
 
@@ -89,6 +102,57 @@ export function convertToNeon(staffBasedMei: string): string {
   }
 
   return vkbeautify.xml(serializer.serializeToString(meiDoc));
+
+  function calculateAndAddZone(startElement: Element, endElement: Element | null, surface: Element) {
+    // Collect elements between startCb and endCb
+    const elementsBetween = collectAllElementsWithFacs(startElement.nextElementSibling, endElement);
+
+    // Calculate zone attributes
+    const zone = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'zone');
+    const BBox = calculateBBox(elementsBetween, surface);
+    zone.setAttribute('lrx', BBox.lrx.toString());
+    zone.setAttribute('lry', BBox.lry.toString());
+    zone.setAttribute('ulx', BBox.ulx.toString());
+    zone.setAttribute('uly', BBox.uly.toString());
+    zone.setAttribute('xml:id', startElement.getAttribute('facs').slice(1));
+
+    // Add zone to the beginning of surface children
+    surface.insertBefore(zone, surface.firstElementChild);
+  }
+
+  function collectAllElementsWithFacs(element: Element, endElement: Element, elementsBetween = []) {
+    if (element && element !== endElement) {
+      // Push elements only if it has facs
+      if (element.hasAttribute('facs')) elementsBetween.push(element);
+
+      if (element.children.length > 0) {
+        for (const child of element.children) {
+          collectAllElementsWithFacs(child, endElement, elementsBetween);
+        }
+      }
+
+      if (element.nextElementSibling) {
+        collectAllElementsWithFacs(element.nextElementSibling, endElement, elementsBetween);
+      }
+    }
+
+    return elementsBetween;
+  }
+
+  function calculateBBox(elements: Element[], surface: Element) {
+    let lrx = Infinity; let lry = 0; let ulx = 0; let uly = Infinity;
+
+    elements.forEach((element) => {
+      const zone = Array.from(surface.children).find(zone => 
+        zone.getAttribute('xml:id') === element.getAttribute('facs').slice(1));
+      lrx = Math.min(lrx, parseInt(zone.getAttribute('lrx')));
+      lry = Math.max(lry, parseInt(zone.getAttribute('lry')));
+      ulx = Math.max(ulx, parseInt(zone.getAttribute('ulx')));
+      uly = Math.min(uly, parseInt(zone.getAttribute('uly')));
+    });
+
+    return { lrx, lry, ulx, uly };
+  }
 }
 
 export function getSyllableText (syllable: Element): string {
