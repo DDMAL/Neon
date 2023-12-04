@@ -285,9 +285,93 @@ function addDeleteListener(): void {
 }
 
 export function addChangeStaffListener(): void {
-  const staff = document.getElementById('changeStaff');
-  staff?.removeEventListener('click', changeStaffHandler);
-  staff?.addEventListener('click', changeStaffHandler);
+  const changeStaff = document.getElementById('changeStaff');
+  changeStaff?.removeEventListener('click', changeStaffHandler);
+  changeStaff?.addEventListener('click', changeStaffHandler);
+}
+
+/**
+ * Update the column number in the input
+ */
+function updateColumnInfo(): void {
+  const colInput = document.getElementById('col-input') as HTMLInputElement;
+  const staves = document.querySelectorAll('.staff.selected');
+  let colInfo: number;
+  for (const staff of staves) {
+    const hasColumn = Array.from(staff.classList).join(' ').match(/\bcolumn(\d+)\b/);
+    if (hasColumn) {
+      const staffCol = parseInt(hasColumn[1], 10);
+      if (colInfo && colInfo != staffCol) {
+        const warning = document.getElementById('col-warning');
+        warning.innerText = 'The selected staves are not of the same column!';
+        colInfo = 0;
+        break;
+      } else {
+        colInfo = staffCol;
+      }
+    }
+  } 
+  if (colInfo) colInput.value = colInfo.toString();
+}
+
+/**
+ * Add column info edit handler for column info editor
+ */
+function addColumnInfoStepHandler(): void {
+  const decrementButton = document.getElementById('col-decrement') as HTMLButtonElement;
+  const incrementButton = document.getElementById('col-increment') as HTMLButtonElement;
+  const confirmButton = document.getElementById('col-confirm') as HTMLButtonElement;
+  const colInput = document.getElementById('col-input') as HTMLInputElement;
+
+  decrementButton.addEventListener('click', function () {
+    updateNumber(-1);
+  });
+
+  incrementButton.addEventListener('click', function () {
+    updateNumber(1);
+  });
+
+  // Add column info edit handler
+  confirmButton.addEventListener('click', function () {
+    const toSetColumn: EditorAction[] = [];
+    const staves = document.querySelectorAll('.staff.selected');
+    staves.forEach(staff => {
+      toSetColumn.push(
+        {
+          action: 'set',
+          param: {
+            elementId: staff.id,
+            attrType: 'type',
+            attrValue: 'column' + colInput.value,
+          }
+        }
+      );
+    });
+    const chainAction: ChainAction = {
+      action: 'chain',
+      param: toSetColumn
+    };
+    neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => { 
+      if (result) {
+        Notification.queueNotification('Column Value Update Success', 'success');
+      } else {
+        Notification.queueNotification('Column Value Update Failed XoX', 'error');
+      }
+      endOptionsSelection();
+      neonView.updateForCurrentPage(); 
+    });
+  });
+  
+  function updateNumber(change: number) {
+    const minNum = 1;
+    const maxNum = 5;
+    let currentValue = parseInt(colInput.value, 10) || 0;
+    currentValue += change;
+
+    currentValue = Math.min(Math.max(currentValue, minNum), maxNum);
+    if (currentValue.toString() != colInput.value) confirmButton.style.display = '';
+    colInput.value = currentValue.toString();
+  }
 }
 
 /**
@@ -893,10 +977,15 @@ function parseShapeChangeAction(action: SetAction | SetClefAction) {
 /**
  * Trigger extra staff actions.
  */
-export function triggerStaffActions (): void {
+export function triggerMultiStaffActions (): void {
   endOptionsSelection();
-  setEditControls('moreEdit', Contents.staffActionContents);
+  setEditControls('moreEdit', Contents.staffMergeActionContents);
+  setEditControls('extraEdit', Contents.columnActionContents);
   addDeleteListener();
+
+  // Column info editor
+  updateColumnInfo();
+  addColumnInfoStepHandler();
 
   document.getElementById('merge-systems').addEventListener('click', () => {
     Grouping.mergeStaves();
@@ -921,12 +1010,17 @@ export function triggerStaffSplitMode (): void {
 /**
  * Trigger split staff option
  */
-export function triggerSplitActions (): void {
+export function triggerSingleStaffActions (): void {
   endOptionsSelection();
-  setEditControls('moreEdit', Contents.splitActionContents);
+  setEditControls('moreEdit', Contents.staffSplitActionContents);
+  setEditControls('extraEdit', Contents.columnActionContents);
   addDeleteListener();
 
-  // TODO add trigger for split action
+  // Column info editor
+  updateColumnInfo();
+  addColumnInfoStepHandler();
+
+  // Add trigger for split action
   document.getElementById('split-system')
     .addEventListener('click', () => {
       triggerStaffSplitMode();

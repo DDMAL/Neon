@@ -16,13 +16,12 @@ function copyAttributes(src: Element, dst: Element): void {
   }
 }
 
-export function convertStaffToSb(staffBasedMei: string): string {
+export function convertToNeon(staffBasedMei: string): string {
   const parser = new DOMParser();
   const serializer = new XMLSerializer();
   const meiDoc = parser.parseFromString(staffBasedMei, 'text/xml');
   const mei = meiDoc.documentElement;
-
-  // const precedesSyllables: Set<Element> = new Set();
+  let nCol = 0;
 
   for (const section of mei.getElementsByTagName('section')) {
     const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
@@ -31,13 +30,41 @@ export function convertStaffToSb(staffBasedMei: string): string {
     newLayer.setAttribute('n', '1');
     newStaff.appendChild(newLayer);
 
-    const staves = Array.from(section.getElementsByTagName('staff'));
+    // Add <pb>
+    const surface = mei.getElementsByTagName('surface')[0];
+    const surfaceId = surface.getAttribute('xml:id');
+    const pb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'pb');
+    pb.setAttribute('xml:id', 'm-' + uuidv4());
+    pb.setAttribute('facs', '#' + surfaceId);
+    newLayer.appendChild(pb);
 
+    const staves = Array.from(section.getElementsByTagName('staff'));
+    let nStaff = 0;
+    let lastCb: Element = null;
+    
     for (const staff of staves) {
+      nStaff += 1;
       const layer = staff.getElementsByTagName('layer')[0];
 
+      // if staff has a new type value,
+      // add cb before sb
+      if (staff.hasAttribute('type') && staff.getAttribute('type') != 'column' + nCol.toString()) {
+        nCol += 1;
+        const cb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'cb');
+        cb.setAttribute('n', nCol.toString());
+        cb.setAttribute('xml:id', 'm-' + uuidv4());
+        cb.setAttribute('facs', '#m-' + uuidv4());
+        newLayer.appendChild(cb);
+
+        // Calculate zone for previous cb
+        if (lastCb) {
+          calculateAndAddZone(lastCb, cb, surface);
+        }
+        lastCb = cb;
+      }
+
       const sb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'sb');
-      sb.setAttribute('n', staff.getAttribute('n'));
+      sb.setAttribute('n', nStaff.toString());
       sb.setAttribute('facs', staff.getAttribute('facs'));
       sb.setAttribute('xml:id', staff.getAttribute('xml:id'));
 
@@ -48,51 +75,84 @@ export function convertStaffToSb(staffBasedMei: string): string {
         custos = newLayer.removeChild(newLayer.lastElementChild);
       }
 
-      // Insert sb either as last child of layer or in the last syllable
-      // const lastElement = newLayer.lastElementChild;
-      // if ((lastElement !== null) && (lastElement.tagName === 'syllable') && lastElement.hasAttribute('precedes')) {
-      //   if (custos !== undefined) lastElement.appendChild(custos);
-      //   lastElement.appendChild(sb);
-      // }
-      // else {
       if (custos !== undefined) newLayer.appendChild(custos);
       newLayer.appendChild(sb);
-      // }
-
-      // Handle split syllables
-      // for (const precedes of precedesSyllables) {
-      //   const followsId = precedes.getAttribute('precedes');
-      //   const followsSyllable = Array.from(layer.getElementsByTagName('syllable'))
-      //     .filter(syllable => { return '#' + syllable.getAttribute('xml:id') === followsId; })
-      //     .pop();
-      //   if (followsSyllable !== undefined) {
-      //     // Check for preceeding clef
-      //     if ((followsSyllable.previousElementSibling !== null) &&
-      //     (followsSyllable.previousElementSibling.tagName === 'clef')) {
-      //       precedes.append(followsSyllable.previousElementSibling);
-      //     }
-      //     while (followsSyllable.firstChild !== null) {
-      //       precedes.append(followsSyllable.firstChild);
-      //     }
-      //     followsSyllable.remove();
-      //     precedes.removeAttribute('precedes');
-      //     precedesSyllables.delete(precedes);
-      //   }
-      // }
 
       // Add remaining elements of layer to newLayer
       while (layer.firstElementChild !== null) {
-        // if (layer.firstElementChild.hasAttribute('precedes')) {
-        //   precedesSyllables.add(layer.firstElementChild);
-        // }
         newLayer.appendChild(layer.firstElementChild);
       }
       staff.remove();
     }
+
+    // Calculate and add zone for the last cb in the section
+    if (lastCb) {
+      calculateAndAddZone(lastCb, null, surface);
+    }
     section.appendChild(newStaff);
   }
 
+  // Add <colLayout>
+  if (nCol) {
+    const scoreDef = mei.getElementsByTagName('scoreDef')[0];
+    const colLayout = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'colLayout');
+    colLayout.setAttribute('xml:id', 'm-' + uuidv4());
+    colLayout.setAttribute('n', nCol.toString());
+    scoreDef.insertAdjacentElement('afterend', colLayout);
+  }
+
   return vkbeautify.xml(serializer.serializeToString(meiDoc));
+
+  function calculateAndAddZone(startElement: Element, endElement: Element | null, surface: Element) {
+    // Collect elements between startCb and endCb
+    const elementsBetween = collectAllElementsWithFacs(startElement.nextElementSibling, endElement);
+
+    // Calculate zone attributes
+    const zone = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'zone');
+    const BBox = calculateBBox(elementsBetween, surface);
+    zone.setAttribute('lrx', BBox.lrx.toString());
+    zone.setAttribute('lry', BBox.lry.toString());
+    zone.setAttribute('ulx', BBox.ulx.toString());
+    zone.setAttribute('uly', BBox.uly.toString());
+    zone.setAttribute('xml:id', startElement.getAttribute('facs').slice(1));
+
+    // Add zone to the beginning of surface children
+    surface.insertBefore(zone, surface.firstElementChild);
+  }
+
+  function collectAllElementsWithFacs(element: Element, endElement: Element, elementsBetween = []) {
+    if (element && element !== endElement) {
+      // Push elements only if it has facs
+      if (element.hasAttribute('facs')) elementsBetween.push(element);
+
+      if (element.children.length > 0) {
+        for (const child of element.children) {
+          collectAllElementsWithFacs(child, endElement, elementsBetween);
+        }
+      }
+
+      if (element.nextElementSibling) {
+        collectAllElementsWithFacs(element.nextElementSibling, endElement, elementsBetween);
+      }
+    }
+
+    return elementsBetween;
+  }
+
+  function calculateBBox(elements: Element[], surface: Element) {
+    let lrx = Infinity; let lry = 0; let ulx = 0; let uly = Infinity;
+
+    elements.forEach((element) => {
+      const zone = Array.from(surface.children).find(zone => 
+        zone.getAttribute('xml:id') === element.getAttribute('facs').slice(1));
+      lrx = Math.min(lrx, parseInt(zone.getAttribute('lrx')));
+      lry = Math.max(lry, parseInt(zone.getAttribute('lry')));
+      ulx = Math.max(ulx, parseInt(zone.getAttribute('ulx')));
+      uly = Math.min(uly, parseInt(zone.getAttribute('uly')));
+    });
+
+    return { lrx, lry, ulx, uly };
+  }
 }
 
 export function getSyllableText (syllable: Element): string {
@@ -116,28 +176,41 @@ export function getSyllableText (syllable: Element): string {
  *    3. linked syllables not linked
  *    4. incomplete linked syllable
  */
-export function convertSbToStaff(sbBasedMei: string): string {
+export function convertToVerovio(sbBasedMei: string): string {
   const parser = new DOMParser();
   const meiDoc = parser.parseFromString(sbBasedMei, 'text/xml');
   const mei = meiDoc.documentElement;
+  let hasCols = false;
 
-  // Check neume without neume component
-  const neumes = Array.from(mei.getElementsByTagName('neume'));
-  for (const neume of neumes) {
-    if (neume.getElementsByTagName('nc').length === 0) {
-      // neume.remove();
-      const id = neume.getAttribute('xml:id');
-      Notification.queueNotification(`This file contains a neume without neume component!<br/>ID: ${id}`, 'warning');
-    }
+  // Check if there is <colLayout> element and remove them
+  // There will only be one <colLayout> element
+  const colLayout = Array.from(mei.getElementsByTagName('colLayout')).at(0);
+  if (colLayout) {
+    hasCols = true;
+    colLayout.parentNode.removeChild(colLayout);
+  }
+
+  // Check if there are <pb> elements and remove them
+  const pageBegins = Array.from(mei.getElementsByTagName('pb'));
+  for (const pb of pageBegins) {
+    pb.parentNode.removeChild(pb);
   }
 
   // Check syllable without neume 
   const syllables = Array.from(mei.getElementsByTagName('syllable'));
   for (const syllable of syllables) {
     if (syllable.getElementsByTagName('neume').length === 0) {
-      // syllable.remove();
       const id = syllable.getAttribute('xml:id');
       Notification.queueNotification(`This file contains a syllable without neume!<br/>ID: ${id}`, 'warning');
+    }
+
+    // Check neume without neume component
+    const neumes = syllable.getElementsByTagName('neume');
+    for (const neume of neumes) {
+      if (neume.getElementsByTagName('nc').length === 0) {
+        const id = neume.getAttribute('xml:id');
+        Notification.queueNotification(`This file contains a neume without neume component!<br/>ID: ${id}`, 'warning');
+      }
     }
   }
 
@@ -150,6 +223,8 @@ export function convertSbToStaff(sbBasedMei: string): string {
       const layer = staff.getElementsByTagName('layer')[0];
       // First pass: get all sb elements as direct children of layer
       const sbArray = Array.from(layer.getElementsByTagName('sb'));
+      // Check if any syllables have sb inside (linked syllables)
+      // Keep this check for files not produced by Rodan
       for (const sb of sbArray) {
         if (sb.parentElement.tagName !== 'layer') {
           const origSyllable: Element = sb.parentElement;
@@ -211,12 +286,30 @@ export function convertSbToStaff(sbBasedMei: string): string {
       }
 
       const sbs = Array.from(layer.getElementsByTagName('sb'));
+      const layerChildren = Array.from(layer.children);
+      let nCol = 0;
       for (let i = 0; i < sbs.length; i++) {
         const currentSb = sbs[i];
         const nextSb = (sbs.length > i + 1) ? sbs[i + 1] : undefined;
 
         const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
         copyAttributes(currentSb, newStaff);
+        newStaff.setAttribute('n', '1');
+        const currentIdx = layerChildren.indexOf(currentSb);
+        if (hasCols) {
+          if (layerChildren.at(currentIdx-1).tagName === 'cb') {
+            nCol += 1;
+            // Remove cb element and its zone
+            const cb = layerChildren.at(currentIdx-1);
+            const cbFacs = cb.getAttribute('facs');
+            const cbZone = Array.from(mei.querySelectorAll('facsimile > surface > zone'))
+              .find(zone => zone.getAttribute('xml:id') === cbFacs.slice(1));
+            cb.parentNode.removeChild(cb);
+            cbZone.parentNode.removeChild(cbZone);
+          }
+          newStaff.setAttribute('type', 'column' + nCol.toString());
+        }
+        
         const newLayer = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'layer');
         newLayer.setAttribute('n', '1');
         newLayer.setAttribute('xml:id', 'm-' + uuidv4());
@@ -398,4 +491,19 @@ function checkOblique (syllable: Element): void {
     }
     ncIdx += 1;
   }
+}
+
+export function removeColumnLabel(mei: string): string {
+  const parser = new DOMParser();
+  const meiDoc = parser.parseFromString(mei, 'text/xml');
+  const meiForValidation = meiDoc.documentElement;
+
+  for (const staff of Array.from(meiForValidation.getElementsByTagName('staff'))) {
+    if (staff.hasAttribute('type')) {
+      staff.removeAttribute('type');
+    }
+  }
+
+  const serializer = new XMLSerializer();
+  return vkbeautify.xml(serializer.serializeToString(meiForValidation));
 }

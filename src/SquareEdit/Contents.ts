@@ -216,14 +216,6 @@ export const neumeActionContents =
     <button class="side-panel-btn" id="ungroupNcs">Ungroup</button>`;
 
 /**
- * Contents of extra staff action menu.
- */
-export const staffActionContents =
-    `<label>Merge Systems:</label>
-    <button id="merge-systems" class="side-panel-btn">Merge</button>
-    <button class="side-panel-btn" id="delete">Delete</button>`;
-
-/**
  * Contents of default action menu.
  */
 export const defaultActionContents = 
@@ -289,14 +281,39 @@ export const accidActionContents =
     </div>`;
 
 /**
- * Contents of split action menu.
+ * Contents of staff split action menu.
  */
-export const splitActionContents =
+export const staffSplitActionContents =
     `<div>Split System:</div>
     <div id="split-system-btns-container" class="right-side-panel-btns-container">
         <button id="split-system" class="side-panel-btn">Split</button>
         <button id="reset-rotate" class="side-panel-btn">Reset Rotate</button>
         <button class="side-panel-btn" id="delete">Delete</button>
+    </div>`;
+
+/**
+ * Contents of extra staff action menu.
+ */
+export const staffMergeActionContents =
+    `<label>Merge Systems:</label>
+    <div id="merge-system-btns-container" class="right-side-panel-btns-container">
+        <button id="merge-systems" class="side-panel-btn">Merge</button>
+        <button class="side-panel-btn" id="delete">Delete</button>
+    </div>`;
+
+/**
+ * Contents of accid action menu.
+ */
+export const columnActionContents =
+    `<div class="col-edit-container">
+        Edit Column Information: 
+        <div id="col-stepper-btns-container" class="right-side-panel-btns-container">
+            <button id="col-decrement" class="side-panel-btn col-stepper-btn">–</button>
+            <input type="text" id="col-input" class="side-panel-stepper-input" value="0">
+            <button id="col-increment" class="side-panel-btn col-stepper-btn">+</button>
+            <button id="col-confirm" class="side-panel-btn side-panel-confirm-btn" style="display:none">Confirm</button>
+            <div id="col-warning" class="side-panel-warning"></div> 
+        </div>
     </div>`;
 
 /**

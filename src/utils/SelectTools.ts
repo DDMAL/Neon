@@ -97,7 +97,7 @@ export function selectStaff (staff: SVGGElement, dragHandler: DragHandler): void
     staff.classList.add('selected');
     Color.unhighlight(staff);
     Color.highlight(staff, '#d00');
-    SelectOptions.triggerSplitActions();
+    SelectOptions.triggerSingleStaffActions();
     Grouping.initGroupingListeners();
     dragHandler.dragInit();
   }
@@ -605,12 +605,12 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     case 'selByStaff':
       switch (groups.length) {
         case 1:
-          SelectOptions.triggerSplitActions();
+          SelectOptions.triggerSingleStaffActions();
           Grouping.initGroupingListeners();
           resize(groups[0], neonView, dragHandler);
           break;
         default:
-          SelectOptions.triggerStaffActions();
+          SelectOptions.triggerMultiStaffActions();
           Grouping.initGroupingListeners();
       }
       break;

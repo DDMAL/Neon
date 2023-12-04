@@ -1,4 +1,4 @@
-import { checkOutOfBoundsGlyphs, convertSbToStaff } from './utils/ConvertMei';
+import { checkOutOfBoundsGlyphs, convertToVerovio, removeColumnLabel } from './utils/ConvertMei';
 import * as Validation from './Validation';
 import VerovioWrapper from './VerovioWrapper';
 import { WebAnnotation, Attributes, EditorAction, NeonManifest, VerovioMessage } from './Types';
@@ -207,7 +207,7 @@ class NeonCore {
           }).then(data => {
             // Check if the MEI file is sb-based. If so, convert to staff-based.
             if (data.match(/<sb .+>/)) {
-              data = convertSbToStaff(data);
+              data = convertToVerovio(data);
             }
 
             checkOutOfBoundsGlyphs(data);
@@ -234,7 +234,7 @@ class NeonCore {
    * @param dirty - If the cache entry should be marked as dirty.
    */
   loadData (pageURI: string, data: string, dirty = false): Promise<void> {
-    Validation.sendForValidation(data);
+    Validation.sendForValidation(removeColumnLabel(data));
     this.lastPageLoaded = pageURI;
     /* A promise is returned that will resolve to the result of the action.
      * However the value that is must return comes from the Web Worker and
@@ -391,7 +391,7 @@ class NeonCore {
           if (evt.data.id === message.id) {
             mei = evt.data.mei;
             evt.target.removeEventListener('message', handle);
-            Validation.sendForValidation(mei);
+            Validation.sendForValidation(removeColumnLabel(mei));
             resolve('');
           }
         });

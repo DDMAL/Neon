@@ -16,31 +16,31 @@ const neumeGroups = new Map(
 );
 
 function startInfoVisibility (): void {
-  const neumeInfo = document.getElementById('neume_info');
-  neumeInfo.innerHTML =
+  const elementInfo = document.getElementById('element_info');
+  elementInfo.innerHTML =
     `<div class="info-bubble-container">
       <div class="info-bubble-header">Element Info</div>
       <div class="info-bubble-body"><i>Hover over any element to see its metadata</i></div>
     </div>`;
-  document.getElementById('neume_info').setAttribute('style', 'display: none');
+  document.getElementById('element_info').setAttribute('style', 'display: none');
 }
 
 /**
  * Update the visibility of infoBox
  */
 function updateInfoVisibility (): void {
-  const neumeInfo = document.getElementById('neume_info');
+  const elementInfo = document.getElementById('element_info');
   const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
   
   // save setting to localStorage
   setSettings({ displayInfo: displayInfo.checked });
 
   if (displayInfo.checked) {
-    neumeInfo.setAttribute('style', '');
+    elementInfo.setAttribute('style', '');
     // scroll neume info into view
-    //neumeInfo.scrollIntoView({ behavior: 'smooth' });
+    //elementInfo.scrollIntoView({ behavior: 'smooth' });
   } else {
-    neumeInfo.setAttribute('style', 'display: none');
+    elementInfo.setAttribute('style', 'display: none');
   }
   updateDisplayAllBtn();
 }
@@ -68,6 +68,7 @@ function setInfoControls (): void {
  */
 class InfoModule implements InfoInterface {
   private neonView: NeonView;
+  isHoveringChild: boolean;
 
   /**
    * A constructor for an InfoModule.
@@ -100,9 +101,20 @@ class InfoModule implements InfoInterface {
   infoListeners (): void {
     try {
       document.getElementsByClassName('active-page')[0]
+        .querySelectorAll('.neume,.custos,.clef,.accid,.divLine,.staff')
+        .forEach(node => {
+          node.addEventListener('mouseover', (event: MouseEvent) => {
+            if (!node.classList.contains('staff')) this.isHoveringChild = true;
+            this.updateInfo(event);
+          });
+        });
+
+      document.getElementsByClassName('active-page')[0]
         .querySelectorAll('.neume,.custos,.clef,.accid,.divLine')
         .forEach(node => {
-          node.addEventListener('mouseover', this.updateInfo.bind(this));
+          node.addEventListener('mouseleave', () => {
+            this.isHoveringChild = false;
+          });
         });
     } catch (e) {}
   }
@@ -111,8 +123,13 @@ class InfoModule implements InfoInterface {
    * Stop listeners for the InfoModule.
    */
   stopListeners (): void {
-    document.querySelectorAll('.neume,.custos,.clef,.accid,.divLine').forEach(node => {
+    document.querySelectorAll('.neume,.custos,.clef,.accid,.divLine,.staff').forEach(node => {
       node.removeEventListener('mouseover', this.updateInfo.bind(this));
+    });
+    document.querySelectorAll('.neume, .custos, .clef, .accid, .divLine').forEach(node => {
+      node.removeEventListener('mouseleave', () => {
+        this.isHoveringChild = false;
+      });
     });
   }
 
@@ -133,7 +150,7 @@ class InfoModule implements InfoInterface {
   // So we will simply return if ID does not exist for now
     const id = (event.currentTarget as HTMLElement).id;
     if (id === '') {
-      Array.from(document.getElementById('neume_info').children).forEach(child => {
+      Array.from(document.getElementById('element_info').children).forEach(child => {
         child.remove();
       });
       console.log('No id!');
@@ -141,7 +158,7 @@ class InfoModule implements InfoInterface {
     }
 
     const element = document.getElementById(id);
-    const classRe = /neume|nc|clef|custos|staff|liquescent|accid|divLine/;
+    const classRe = /neume|clef|custos|staff|accid|divLine/;
     const elementClass = element.getAttribute('class').match(classRe)[0];
     let body = '';
     let attributes: Attributes;
@@ -243,12 +260,18 @@ class InfoModule implements InfoInterface {
         body += 'DivLine Type: ' + attributes['form'];
         break;
       }
+      case 'staff': {
+        if (this.isHoveringChild) return;
+        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
+        if (attributes['type']) body += 'Column: ' + attributes['type'].replace(/^column/, '');
+        break;
+      }
       default: {
         body += 'nothing';
         break;
       }
     }
-    body = `Type: ${elementClass}\n${body}`;
+    body = `Element Type: ${elementClass.charAt(0).toUpperCase() + elementClass.slice(1)}\n${body}`;
     this.updateInfoModule(body);
   }
 

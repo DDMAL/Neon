@@ -349,6 +349,7 @@ export function setHighlightControls (): void {
     if (dropdown.classList.contains('is-active')) {
       document.body.addEventListener('click', highlightClickaway);
 
+      setHighlightOption('column');
       setHighlightOption('staff');
       setHighlightOption('syllable');
       setHighlightOption('neume');
@@ -417,6 +418,9 @@ export function updateHighlight (): void {
     highlightId = '';
   }
   switch (highlightId) {
+    case 'highlight-column':
+      Color.setGroupingHighlight('column');
+      break;
     case 'highlight-staff':
       Color.setGroupingHighlight('staff');
       break;

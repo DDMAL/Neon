@@ -178,6 +178,31 @@ export function setStaffHighlight(): void {
   }
 }
 
+function setColumnHighlight(): void {
+  const  groups: { [key: number]: SVGGElement[] } = {};
+
+  document.querySelectorAll('.staff').forEach((staff) => {
+    const hasColumn = Array.from(staff.classList).join(' ').match(/\bcolumn(\d+)\b/);
+    let columnNum = 0;
+    if (hasColumn) {
+      columnNum = parseInt(hasColumn[1], 10) - 1;
+    }
+
+    if (!groups[columnNum]) {
+      groups[columnNum] = [];
+    }
+
+    groups[columnNum].push(staff as SVGGElement);
+  });
+
+  for (const [column, staves] of Object.entries(groups)) {
+    const color = ColorPalette[Number(column) % ColorPalette.length];
+    for (const staff of staves) {
+      highlight(staff, color);
+    }
+  }
+}
+
 /**
  * Set a highlight by a different grouping.
  * @param grouping - Either "staff", "syllable", "neume", "selection", or "layerElement".
@@ -187,12 +212,20 @@ export function setGroupingHighlight(grouping: GroupingType): void {
   if (grouping === 'staff') {
     setStaffHighlight();
     return;
-  } else if (grouping === 'selection') {
+  }
+  else if (grouping === 'column') {
+    setColumnHighlight();
+    return;
+  } 
+  else if (grouping === 'selection') {
     const temp = document.querySelector('.sel-by.is-active').id;
     switch (temp) {
       case 'selBySyllable':
       case 'selByBBox':
         grouping = 'syllable';
+        break;
+      case 'selByColumn':
+        grouping = 'column';
         break;
       case 'selByStaff':
         grouping = 'staff';

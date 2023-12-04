@@ -19,7 +19,7 @@ describe('displace: +1 octave', () => {
     const NEUME_ID = '#m-f76386ee-7bfd-471a-8478-e1fb7e345757';
 
     cy.get(NEUME_ID).trigger('mouseover', { force: true, timeout: 100 });
-    cy.get('#neume_info').should('contain', 'F3').and('not.contain', 'F2');
+    cy.get('#element_info').should('contain', 'F3').and('not.contain', 'F2');
   });
 
   it('pitch: ignore presence of divlines', () => {
@@ -31,7 +31,7 @@ describe('displace: +1 octave', () => {
     const NEUME_ID = '#m-61068be0-0f13-4ffb-bc64-65e6b643de60';
 
     cy.get(NEUME_ID).trigger('mouseover', { force: true, timeout: 100 });
-    cy.get('#neume_info').should('contain', 'D3').and('not.contain', 'D2');
+    cy.get('#element_info').should('contain', 'D3').and('not.contain', 'D2');
   });
 
   it('visual: neume should not be visually displaced', () => {
