@@ -519,7 +519,7 @@ a:hover {
     flex-wrap: wrap;
 }
 
-#selection-mode-btns-container, #split-system-btns-container {
+#selection-mode-btns-container, #split-system-btns-container, #col-stepper-btns-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -602,6 +602,33 @@ a:hover {
 .dropdown-content {
     box-shadow: none;
 }
+.col-stepper-btn {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    margin: 10px;
+}
+#col-decrement {
+    margin-left: 3px;
+}
+.side-panel-stepper-input {
+    border-radius: 4px;
+    border: 1px solid #afafaf;
+    height: 25px;
+    font-size: 14px;
+    color: grey;
+    outline: none;
+    margin-top: 10px;
+    width: 30px;
+    padding: 10px;
+}
+.side-panel-confirm-btn:hover {
+    background-color: #f2f2f2;
+}
+.side-panel-warning {
+    font-size: 14px;
+    color: #C51605;
+}
 /* Insert Panel */
 #insert_data {
     margin-top: 2vh;
@@ -648,8 +675,8 @@ a:hover {
     background-color: #f2f2f2;
     padding: 10px;
 }
-/* neume info (metadata) */
-#neume_info {
+/* element info (metadata) */
+#element_info {
     width: 100%;
 }
 .smallel {
@@ -668,6 +695,9 @@ a:hover {
     display: none;
 }
 /* Syllable text side panel */
+#syl_text {
+    width: 100%;
+}
 .syl-text-side-panel {
     margin-right: 5px;
     cursor: pointer;
