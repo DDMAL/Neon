@@ -169,6 +169,20 @@ export function getSyllableText (syllable: Element): string {
 }
 
 /**
+ * Check if zone is all-zero
+ */
+export function isInvalidBBox (zone: Element): boolean {
+  if ((parseInt(zone.getAttribute('lrx')) === 0) && 
+    (parseInt(zone.getAttribute('lry')) === 0) &&
+    (parseInt(zone.getAttribute('ulx')) === 0) &&
+    (parseInt(zone.getAttribute('uly')) === 0)) {
+    return true;
+  }
+  return false;
+}
+
+
+/**
  * Convert sb to staff for verovio
  * Also do heuristic checks:
  *    1. neume without neume component
@@ -182,9 +196,18 @@ export function convertToVerovio(sbBasedMei: string): string {
   const mei = meiDoc.documentElement;
   let hasCols = false;
 
+  // Check if there is zones with 0, 0, 0, 0
+  const surface = mei.getElementsByTagName('surface')[0];
+  for (const zone of surface.getElementsByTagName('zone')) {
+    if (isInvalidBBox(zone)) {
+      Notification.queueNotification('This file contains invalid zone element(s)!', 'warning');
+      break;
+    }
+  }
+
   // Check if there is <colLayout> element and remove them
   // There will only be one <colLayout> element
-  const colLayout = Array.from(mei.getElementsByTagName('colLayout')).at(0);
+  const colLayout = mei.getElementsByTagName('colLayout')[0];
   if (colLayout) {
     hasCols = true;
     colLayout.parentNode.removeChild(colLayout);
@@ -302,7 +325,7 @@ export function convertToVerovio(sbBasedMei: string): string {
             // Remove cb element and its zone
             const cb = layerChildren.at(currentIdx-1);
             const cbFacs = cb.getAttribute('facs');
-            const cbZone = Array.from(mei.querySelectorAll('facsimile > surface > zone'))
+            const cbZone = Array.from(surface.querySelectorAll('zone'))
               .find(zone => zone.getAttribute('xml:id') === cbFacs.slice(1));
             cb.parentNode.removeChild(cb);
             cbZone.parentNode.removeChild(cbZone);
