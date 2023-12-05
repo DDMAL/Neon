@@ -156,7 +156,7 @@ export function convertToNeon(staffBasedMei: string): string {
 }
 
 export function getSyllableText (syllable: Element): string {
-  const syl = syllable.getElementsByTagName('syl')[0].childNodes[0];
+  const syl = syllable.getElementsByTagName('syl')[0]?.childNodes[0];
   let sylText: string;
   if (syl) {
     sylText = syl.nodeValue;
