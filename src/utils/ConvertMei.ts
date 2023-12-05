@@ -198,11 +198,17 @@ export function convertToVerovio(sbBasedMei: string): string {
 
   // Check if there is zones with 0, 0, 0, 0
   const surface = mei.getElementsByTagName('surface')[0];
+  let hasInvalidBBox = false;
   for (const zone of surface.getElementsByTagName('zone')) {
     if (isInvalidBBox(zone)) {
-      Notification.queueNotification('This file contains invalid zone element(s)!', 'warning');
-      break;
+      const element = mei.querySelector(`*[facs="${'#'+zone.getAttribute('xml:id')}"]`);
+      if (element) element.parentNode.removeChild(element);
+      zone.parentNode.removeChild(zone);
+      hasInvalidBBox = true;
     }
+  }
+  if (hasInvalidBBox) {
+    Notification.queueNotification('Removed invalid zones contained in this file', 'warning');
   }
 
   // Check if there is <colLayout> element and remove them
