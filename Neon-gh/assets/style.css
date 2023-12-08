@@ -447,6 +447,13 @@ a:hover {
     display: flex;
     width: 90%;
 }
+.slider-container > input {
+    width: 90%;
+}
+.slider-container>output {
+    width: 10%;
+    text-align: end;
+}
 .panel-block {
     align-items: center;
     color: #363636;
