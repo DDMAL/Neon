@@ -5,6 +5,10 @@ import { IFolder, FileSystemTools } from './FileSystem';
 
 const fm = UploadFileManager.getInstance();
 
+// Set MEI template
+const templatePath = 'samples/mei/mei_template.mei';
+fm.setMeiTemplate(templatePath);
+
 // Adds new files to upload pairing container and filemanager, returns list of rejected files
 export function addNewFiles( files: File[] ): File[] {
   const mei_container: HTMLDivElement = document.querySelector('#mei_list');
@@ -86,8 +90,14 @@ export function handleMakePair(): void {
   const selectedImageElement: HTMLInputElement = document.querySelector('input[name="image_radio_group"]:checked');
   if (selectedMeiElement === null || selectedImageElement === null) return;
   
-  const mei_filename = selectedMeiElement.value;
+  let mei_filename = selectedMeiElement.value;
   const image_filename = selectedImageElement.value;
+
+  if (selectedMeiElement.value === 'create_mei'){
+    mei_filename = image_filename;
+    // Create new MEI file
+    fm.createMeiFile(mei_filename);
+  }
   const filename = mei_filename.substring(0, mei_filename.length-4);
   // make and append UI element
   const paired_el = createPairedFolio(filename, mei_filename, image_filename);

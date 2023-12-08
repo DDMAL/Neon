@@ -7,6 +7,7 @@ class UploadFileManager {
   private allFiles = new Map<string, {file: File, count: number}>();
   private folios = new Array<folio>(); // filename, mei_filename, image_filename
   // private manuscripts = new Array<string>();
+  private meiTemplate: string;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   private constructor() {}
@@ -29,6 +30,24 @@ class UploadFileManager {
       this.allFiles.set(file.name, updatedEntry);
     }
   }
+
+  public async setMeiTemplate(templatePath: string): Promise<void> {
+    try {
+      const response = await fetch(templatePath);
+      if (!response.ok) {
+        throw new Error(`Failed to load MEI template from ${templatePath}`);
+      }
+
+      this.meiTemplate = await response.text();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  public createMeiFile(filename: string): void {
+    // 
+  } 
 
   public getFile(key: string): File {
     if (this.allFiles.has(key)) {
