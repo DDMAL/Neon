@@ -78,6 +78,7 @@ backgroundArea?.addEventListener('click', (e) => {
  * @returns 
  */
 function openUploadAreaHandler() {
+  if (!uploadDocumentsButton.classList.contains('active')) return;
   InitUploadArea(state.getParentFolder());
 }
 
@@ -862,6 +863,8 @@ function openMoveToWindow() {
  * On clicking the Create button, closes modal window and creates new folder.
  */
 function openNewFolderWindow() {
+  if (!newFolderButton.classList.contains('active')) return;
+
   // generate modal window
   const modalWindow = new ModalWindow();
   modalWindow.setModalWindowView(ModalWindowView.NEW_FOLDER);
