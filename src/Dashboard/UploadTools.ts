@@ -59,7 +59,7 @@ function createUnpairedItem(filename: string, group: string): HTMLDivElement {
 
   const text = document.createElement('span');
   text.innerText = formatFilename(filename, 50);
-  text.setAttribute('style', 'margin-top: auto');
+  text.setAttribute('style', 'margin-top: auto; margin-left: 3px;');
 
   const delBtn = document.createElement('img');
   delBtn.className = 'unpaired_del_btn';
