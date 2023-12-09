@@ -1,5 +1,5 @@
 import { IFolder, FileSystemTools } from '.';
-import { fetchUploads, db } from '../Storage';
+import { fetchUploads } from '../Storage';
 import { samples } from '../samples_filenames';
 
 interface FileSystemProps {

@@ -1,3 +1,6 @@
+import { uuidv4 } from '../utils/random';
+import * as vkbeautify from 'vkbeautify';
+
 /**
  * Manager for file uploading and pairing process
  */
@@ -41,12 +44,42 @@ class UploadFileManager {
       this.meiTemplate = await response.text();
     } catch (error) {
       console.error(error);
-      throw error;
     }
   }
 
-  public createMeiFile(filename: string): void {
-    // 
+  public createMeiFile(filename: string): File {
+    try {
+      if (!this.meiTemplate) {
+        throw new Error('Cannot find MEI template');
+      }
+
+      const parser = new DOMParser();
+      const serializer = new XMLSerializer();
+      const meiDoc = parser.parseFromString(this.meiTemplate, 'text/xml');
+      const mei = meiDoc.documentElement;
+
+      const meiHead = mei.querySelector('meiHead');
+      meiHead.setAttribute('xml:id', 'm-' + uuidv4());
+      const fileDesc = mei.querySelector('fileDesc');
+      fileDesc.setAttribute('xml:id', 'm-' + uuidv4());
+      const titleStmt = mei.querySelector('titleStmt');
+      titleStmt.setAttribute('xml:id', 'm-' + uuidv4());
+      const title = mei.querySelector('title');
+      title.setAttribute('xml:id', 'm-' + uuidv4());
+      const pubStmt = mei.querySelector('pubStmt');
+      pubStmt.setAttribute('xml:id', 'm-' + uuidv4());
+      const facsimile = mei.querySelector('facsimile');
+      facsimile.setAttribute('xml:id', 'm-' + uuidv4());
+      const surface = mei.querySelector('surface');
+      surface.setAttribute('xml:id', 'm-' + uuidv4());
+
+      const meiFileContent = vkbeautify.xml(serializer.serializeToString(meiDoc));
+      const meiBlob = new Blob([meiFileContent], { type: 'text/xml' });
+
+      return new File([meiBlob], filename, { type: 'text/xml' });
+    } catch (error) {
+      console.error(error);
+    }
   } 
 
   public getFile(key: string): File {

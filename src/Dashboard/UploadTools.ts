@@ -94,9 +94,17 @@ export function handleMakePair(): void {
   const image_filename = selectedImageElement.value;
 
   if (selectedMeiElement.value === 'create_mei'){
-    mei_filename = image_filename;
+    // Change extension
+    const fn = image_filename.split('.');
+    if (fn.length > 1) {
+      fn.pop();
+    }
+    fn.push('mei');
+
+    mei_filename = fn.join('.');
     // Create new MEI file
-    fm.createMeiFile(mei_filename);
+    const newMeiFile = fm.createMeiFile(mei_filename);
+    fm.addFile(newMeiFile);
   }
   const filename = mei_filename.substring(0, mei_filename.length-4);
   // make and append UI element
