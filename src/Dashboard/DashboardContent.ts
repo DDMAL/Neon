@@ -20,8 +20,8 @@ export const uploadAreaHTML =
               <div>Name</div>
               <div class="sort_name arrow_btn">&#x22C0;</div>
             </div>
-            <div class="file_list" id="mei_list" style="position: relative;">
-              <div class="unpaired_item_container" style="position: absolute; bottom: 0;">
+            <div class="file_list" id="mei_list">
+              <div class="unpaired_item_container" style="width: 100%; background: #DAEAF1; border-radius: 5px;">
                 <label class="unpaired_item_label">
                   <input type="radio" class="unpaired_item_radio" name="mei_radio_group" value="create_mei">
                     <span style="margin-top: auto;margin-left: 3px;">
