@@ -92,8 +92,10 @@ export function handleMakePair(): void {
   
   let mei_filename = selectedMeiElement.value;
   const image_filename = selectedImageElement.value;
+  let isCreated = false;
 
   if (selectedMeiElement.value === 'create_mei'){
+    isCreated = true;
     // Change extension
     const fn = image_filename.split('.');
     if (fn.length > 1) {
@@ -111,9 +113,9 @@ export function handleMakePair(): void {
   const paired_el = createPairedFolio(filename, mei_filename, image_filename);
   paired_container.appendChild(paired_el);
   // reflect in file manager
-  fm.addFolio(filename, mei_filename, image_filename);
+  fm.addFolio(filename, mei_filename, image_filename, isCreated);
   // remove from unpaired mei and image lists
-  selectedMeiElement.parentElement.parentElement.remove();
+  if (!isCreated) selectedMeiElement.parentElement.parentElement.remove();
   selectedImageElement.parentElement.parentElement.remove();
 }
 
@@ -135,10 +137,13 @@ function createPairedFolio(filename: string, mei_filename: string, image_filenam
     // remove folio from UI
     folio.remove();
     // remove folio from file manager
+    const isCreated = fm.isCreatedFolio(filename);
     fm.removeFolio(filename);
     // add items back to unpaired containers
-    const meiItem = createUnpairedItem(mei_filename, 'mei');
-    mei_container.appendChild(meiItem);
+    if (!isCreated) {
+      const meiItem = createUnpairedItem(mei_filename, 'mei');
+      mei_container.appendChild(meiItem);
+    }
     const imageItem = createUnpairedItem(image_filename, 'image');
     image_container.appendChild(imageItem);
   }

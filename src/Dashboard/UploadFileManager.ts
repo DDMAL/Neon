@@ -127,11 +127,12 @@ class UploadFileManager {
     else return 0;
   }
 
-  public addFolio(name: string, mei: string, image: string): void {
+  public addFolio(name: string, mei: string, image: string, isCreated: boolean): void {
     const newFolio: folio = {
       filename: name,
       mei_filename: mei,
-      image_filename: image
+      image_filename: image,
+      isCreated: isCreated,
     };
     this.folios.push(newFolio);
   }
@@ -139,6 +140,11 @@ class UploadFileManager {
   // public addManuscript(filename: string): void {
   //   this.manuscripts.push(filename);
   // }
+
+  public isCreatedFolio(filename: string): boolean {
+    const folio = this.folios.find((folio) => folio.filename === filename);
+    return folio ? folio.isCreated : false;
+  }
 
   public removeFolio(filename: string): void {
     const idx = this.folios.findIndex( folio => folio.filename === filename);
@@ -189,4 +195,5 @@ type folio = {
   filename: string,
   mei_filename: string,
   image_filename: string,
+  isCreated: boolean,
 };
