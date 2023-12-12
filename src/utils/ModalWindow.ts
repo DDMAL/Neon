@@ -161,11 +161,14 @@ export class ModalWindow implements ModalWindowInterface {
    * Set content of modal window
    */
   private setModalWindowContent(content?: string): void {
+    const container = document.getElementById('neon-modal-window-content-container');
+    const title = document.getElementById('neon-modal-window-header-title');
+
     switch (this.modalWindowView) {
       case ModalWindowView.EDIT_TEXT:
-        document.getElementById('neon-modal-window-content-container').innerHTML = editTextModal;
+        container.innerHTML = editTextModal;
         // set modal window title
-        document.getElementById('neon-modal-window-header-title').innerText = 'EDIT SYLLABLE TEXT';
+        title.innerText = 'EDIT SYLLABLE TEXT';
 
         // span and current text of selected-to-edit syllable and filter out unwanted chars
         const span = <HTMLSpanElement> document.getElementById('syl_text').querySelectorAll('span.selected-to-edit')[0];
@@ -177,38 +180,38 @@ export class ModalWindow implements ModalWindowInterface {
         break;
 
       case ModalWindowView.HOTKEYS:
-        document.getElementById('neon-modal-window-content-container').innerHTML = hotkeysModal;
-        document.getElementById('neon-modal-window-header-title').innerText = 'HOTKEYS';
+        container.innerHTML = hotkeysModal;
+        title.innerText = 'HOTKEYS';
         break;
 
       case ModalWindowView.VALIDATION_STATUS:
-        document.getElementById('neon-modal-window-content-container').innerHTML = 
+        container.innerHTML = 
           `<div style="margin-bottom: 30px;white-space: pre-line;">${content}</div>
           <div class="neon-modal-window-btn">
             <a href="data:text/plain;charset=utf-8,${encodeURIComponent(content)}" download="validation.log">
               Export
             </a>
             </div>`;
-        document.getElementById('neon-modal-window-header-title').innerText = 'ERROR LOG';
+        title.innerText = 'ERROR LOG';
         break;
 
       case ModalWindowView.DOCUMENT_UPLOAD:
-        document.getElementById('neon-modal-window-header-title').innerText = 'DOCUMENT UPLOAD';
-        document.getElementById('neon-modal-window-content-container').innerHTML = uploadAreaHTML;
+        title.innerText = 'DOCUMENT UPLOAD';
+        container.innerHTML = uploadAreaHTML;
         break;
 
       case ModalWindowView.MOVE_TO:
-        document.getElementById('neon-modal-window-header-title').innerText = 'MOVE TO';
+        title.innerText = 'MOVE TO';
         break;
 
       case ModalWindowView.NEW_FOLDER:
-        document.getElementById('neon-modal-window-header-title').innerText = 'NEW FOLDER';
-        document.getElementById('neon-modal-window-content-container').innerHTML = newFolderHTML;
+        title.innerText = 'NEW FOLDER';
+        container.innerHTML = newFolderHTML;
         break;
 
       case ModalWindowView.RENAME:
-        document.getElementById('neon-modal-window-header-title').innerText = 'RENAME';
-        document.getElementById('neon-modal-window-content-container').innerHTML = renameHTML;
+        title.innerText = 'RENAME';
+        container.innerHTML = renameHTML;
         break;
 
       default:

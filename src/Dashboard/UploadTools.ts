@@ -5,6 +5,10 @@ import { IFolder, FileSystemTools } from './FileSystem';
 
 const fm = UploadFileManager.getInstance();
 
+// Set MEI template
+const templatePath = 'samples/mei/mei_template.mei';
+fm.setMeiTemplate(templatePath);
+
 // Adds new files to upload pairing container and filemanager, returns list of rejected files
 export function addNewFiles( files: File[] ): File[] {
   const mei_container: HTMLDivElement = document.querySelector('#mei_list');
@@ -59,7 +63,7 @@ function createUnpairedItem(filename: string, group: string): HTMLDivElement {
 
   const text = document.createElement('span');
   text.innerText = formatFilename(filename, 50);
-  text.setAttribute('style', 'margin-top: auto');
+  text.setAttribute('style', 'margin-top: auto; margin-left: 3px;');
 
   const delBtn = document.createElement('img');
   delBtn.className = 'unpaired_del_btn';
@@ -86,16 +90,32 @@ export function handleMakePair(): void {
   const selectedImageElement: HTMLInputElement = document.querySelector('input[name="image_radio_group"]:checked');
   if (selectedMeiElement === null || selectedImageElement === null) return;
   
-  const mei_filename = selectedMeiElement.value;
+  let mei_filename = selectedMeiElement.value;
   const image_filename = selectedImageElement.value;
+  let isCreated = false;
+
+  if (selectedMeiElement.value === 'create_mei'){
+    isCreated = true;
+    // Change extension
+    const fn = image_filename.split('.');
+    if (fn.length > 1) {
+      fn.pop();
+    }
+    fn.push('mei');
+
+    mei_filename = fn.join('.');
+    // Create new MEI file
+    const newMeiFile = fm.createMeiFile(mei_filename);
+    fm.addFile(newMeiFile);
+  }
   const filename = mei_filename.substring(0, mei_filename.length-4);
   // make and append UI element
   const paired_el = createPairedFolio(filename, mei_filename, image_filename);
   paired_container.appendChild(paired_el);
   // reflect in file manager
-  fm.addFolio(filename, mei_filename, image_filename);
+  fm.addFolio(filename, mei_filename, image_filename, isCreated);
   // remove from unpaired mei and image lists
-  selectedMeiElement.parentElement.parentElement.remove();
+  if (!isCreated) selectedMeiElement.parentElement.parentElement.remove();
   selectedImageElement.parentElement.parentElement.remove();
 }
 
@@ -117,10 +137,13 @@ function createPairedFolio(filename: string, mei_filename: string, image_filenam
     // remove folio from UI
     folio.remove();
     // remove folio from file manager
+    const isCreated = fm.isCreatedFolio(filename);
     fm.removeFolio(filename);
     // add items back to unpaired containers
-    const meiItem = createUnpairedItem(mei_filename, 'mei');
-    mei_container.appendChild(meiItem);
+    if (!isCreated) {
+      const meiItem = createUnpairedItem(mei_filename, 'mei');
+      mei_container.appendChild(meiItem);
+    }
     const imageItem = createUnpairedItem(image_filename, 'image');
     image_container.appendChild(imageItem);
   }
