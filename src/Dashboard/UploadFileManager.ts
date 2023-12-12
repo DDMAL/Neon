@@ -85,14 +85,7 @@ class UploadFileManager {
       staffDef.setAttribute('xml:id', 'm-' + uuidv4());
       const section = mei.querySelector('section');
       section.setAttribute('xml:id', 'm-' + uuidv4());
-      const staff = mei.querySelector('staff');
-      staff.setAttribute('xml:id', 'm-' + uuidv4());
-      const layer = mei.querySelector('layer');
-      layer.setAttribute('xml:id', 'm-' + uuidv4());
-      const zone = mei.querySelector('zone');
-      zone.setAttribute('xml:id', 'm-' + uuidv4());
-      staff.setAttribute('facs', '#'+zone.getAttribute('xml:id'));
-
+      
       const meiFileContent = vkbeautify.xml(serializer.serializeToString(meiDoc));
       const meiBlob = new Blob([meiFileContent], { type: 'text/xml' });
 
