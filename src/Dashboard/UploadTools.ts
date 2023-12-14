@@ -105,8 +105,15 @@ export function handleMakePair(): void {
 
     mei_filename = fn.join('.');
     // Create new MEI file
-    const newMeiFile = fm.createMeiFile(mei_filename);
-    fm.addFile(newMeiFile);
+    fm.getImgDimension(image_filename)
+      .then((dimensions) => {
+        const { width, height } = dimensions;
+        const newMeiFile = fm.createMeiFile(mei_filename, width, height);
+        fm.addFile(newMeiFile);
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
   }
   const filename = mei_filename.substring(0, mei_filename.length-4);
   // make and append UI element

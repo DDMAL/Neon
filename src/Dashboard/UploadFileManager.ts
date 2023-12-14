@@ -47,7 +47,7 @@ class UploadFileManager {
     }
   }
 
-  public createMeiFile(filename: string): File {
+  public createMeiFile(filename: string, lrx: number, lry: number): File {
     try {
       if (!this.meiTemplate) {
         throw new Error('Cannot find MEI template');
@@ -72,6 +72,8 @@ class UploadFileManager {
       facsimile.setAttribute('xml:id', 'm-' + uuidv4());
       const surface = mei.querySelector('surface');
       surface.setAttribute('xml:id', 'm-' + uuidv4());
+      surface.setAttribute('lrx', lrx.toString());
+      surface.setAttribute('lry', lry.toString());
 
       const mdiv = mei.querySelector('mdiv');
       mdiv.setAttribute('xml:id', 'm-' + uuidv4());
@@ -85,7 +87,7 @@ class UploadFileManager {
       staffDef.setAttribute('xml:id', 'm-' + uuidv4());
       const section = mei.querySelector('section');
       section.setAttribute('xml:id', 'm-' + uuidv4());
-      
+
       const meiFileContent = vkbeautify.xml(serializer.serializeToString(meiDoc));
       const meiBlob = new Blob([meiFileContent], { type: 'text/xml' });
 
@@ -94,6 +96,33 @@ class UploadFileManager {
       console.error(error);
     }
   } 
+
+  public getImgDimension(filename: string): Promise<{ width: number; height: number }> {
+    return new Promise((resolve, reject) => {
+      const imgFile = this.getFile(filename);
+
+      if (!imgFile) {
+        reject(new Error(`File not found: ${filename}`));
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          resolve({ width: img.width, height: img.height });
+        };
+        img.onerror = () => {
+          reject(new Error(`Failed to load image: ${filename}`));
+        };
+        img.src = event.target.result as string;
+      };
+
+      reader.readAsDataURL(imgFile);
+    });
+  }
+
 
   public getFile(key: string): File {
     if (this.allFiles.has(key)) {
