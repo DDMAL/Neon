@@ -353,6 +353,20 @@ export function convertToVerovio(sbBasedMei: string): string {
           newLayer.appendChild(child);
         }
 
+        // Remove the zones for the last element in the original file
+        // because the last element is not included
+        if (!nextSb) {
+          const lastElement = childrenArray.at(-1);
+          const facsChildren = collectFacsChildren(lastElement, []);
+          const zones = Array.from(surface.querySelectorAll('zone'));
+          for (const child of facsChildren) {
+            const zone = zones.find(z => z.getAttribute('xml:id') == child.getAttribute('facs').slice(1));
+            if (zone) {
+              zone.parentNode.removeChild(zone);
+            }
+          }
+        }
+
         section.insertBefore(newStaff, staff);
       }
       staff.remove();
@@ -538,3 +552,15 @@ export function removeColumnLabel(mei: string): string {
   const serializer = new XMLSerializer();
   return vkbeautify.xml(serializer.serializeToString(meiForValidation));
 }
+
+function collectFacsChildren(element: Element, array: Element[]): Element[] {
+  for (const child of element.children) {
+    if (child.hasAttribute('facs')) {
+      array.push(child);
+    }
+
+    // Recursively call the function for child's children
+    collectFacsChildren(child, array);
+  }
+  return array;
+} 
