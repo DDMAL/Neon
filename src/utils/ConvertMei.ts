@@ -169,26 +169,27 @@ export function getSyllableText (syllable: Element): string {
 }
 
 /**
- * Check if zone is all-zero
+ * Check if zone is all-zero or not linked with glyphs
  */
-export function isInvalidBBox (zone: Element): boolean {
-  if ((parseInt(zone.getAttribute('lrx')) === 0) && 
+export function isInvalidBBox (mei: HTMLElement, zone: Element): [boolean, Element?] {
+  const isAllZero = (parseInt(zone.getAttribute('lrx')) === 0) && 
     (parseInt(zone.getAttribute('lry')) === 0) &&
     (parseInt(zone.getAttribute('ulx')) === 0) &&
-    (parseInt(zone.getAttribute('uly')) === 0)) {
-    return true;
-  }
-  return false;
+    (parseInt(zone.getAttribute('uly')) === 0);
+  const element = mei.querySelector(`*[facs="${'#'+zone.getAttribute('xml:id')}"]`);
+  if (isAllZero|| !element) return [true, element];
+  return [false];
 }
 
 
 /**
  * Convert sb to staff for verovio
  * Also do heuristic checks:
- *    1. neume without neume component
- *    2. syllable without neume
- *    3. linked syllables not linked
- *    4. incomplete linked syllable
+ *    1. invalid zones
+ *    2. neume without neume component
+ *    3. syllable without neume
+ *    4. linked syllables not linked
+ *    5. incomplete linked syllable
  */
 export function convertToVerovio(sbBasedMei: string): string {
   const parser = new DOMParser();
@@ -196,12 +197,13 @@ export function convertToVerovio(sbBasedMei: string): string {
   const mei = meiDoc.documentElement;
   let hasCols = false;
 
-  // Check if there is zones with 0, 0, 0, 0
+  // Remove all-zero zones
+  // Remove zones not linked with glyphs
   const surface = mei.getElementsByTagName('surface')[0];
   let hasInvalidBBox = false;
   for (const zone of surface.getElementsByTagName('zone')) {
-    if (isInvalidBBox(zone)) {
-      const element = mei.querySelector(`*[facs="${'#'+zone.getAttribute('xml:id')}"]`);
+    const [isInvalid, element] = isInvalidBBox(mei, zone);
+    if (isInvalid) {
       if (element) element.parentNode.removeChild(element);
       zone.parentNode.removeChild(zone);
       hasInvalidBBox = true;
@@ -349,6 +351,20 @@ export function convertToVerovio(sbBasedMei: string): string {
 
         for (const child of copyArray) {
           newLayer.appendChild(child);
+        }
+
+        // Remove the zones for the last element in the original file
+        // because the last element is not included
+        if (!nextSb) {
+          const lastElement = childrenArray.at(-1);
+          const facsChildren = collectFacsChildren(lastElement, []);
+          const zones = Array.from(surface.querySelectorAll('zone'));
+          for (const child of facsChildren) {
+            const zone = zones.find(z => z.getAttribute('xml:id') == child.getAttribute('facs').slice(1));
+            if (zone) {
+              zone.parentNode.removeChild(zone);
+            }
+          }
         }
 
         section.insertBefore(newStaff, staff);
@@ -536,3 +552,15 @@ export function removeColumnLabel(mei: string): string {
   const serializer = new XMLSerializer();
   return vkbeautify.xml(serializer.serializeToString(meiForValidation));
 }
+
+function collectFacsChildren(element: Element, array: Element[]): Element[] {
+  for (const child of element.children) {
+    if (child.hasAttribute('facs')) {
+      array.push(child);
+    }
+
+    // Recursively call the function for child's children
+    collectFacsChildren(child, array);
+  }
+  return array;
+} 
