@@ -584,10 +584,16 @@ a:hover {
     color: inherit;
     
 }
-#validation_status_container {
+#mei_version_container {
+    margin-right: 8px;
+    padding-right: 8px;
+    border-right: #68A7AD 1px solid;
     display: flex;
 }
-#validation_status_title {
+#validation_status_container{
+    display: flex;
+}
+.file_status_title {
     margin-right: 5px;
 }
 #display-slider-actions-container {

@@ -46,10 +46,22 @@ function statusOnClick(log: string) {
 export async function init (neonView: NeonView): Promise<void> {
   const fileStatusDiv = document.getElementById('file-status');
   if (fileStatusDiv !== null) {
+    const meiVersionDiv = document.createElement('div');
+    meiVersionDiv.id = 'mei_version_container';
+    const meiVersionTitle = document.createElement('span');
+    meiVersionTitle.classList.add('file_status_title');
+    meiVersionTitle.textContent = 'MEI Version: ';
+    const version = document.createElement('span');
+    version.id = 'mei_version';
+    version.textContent = 'unknown';
+    meiVersionDiv.appendChild(meiVersionTitle);
+    meiVersionDiv.appendChild(version);
+    fileStatusDiv.appendChild(meiVersionDiv);
+
     const meiStatusDiv = document.createElement('div');
     meiStatusDiv.id = 'validation_status_container';
     const meiStatusTitle = document.createElement('span');
-    meiStatusTitle.id = 'validation_status_title';
+    meiStatusTitle.classList.add('file_status_title');
     meiStatusTitle.textContent = 'MEI Status: ';
     const status = document.createElement('span');
     status.id = 'validation_status';
