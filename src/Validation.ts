@@ -22,6 +22,7 @@ function updateUI (message: { data: string[] }): void {
     });
     statusField.textContent = '';
     statusField.style.color = 'red';
+    // Create a new div for easier log implementation
     const status = document.createElement('div');
     //link.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(log)}`);
     //link.setAttribute('download', 'validation.log');
@@ -45,14 +46,17 @@ function statusOnClick(log: string) {
 export async function init (neonView: NeonView): Promise<void> {
   const fileStatusDiv = document.getElementById('file-status');
   if (fileStatusDiv !== null) {
-    const statusTitle = document.createElement('div');
-    statusTitle.textContent = 'MEI Status:';
-    statusTitle.id = 'validation_status_title';
+    const meiStatusDiv = document.createElement('div');
+    meiStatusDiv.id = 'validation_status_container';
+    const meiStatusTitle = document.createElement('span');
+    meiStatusTitle.id = 'validation_status_title';
+    meiStatusTitle.textContent = 'MEI Status: ';
     const status = document.createElement('span');
     status.id = 'validation_status';
     status.textContent = 'unknown';
-    fileStatusDiv.appendChild(statusTitle);
-    fileStatusDiv.appendChild(status);
+    meiStatusDiv.appendChild(meiStatusTitle);
+    meiStatusDiv.appendChild(status);
+    fileStatusDiv.appendChild(meiStatusDiv);
     statusField = document.getElementById('validation_status');
     worker = new Worker(__ASSET_PREFIX__ + 'workers/Worker.js');
     worker.onmessage = updateUI.bind(neonView);
