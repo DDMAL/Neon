@@ -122,13 +122,18 @@ export async function sendForValidation (meiData: string): Promise<void> {
  * Update the message on a blank page when there is no MEI.
  */
 export function blankPage (): void {
+  if (statusField === undefined || versionField === undefined) {
+    return;
+  }
+  
   for (const child of statusField.children) {
     child.remove();
   }
   statusField.textContent = 'No MEI';
   statusField.style.color = 'color:gray';
 
-  // Todo: update versionField  
+  versionField.textContent = 'No MEI';
+  versionField.style.color = 'color:gray';
 }
 
 async function getMeiVersion(meiData: string): Promise<string> {
