@@ -7,7 +7,7 @@ let worker: Worker, schema: string, versionField: HTMLSpanElement, statusField: 
 /**
  * Update the UI with the validation results. Called when the WebWorker finishes validating.
  */
-function updateUI (message: { data: string[] }): void {
+function updateStatusUI (message: { data: string[] }): void {
   const errors = message.data;
   if (errors === null) {
     statusField.textContent = 'VALID';
@@ -72,7 +72,7 @@ export async function init (neonView: NeonView): Promise<void> {
     fileStatusDiv.appendChild(meiStatusDiv);
     statusField = document.getElementById('validation_status');
     worker = new Worker(__ASSET_PREFIX__ + 'workers/Worker.js');
-    worker.onmessage = updateUI.bind(neonView);
+    worker.onmessage = updateStatusUI.bind(neonView);
   }
 }
 
