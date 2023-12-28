@@ -34,6 +34,23 @@ function updateStatusUI (message: { data: string[] }): void {
   }
 }
 
+function updateVersionUI (version: string): void {
+  if (!version) {
+    return;
+  } 
+
+  switch (version) {
+    case 'unknown':
+      versionField.textContent = version;
+      versionField.style.color = 'gray';
+      break;
+
+    default:
+      versionField.textContent = version;
+      versionField.style.color = '#68A7AD';
+  }
+}
+
 function statusOnClick(log: string) {
   this.modal.setModalWindowView(ModalWindowView.VALIDATION_STATUS, log);
   this.modal.openModalWindow();
@@ -97,6 +114,8 @@ export async function sendForValidation (meiData: string): Promise<void> {
 
   versionField.textContent = 'checking...';
   versionField.style.color = 'gray';
+  const meiVersion = await getMeiVersion(meiData);
+  updateVersionUI(meiVersion);
 }
 
 /**
@@ -108,4 +127,19 @@ export function blankPage (): void {
   }
   statusField.textContent = 'No MEI';
   statusField.style.color = 'color:gray';
+
+  // Todo: update versionField  
+}
+
+async function getMeiVersion(meiData: string): Promise<string> {
+  const parser = new DOMParser();
+  const meiDoc = parser.parseFromString(meiData, 'text/xml');
+  const mei = meiDoc.documentElement;
+  
+  const meiVersion = mei.getAttribute('meiversion');
+  if (meiVersion) {
+    return meiVersion;
+  } else {
+    return 'unknown';
+  }
 }
