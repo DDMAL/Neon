@@ -2,7 +2,7 @@ import NeonView from './NeonView';
 import { ModalWindowView } from './utils/ModalWindow';
 
 const schemaResponse = fetch(__ASSET_PREFIX__ + 'assets/mei-all.rng');
-let worker: Worker, schema: string, statusField: HTMLSpanElement;
+let worker: Worker, schema: string, versionField: HTMLSpanElement, statusField: HTMLSpanElement;
 
 /**
  * Update the UI with the validation results. Called when the WebWorker finishes validating.
@@ -57,6 +57,7 @@ export async function init (neonView: NeonView): Promise<void> {
     meiVersionDiv.appendChild(meiVersionTitle);
     meiVersionDiv.appendChild(version);
     fileStatusDiv.appendChild(meiVersionDiv);
+    versionField = document.getElementById('mei_version');
 
     const meiStatusDiv = document.createElement('div');
     meiStatusDiv.id = 'validation_status_container';
@@ -80,7 +81,7 @@ export async function init (neonView: NeonView): Promise<void> {
  * @param {string} meiData
  */
 export async function sendForValidation (meiData: string): Promise<void> {
-  if (statusField === undefined) {
+  if (statusField === undefined || versionField === undefined) {
     return;
   }
   if (schema === undefined) {
@@ -93,6 +94,9 @@ export async function sendForValidation (meiData: string): Promise<void> {
     mei: meiData,
     schema: schema
   });
+
+  versionField.textContent = 'checking...';
+  versionField.style.color = 'gray';
 }
 
 /**
