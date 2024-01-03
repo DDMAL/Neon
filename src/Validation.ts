@@ -2,12 +2,12 @@ import NeonView from './NeonView';
 import { ModalWindowView } from './utils/ModalWindow';
 
 const schemaResponse = fetch(__ASSET_PREFIX__ + 'assets/mei-all.rng');
-let worker: Worker, schema: string, statusField: HTMLSpanElement;
+let worker: Worker, schema: string, versionField: HTMLSpanElement, statusField: HTMLSpanElement;
 
 /**
  * Update the UI with the validation results. Called when the WebWorker finishes validating.
  */
-function updateUI (message: { data: string[] }): void {
+function updateStatusUI (message: { data: string[] }): void {
   const errors = message.data;
   if (errors === null) {
     statusField.textContent = 'VALID';
@@ -22,6 +22,7 @@ function updateUI (message: { data: string[] }): void {
     });
     statusField.textContent = '';
     statusField.style.color = 'red';
+    // Create a new div for easier log implementation
     const status = document.createElement('div');
     //link.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(log)}`);
     //link.setAttribute('download', 'validation.log');
@@ -30,6 +31,23 @@ function updateUI (message: { data: string[] }): void {
     statusField.appendChild(status);
 
     status.addEventListener('click', statusOnClick.bind(this, log));
+  }
+}
+
+function updateVersionUI (version: string): void {
+  if (!version) {
+    return;
+  } 
+
+  switch (version) {
+    case 'unknown':
+      versionField.textContent = version;
+      versionField.style.color = 'gray';
+      break;
+
+    default:
+      versionField.textContent = version;
+      versionField.style.color = '#68A7AD';
   }
 }
 
@@ -45,17 +63,33 @@ function statusOnClick(log: string) {
 export async function init (neonView: NeonView): Promise<void> {
   const fileStatusDiv = document.getElementById('file-status');
   if (fileStatusDiv !== null) {
-    const statusTitle = document.createElement('div');
-    statusTitle.textContent = 'MEI Status:';
-    statusTitle.id = 'validation_status_title';
+    const meiVersionDiv = document.createElement('div');
+    meiVersionDiv.id = 'mei_version_container';
+    const meiVersionTitle = document.createElement('span');
+    meiVersionTitle.classList.add('file_status_title');
+    meiVersionTitle.textContent = 'MEI Version: ';
+    const version = document.createElement('span');
+    version.id = 'mei_version';
+    version.textContent = 'unknown';
+    meiVersionDiv.appendChild(meiVersionTitle);
+    meiVersionDiv.appendChild(version);
+    fileStatusDiv.appendChild(meiVersionDiv);
+    versionField = document.getElementById('mei_version');
+
+    const meiStatusDiv = document.createElement('div');
+    meiStatusDiv.id = 'validation_status_container';
+    const meiStatusTitle = document.createElement('span');
+    meiStatusTitle.classList.add('file_status_title');
+    meiStatusTitle.textContent = 'MEI Status: ';
     const status = document.createElement('span');
     status.id = 'validation_status';
     status.textContent = 'unknown';
-    fileStatusDiv.appendChild(statusTitle);
-    fileStatusDiv.appendChild(status);
+    meiStatusDiv.appendChild(meiStatusTitle);
+    meiStatusDiv.appendChild(status);
+    fileStatusDiv.appendChild(meiStatusDiv);
     statusField = document.getElementById('validation_status');
     worker = new Worker(__ASSET_PREFIX__ + 'workers/Worker.js');
-    worker.onmessage = updateUI.bind(neonView);
+    worker.onmessage = updateStatusUI.bind(neonView);
   }
 }
 
@@ -64,7 +98,7 @@ export async function init (neonView: NeonView): Promise<void> {
  * @param {string} meiData
  */
 export async function sendForValidation (meiData: string): Promise<void> {
-  if (statusField === undefined) {
+  if (statusField === undefined || versionField === undefined) {
     return;
   }
   if (schema === undefined) {
@@ -77,15 +111,40 @@ export async function sendForValidation (meiData: string): Promise<void> {
     mei: meiData,
     schema: schema
   });
+
+  versionField.textContent = 'checking...';
+  versionField.style.color = 'gray';
+  const meiVersion = await getMeiVersion(meiData);
+  updateVersionUI(meiVersion);
 }
 
 /**
  * Update the message on a blank page when there is no MEI.
  */
 export function blankPage (): void {
+  if (statusField === undefined || versionField === undefined) {
+    return;
+  }
+  
   for (const child of statusField.children) {
     child.remove();
   }
   statusField.textContent = 'No MEI';
   statusField.style.color = 'color:gray';
+
+  versionField.textContent = 'No MEI';
+  versionField.style.color = 'color:gray';
+}
+
+async function getMeiVersion(meiData: string): Promise<string> {
+  const parser = new DOMParser();
+  const meiDoc = parser.parseFromString(meiData, 'text/xml');
+  const mei = meiDoc.documentElement;
+  
+  const meiVersion = mei.getAttribute('meiversion');
+  if (meiVersion) {
+    return meiVersion;
+  } else {
+    return 'unknown';
+  }
 }
