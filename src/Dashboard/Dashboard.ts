@@ -84,7 +84,7 @@ function openUploadAreaHandler() {
 
 
 /**
- * Opens a new tab with the Neon editor for the given filename
+ * Opens a new tab with the Neon editor for the given id
  * 
  * @param id key of file in bbb or manifest url
  * @param isSample boolean to decide where to fetch file

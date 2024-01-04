@@ -187,16 +187,16 @@ export async function handleUploadAllDocuments(currentFolder: IFolder): Promise<
 }
 
 async function uploadFolio(id: string, name: string, mei: File, image: File, currentFolder: IFolder): Promise<boolean> {
-  return createManifest(id, name, mei, image)
+  const newName = fnConflictHandler(name, FileSystemTools.getAllNames(currentFolder));
+  return createManifest(id, newName, mei, image)
     .then(manifest => {
       const manifestBlob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/ld+json' });
       const isSingle = true;
-      return addDocument(id, name, manifestBlob, isSingle);
+      return addDocument(id, newName, manifestBlob, isSingle);
     })
     // add to dashboard FileSystem
     .then(succeeded => {
       if (succeeded) {
-        const newName = fnConflictHandler(name, FileSystemTools.getAllNames(currentFolder));
         const datetime = new Date().toLocaleString();
         const fileEntry = FileSystemTools.createFile(newName, id);
         const folioEntry = FileSystemTools.addMetadata(fileEntry, { type: 'folio', created_on: datetime });
