@@ -346,6 +346,9 @@ export function convertToVerovio(sbBasedMei: string): string {
         const currentSb = sbs[i];
         const nextSb = (sbs.length > i + 1) ? sbs[i + 1] : undefined;
 
+        const newSection = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'section');
+        newSection.setAttribute('type', 'neon-neume-line');
+
         const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
         copyAttributes(currentSb, newStaff);
         newStaff.setAttribute('n', '1');
@@ -367,6 +370,7 @@ export function convertToVerovio(sbBasedMei: string): string {
         const newLayer = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'layer');
         newLayer.setAttribute('n', '1');
         newLayer.setAttribute('xml:id', 'm-' + uuidv4());
+        newSection.appendChild(newStaff);
         newStaff.appendChild(newLayer);
 
         const childrenArray = Array.from(layer.children);
@@ -389,7 +393,7 @@ export function convertToVerovio(sbBasedMei: string): string {
           }
         }
 
-        section.insertBefore(newStaff, staff);
+        section.insertBefore(newSection, staff);
       }
       staff.remove();
     }
