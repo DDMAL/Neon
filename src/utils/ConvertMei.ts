@@ -23,7 +23,7 @@ export function convertToNeon(staffBasedMei: string): string {
   const mei = meiDoc.documentElement;
   let nCol = 0;
 
-  for (const section of mei.getElementsByTagName('section')) {
+  for (const section of mei.querySelectorAll('section:not([type="neon-neume-line"])')) {
     const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
     const newLayer = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'layer');
     newStaff.setAttribute('n', '1');
@@ -38,13 +38,14 @@ export function convertToNeon(staffBasedMei: string): string {
     pb.setAttribute('facs', '#' + surfaceId);
     newLayer.appendChild(pb);
 
-    const staves = Array.from(section.getElementsByTagName('staff'));
+    const neonNeumeLineSections = Array.from(section.querySelectorAll('section[type="neon-neume-line"]'));
     let nStaff = 0;
     let lastCb: Element = null;
     
-    for (const staff of staves) {
+    for (const neonNeumeLineSection of neonNeumeLineSections) {
       nStaff += 1;
-      const layer = staff.getElementsByTagName('layer')[0];
+      const staff = neonNeumeLineSection.querySelector('staff');
+      const layer = staff.querySelector('layer');
 
       // if staff has a new type value,
       // add cb before sb
@@ -82,7 +83,7 @@ export function convertToNeon(staffBasedMei: string): string {
       while (layer.firstElementChild !== null) {
         newLayer.appendChild(layer.firstElementChild);
       }
-      staff.remove();
+      neonNeumeLineSection.remove();
     }
 
     // Calculate and add zone for the last cb in the section
