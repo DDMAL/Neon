@@ -122,6 +122,14 @@ export type SetAction = {
   };
 };
 
+export type SetLiquescentAction = {
+  action: 'setLiquescent',
+  param: {
+    elementId: string,
+    curve: string,
+  };
+};
+
 export type MergeAction = {
   action: 'merge',
   param: {
@@ -221,6 +229,7 @@ export type EditorAction =
   | GroupingAction
   | UngroupingAction
   | SetAction
+  | SetLiquescentAction
   | MergeAction
   | SplitAction
   | SplitNeumeAction

@@ -12,7 +12,8 @@ import {
   MatchHeightAction,
   RemoveAction,
   SetAction,
-  SetClefAction
+  SetClefAction,
+  SetLiquescentAction
 } from '../Types';
 import { getStaffBBox } from '../utils/SelectTools';
 
@@ -93,13 +94,12 @@ export function unsetLiquescentClockwiseAction (id: string): SetAction {
  * @param id - The id of the neume component.
  * @returns An action that unsets the liquescent_anticlockwise parameter of a neume component.
  */
-export function unsetLiquescentAnticlockwiseAction (id: string): SetAction {
+export function unsetLiquescentAnticlockwiseAction (id: string): SetLiquescentAction {
   return {
-    action: 'set',
+    action: 'setLiquescent',
     param: {
       elementId: id,
-      attrType: 'curve',
-      attrValue: ''
+      curve: ''
     }
   };
 }
@@ -500,12 +500,11 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       const unsetVirga = unsetVirgaAction(nc.id);
       const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(nc.id);
-      const setLiquescentClockwise: SetAction = {
-        action: 'set',
+      const setLiquescentClockwise: SetLiquescentAction = {
+        action: 'setLiquescent',
         param: {
           elementId: nc.id,
-          attrType: 'curve',
-          attrValue: 'c'
+          curve: 'c'
         }
       };
       neonView.edit({ action: 'chain', param: [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentAnticlockwise, setLiquescentClockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
@@ -525,12 +524,11 @@ export function triggerNcActions (nc: SVGGraphicsElement): void {
       const unsetVirga = unsetVirgaAction(nc.id);
       const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
-      const setLiquescentAnticlockwise: SetAction = {
-        action: 'set',
+      const setLiquescentAnticlockwise: SetLiquescentAction = {
+        action: 'setLiquescent',
         param: {
           elementId: nc.id,
-          attrType: 'curve',
-          attrValue: 'a'
+          curve: 'a'
         }
       };
       neonView.edit({ action: 'chain', param: [ unsetInclinatum, unsetVirga, unsetVirgaReversed, unsetLiquescentClockwise, setLiquescentAnticlockwise ] }, neonView.view.getCurrentPageURI()).then((result) => {
