@@ -269,7 +269,8 @@ export function convertToVerovio(sbBasedMei: string): string {
   }
 
   // Go section by section just in case
-  for (const section of mei.getElementsByTagName('section')) {
+  const sections = Array.from(mei.getElementsByTagName('section'));
+  for (const section of sections) {
     // In case there are multiple staves here we want to preserve those
     // A separate array is necessary as the HTMLCollection will update!
     const originalStaves = Array.from(section.getElementsByTagName('staff'));
