@@ -31,7 +31,7 @@ export function convertToNeon(staffBasedMei: string): string {
     newStaff.appendChild(newLayer);
 
     // Add <pb>
-    const surface = mei.getElementsByTagName('surface')[0];
+    const surface = mei.querySelector('surface');
     const surfaceId = surface.getAttribute('xml:id');
     const pb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'pb');
     pb.setAttribute('xml:id', 'm-' + uuidv4());
@@ -95,7 +95,7 @@ export function convertToNeon(staffBasedMei: string): string {
 
   // Add <colLayout>
   if (nCol) {
-    const scoreDef = mei.getElementsByTagName('scoreDef')[0];
+    const scoreDef = mei.querySelector('scoreDef');
     const colLayout = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'colLayout');
     colLayout.setAttribute('xml:id', 'm-' + uuidv4());
     colLayout.setAttribute('n', nCol.toString());
@@ -157,7 +157,7 @@ export function convertToNeon(staffBasedMei: string): string {
 }
 
 export function getSyllableText (syllable: Element): string {
-  const syl = syllable.getElementsByTagName('syl')[0]?.childNodes[0];
+  const syl = syllable.querySelector('syl')?.childNodes[0];
   let sylText: string;
   if (syl) {
     sylText = syl.nodeValue;
@@ -200,7 +200,7 @@ export function convertToVerovio(sbBasedMei: string): string {
 
   // Remove all-zero zones
   // Remove zones not linked with glyphs
-  const surface = mei.getElementsByTagName('surface')[0];
+  const surface = mei.querySelector('surface');
   let hasInvalidBBox = false;
   const zones = Array.from(surface.getElementsByTagName('zone'));
   for (const zone of zones) {
@@ -217,7 +217,7 @@ export function convertToVerovio(sbBasedMei: string): string {
 
   // Check if there is <colLayout> element and remove them
   // There will only be one <colLayout> element
-  const colLayout = mei.getElementsByTagName('colLayout')[0];
+  const colLayout = mei.querySelector('colLayout');
   if (colLayout) {
     hasCols = true;
     colLayout.parentNode.removeChild(colLayout);
@@ -276,7 +276,7 @@ export function convertToVerovio(sbBasedMei: string): string {
     // A separate array is necessary as the HTMLCollection will update!
     const originalStaves = Array.from(section.getElementsByTagName('staff'));
     for (const staff of originalStaves) {
-      const layer = staff.getElementsByTagName('layer')[0];
+      const layer = staff.querySelector('layer');
       // First pass: get all sb elements as direct children of layer
       const sbArray = Array.from(layer.getElementsByTagName('sb'));
       // Check if any syllables have sb inside (linked syllables)
