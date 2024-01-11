@@ -2,6 +2,35 @@ import { uuidv4 } from './random';
 import * as vkbeautify from 'vkbeautify';
 import * as Notification from '../utils/Notification';
 
+// Note:
+// The file sent to Verovio has the following structure (ConvertToVerovio()):
+// <section>
+//   <pb/>
+//   <section type="neon-neume-line">
+//     <staff/>
+//      <layer/>
+//        content
+//   </section>
+//   <section type="neon-neume-line">
+//     <staff/>
+//      <layer/>
+//        content
+//   </section>
+//   ...
+// </section>
+// 
+// The file received needs to be converted back to the following structure (ConvertToNeon()):
+// <section>
+//   <staff/>
+//     <layer/>
+//      <pb/>
+//      <sb/>
+//      staff content <syllable> etc.
+//      <sb/>
+//      staff content <syllable> etc.
+//      ...
+// </section>
+
 export function zip<T> (array1: Array<T>, array2: Array<T>): Array<T> {
   const result = [];
   for (let i = 0; i < (array1.length > array2.length ? array2.length : array1.length); i++) {
@@ -24,6 +53,10 @@ export function convertToNeon(staffBasedMei: string): string {
   let nCol = 0;
 
   for (const section of mei.querySelectorAll('section:not([type="neon-neume-line"])')) {
+    // Remove direct children pb elements within section
+    const pbs = section.querySelectorAll('pb');
+    pbs.forEach(pb => pb.remove());
+
     const newStaff = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'staff');
     const newLayer = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'layer');
     newStaff.setAttribute('n', '1');
@@ -226,12 +259,6 @@ export function convertToVerovio(sbBasedMei: string): string {
     colLayout.parentNode.removeChild(colLayout);
   }
 
-  // Check if there are <pb> elements and remove them
-  const pageBegins = Array.from(mei.getElementsByTagName('pb'));
-  for (const pb of pageBegins) {
-    pb.parentNode.removeChild(pb);
-  }
-
   // Check syllable without neume 
   const syllables = Array.from(mei.getElementsByTagName('syllable'));
   let hasEmptySyllable = false;
@@ -279,6 +306,11 @@ export function convertToVerovio(sbBasedMei: string): string {
     // A separate array is necessary as the HTMLCollection will update!
     const originalStaves = Array.from(section.getElementsByTagName('staff'));
     for (const staff of originalStaves) {
+      // Add a pb with a facs pointing to the surface
+      const newPb = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'pb');
+      newPb.setAttribute('facs', '#' + surface.getAttribute('xml:id'));
+      section.insertBefore(newPb, staff);
+
       const layer = staff.querySelector('layer');
       // First pass: get all sb elements as direct children of layer
       const sbArray = Array.from(layer.getElementsByTagName('sb'));
