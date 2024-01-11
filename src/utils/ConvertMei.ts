@@ -198,6 +198,9 @@ export function convertToVerovio(sbBasedMei: string): string {
   const mei = meiDoc.documentElement;
   let hasCols = false;
 
+  const facsimile = mei.querySelector('facsimile');
+  facsimile.setAttribute('type', 'transcription');
+
   // Remove all-zero zones
   // Remove zones not linked with glyphs
   const surface = mei.querySelector('surface');
