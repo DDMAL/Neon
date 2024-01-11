@@ -16,7 +16,7 @@ export default class VerovioWrapper {
       pageMarginLeft: 0,
       pageMarginTop: 0,
       font: 'Bravura',
-      useFacsimile: true,
+      useFacsimile: false,
     });
   }
 

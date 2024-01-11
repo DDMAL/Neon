@@ -50,7 +50,7 @@ var Module = {
       pageMarginLeft: 0,
       pageMarginTop: 0,
       font: 'Bravura',
-      useFacsimile: true,
+      useFacsimile: false,
     });
     console.debug('READY');
     onmessage = handleNeonEvent;
