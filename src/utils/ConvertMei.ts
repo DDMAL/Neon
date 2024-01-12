@@ -238,9 +238,20 @@ export function convertToVerovio(sbBasedMei: string): string {
     // Check neume without neume component
     const neumes = syllable.getElementsByTagName('neume');
     for (const neume of neumes) {
-      if (neume.getElementsByTagName('nc').length === 0) {
+      const ncs = Array.from(neume.getElementsByTagName('nc'));
+      if (ncs.length === 0) {
         const id = neume.getAttribute('xml:id');
         Notification.queueNotification(`This file contains a neume without neume component!<br/>ID: ${id}`, 'warning');
+      } else {
+        // To be removed in the future:
+        // If nc has a @curve value, add a <liquescent> element
+        for (const nc of ncs) {
+          if (nc.hasAttribute('curve')) {
+            const liq = meiDoc.createElementNS('http://www.music-encoding.org/ns/mei', 'liquescent');
+            liq.setAttribute('xml:id', 'm-' + uuidv4());
+            nc.appendChild(liq);
+          }
+        }
       }
     }
   }
