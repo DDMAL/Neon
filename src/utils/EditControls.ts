@@ -234,6 +234,145 @@ export function initNavbar (neonView: NeonView): void {
     });
   });
 
+  document.getElementById('untoggle-invalid-syls').addEventListener('click', function () {
+    const uri = neonView.view.getCurrentPageURI();
+    neonView.getPageMEI(uri).then(meiString => {
+      // Load MEI document into parser
+      const parser = new DOMParser();
+      const meiDoc = parser.parseFromString(meiString, 'text/xml');
+      const mei = meiDoc.documentElement;
+      const syllables = Array.from(mei.getElementsByTagName('syllable'));
+
+      let hasInvalidSyllables = false;
+      const chainAction: EditorAction = {
+        action: 'chain',
+        param: []
+      };
+      const param = new Array<EditorAction>();
+      for (const syllable of syllables) {
+        if (syllable.hasAttribute('precedes') && syllable.hasAttribute('follows')) {
+          hasInvalidSyllables = true;
+          const precedesSyllable = syllables.find(element => element.getAttribute('xml:id') === syllable.getAttribute('precedes').substring(1));
+          const followsSyllable = syllables.find(element => element.getAttribute('xml:id') === syllable.getAttribute('follows').substring(1));
+          
+          param.push({
+            action: 'set',
+            param: {
+              elementId: syllable.getAttribute('xml:id'),
+              attrType: 'precedes',
+              attrValue: ''
+            }
+          });
+          param.push({
+            action: 'set',
+            param: {
+              elementId: syllable.getAttribute('xml:id'),
+              attrType: 'follows',
+              attrValue: ''
+            }
+          });
+          param.push({
+            action: 'set',
+            param: {
+              elementId: precedesSyllable.getAttribute('xml:id'),
+              attrType: 'follows',
+              attrValue: ''
+            }
+          });
+          param.push({
+            action: 'set',
+            param: {
+              elementId: followsSyllable.getAttribute('xml:id'),
+              attrType: 'precedes',
+              attrValue: ''
+            }
+          });
+        } 
+        else if (syllable.hasAttribute('precedes')) {
+          const precedesSyllable = syllables.find(element => element.getAttribute('xml:id') === syllable.getAttribute('precedes').substring(1));
+          if (!precedesSyllable || !precedesSyllable.hasAttribute('follows')) {
+            hasInvalidSyllables = true;
+            param.push({
+              action: 'set',
+              param: {
+                elementId: syllable.getAttribute('xml:id'),
+                attrType: 'precedes',
+                attrValue: ''
+              }
+            });
+          }
+          else if (precedesSyllable.getAttribute('follows') != '#' + syllable.getAttribute('xml:id')) {
+            hasInvalidSyllables = true;
+            param.push({
+              action: 'set',
+              param: {
+                elementId: syllable.getAttribute('xml:id'),
+                attrType: 'precedes',
+                attrValue: ''
+              }
+            });
+            param.push({
+              action: 'set',
+              param: {
+                elementId: precedesSyllable.getAttribute('xml:id'),
+                attrType: 'follows',
+                attrValue: ''
+              }
+            });
+          }
+        }
+        else if (syllable.hasAttribute('follows')) {
+          const followsSyllable = syllables.find(element => element.getAttribute('xml:id') === syllable.getAttribute('follows').substring(1));
+          if (!followsSyllable || !followsSyllable.hasAttribute('precedes')) {
+            hasInvalidSyllables = true;
+            param.push({
+              action: 'set',
+              param: {
+                elementId: syllable.getAttribute('xml:id'),
+                attrType: 'follows',
+                attrValue: ''
+              }
+            });
+          }
+          else if (followsSyllable.getAttribute('precedes') != '#' + syllable.getAttribute('xml:id')) {
+            hasInvalidSyllables = true;
+            param.push({
+              action: 'set',
+              param: {
+                elementId: syllable.getAttribute('xml:id'),
+                attrType: 'follows',
+                attrValue: ''
+              }
+            });
+            param.push({
+              action: 'set',
+              param: {
+                elementId: followsSyllable.getAttribute('xml:id'),
+                attrType: 'precedes',
+                attrValue: ''
+              }
+            });
+          }
+        }
+      }
+
+      if (!hasInvalidSyllables) {
+        Notification.queueNotification('No invalid syllables found', 'warning');
+      }
+      else {
+        chainAction.param = param;
+        neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => {
+          if (result) {
+            Notification.queueNotification('Untoggled invalid syllables', 'success');
+          } else {
+            Notification.queueNotification('Failed to untoggle invalid syllables', 'error');
+          }
+          neonView.updateForCurrentPage();
+        });
+      }
+    });
+  });
+
   // Event listener for "Revert" button inside "MEI Actions" dropdown
   document.getElementById('revert').addEventListener('click', function () {
     if (window.confirm('Reverting will cause all changes to be lost. Press OK to continue.')) {
