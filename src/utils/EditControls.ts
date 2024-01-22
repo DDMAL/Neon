@@ -287,6 +287,72 @@ export function initNavbar (neonView: NeonView): void {
               attrValue: ''
             }
           });
+        } 
+        else if (syllable.hasAttribute('precedes')) {
+          const precedesSyllable = syllables.find(element => element.getAttribute('xml:id') === syllable.getAttribute('precedes').substring(1));
+          if (!precedesSyllable || !precedesSyllable.hasAttribute('follows')) {
+            hasInvalidSyllables = true;
+            param.push({
+              action: 'set',
+              param: {
+                elementId: syllable.getAttribute('xml:id'),
+                attrType: 'precedes',
+                attrValue: ''
+              }
+            });
+          }
+          else if (precedesSyllable.getAttribute('follows') != '#' + syllable.getAttribute('xml:id')) {
+            hasInvalidSyllables = true;
+            param.push({
+              action: 'set',
+              param: {
+                elementId: syllable.getAttribute('xml:id'),
+                attrType: 'precedes',
+                attrValue: ''
+              }
+            });
+            param.push({
+              action: 'set',
+              param: {
+                elementId: precedesSyllable.getAttribute('xml:id'),
+                attrType: 'follows',
+                attrValue: ''
+              }
+            });
+          }
+        }
+        else if (syllable.hasAttribute('follows')) {
+          const followsSyllable = syllables.find(element => element.getAttribute('xml:id') === syllable.getAttribute('follows').substring(1));
+          if (!followsSyllable || !followsSyllable.hasAttribute('precedes')) {
+            hasInvalidSyllables = true;
+            param.push({
+              action: 'set',
+              param: {
+                elementId: syllable.getAttribute('xml:id'),
+                attrType: 'follows',
+                attrValue: ''
+              }
+            });
+          }
+          else if (followsSyllable.getAttribute('precedes') != '#' + syllable.getAttribute('xml:id')) {
+            hasInvalidSyllables = true;
+            param.push({
+              action: 'set',
+              param: {
+                elementId: syllable.getAttribute('xml:id'),
+                attrType: 'follows',
+                attrValue: ''
+              }
+            });
+            param.push({
+              action: 'set',
+              param: {
+                elementId: followsSyllable.getAttribute('xml:id'),
+                attrType: 'precedes',
+                attrValue: ''
+              }
+            });
+          }
         }
       }
 
