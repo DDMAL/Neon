@@ -24,7 +24,7 @@ async function setBody (neonView: NeonView): Promise<void> {
   // set initial saved status
   const indicator = document.querySelector<HTMLDivElement>('#file-saved');
   indicator.setAttribute('src', `${__ASSET_PREFIX__}assets/img/saved-icon.svg`);
-  indicator.setAttribute('alt', "Your work is saved");
+  indicator.setAttribute('alt', 'Your work is saved');
 }
 
 export { setBody as default };
