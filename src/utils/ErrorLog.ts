@@ -31,7 +31,7 @@ function createLogMessage (notif: Notification): Element {
     removeBtn.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/garbage-closed.svg`);
   });
 
-  if (notif.hasInfo) {
+  if (notif.info) {
     const infoBtn = notifDiv.querySelector<HTMLElement>('.notif-info-icon');
     infoBtn.style.display = '';
 
