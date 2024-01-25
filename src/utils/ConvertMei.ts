@@ -453,7 +453,6 @@ export function checkOutOfBoundsGlyphs (meiString: string): void {
   });
 
   if (hasOutOfBounds) {
-    console.log(info);
     Notification.queueNotification('This folio contains glyph(s) placed out-of-bounds!', 'warning', info);
   }
 }
