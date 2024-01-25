@@ -2,34 +2,48 @@ import { Notification } from './Notification';
 import { errorLogsPanelContents } from '../SquareEdit/Contents';
 import { setSettings, getSettings } from './LocalSettings';
 
-
-// TODO: styling
 function createLogMessage (notif: Notification): Element {
   const notifDiv = document.createElement('div');
   notifDiv.classList.add('notification-container');
   notifDiv.innerHTML = `
-    <div class="notification-wrapper">
-
-      <div>
+      <div class="notification-wrapper">
         <div class="log-main">${notif.message}</div>
         <div class="log-extra"></div>
       </div>
 
-    </div>
+      <div class="notification-btn-container" style="display: flex;">
+        <div class="notif-info-icon-wrapper">
+          <img style="display: none;" class="notif-info-icon" src="${__ASSET_PREFIX__}/assets/img/notification-info-icon-light.svg" title="More Info">
+        </div>
 
-    <div class="remove-notif-icon-wrapper">
-      <img class="log-remove remove-notif-icon" src="${__ASSET_PREFIX__}/assets/img/garbage-closed.svg">
-    </div>
+        <div class="notif-remove-icon-wrapper">
+          <img class="log-remove notif-remove-icon" src="${__ASSET_PREFIX__}/assets/img/garbage-closed.svg" title="Remove">
+        </div>
+      </div>
   `;
 
-  const remove = notifDiv.querySelector<HTMLButtonElement>('.log-remove');
-  remove.onclick = () => notifDiv.remove();
-  remove.addEventListener('mouseover', () => {
-    remove.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/garbage-open.svg`);
+  const removeBtn = notifDiv.querySelector<HTMLButtonElement>('.log-remove');
+  removeBtn.onclick = () => notifDiv.remove();
+  removeBtn.addEventListener('mouseover', () => {
+    removeBtn.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/garbage-open.svg`);
   });
-  remove.addEventListener('mouseout', () => {
-    remove.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/garbage-closed.svg`);
+  removeBtn.addEventListener('mouseout', () => {
+    removeBtn.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/garbage-closed.svg`);
   });
+
+  if (notif.hasInfo) {
+    const infoBtn = notifDiv.querySelector<HTMLElement>('.notif-info-icon');
+    infoBtn.style.display = '';
+
+    removeBtn.style.height = '20px';
+
+    infoBtn.addEventListener('mouseover', () => {
+      infoBtn.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/notification-info-icon-dark.svg`);
+    });
+    infoBtn.addEventListener('mouseout', () => {
+      infoBtn.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/notification-info-icon-light.svg`);
+    });
+  }
 
   return notifDiv;
 }
