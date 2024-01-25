@@ -31,19 +31,19 @@ export class Notification {
   displayed: boolean;
   id: string;
   isModeMessage: boolean;
-  info: string;
+  logInfo: string;
   timeoutID: number;
   type: NotificationType;
   /**
    * Create a new notification.
    * @param message - Notification content.
    */
-  constructor (message: string, type: NotificationType, info: string = null) {
+  constructor (message: string, type: NotificationType, logInfo: string = null) {
     this.message = notificationIcon[type] + message;
     this.displayed = false;
     this.id = uuidv4();
     this.isModeMessage = message.search('Mode') !== -1;
-    this.info = info;
+    this.logInfo = logInfo;
     this.timeoutID = -1;
     this.type = type;
   }
@@ -128,8 +128,8 @@ function startNotification (notification: Notification): void {
  * Add a notification to the queue.
  * @param notification - Notification content.
  */
-export function queueNotification (notificationContent: string, type: NotificationType = 'default', info: string = null): void {
-  const notification = new Notification(notificationContent, type, info);
+export function queueNotification (notificationContent: string, type: NotificationType = 'default', logInfo: string = null): void {
+  const notification = new Notification(notificationContent, type, logInfo);
 
   if (notification.type == 'error' || notification.type == 'warning') {
     recordNotification(notification);

@@ -13,8 +13,8 @@ function createLogMessage (notif: Notification): Element {
       </div>
 
       <div class="notification-btn-container" style="display: flex;">
-        <div class="notif-info-icon-wrapper">
-          <img style="display: none;" class="notif-info-icon" src="${__ASSET_PREFIX__}/assets/img/notification-info-icon-light.svg" title="More Info">
+        <div class="notif-log-info-icon-wrapper">
+          <img style="display: none;" class="notif-log-info-icon" src="${__ASSET_PREFIX__}/assets/img/notification-info-icon-light.svg" title="Log Message">
         </div>
 
         <div class="notif-remove-icon-wrapper">
@@ -32,8 +32,8 @@ function createLogMessage (notif: Notification): Element {
     removeBtn.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/garbage-closed.svg`);
   });
 
-  if (notif.info) {
-    const infoBtn = notifDiv.querySelector<HTMLElement>('.notif-info-icon');
+  if (notif.logInfo) {
+    const infoBtn = notifDiv.querySelector<HTMLElement>('.notif-log-info-icon');
     infoBtn.style.display = '';
 
     removeBtn.style.height = '20px';
@@ -44,7 +44,7 @@ function createLogMessage (notif: Notification): Element {
     infoBtn.addEventListener('mouseout', () => {
       infoBtn.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/notification-info-icon-light.svg`);
     });
-    infoBtn.addEventListener('click', () => openErrorLogWindow(notif.info));
+    infoBtn.addEventListener('click', () => openErrorLogWindow(notif.logInfo));
   }
 
   return notifDiv;
