@@ -1,6 +1,7 @@
 import { Notification } from './Notification';
 import { errorLogsPanelContents } from '../SquareEdit/Contents';
 import { setSettings, getSettings } from './LocalSettings';
+import { ModalWindow, ModalWindowView } from './ModalWindow';
 
 function createLogMessage (notif: Notification): Element {
   const notifDiv = document.createElement('div');
@@ -43,6 +44,7 @@ function createLogMessage (notif: Notification): Element {
     infoBtn.addEventListener('mouseout', () => {
       infoBtn.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/notification-info-icon-light.svg`);
     });
+    infoBtn.addEventListener('click', () => openErrorLogWindow(notif.info));
   }
 
   return notifDiv;
@@ -135,9 +137,6 @@ export function initDisplayListener(): void {
   if (displayErrLog) erorrsBtn.checked = true;
 
   erorrsBtn.addEventListener('click', () => {
-
-    // setSettings({ displayBBox: displayBBoxes.checked });
-
     const displayAllBtn = document.getElementById('display-all-btn');
     const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
     const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
@@ -165,4 +164,11 @@ export function initDisplayListener(): void {
     }
     
   });
+}
+
+
+function openErrorLogWindow(log: string) {
+  const modalWindow = new ModalWindow();
+  modalWindow.setModalWindowView(ModalWindowView.ERROR_LOG, log);
+  modalWindow.openModalWindow();
 }
