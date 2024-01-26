@@ -1,8 +1,6 @@
 import { uuidv4 } from './random';
 import * as vkbeautify from 'vkbeautify';
 import * as Notification from '../utils/Notification';
-import { xml } from 'd3';
-import { idText } from 'typescript';
 
 export function zip<T> (array1: Array<T>, array2: Array<T>): Array<T> {
   const result = [];
@@ -441,13 +439,14 @@ export function checkOutOfBoundsGlyphs (meiString: string): void {
     return coord < 0 || coord > comp;
   }
 
-  let info = 'The following xml:ids are associated with glyphs that are out of bounds: \n\n';
+  let info = 'The following glyphs are out of bounds: \n\n';
 
   const hasOutOfBounds = zones.some((zone) => {
     const isOutOfBounds = ['ulx', 'uly', 'lrx', 'lry'].some((attr) => isAttrOutOfBounds(zone, attr));
     if (isOutOfBounds) {
       const element = mei.querySelector(`*[facs="${'#'+zone.getAttribute('xml:id')}"]`);
-      info += '- <' + element.tagName + '> with xml:id: ' + element.getAttribute('xml:id') + '\n';
+      info += `- &lt;${element.tagName}&gt; with xml:id: ${element.getAttribute('xml:id')}\n`;
+
     }
     return isOutOfBounds;
   });

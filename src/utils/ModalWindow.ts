@@ -188,7 +188,7 @@ export class ModalWindow implements ModalWindowInterface {
         container.innerHTML = 
           `<div style="margin-bottom: 30px;white-space: pre-line;">${content}</div>
           <div class="neon-modal-window-btn">
-            <a href="data:text/plain;charset=utf-8,${encodeURIComponent(content)}" download="validation.log">
+            <a href="data:text/plain;charset=utf-8,${encodeURI(content)}" download="error.log">
               Export
             </a>
             </div>`;
