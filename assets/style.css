@@ -730,12 +730,9 @@ a:hover {
     display: block;
 }
 .notification-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 5fr 1fr;
     width: 98%;
-    flex-wrap: wrap;
     margin: 5px 0px;
     gap: 10px;
 }
@@ -746,15 +743,24 @@ a:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 85%;
-    flex-grow: 1;
+    width: 100%;
 }
-.remove-notif-icon-wrapper {
-    /* height: 100%; */
-    width: 30px;
+.notification-btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-.remove-notif-icon {
+.notif-log-info-icon-wrapper {
+    border-right: 2px solid rgb(232 232 232);
+    padding-right: 5px;
+}
+.notif-log-info-icon {
+    width: 22px;
     cursor: pointer;
+}
+.notif-remove-icon {
+    cursor: pointer;
+    width: 30px;
 }
 
 /* Navigation panel styles for smaller devices */
@@ -763,7 +769,7 @@ a:hover {
         justify-content: center;
         gap: 7px;
     }
-    .remove-notif-icon-wrapper {
+    .notif-remove-icon-wrapper {
         min-width: 30px;
     }
 }

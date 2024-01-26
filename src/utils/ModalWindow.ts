@@ -14,7 +14,7 @@ import { selectBBox, unselect } from './SelectTools';
 export enum ModalWindowView {
   EDIT_TEXT,
   HOTKEYS,
-  VALIDATION_STATUS,
+  ERROR_LOG, // for validation errors against MEI schema and invalid element errors
   DOCUMENT_UPLOAD,
   MOVE_TO,
   NEW_FOLDER,
@@ -184,11 +184,11 @@ export class ModalWindow implements ModalWindowInterface {
         title.innerText = 'HOTKEYS';
         break;
 
-      case ModalWindowView.VALIDATION_STATUS:
+      case ModalWindowView.ERROR_LOG:
         container.innerHTML = 
           `<div style="margin-bottom: 30px;white-space: pre-line;">${content}</div>
           <div class="neon-modal-window-btn">
-            <a href="data:text/plain;charset=utf-8,${encodeURIComponent(content)}" download="validation.log">
+            <a href="data:text/plain;charset=utf-8,${encodeURI(content)}" download="error.log">
               Export
             </a>
             </div>`;

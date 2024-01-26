@@ -52,7 +52,7 @@ function updateVersionUI (version: string): void {
 }
 
 function statusOnClick(log: string) {
-  this.modal.setModalWindowView(ModalWindowView.VALIDATION_STATUS, log);
+  this.modal.setModalWindowView(ModalWindowView.ERROR_LOG, log);
   this.modal.openModalWindow();
 }
 
