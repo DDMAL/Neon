@@ -63,31 +63,13 @@ function statusOnClick(log: string) {
 export async function init (neonView: NeonView): Promise<void> {
   const fileStatusDiv = document.getElementById('file-status');
   if (fileStatusDiv !== null) {
-    const meiVersionDiv = document.createElement('div');
-    meiVersionDiv.id = 'mei_version_container';
-    const meiVersionTitle = document.createElement('span');
-    meiVersionTitle.classList.add('file_status_title');
-    meiVersionTitle.textContent = 'MEI Version: ';
-    const version = document.createElement('span');
-    version.id = 'mei_version';
-    version.textContent = 'unknown';
-    meiVersionDiv.appendChild(meiVersionTitle);
-    meiVersionDiv.appendChild(version);
-    fileStatusDiv.appendChild(meiVersionDiv);
-    versionField = document.getElementById('mei_version');
+    const meiVersion = document.getElementById('mei_version');
+    meiVersion.textContent = 'unknown';
+    versionField = meiVersion;
 
-    const meiStatusDiv = document.createElement('div');
-    meiStatusDiv.id = 'validation_status_container';
-    const meiStatusTitle = document.createElement('span');
-    meiStatusTitle.classList.add('file_status_title');
-    meiStatusTitle.textContent = 'MEI Status: ';
-    const status = document.createElement('span');
-    status.id = 'validation_status';
-    status.textContent = 'unknown';
-    meiStatusDiv.appendChild(meiStatusTitle);
-    meiStatusDiv.appendChild(status);
-    fileStatusDiv.appendChild(meiStatusDiv);
-    statusField = document.getElementById('validation_status');
+    const meiStatus = document.getElementById('validation_status');
+    meiStatus.textContent = 'unknown';
+    statusField = meiStatus;
     worker = new Worker(__ASSET_PREFIX__ + 'workers/Worker.js');
     worker.onmessage = updateStatusUI.bind(neonView);
   }
