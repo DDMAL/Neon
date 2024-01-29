@@ -235,8 +235,7 @@ export function setBgOpacityFromSlider (background?: string): void {
 }
 
 /**
- * Set background image opacity button and slider listeners.
- * @param background - The background image selector.
+ * Set bbox adjustment circle size button and slider listeners.
  */
 export function setCircleSizeControls (): void {
   const circleSlider = document.getElementById('circleSlider') as HTMLInputElement;
