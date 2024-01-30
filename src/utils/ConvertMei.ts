@@ -177,7 +177,7 @@ export function isInvalidBBox (mei: HTMLElement, zone: Element): [boolean, Eleme
     (parseInt(zone.getAttribute('ulx')) === 0) &&
     (parseInt(zone.getAttribute('uly')) === 0);
   const element = mei.querySelector(`*[facs="${'#'+zone.getAttribute('xml:id')}"]`);
-  if (isAllZero|| !element) return [true, element];
+  if (isAllZero || !element) return [true, element];
   return [false];
 }
 
@@ -201,7 +201,8 @@ export function convertToVerovio(sbBasedMei: string): string {
   // Remove zones not linked with glyphs
   const surface = mei.getElementsByTagName('surface')[0];
   let hasInvalidBBox = false;
-  for (const zone of surface.getElementsByTagName('zone')) {
+  const zones = Array.from(surface.getElementsByTagName('zone'));
+  for (const zone of zones) {
     const [isInvalid, element] = isInvalidBBox(mei, zone);
     if (isInvalid) {
       if (element) element.parentNode.removeChild(element);
@@ -445,6 +446,8 @@ export function checkOutOfBoundsGlyphs (meiString: string): void {
     const isOutOfBounds = ['ulx', 'uly', 'lrx', 'lry'].some((attr) => isAttrOutOfBounds(zone, attr));
     if (isOutOfBounds) {
       const element = mei.querySelector(`*[facs="${'#'+zone.getAttribute('xml:id')}"]`);
+      console.log(zone.getAttribute('xml:id'));
+      console.log(element);
       info += `- &lt;${element.tagName}&gt; with xml:id: ${element.getAttribute('xml:id')}\n`;
 
     }
