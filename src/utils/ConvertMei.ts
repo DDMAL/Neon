@@ -230,10 +230,14 @@ export function convertToVerovio(sbBasedMei: string): string {
 
   // Check syllable without neume 
   const syllables = Array.from(mei.getElementsByTagName('syllable'));
+  let hasEmptySyllable = false;
+  let hasEmptyNeume = false;
+  let emptySyllableInfo = 'The following syllable(s) have no neumes: \n\n'; 
+  let emptyNeumeInfo = 'The following neume(s) have no neume components: \n\n'; 
   for (const syllable of syllables) {
     if (syllable.getElementsByTagName('neume').length === 0) {
-      const id = syllable.getAttribute('xml:id');
-      Notification.queueNotification(`This file contains a syllable without neume!<br/>ID: ${id}`, 'warning');
+      hasEmptySyllable = true;
+      emptySyllableInfo += `- &lt;${syllable.tagName}&gt; with xml:id: ${syllable.getAttribute('xml:id')}\n`;
     }
 
     // Check neume without neume component
@@ -241,8 +245,8 @@ export function convertToVerovio(sbBasedMei: string): string {
     for (const neume of neumes) {
       const ncs = Array.from(neume.getElementsByTagName('nc'));
       if (ncs.length === 0) {
-        const id = neume.getAttribute('xml:id');
-        Notification.queueNotification(`This file contains a neume without neume component!<br/>ID: ${id}`, 'warning');
+        hasEmptyNeume = true;
+        emptyNeumeInfo += `- &lt;${neume.tagName}&gt; with xml:id: ${neume.getAttribute('xml:id')}\n`;
       } else {
         // To be removed in the future:
         // If nc has a @curve value, add a <liquescent> element
@@ -255,6 +259,13 @@ export function convertToVerovio(sbBasedMei: string): string {
         }
       }
     }
+  }
+
+  if (hasEmptySyllable) {
+    Notification.queueNotification('This file contains syllable(s) without neume!', 'warning', emptySyllableInfo);
+  }
+  if (hasEmptyNeume) {
+    Notification.queueNotification('This file contains neume(s) without neume component!', 'warning', emptyNeumeInfo);
   }
 
   // Go section by section just in case
@@ -446,10 +457,7 @@ export function checkOutOfBoundsGlyphs (meiString: string): void {
     const isOutOfBounds = ['ulx', 'uly', 'lrx', 'lry'].some((attr) => isAttrOutOfBounds(zone, attr));
     if (isOutOfBounds) {
       const element = mei.querySelector(`*[facs="${'#'+zone.getAttribute('xml:id')}"]`);
-      console.log(zone.getAttribute('xml:id'));
-      console.log(element);
       info += `- &lt;${element.tagName}&gt; with xml:id: ${element.getAttribute('xml:id')}\n`;
-
     }
     return isOutOfBounds;
   });
