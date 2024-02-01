@@ -118,7 +118,6 @@ export function initErrorLogControls(): void {
  * Initializes click listener on "Show error logs" button in "View" dropdown.
  */
 export function initDisplayListener(): void {
-  const notifPanel = document.querySelector('#error_log');
   const checkboxesContainer = document.querySelector('#display-single-container');
   const errorsLabel = document.createElement('label');
   const erorrsBtn = document.createElement('input');
@@ -132,37 +131,12 @@ export function initDisplayListener(): void {
   errorsLabel.appendChild(erorrsBtn);
   checkboxesContainer.append(errorsLabel);
 
-
   const { displayErrLog } = getSettings();
-  if (displayErrLog) erorrsBtn.checked = true;
+  erorrsBtn.checked = displayErrLog;
 
   erorrsBtn.addEventListener('click', () => {
-    const displayAllBtn = document.getElementById('display-all-btn');
-    const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
-    const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
-    const displayText = document.getElementById('displayText') as HTMLInputElement;
-    const displayErrLog = document.getElementById('display-errors') as HTMLInputElement;
-
-
-    if (erorrsBtn.checked) {
-      notifPanel.classList.add('visible');
-      setSettings({ displayErrLog: true });
-
-      if (displayInfo?.checked && displayBBoxes?.checked && 
-        displayText?.checked && displayErrLog?.checked) {
-        displayAllBtn.classList.add('selected');
-        displayAllBtn.innerHTML = 'Hide All';
-      }
-    }
-    else {
-      notifPanel.classList.remove('visible');
-      setSettings({ displayErrLog: false });
-      if (displayAllBtn.classList.contains('selected')) {
-        displayAllBtn.classList.remove('selected');
-        displayAllBtn.innerHTML = 'Display All';
-      }
-    }
-    
+    setSettings({ displayErrLog: erorrsBtn.checked });
+    updateErrorLogVisibility();
   });
 }
 
@@ -171,4 +145,38 @@ function openErrorLogWindow(log: string) {
   const modalWindow = new ModalWindow();
   modalWindow.setModalWindowView(ModalWindowView.ERROR_LOG, log);
   modalWindow.openModalWindow();
+}
+
+export function updateErrorLogVisibility(): void {
+  const notifPanel = document.querySelector('#error_log');
+  const { debugMode, displayErrLog, displayInfo, displayBBox, displayText } = getSettings();
+
+  const displayAllBtn = document.getElementById('display-all-btn');
+
+  if (debugMode) {
+    if (displayErrLog) {
+      notifPanel.classList.add('visible');
+      if (displayInfo && displayBBox && 
+        displayText && displayErrLog) {
+        displayAllBtn.classList.add('selected');
+        displayAllBtn.innerHTML = 'Hide All';
+      }
+    }
+    else {
+      notifPanel.classList.remove('visible');
+      if (displayAllBtn.classList.contains('selected')) {
+        displayAllBtn.classList.remove('selected');
+        displayAllBtn.innerHTML = 'Display All';
+      }
+    }
+  } else {
+    notifPanel.classList.remove('visible');
+    if (displayInfo && displayBBox && displayText) {
+      displayAllBtn.classList.add('selected');
+      displayAllBtn.innerHTML = 'Hide All';
+    } else {
+      displayAllBtn.classList.remove('selected');
+      displayAllBtn.innerHTML = 'Display All';
+    }
+  }
 }

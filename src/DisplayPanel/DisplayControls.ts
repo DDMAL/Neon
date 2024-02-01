@@ -235,8 +235,7 @@ export function setBgOpacityFromSlider (background?: string): void {
 }
 
 /**
- * Set background image opacity button and slider listeners.
- * @param background - The background image selector.
+ * Set bbox adjustment circle size button and slider listeners.
  */
 export function setCircleSizeControls (): void {
   const circleSlider = document.getElementById('circleSlider') as HTMLInputElement;
@@ -461,7 +460,7 @@ function setDisplayAllListener(): void {
     if (selectAllBtn.classList.contains('selected')) {
       selectAllBtn.classList.remove('selected');
       selectAllBtn.innerHTML = 'Display All';
-      const options =  document.querySelectorAll('.checkbox-container > .checkbox');
+      const options =  document.querySelectorAll('.checkbox-container:not([style*="display: none;"]) > .checkbox');
 
       Array.from(options).forEach((option: HTMLInputElement) => {
         if (option.checked) option.click();
@@ -470,7 +469,7 @@ function setDisplayAllListener(): void {
     else {
       selectAllBtn.classList.add('selected');
       selectAllBtn.innerHTML = 'Hide All';
-      const options =  document.querySelectorAll('.checkbox-container > .checkbox');
+      const options =  document.querySelectorAll('.checkbox-container:not([style*="display: none;"]) > .checkbox');
       
       Array.from(options).forEach((option: HTMLInputElement) => {
         if (!option.checked) option.click();

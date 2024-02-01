@@ -26,6 +26,7 @@ export interface Settings {
   insertMode: InsertType;
   insertTab: InsertTabType;
   selectionMode: SelectionType;
+  debugMode: boolean;
   displayBBox: boolean;
   displayText: boolean;
   displayInfo: boolean;
@@ -50,6 +51,7 @@ const DEFAULT_SETTINGS: Settings = {
   insertMode: 'punctum',
   insertTab: 'primitiveTab',
   selectionMode: 'selBySyllable',
+  debugMode: false,
   displayBBox: false,
   displayText: false,
   displayInfo: false,
