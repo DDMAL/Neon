@@ -287,6 +287,32 @@ input[type=checkbox].debug-mode-toggle:checked+label:before {
     top: 1px;
     background-color: white;
 }
+.debug-mode-tooltip-container {
+    position: relative;
+    display: inline-block;
+    bottom: 10px;
+    left: 3px;
+}
+
+.debug-mode-tooltip-container .debug-mode-tooltiptext {
+    visibility: hidden;
+    background-color: #68A7AD;
+    color: #fff;
+    text-align: start;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 10;
+    width: 200px;
+    top: 100%;
+    left: 50%;
+    margin-left: -50px;
+    opacity: 90%;
+}
+
+.debug-mode-tooltip-container:hover .debug-mode-tooltiptext {
+    visibility: visible;
+}
 
 /* Tov navbar styles styles for smaller devices */
 @media screen and (max-width: 1023px) {    
