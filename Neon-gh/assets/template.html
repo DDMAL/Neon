@@ -22,7 +22,16 @@
         <div id="unsaved-changes-container">
           <img class="navbar-element" id="file-saved" src="/Neon/assets/img/saved-icon.svg" alt="Your work is saved">
         </div>
-        <div class="navbar-element" id="file-status"></div>
+        <div class="navbar-element" id="file-status">
+          <div id="mei_version_container">
+            <span class="file_status_title">MEI Version: </span>
+            <span id="mei_version"></span>
+          </div>
+          <div id="validation_status_container">
+            <span class="file_status_title">MEI Status: </span>
+            <span id="validation_status"></span>
+          </div>
+        </div>
       </div>
 
       <div class="navbar-main-content-container" id="navbar-main-content-container-bottom">
@@ -44,58 +53,6 @@
             </a>
           </div>   
         </div>
-
-        <!--
-        <div class="navbar-item has-dropdown is-hoverable">
-          <div class="navbar-element navbar-btn">
-            <div class="navbar-btn-text">View</div>
-          </div>
-          <div class="navbar-dropdown">
-
-            <div id="default-zoom" class="navbar-dropdown-item has-extendable-content">
-
-              <div class="navbar-dropdown-item-text-wrapper">
-                <div class="navbar-dropdown-item-text">Default Zoom</div>
-              </div>
-              <div class="navbar-dropdown-item-icon-wrapper flex-end">
-                <img src="/Neon/assets/img/right_arrow.svg" class="right-arrow">
-              </div>
-
-              
-              <div id="extendable-content" class="dropdown-extendable-content-container">
-                <div class="navbar-dropdown-item extendable">
-                  <div class="navbar-dropdown-item-icon-wrapper">
-                    <img src="/Neon/assets/img/checkmark.svg" id="zoom-fit-content-icon" class="checkmark-icon default-zoom selected navbar-item-icon">
-                  </div>
-                  <div class="navbar-dropdown-item-text-wrapper">
-                    <div class="navbar-dropdown-item-text checked" id="zoom-fit-content">Fit Content</div>
-                  </div>
-                </div>
-                <div class="navbar-dropdown-item extendable">
-                  <div class="navbar-dropdown-item-icon-wrapper">
-                    <img src="/Neon/assets/img/checkmark.svg" id="zoom-easy-edit-icon" class="checkmark-icon default-zoom navbar-item-icon">
-                  </div>
-                  <div class="navbar-dropdown-item-text-wrapper">
-                    <div class="navbar-dropdown-item-text" id="zoom-easy-edit">Easy Edit</div>
-                  </div>
-                </div>
-              </div>
-              
-
-            </div>
-
-            <div class="navbar-dropdown-item">
-
-              <div class="navbar-dropdown-item-icon-wrapper">
-                <img src="/Neon/assets/img/checkmark.svg" id="show-error-logs-checkmark-icon" class="checkmark-icon">
-              </div>
-              <div class="navbar-dropdown-item-text-wrapper">
-                <div class="navbar-dropdown-item-text" id="show-error-logs-btn">Show error logs</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        -->
 
         <div class="navbar-item has-dropdown is-hoverable">
           <div class="navbar-element navbar-btn">
@@ -120,7 +77,7 @@
               <img class="external-link-icon">
             </a>
             <a class="navbar-dropdown-item" href="//github.com/DDMAL/Neon/wiki" target="_blank">
-              Wiki
+              Neon Wiki
               <img class="external-link-icon">
             </a>
             <a class="navbar-dropdown-item" href="//ddmal.music.mcgill.ca" target="_blank">
@@ -131,6 +88,7 @@
               <div id="navbar-item-hotkeys">Hotkeys</div>
             </div>
             <div class="navbar-dropdown-item">
+              Version:&nbsp;
               <div id="neon-version"></div>
             </div>
           </div>
@@ -139,6 +97,18 @@
     </div>
 
     <div class="navbar-end">
+      <div class="navbar-element">
+        <div class="debug-mode-container">
+          Debug Mode:&nbsp;
+          <input type="checkbox" class="debug-mode-toggle" id="debug-mode-checkbox">
+          <label for="debug-mode-checkbox" data-checked="ON" data-unchecked="OFF" class="debug-mode-on"></label>
+        </div>
+        <div class="debug-mode-tooltip-container">
+          <img id="debug-mode-tooltip-icon" src="/Neon-gh/assets/img/debug-tooltip-light.svg">
+          <span class="debug-mode-tooltiptext">This feature is intended for developers and provides access to error history and detailed error log messages.</span>
+        </div>
+      </div>
+      
       <a class="navbar-element navbar-btn" id="feedback-form-btn-container" href="https://forms.gle/vGUpvZKZxGX5QGJZ9" target="_blank">
         Feedback Form
         <img class="external-link-icon">

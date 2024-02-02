@@ -60,7 +60,7 @@ a:hover {
 }
 .navbar-end {
     display: flex;
-    align-items: center;
+    flex-direction: row;
 }
 .navbar-main-content-container {
     display: flex;
@@ -190,7 +190,7 @@ a:hover {
 .navbar-dropdown {
     border-top: 1px solid #7cb1b7;
     box-shadow: 0px 7px 10px 2px #00000052;
-    min-width: 13vw;
+    min-width: 15vw;
 }
 #default-zoom:hover #extendable-content {
     display: block;
@@ -212,6 +212,106 @@ a:hover {
 }
 .dropdown-extendable-content-container:hover {
     display: block;
+}
+/* Styles for debug mode toggle switch */
+.debug-mode-container {
+    display: flex;
+    align-items: center;
+    color: #818181;
+}
+input[type=checkbox].debug-mode-toggle {
+    display: none;
+}
+input[type=checkbox].debug-mode-toggle + label {
+    display: inline-block;
+    height: 35px;
+    width: 70px;
+    position: relative;
+    border: 4px #68A7AD solid;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    border-radius: 35px;
+}
+input[type=checkbox].debug-mode-toggle + label::before {
+    position: absolute;
+    height: 25px;
+    width: 25px;
+    content: '';
+    transition: all 0.3s ease;
+    z-index: 3;
+    border-radius: 50%;
+}
+input[type=checkbox].debug-mode-toggle + label::after {
+    position: absolute;
+    width: 55px;
+    text-align: center;
+    z-index: 2;
+    text-transform: uppercase;
+    transform: translateY(-50%);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    border-radius: 50%;
+    top: 50%;
+}
+input[type=checkbox].debug-mode-toggle:not(:checked) + label {
+    background-color: transparent;
+    text-align: right;
+}
+input[type=checkbox].debug-mode-toggle:not(:checked)+label:after {
+    content: attr(data-unchecked);
+    left: 15px;
+    opacity: 1;
+    color: #68A7AD;
+}
+input[type=checkbox].debug-mode-toggle:not(:checked) + label:before {
+    left: 1px;
+    top: 1px;
+    background-color: #68A7AD;
+}
+
+input[type=checkbox].debug-mode-toggle:checked + label {
+    background-color: #68A7AD;
+    text-align: left;
+}
+input[type=checkbox].debug-mode-toggle:checked+label:after {
+    content: attr(data-checked);
+    opacity: 1;
+    color: white;
+    right: 15px;
+}
+input[type=checkbox].debug-mode-toggle:checked+label:before {
+    left: 37px;
+    top: 1px;
+    background-color: white;
+}
+.debug-mode-tooltip-container {
+    position: relative;
+    display: inline-block;
+    bottom: 10px;
+    left: 3px;
+}
+
+.debug-mode-tooltip-container .debug-mode-tooltiptext {
+    visibility: hidden;
+    background-color: #68A7AD;
+    color: #fff;
+    text-align: start;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 10;
+    width: 200px;
+    top: 100%;
+    left: 50%;
+    margin-left: -50px;
+    opacity: 90%;
+}
+
+.debug-mode-tooltip-container:hover .debug-mode-tooltiptext {
+    visibility: visible;
 }
 
 /* Tov navbar styles styles for smaller devices */
