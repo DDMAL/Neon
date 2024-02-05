@@ -21,6 +21,10 @@ async function setBody (neonView: NeonView): Promise<void> {
     neonView.modal.openModalWindow();
   });
 
+  // set 
+  const debugModeTooltip = document.querySelector<HTMLElement>('#debug-mode-tooltip-icon');
+  debugModeTooltip.setAttribute('src', `${__ASSET_PREFIX__}assets/img/debug-tooltip-light.svg`);
+
   // set initial saved status
   const indicator = document.querySelector<HTMLDivElement>('#file-saved');
   indicator.setAttribute('src', `${__ASSET_PREFIX__}assets/img/saved-icon.svg`);
