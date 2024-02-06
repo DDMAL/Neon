@@ -381,7 +381,6 @@ export function convertToVerovio(sbBasedMei: string): string {
         if (!nextSb) {
           const lastElement = childrenArray.at(-1);
           const facsChildren = collectFacsChildren(lastElement, []);
-          const zones = Array.from(surface.querySelectorAll('zone'));
           for (const child of facsChildren) {
             const zone = zones.find(z => z.getAttribute('xml:id') == child.getAttribute('facs').slice(1));
             if (zone) {
@@ -577,11 +576,8 @@ export function removeColumnLabel(mei: string): string {
 }
 
 function collectFacsChildren(element: Element, array: Element[]): Element[] {
+  if (element.hasAttribute('facs')) array.push(element);
   for (const child of element.children) {
-    if (child.hasAttribute('facs')) {
-      array.push(child);
-    }
-
     // Recursively call the function for child's children
     collectFacsChildren(child, array);
   }
