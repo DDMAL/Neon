@@ -234,6 +234,59 @@ export function initNavbar (neonView: NeonView): void {
     });
   });
 
+  document.getElementById('untoggle-invalid-oblique').addEventListener('click', function () {
+    const uri = neonView.view.getCurrentPageURI();
+    neonView.getPageMEI(uri).then(meiString => {
+      // Load MEI document into parser
+      const parser = new DOMParser();
+      const meiDoc = parser.parseFromString(meiString, 'text/xml');
+      const mei = meiDoc.documentElement;
+      const ncs = Array.from(mei.getElementsByTagName('nc'));
+
+      let hasInvalidOblique = false;
+      const chainAction: EditorAction = {
+        action: 'chain',
+        param: []
+      };
+      const param = new Array<EditorAction>();
+      let ncIdx = 0;
+      while (ncIdx < ncs.length) {
+        if (ncs[ncIdx].getAttribute('ligated')) {
+          if ((ncIdx < ncs.length-1 && !ncs[ncIdx+1].getAttribute('ligated')) || (ncIdx == ncs.length-1)) {
+            // If nc is ligated, and the next nc is not
+            // Or, nc is ligated, but already at the end (there is no next)\
+            hasInvalidOblique = true;
+            param.push({
+              action: 'set',
+              param: {
+                elementId: ncs[ncIdx].getAttribute('xml:id'),
+                attrType: 'ligated',
+                attrValue: ''
+              }
+            });
+          }
+          ncIdx += 2;
+        }
+        ncIdx += 1;
+      }
+
+      if (!hasInvalidOblique) {
+        Notification.queueNotification('No invalid obliques found', 'warning');
+      }
+      else {
+        chainAction.param = param;
+        neonView.edit(chainAction, neonView.view.getCurrentPageURI()).then((result) => {
+          if (result) {
+            Notification.queueNotification('Untoggled invalid obliques', 'success');
+          } else {
+            Notification.queueNotification('Failed to untoggle invalid obliques', 'error');
+          }
+          neonView.updateForCurrentPage();
+        });
+      }
+    });
+  });
+
   document.getElementById('untoggle-invalid-syls').addEventListener('click', function () {
     const uri = neonView.view.getCurrentPageURI();
     neonView.getPageMEI(uri).then(meiString => {
