@@ -399,6 +399,8 @@ export function convertToVerovio(sbBasedMei: string): string {
   const newSyllables = Array.from(mei.getElementsByTagName('syllable'));
   let invalidLinked = false;
   let invalidLinkedInfo = 'The following linked syllables are not encoded correctly: \n\n';
+  let invalidOblique = false;
+  let invalidObliqueInfo = 'The following obliques are incomplete: \n\n';
   for (const syllable of mei.querySelectorAll('syllable')) {
     for (const clef of syllable.querySelectorAll('clef')) {
       syllable.insertAdjacentElement('beforebegin', clef);
@@ -409,7 +411,11 @@ export function convertToVerovio(sbBasedMei: string): string {
 
     // Check incomplete obliques
     // Obliques always come as a pair
-    checkOblique(syllable);
+    const obliqueInfo = checkOblique(syllable);
+    if (obliqueInfo) {
+      invalidOblique = true;
+      invalidObliqueInfo += obliqueInfo;
+    }
 
     // Check syllables that contains @precedes or @follows
     // Update syllable arrays for each syllable
@@ -437,6 +443,9 @@ export function convertToVerovio(sbBasedMei: string): string {
         invalidLinkedInfo += info;
       }
     }
+  }
+  if (invalidOblique) {
+    Notification.queueNotification('This file contains incomplete oblique(s)', 'error', invalidObliqueInfo);
   }
   if (invalidLinked) {
     Notification.queueNotification('This file contains invalid linked syllable(s)', 'error', invalidLinkedInfo);
@@ -542,22 +551,23 @@ function checkFollowsSyllable (syllable: Element, syllables: Element[]): string 
   }
 }
 
-function checkOblique (syllable: Element): void {
+function checkOblique (syllable: Element): string {
   const ncs = syllable.querySelectorAll('nc');
   let ncIdx = 0;
+  let info = '';
   while (ncIdx < ncs.length) {
     if (ncs[ncIdx].getAttribute('ligated')) {
       if ((ncIdx < ncs.length-1 && !ncs[ncIdx+1].getAttribute('ligated')) || (ncIdx == ncs.length-1)) {
         // If nc is ligated, and the next nc is not
         // Or, nc is ligated, but already at the end (there is no next)
-        const sylText = getSyllableText(syllable);
-        const sylId = syllable.getAttribute('xml:id');
-        Notification.queueNotification(`The oblique in syllable (${sylText}) is incomplete!<br/>ID: ${sylId}`, 'error');
+        info += `- The oblique in syllable (${getSyllableText(syllable)}) with xml:id: ${syllable.getAttribute('xml:id')}\n`;
       }
       ncIdx += 2;
     }
     ncIdx += 1;
   }
+
+  return info;
 }
 
 export function removeColumnLabel(mei: string): string {
