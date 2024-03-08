@@ -568,15 +568,28 @@ export async function selectAll (elements: Array<SVGGraphicsElement>, neonView: 
     groupsToSelect.add(grouping);
 
     // Check for precedes/follows
-    const follows = grouping.getAttribute('mei:follows');
-    if (follows) {
-      document.querySelector('#' + follows.slice(1)).classList.add('no-moving');
-      groupsToSelect.add(document.querySelector('#' + follows.slice(1)));
-    }
-    const precedes = grouping.getAttribute('mei:precedes');
-    if (precedes) {
-      document.querySelector('#' + precedes.slice(1)).classList.add('no-moving');
-      groupsToSelect.add(document.querySelector('#' + precedes.slice(1)));
+    let selected = grouping; 
+    let follows = selected.getAttribute('mei:follows');
+    let precedes = selected.getAttribute('mei:precedes');
+    while (follows || precedes){  
+      if (follows) {
+        selected = document.querySelector('#' + follows.slice(1));
+        if (groupsToSelect.has(selected)) {
+          break;
+        }
+        selected.classList.add('no-moving');
+        groupsToSelect.add(selected);
+        follows = selected.getAttribute('mei:follows');
+      }
+      if (precedes) {
+        selected = document.querySelector('#' + precedes.slice(1));
+        if (groupsToSelect.has(selected)) {
+          break;
+        }
+        selected.classList.add('no-moving');
+        groupsToSelect.add(selected);
+        precedes = selected.getAttribute('mei:precedes');
+      }
     }
   }
   // Select the elements
