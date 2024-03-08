@@ -340,6 +340,8 @@ export function initNavbar (neonView: NeonView): void {
               attrValue: ''
             }
           });
+
+          param.push(...addSylAction([syllable, precedesSyllable, followsSyllable]));
         } 
         else if (syllable.hasAttribute('precedes')) {
           const precedesSyllable = syllables.find(element => element.getAttribute('xml:id') === syllable.getAttribute('precedes').substring(1));
@@ -373,6 +375,7 @@ export function initNavbar (neonView: NeonView): void {
               }
             });
           }
+          param.push(...addSylAction([syllable, precedesSyllable]));
         }
         else if (syllable.hasAttribute('follows')) {
           const followsSyllable = syllables.find(element => element.getAttribute('xml:id') === syllable.getAttribute('follows').substring(1));
@@ -406,6 +409,7 @@ export function initNavbar (neonView: NeonView): void {
               }
             });
           }
+          param.push(...addSylAction([syllable, followsSyllable]));
         }
       }
 
@@ -516,4 +520,22 @@ export function initUndoRedoPanel (neonView: NeonView): void {
       redoHandler();
     }
   });
+}
+
+function addSylAction(syllables: Element[]): Array<EditorAction> {
+  const param = new Array<EditorAction>();
+
+  for (const syllable of syllables) {
+    if (!syllable.getElementsByTagName('syl').length) {
+      param.push({
+        action: 'setText',
+        param: {
+          elementId: syllable.getAttribute('xml:id'),
+          text: '',
+        }
+      });
+    }
+  }
+
+  return param;
 }
