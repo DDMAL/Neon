@@ -52,7 +52,8 @@ export function convertToNeon(staffBasedMei: string): string {
   const mei = meiDoc.documentElement;
   let nCol = 0;
 
-  for (const section of mei.querySelectorAll('section:not([type="neon-neume-line"])')) {
+  const sections = Array.from(mei.querySelectorAll('section:not([type="neon-neume-line"])'));
+  for (const section of sections) {
     // Remove direct children pb elements within section
     const pbs = section.querySelectorAll('pb');
     pbs.forEach(pb => pb.remove());
@@ -78,6 +79,10 @@ export function convertToNeon(staffBasedMei: string): string {
     for (const neonNeumeLineSection of neonNeumeLineSections) {
       nStaff += 1;
       const staff = neonNeumeLineSection.querySelector('staff');
+      if (!staff) {
+        neonNeumeLineSection.remove();
+        continue;
+      }
       const layer = staff.querySelector('layer');
 
       // if staff has a new type value,
