@@ -7,10 +7,10 @@ const backlog = [];
  * Parse and respond to messages sent by NeonCore.
  * @param {MessageEvent} evt
  */
-function handleNeonEvent (evt) {
+function handleNeonEvent(evt) {
   const data = evt.data;
   const result = {
-    id: data.id
+    id: data.id,
   };
 
   switch (data.action) {
@@ -26,7 +26,7 @@ function handleNeonEvent (evt) {
     case 'getMEI':
       result.mei = toolkit.getMEI({
         pageNo: 0,
-        scoreBased: true
+        scoreBased: true,
       });
       break;
     case 'editInfo':
@@ -41,9 +41,7 @@ function handleNeonEvent (evt) {
   postMessage(result);
 }
 
-
 verovio.module.onRuntimeInitialized = function () {
-
   toolkit = new verovio.toolkit();
   toolkit.setOptions({
     inputFrom: 'mei',
@@ -54,15 +52,15 @@ verovio.module.onRuntimeInitialized = function () {
     font: 'Bravura',
     useFacsimile: false,
   });
-  console.debug('READY');
+  console.log('Verovio toolkit: READY');
   onmessage = handleNeonEvent;
   for (const message of backlog) {
     handleNeonEvent(message);
   }
-}
+  postMessage('ready');
+};
 
-
-function tempHandler (evt) {
+function tempHandler(evt) {
   backlog.push(evt);
 }
 
