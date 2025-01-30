@@ -50,10 +50,10 @@ export function isGroupable(
   }
 }
 
-function containsLinked(
+export function containsLinked(
   selectionType: string,
   elements?: Array<SVGGraphicsElement>,
-) {
+): boolean {
   if (!elements) {
     elements = Array.from(
       document.querySelectorAll('.selected'),

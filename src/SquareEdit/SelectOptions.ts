@@ -15,8 +15,8 @@ import {
   SetClefAction,
   SetLiquescentAction,
 } from '../Types';
-import { getStaffBBox } from '../utils/SelectTools';
-import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
+import { getStaffBBox, getSelectionType } from '../utils/SelectTools';
+import { ModalWindowView } from '../utils/ModalWindow';
 
 /**
  * The NeonView parent to call editor actions.
@@ -136,6 +136,9 @@ export function endOptionsSelection(): void {
  * Function to handle removing elements
  */
 export function removeHandler(): void {
+  if (Grouping.containsLinked(getSelectionType())) {
+    return;
+  }
   const toRemove: RemoveAction[] = [];
   const selected = Array.from(document.getElementsByClassName('selected'));
   selected.forEach((elem) => {
