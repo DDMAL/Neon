@@ -543,20 +543,21 @@ export function convertToVerovio(sbBasedMei: string): string {
         newStaff.appendChild(newLayer);
 
         const childrenArray = Array.from(layer.children);
-        const copyArray = childrenArray.slice(
-          childrenArray.indexOf(currentSb) + 1,
-          childrenArray.indexOf(nextSb),
-        );
-
-        for (const child of copyArray) {
-          newLayer.appendChild(child);
+        const startIdx = childrenArray.indexOf(currentSb) + 1;
+        // prettier-ignore
+        const endIdx = nextSb
+          ? childrenArray.indexOf(nextSb)
+          : (childrenArray.at(-1).tagName === 'custos'
+            ? childrenArray.length - 1
+            : childrenArray.length);
+        for (let i = startIdx; i < endIdx; i++) {
+          newLayer.appendChild(childrenArray[i]);
         }
 
         // Remove the zones for the last element in the original file
         // because the last element is not included
-        if (!nextSb) {
-          const lastElement = childrenArray.at(-1);
-          const facsChildren = collectFacsChildren(lastElement, []);
+        if (!nextSb && childrenArray.at(-1).tagName === 'custos') {
+          const facsChildren = collectFacsChildren(childrenArray.at(-1), []);
           for (const child of facsChildren) {
             const zone = zones.find(
               (z) =>
