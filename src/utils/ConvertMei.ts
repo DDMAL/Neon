@@ -544,29 +544,12 @@ export function convertToVerovio(sbBasedMei: string): string {
 
         const childrenArray = Array.from(layer.children);
         const startIdx = childrenArray.indexOf(currentSb) + 1;
-        // prettier-ignore
+        // Include last element if it is the last sb
         const endIdx = nextSb
           ? childrenArray.indexOf(nextSb)
-          : (childrenArray.at(-1).tagName === 'custos'
-            ? childrenArray.length - 1
-            : childrenArray.length);
+          : childrenArray.length;
         for (let i = startIdx; i < endIdx; i++) {
           newLayer.appendChild(childrenArray[i]);
-        }
-
-        // Remove the zones for the last element in the original file
-        // because the last element is not included
-        if (!nextSb && childrenArray.at(-1).tagName === 'custos') {
-          const facsChildren = collectFacsChildren(childrenArray.at(-1), []);
-          for (const child of facsChildren) {
-            const zone = zones.find(
-              (z) =>
-                z.getAttribute('xml:id') == child.getAttribute('facs').slice(1),
-            );
-            if (zone && zones.length > 1) {
-              zone.parentNode.removeChild(zone);
-            }
-          }
         }
 
         section.insertBefore(newSb, staff);
