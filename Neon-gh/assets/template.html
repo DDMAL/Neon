@@ -5,22 +5,33 @@
   <div class="navbar-brand">
     <a class="navbar-btn" id="home-link">
       <!-- Image src attributes are ste programatically because paths are not the same in dev and prod -->
-      <img id="neon-main-icon">
+      <img id="neon-main-icon" />
     </a>
-    <a class="navbar-burger" id="burgerMenu" role="button" aria-label="menu" aria-expanded="false">
+    <a
+      class="navbar-burger"
+      id="burgerMenu"
+      role="button"
+      aria-label="menu"
+      aria-expanded="false"
+    >
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
     </a>
   </div>
   <div class="navbar-menu" id="navMenu">
-
     <div class="navbar-start">
-
-      <div class="navbar-main-content-container" id="navbar-main-content-container-top">
+      <div
+        class="navbar-main-content-container"
+        id="navbar-main-content-container-top"
+      >
         <div class="navbar-element" id="filename"></div>
         <div id="unsaved-changes-container">
-          <img class="navbar-element" id="file-saved" alt="Your work is saved">
+          <img
+            class="navbar-element"
+            id="file-saved"
+            alt="Your work is saved"
+          />
         </div>
         <div class="navbar-element" id="file-status">
           <div id="mei_version_container">
@@ -34,8 +45,10 @@
         </div>
       </div>
 
-      <div class="navbar-main-content-container" id="navbar-main-content-container-bottom">
-
+      <div
+        class="navbar-main-content-container"
+        id="navbar-main-content-container-bottom"
+      >
         <div class="navbar-item has-dropdown is-hoverable">
           <div class="navbar-element navbar-btn">
             <div class="navbar-btn-text">File</div>
@@ -46,12 +59,14 @@
               <div class="navbar-dropdown-item-text">Save</div>
             </div>
             <div id="export" class="navbar-dropdown-item">
-              <div class="navbar-dropdown-item-text">Save and Export to File</div>
+              <div class="navbar-dropdown-item-text">
+                Save and Export to File
+              </div>
             </div>
             <a id="getmei" class="navbar-dropdown-item">
-             <div class="navbar-dropdown-item-text">Download MEI</div>
+              <div class="navbar-dropdown-item-text">Download MEI</div>
             </a>
-          </div>   
+          </div>
         </div>
 
         <div class="navbar-item has-dropdown is-hoverable">
@@ -59,31 +74,56 @@
             <div class="navbar-btn-text">MEI Actions</div>
           </div>
           <div class="navbar-dropdown">
-            <div id="remove-empty-syls" class="navbar-dropdown-item">Remove Empty Syllables</div>
-            <div id="remove-empty-neumes" class="navbar-dropdown-item">Remove Empty Neumes</div>
-            <div id="remove-out-of-bounds-glyphs" class="navbar-dropdown-item">Remove Out-of-bounds Glyphs</div>
-            <div id="untoggle-invalid-oblique" class="navbar-dropdown-item">Untoggle Invalid Obliques</div>
-            <div id="untoggle-invalid-syls" class="navbar-dropdown-item">Untoggle Invalid Toggled Syllables</div>
+            <div id="remove-empty-syls" class="navbar-dropdown-item">
+              Remove Empty Syllables
+            </div>
+            <div id="remove-empty-neumes" class="navbar-dropdown-item">
+              Remove Empty Neumes
+            </div>
+            <div id="remove-out-of-bounds-glyphs" class="navbar-dropdown-item">
+              Remove Out-of-bounds Glyphs
+            </div>
+            <div id="untoggle-invalid-oblique" class="navbar-dropdown-item">
+              Untoggle Invalid Obliques
+            </div>
+            <div id="untoggle-invalid-syls" class="navbar-dropdown-item">
+              Untoggle Invalid Toggled Syllables
+            </div>
+            <div id="untoggle-all-syls" class="navbar-dropdown-item">
+              Untoggle All Toggled Syllables
+            </div>
             <div id="revert" class="navbar-dropdown-item">Revert</div>
           </div>
         </div>
-      
+
         <div class="navbar-item has-dropdown is-hoverable">
           <div class="navbar-element navbar-btn">
             <div class="navbar-btn-text">Help</div>
           </div>
           <div class="navbar-dropdown">
-            <a class="navbar-dropdown-item navbar-dropdown-link" href="//github.com/DDMAL/Neon/wiki/Instructions" target="_blank">
+            <a
+              class="navbar-dropdown-item navbar-dropdown-link"
+              href="//github.com/DDMAL/Neon/wiki/Instructions"
+              target="_blank"
+            >
               User Guide
-              <img class="external-link-icon">
+              <img class="external-link-icon" />
             </a>
-            <a class="navbar-dropdown-item" href="//github.com/DDMAL/Neon/wiki" target="_blank">
+            <a
+              class="navbar-dropdown-item"
+              href="//github.com/DDMAL/Neon/wiki"
+              target="_blank"
+            >
               Neon Wiki
-              <img class="external-link-icon">
+              <img class="external-link-icon" />
             </a>
-            <a class="navbar-dropdown-item" href="//ddmal.music.mcgill.ca" target="_blank">
+            <a
+              class="navbar-dropdown-item"
+              href="//ddmal.music.mcgill.ca"
+              target="_blank"
+            >
               DDMAL
-              <img class="external-link-icon">
+              <img class="external-link-icon" />
             </a>
             <div class="navbar-dropdown-item">
               <div id="navbar-item-hotkeys">Hotkeys</div>
@@ -101,45 +141,60 @@
       <div class="navbar-element">
         <div class="debug-mode-container">
           Debug Mode:&nbsp;
-          <input type="checkbox" class="debug-mode-toggle" id="debug-mode-checkbox">
-          <label for="debug-mode-checkbox" data-checked="ON" data-unchecked="OFF" class="debug-mode-on"></label>
+          <input
+            type="checkbox"
+            class="debug-mode-toggle"
+            id="debug-mode-checkbox"
+          />
+          <label
+            for="debug-mode-checkbox"
+            data-checked="ON"
+            data-unchecked="OFF"
+            class="debug-mode-on"
+          ></label>
         </div>
         <div class="debug-mode-tooltip-container">
-          <img id="debug-mode-tooltip-icon">
-          <span class="debug-mode-tooltiptext">This feature is intended for developers and provides access to error history and detailed error log messages.</span>
+          <img id="debug-mode-tooltip-icon" />
+          <span class="debug-mode-tooltiptext"
+            >This feature is intended for developers and provides access to
+            error history and detailed error log messages.</span
+          >
         </div>
       </div>
-      
-      <a class="navbar-element navbar-btn" id="feedback-form-btn-container" href="https://forms.gle/vGUpvZKZxGX5QGJZ9" target="_blank">
+
+      <a
+        class="navbar-element navbar-btn"
+        id="feedback-form-btn-container"
+        href="https://forms.gle/vGUpvZKZxGX5QGJZ9"
+        target="_blank"
+      >
         Feedback Form
-        <img class="external-link-icon">
+        <img class="external-link-icon" />
       </a>
     </div>
   </div>
 </nav>
 
 <div id="editor-body-container">
-  <div id="notification-content" style="display:none;"></div>
+  <div id="notification-content" style="display: none"></div>
   <div id="left-column">
     <div id="container"></div>
   </div>
   <div id="right-column">
-      <div id="display_controls"></div>
-      <div id="insert_controls"></div>
-      <div id="edit_controls"></div>
-      <div id="error_log"></div>
-      <div id="info-bubbles-container">
-        <div id="element_info"></div>
-        <div id="syl_text" style="display:none;"></div>
-      </div>
+    <div id="display_controls"></div>
+    <div id="insert_controls"></div>
+    <div id="edit_controls"></div>
+    <div id="error_log"></div>
+    <div id="info-bubbles-container">
+      <div id="element_info"></div>
+      <div id="syl_text" style="display: none"></div>
+    </div>
   </div>
 </div>
-
 
 <!-- Neon modal window -->
 <div id="neon-modal-window-container">
   <div tabindex="0" id="neon-modal-window">
-    
     <div id="neon-modal-window-header">
       <div id="neon-modal-window-header-title"></div>
       <div id="neon-modal-window-header-close">x</div>
@@ -148,6 +203,4 @@
     <!-- Neon modal window content section -->
     <div id="neon-modal-window-content-container"></div>
   </div>
-  
-
 </div>
