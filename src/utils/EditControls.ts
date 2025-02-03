@@ -492,6 +492,86 @@ export function initNavbar(neonView: NeonView): void {
     }
   });
 
+  document
+    .getElementById('untoggle-all-syls')
+    .addEventListener('click', function () {
+      const uri = neonView.view.getCurrentPageURI();
+      neonView.getPageMEI(uri).then((meiString) => {
+        // Load MEI document into parser
+        const parser = new DOMParser();
+        const meiDoc = parser.parseFromString(meiString, 'text/xml');
+        const mei = meiDoc.documentElement;
+        const syllables = Array.from(mei.getElementsByTagName('syllable'));
+
+        const chainAction: EditorAction = {
+          action: 'chain',
+          param: [],
+        };
+        const param = new Array<EditorAction>();
+
+        for (const syllable of syllables) {
+          if (syllable.hasAttribute('precedes')) {
+            param.push({
+              action: 'set',
+              param: {
+                elementId: syllable.getAttribute('xml:id'),
+                attrType: 'precedes',
+                attrValue: '',
+              },
+            });
+          }
+          if (syllable.hasAttribute('follows')) {
+            param.push({
+              action: 'set',
+              param: {
+                elementId: syllable.getAttribute('xml:id'),
+                attrType: 'follows',
+                attrValue: '',
+              },
+            });
+          }
+        }
+
+        if (param.length === 0) {
+          Notification.queueNotification(
+            'Not toggle-linked syllables found',
+            'warning',
+          );
+        } else {
+          chainAction.param = param;
+          neonView
+            .edit(chainAction, neonView.view.getCurrentPageURI())
+            .then((result) => {
+              if (result) {
+                Notification.queueNotification(
+                  'Untoggled all syllables',
+                  'success',
+                );
+              } else {
+                Notification.queueNotification(
+                  'Failed to untoggle all syllables',
+                  'error',
+                );
+              }
+              neonView.updateForCurrentPage();
+            });
+        }
+      });
+    });
+
+  // Event listener for "Revert" button inside "MEI Actions" dropdown
+  document.getElementById('revert').addEventListener('click', function () {
+    if (
+      window.confirm(
+        'Reverting will cause all changes to be lost. Press OK to continue.',
+      )
+    ) {
+      neonView.deleteDb().then(() => {
+        window.location.reload();
+      });
+    }
+  });
+
   /* "VIEW" menu */
 
   /*
