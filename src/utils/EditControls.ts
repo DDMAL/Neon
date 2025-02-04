@@ -529,6 +529,15 @@ export function initNavbar(neonView: NeonView): void {
                 attrValue: '',
               },
             });
+            if (syllable.getElementsByTagName('syl').length === 0) {
+              param.push({
+                action: 'setText',
+                param: {
+                  elementId: syllable.getAttribute('xml:id'),
+                  text: '',
+                },
+              });
+            }
           }
         }
 
