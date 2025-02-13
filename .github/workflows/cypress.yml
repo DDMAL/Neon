@@ -2,7 +2,7 @@ name: E2E on Chrome
 on: [push]
 jobs:
   cypress-run:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     # let's make sure our tests pass on Chrome browser
     name: E2E on Chrome
     steps:
@@ -13,6 +13,6 @@ jobs:
           node-version: 16
       - uses: cypress-io/github-action@v5
         with:
-          build: yarn build 
+          build: yarn build
           start: yarn start
           browser: chrome
