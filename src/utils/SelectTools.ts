@@ -166,7 +166,7 @@ export function select(
     // set fill to red
     // set stroke to red only if selected elem is a divLine
     el.style.fill = '#d00';
-    el.style.stroke = el.classList.contains('divLine') ? '#d00' : 'black';
+    el.style.color = el.classList.contains('divLine') ? '#d00' : '';
 
     if (el.querySelectorAll('.sylTextRect-display').length) {
       el.querySelectorAll('.sylTextRect-display').forEach(
@@ -178,7 +178,7 @@ export function select(
 
     if (el.querySelectorAll('.divLine').length) {
       el.querySelectorAll('.divLine').forEach((elem: HTMLElement) => {
-        elem.style.stroke = '#d00';
+        elem.style.color = '#d00';
       });
     }
 

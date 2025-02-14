@@ -12,7 +12,7 @@ const ColorPalette: string[] = [
   'rgb(240, 228, 66)',
   'rgb(0, 114, 178)',
   'rgb(213, 94, 0)',
-  'rgb(204, 121, 167)'
+  'rgb(204, 121, 167)',
 ];
 
 /**
@@ -26,28 +26,36 @@ export function unhighlight(staff?: SVGGElement): void {
   } else {
     children = document.querySelectorAll(':not(.selected) .highlighted');
   }
-  children.forEach(elem => {
-    if (elem.tagName === 'path' && !elem.closest('.staff').classList.contains('selected')) {
-      elem.setAttribute('stroke', '#000000');
-    } else if (elem.classList.contains('divLine') && !elem.closest('.staff').classList.contains('selected')) {
-      elem.setAttribute('stroke', '#000000');
-    }
-    else {
+  children.forEach((elem) => {
+    if (
+      elem.tagName === 'path' &&
+      !elem.closest('.staff').classList.contains('selected')
+    ) {
+      (elem as SVGPathElement).style.stroke = '#000000';
+    } else if (
+      elem.classList.contains('divLine') &&
+      !elem.closest('.staff').classList.contains('selected')
+    ) {
+      (elem as SVGPathElement).style.color = '#000000';
+    } else {
       elem.removeAttribute('fill');
       let rects = elem.querySelectorAll('.sylTextRect-display');
       if (!rects.length) {
         try {
-          rects = elem.closest('.syllable').querySelectorAll('.sylTextRect-display');
+          rects = elem
+            .closest('.syllable')
+            .querySelectorAll('.sylTextRect-display');
         } catch (e) {
           rects = [] as unknown as NodeListOf<Element>;
         }
       }
       rects.forEach(function (rect: HTMLElement) {
-        if (rect.closest('.syllable').classList.contains('selected') ||
+        if (
+          rect.closest('.syllable').classList.contains('selected') ||
           rect.closest('.staff').classList.contains('selected') ||
           rect.closest('.syl').classList.contains('selected')
           // rect.closest('.layer').classList.contains('selected')
-        ){
+        ) {
           rect.style.fill = '#d00';
         } else {
           rect.style.fill = 'blue';
@@ -71,20 +79,26 @@ export function unsetStaffHighlight(): void {
  */
 export function unsetGroupingHighlight(): void {
   unsetStaffHighlight();
-  const highlighted = Array.from(document.getElementsByClassName('highlighted'))
-    .filter((elem: HTMLElement) => !elem.parentElement.classList.contains('selected'));
+  const highlighted = Array.from(
+    document.getElementsByClassName('highlighted'),
+  ).filter(
+    (elem: HTMLElement) => !elem.parentElement.classList.contains('selected'),
+  );
   highlighted.forEach((elem: HTMLElement) => {
     elem.setAttribute('#d00', null);
     let rects = elem.querySelectorAll('.sylTextRect-display');
     if (!rects.length) {
       if (elem.closest('.syllable') !== null) {
-        rects = elem.closest('.syllable').querySelectorAll('sylTextRect-display');
+        rects = elem
+          .closest('.syllable')
+          .querySelectorAll('sylTextRect-display');
       }
     }
     rects.forEach(function (rect: HTMLElement) {
-      if (rect.closest('.syllable').classList.contains('selected') || 
-      rect.closest('.syl').classList.contains('selected')
-      ){
+      if (
+        rect.closest('.syllable').classList.contains('selected') ||
+        rect.closest('.syl').classList.contains('selected')
+      ) {
         rect.style.fill = '#d00';
       } else {
         rect.style.fill = 'blue';
@@ -92,11 +106,13 @@ export function unsetGroupingHighlight(): void {
       rect.classList.remove('highlighted');
     });
     elem.classList.remove('highlighted');
-    elem.querySelectorAll('sylTextRect-display').forEach(rect => {
+    elem.querySelectorAll('sylTextRect-display').forEach((rect) => {
       rect.classList.remove('highlighted');
     });
   });
-  Array.from(document.getElementsByClassName('selected')).forEach((el) => { el.setAttribute('fill', ''); });
+  Array.from(document.getElementsByClassName('selected')).forEach((el) => {
+    el.setAttribute('fill', '');
+  });
 }
 
 /**
@@ -107,37 +123,63 @@ export function highlight(staff: SVGGElement, color: string): void {
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
     if (child.tagName === 'path') {
-      child.setAttribute('stroke', color);
+      (child as SVGPathElement).style.stroke = color;
     } else if (child.classList.contains('divLine')) {
-      child.setAttribute('stroke', color);
+      (child as SVGPathElement).style.color = color;
       child.setAttribute('stroke-width', '30px');
-    } else if (child.querySelectorAll('.divLine').length && child.classList.contains('syllable')) {
-      Array.from(child.children).filter(el => el.querySelectorAll('.divLine')).forEach(cchild => { children.push(cchild); });
-    }
-    else if (child.classList.contains('resizePoint') || child.id === 'resizeRect' || child.classList.contains('rotatePoint')) {
+    } else if (
+      child.querySelectorAll('.divLine').length &&
+      child.classList.contains('syllable')
+    ) {
+      Array.from(child.children)
+        .filter((el) => el.querySelectorAll('.divLine'))
+        .forEach((cchild) => {
+          children.push(cchild);
+        });
+    } else if (
+      child.classList.contains('resizePoint') ||
+      child.id === 'resizeRect' ||
+      child.classList.contains('rotatePoint')
+    ) {
       return;
     } else if (child.classList.contains('layer')) {
-      Array.from(child.children).forEach(cchild => { children.push(cchild); });
-    } else if (document.getElementsByClassName('highlight-selected').length &&
-      document.getElementsByClassName('highlight-selected')[0].id === 'highlight-neume'
-      && child.classList.contains('syllable')) {
-      Array.from(child.children).filter(el => el.classList.contains('neume')).forEach(cchild => { children.push(cchild); });
+      Array.from(child.children).forEach((cchild) => {
+        children.push(cchild);
+      });
+    } else if (
+      document.getElementsByClassName('highlight-selected').length &&
+      document.getElementsByClassName('highlight-selected')[0].id ===
+        'highlight-neume' &&
+      child.classList.contains('syllable')
+    ) {
+      Array.from(child.children)
+        .filter((el) => el.classList.contains('neume'))
+        .forEach((cchild) => {
+          children.push(cchild);
+        });
     } else {
       child.setAttribute('fill', color);
       let rects = child.querySelectorAll('.sylTextRect-display');
       if (!rects.length) {
         try {
-          rects = child.closest('.syllable').querySelectorAll('.sylTextRect-display');
+          rects = child
+            .closest('.syllable')
+            .querySelectorAll('.sylTextRect-display');
         } catch (e) {
           rects = [] as unknown as NodeListOf<Element>;
         }
       }
       rects.forEach(function (rect: HTMLElement) {
-        if (!(rect.closest('.syllable').classList.contains('selected') ||
-          rect.closest('.syl').classList.contains('selected') ||
-          rect.closest('.staff').classList.contains('selected')
-          // rect.closest('.layer').classList.contains('selected')
-        )) {
+        if (
+          !(
+            (
+              rect.closest('.syllable').classList.contains('selected') ||
+              rect.closest('.syl').classList.contains('selected') ||
+              rect.closest('.staff').classList.contains('selected')
+            )
+            // rect.closest('.layer').classList.contains('selected')
+          )
+        ) {
           rect.style.fill = color;
           rect.classList.add('highlighted');
         }
@@ -156,12 +198,11 @@ export function highlight(staff: SVGGElement, color: string): void {
   if (width !== undefined && height !== undefined) {
     // idk looks good :')
     // TODO find a better way of calculating this as this actually doesn't work as well as 30px
-    stroke = (width * height / 1000000).toString();
-  }
-  else {
+    stroke = ((width * height) / 1000000).toString();
+  } else {
     stroke = '30px';
   }
-  staff.querySelectorAll('.nc, .custos, .clef, .accid').forEach(el => {
+  staff.querySelectorAll('.nc, .custos, .clef, .accid').forEach((el) => {
     el.setAttribute('stroke', 'black');
     el.setAttribute('stroke-width', stroke);
   });
@@ -171,7 +212,9 @@ export function highlight(staff: SVGGElement, color: string): void {
  * Highlight each staff a different color.
  */
 export function setStaffHighlight(): void {
-  const staves = Array.from(document.getElementsByClassName('staff')) as SVGGElement[];
+  const staves = Array.from(
+    document.getElementsByClassName('staff'),
+  ) as SVGGElement[];
   for (let i = 0; i < staves.length; i++) {
     const staffColor = ColorPalette[i % ColorPalette.length];
     highlight(staves[i], staffColor);
@@ -179,10 +222,12 @@ export function setStaffHighlight(): void {
 }
 
 function setColumnHighlight(): void {
-  const  groups: { [key: number]: SVGGElement[] } = {};
+  const groups: { [key: number]: SVGGElement[] } = {};
 
   document.querySelectorAll('.staff').forEach((staff) => {
-    const hasColumn = Array.from(staff.classList).join(' ').match(/\bcolumn(\d+)\b/);
+    const hasColumn = Array.from(staff.classList)
+      .join(' ')
+      .match(/\bcolumn(\d+)\b/);
     let columnNum = 0;
     if (hasColumn) {
       columnNum = parseInt(hasColumn[1], 10) - 1;
@@ -212,12 +257,10 @@ export function setGroupingHighlight(grouping: GroupingType): void {
   if (grouping === 'staff') {
     setStaffHighlight();
     return;
-  }
-  else if (grouping === 'column') {
+  } else if (grouping === 'column') {
     setColumnHighlight();
     return;
-  } 
-  else if (grouping === 'selection') {
+  } else if (grouping === 'selection') {
     const temp = document.querySelector('.sel-by.is-active').id;
     switch (temp) {
       case 'selBySyllable':
@@ -245,23 +288,36 @@ export function setGroupingHighlight(grouping: GroupingType): void {
 
   if (grouping == 'layerElement') {
     groups = document.querySelectorAll('.accid, .clef, .custos, .divLine');
-  }
-  else {
-    groups = document.getElementsByClassName(grouping) as HTMLCollectionOf<HTMLElement>;
+  } else {
+    groups = document.getElementsByClassName(
+      grouping,
+    ) as HTMLCollectionOf<HTMLElement>;
   }
 
-  document.querySelectorAll('.nc, .custos, .clef, .accid, .divLine').forEach(el => {
-    el.setAttribute('stroke', 'black');
-    el.setAttribute('stroke-width', '30px');
-  });
+  document
+    .querySelectorAll('.nc, .custos, .clef, .accid, .divLine')
+    .forEach((el) => {
+      el.setAttribute('stroke', 'black');
+      el.setAttribute('stroke-width', '30px');
+    });
 
   for (let i = 0; i < groups.length; i++) {
     const groupColor = ColorPalette[i % ColorPalette.length];
-    if ((groups[i].closest('.selected') === null) && !groups[i].classList.contains('selected')) {
-      groups[i].setAttribute('fill', groupColor);
-      const rects = groups[i].querySelectorAll('.sylTextRect-display') as NodeListOf<HTMLElement>;
+    if (
+      groups[i].closest('.selected') === null &&
+      !groups[i].classList.contains('selected')
+    ) {
+      if (groups[i].classList.contains('divLine')) {
+        (groups[i] as SVGPathElement).style.color = groupColor;
+      } else {
+        groups[i].setAttribute('fill', groupColor);
+      }
+      const rects = groups[i].querySelectorAll(
+        '.sylTextRect-display',
+      ) as NodeListOf<HTMLElement>;
       rects.forEach(function (rect) {
-        if (rect.closest('.syl').classList.contains('selected') ||
+        if (
+          rect.closest('.syl').classList.contains('selected') ||
           rect.closest('.syllable').classList.contains('selected') ||
           rect.closest('.staff').classList.contains('selected')
         ) {
@@ -270,25 +326,34 @@ export function setGroupingHighlight(grouping: GroupingType): void {
         rect.style.fill = groupColor;
       });
       groups[i].classList.add('highlighted');
-      groups[i].querySelectorAll('.sylTextRect-display').forEach(rect => {
+      groups[i].querySelectorAll('.sylTextRect-display').forEach((rect) => {
         rect.classList.add('highlighted');
       });
     } else {
       if (!groups[i].classList.contains('selected')) {
-        groups[i].setAttribute('fill', null);
+        if (groups[i].classList.contains('divLine')) {
+          (groups[i] as SVGPathElement).style.color = null;
+        } else {
+          groups[i].setAttribute('fill', null);
+        }
       } else {
-        groups[i].setAttribute('fill', '#d00');
+        if (groups[i].classList.contains('divLine')) {
+          (groups[i] as SVGPathElement).style.color = '#d00';
+        } else {
+          groups[i].setAttribute('fill', '#d00');
+        }
       }
       groups[i].classList.remove('highlighted');
     }
 
-    const divLineChildren = groups[i].querySelectorAll('.divLine');
+    const divLineChildren = groups[i].querySelectorAll(
+      '.divLine',
+    ) as Array<SVGPathElement>;
     if (divLineChildren) {
       for (let j = 0; j < divLineChildren.length; j++) {
-        divLineChildren[j].setAttribute('stroke', groupColor);
-        divLineChildren[j].setAttribute('stroke-width', '30px');
+        divLineChildren[j].style.color = groupColor;
+        divLineChildren[j].style.strokeWidth = '30px';
       }
     }
   }
-  
 }
