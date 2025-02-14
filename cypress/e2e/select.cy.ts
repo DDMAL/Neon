@@ -11,13 +11,12 @@ beforeEach(() => {
 
 describe('select: syllable', () => {
   beforeEach(() => {
-    cy.get('#selBySyllable')
-      .click()
-      .should('have.class', 'is-active');
+    cy.get('#selBySyllable').click().should('have.class', 'is-active');
   });
 
   it('highlight: syllable should be selected red', () => {
-    cy.get('.syllable').first()
+    cy.get('.syllable')
+      .first()
       .click({ timeout: 100, force: true })
       .should('have.class', 'selected')
       .should('have.css', 'fill')
@@ -29,9 +28,7 @@ describe('select: syllable', () => {
 
 describe('select: staff', () => {
   beforeEach(() => {
-    cy.get('#selByStaff')
-      .click()
-      .should('have.class', 'is-active');
+    cy.get('#selByStaff').click().should('have.class', 'is-active');
   });
 
   it('highlight: syllables, clefs, and accids', () => {
@@ -63,7 +60,7 @@ describe('select: staff', () => {
       .within(() => {
         cy.get('.divLine')
           .should('have.class', 'highlighted')
-          .and('have.css', 'stroke')
+          .and('have.css', 'color')
           .and('eq', 'rgb(221, 0, 0)');
       });
   });
@@ -78,5 +75,4 @@ describe('select: staff', () => {
 
     cy.get('#svg_group').find('.resizePoint').should('have.length', 8);
   });
-
 });
