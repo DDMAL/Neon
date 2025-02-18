@@ -638,8 +638,8 @@ export async function selectAll(
 
     // Check for precedes/follows
     let selected = grouping;
-    let follows = selected.getAttribute('mei:follows');
-    let precedes = selected.getAttribute('mei:precedes');
+    let follows = selected.getAttribute('data-follows');
+    let precedes = selected.getAttribute('data-precedes');
     while (follows || precedes) {
       if (follows) {
         selected = document.querySelector('#' + follows.slice(1));
@@ -648,7 +648,7 @@ export async function selectAll(
         }
         selected.classList.add('no-moving');
         groupsToSelect.add(selected);
-        follows = selected.getAttribute('mei:follows');
+        follows = selected.getAttribute('data-follows');
       }
       if (precedes) {
         selected = document.querySelector('#' + precedes.slice(1));
@@ -657,7 +657,7 @@ export async function selectAll(
         }
         selected.classList.add('no-moving');
         groupsToSelect.add(selected);
-        precedes = selected.getAttribute('mei:precedes');
+        precedes = selected.getAttribute('data-precedes');
       }
     }
   }

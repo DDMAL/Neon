@@ -63,8 +63,8 @@ export function containsLinked(
     case 'selBySyllable':
       for (const element of elements) {
         if (
-          element.hasAttribute('mei:follows') ||
-          element.hasAttribute('mei:precedes')
+          element.hasAttribute('data-follows') ||
+          element.hasAttribute('data-precedes')
         ) {
           Notification.queueNotification(
             'The action involves linked syllables, please untoggle them first',
@@ -78,8 +78,8 @@ export function containsLinked(
     case 'selByNeume':
       for (const element of elements) {
         if (
-          element.parentElement.hasAttribute('mei:follows') ||
-          element.parentElement.hasAttribute('mei:precedes')
+          element.parentElement.hasAttribute('data-follows') ||
+          element.parentElement.hasAttribute('data-precedes')
         ) {
           Notification.queueNotification(
             'The action involves linked syllables, please untoggle them first',
@@ -93,8 +93,8 @@ export function containsLinked(
     case 'selByNc':
       for (const element of elements) {
         if (
-          element.parentElement.parentElement.hasAttribute('mei:follows') ||
-          element.parentElement.parentElement.hasAttribute('mei:precedes')
+          element.parentElement.parentElement.hasAttribute('data-follows') ||
+          element.parentElement.parentElement.hasAttribute('data-precedes')
         ) {
           Notification.queueNotification(
             'The action involves linked syllables, please untoggle them first',
@@ -124,10 +124,10 @@ function hasInvalidLinkedSyllable(
 
   for (let idx = 0; idx < elements.length; idx++) {
     const syllable = elements.at(idx);
-    if (syllable.hasAttribute('mei:precedes')) {
+    if (syllable.hasAttribute('data-precedes')) {
       // Get xml:id of the next syllable (without the #, if it exists)
       const nextSyllableId = syllable
-        .getAttribute('mei:precedes')
+        .getAttribute('data-precedes')
         .replace('#', '');
 
       // Find the next syllable and its index in the array
@@ -147,12 +147,12 @@ function hasInvalidLinkedSyllable(
       }
 
       // Condition 2: The next syllable has been found, but the @follows attribute does NOT EXIST
-      if (!nextSyllable.hasAttribute('mei:follows')) {
+      if (!nextSyllable.hasAttribute('data-follows')) {
         return true;
       }
 
       // Condition 3: The next syllable's @follows attribute exists, but it is not in the correct format #id
-      if (nextSyllable.getAttribute('mei:follows') != '#' + syllable.id) {
+      if (nextSyllable.getAttribute('data-follows') != '#' + syllable.id) {
         return true;
       }
 
@@ -163,9 +163,9 @@ function hasInvalidLinkedSyllable(
         return true;
       }
     }
-    if (syllable.hasAttribute('mei:follows')) {
+    if (syllable.hasAttribute('data-follows')) {
       const prevSyllableId = syllable
-        .getAttribute('mei:follows')
+        .getAttribute('data-follows')
         .replace('#', '');
       const prevSyllable = elements.find(
         (syllable) => syllable.id === prevSyllableId,
@@ -177,12 +177,12 @@ function hasInvalidLinkedSyllable(
       }
 
       // Condition 2: The previous syllable exists, but the @precedes attribute does NOT EXIST
-      if (!prevSyllable.hasAttribute('mei:precedes')) {
+      if (!prevSyllable.hasAttribute('data-precedes')) {
         return true;
       }
 
       // Condition 3: The previous syllable's @precedes attribute exists, but it is not in the correct format #id
-      if (prevSyllable.getAttribute('mei:precedes') != '#' + syllable.id) {
+      if (prevSyllable.getAttribute('data-precedes') != '#' + syllable.id) {
         return true;
       }
     }
@@ -200,8 +200,8 @@ export function isLinked(elements: Array<SVGGraphicsElement>): boolean {
   // every element should be linked
   for (const element of elements) {
     if (
-      !element.hasAttribute('mei:precedes') &&
-      !element.hasAttribute('mei:follows')
+      !element.hasAttribute('data-precedes') &&
+      !element.hasAttribute('data-follows')
     )
       return false;
   }
@@ -259,16 +259,16 @@ export function canBeLinked(elements: Array<SVGGraphicsElement>): boolean {
   if (elements.length === 2) {
     return elements.every(
       (element) =>
-        !element.hasAttribute('mei:precedes') &&
-        !element.hasAttribute('mei:follows'),
+        !element.hasAttribute('data-precedes') &&
+        !element.hasAttribute('data-follows'),
     );
   }
 
   // 4.2 Handle case for more than two syllables
   const unlinkedElements = elements.filter(
     (element) =>
-      !element.hasAttribute('mei:precedes') &&
-      !element.hasAttribute('mei:follows'),
+      !element.hasAttribute('data-precedes') &&
+      !element.hasAttribute('data-follows'),
   );
 
   if (unlinkedElements.length !== 1) {
@@ -590,7 +590,7 @@ function unlink(elementIds: string[]): Array<EditorAction> {
   const param = new Array<EditorAction>();
   for (const id of elementIds) {
     const element = document.getElementById(id);
-    if (element.getAttribute('mei:precedes')) {
+    if (element.getAttribute('data-precedes')) {
       param.push({
         action: 'set',
         param: {
@@ -600,7 +600,7 @@ function unlink(elementIds: string[]): Array<EditorAction> {
         },
       });
     }
-    if (element.getAttribute('mei:follows')) {
+    if (element.getAttribute('data-follows')) {
       param.push({
         action: 'set',
         param: {
@@ -649,7 +649,8 @@ function getToggleSyllableIds(
   }
 
   const unlinkedElement = elements.find(
-    (el) => !el.hasAttribute('mei:precedes') && !el.hasAttribute('mei:follows'),
+    (el) =>
+      !el.hasAttribute('data-precedes') && !el.hasAttribute('data-follows'),
   );
 
   if (unlinkedElement) {
