@@ -51,6 +51,7 @@ verovio.module.onRuntimeInitialized = function () {
     pageMarginTop: 0,
     font: 'Bravura',
     useFacsimile: false,
+    svgAdditionalAttribute: ['syllable@precedes', 'syllable@follows'],
   });
   console.log('Verovio toolkit: READY');
   onmessage = handleNeonEvent;
