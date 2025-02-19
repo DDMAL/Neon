@@ -1,12 +1,18 @@
 /**
  * Drag function for syllables and staves
  */
-function drag (selector: string, offsetX = 0, offsetY = 0): void {
+function drag(selector: string, offsetX = 0, offsetY = 0): void {
   // https://github.com/cypress-io/cypress/issues/3441#issuecomment-545292552
-  cy.window().then(win => {
-    cy.get(selector).first()
+  cy.window().then((win) => {
+    cy.get(selector)
+      .first()
       .click({ timeout: 100, force: true })
-      .trigger('mousedown', 1, 1, { timeout: 100, force: true, which: 1, view: win })
+      .trigger('mousedown', 1, 1, {
+        timeout: 100,
+        force: true,
+        which: 1,
+        view: win,
+      })
       .trigger('mousemove', offsetX + 1, offsetY + 1, { force: true })
       .trigger('mouseup', { force: true, view: win });
   });
@@ -14,7 +20,9 @@ function drag (selector: string, offsetX = 0, offsetY = 0): void {
 
 beforeEach(() => {
   cy.visit('http://localhost:8080/editor.html?manifest=test');
-  cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
+  cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
+    'be.visible',
+  );
 });
 
 describe('drag: staves', () => {
@@ -23,18 +31,22 @@ describe('drag: staves', () => {
   });
 
   it('error: move out of bounds to the LEFT', () => {
-    cy.get('.staff').first().then(el => {
-      const origin = el[0].getBoundingClientRect();
+    cy.get('.staff')
+      .first()
+      .then((el) => {
+        const origin = el[0].getBoundingClientRect();
 
-      drag('.staff', -300, -0);
+        drag('.staff', -300, -0);
 
-      cy.get('.staff').first().then(el => {
-        const { x, y } = el[0].getBoundingClientRect();
+        cy.get('.staff')
+          .first()
+          .then((el) => {
+            const { x, y } = el[0].getBoundingClientRect();
 
-        expect(x).to.be.closeTo(origin.x, 15);
-        expect(y).to.be.closeTo(origin.y, 15);
+            expect(x).to.be.closeTo(origin.x, 15);
+            expect(y).to.be.closeTo(origin.y, 15);
+          });
       });
-    });
 
     // User should be notified
     cy.contains('Drag action failed').should('be.visible');
@@ -49,7 +61,7 @@ describe('drag: staves', () => {
     drag('.staff', 0, -300);
     cy.contains('Drag action failed').should('be.visible');
   });
-  
+
   it('error: move out of bounds to the BOTTOM', () => {
     drag('.staff', 0, 1000);
     cy.contains('Drag action failed').should('be.visible');
@@ -59,8 +71,7 @@ describe('drag: staves', () => {
     drag('.staff', 50, -30);
 
     // Staff should still be selected even after drag
-    cy.get('.staff').first()
-      .should('have.class', 'selected');
+    cy.get('.staff').first().should('have.class', 'selected');
 
     cy.contains('Drag action failed').should('not.exist');
   });

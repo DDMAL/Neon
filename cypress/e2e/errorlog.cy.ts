@@ -8,7 +8,9 @@ describe('test: error log', () => {
     cy.viewport('macbook-13');
     cy.clearLocalStorage();
     cy.visit('http://localhost:8080/editor.html?manifest=test');
-    cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
+    cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
+      'be.visible',
+    );
     cy.get('#debug-mode-checkbox').click({ timeout: 100, force: true });
   });
 

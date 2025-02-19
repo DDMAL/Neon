@@ -5,7 +5,9 @@ describe('resize: bounding boxes', () => {
   beforeEach(() => {
     cy.viewport('macbook-13');
     cy.visit('http://localhost:8080/editor.html?manifest=test');
-    cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
+    cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
+      'be.visible',
+    );
     cy.get('#displayBBox').click();
     cy.get('#selByBBox').click();
 
@@ -15,14 +17,17 @@ describe('resize: bounding boxes', () => {
   const BBOX_ID = '#m-8e6837fc-19d4-42c9-8266-cd54bb6f1dea';
 
   it('oob: bbox should return to original size', () => {
-    cy.get(BBOX_ID)
-      .click()
-      .should('have.class', 'selected');
+    cy.get(BBOX_ID).click().should('have.class', 'selected');
 
     // cy.window() is necessary for d3 dragging
-    cy.window().then(win => {
+    cy.window().then((win) => {
       cy.get('#p-BottomLeft')
-        .trigger('mousedown', { timeout: 100, force: true, which: 1, view: win })
+        .trigger('mousedown', {
+          timeout: 100,
+          force: true,
+          which: 1,
+          view: win,
+        })
         .trigger('mousemove', -100, 0, { force: true })
         .trigger('mouseup', { force: true, view: win });
     });

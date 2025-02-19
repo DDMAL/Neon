@@ -10,7 +10,9 @@ describe('test: zoom', () => {
     cy.viewport('macbook-13');
     // Visit the website, and wait until the MEI SVG is visible:
     cy.visit('http://localhost:8080/editor.html?manifest=test');
-    cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
+    cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
+      'be.visible',
+    );
 
     expectZoom(100);
   });
@@ -34,8 +36,9 @@ describe('test: zoom', () => {
    * Zoom to a percentage value, then run `expectZoom` to check
    * viewbox value and zoom output text value
    */
-  function zoomTo (val: number) {
-    cy.get('#zoomSlider').as('range')
+  function zoomTo(val: number) {
+    cy.get('#zoomSlider')
+      .as('range')
       .trigger('mousedown')
       .invoke('val', val)
       .trigger('mouseup'); // may be "change"
@@ -47,11 +50,11 @@ describe('test: zoom', () => {
    * Function that checks viewbox, slider, and output values to
    * the zoomed in value
    */
-  function expectZoom (val = 100) {
+  function expectZoom(val = 100) {
     // Check whether the SVG has the correct viewbox values
     cy.get('#svg_group')
       .should('have.attr', 'viewBox')
-      .and('eq', ORIGIN_VIEWBOX.map(e => e / (val / 100)).join(' '));
+      .and('eq', ORIGIN_VIEWBOX.map((e) => e / (val / 100)).join(' '));
 
     // Check zoom slider and output values
     cy.get('#zoomSlider').as('range').should('have.value', val);

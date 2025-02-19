@@ -2,7 +2,9 @@ describe('test: dropdowns', () => {
   beforeEach(() => {
     cy.viewport('macbook-13');
     cy.visit('http://localhost:8080/editor.html?manifest=test');
-    cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
+    cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
+      'be.visible',
+    );
   });
 
   function isOctaveDropdown(visible = true) {
@@ -43,5 +45,4 @@ describe('test: dropdowns', () => {
     cy.get('body').click({ force: true });
     isOctaveDropdown(false);
   });
-
 });
