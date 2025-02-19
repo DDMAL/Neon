@@ -1,24 +1,24 @@
 beforeEach(() => {
   cy.viewport('macbook-13');
   cy.visit('http://localhost:8080/editor.html?manifest=test');
-  cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
+  cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
+    'be.visible',
+  );
 });
 
 type OpacityType = 'glyph' | 'bg';
 
-function expectOpacity (type: OpacityType, val: number) {
+function expectOpacity(type: OpacityType, val: number) {
   if (type === 'glyph') {
-    cy.get('#opacitySlider').as('range')
-      .should('have.value', val);
+    cy.get('#opacitySlider').as('range').should('have.value', val);
 
-    cy.get('#mei_output')
+    cy.get('svg.neon-container.active-page')
       .should('have.css', 'opacity')
       .and('eq', String(val / 100));
 
     cy.get('#opacityOutput').should('have.text', String(val));
   } else {
-    cy.get('#bgOpacitySlider').as('range')
-      .should('have.value', val);
+    cy.get('#bgOpacitySlider').as('range').should('have.value', val);
 
     cy.get('#bgimg')
       .should('have.css', 'opacity')
@@ -28,16 +28,17 @@ function expectOpacity (type: OpacityType, val: number) {
   }
 }
 
-function expectToggleButton (type: OpacityType, val: number) {
+function expectToggleButton(type: OpacityType, val: number) {
   cy.get(`#toggle-${type}-opacity > .slider-btn-img`)
     .should('have.attr', 'src')
     .and('contain', val === 0 ? 'show-icon' : 'hide-icon');
 }
 
-function setOpacity (type: OpacityType, val: number) {
+function setOpacity(type: OpacityType, val: number) {
   const sliderId = type === 'glyph' ? '#opacitySlider' : '#bgOpacitySlider';
 
-  cy.get(sliderId).as('range')
+  cy.get(sliderId)
+    .as('range')
     .trigger('mousedown')
     .invoke('val', val)
     .trigger('change') // Zoom slider uses mouseup, but glyph/img opacity uses change event
@@ -49,14 +50,16 @@ function setOpacity (type: OpacityType, val: number) {
 
 // Click the toggle button for the corresponding opacity type:
 // Check opacity value to be set to 0 or 100, as expected
-function clickToggle (type: OpacityType) {
+function clickToggle(type: OpacityType) {
   const sliderId = type === 'glyph' ? '#opacitySlider' : '#bgOpacitySlider';
-  cy.get(sliderId).as('range').then(($slider: JQuery<HTMLInputElement>) => {
-    const originVal = Number($slider[0].value);
-    cy.get(`#toggle-${type}-opacity`).click();
-    expectOpacity(type, originVal === 0 ? 100 : 0);
-    expectToggleButton(type, originVal === 0 ? 100 : 0);
-  });
+  cy.get(sliderId)
+    .as('range')
+    .then(($slider: JQuery<HTMLInputElement>) => {
+      const originVal = Number($slider[0].value);
+      cy.get(`#toggle-${type}-opacity`).click();
+      expectOpacity(type, originVal === 0 ? 100 : 0);
+      expectToggleButton(type, originVal === 0 ? 100 : 0);
+    });
 }
 
 describe('test: glyph opacity', () => {

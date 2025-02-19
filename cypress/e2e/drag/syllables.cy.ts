@@ -1,12 +1,18 @@
 /**
  * Drag function for syllables and staves
  */
-function drag (selector: string, offsetX = 0, offsetY = 0): void {
+function drag(selector: string, offsetX = 0, offsetY = 0): void {
   // https://github.com/cypress-io/cypress/issues/3441#issuecomment-545292552
-  cy.window().then(win => {
-    cy.get(selector).first()
+  cy.window().then((win) => {
+    cy.get(selector)
+      .first()
       .click({ timeout: 100, force: true })
-      .trigger('mousedown', 1, 1, { timeout: 100, force: true, which: 1, view: win })
+      .trigger('mousedown', 1, 1, {
+        timeout: 100,
+        force: true,
+        which: 1,
+        view: win,
+      })
       .trigger('mousemove', offsetX + 1, offsetY + 1, { force: true })
       .trigger('mouseup', { force: true, view: win });
   });
@@ -14,7 +20,9 @@ function drag (selector: string, offsetX = 0, offsetY = 0): void {
 
 beforeEach(() => {
   cy.visit('http://localhost:8080/editor.html?manifest=test');
-  cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
+  cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
+    'be.visible',
+  );
 });
 
 //
@@ -56,7 +64,6 @@ describe('drag: syllables', () => {
 
     // Syllable should still be selected even after drag
     cy.get(SYLLABLE_ID).should('have.class', 'selected');
-
   });
 });
 

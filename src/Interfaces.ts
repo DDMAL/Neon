@@ -4,7 +4,12 @@ import ZoomHandler from './SingleView/Zoom';
 import { ModalWindowView } from './utils/ModalWindow';
 
 export interface DisplayConstructable {
-  new (a: ViewInterface, b: string, c: string, d?: ZoomHandler): DisplayInterface;
+  new (
+    a: ViewInterface,
+    b: string,
+    c: string,
+    d?: ZoomHandler,
+  ): DisplayInterface;
 }
 
 export interface DisplayInterface {
@@ -12,9 +17,9 @@ export interface DisplayInterface {
   meiClass: string;
   background: string;
   zoomHandler: ZoomHandler;
-  setDisplayListeners (): void;
-  updateVisualization (): void;
-  loadSettings (): void;
+  setDisplayListeners(): void;
+  updateVisualization(): void;
+  loadSettings(): void;
 }
 
 export interface ViewConstructable {
@@ -23,12 +28,13 @@ export interface ViewConstructable {
 
 export interface ViewInterface {
   zoomHandler: ZoomHandler;
-  changePage (pageIndex: number, delay: boolean): Promise<void>;
+  changePage(pageIndex: number, delay: boolean): Promise<void>;
   addUpdateCallback(a: Function);
-  getCurrentPage (): number;
-  getCurrentPageURI (): string;
-  getPageName (): string;
-  onSVGLoad? (): void;
+  getCurrentPage(): number;
+  getCurrentPageURI(): string;
+  getPageName(): string;
+  onSVGLoad?(): void;
+  svgId: string;
 }
 
 export interface NeumeEditConstructable {
@@ -36,9 +42,9 @@ export interface NeumeEditConstructable {
 }
 
 export interface NeumeEditInterface {
-  initEditMode (): void;
-  getUserMode (): UserType;
-  setSelectListeners (): void;
+  initEditMode(): void;
+  getUserMode(): UserType;
+  setSelectListeners(): void;
 }
 
 export interface TextEditConstructable {
@@ -46,9 +52,9 @@ export interface TextEditConstructable {
 }
 
 export interface TextEditInterface {
-  initTextEdit (): void;
-  initSelectByBBoxButton (): void;
-  initBBoxCircleSlider (): void;
+  initTextEdit(): void;
+  initSelectByBBoxButton(): void;
+  initBBoxCircleSlider(): void;
 }
 
 export interface ModalWindowInterface {
@@ -62,8 +68,8 @@ export interface TextViewConstructable {
 }
 
 export interface TextViewInterface {
-  updateBBoxVisibility (): void;
-  getSylText (): string;
+  updateBBoxVisibility(): void;
+  getSylText(): string;
 }
 
 export interface InfoConstructable {
@@ -71,15 +77,15 @@ export interface InfoConstructable {
 }
 
 export interface InfoInterface {
-  getContour (ncs: Iterable<SVGGraphicsElement>): Promise<string>;
-  getPitches (ncs: Iterable<SVGGraphicsElement>): Promise<string>;
-  pitchNameToNum (pname: string): number;
-  getContourByValue (value: string): string;
-  updateInfoModule (body: string): void;
-  infoListeners (): void;
-  stopListeners (): void;
-  resetInfoListeners (): void;
-  updateInfo (evt: MouseEvent): Promise<void>;
+  getContour(ncs: Iterable<SVGGraphicsElement>): Promise<string>;
+  getPitches(ncs: Iterable<SVGGraphicsElement>): Promise<string>;
+  pitchNameToNum(pname: string): number;
+  getContourByValue(value: string): string;
+  updateInfoModule(body: string): void;
+  infoListeners(): void;
+  stopListeners(): void;
+  resetInfoListeners(): void;
+  updateInfo(evt: MouseEvent): Promise<void>;
 }
 
 export interface NeonViewParams {

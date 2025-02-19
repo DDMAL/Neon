@@ -1,4 +1,8 @@
-import { updateHighlight, setGlyphOpacityFromSlider, setBgOpacityFromSlider } from '../DisplayPanel/DisplayControls';
+import {
+  updateHighlight,
+  setGlyphOpacityFromSlider,
+  setBgOpacityFromSlider,
+} from '../DisplayPanel/DisplayControls';
 import NeonView from '../NeonView';
 import DisplayPanel from '../DisplayPanel/DisplayPanel';
 import ZoomHandler from './Zoom';
@@ -17,6 +21,7 @@ class SingleView implements ViewInterface {
   private group: SVGSVGElement;
   private bg: SVGImageElement;
   private svg: SVGSVGElement;
+  svgId: string; // Change to readonly
   zoomHandler: ZoomHandler;
   private displayPanel: DisplayPanel;
   readonly pageURI: string;
@@ -24,7 +29,7 @@ class SingleView implements ViewInterface {
    * Constructor for SingleView.
    * @param image - The URI to the background image for the page.
    */
-  constructor (neonView: NeonView, panel: DisplayConstructable, image: string) {
+  constructor(neonView: NeonView, panel: DisplayConstructable, image: string) {
     this.neonView = neonView;
     this.container = document.getElementById('container');
     this.updateCallbacks = new Array(0);
@@ -41,54 +46,69 @@ class SingleView implements ViewInterface {
     this.bg.setAttribute('y', '0');
 
     const reader = new FileReader();
-    fetch(image).then(result => {
-      if (result.ok) {
-        reader.addEventListener('load', () => {
-          this.bg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', reader.result.toString());
-          const bbox = this.bg.getBBox();
-          if (!this.group.hasAttribute('viewBox')) {
-            /*
+    fetch(image)
+      .then((result) => {
+        if (result.ok) {
+          reader.addEventListener('load', () => {
+            this.bg.setAttributeNS(
+              'http://www.w3.org/1999/xlink',
+              'href',
+              reader.result.toString(),
+            );
+            const bbox = this.bg.getBBox();
+            if (!this.group.hasAttribute('viewBox')) {
+              /*
               If the SVG does not have a viewBox, load the previous viewBox
               value from localStorage. If none has been stored (viewBox is null),
               set it to the default value of the width and height of the background image
-              
+
               Note: an SVG's viewBox gives the "box" that the user can see the SVG through.
               The user may be zoomed into a very specific section of the SVG, in which case the
               viewBox should give coordinates of that specific box.
 
               See more: https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/viewBox
             */
-            let { viewBox } = getSettings();
-            if (!viewBox)
-              viewBox = '0 0 ' + bbox.width.toString() + ' ' + bbox.height.toString();
+              let { viewBox } = getSettings();
+              if (!viewBox)
+                viewBox =
+                  '0 0 ' + bbox.width.toString() + ' ' + bbox.height.toString();
 
-            this.group.setAttribute('viewBox', viewBox);
-          }
-        });
-        return result.blob();
-      }
-    }).then(blob => {
-      reader.readAsDataURL(blob);
-    });
+              this.group.setAttribute('viewBox', viewBox);
+            }
+          });
+          return result.blob();
+        }
+      })
+      .then((blob) => {
+        reader.readAsDataURL(blob);
+      });
 
     // It is better named svg, to avoid confusion with the actual MEI file.
-    this.svg = document.createElementNS('http://www.w3.org/svg', 'svg') as SVGSVGElement;
-    this.svg.id = 'mei_output';
+    this.svg = document.createElementNS(
+      'http://www.w3.org/svg',
+      'svg',
+    ) as SVGSVGElement;
     this.svg.classList.add('neon-container', 'active-page');
+    this.svgId = this.svg.id;
 
     this.group.appendChild(this.bg);
     this.group.appendChild(this.svg);
     this.container.appendChild(this.group);
 
     this.zoomHandler = new ZoomHandler();
-    this.displayPanel = new panel(this, 'neon-container', 'background', this.zoomHandler);
+    this.displayPanel = new panel(
+      this,
+      'neon-container',
+      'background',
+      this.zoomHandler,
+    );
 
     this.pageURI = image;
 
     document.getElementById('loading').style.display = 'none';
   }
 
-  onSVGLoad (): void {
+  onSVGLoad(): void {
     this.setViewEventHandlers();
     this.displayPanel.setDisplayListeners();
   }
@@ -97,11 +117,11 @@ class SingleView implements ViewInterface {
    * Update the SVG being displayed.
    * @param svg - New rendered SVG to use.
    */
-  updateSVG (svg: SVGSVGElement): void {
+  updateSVG(svg: SVGSVGElement): void {
     this.group.replaceChild(svg, this.svg);
     this.svg = svg;
-    this.svg.id = 'mei_output';
     this.svg.classList.add('neon-container', 'active-page');
+    this.svgId = this.svg.id;
     const height = parseInt(this.svg.getAttribute('height'));
     const width = parseInt(this.svg.getAttribute('width'));
 
@@ -111,19 +131,18 @@ class SingleView implements ViewInterface {
     const { viewBox } = getSettings();
     if (!viewBox)
       this.group.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
-    else
-      this.group.setAttribute('viewBox', viewBox);
+    else this.group.setAttribute('viewBox', viewBox);
 
     updateHighlight();
     this.resetTransformations();
-    this.updateCallbacks.forEach(callback => callback());
+    this.updateCallbacks.forEach((callback) => callback());
   }
 
   /**
    * Change to a certain page
    * Since there is only one page, this is essentially a wrapper for updateSVG
    */
-  async changePage (_page: number, _delay: boolean): Promise<void> {
+  async changePage(_page: number, _delay: boolean): Promise<void> {
     const svg = await this.neonView.getPageSVG(this.getCurrentPageURI());
     this.updateSVG(svg);
   }
@@ -132,7 +151,7 @@ class SingleView implements ViewInterface {
    * Add a callback to the list of those be called when the page updates.
    * @param cb - The callback function.
    */
-  addUpdateCallback (cb: () => void): void {
+  addUpdateCallback(cb: () => void): void {
     this.updateCallbacks.push(cb);
   }
 
@@ -140,7 +159,7 @@ class SingleView implements ViewInterface {
    * Remove a callback from the list of callbacks if it is part of the list.
    * @param cb - The callback function.
    */
-  removeUpdateCallback (cb: () => void): void {
+  removeUpdateCallback(cb: () => void): void {
     const index = this.updateCallbacks.findIndex((elem) => {
       return elem === cb;
     });
@@ -152,7 +171,7 @@ class SingleView implements ViewInterface {
   /**
    * Reset the transformations that have been applied to the SVG upon update.
    */
-  resetTransformations (): void {
+  resetTransformations(): void {
     this.displayPanel.zoomHandler.restoreTransformation();
     setGlyphOpacityFromSlider();
     setBgOpacityFromSlider();
@@ -161,34 +180,49 @@ class SingleView implements ViewInterface {
   /**
    * @returns The zero-indexed number of the current page. This will always be zero.
    */
-  getCurrentPage (): number {
+  getCurrentPage(): number {
     return 0;
   }
 
   /**
    * @returns The URI of the page.
    */
-  getCurrentPageURI (): string {
+  getCurrentPageURI(): string {
     return this.pageURI;
   }
 
   /**
    * Set event handlers for the view and display panel.
    */
-  setViewEventHandlers (): void {
+  setViewEventHandlers(): void {
     document.body.addEventListener('keydown', (evt) => {
       switch (evt.key) {
         case 'Shift':
           d3.select('#svg_group').on('.drag', null);
           d3.select('#svg_group').call(
-            d3.drag().on('start', this.displayPanel.zoomHandler.startDrag.bind(this.displayPanel.zoomHandler))
-              .on('drag', this.displayPanel.zoomHandler.dragging.bind(this.displayPanel.zoomHandler))
+            d3
+              .drag()
+              .on(
+                'start',
+                this.displayPanel.zoomHandler.startDrag.bind(
+                  this.displayPanel.zoomHandler,
+                ),
+              )
+              .on(
+                'drag',
+                this.displayPanel.zoomHandler.dragging.bind(
+                  this.displayPanel.zoomHandler,
+                ),
+              ),
           );
           break;
         case 'h':
-          document.getElementById('mei_output').setAttribute('visibility', 'hidden');
+          document
+            .getElementById(this.svgId)
+            .setAttribute('visibility', 'hidden');
           break;
-        default: break;
+        default:
+          break;
       }
     });
     document.body.addEventListener('keyup', (evt) => {
@@ -200,22 +234,36 @@ class SingleView implements ViewInterface {
           }
           break;
         case 'h':
-          document.getElementById('mei_output').setAttribute('visibility', 'visible');
+          document
+            .getElementById(this.svgId)
+            .setAttribute('visibility', 'visible');
           break;
-        default: break;
+        default:
+          break;
       }
     });
 
     d3.select('#container').on('touchstart', () => {
       if (d3.event.touches.length === 2) {
         this.displayPanel.zoomHandler.startDrag();
-        d3.select('#container').on('touchmove', this.displayPanel.zoomHandler.dragging.bind(this.displayPanel.zoomHandler));
+        d3.select('#container').on(
+          'touchmove',
+          this.displayPanel.zoomHandler.dragging.bind(
+            this.displayPanel.zoomHandler,
+          ),
+        );
         d3.select('#container').on('touchend', () => {
           d3.select('#container').on('touchmove', null);
         });
       }
     });
-    d3.select('#container').on('wheel', this.displayPanel.zoomHandler.scrollZoom.bind(this.displayPanel.zoomHandler), false);
+    d3.select('#container').on(
+      'wheel',
+      this.displayPanel.zoomHandler.scrollZoom.bind(
+        this.displayPanel.zoomHandler,
+      ),
+      false,
+    );
     // Update height of container based on window
     window.onresize = (): void => {
       const newHeight = window.innerHeight;
@@ -229,7 +277,7 @@ class SingleView implements ViewInterface {
   /**
    * @returns A human readable name for the page. Used for downloads.
    */
-  getPageName (): string {
+  getPageName(): string {
     return this.neonView.name;
   }
 }

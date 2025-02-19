@@ -4,7 +4,9 @@
 
 beforeEach(() => {
   cy.visit('http://localhost:8080/editor.html?manifest=test');
-  cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
+  cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
+    'be.visible',
+  );
 });
 
 describe('drag: bounding boxes', () => {
@@ -18,18 +20,20 @@ describe('drag: bounding boxes', () => {
 
   const BBOX_ID = '#m-8e6837fc-19d4-42c9-8266-cd54bb6f1dea';
 
-  it('coords(safe): move bbox in the x-direction', () => dragBBox(BBOX_ID, 350, 0));
-  it('coords(safe): move bbox in the y-direction', () => dragBBox(BBOX_ID, 0, 200));
-  it('coords(safe): move bbox in both directions', () => dragBBox(BBOX_ID, 100, 100));
-
+  it('coords(safe): move bbox in the x-direction', () =>
+    dragBBox(BBOX_ID, 350, 0));
+  it('coords(safe): move bbox in the y-direction', () =>
+    dragBBox(BBOX_ID, 0, 200));
+  it('coords(safe): move bbox in both directions', () =>
+    dragBBox(BBOX_ID, 100, 100));
 });
 
 /**
  * Drag function for bounding boxes:
  * Checks for whether the bounding box has moved correctly on mouseup
  */
-function dragBBox (selector: string, offsetX = 0, offsetY = 0): void {
-  cy.window().then(win => {
+function dragBBox(selector: string, offsetX = 0, offsetY = 0): void {
+  cy.window().then((win) => {
     cy.get(selector)
       .click()
       .then(($bbox) => {
@@ -37,12 +41,13 @@ function dragBBox (selector: string, offsetX = 0, offsetY = 0): void {
         // https://docs.cypress.io/guides/core-concepts/variables-and-aliases#Closures
         const origin = $bbox[0].getBoundingClientRect();
 
-        cy.get(selector).trigger('mousedown', { view: win, force: true, timeout: 100 })
+        cy.get(selector)
+          .trigger('mousedown', { view: win, force: true, timeout: 100 })
           .trigger('mousemove', offsetX, offsetY, { force: true })
           .trigger('mouseup', { view: win, force: true })
           .then(($bbox) => {
             const moved = $bbox[0].getBoundingClientRect();
-            
+
             // Bounding box coordinate checks:
             // We allow for some leeway on how close the positions have to be,
             // for any calculation rounding in d3 and Neon
@@ -55,10 +60,8 @@ function dragBBox (selector: string, offsetX = 0, offsetY = 0): void {
   });
 }
 
-
 Cypress.on('uncaught:exception', () => {
   // returning false here prevents Cypress from
   // failing the test
   return false;
 });
-

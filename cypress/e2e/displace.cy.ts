@@ -1,7 +1,9 @@
 beforeEach(() => {
   cy.viewport('macbook-13');
   cy.visit('http://localhost:8080/editor.html?manifest=test');
-  cy.get('#mei_output', { timeout: 10000 }).should('be.visible');
+  cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
+    'be.visible',
+  );
 });
 
 describe('displace: +1 octave', () => {
@@ -43,7 +45,7 @@ describe('displace: +1 octave', () => {
 
       cy.get('#increment-octave').click({ timeout: 100, force: true });
 
-      cy.get(NEUME_ID).then($neume => {
+      cy.get(NEUME_ID).then(($neume) => {
         const after = $neume[0].getBoundingClientRect();
 
         // The neume should not have been moved, give or take 1px
