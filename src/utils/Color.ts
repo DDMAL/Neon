@@ -28,12 +28,7 @@ export function unhighlight(staff?: SVGGElement): void {
   }
   children.forEach((elem) => {
     if (
-      elem.tagName === 'path' &&
-      !elem.closest('.staff').classList.contains('selected')
-    ) {
-      (elem as SVGPathElement).style.stroke = '#000000';
-    } else if (
-      elem.classList.contains('divLine') &&
+      (elem.tagName === 'path' || elem.classList.contains('divLine')) &&
       !elem.closest('.staff').classList.contains('selected')
     ) {
       (elem as SVGPathElement).style.color = '#000000';
@@ -123,7 +118,7 @@ export function highlight(staff: SVGGElement, color: string): void {
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
     if (child.tagName === 'path') {
-      (child as SVGPathElement).style.stroke = color;
+      (child as SVGPathElement).style.color = color;
     } else if (child.classList.contains('divLine')) {
       (child as SVGPathElement).style.color = color;
       child.setAttribute('stroke-width', '30px');

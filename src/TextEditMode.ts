@@ -160,7 +160,9 @@ export default class TextEditMode implements TextEditInterface {
         );
         setSelectHelperObjects(this.neonView, this.dragHandler);
         if (this.neonView.view.constructor.name === 'SingleView') {
-          clickSelect('#mei_output, #mei_output rect');
+          clickSelect(
+            `#${this.neonView.view.svgId}, #${this.neonView.view.svgId} rect`,
+          );
           dragSelect('#svg_group');
         } else {
           clickSelect(
