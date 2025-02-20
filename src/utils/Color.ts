@@ -24,14 +24,16 @@ export function unhighlight(staff?: SVGGElement): void {
   if (staff) {
     children = staff.querySelectorAll(':not(.selected) .highlighted');
   } else {
-    children = document.querySelectorAll(':not(.selected) .highlighted');
+    children = document.querySelectorAll(
+      ':not(.selected) .highlighted, :not(.selected) .syllable.highlighted > .divLine',
+    );
   }
   children.forEach((elem) => {
     if (
       (elem.tagName === 'path' || elem.classList.contains('divLine')) &&
       !elem.closest('.staff').classList.contains('selected')
     ) {
-      (elem as SVGPathElement).style.color = '#000000';
+      (elem as SVGPathElement).style.color = 'black';
     } else {
       elem.removeAttribute('fill');
       let rects = elem.querySelectorAll('.sylTextRect-display');
@@ -117,11 +119,8 @@ export function highlight(staff: SVGGElement, color: string): void {
   const children = Array.from(staff.children);
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
-    if (child.tagName === 'path') {
+    if (child.tagName === 'path' || child.classList.contains('divLine')) {
       (child as SVGPathElement).style.color = color;
-    } else if (child.classList.contains('divLine')) {
-      (child as SVGPathElement).style.color = color;
-      child.setAttribute('stroke-width', '30px');
     } else if (
       child.querySelectorAll('.divLine').length &&
       child.classList.contains('syllable')
@@ -182,25 +181,12 @@ export function highlight(staff: SVGGElement, color: string): void {
     }
     child.classList.add('highlighted');
   }
-  let width, height;
   /*try {
     width = Number(document.querySelector('.active-page').querySelector('svg').getAttribute('width').split('px')[0]);
     height = Number(document.querySelector('.active-page').querySelector('svg').getAttribute('height').split('px')[0]);
   } catch (e) {
     console.debug(e);
   }*/
-  let stroke: string;
-  if (width !== undefined && height !== undefined) {
-    // idk looks good :')
-    // TODO find a better way of calculating this as this actually doesn't work as well as 30px
-    stroke = ((width * height) / 1000000).toString();
-  } else {
-    stroke = '30px';
-  }
-  staff.querySelectorAll('.nc, .custos, .clef, .accid').forEach((el) => {
-    el.setAttribute('stroke', 'black');
-    el.setAttribute('stroke-width', stroke);
-  });
 }
 
 /**
@@ -289,13 +275,6 @@ export function setGroupingHighlight(grouping: GroupingType): void {
     ) as HTMLCollectionOf<HTMLElement>;
   }
 
-  document
-    .querySelectorAll('.nc, .custos, .clef, .accid, .divLine')
-    .forEach((el) => {
-      el.setAttribute('stroke', 'black');
-      el.setAttribute('stroke-width', '30px');
-    });
-
   for (let i = 0; i < groups.length; i++) {
     const groupColor = ColorPalette[i % ColorPalette.length];
     if (
@@ -347,7 +326,6 @@ export function setGroupingHighlight(grouping: GroupingType): void {
     if (divLineChildren) {
       for (let j = 0; j < divLineChildren.length; j++) {
         divLineChildren[j].style.color = groupColor;
-        divLineChildren[j].style.strokeWidth = '30px';
       }
     }
   }
