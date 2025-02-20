@@ -54,6 +54,8 @@ verovio.module.onRuntimeInitialized = () => {
     font: 'Bravura',
     useFacsimile: false,
     svgAdditionalAttribute: ['syllable@precedes', 'syllable@follows'],
+    svgCss:
+      'g.nc, g.custos, g.clef, g.accid, g.divLine {stroke: currentColor; stroke-width: 30px;}',
   });
   console.log('Verovio toolkit: READY');
   onmessage = handleNeonEvent;

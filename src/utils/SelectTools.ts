@@ -41,8 +41,7 @@ export function unselect(): void {
 
     Array.from(selected.querySelectorAll('.divLine')).forEach(
       (divLine: HTMLElement) => {
-        divLine.style.stroke = '';
-        divLine.setAttribute('stroke-width', '30px');
+        divLine.style.color = '';
       },
     );
 
@@ -65,8 +64,7 @@ export function unselect(): void {
 
       Array.from(selected.parentElement.querySelectorAll('.divLine')).forEach(
         (divLine: HTMLElement) => {
-          divLine.style.stroke = '';
-          divLine.setAttribute('stroke-width', '30px');
+          divLine.style.color = '';
         },
       );
 
