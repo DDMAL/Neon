@@ -2,6 +2,7 @@ import NeonView from './NeonView';
 import { ModalWindowView } from './utils/ModalWindow';
 
 let worker: Worker,
+  currentVersion: string, // To keep track of the current version of the MEI file
   schema: string,
   versionField: HTMLSpanElement,
   statusField: HTMLSpanElement;
@@ -102,7 +103,8 @@ export async function sendForValidation(meiData: string): Promise<void> {
   versionField.style.color = 'gray';
   updateVersionUI(meiVersion);
 
-  if (schema === undefined) {
+  if (schema === undefined || meiVersion !== currentVersion) {
+    currentVersion = meiVersion;
     schema = await fetchSchema(meiVersion);
   }
   statusField.textContent = 'checking...';
