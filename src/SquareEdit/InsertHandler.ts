@@ -73,6 +73,7 @@ class InsertHandler {
         break;
       case 'cClef':
       case 'fClef':
+      case 'gClef':
         this.type = 'clef';
         this.attributes = { shape: buttonId.charAt(0).toUpperCase() };
         break;
