@@ -1,10 +1,12 @@
-name: E2E on Chrome
-on: [push]
+name: Scheduled E2E on Chrome
+on:
+  schedule:
+    - cron: '0 7 * * *'  # Runs at 07:00 UTC every day (02:00 AM EST)
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
     # let's make sure our tests pass on Chrome browser
-    name: E2E on Chrome
+    name: Scheduled E2E on Chrome
     steps:
       - uses: actions/checkout@v3
       - name: Set Node.js 16
@@ -13,6 +15,6 @@ jobs:
           node-version: 16
       - uses: cypress-io/github-action@v5
         with:
-          build: yarn build
+          build: yarn build:prod
           start: yarn start
           browser: chrome
