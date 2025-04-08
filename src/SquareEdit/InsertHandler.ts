@@ -20,7 +20,7 @@ class InsertHandler {
    * @param neonView - NeonView parent.
    * @param sel - The CSS selector to apply insert listeners to.
    */
-  constructor (neonView: NeonView, sel: string) {
+  constructor(neonView: NeonView, sel: string) {
     this.neonView = neonView;
     this.selector = sel;
   }
@@ -30,7 +30,7 @@ class InsertHandler {
    * Triggers the start of insert mode.
    * @param buttonId - The ID of the button that was clicked.
    */
-  insertActive (buttonId: string): void {
+  insertActive(buttonId: string): void {
     const alreadyInInsertMode = this.isInsertMode();
     switch (buttonId) {
       case 'punctum':
@@ -66,13 +66,14 @@ class InsertHandler {
       case 'porrectus':
       case 'pressus':
         const contour = this.neonView.info.getContourByValue(
-          buttonId.charAt(0).toUpperCase() + buttonId.slice(1)
+          buttonId.charAt(0).toUpperCase() + buttonId.slice(1),
         );
         this.type = 'grouping';
         this.attributes = { contour: contour };
         break;
       case 'cClef':
       case 'fClef':
+      case 'gClef':
         this.type = 'clef';
         this.attributes = { shape: buttonId.charAt(0).toUpperCase() };
         break;
@@ -106,10 +107,12 @@ class InsertHandler {
     this.removeInsertClickHandlers();
     try {
       if (this.type === 'staff') {
-        document.querySelector(this.selector)
+        document
+          .querySelector(this.selector)
           .addEventListener('click', this.staffHandler);
       } else {
-        document.querySelector(this.selector)
+        document
+          .querySelector(this.selector)
           .addEventListener('click', this.handler);
       }
     } catch (e) {}
@@ -128,13 +131,15 @@ class InsertHandler {
       editModeButton.addEventListener('click', this.insertDisabled);
     }
 
-    document.getElementById('editContents').addEventListener('click', this.clickawayHandler);
+    document
+      .getElementById('editContents')
+      .addEventListener('click', this.clickawayHandler);
   }
 
   /**
    * Disable insert mode and remove event listeners.
    */
-  insertDisabled = (function insertDisabled (): void {
+  insertDisabled = function insertDisabled(): void {
     this.type = '';
     this.removeInsertClickHandlers();
     document.body.removeEventListener('keydown', this.keydownListener);
@@ -150,55 +155,65 @@ class InsertHandler {
 
     const insertPanel = document.getElementById('insert_controls');
     const insertHeading = document.getElementById('insertMenu');
-    const insertHeadingTitle = insertHeading.querySelector('.panel-heading-title');
+    const insertHeadingTitle = insertHeading.querySelector(
+      '.panel-heading-title',
+    );
 
     const editPanel = document.getElementById('edit_controls');
     const editHeading = document.getElementById('editMenu');
-    const displayHeadingTitle = editHeading.querySelector('.panel-heading-title');
+    const displayHeadingTitle = editHeading.querySelector(
+      '.panel-heading-title',
+    );
 
     insertHeadingTitle.classList.remove('focused');
     displayHeadingTitle.classList.add('focused');
 
-    insertPanel.querySelector('.side-panel-btn.insertel.is-active').classList.add('unfocused');
-    editPanel.querySelector('.side-panel-btn.sel-by.is-active').classList.remove('unfocused');
+    insertPanel
+      .querySelector('.side-panel-btn.insertel.is-active')
+      .classList.add('unfocused');
+    editPanel
+      .querySelector('.side-panel-btn.sel-by.is-active')
+      .classList.remove('unfocused');
 
     setSettings({ userMode: 'edit' });
-    
-  }).bind(this);
+  }.bind(this);
 
   /**
    * Event handler to handle a user clicking away from the active page
    * causing insert mode to end.
    */
-  clickawayHandler = (function clickawayHandler (evt: MouseEvent): void {
+  clickawayHandler = function clickawayHandler(evt: MouseEvent): void {
     const target = evt.target as HTMLElement;
-    if (target.closest('.active-page') === null &&
+    if (
+      target.closest('.active-page') === null &&
       target.closest('#insert_controls') === null &&
-      target.closest('#svg_group') === null) {
+      target.closest('#svg_group') === null
+    ) {
       this.insertDisabled();
-      document.body.removeEventListener('keydown',
-        this.staffHandler);
-      document.body.removeEventListener('keydown',
-        this.handler);
+      document.body.removeEventListener('keydown', this.staffHandler);
+      document.body.removeEventListener('keydown', this.handler);
     }
-  }).bind(this);
+  }.bind(this);
 
   /**
    * Resets an insert event listener after temporarily removing it.
    */
-  resetInsertHandler = (function resetInsertHandler (evt: KeyboardEvent): void {
+  resetInsertHandler = function resetInsertHandler(evt: KeyboardEvent): void {
     if (evt.key === 'Shift') {
-      document.querySelector(this.selector)
-        .addEventListener('click', this.type === 'staff' ?
-          this.staffHandler : this.handler);
+      document
+        .querySelector(this.selector)
+        .addEventListener(
+          'click',
+          this.type === 'staff' ? this.staffHandler : this.handler,
+        );
     }
-  }).bind(this);
+  }.bind(this);
 
   /**
    * Listens to key presses to either exit edit mode (if Escape) or
    * temporarily remove insert event listeners (if Shift).
    */
-  keydownListener = (function keydownListener (evt: KeyboardEvent): void {
+  keydownListener = function keydownListener(evt: KeyboardEvent): void {
     if (evt.key === 'Escape') {
       this.insertDisabled();
       document.body.removeEventListener('keydown', this.staffHandler);
@@ -206,18 +221,21 @@ class InsertHandler {
     } else if (evt.key === 'Shift') {
       this.removeInsertClickHandlers();
     }
-  }).bind(this);
+  }.bind(this);
 
   /**
    * Event handler for clicking to insert any element except a staff.
    */
-  handler = (function handler (evt: MouseEvent): void {
+  handler = function handler(evt: MouseEvent): void {
     evt.stopPropagation();
 
     // If the cursor is out of bounds, nothing should be inserted.
     const cursor = getSVGRelCoords(evt.clientX, evt.clientY);
     if (isOutOfSVGBounds(cursor.x, cursor.y))
-      return queueNotification('[FAIL] Glyph was placed out of bounds! Insertion failed.', 'error');
+      return queueNotification(
+        '[FAIL] Glyph was placed out of bounds! Insertion failed.',
+        'error',
+      );
 
     const editorAction: InsertAction = {
       action: 'insert',
@@ -226,7 +244,7 @@ class InsertHandler {
         staffId: 'auto',
         ulx: cursor.x,
         uly: cursor.y,
-      }
+      },
     };
 
     if (this.attributes !== null) {
@@ -236,28 +254,40 @@ class InsertHandler {
       }
     }
 
-    this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(() => {
-      return this.neonView.updateForCurrentPage();
-    }).then(() => {
-      document.querySelector(this.selector).addEventListener('click', this.handler);
-    });
-  }).bind(this);
+    this.neonView
+      .edit(editorAction, this.neonView.view.getCurrentPageURI())
+      .then(() => {
+        return this.neonView.updateForCurrentPage();
+      })
+      .then(() => {
+        document
+          .querySelector(this.selector)
+          .addEventListener('click', this.handler);
+      });
+  }.bind(this);
 
   /**
    * Event handler to insert a staff.
    */
-  staffHandler = (function staffHandler (evt: MouseEvent): void {
+  staffHandler = function staffHandler(evt: MouseEvent): void {
     const cursor = getSVGRelCoords(evt.clientX, evt.clientY);
 
     if (isOutOfSVGBounds(cursor.x, cursor.y)) {
-      return queueNotification('Staff cannot be placed out of bounds!', 'error');
+      return queueNotification(
+        'Staff cannot be placed out of bounds!',
+        'error',
+      );
     }
 
-    const container = document.querySelector('.active-page > .definition-scale');
+    const container = document.querySelector(
+      '.active-page > .definition-scale',
+    );
 
     if (this.firstClick) {
       this.coord = cursor;
-      d3.select(container).append('circle').attr('cx', cursor.x)
+      d3.select(container)
+        .append('circle')
+        .attr('cx', cursor.x)
         .attr('cy', cursor.y)
         .attr('r', 10)
         .attr('id', 'staff-circle')
@@ -265,7 +295,8 @@ class InsertHandler {
       this.firstClick = false;
     } else {
       let ul: Point, lr: Point;
-      if (cursor.x < this.coord.x || cursor.y < this.coord.y) { // second point is not lr
+      if (cursor.x < this.coord.x || cursor.y < this.coord.y) {
+        // second point is not lr
         ul = cursor;
         lr = this.coord;
       } else {
@@ -281,29 +312,35 @@ class InsertHandler {
           ulx: ul.x,
           uly: ul.y,
           lrx: lr.x,
-          lry: lr.y
-        }
+          lry: lr.y,
+        },
       };
 
-      this.neonView.edit(action, this.neonView.view.getCurrentPageURI()).then(() => {
-        this.neonView.updateForCurrentPage();
-        this.firstClick = true;
-      });
+      this.neonView
+        .edit(action, this.neonView.view.getCurrentPageURI())
+        .then(() => {
+          this.neonView.updateForCurrentPage();
+          this.firstClick = true;
+        });
     }
-  }).bind(this);
+  }.bind(this);
 
   /**
    * Remove the insert listeners while not leaving insert mode entirely.
    */
-  removeInsertClickHandlers = (function removeInsertClickHandlers (): void {
+  removeInsertClickHandlers = function removeInsertClickHandlers(): void {
     try {
-      document.querySelector(this.selector).removeEventListener('click', this.staffHandler);
-      document.querySelector(this.selector).removeEventListener('click', this.handler);
+      document
+        .querySelector(this.selector)
+        .removeEventListener('click', this.staffHandler);
+      document
+        .querySelector(this.selector)
+        .removeEventListener('click', this.handler);
     } catch (e) {}
-  }).bind(this);
+  }.bind(this);
 
-  isInsertMode (): boolean {
-    return (this.type !== '');
+  isInsertMode(): boolean {
+    return this.type !== '';
   }
 }
 

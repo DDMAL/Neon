@@ -24,6 +24,9 @@ export const insertTabHtml: Record<string, string> = {
             <button id="fClef" class="side-panel-btn insertel smallel" aria-label="F Clef" title="F Clef"><img src="${__ASSET_PREFIX__}assets/img/fClef.png" class="image"></button>
         </p>
         <p class="insert-element-container">
+            <button id="gClef" class="side-panel-btn insertel smallel" aria-label="G Clef" title="G Clef"><img src="${__ASSET_PREFIX__}assets/img/gClef.png" class="image"></button>
+        </p>
+        <p class="insert-element-container">
             <button id="liquescentA" class="side-panel-btn insertel smallel" aria-label="Liquescent A" title="Liquescent A"><img src="${__ASSET_PREFIX__}assets/img/liquescentA.png" class="image"></button>
         </p>
         <p class="insert-element-container">
@@ -62,7 +65,7 @@ export const insertTabHtml: Record<string, string> = {
   systemTab: `<p class="insert-element-container">
             <button id="staff" class="side-panel-btn insertel longel" aria-label="system" title="system"><img src="${__ASSET_PREFIX__}assets/img/staff.png" class="image"></button>
         </p>
-        <p>Click upper left and lower right corners of new staff.</p>`,
+        <p>Click upper left and lower right corners of new staff.</p>`
   // divisionTab: "<p class='insert-element-container'>" +
   // "<button id='smallDiv' class='side-panel-btn insertel tallel'><img src='" + __ASSET_PREFIX__ + 'assets/img/smalldiv.png "' class='image'/></button></p>" +
   // "<p class='insert-element-container'>" +
@@ -328,6 +331,7 @@ export const clefActionContents = `
                 <div class="dropdown-content">
                     <a id="CClef" class="dropdown-item">C Clef</a>
                     <a id="FClef" class="dropdown-item">F Clef</a>
+                    <a id="GClef" class="dropdown-item">G Clef</a>
                 </div>
             </div>
         </div>
@@ -406,7 +410,7 @@ export const groupingMenu = {
                         <button class="side-panel-btn" id="toggle-link">Toggle Linked Syllables</button>
                         <button class="side-panel-btn" id="delete">Delete</button>
                     </div>
-                </div>`,
+                </div>`
 };
 
 /* BGINNING OF MODAL WINDOW CONTENT SECTION */

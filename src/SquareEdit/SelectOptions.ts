@@ -1080,6 +1080,18 @@ function clefOptionsListener(element: SVGGraphicsElement): void {
       };
       parseShapeChangeAction(setFClef);
     });
+  document
+    .querySelector('#GClef.dropdown-item')
+    .addEventListener('click', () => {
+      const setGClef: SetClefAction = {
+        action: 'setClef',
+        param: {
+          elementId: element.id,
+          shape: 'G',
+        },
+      };
+      parseShapeChangeAction(setGClef);
+    });
 
   initOptionsListeners();
 }
