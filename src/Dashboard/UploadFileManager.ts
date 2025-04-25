@@ -206,8 +206,11 @@ class UploadFileManager {
 
     // Count occurrences of each element
     arr.forEach((element) => {
-      const count = (countMap.get(element) || 0) + 1;
-      countMap.set(element, count);
+      // Ignore values less than 10 to avoid noise
+      if (element > 10) {
+        const count = (countMap.get(element) || 0) + 1;
+        countMap.set(element, count);
+      }
     });
 
     const sortedMap = Array.from(countMap.entries()).sort(
