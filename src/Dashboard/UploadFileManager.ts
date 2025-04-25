@@ -7,7 +7,7 @@ import * as vkbeautify from 'vkbeautify';
 class UploadFileManager {
   private static instance: UploadFileManager;
 
-  private allFiles = new Map<string, {file: File, count: number}>();
+  private allFiles = new Map<string, { file: File; count: number }>();
   private folios = new Array<folio>(); // filename, mei_filename, image_filename
   // private manuscripts = new Array<string>();
   private meiTemplate: string;
@@ -26,10 +26,9 @@ class UploadFileManager {
     if (!this.allFiles.has(file.name)) {
       const newEntry = { file: file, count: 1 };
       this.allFiles.set(file.name, newEntry);
-    }
-    else {
+    } else {
       const existingCount = this.getFileCount(file.name);
-      const updatedEntry = { file: file, count: existingCount+1 };
+      const updatedEntry = { file: file, count: existingCount + 1 };
       this.allFiles.set(file.name, updatedEntry);
     }
   }
@@ -47,7 +46,12 @@ class UploadFileManager {
     }
   }
 
-  public createMeiFile(filename: string, width: number, height: number, staffSpace: number): File {
+  public createMeiFile(
+    filename: string,
+    width: number,
+    height: number,
+    staffSpace: number,
+  ): File {
     try {
       if (!this.meiTemplate) {
         throw new Error('Cannot find MEI template');
@@ -75,7 +79,7 @@ class UploadFileManager {
       surface.setAttribute('xml:id', surfaceId);
       surface.setAttribute('lrx', width.toString());
       surface.setAttribute('lry', height.toString());
-      
+
       const zone = mei.querySelector('zone');
       const zoneId = 'm-' + uuidv4();
       zone.setAttribute('xml:id', zoneId);
@@ -107,16 +111,20 @@ class UploadFileManager {
       sb.setAttribute('xml:id', 'm-' + uuidv4());
       sb.setAttribute('facs', '#' + zoneId);
 
-      const meiFileContent = vkbeautify.xml(serializer.serializeToString(meiDoc));
+      const meiFileContent = vkbeautify.xml(
+        serializer.serializeToString(meiDoc),
+      );
       const meiBlob = new Blob([meiFileContent], { type: 'text/xml' });
 
       return new File([meiBlob], filename, { type: 'text/xml' });
     } catch (error) {
       console.error(error);
     }
-  } 
+  }
 
-  public getImgDimension(filename: string): Promise<{ width: number; height: number, staffSpace: number }> {
+  public getImgDimension(
+    filename: string,
+  ): Promise<{ width: number; height: number; staffSpace: number }> {
     return new Promise((resolve, reject) => {
       const imgFile = this.getFile(filename);
 
@@ -155,7 +163,7 @@ class UploadFileManager {
           ctx.putImageData(imageData, 0, 0);
 
           // Finding staff space
-          const whiteRunLengths: number[] = [];  
+          const whiteRunLengths: number[] = [];
           let currSpaceCount = 0;
           for (let x = 0; x < canvas.width; x++) {
             // new currSpaceCount for every column
@@ -167,14 +175,21 @@ class UploadFileManager {
                 currSpaceCount = 0;
               } else {
                 currSpaceCount++;
-              } 
+              }
             }
           }
 
           // Get the second most common value as staff space
-          const staffSpace = whiteRunLengths.length > 0 ? this.findSecondMode(whiteRunLengths) : 0;
+          const staffSpace =
+            whiteRunLengths.length > 0
+              ? this.findSecondMode(whiteRunLengths)
+              : 0;
 
-          resolve({ width: img.width, height: img.height, staffSpace:  staffSpace });
+          resolve({
+            width: img.width,
+            height: img.height,
+            staffSpace: staffSpace,
+          });
         };
         img.onerror = () => {
           reject(new Error(`Failed to load image: ${filename}`));
@@ -190,16 +205,17 @@ class UploadFileManager {
     const countMap: Map<number, number> = new Map();
 
     // Count occurrences of each element
-    arr.forEach(element => {
+    arr.forEach((element) => {
       const count = (countMap.get(element) || 0) + 1;
       countMap.set(element, count);
     });
 
-    const sortedMap = Array.from(countMap.entries()).sort((a, b) => b[1] - a[1]);
+    const sortedMap = Array.from(countMap.entries()).sort(
+      (a, b) => b[1] - a[1],
+    );
 
     return sortedMap[1][0];
   }
-
 
   public getFile(key: string): File {
     if (this.allFiles.has(key)) {
@@ -212,21 +228,27 @@ class UploadFileManager {
     if (count === 0) return;
     else if (count === 1) {
       this.allFiles.delete(key);
-    }
-    else {
-      const updatedEntry = { file: this.allFiles.get(key).file, count: count-1 };
+    } else {
+      const updatedEntry = {
+        file: this.allFiles.get(key).file,
+        count: count - 1,
+      };
       this.allFiles.set(key, updatedEntry);
     }
   }
 
   public getFileCount(key: string): number {
-    if ( this.allFiles.has(key) ) {
+    if (this.allFiles.has(key)) {
       return this.allFiles.get(key).count;
-    }
-    else return 0;
+    } else return 0;
   }
 
-  public addFolio(name: string, mei: string, image: string, isCreated: boolean): void {
+  public addFolio(
+    name: string,
+    mei: string,
+    image: string,
+    isCreated: boolean,
+  ): void {
     const newFolio: folio = {
       filename: name,
       mei_filename: mei,
@@ -246,7 +268,7 @@ class UploadFileManager {
   }
 
   public removeFolio(filename: string): void {
-    const idx = this.folios.findIndex( folio => folio.filename === filename);
+    const idx = this.folios.findIndex((folio) => folio.filename === filename);
     this.folios.splice(idx, 1);
   }
 
@@ -257,11 +279,15 @@ class UploadFileManager {
   // }
 
   public getFolios(): [string, File, File][] {
-    return this.folios.map( folio => {
+    return this.folios.map((folio) => {
       const filename = folio.filename;
       const mei_filename = folio.mei_filename;
       const image_filename = folio.image_filename;
-      return [filename, this.getFile(mei_filename), this.getFile(image_filename)];
+      return [
+        filename,
+        this.getFile(mei_filename),
+        this.getFile(image_filename),
+      ];
     });
   }
 
@@ -275,7 +301,7 @@ class UploadFileManager {
   //   });
   //   this.manuscripts = [];
   // }
-  
+
   public clear(): void {
     this.allFiles.clear();
     this.folios.splice(0);
@@ -291,8 +317,8 @@ class UploadFileManager {
 export default UploadFileManager;
 
 type folio = {
-  filename: string,
-  mei_filename: string,
-  image_filename: string,
-  isCreated: boolean,
+  filename: string;
+  mei_filename: string;
+  image_filename: string;
+  isCreated: boolean;
 };
