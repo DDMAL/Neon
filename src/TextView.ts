@@ -184,6 +184,9 @@ class TextView implements TextViewInterface {
           syllable.querySelectorAll('.neume').forEach((neume) => {
             neume.classList.add('selected');
           });
+          syllable.querySelectorAll('.divLine').forEach((divLine) => {
+            divLine.classList.add('selected');
+          });
           if (rect !== null) {
             rect.style.fill = '#d00';
           }
@@ -197,6 +200,9 @@ class TextView implements TextViewInterface {
           syllable.classList.remove('selected');
           syllable.querySelectorAll('.neume').forEach((neume) => {
             neume.classList.remove('selected');
+          });
+          syllable.querySelectorAll('.divLine').forEach((divLine) => {
+            divLine.classList.remove('selected');
           });
           if (rect !== null) {
             if (syllable.style.fill !== 'rgb(0, 0, 0)') {

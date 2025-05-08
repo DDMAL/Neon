@@ -429,6 +429,9 @@ input[type='checkbox'].debug-mode-toggle:checked + label:before {
 .selected {
   fill: #d00;
 }
+.selected .divLine {
+  color: #d00 !important;
+}
 .diva-wrapper {
   min-height: inherit;
   height: 100%;
