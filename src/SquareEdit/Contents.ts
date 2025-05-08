@@ -65,7 +65,7 @@ export const insertTabHtml: Record<string, string> = {
   systemTab: `<p class="insert-element-container">
             <button id="staff" class="side-panel-btn insertel longel" aria-label="system" title="system"><img src="${__ASSET_PREFIX__}assets/img/staff.png" class="image"></button>
         </p>
-        <p>Click upper left and lower right corners of new staff.</p>`
+        <p>Click upper left and lower right corners of new staff.</p>`,
   // divisionTab: "<p class='insert-element-container'>" +
   // "<button id='smallDiv' class='side-panel-btn insertel tallel'><img src='" + __ASSET_PREFIX__ + 'assets/img/smalldiv.png "' class='image'/></button></p>" +
   // "<p class='insert-element-container'>" +
@@ -410,7 +410,7 @@ export const groupingMenu = {
                         <button class="side-panel-btn" id="toggle-link">Toggle Linked Syllables</button>
                         <button class="side-panel-btn" id="delete">Delete</button>
                     </div>
-                </div>`
+                </div>`,
 };
 
 /* BGINNING OF MODAL WINDOW CONTENT SECTION */

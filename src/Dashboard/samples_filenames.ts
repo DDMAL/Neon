@@ -4,5 +4,5 @@ export const samples = [
   ['CH-E_611_024r', 'folio'],
   ['CH-E_611_026r', 'folio'],
   ['CH-E_611_028r', 'folio'],
-  ['Salzinnes', 'manuscript']
+  ['Salzinnes', 'manuscript'],
 ];

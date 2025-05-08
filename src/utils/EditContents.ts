@@ -3,8 +3,13 @@
  */
 
 // "File" Dropdown
-export const navbarDropdownFileMenu: HTMLDivElement = document.createElement('div');
-navbarDropdownFileMenu.classList.add('navbar-item', 'has-dropdown', 'is-hoverable');
+export const navbarDropdownFileMenu: HTMLDivElement =
+  document.createElement('div');
+navbarDropdownFileMenu.classList.add(
+  'navbar-item',
+  'has-dropdown',
+  'is-hoverable',
+);
 const fileDropdownBtn = document.createElement('div');
 fileDropdownBtn.classList.add('navbar-btn');
 fileDropdownBtn.innerHTML = '<div>File</div>';
@@ -15,10 +20,10 @@ fileNavbarContents.id = 'navbar-dropdown-options';
 const fileDropdownContents = [
   ['save', 'Save'],
   ['export', 'Save and Export to File'],
-  ['getmei', 'Download MEI']
+  ['getmei', 'Download MEI'],
 ];
 
-fileDropdownContents.forEach(content => {
+fileDropdownContents.forEach((content) => {
   const item = document.createElement('div');
   item.id = content[0];
   item.classList.add('navbar-dropdown-item');
@@ -30,8 +35,13 @@ navbarDropdownFileMenu.appendChild(fileDropdownBtn);
 navbarDropdownFileMenu.appendChild(fileNavbarContents);
 
 // "MEI Actions" Dropdown
-export const navbarDropdownMEIActionsMenu: HTMLDivElement = document.createElement('div');
-navbarDropdownMEIActionsMenu.classList.add('navbar-item', 'has-dropdown', 'is-hoverable');
+export const navbarDropdownMEIActionsMenu: HTMLDivElement =
+  document.createElement('div');
+navbarDropdownMEIActionsMenu.classList.add(
+  'navbar-item',
+  'has-dropdown',
+  'is-hoverable',
+);
 const meiActionsDropdownBtn = document.createElement('div');
 meiActionsDropdownBtn.classList.add('navbar-btn');
 meiActionsDropdownBtn.innerHTML = '<div>MEI Actions</div>';
@@ -41,10 +51,10 @@ meiActionsNavbarContents.id = 'navbar-dropdown-options';
 const meiActionsDropdownContents = [
   ['remove-empty-syls', 'Remove Empty Syllables'],
   ['remove-empty-neumes', 'Remove Empty Neumes'],
-  ['revert', 'Revert']
+  ['revert', 'Revert'],
 ];
 
-meiActionsDropdownContents.forEach(content => {
+meiActionsDropdownContents.forEach((content) => {
   const item = document.createElement('div');
   item.id = content[0];
   item.classList.add('navbar-dropdown-item');
@@ -59,11 +69,10 @@ navbarDropdownMEIActionsMenu.appendChild(meiActionsNavbarContents);
  * Finalize option in the navbar for rodan
  */
 export const navbarFinalize =
-    '<a id="finalize" class="navbar-item"> Finalize MEI </a>';
+  '<a id="finalize" class="navbar-item"> Finalize MEI </a>';
 
 /**
  * Contents of the undo/redo panel with buttons
  */
-export const undoRedoPanel =
-  `<button class="side-panel-btn" id="undo">Undo</button>
+export const undoRedoPanel = `<button class="side-panel-btn" id="undo">Undo</button>
   <button class="side-panel-btn" id="redo">Redo</button>`;

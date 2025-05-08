@@ -1,7 +1,7 @@
 export enum EntryType {
   Folder = 'folder',
   Trash = 'trash',
-  File = 'file'
+  File = 'file',
 }
 
 export interface IEntry {
@@ -19,6 +19,6 @@ export interface IFolder extends IEntry {
 }
 
 export interface IFile extends IEntry {
-  type: EntryType.File
+  type: EntryType.File;
   id: string;
 }

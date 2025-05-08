@@ -9,29 +9,46 @@ import { updateDisplayAllBtn } from './DisplayPanel/DisplayControls';
 /**
  * Map of contours to neume names.
  */
-const neumeGroups = new Map(
-  [['', 'Punctum'], ['u', 'Pes'], ['d', 'Clivis'], ['uu', 'Scandicus'], ['ud', 'Torculus'], ['du', 'Porrectus'], ['s', 'Distropha'], ['ss', 'Tristopha'],
-    ['sd', 'Pressus'], ['dd', 'Climacus'], ['ddu', 'ClimacusResupinus'], ['udu', 'TorculusResupinus'], ['dud', 'PorrectusFlexus'],
-    ['udd', 'PesSubpunctis'], ['uud', 'ScandicusFlexus'], ['uudd', 'ScandicusSubpunctis'], ['dudd', 'PorrectusSubpunctis']]
-);
+const neumeGroups = new Map([
+  ['', 'Punctum'],
+  ['u', 'Pes'],
+  ['d', 'Clivis'],
+  ['uu', 'Scandicus'],
+  ['ud', 'Torculus'],
+  ['du', 'Porrectus'],
+  ['s', 'Distropha'],
+  ['ss', 'Tristopha'],
+  ['sd', 'Pressus'],
+  ['dd', 'Climacus'],
+  ['ddu', 'ClimacusResupinus'],
+  ['udu', 'TorculusResupinus'],
+  ['dud', 'PorrectusFlexus'],
+  ['udd', 'PesSubpunctis'],
+  ['uud', 'ScandicusFlexus'],
+  ['uudd', 'ScandicusSubpunctis'],
+  ['dudd', 'PorrectusSubpunctis'],
+]);
 
-function startInfoVisibility (): void {
+function startInfoVisibility(): void {
   const elementInfo = document.getElementById('element_info');
-  elementInfo.innerHTML =
-    `<div class="info-bubble-container">
+  elementInfo.innerHTML = `<div class="info-bubble-container">
       <div class="info-bubble-header">Element Info</div>
       <div class="info-bubble-body"><i>Hover over any element to see its metadata</i></div>
     </div>`;
-  document.getElementById('element_info').setAttribute('style', 'display: none');
+  document
+    .getElementById('element_info')
+    .setAttribute('style', 'display: none');
 }
 
 /**
  * Update the visibility of infoBox
  */
-function updateInfoVisibility (): void {
+function updateInfoVisibility(): void {
   const elementInfo = document.getElementById('element_info');
-  const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
-  
+  const displayInfo = document.getElementById(
+    'displayInfo',
+  ) as HTMLInputElement;
+
   // save setting to localStorage
   setSettings({ displayInfo: displayInfo.checked });
 
@@ -48,19 +65,22 @@ function updateInfoVisibility (): void {
 /**
  * Load displayInfo settings from localStorage
  */
-function loadSettings (): void {
+function loadSettings(): void {
   const { displayInfo } = getSettings();
-  document.querySelector<HTMLInputElement>('#displayInfo').checked = displayInfo;
+  document.querySelector<HTMLInputElement>('#displayInfo').checked =
+    displayInfo;
 }
 
 /**
  * Set listener on info visibility checkbox.
  */
-function setInfoControls (): void {
+function setInfoControls(): void {
   startInfoVisibility();
   loadSettings();
   updateInfoVisibility();
-  document.getElementById('displayInfo').addEventListener('click', updateInfoVisibility);
+  document
+    .getElementById('displayInfo')
+    .addEventListener('click', updateInfoVisibility);
 }
 
 /**
@@ -74,10 +94,12 @@ class InfoModule implements InfoInterface {
    * A constructor for an InfoModule.
    * @param {NeonView} neonView - The NeonView parent.
    */
-  constructor (neonView: NeonView) {
+  constructor(neonView: NeonView) {
     this.neonView = neonView;
     // Add info box enable/disable check box
-    const checkboxesContainer = document.getElementById('display-single-container');
+    const checkboxesContainer = document.getElementById(
+      'display-single-container',
+    );
     const label = document.createElement('label');
     label.classList.add('checkbox-container', 'side-panel-btn');
     label.textContent = 'Info';
@@ -98,20 +120,22 @@ class InfoModule implements InfoInterface {
    * Set listeners for the InfoModule.
    * Trigger action on mouseover of specific musical element classes.
    */
-  infoListeners (): void {
+  infoListeners(): void {
     try {
-      document.getElementsByClassName('active-page')[0]
+      document
+        .getElementsByClassName('active-page')[0]
         .querySelectorAll('.neume,.custos,.clef,.accid,.divLine,.staff')
-        .forEach(node => {
+        .forEach((node) => {
           node.addEventListener('mouseover', (event: MouseEvent) => {
             if (!node.classList.contains('staff')) this.isHoveringChild = true;
             this.updateInfo(event);
           });
         });
 
-      document.getElementsByClassName('active-page')[0]
+      document
+        .getElementsByClassName('active-page')[0]
         .querySelectorAll('.neume,.custos,.clef,.accid,.divLine')
-        .forEach(node => {
+        .forEach((node) => {
           node.addEventListener('mouseleave', () => {
             this.isHoveringChild = false;
           });
@@ -122,21 +146,25 @@ class InfoModule implements InfoInterface {
   /**
    * Stop listeners for the InfoModule.
    */
-  stopListeners (): void {
-    document.querySelectorAll('.neume,.custos,.clef,.accid,.divLine,.staff').forEach(node => {
-      node.removeEventListener('mouseover', this.updateInfo.bind(this));
-    });
-    document.querySelectorAll('.neume, .custos, .clef, .accid, .divLine').forEach(node => {
-      node.removeEventListener('mouseleave', () => {
-        this.isHoveringChild = false;
+  stopListeners(): void {
+    document
+      .querySelectorAll('.neume,.custos,.clef,.accid,.divLine,.staff')
+      .forEach((node) => {
+        node.removeEventListener('mouseover', this.updateInfo.bind(this));
       });
-    });
+    document
+      .querySelectorAll('.neume, .custos, .clef, .accid, .divLine')
+      .forEach((node) => {
+        node.removeEventListener('mouseleave', () => {
+          this.isHoveringChild = false;
+        });
+      });
   }
 
   /**
    * Restart listeners for the InfoModule.
    */
-  resetInfoListeners (): void {
+  resetInfoListeners(): void {
     this.stopListeners();
     this.infoListeners();
   }
@@ -145,14 +173,16 @@ class InfoModule implements InfoInterface {
    * Get updated info for the calling element based on its element type.
    * Makes calls to NeonCore to get the information necessary.
    */
-  async updateInfo (event: MouseEvent): Promise<void> {
-  // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the <g> element
-  // So we will simply return if ID does not exist for now
+  async updateInfo(event: MouseEvent): Promise<void> {
+    // For now, since Clefs do not have their own element tag in mei4, there is not a way to select the <g> element
+    // So we will simply return if ID does not exist for now
     const id = (event.currentTarget as HTMLElement).id;
     if (id === '') {
-      Array.from(document.getElementById('element_info').children).forEach(child => {
-        child.remove();
-      });
+      Array.from(document.getElementById('element_info').children).forEach(
+        (child) => {
+          child.remove();
+        },
+      );
       console.log('No id!');
       return;
     }
@@ -167,41 +197,48 @@ class InfoModule implements InfoInterface {
     switch (elementClass) {
       case 'neume': {
         // Select neume components of selected neume
-        const ncs = element.querySelectorAll('.nc') as NodeListOf<SVGGraphicsElement>;
+        const ncs = element.querySelectorAll(
+          '.nc',
+        ) as NodeListOf<SVGGraphicsElement>;
         if (ncs.length === 1) {
-          const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
+          const attr: Attributes = await this.neonView.getElementAttr(
+            ncs[0].id,
+            this.neonView.view.getCurrentPageURI(),
+          );
           if (attr.curve === 'a' || attr.curve === 'c') {
             let pitches = await this.getPitches(ncs);
 
             pitches = pitches.trim().toUpperCase();
-            body = 'Shape: Liquescent' + '\r\n' +
-                    'Pitch(es): ' + pitches;
+            body = 'Shape: Liquescent' + '\r\n' + 'Pitch(es): ' + pitches;
             break;
           }
         }
 
         let contour = await this.getContour(ncs);
         if (ncs.length === 1) {
-          const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
-          if(attr.tilt === 's') {
+          const attr: Attributes = await this.neonView.getElementAttr(
+            ncs[0].id,
+            this.neonView.view.getCurrentPageURI(),
+          );
+          if (attr.tilt === 's') {
             let pitches = await this.getPitches(ncs);
 
             pitches = pitches.trim().toUpperCase();
-            body = 'Shape: Virga \r\n'  +
-                    'Pitch(es): ' + pitches;
+            body = 'Shape: Virga \r\n' + 'Pitch(es): ' + pitches;
             break;
-          }
-          else if(attr.tilt === 'n'){
+          } else if (attr.tilt === 'n') {
             let pitches = await this.getPitches(ncs);
 
             pitches = pitches.trim().toUpperCase();
-            body = 'Shape: Reversed Virga \r\n'  +
-                    'Pitch(es): ' + pitches;
+            body = 'Shape: Reversed Virga \r\n' + 'Pitch(es): ' + pitches;
             break;
           }
         }
         if (contour === 'Clivis') {
-          const attr: Attributes = await this.neonView.getElementAttr(ncs[0].id, this.neonView.view.getCurrentPageURI());
+          const attr: Attributes = await this.neonView.getElementAttr(
+            ncs[0].id,
+            this.neonView.view.getCurrentPageURI(),
+          );
           if (attr.ligated) {
             contour = 'Ligature';
           }
@@ -209,29 +246,42 @@ class InfoModule implements InfoInterface {
         let pitches = await this.getPitches(ncs);
 
         pitches = pitches.trim().toUpperCase();
-        body = 'Shape: ' + (contour === undefined ? 'Compound' : contour) + '\r\n' +
-                'Pitch(es): ' + pitches;
+        body =
+          'Shape: ' +
+          (contour === undefined ? 'Compound' : contour) +
+          '\r\n' +
+          'Pitch(es): ' +
+          pitches;
         break;
       }
       case 'custos': {
-        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
-        body += 'Pitch: ' + (attributes['pname']).toUpperCase() + attributes['oct'];
+        attributes = await this.neonView.getElementAttr(
+          id,
+          this.neonView.view.getCurrentPageURI(),
+        );
+        body +=
+          'Pitch: ' + attributes['pname'].toUpperCase() + attributes['oct'];
         break;
       }
       case 'accid': {
-        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
+        attributes = await this.neonView.getElementAttr(
+          id,
+          this.neonView.view.getCurrentPageURI(),
+        );
         let type = '';
-        if ((attributes['accid']).toUpperCase() == 'F'){
+        if (attributes['accid'].toUpperCase() == 'F') {
           type = 'Flat';
-        }
-        else if((attributes['accid']).toUpperCase() == 'N'){
+        } else if (attributes['accid'].toUpperCase() == 'N') {
           type = 'Natural';
         }
         body += 'Accid Type: ' + type;
         break;
       }
       case 'clef': {
-        const attr = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI()) as ClefAttributes;
+        const attr = (await this.neonView.getElementAttr(
+          id,
+          this.neonView.view.getCurrentPageURI(),
+        )) as ClefAttributes;
 
         // If clef has been displaced, format and show the displacement as
         // number of octaves not number of full steps
@@ -245,9 +295,11 @@ class InfoModule implements InfoInterface {
             return dir + octave;
           };
 
-          body += 'Octave Displacement: ' + format(attr['dis.place'], attr.dis) + '\r\n';
-        }
-        else {
+          body +=
+            'Octave Displacement: ' +
+            format(attr['dis.place'], attr.dis) +
+            '\r\n';
+        } else {
           body += 'Octave Displacement: None\r\n';
         }
 
@@ -256,14 +308,21 @@ class InfoModule implements InfoInterface {
         break;
       }
       case 'divLine': {
-        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
+        attributes = await this.neonView.getElementAttr(
+          id,
+          this.neonView.view.getCurrentPageURI(),
+        );
         body += 'DivLine Type: ' + attributes['form'];
         break;
       }
       case 'staff': {
         if (this.isHoveringChild) return;
-        attributes = await this.neonView.getElementAttr(id, this.neonView.view.getCurrentPageURI());
-        if (attributes['type']) body += 'Column: ' + attributes['type'].replace(/^column/, '');
+        attributes = await this.neonView.getElementAttr(
+          id,
+          this.neonView.view.getCurrentPageURI(),
+        );
+        if (attributes['type'])
+          body += 'Column: ' + attributes['type'].replace(/^column/, '');
         break;
       }
       default: {
@@ -280,10 +339,13 @@ class InfoModule implements InfoInterface {
    * @param ncs - Neume components in the neume.
    * @returns Space separated pitches of the neume components in order.
    */
-  async getPitches (ncs: Iterable<SVGGraphicsElement>): Promise<string> {
+  async getPitches(ncs: Iterable<SVGGraphicsElement>): Promise<string> {
     let pitches = '';
     for (const nc of ncs) {
-      const attributes: Attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
+      const attributes: Attributes = await this.neonView.getElementAttr(
+        nc.id,
+        this.neonView.view.getCurrentPageURI(),
+      );
       pitches += attributes['pname'] + attributes['oct'] + ' ';
     }
     return pitches;
@@ -293,20 +355,29 @@ class InfoModule implements InfoInterface {
    * Get the contour of a neume.
    * @param ncs - Neume components in the neume.
    */
-  async getContour (ncs: Iterable<SVGGraphicsElement>): Promise<string> {
+  async getContour(ncs: Iterable<SVGGraphicsElement>): Promise<string> {
     let contour = '';
     let previous: Attributes = null;
     for (const nc of ncs) {
-      const attributes: Attributes = await this.neonView.getElementAttr(nc.id, this.neonView.view.getCurrentPageURI());
+      const attributes: Attributes = await this.neonView.getElementAttr(
+        nc.id,
+        this.neonView.view.getCurrentPageURI(),
+      );
       if (previous !== null) {
         if (previous['oct'] > attributes['oct']) {
           contour += 'd';
         } else if (previous['oct'] < attributes['oct']) {
           contour += 'u';
         } else {
-          if (this.pitchNameToNum(previous['pname']) < this.pitchNameToNum(attributes['pname'])) {
+          if (
+            this.pitchNameToNum(previous['pname']) <
+            this.pitchNameToNum(attributes['pname'])
+          ) {
             contour += 'u';
-          } else if (this.pitchNameToNum(previous['pname']) > this.pitchNameToNum(attributes['pname'])) {
+          } else if (
+            this.pitchNameToNum(previous['pname']) >
+            this.pitchNameToNum(attributes['pname'])
+          ) {
             contour += 'd';
           } else {
             contour += 's';
@@ -325,11 +396,17 @@ class InfoModule implements InfoInterface {
    * Show and update the info box.
    * @param body - The info box contents.
    */
-  updateInfoModule (body: string): void {
-    (<HTMLElement> document.getElementsByClassName('info-bubble-body')[0]).innerText = body;
+  updateInfoModule(body: string): void {
+    (<HTMLElement>(
+      document.getElementsByClassName('info-bubble-body')[0]
+    )).innerText = body;
 
     if ((document.getElementById('displayInfo') as HTMLInputElement).checked) {
-      (document.getElementsByClassName('info-bubble-container')[0] as HTMLElement).style.display = '';
+      (
+        document.getElementsByClassName(
+          'info-bubble-container',
+        )[0] as HTMLElement
+      ).style.display = '';
     }
   }
 
@@ -338,7 +415,7 @@ class InfoModule implements InfoInterface {
    * @param pname - The pitch name.
    * @returns Equivalent pitch name as a number from 1 to 7.
    */
-  pitchNameToNum (pname: string): number {
+  pitchNameToNum(pname: string): number {
     switch (pname) {
       case 'c':
         return 1;
@@ -364,8 +441,7 @@ class InfoModule implements InfoInterface {
    * @param value - The contour name.
    * @returns Best guess name of the neume shape.
    */
-  getContourByValue (value: string): string {
-    
+  getContourByValue(value: string): string {
     for (const [cont, v] of neumeGroups.entries()) {
       if (v === value) {
         return cont;

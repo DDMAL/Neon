@@ -13,7 +13,7 @@ export class SplitStaffHandler {
   /**
    * @param staff - The staff that will be modified.
    */
-  constructor (neonView: NeonView, staff: SVGGElement) {
+  constructor(neonView: NeonView, staff: SVGGElement) {
     this.neonView = neonView;
     this.staff = staff;
   }
@@ -21,7 +21,7 @@ export class SplitStaffHandler {
   /**
    * First part of the split action.
    */
-  startSplit (): void {
+  startSplit(): void {
     this.splitDisable();
 
     document.body.addEventListener('click', this.handler, { capture: true });
@@ -34,7 +34,7 @@ export class SplitStaffHandler {
     Notification.queueNotification('Click Where to Split');
   }
 
-  splitDisable (): void {
+  splitDisable(): void {
     document.body.removeEventListener('keydown', this.keydownListener);
     document.body.removeEventListener('keyup', this.resetHandler);
     document.body.removeEventListener('click', this.clickawayHandler);
@@ -51,25 +51,31 @@ export class SplitStaffHandler {
       action: 'split',
       param: {
         elementId: id,
-        x: cursor.x
-      }
+        x: cursor.x,
+      },
     };
 
-    this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(async (result) => {
-      if (result) {
-        await this.neonView.updateForCurrentPage();
-        Notification.queueNotification('Split action successful', 'success');
-      }
-      const dragHandler = new DragHandler(this.neonView, '.staff');
-      this.splitDisable();
-      selectAll([document.querySelector(`#${id}`)], this.neonView, dragHandler);
+    this.neonView
+      .edit(editorAction, this.neonView.view.getCurrentPageURI())
+      .then(async (result) => {
+        if (result) {
+          await this.neonView.updateForCurrentPage();
+          Notification.queueNotification('Split action successful', 'success');
+        }
+        const dragHandler = new DragHandler(this.neonView, '.staff');
+        this.splitDisable();
+        selectAll(
+          [document.querySelector(`#${id}`)],
+          this.neonView,
+          dragHandler,
+        );
 
-      const moreEdit = document.getElementById('moreEdit');
-      if (moreEdit) {
-        moreEdit.innerHTML = '';
-        moreEdit.parentElement.classList.add('hidden');
-      }
-    });
+        const moreEdit = document.getElementById('moreEdit');
+        if (moreEdit) {
+          moreEdit.innerHTML = '';
+          moreEdit.parentElement.classList.add('hidden');
+        }
+      });
   }).bind(this);
 
   /** Exits split on Escape press, disables on Shift. */
@@ -77,7 +83,9 @@ export class SplitStaffHandler {
     if (evt.key === 'Escape') {
       this.splitDisable();
     } else if (evt.key === 'Shift') {
-      document.body.removeEventListener('click', this.handler, { capture: true });
+      document.body.removeEventListener('click', this.handler, {
+        capture: true,
+      });
     }
   }).bind(this);
 
@@ -86,7 +94,9 @@ export class SplitStaffHandler {
     const target = evt.target as HTMLElement;
     if (target.closest('.active-page') === null) {
       this.splitDisable();
-      document.body.removeEventListener('click', this.handler, { capture: true });
+      document.body.removeEventListener('click', this.handler, {
+        capture: true,
+      });
     }
   }).bind(this);
 

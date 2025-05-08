@@ -38,7 +38,7 @@ export class Notification {
    * Create a new notification.
    * @param message - Notification content.
    */
-  constructor (message: string, type: NotificationType, logInfo: string = null) {
+  constructor(message: string, type: NotificationType, logInfo: string = null) {
     this.message = notificationIcon[type] + message;
     this.displayed = false;
     this.id = uuidv4();
@@ -49,19 +49,19 @@ export class Notification {
   }
 
   /** Set the ID from setTimeout. */
-  setTimeoutId (id: number): void {
+  setTimeoutId(id: number): void {
     this.timeoutID = Math.max(id, -1);
   }
 
   /** Display the Notification. */
-  display (): void {
+  display(): void {
     this.displayed = true;
   }
 
   /**
    * @returns The UUID for this notification.
    */
-  getId (): string {
+  getId(): string {
     return this.id;
   }
 }
@@ -70,7 +70,7 @@ export class Notification {
  * Clear the notification
  * @param currentId - The ID of the notification to be cleared.
  */
-function clearNotification (currentId: string): void {
+function clearNotification(currentId: string): void {
   if (document.getElementById(currentId)) {
     document.getElementById(currentId).remove();
   }
@@ -80,7 +80,7 @@ function clearNotification (currentId: string): void {
  * Display a notification.
  * @param notification - Notification to display.
  */
-function displayNotification (notification: Notification): void {
+function displayNotification(notification: Notification): void {
   // Not sure what it does, maybe related to rodan/neon
   if (notification.isModeMessage) {
     if (currentModeMessage === null) {
@@ -111,10 +111,10 @@ function displayNotification (notification: Notification): void {
 /**
  * Start displaying notifications. Called automatically.
  */
-function startNotification (notification: Notification): void {
+function startNotification(notification: Notification): void {
   displayNotification(notification);
   notification.setTimeoutId(
-    window.setTimeout(clearNotification, TIMEOUT, notification.getId())
+    window.setTimeout(clearNotification, TIMEOUT, notification.getId()),
   );
   document
     .getElementById(notification.getId())
@@ -128,7 +128,11 @@ function startNotification (notification: Notification): void {
  * Add a notification to the queue.
  * @param notification - Notification content.
  */
-export function queueNotification (notificationContent: string, type: NotificationType = 'default', logInfo: string = null): void {
+export function queueNotification(
+  notificationContent: string,
+  type: NotificationType = 'default',
+  logInfo: string = null,
+): void {
   const notification = new Notification(notificationContent, type, logInfo);
 
   if (notification.type == 'error' || notification.type == 'warning') {

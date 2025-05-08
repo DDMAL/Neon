@@ -1,4 +1,8 @@
-import { bindInsertTabs, initInsertEditControls, initSelectionButtons } from './Controls';
+import {
+  bindInsertTabs,
+  initInsertEditControls,
+  initSelectionButtons,
+} from './Controls';
 import { setHighlightOption } from '../DisplayPanel/DisplayControls';
 import { initUndoRedoPanel } from '../utils/EditControls';
 import * as Select from '../utils/Select';
@@ -25,7 +29,7 @@ class SingleEditMode implements NeumeEditInterface {
    * Constructor for an EditMode object.
    * @param {NeonView} neonView - The NeonView parent.
    */
-  constructor (neonView: NeonView) {
+  constructor(neonView: NeonView) {
     this.neonView = neonView;
     this.initEditMode();
   }
@@ -33,11 +37,12 @@ class SingleEditMode implements NeumeEditInterface {
   /**
    * Initialize Edit mode (default).
    */
-  initEditMode (): void {
-
+  initEditMode(): void {
     initNavbar(this.neonView);
-    document.getElementById('insert_controls').innerHTML += Contents.insertControlsPanel;
-    document.getElementById('edit_controls').innerHTML += Contents.editControlsPanel;
+    document.getElementById('insert_controls').innerHTML +=
+      Contents.insertControlsPanel;
+    document.getElementById('edit_controls').innerHTML +=
+      Contents.editControlsPanel;
     document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;
 
     this.dragHandler = new DragHandler(this.neonView, '#svg_group');
@@ -60,12 +65,12 @@ class SingleEditMode implements NeumeEditInterface {
    * Get the user mode that Neon is in. Either insert, edit, or viewer.
    * @returns {UserType}
    */
-  getUserMode (): UserType {
+  getUserMode(): UserType {
     const { userMode } = getSettings();
     return userMode;
   }
 
-  setSelectListeners (): void {
+  setSelectListeners(): void {
     Select.clickSelect('#svg_group, #svg_group use, #svg_group rect');
     Select.dragSelect('#svg_group');
   }

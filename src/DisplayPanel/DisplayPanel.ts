@@ -8,7 +8,7 @@ import { getSettings } from '../utils/LocalSettings';
  * @param {ZoomHandler} handleZoom - Includes zoom controls if defined.
  * @returns {string}
  */
-function displayControlsPanel (handleZoom: ZoomHandler): string {
+function displayControlsPanel(handleZoom: ZoomHandler): string {
   let contents = `
     <div class="panel-heading" id="displayHeader">
       <div class="panel-heading-title">DISPLAY</div>
@@ -158,8 +158,12 @@ class DisplayPanel implements DisplayInterface {
    * @param {string} background - The class name associated with the background.
    * @param {ZoomHandler} [zoomHandler] - The ZoomHandler object, if SingleView.
    */
-  constructor (view: ViewInterface, mei: string,
-    background: string, zoomHandler: ZoomHandler = undefined) {
+  constructor(
+    view: ViewInterface,
+    mei: string,
+    background: string,
+    zoomHandler: ZoomHandler = undefined,
+  ) {
     this.view = view;
     this.meiClass = mei;
     this.background = background;
@@ -176,7 +180,7 @@ class DisplayPanel implements DisplayInterface {
   /**
    * Apply event listeners related to the DisplayPanel.
    */
-  setDisplayListeners (): void {
+  setDisplayListeners(): void {
     if (this.zoomHandler) {
       // Zoom handler stuff
       DisplayControls.setZoomControls(this.zoomHandler);
@@ -186,37 +190,46 @@ class DisplayPanel implements DisplayInterface {
 
   /**
    * Load localStorage values before SVG is loaded
-   * 
+   *
    * NOTE: this function only causes visual changes, not functional changes.
    *    Functional changes are done in separate modules which depend on specific conditions.
    */
-  loadSettings (): void {
+  loadSettings(): void {
     const { zoom, glyphOpacity, imageOpacity, highlightMode } = getSettings();
-    
+
     // Zoom
     if (document.querySelector<HTMLInputElement>('#zoomOutput')) {
-      document.querySelector<HTMLInputElement>('#zoomOutput').value = String(zoom);
-      document.querySelector<HTMLInputElement>('#zoomSlider').value = String(zoom);
-    }    
+      document.querySelector<HTMLInputElement>('#zoomOutput').value =
+        String(zoom);
+      document.querySelector<HTMLInputElement>('#zoomSlider').value =
+        String(zoom);
+    }
 
     // Image opacity
-    document.querySelector<HTMLInputElement>('#bgOpacityOutput').value = String(imageOpacity);
-    document.querySelector<HTMLInputElement>('#bgOpacitySlider').value = String(imageOpacity);
+    document.querySelector<HTMLInputElement>('#bgOpacityOutput').value =
+      String(imageOpacity);
+    document.querySelector<HTMLInputElement>('#bgOpacitySlider').value =
+      String(imageOpacity);
 
     // Glyph opacity
-    document.querySelector<HTMLInputElement>('#opacityOutput').value = String(glyphOpacity);
-    document.querySelector<HTMLInputElement>('#opacitySlider').value = String(glyphOpacity);
+    document.querySelector<HTMLInputElement>('#opacityOutput').value =
+      String(glyphOpacity);
+    document.querySelector<HTMLInputElement>('#opacitySlider').value =
+      String(glyphOpacity);
 
     // Highlight mode:
     // Text = capitalized version of highlight-${id}
-    const text = highlightMode === 'none' ? 'Off' : highlightMode[0].toUpperCase() + highlightMode.slice(1);
+    const text =
+      highlightMode === 'none'
+        ? 'Off'
+        : highlightMode[0].toUpperCase() + highlightMode.slice(1);
     document.querySelector('#highlight-type').textContent = `\xA0- ${text}`;
   }
 
   /**
    * Update SVG based on visualization settings
    */
-  updateVisualization (): void {
+  updateVisualization(): void {
     DisplayControls.setGlyphOpacityFromSlider(this.meiClass);
     DisplayControls.setBgOpacityFromSlider(this.background);
     DisplayControls.updateHighlight();

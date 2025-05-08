@@ -8,12 +8,10 @@ interface FileSystemProps {
   getFileSystem: () => Promise<IFolder>;
   newTrash: (root: IFolder) => void;
 }
-  
 
 // Manager is used for accessing local storage and tracking the position of current folder
 export const FileSystemManager = (): FileSystemProps => {
-
-  async function getRoot(): Promise<IFolder> { 
+  async function getRoot(): Promise<IFolder> {
     return await getFileSystem();
   }
 
@@ -33,7 +31,7 @@ export const FileSystemManager = (): FileSystemProps => {
   async function getFileSystem(): Promise<IFolder> {
     try {
       const fs = window.localStorage.getItem('neon-fs');
-            
+
       // if localstorage exists, load previous root
       if (fs) {
         const localFileSystem = JSON.parse(fs) as IFolder;
@@ -52,7 +50,7 @@ export const FileSystemManager = (): FileSystemProps => {
       console.error(e);
       window.alert('Error loading file system');
     }
-  } 
+  }
 
   // This next function is solely for loading samples into the root as a default for Neon
   function loadSamples(root: IFolder) {
@@ -60,10 +58,17 @@ export const FileSystemManager = (): FileSystemProps => {
     const sampleEntries = samples.map(([name, type]) => {
       const entry = FileSystemTools.createFile(name, name);
       if (type === 'folio') {
-        FileSystemTools.addMetadata(entry, { type: 'folio', document: 'sample', immutable: true });
-      }
-      else if (type === 'manuscript') {
-        FileSystemTools.addMetadata(entry, { type: 'manuscript', document: 'sample', immutable: true });
+        FileSystemTools.addMetadata(entry, {
+          type: 'folio',
+          document: 'sample',
+          immutable: true,
+        });
+      } else if (type === 'manuscript') {
+        FileSystemTools.addMetadata(entry, {
+          type: 'manuscript',
+          document: 'sample',
+          immutable: true,
+        });
       }
       return entry;
     });

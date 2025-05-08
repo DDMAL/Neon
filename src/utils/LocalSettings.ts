@@ -1,9 +1,15 @@
-import { GroupingType, SelectionType, UserType, InsertType, InsertTabType } from '../Types';
+import {
+  GroupingType,
+  SelectionType,
+  UserType,
+  InsertType,
+  InsertTabType,
+} from '../Types';
 
 /**
  * The one instance of LocalSettings that will be created and
  * used by the editor.
- * 
+ *
  * Use the functions `getSettings()` and `setSettings()`
  * to access this instance.
  */
@@ -56,14 +62,14 @@ const DEFAULT_SETTINGS: Settings = {
   displayText: false,
   displayInfo: false,
   displayErrLog: false,
-  viewBox: null
+  viewBox: null,
 };
 
 class LocalSettings {
   id: string;
   settings: Settings;
 
-  constructor (folioId: string) {
+  constructor(folioId: string) {
     localSettings = this;
     this.id = folioId;
     this.load();
@@ -73,9 +79,11 @@ class LocalSettings {
    * Load settings from localStorage, and sync loaded settings with
    * new fields that may not be in localStorage.
    */
-  load (): void {
+  load(): void {
     try {
-      const stored: Partial<Settings> = JSON.parse(window.localStorage.getItem(this.id));
+      const stored: Partial<Settings> = JSON.parse(
+        window.localStorage.getItem(this.id),
+      );
       this.sync(stored);
     } catch (error) {
       // If localStorage value is not a JSON object (for instance, an empty string),
@@ -88,7 +96,7 @@ class LocalSettings {
   /**
    * Set new fields in localStorage, as a "union" of old and new settings.
    */
-  set (params: Partial<Settings>): void {
+  set(params: Partial<Settings>): void {
     this.settings = { ...this.settings, ...params };
     window.localStorage.setItem(this.id, JSON.stringify(this.settings));
   }
@@ -98,7 +106,7 @@ class LocalSettings {
    * such as fields that have been added to localStorage in a new
    * update of Neon.
    */
-  sync (stored: Partial<Settings>): void {
+  sync(stored: Partial<Settings>): void {
     this.settings = { ...DEFAULT_SETTINGS, ...stored };
     window.localStorage.setItem(this.id, JSON.stringify(this.settings));
   }
@@ -107,14 +115,14 @@ class LocalSettings {
 /**
  * Get localStorage settings for the folio.
  */
-export function getSettings (): Settings {
+export function getSettings(): Settings {
   return localSettings.settings;
 }
 
 /**
  * Set specific localStorage settings for the folio.
  */
-export function setSettings (params: Partial<Settings>): void {
+export function setSettings(params: Partial<Settings>): void {
   localSettings.set(params);
 }
 

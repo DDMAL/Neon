@@ -1,6 +1,5 @@
 // If user right-clicks on background and nothing is selected
-export const defaultOptions = 
-    `<div id="cm-upload-doc-btn" class="context-menu-item-wrapper">
+export const defaultOptions = `<div id="cm-upload-doc-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Upload document</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/new-doc.svg">
     </div>
@@ -10,8 +9,7 @@ export const defaultOptions =
     </div>`;
 
 // If a single file is selected
-export const singleFileOptions = 
-    `<div id="cm-open-btn" class="context-menu-item-wrapper">
+export const singleFileOptions = `<div id="cm-open-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Open</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/open-doc.svg">
     </div>
@@ -29,8 +27,7 @@ export const singleFileOptions =
     </div>`;
 
 // If multiple files are selected
-export const multiFileOptions = 
-    `<div id="cm-open-btn" class="context-menu-item-wrapper">
+export const multiFileOptions = `<div id="cm-open-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Open</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/open-doc.svg">
     </div>
@@ -44,8 +41,7 @@ export const multiFileOptions =
     </div>`;
 
 // If 1 or more files and 1 or more folders are selected
-export const folderAndFileOptions = 
-    `<div id="cm-remove-btn" class="context-menu-item-wrapper">
+export const folderAndFileOptions = `<div id="cm-remove-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Delete</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>
@@ -55,8 +51,7 @@ export const folderAndFileOptions =
     </div>`;
 
 // If one folder is selected
-export const singleFolderOptions = 
-    `<div id="cm-open-btn" class="context-menu-item-wrapper">
+export const singleFolderOptions = `<div id="cm-open-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Open</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/open-doc.svg">
     </div>
@@ -74,8 +69,7 @@ export const singleFolderOptions =
     </div>`;
 
 // If multiple folders are selected
-export const multiFolderOptions = 
-    `<div id="cm-remove-btn" class="context-menu-item-wrapper">
+export const multiFolderOptions = `<div id="cm-remove-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Move to Trash</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>
@@ -85,15 +79,13 @@ export const multiFolderOptions =
     </div>`;
 
 // If trash folder is selected
-export const trashFolderOptions = 
-    `<div id="cm-empty-trash-btn" class="context-menu-item-wrapper">
+export const trashFolderOptions = `<div id="cm-empty-trash-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Empty Trash</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>`;
 
 // If entry in trash folder is selected
-export const trashEntryOptions = 
-    `<div id="cm-recover-btn" class="context-menu-item-wrapper">
+export const trashEntryOptions = `<div id="cm-recover-btn" class="context-menu-item-wrapper">
         <div class="context-menu-item">Put Back</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/recover-doc.svg">
     </div>
@@ -101,4 +93,3 @@ export const trashEntryOptions =
         <div class="context-menu-item">Delete</div>
         <img class="context-menu-item-icon" src="${__ASSET_PREFIX__}assets/img/remove-doc.svg">
     </div>`;
-

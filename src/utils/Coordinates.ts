@@ -16,9 +16,11 @@ export interface BBox {
  * Get SVG relative coordinates given clientX and clientY
  * Source: https://stackoverflow.com/questions/29261304
  */
-export function getSVGRelCoords (clientX: number, clientY: number): Point {
+export function getSVGRelCoords(clientX: number, clientY: number): Point {
   const pt = new DOMPoint(clientX, clientY);
-  const svg = document.querySelector<SVGSVGElement>('.active-page > .definition-scale');
+  const svg = document.querySelector<SVGSVGElement>(
+    '.active-page > .definition-scale',
+  );
   const pageMargin = svg.querySelector<SVGGElement>('.page-margin');
 
   const { x, y } = pt.matrixTransform(pageMargin.getScreenCTM().inverse());
@@ -34,15 +36,15 @@ export function getSVGRelCoords (clientX: number, clientY: number): Point {
  * This function considers the *visual* bounding box of the staff
  * based on its staff lines, instead of the SVG element itself.
  */
-export function getStaffIdByCoords (clientX: number, clientY: number): string {
+export function getStaffIdByCoords(clientX: number, clientY: number): string {
   const staves = Array.from(document.querySelectorAll<SVGGElement>('.staff'));
-  const staffBBoxes = staves.map(staff => getStaffBBox(staff));
+  const staffBBoxes = staves.map((staff) => getStaffBBox(staff));
 
   // find the staff that the cursor is inside
   const { x, y } = getSVGRelCoords(clientX, clientY);
   const staff = staffBBoxes.find(
-    (bbox) => x <= bbox.lrx && x >= bbox.ulx && y <= bbox.lry && y >= bbox.uly
-  ); 
+    (bbox) => x <= bbox.lrx && x >= bbox.ulx && y <= bbox.lry && y >= bbox.uly,
+  );
 
   // If there is issues with finding the staff, this may be more accurate:
   // return (pt.x > ulx && pt.x < lrx) &&
@@ -57,17 +59,22 @@ export function getStaffIdByCoords (clientX: number, clientY: number): string {
  * Get staff by client's x-y coordinates; wrapper for getStaffIdByCoords, but
  *   returns the element, not the ID
  */
-export function getStaffByCoords (clientX: number, clientY: number): SVGGElement | null {
+export function getStaffByCoords(
+  clientX: number,
+  clientY: number,
+): SVGGElement | null {
   const staffId = getStaffIdByCoords(clientX, clientY);
   return document.querySelector(`#${staffId}`);
 }
 
-export function isOutOfSVGBounds (x: number, y: number): boolean {
+export function isOutOfSVGBounds(x: number, y: number): boolean {
   const bgImg = document.querySelector<SVGImageElement>('#bgimg');
-  
+
   return (
-    x <= 0 || x >= Number(bgImg.getAttribute('width')) ||
-    y <= 0 || y >= Number(bgImg.getAttribute('height'))
+    x <= 0 ||
+    x >= Number(bgImg.getAttribute('width')) ||
+    y <= 0 ||
+    y >= Number(bgImg.getAttribute('height'))
   );
 }
 
@@ -75,14 +82,14 @@ export function isOutOfSVGBounds (x: number, y: number): boolean {
  * Get bounding box (lrx, lry, ulx, uly) of a glyph, which
  * is a <use> element in the SVG
  */
-export function getGlyphBBox (g: SVGRectElement | SVGUseElement): BBox {
-  const rect = (g.tagName == 'rect') ? g.getBBox() : (g.parentNode as SVGGElement).getBBox();
+export function getGlyphBBox(g: SVGRectElement | SVGUseElement): BBox {
+  const rect =
+    g.tagName == 'rect' ? g.getBBox() : (g.parentNode as SVGGElement).getBBox();
 
   return {
     ulx: rect.x,
     uly: rect.y,
     lrx: rect.x + rect.width,
-    lry: rect.y + rect.height
+    lry: rect.y + rect.height,
   };
 }
-

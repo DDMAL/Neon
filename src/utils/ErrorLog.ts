@@ -3,7 +3,7 @@ import { errorLogsPanelContents } from '../SquareEdit/Contents';
 import { setSettings, getSettings } from './LocalSettings';
 import { ModalWindow, ModalWindowView } from './ModalWindow';
 
-function createLogMessage (notif: Notification): Element {
+function createLogMessage(notif: Notification): Element {
   const notifDiv = document.createElement('div');
   notifDiv.classList.add('notification-container');
   notifDiv.innerHTML = `
@@ -26,10 +26,16 @@ function createLogMessage (notif: Notification): Element {
   const removeBtn = notifDiv.querySelector<HTMLButtonElement>('.log-remove');
   removeBtn.onclick = () => notifDiv.remove();
   removeBtn.addEventListener('mouseover', () => {
-    removeBtn.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/garbage-open.svg`);
+    removeBtn.setAttribute(
+      'src',
+      `${__ASSET_PREFIX__}/assets/img/garbage-open.svg`,
+    );
   });
   removeBtn.addEventListener('mouseout', () => {
-    removeBtn.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/garbage-closed.svg`);
+    removeBtn.setAttribute(
+      'src',
+      `${__ASSET_PREFIX__}/assets/img/garbage-closed.svg`,
+    );
   });
 
   if (notif.logInfo) {
@@ -39,10 +45,16 @@ function createLogMessage (notif: Notification): Element {
     removeBtn.style.height = '20px';
 
     infoBtn.addEventListener('mouseover', () => {
-      infoBtn.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/notification-info-icon-dark.svg`);
+      infoBtn.setAttribute(
+        'src',
+        `${__ASSET_PREFIX__}/assets/img/notification-info-icon-dark.svg`,
+      );
     });
     infoBtn.addEventListener('mouseout', () => {
-      infoBtn.setAttribute('src', `${__ASSET_PREFIX__}/assets/img/notification-info-icon-light.svg`);
+      infoBtn.setAttribute(
+        'src',
+        `${__ASSET_PREFIX__}/assets/img/notification-info-icon-light.svg`,
+      );
     });
     infoBtn.addEventListener('click', () => openErrorLogWindow(notif.logInfo));
   }
@@ -50,16 +62,14 @@ function createLogMessage (notif: Notification): Element {
   return notifDiv;
 }
 
-
 /**
  * Add notification to the persistent error log on the sidebar
  * @param notif {Notification} Notification to add to the error log
  */
-export function recordNotification (notif: Notification): void {
+export function recordNotification(notif: Notification): void {
   const log = document.querySelector('#errorLogContents');
   log.prepend(createLogMessage(notif));
 }
-
 
 /**
  * Initialize error log.
@@ -72,7 +82,6 @@ export function initErrorLog(): void {
 
   initErrorLogControls();
 }
-
 
 /**
  * Set up event listeners for error Log panel
@@ -96,8 +105,11 @@ export function initErrorLogControls(): void {
       setTimeout(() => {
         contents.style.overflow = 'visible';
       }, 200);
-      dropdownIcon.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down`);
-    } 
+      dropdownIcon.setAttribute(
+        'xlink:href',
+        `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down`,
+      );
+    }
     // if error panel is open, close it
     else {
       // set classes and styles for a closed panel
@@ -106,19 +118,23 @@ export function initErrorLogControls(): void {
       setTimeout(() => {
         contents.style.padding = '0px';
       }, 200);
-      dropdownIcon.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-side`);
+      dropdownIcon.setAttribute(
+        'xlink:href',
+        `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-side`,
+      );
     }
   });
 
   initDisplayListener();
 }
 
-
 /**
  * Initializes click listener on "Show error logs" button in "View" dropdown.
  */
 export function initDisplayListener(): void {
-  const checkboxesContainer = document.querySelector('#display-single-container');
+  const checkboxesContainer = document.querySelector(
+    '#display-single-container',
+  );
   const errorsLabel = document.createElement('label');
   const erorrsBtn = document.createElement('input');
 
@@ -140,7 +156,6 @@ export function initDisplayListener(): void {
   });
 }
 
-
 function openErrorLogWindow(log: string) {
   const modalWindow = new ModalWindow();
   modalWindow.setModalWindowView(ModalWindowView.ERROR_LOG, log);
@@ -149,20 +164,19 @@ function openErrorLogWindow(log: string) {
 
 export function updateErrorLogVisibility(): void {
   const notifPanel = document.querySelector('#error_log');
-  const { debugMode, displayErrLog, displayInfo, displayBBox, displayText } = getSettings();
+  const { debugMode, displayErrLog, displayInfo, displayBBox, displayText } =
+    getSettings();
 
   const displayAllBtn = document.getElementById('display-all-btn');
 
   if (debugMode) {
     if (displayErrLog) {
       notifPanel.classList.add('visible');
-      if (displayInfo && displayBBox && 
-        displayText && displayErrLog) {
+      if (displayInfo && displayBBox && displayText && displayErrLog) {
         displayAllBtn.classList.add('selected');
         displayAllBtn.innerHTML = 'Hide All';
       }
-    }
-    else {
+    } else {
       notifPanel.classList.remove('visible');
       if (displayAllBtn.classList.contains('selected')) {
         displayAllBtn.classList.remove('selected');

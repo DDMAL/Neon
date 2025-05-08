@@ -1,4 +1,9 @@
-import { getStaffBBox, selectBBox, selectStaff, selectAll } from './SelectTools';
+import {
+  getStaffBBox,
+  selectBBox,
+  selectStaff,
+  selectAll,
+} from './SelectTools';
 import NeonView from '../NeonView';
 import DragHandler from './DragHandler';
 
@@ -25,23 +30,53 @@ const PointNames = {
   BottomRight: 4,
   Bottom: 5,
   BottomLeft: 6,
-  Left: 7
+  Left: 7,
 };
 
-function getPoints(ulx: number, uly: number, lrx: number, lry: number, rotate: number): Point[] {
+function getPoints(
+  ulx: number,
+  uly: number,
+  lrx: number,
+  lry: number,
+  rotate: number,
+): Point[] {
   // Note that arc functions return an angle x in [-pi/2, pi/2].
   let points: Array<Point>;
   // ul is ulx, uly, lr is lrx, lry
   if (rotate >= 0) {
     points = [
       { x: ulx, y: uly, name: PointNames.TopLeft },
-      { x: (ulx + lrx) / 2, y: uly + (lrx - ulx) / 2 * Math.sin(rotate), name: PointNames.Top },
-      { x: lrx, y: uly + (lrx - ulx) * Math.sin(rotate), name: PointNames.TopRight },
-      { x: lrx, y: (uly + lry + (lrx - ulx) * Math.sin(rotate)) / 2, name: PointNames.Right },
+      {
+        x: (ulx + lrx) / 2,
+        y: uly + ((lrx - ulx) / 2) * Math.sin(rotate),
+        name: PointNames.Top,
+      },
+      {
+        x: lrx,
+        y: uly + (lrx - ulx) * Math.sin(rotate),
+        name: PointNames.TopRight,
+      },
+      {
+        x: lrx,
+        y: (uly + lry + (lrx - ulx) * Math.sin(rotate)) / 2,
+        name: PointNames.Right,
+      },
       { x: lrx, y: lry, name: PointNames.BottomRight },
-      { x: (ulx + lrx) / 2, y: lry - (lrx - ulx) / 2 * Math.sin(rotate), name: PointNames.Bottom },
-      { x: ulx, y: lry - (lrx - ulx) * Math.sin(rotate), name: PointNames.BottomLeft },
-      { x: ulx, y: (uly + lry - (lrx - ulx) * Math.sin(rotate)) / 2, name: PointNames.Left }
+      {
+        x: (ulx + lrx) / 2,
+        y: lry - ((lrx - ulx) / 2) * Math.sin(rotate),
+        name: PointNames.Bottom,
+      },
+      {
+        x: ulx,
+        y: lry - (lrx - ulx) * Math.sin(rotate),
+        name: PointNames.BottomLeft,
+      },
+      {
+        x: ulx,
+        y: (uly + lry - (lrx - ulx) * Math.sin(rotate)) / 2,
+        name: PointNames.Left,
+      },
     ];
   }
   // Not that
@@ -56,13 +91,17 @@ function getPoints(ulx: number, uly: number, lrx: number, lry: number, rotate: n
       { x: lrx, y: uly + b, name: PointNames.BottomRight },
       { x: (ulx + lrx) / 2, y: lry - a / 2, name: PointNames.Bottom },
       { x: ulx, y: lry, name: PointNames.BottomLeft },
-      { x: ulx, y: lry - b / 2, name: PointNames.Left }
+      { x: ulx, y: lry - b / 2, name: PointNames.Left },
     ];
   }
   return points;
 }
 
-export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHandler: DragHandler): void {
+export function resize(
+  element: SVGGraphicsElement,
+  neonView: NeonView,
+  dragHandler: DragHandler,
+): void {
   let ulx: number;
   let uly: number;
   let lrx: number;
@@ -70,24 +109,35 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
   let rotate: number;
 
   let initialUlx: number, initialLrx: number;
-  let initialPoint: number[], initialUly: number, initialLry: number,
-    initialY: number, initialRectY: number, polyLen: number, dy: number, initialRotate: number;
+  let initialPoint: number[],
+    initialUly: number,
+    initialLry: number,
+    initialY: number,
+    initialRectY: number,
+    polyLen: number,
+    dy: number,
+    initialRotate: number;
 
   drawInitialRect();
 
   /**
    * Redraw the rectangle with the new bounds
    */
-  function redraw (): void {
+  function redraw(): void {
     const points: Point[] = getPoints(ulx, uly, lrx, lry, rotate);
 
-    const pointString: string = points.filter((_elem, index) => { return index % 2 === 0; })
-      .map(elem => elem.x + ',' + elem.y)
+    const pointString: string = points
+      .filter((_elem, index) => {
+        return index % 2 === 0;
+      })
+      .map((elem) => elem.x + ',' + elem.y)
       .join(' ');
 
     document.querySelector('#resizeRect').setAttribute('points', pointString);
 
-    const textRect = document.querySelector('.syl.selected > .sylTextRect-display');
+    const textRect = document.querySelector(
+      '.syl.selected > .sylTextRect-display',
+    );
     if (textRect) {
       textRect.setAttribute('x', String(Math.min(ulx, lrx)));
       textRect.setAttribute('y', String(Math.min(uly, lry)));
@@ -95,22 +145,52 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       textRect.setAttribute('height', String(Math.abs(lry - uly)));
     }
 
-
     for (const pointName in PointNames) {
       const point: Point = points[PointNames[pointName]];
-      d3.select('#p-' + pointName).filter('.resizePoint')
+      d3.select('#p-' + pointName)
+        .filter('.resizePoint')
         .attr('cx', point.x)
         .attr('cy', point.y);
     }
 
     let x = points[3].x;
     let y = points[3].y;
-    const pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
-      (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
+    const pointStringRight =
+      x +
+      100 +
+      ',' +
+      (y + 85) +
+      ' ' +
+      (x + 70) +
+      ',' +
+      (y + 50) +
+      ' ' +
+      (x + 100) +
+      ',' +
+      (y + 15) +
+      ' ' +
+      (x + 130) +
+      ',' +
+      (y + 50);
     x = points[7].x;
     y = points[7].y;
-    const pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
-      (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
+    const pointStringLeft =
+      x -
+      100 +
+      ',' +
+      (y - 15) +
+      ' ' +
+      (x - 130) +
+      ',' +
+      (y - 50) +
+      ' ' +
+      (x - 100) +
+      ',' +
+      (y - 85) +
+      ' ' +
+      (x - 70) +
+      ',' +
+      (y - 50);
 
     d3.select('#rotateLeft').attr('points', pointStringLeft);
     d3.select('#rotateRight').attr('points', pointStringRight);
@@ -120,7 +200,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
    * Draw the initial rectangle around the element
    * and add the listeners to support dragging to resize.
    */
-  function drawInitialRect (): void {
+  function drawInitialRect(): void {
     if (element === null) return;
 
     d3.selectAll('.resizePoint').remove();
@@ -131,7 +211,9 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
     if (element.classList.contains('syl')) {
       const rect = element.querySelector('.sylTextRect-display');
       if (rect === null) {
-        console.warn('Tried to draw resize rect for a sylTextRect that doesn\'t exist (or isn\'t displaying)');
+        console.warn(
+          "Tried to draw resize rect for a sylTextRect that doesn't exist (or isn't displaying)",
+        );
         return;
       }
       ulx = Number(rect.getAttribute('x'));
@@ -150,15 +232,20 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
       lrx = bbox.lrx;
       lry = bbox.lry;
 
-      const coordinates: number[] = element.querySelector('path')
+      const coordinates: number[] = element
+        .querySelector('path')
         .getAttribute('d')
         .match(/\d+/g)
-        .map(element => Number(element));
-      rotate = Math.atan((coordinates[3] - coordinates[1]) /
-        (coordinates[2] - coordinates[0]));
+        .map((element) => Number(element));
+      rotate = Math.atan(
+        (coordinates[3] - coordinates[1]) / (coordinates[2] - coordinates[0]),
+      );
     }
 
-    initialUlx = ulx, initialUly = uly, initialLrx = lrx, initialLry = lry;
+    (initialUlx = ulx),
+      (initialUly = uly),
+      (initialLrx = lrx),
+      (initialLry = lry);
 
     let whichPoint: string;
 
@@ -166,11 +253,13 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
 
     polyLen = points[2].x - points[0].x;
 
-    const pointString = points.filter((_, index) => index % 2 === 0)
-      .map(elem => elem.x + ',' + elem.y)
+    const pointString = points
+      .filter((_, index) => index % 2 === 0)
+      .map((elem) => elem.x + ',' + elem.y)
       .join(' ');
 
-    d3.select('#' + element.id).append('polygon')
+    d3.select('#' + element.id)
+      .append('polygon')
       .attr('points', pointString)
       .attr('id', 'resizeRect')
       .attr('stroke', 'black')
@@ -183,7 +272,8 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
 
     for (const pointName in PointNames) {
       const point: Point = points[PointNames[pointName]];
-      d3.select(element.viewportElement).append('circle')
+      d3.select(element.viewportElement)
+        .append('circle')
         .attr('cx', point.x)
         .attr('cy', point.y)
         .attr('r', circleSize)
@@ -196,24 +286,61 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
 
     // do it as a loop instead of selectAll so that you can easily know which point was
     for (const name in PointNames) {
-      d3.select('#p-' + name).filter('.resizePoint').call(
-        d3.drag()
-          .on('start', () => { resizeStart(name); })
-          .on('drag', resizeDrag)
-          .on('end', resizeEnd.bind(this)));
+      d3.select('#p-' + name)
+        .filter('.resizePoint')
+        .call(
+          d3
+            .drag()
+            .on('start', () => {
+              resizeStart(name);
+            })
+            .on('drag', resizeDrag)
+            .on('end', resizeEnd.bind(this)),
+        );
     }
 
     if (element.classList.contains('staff')) {
       let x = points[3].x;
       let y = points[3].y;
-      const pointStringRight = (x + 100) + ',' + (y + 85) + ' ' +
-        (x + 70) + ',' + (y + 50) + ' ' + (x + 100) + ',' + (y + 15) + ' ' + (x + 130) + ',' + (y + 50);
+      const pointStringRight =
+        x +
+        100 +
+        ',' +
+        (y + 85) +
+        ' ' +
+        (x + 70) +
+        ',' +
+        (y + 50) +
+        ' ' +
+        (x + 100) +
+        ',' +
+        (y + 15) +
+        ' ' +
+        (x + 130) +
+        ',' +
+        (y + 50);
       x = points[7].x;
       y = points[7].y;
-      const pointStringLeft = (x - 100) + ',' + (y - 15) + ' ' +
-        (x - 130) + ',' + (y - 50) + ' ' + (x - 100) + ',' + (y - 85) + ' ' + (x - 70) + ',' + (y - 50);
+      const pointStringLeft =
+        x -
+        100 +
+        ',' +
+        (y - 15) +
+        ' ' +
+        (x - 130) +
+        ',' +
+        (y - 50) +
+        ' ' +
+        (x - 100) +
+        ',' +
+        (y - 85) +
+        ' ' +
+        (x - 70) +
+        ',' +
+        (y - 50);
 
-      d3.select('#' + element.id).append('polygon')
+      d3.select('#' + element.id)
+        .append('polygon')
         .attr('points', pointStringRight)
         .attr('id', 'rotateRight')
         .attr('stroke', 'black')
@@ -221,7 +348,8 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         .attr('fill', '#0099ff')
         .attr('class', 'rotatePoint');
 
-      d3.select('#' + element.id).append('polygon')
+      d3.select('#' + element.id)
+        .append('polygon')
         .attr('points', pointStringLeft)
         .attr('id', 'rotateLeft')
         .attr('stroke', 'black')
@@ -230,27 +358,31 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         .attr('class', 'rotatePoint');
 
       d3.select('#rotateLeft').call(
-        d3.drag()
+        d3
+          .drag()
           .on('start', rotateStart)
           .on('drag', rotateDragLeft)
-          .on('end', rotateEnd));
+          .on('end', rotateEnd),
+      );
 
       d3.select('#rotateRight').call(
-        d3.drag()
+        d3
+          .drag()
           .on('start', rotateStart)
           .on('drag', rotateDragRight)
-          .on('end', rotateEnd));
+          .on('end', rotateEnd),
+      );
     }
 
-    function resizeStart (name: string): void {
+    function resizeStart(name: string): void {
       whichPoint = name;
-      const point = points.find(point => point.name === PointNames[name]);
+      const point = points.find((point) => point.name === PointNames[name]);
       initialPoint = [point.x, point.y];
       initialUly = uly;
       initialLry = lry;
     }
 
-    function resizeDrag (): void {
+    function resizeDrag(): void {
       const currentPoint = d3.mouse(this);
       switch (PointNames[whichPoint]) {
         case PointNames.TopLeft:
@@ -258,7 +390,7 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
           uly = currentPoint[1];
           break;
         case PointNames.Top:
-          uly = currentPoint[1] - (lrx - ulx) * Math.tan(rotate) / 2;
+          uly = currentPoint[1] - ((lrx - ulx) * Math.tan(rotate)) / 2;
           break;
         case PointNames.TopRight:
           lrx = currentPoint[0];
@@ -266,14 +398,15 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
           break;
         case PointNames.Right:
           lrx = currentPoint[0];
-          lry = initialLry + (currentPoint[0] - initialPoint[0]) * Math.tan(rotate);
+          lry =
+            initialLry + (currentPoint[0] - initialPoint[0]) * Math.tan(rotate);
           break;
         case PointNames.BottomRight:
           lrx = currentPoint[0];
           lry = currentPoint[1];
           break;
         case PointNames.Bottom:
-          lry = currentPoint[1] + (lrx - ulx) * Math.tan(rotate) / 2;
+          lry = currentPoint[1] + ((lrx - ulx) * Math.tan(rotate)) / 2;
           break;
         case PointNames.BottomLeft:
           ulx = currentPoint[0];
@@ -281,20 +414,29 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
           break;
         case PointNames.Left:
           ulx = currentPoint[0];
-          uly = initialUly + (currentPoint[0] - initialPoint[0]) * Math.tan(rotate);
+          uly =
+            initialUly + (currentPoint[0] - initialPoint[0]) * Math.tan(rotate);
           break;
         default:
-          console.error('Something that wasn\'t a side of the rectangle was dragged. This shouldn\'t happen.');
+          console.error(
+            "Something that wasn't a side of the rectangle was dragged. This shouldn't happen.",
+          );
       }
       redraw();
     }
 
-    function resizeEnd (): void {
+    function resizeEnd(): void {
       if (isOutOfSVGBounds(ulx, uly) || isOutOfSVGBounds(lrx, lry)) {
-        ulx = initialUlx, uly = initialUly, lrx = initialLrx, lry = initialLry;
+        (ulx = initialUlx),
+          (uly = initialUly),
+          (lrx = initialLrx),
+          (lry = initialLry);
         redraw();
 
-        return queueNotification('[FAIL] Glyphs were placed out of bounds! Resize action failed.', 'error');
+        return queueNotification(
+          '[FAIL] Glyphs were placed out of bounds! Resize action failed.',
+          'error',
+        );
       }
 
       const editorAction: ResizeAction = {
@@ -304,43 +446,56 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
           ulx: ulx,
           uly: uly,
           lrx: lrx,
-          lry: lry
-        }
+          lry: lry,
+        },
       };
 
-      neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
-        if (result) {
-          await neonView.updateForCurrentPage();
-        }
-        element = document.querySelector(`#${element.id}`);
-        ulx = undefined, uly = undefined, lrx = undefined, lry = undefined;
-        drawInitialRect();
-        
-        if (element.classList.contains('syl')) {
-          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
-        } else {
-          selectAll([document.querySelector(`#${element.id}`)], neonView, dragHandler);
-          const moreEdit = document.querySelector('moreEdit');
-
-          if (moreEdit) {
-            moreEdit.innerHTML = '';
-            moreEdit.parentElement.classList.add('hidden');
+      neonView
+        .edit(editorAction, neonView.view.getCurrentPageURI())
+        .then(async (result) => {
+          if (result) {
+            await neonView.updateForCurrentPage();
           }
-        }
-      });
+          element = document.querySelector(`#${element.id}`);
+          (ulx = undefined),
+            (uly = undefined),
+            (lrx = undefined),
+            (lry = undefined);
+          drawInitialRect();
+
+          if (element.classList.contains('syl')) {
+            selectBBox(
+              element.querySelector('.sylTextRect-display'),
+              dragHandler,
+              this,
+            );
+          } else {
+            selectAll(
+              [document.querySelector(`#${element.id}`)],
+              neonView,
+              dragHandler,
+            );
+            const moreEdit = document.querySelector('moreEdit');
+
+            if (moreEdit) {
+              moreEdit.innerHTML = '';
+              moreEdit.parentElement.classList.add('hidden');
+            }
+          }
+        });
     }
 
     // ROTATE
-    function rotateStart (): void {
+    function rotateStart(): void {
       const which = d3.event.sourceEvent.target.id;
       initialY = d3.mouse(this)[1];
       initialLry = lry;
       initialUly = uly;
-      initialRectY = (which === 'rotateRight' ? lry : uly);
+      initialRectY = which === 'rotateRight' ? lry : uly;
       initialRotate = rotate;
     }
 
-    function rotateDragLeft (): void {
+    function rotateDragLeft(): void {
       const currentY = d3.mouse(this)[1];
       const temp = currentY - initialY;
       const tempRotate = initialRotate - Math.atan(temp / polyLen);
@@ -349,45 +504,62 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         uly = initialRectY + dy;
         rotate = tempRotate;
         if (rotate >= 0) {
-          uly = dy + points.filter(point => point.name === PointNames.TopLeft)[0].y;
-          lry = points.filter(point => point.name === PointNames.BottomRight)[0].y;
+          uly =
+            dy +
+            points.filter((point) => point.name === PointNames.TopLeft)[0].y;
+          lry = points.filter(
+            (point) => point.name === PointNames.BottomRight,
+          )[0].y;
         } else {
-          uly = points.filter(point => point.name === PointNames.TopRight)[0].y;
-          lry = dy + points.filter(point => point.name === PointNames.BottomLeft)[0].y;
+          uly = points.filter((point) => point.name === PointNames.TopRight)[0]
+            .y;
+          lry =
+            dy +
+            points.filter((point) => point.name === PointNames.BottomLeft)[0].y;
         }
       }
       redraw();
     }
 
-    function rotateDragRight (): void {
+    function rotateDragRight(): void {
       const currentY = d3.mouse(this)[1];
       const temp = currentY - initialY;
       const tempRotate = initialRotate + Math.atan(temp / polyLen);
       if (tempRotate > -0.2 && tempRotate < 0.2) {
         dy = temp;
         rotate = tempRotate;
-        if (rotate >= 0 ) {
-          lry = dy + points.filter(point => point.name === PointNames.BottomRight)[0].y;
-          uly = points.filter(point => point.name === PointNames.TopLeft)[0].y;
+        if (rotate >= 0) {
+          lry =
+            dy +
+            points.filter((point) => point.name === PointNames.BottomRight)[0]
+              .y;
+          uly = points.filter((point) => point.name === PointNames.TopLeft)[0]
+            .y;
         } else {
-          uly = dy + points.filter(point => point.name === PointNames.TopRight)[0].y;
-          lry = points.filter(point => point.name === PointNames.BottomLeft)[0].y;
+          uly =
+            dy +
+            points.filter((point) => point.name === PointNames.TopRight)[0].y;
+          lry = points.filter(
+            (point) => point.name === PointNames.BottomLeft,
+          )[0].y;
         }
       }
       redraw();
     }
 
-    function rotateEnd (): void {
+    function rotateEnd(): void {
       if (dy === undefined) {
         dy = 0;
       }
 
       if (isOutOfSVGBounds(ulx, uly) || isOutOfSVGBounds(lrx, lry)) {
-        document.querySelectorAll('.resizePoint').forEach(el => el.remove());
-        document.querySelectorAll('#resizeRect').forEach(el => el.remove());
-        document.querySelectorAll('.rotatePoint').forEach(el => el.remove());
+        document.querySelectorAll('.resizePoint').forEach((el) => el.remove());
+        document.querySelectorAll('#resizeRect').forEach((el) => el.remove());
+        document.querySelectorAll('.rotatePoint').forEach((el) => el.remove());
 
-        element = document.getElementById(element.id) as unknown as SVGGraphicsElement;
+        element = document.getElementById(
+          element.id,
+        ) as unknown as SVGGraphicsElement;
         ulx = undefined;
         uly = undefined;
         lrx = undefined;
@@ -395,12 +567,19 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
         dy = undefined;
         drawInitialRect();
         if (element.classList.contains('syl')) {
-          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
+          selectBBox(
+            element.querySelector('.sylTextRect-display'),
+            dragHandler,
+            this,
+          );
         } else {
           selectStaff(element, dragHandler);
         }
 
-        return queueNotification('[FAIL] Glyphs were placed out of bounds! Rotate action failed.', 'error');
+        return queueNotification(
+          '[FAIL] Glyphs were placed out of bounds! Rotate action failed.',
+          'error',
+        );
       }
 
       const editorAction: EditorAction = {
@@ -411,24 +590,35 @@ export function resize (element: SVGGraphicsElement, neonView: NeonView, dragHan
           uly: uly,
           lrx: lrx,
           lry: lry,
-          rotate: rotate * 180 / Math.PI
-        }
+          rotate: (rotate * 180) / Math.PI,
+        },
       };
-      neonView.edit(editorAction, neonView.view.getCurrentPageURI()).then(async (result) => {
-        if (result) {
-          await neonView.updateForCurrentPage();
-        }
-        element = document.getElementById(element.id) as unknown as SVGGraphicsElement;
-        ulx = undefined, uly = undefined, lrx = undefined, lry = undefined;
-        dy = undefined;
-        drawInitialRect();
-        
-        if (element.classList.contains('syl')) {
-          selectBBox(element.querySelector('.sylTextRect-display'), dragHandler, this);
-        } else {
-          selectStaff(element, dragHandler);
-        }
-      });
+      neonView
+        .edit(editorAction, neonView.view.getCurrentPageURI())
+        .then(async (result) => {
+          if (result) {
+            await neonView.updateForCurrentPage();
+          }
+          element = document.getElementById(
+            element.id,
+          ) as unknown as SVGGraphicsElement;
+          (ulx = undefined),
+            (uly = undefined),
+            (lrx = undefined),
+            (lry = undefined);
+          dy = undefined;
+          drawInitialRect();
+
+          if (element.classList.contains('syl')) {
+            selectBBox(
+              element.querySelector('.sylTextRect-display'),
+              dragHandler,
+              this,
+            );
+          } else {
+            selectStaff(element, dragHandler);
+          }
+        });
     }
   }
 }
