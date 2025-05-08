@@ -10,9 +10,13 @@ import { InsertTabType, InsertType } from '../Types';
 /**
  * Bind listeners to insert tabs.'
  */
-export function bindInsertTabs (insertHandler: InsertHandler): void {
-  const insertTabs: Element[] = Array.from(document.getElementsByClassName('insertTab'));
-  const tabIds: string[] = insertTabs.map((tab) => { return tab.id; });
+export function bindInsertTabs(insertHandler: InsertHandler): void {
+  const insertTabs: Element[] = Array.from(
+    document.getElementsByClassName('insertTab'),
+  );
+  const tabIds: string[] = insertTabs.map((tab) => {
+    return tab.id;
+  });
 
   document.body.addEventListener('keydown', (evt: KeyboardEvent) => {
     if (evt.code.match(/^Digit\d$/) && evt.shiftKey) {
@@ -20,7 +24,7 @@ export function bindInsertTabs (insertHandler: InsertHandler): void {
         const index = Number(evt.code[evt.code.length - 1]) - 1;
         const insertOptions = document.getElementsByClassName('insertel');
         const selectedOption = insertOptions[index];
-        (<HTMLButtonElement> selectedOption).click();
+        (<HTMLButtonElement>selectedOption).click();
       } catch (e) {
         console.debug(e);
       }
@@ -32,7 +36,8 @@ export function bindInsertTabs (insertHandler: InsertHandler): void {
       deactivate('.insertTab');
       activate(tab, insertHandler);
       setSettings({ insertTab: tab as InsertTabType });
-      document.getElementById('insert_data').innerHTML = Contents.insertTabHtml[tab];
+      document.getElementById('insert_data').innerHTML =
+        Contents.insertTabHtml[tab];
       bindElements(insertHandler);
       deactivate('.insertel');
       try {
@@ -49,11 +54,12 @@ export function bindInsertTabs (insertHandler: InsertHandler): void {
 /**
  * Initialize Edit and Insert control panels.
  */
-export function initInsertEditControls (): void {
-
+export function initInsertEditControls(): void {
   const insertPanel = document.getElementById('insert_controls');
   const insertHeading = document.getElementById('insertMenu');
-  const insertHeadingTitle = insertHeading.querySelector('.panel-heading-title');
+  const insertHeadingTitle = insertHeading.querySelector(
+    '.panel-heading-title',
+  );
   const insertContents = document.getElementById('insertContents');
   const insertDropdownIcon = insertHeading.querySelector('svg > use');
 
@@ -63,7 +69,6 @@ export function initInsertEditControls (): void {
   const editContents = document.getElementById('editContents');
   const editDropdownIcon = editHeading.querySelector('svg > use');
 
-
   // event listener for when user clicks inside Insert panel
   // insert mode is activated
   insertPanel.addEventListener('click', () => {
@@ -72,9 +77,13 @@ export function initInsertEditControls (): void {
 
     setSettings({ userMode: 'insert' });
 
-    (<HTMLButtonElement> document.querySelector('.insertel.is-active')).click();
-    editPanel.querySelector('.side-panel-btn.sel-by.is-active').classList.add('unfocused');
-    insertPanel.querySelector('.side-panel-btn.insertel.is-active').classList.remove('unfocused');
+    (<HTMLButtonElement>document.querySelector('.insertel.is-active')).click();
+    editPanel
+      .querySelector('.side-panel-btn.sel-by.is-active')
+      .classList.add('unfocused');
+    insertPanel
+      .querySelector('.side-panel-btn.insertel.is-active')
+      .classList.remove('unfocused');
   });
 
   // event listener for when user clicks inside Edit panel
@@ -82,13 +91,16 @@ export function initInsertEditControls (): void {
   editPanel.addEventListener('click', () => {
     insertHeadingTitle.classList.remove('focused');
     displayHeadingTitle.classList.add('focused');
-    
+
     setSettings({ userMode: 'edit' });
 
-    insertPanel.querySelector('.side-panel-btn.insertel.is-active').classList.add('unfocused');
-    editPanel.querySelector('.side-panel-btn.sel-by.is-active').classList.remove('unfocused');
+    insertPanel
+      .querySelector('.side-panel-btn.insertel.is-active')
+      .classList.add('unfocused');
+    editPanel
+      .querySelector('.side-panel-btn.sel-by.is-active')
+      .classList.remove('unfocused');
   });
-
 
   insertHeading.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -100,8 +112,11 @@ export function initInsertEditControls (): void {
       setTimeout(() => {
         insertContents.style.overflow = 'visible';
       }, 200);
-      insertDropdownIcon.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down`);
-    } 
+      insertDropdownIcon.setAttribute(
+        'xlink:href',
+        `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down`,
+      );
+    }
     // if insert panel is open, close it
     else {
       // set classes and styles for a closed panel
@@ -110,7 +125,10 @@ export function initInsertEditControls (): void {
       setTimeout(() => {
         insertContents.style.padding = '0px';
       }, 200);
-      insertDropdownIcon.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-side`);
+      insertDropdownIcon.setAttribute(
+        'xlink:href',
+        `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-side`,
+      );
     }
   });
 
@@ -124,7 +142,10 @@ export function initInsertEditControls (): void {
       setTimeout(() => {
         editContents.style.overflow = 'visible';
       }, 200);
-      editDropdownIcon.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down`);
+      editDropdownIcon.setAttribute(
+        'xlink:href',
+        `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down`,
+      );
     }
     // if edit panel is closed, open it
     else {
@@ -134,7 +155,10 @@ export function initInsertEditControls (): void {
       setTimeout(() => {
         editContents.style.padding = '0px';
       }, 200);
-      editDropdownIcon.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-side`);
+      editDropdownIcon.setAttribute(
+        'xlink:href',
+        `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-side`,
+      );
     }
   });
 }
@@ -145,7 +169,7 @@ export function initInsertEditControls (): void {
  * and insert ICONS (whyyy).
  * @param id - The ID of the insert action tab.
  */
-function activate (id: string, insertHandler: InsertHandler): void {
+function activate(id: string, insertHandler: InsertHandler): void {
   const selectedTab = document.getElementById(id);
   selectedTab.classList.add('is-active');
   if (document.getElementById(id).classList.contains('insertel')) {
@@ -158,9 +182,9 @@ function activate (id: string, insertHandler: InsertHandler): void {
  * Deactivate a certain insert action.
  * @param type - A CSS selector for the action tab.
  */
-function deactivate (type: string) {
+function deactivate(type: string) {
   const elList = document.querySelectorAll(type);
-  elList.forEach(el => {
+  elList.forEach((el) => {
     el.classList.remove('is-active');
     el.classList.remove('unfocused');
   });
@@ -169,10 +193,12 @@ function deactivate (type: string) {
 /**
  * Bind listeners to insert tab elements.
  */
-function bindElements (insertHandler: InsertHandler) {
-  const insertElements = Array.from(document.getElementsByClassName('insertel'));
-  const elementIds = insertElements.map(el => el.id);
-  elementIds.forEach(el => {
+function bindElements(insertHandler: InsertHandler) {
+  const insertElements = Array.from(
+    document.getElementsByClassName('insertel'),
+  );
+  const elementIds = insertElements.map((el) => el.id);
+  elementIds.forEach((el) => {
     document.getElementById(el).addEventListener('click', () => {
       deactivate('.insertel');
       activate(el, insertHandler);
@@ -183,7 +209,7 @@ function bindElements (insertHandler: InsertHandler) {
 /**
  * Set listeners on the buttons to change selection modes.
  */
-export function initSelectionButtons (): void {
+export function initSelectionButtons(): void {
   const selBySyllable = document.getElementById('selBySyllable');
   const selByNeume = document.getElementById('selByNeume');
   const selByNc = document.getElementById('selByNc');
@@ -204,8 +230,7 @@ export function initSelectionButtons (): void {
     if (evt.key === '5') selByLayerElement.click();
   });
 
-
-  function selectBySyllableHandler () {
+  function selectBySyllableHandler() {
     if (!selBySyllable.classList.contains('is-active')) {
       setSettings({ selectionMode: 'selBySyllable' });
 
@@ -213,7 +238,9 @@ export function initSelectionButtons (): void {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
       document.getElementById('moreEdit').parentElement.classList.add('hidden');
-      document.getElementById('extraEdit').parentElement.classList.add('hidden');
+      document
+        .getElementById('extraEdit')
+        .parentElement.classList.add('hidden');
       selBySyllable.classList.add('is-active');
 
       selByNeume.classList.remove('is-active');
@@ -224,14 +251,17 @@ export function initSelectionButtons (): void {
         document.getElementById('selByBBox').classList.remove('is-active');
       } catch (e) {}
       try {
-        if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
+        if (
+          document.querySelector('.highlight-selected').id ===
+          'highlight-selection'
+        ) {
           setGroupingHighlight('syllable');
         }
       } catch (e) {}
     }
   }
 
-  function selectByNeumeHandler () {
+  function selectByNeumeHandler() {
     if (!selByNeume.classList.contains('is-active')) {
       setSettings({ selectionMode: 'selByNeume' });
 
@@ -239,7 +269,9 @@ export function initSelectionButtons (): void {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
       document.getElementById('moreEdit').parentElement.classList.add('hidden');
-      document.getElementById('extraEdit').parentElement.classList.add('hidden');
+      document
+        .getElementById('extraEdit')
+        .parentElement.classList.add('hidden');
       selByNeume.classList.add('is-active');
       selByNc.classList.remove('is-active');
       selBySyllable.classList.remove('is-active');
@@ -249,14 +281,17 @@ export function initSelectionButtons (): void {
         document.getElementById('selByBBox').classList.remove('is-active');
       } catch (e) {}
       try {
-        if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
+        if (
+          document.querySelector('.highlight-selected').id ===
+          'highlight-selection'
+        ) {
           setGroupingHighlight('neume');
         }
       } catch (e) {}
     }
   }
 
-  function selectByNcHandler () {
+  function selectByNcHandler() {
     if (!selByNc.classList.contains('is-active')) {
       setSettings({ selectionMode: 'selByNc' });
 
@@ -264,7 +299,9 @@ export function initSelectionButtons (): void {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
       document.getElementById('moreEdit').parentElement.classList.add('hidden');
-      document.getElementById('extraEdit').parentElement.classList.add('hidden');
+      document
+        .getElementById('extraEdit')
+        .parentElement.classList.add('hidden');
       selByNc.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selBySyllable.classList.remove('is-active');
@@ -274,14 +311,17 @@ export function initSelectionButtons (): void {
         document.getElementById('selByBBox').classList.remove('is-active');
       } catch (e) {}
       try {
-        if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
+        if (
+          document.querySelector('.highlight-selected').id ===
+          'highlight-selection'
+        ) {
           setGroupingHighlight('neume');
         }
       } catch (e) {}
     }
   }
 
-  function selectByStaffHandler () {
+  function selectByStaffHandler() {
     if (!selByStaff.classList.contains('is-active')) {
       setSettings({ selectionMode: 'selByStaff' });
 
@@ -289,7 +329,9 @@ export function initSelectionButtons (): void {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
       document.getElementById('moreEdit').parentElement.classList.add('hidden');
-      document.getElementById('extraEdit').parentElement.classList.add('hidden');
+      document
+        .getElementById('extraEdit')
+        .parentElement.classList.add('hidden');
       selByStaff.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');
@@ -299,14 +341,17 @@ export function initSelectionButtons (): void {
         document.getElementById('selByBBox').classList.remove('is-active');
       } catch (e) {}
       try {
-        if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
+        if (
+          document.querySelector('.highlight-selected').id ===
+          'highlight-selection'
+        ) {
           setGroupingHighlight('staff');
         }
       } catch (e) {}
     }
   }
 
-  function selByLayerElementHandler () {
+  function selByLayerElementHandler() {
     if (!selByLayerElement.classList.contains('is-active')) {
       setSettings({ selectionMode: 'selByLayerElement' });
 
@@ -314,7 +359,9 @@ export function initSelectionButtons (): void {
       document.getElementById('moreEdit').innerHTML = '';
       document.getElementById('extraEdit').innerHTML = '';
       document.getElementById('moreEdit').parentElement.classList.add('hidden');
-      document.getElementById('extraEdit').parentElement.classList.add('hidden');
+      document
+        .getElementById('extraEdit')
+        .parentElement.classList.add('hidden');
       selByLayerElement.classList.add('is-active');
       selByNeume.classList.remove('is-active');
       selByNc.classList.remove('is-active');
@@ -324,7 +371,10 @@ export function initSelectionButtons (): void {
         document.getElementById('selByBBox').classList.remove('is-active');
       } catch (e) {}
       try {
-        if (document.querySelector('.highlight-selected').id === 'highlight-selection') {
+        if (
+          document.querySelector('.highlight-selected').id ===
+          'highlight-selection'
+        ) {
           setGroupingHighlight('layerElement');
         }
       } catch (e) {}

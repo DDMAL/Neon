@@ -1,5 +1,4 @@
-export const uploadAreaHTML = 
-  `<div id="document-upload-container">
+export const uploadAreaHTML = `<div id="document-upload-container">
 
     <div id="initial_upload_container">
       <div id="initial_upload_area">

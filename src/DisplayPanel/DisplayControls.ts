@@ -12,7 +12,7 @@ let lastGlyphOpacity: number, lastImageOpacity: number, lastCircleSize: number;
  * Set zoom control listener for button and slider
  * @param zoomHandler - A [[ZoomHandler]] is only necessary in Single Page mode as diva.js handles zooming otherwise.
  */
-export function setZoomControls (zoomHandler?: ZoomHandler): void {
+export function setZoomControls(zoomHandler?: ZoomHandler): void {
   if (zoomHandler === undefined) {
     return;
   }
@@ -29,13 +29,15 @@ export function setZoomControls (zoomHandler?: ZoomHandler): void {
     zoomHandler.resetZoomAndPan();
   });
 
-  document.querySelector('#set-zoom-easy-edit').addEventListener('click', () => {
-    zoomOutput.value = '180';
-    zoomSlider.value = '180';
-    zoomHandler.zoomTo(180/100);
-  });
+  document
+    .querySelector('#set-zoom-easy-edit')
+    .addEventListener('click', () => {
+      zoomOutput.value = '180';
+      zoomSlider.value = '180';
+      zoomHandler.zoomTo(180 / 100);
+    });
 
-  function inputChangeHandler (): void {
+  function inputChangeHandler(): void {
     zoomOutput.value = zoomSlider.value;
     zoomHandler.zoomTo(Number(zoomOutput.value) / 100.0);
   }
@@ -46,16 +48,28 @@ export function setZoomControls (zoomHandler?: ZoomHandler): void {
 
   document.body.addEventListener('keydown', (evt) => {
     const currentZoom = parseInt(zoomOutput.value);
-    if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown' || 
-    evt.key === 'ArrowRight' || evt.key === 'ArrowLeft') {
+    if (
+      evt.key === 'ArrowUp' ||
+      evt.key === 'ArrowDown' ||
+      evt.key === 'ArrowRight' ||
+      evt.key === 'ArrowLeft'
+    ) {
       evt.preventDefault();
-    } else if (evt.key === '+') { // increase zoom by 20
-      const newZoom = Math.min(currentZoom + 20, parseInt(zoomSlider.getAttribute('max')));
+    } else if (evt.key === '+') {
+      // increase zoom by 20
+      const newZoom = Math.min(
+        currentZoom + 20,
+        parseInt(zoomSlider.getAttribute('max')),
+      );
       zoomHandler.zoomTo(newZoom / 100.0);
       zoomOutput.value = String(newZoom);
       zoomSlider.value = String(newZoom);
-    } else if (evt.key === '_') { // decrease zoom by 20
-      const newZoom = Math.max(currentZoom - 20, parseInt(zoomSlider.getAttribute('min')));
+    } else if (evt.key === '_') {
+      // decrease zoom by 20
+      const newZoom = Math.max(
+        currentZoom - 20,
+        parseInt(zoomSlider.getAttribute('min')),
+      );
       zoomHandler.zoomTo(newZoom / 100.0);
       zoomOutput.value = String(newZoom);
       zoomSlider.value = String(newZoom);
@@ -71,9 +85,13 @@ export function setZoomControls (zoomHandler?: ZoomHandler): void {
  * Update MEI opacity to value from the slider.
  * @param meiClassName - Class that contains the rendered MEI.
  */
-export function setGlyphOpacityFromSlider (meiClassName?: string): void {
-  const opacityOutput = document.getElementById('opacityOutput') as HTMLOutputElement;
-  const opacitySlider = document.getElementById('opacitySlider') as HTMLInputElement;
+export function setGlyphOpacityFromSlider(meiClassName?: string): void {
+  const opacityOutput = document.getElementById(
+    'opacityOutput',
+  ) as HTMLOutputElement;
+  const opacitySlider = document.getElementById(
+    'opacitySlider',
+  ) as HTMLInputElement;
 
   opacitySlider.value = opacityOutput.value;
   // this is where we load glyph opacity from localStorage on page-load
@@ -82,16 +100,23 @@ export function setGlyphOpacityFromSlider (meiClassName?: string): void {
   // dispay correct slider toggle display icon
   const hideGlyphImg = document.querySelector('#toggle-glyph-opacity > img');
   if (Number(opacityOutput.value) === 0) {
-    hideGlyphImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/show-icon.svg`);
+    hideGlyphImg.setAttribute(
+      'src',
+      `${__ASSET_PREFIX__}assets/img/show-icon.svg`,
+    );
     hideGlyphImg.parentElement.setAttribute('title', 'Show glyph');
-  }
-  else {
-    hideGlyphImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/hide-icon.svg`);
+  } else {
+    hideGlyphImg.setAttribute(
+      'src',
+      `${__ASSET_PREFIX__}assets/img/hide-icon.svg`,
+    );
     hideGlyphImg.parentElement.setAttribute('title', 'Hide glyph');
   }
 
   try {
-    ((document.querySelectorAll('.' + meiClassName)) as NodeListOf<HTMLElement>).forEach(g => {
+    (
+      document.querySelectorAll('.' + meiClassName) as NodeListOf<HTMLElement>
+    ).forEach((g) => {
       g.style.opacity = (Number(opacityOutput.value) / 100.0).toString();
     });
   } catch (e) {
@@ -103,16 +128,20 @@ export function setGlyphOpacityFromSlider (meiClassName?: string): void {
  * Set rendered MEI opacity button and slider listeners.
  * @param meiClassName - Class that contains the rendered MEI.
  */
-function setGlyphOpacityControls (meiClassName: string): void {
-  const opacitySlider = document.getElementById('opacitySlider') as HTMLInputElement;
-  const opacityOutput = document.getElementById('opacityOutput') as HTMLOutputElement;
+function setGlyphOpacityControls(meiClassName: string): void {
+  const opacitySlider = document.getElementById(
+    'opacitySlider',
+  ) as HTMLInputElement;
+  const opacityOutput = document.getElementById(
+    'opacityOutput',
+  ) as HTMLOutputElement;
 
   const { glyphOpacity } = getSettings();
   lastGlyphOpacity = glyphOpacity;
   opacitySlider.value = String(glyphOpacity);
   opacityOutput.value = String(glyphOpacity);
 
-  function inputChangeOpacity (): void {
+  function inputChangeOpacity(): void {
     opacityOutput.value = opacitySlider.value;
     lastGlyphOpacity = Number(opacitySlider.value);
     setGlyphOpacityFromSlider(meiClassName);
@@ -125,20 +154,20 @@ function setGlyphOpacityControls (meiClassName: string): void {
   }
 
   toggleOpacityBtn?.addEventListener('click', () => {
-
     let newOpacity;
     if (toggleOpacityBtn.classList.contains('hide-icon')) {
       toggleOpacityBtn.classList.remove('hide-icon');
       newOpacity = 0;
-    }
-    else {
+    } else {
       toggleOpacityBtn.classList.add('hide-icon');
       newOpacity = 1;
     }
 
     // Definition scale is the root element of what is generated by verovio
-    
-    (document.querySelectorAll('.' + meiClassName) as NodeListOf<HTMLElement>).forEach(g => {
+
+    (
+      document.querySelectorAll('.' + meiClassName) as NodeListOf<HTMLElement>
+    ).forEach((g) => {
       g.style.opacity = newOpacity.toString();
     });
 
@@ -157,26 +186,28 @@ function setGlyphOpacityControls (meiClassName: string): void {
   opacitySlider.disabled = false;
 }
 
-
 /**
  * Set background image opacity button and slider listeners.
  * @param background - The background image selector.
  */
-function setBgOpacityControls (background: string): void {
-  const bgOpacitySlider = document.getElementById('bgOpacitySlider') as HTMLInputElement;
-  const bgOpacityOutput = document.getElementById('bgOpacityOutput') as HTMLOutputElement;
+function setBgOpacityControls(background: string): void {
+  const bgOpacitySlider = document.getElementById(
+    'bgOpacitySlider',
+  ) as HTMLInputElement;
+  const bgOpacityOutput = document.getElementById(
+    'bgOpacityOutput',
+  ) as HTMLOutputElement;
 
   const { imageOpacity } = getSettings();
   lastImageOpacity = imageOpacity;
   bgOpacitySlider.value = String(imageOpacity);
   bgOpacityOutput.value = String(imageOpacity);
 
-  function bgInputChangeHandler (): void {
+  function bgInputChangeHandler(): void {
     bgOpacityOutput.value = bgOpacitySlider.value;
     lastImageOpacity = Number(bgOpacitySlider.value);
     setBgOpacityFromSlider(background);
   }
-
 
   const toggleBgOpacityBtn = document.getElementById('toggle-bg-opacity');
 
@@ -185,19 +216,18 @@ function setBgOpacityControls (background: string): void {
   }
 
   toggleBgOpacityBtn.addEventListener('click', () => {
-
     let newOpacity;
 
     if (toggleBgOpacityBtn.classList.contains('hide-icon')) {
       toggleBgOpacityBtn.classList.remove('hide-icon');
       newOpacity = 0;
-    }
-    else {
+    } else {
       toggleBgOpacityBtn.classList.add('hide-icon');
       newOpacity = 1;
     }
-    (document.getElementsByClassName(background)[0] as HTMLElement)
-      .style.opacity = newOpacity.toString();
+    (
+      document.getElementsByClassName(background)[0] as HTMLElement
+    ).style.opacity = newOpacity.toString();
 
     lastImageOpacity = Number(bgOpacitySlider.value);
     bgOpacitySlider.value = String(newOpacity * 100);
@@ -213,20 +243,25 @@ function setBgOpacityControls (background: string): void {
   bgOpacitySlider.disabled = false;
 }
 
+export function setBgOpacityFromSlider(background?: string): void {
+  const bgOpacityOutput: HTMLOutputElement =
+    document.querySelector('#bgOpacityOutput');
 
-export function setBgOpacityFromSlider (background?: string): void {
-  const bgOpacityOutput: HTMLOutputElement = document.querySelector('#bgOpacityOutput');
-  
   setSettings({ imageOpacity: Number(bgOpacityOutput.value) });
 
   // dispay correct slider tiggle display icon
   const hideBgImg = document.querySelector('#toggle-bg-opacity > img');
   if (Number(bgOpacityOutput.value) === 0) {
-    hideBgImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/show-icon.svg`);
+    hideBgImg.setAttribute(
+      'src',
+      `${__ASSET_PREFIX__}assets/img/show-icon.svg`,
+    );
     hideBgImg.parentElement.setAttribute('title', 'Show background image');
-  }
-  else {
-    hideBgImg.setAttribute('src', `${__ASSET_PREFIX__}assets/img/hide-icon.svg`);
+  } else {
+    hideBgImg.setAttribute(
+      'src',
+      `${__ASSET_PREFIX__}assets/img/hide-icon.svg`,
+    );
     hideBgImg.parentElement.setAttribute('title', 'Hide background image');
   }
 
@@ -237,16 +272,20 @@ export function setBgOpacityFromSlider (background?: string): void {
 /**
  * Set bbox adjustment circle size button and slider listeners.
  */
-export function setCircleSizeControls (): void {
-  const circleSlider = document.getElementById('circleSlider') as HTMLInputElement;
-  const circleOutput = document.getElementById('circleOutput') as HTMLOutputElement;
+export function setCircleSizeControls(): void {
+  const circleSlider = document.getElementById(
+    'circleSlider',
+  ) as HTMLInputElement;
+  const circleOutput = document.getElementById(
+    'circleOutput',
+  ) as HTMLOutputElement;
 
   const { circleSize } = getSettings();
   lastCircleSize = circleSize;
   circleSlider.value = String(circleSize);
   circleOutput.value = String(circleSize);
 
-  function circleSizeInputChangeHandler (): void {
+  function circleSizeInputChangeHandler(): void {
     circleOutput.value = circleSlider.value;
     lastCircleSize = Number(circleSlider.value);
     setSettings({ circleSize: Number(lastCircleSize) });
@@ -258,7 +297,7 @@ export function setCircleSizeControls (): void {
 
   const resetBtn = document.getElementById('reset-circle-size');
   resetBtn.addEventListener('click', () => {
-    const defaultSize = 25; 
+    const defaultSize = 25;
     // if has resizePoints displayed
     const resizePoints = d3.selectAll('.resizePoint');
     if (!resizePoints.empty()) {
@@ -283,7 +322,7 @@ export function setCircleSizeControls (): void {
  * Update highlight dropdown option + display
  * @param group - GroupingType / The DOM element's id as `highlight-${id}`
  */
-function updateHighlightOption (group: GroupingType): void {
+function updateHighlightOption(group: GroupingType): void {
   const option = document.getElementById(`highlight-${group}`);
   const dropdown = document.getElementById('highlight-dropdown');
   const highlightType = document.getElementById('highlight-type');
@@ -292,7 +331,7 @@ function updateHighlightOption (group: GroupingType): void {
   setSettings({ highlightMode: group });
 
   dropdown.classList.remove('is-active');
-  document.querySelectorAll('.highlight-selected').forEach(elem => {
+  document.querySelectorAll('.highlight-selected').forEach((elem) => {
     elem.classList.remove('highlight-selected');
   });
 
@@ -301,7 +340,7 @@ function updateHighlightOption (group: GroupingType): void {
     Color.unsetGroupingHighlight();
     return;
   }
-  
+
   option.classList.add('highlight-selected');
 
   // Text content is the grouping type capitalized
@@ -312,7 +351,7 @@ function updateHighlightOption (group: GroupingType): void {
 /**
  * @returns The highlight mode chosen by the user.
  */
-export function getHighlightType (): GroupingType {
+export function getHighlightType(): GroupingType {
   const highlightType = document.getElementById('highlight-type');
   return highlightType.textContent.slice(3).toLowerCase() as GroupingType;
 }
@@ -321,7 +360,7 @@ export function getHighlightType (): GroupingType {
  * Set click listener for each highlight dropdown option
  * @param group - GroupingType / The DOM element's id as `highlight-${id}`
  */
-export function setHighlightOption (group: GroupingType): void {
+export function setHighlightOption(group: GroupingType): void {
   const option = document.getElementById(`highlight-${group}`);
   option.addEventListener('click', () => {
     updateHighlightOption(group);
@@ -331,7 +370,7 @@ export function setHighlightOption (group: GroupingType): void {
 /**
  * Clickaway listener for the highlight dropdown.
  */
-function highlightClickaway (): void {
+function highlightClickaway(): void {
   document.body.removeEventListener('click', highlightClickaway);
   document.getElementById('highlight-dropdown').classList.remove('is-active');
 }
@@ -339,33 +378,35 @@ function highlightClickaway (): void {
 /**
  * Set listener on staff highlighting checkbox.
  */
-export function setHighlightControls (): void {
+export function setHighlightControls(): void {
   const dropdown = document.getElementById('highlight-dropdown');
 
-  document.getElementById('highlight-button').addEventListener('click', (evt) => {
-    evt.stopPropagation();
-    dropdown.classList.toggle('is-active');
-    if (dropdown.classList.contains('is-active')) {
-      document.body.addEventListener('click', highlightClickaway);
+  document
+    .getElementById('highlight-button')
+    .addEventListener('click', (evt) => {
+      evt.stopPropagation();
+      dropdown.classList.toggle('is-active');
+      if (dropdown.classList.contains('is-active')) {
+        document.body.addEventListener('click', highlightClickaway);
 
-      setHighlightOption('column');
-      setHighlightOption('staff');
-      setHighlightOption('syllable');
-      setHighlightOption('neume');
-      setHighlightOption('layerElement');
-      setHighlightOption('none');
-    } else {
-      document.body.removeEventListener('click', highlightClickaway);
-    }
-  });
+        setHighlightOption('column');
+        setHighlightOption('staff');
+        setHighlightOption('syllable');
+        setHighlightOption('neume');
+        setHighlightOption('layerElement');
+        setHighlightOption('none');
+      } else {
+        document.body.removeEventListener('click', highlightClickaway);
+      }
+    });
 }
 
 /**
-  * Set listener on key shortcuts for switching between highlights
-  * 
-  * The current plan is to use the keys q, w, e, r, t, and y
-  */
-function setHighlightKeyControls (): void {
+ * Set listener on key shortcuts for switching between highlights
+ *
+ * The current plan is to use the keys q, w, e, r, t, and y
+ */
+function setHighlightKeyControls(): void {
   document.body.addEventListener('keydown', (evt) => {
     // Prevent cmd/ctrl+r from changing highlight option
     if (evt.metaKey) return;
@@ -393,11 +434,11 @@ function setHighlightKeyControls (): void {
   });
 }
 
-export function setHighlightSelectionControls (): void {
+export function setHighlightSelectionControls(): void {
   const highlightSelection = document.getElementById('highlight-selection');
   highlightSelection.addEventListener('click', () => {
     document.getElementById('highlight-dropdown').classList.remove('is-active');
-    document.querySelectorAll('.highlight-selected').forEach(elem => {
+    document.querySelectorAll('.highlight-selected').forEach((elem) => {
       elem.classList.remove('highlight-selected');
     });
     highlightSelection.classList.add('highlight-selected');
@@ -409,7 +450,7 @@ export function setHighlightSelectionControls (): void {
 /**
  * Reset the highlight for different types based on the 'highlight-selected' class in the DOM.
  */
-export function updateHighlight (): void {
+export function updateHighlight(): void {
   let highlightId: string;
   try {
     highlightId = document.querySelector('.highlight-selected').id;
@@ -443,16 +484,16 @@ export function updateHighlight (): void {
 /**
  * Set listener on burger menu for smaller screens.
  */
-function setBurgerControls (): void {
+function setBurgerControls(): void {
   document.getElementById('burgerMenu').addEventListener('click', () => {
     document.getElementById('burgerMenu').classList.toggle('is-active');
     document.getElementById('navMenu').classList.toggle('is-active');
   });
 }
 
-/** 
+/**
  * Set listener for "Display All" button in Display panel.
-*/
+ */
 function setDisplayAllListener(): void {
   const selectAllBtn = document.querySelector('#display-all-btn');
   selectAllBtn.addEventListener('click', () => {
@@ -460,17 +501,20 @@ function setDisplayAllListener(): void {
     if (selectAllBtn.classList.contains('selected')) {
       selectAllBtn.classList.remove('selected');
       selectAllBtn.innerHTML = 'Display All';
-      const options =  document.querySelectorAll('.checkbox-container:not([style*="display: none;"]) > .checkbox');
+      const options = document.querySelectorAll(
+        '.checkbox-container:not([style*="display: none;"]) > .checkbox',
+      );
 
       Array.from(options).forEach((option: HTMLInputElement) => {
         if (option.checked) option.click();
       });
-    }
-    else {
+    } else {
       selectAllBtn.classList.add('selected');
       selectAllBtn.innerHTML = 'Hide All';
-      const options =  document.querySelectorAll('.checkbox-container:not([style*="display: none;"]) > .checkbox');
-      
+      const options = document.querySelectorAll(
+        '.checkbox-container:not([style*="display: none;"]) > .checkbox',
+      );
+
       Array.from(options).forEach((option: HTMLInputElement) => {
         if (!option.checked) option.click();
       });
@@ -478,20 +522,32 @@ function setDisplayAllListener(): void {
   });
 }
 
-/** 
+/**
  * Update `Display All` button status
-*/
+ */
 export function updateDisplayAllBtn(): void {
   const displayAllBtn = document.getElementById('display-all-btn');
-  const displayInfo = document.getElementById('displayInfo') as HTMLInputElement;
-  const displayBBoxes = document.getElementById('displayBBox') as HTMLInputElement;
-  const displayText = document.getElementById('displayText') as HTMLInputElement;
-  const displayErrLog = document.getElementById('display-errors') as HTMLInputElement;
+  const displayInfo = document.getElementById(
+    'displayInfo',
+  ) as HTMLInputElement;
+  const displayBBoxes = document.getElementById(
+    'displayBBox',
+  ) as HTMLInputElement;
+  const displayText = document.getElementById(
+    'displayText',
+  ) as HTMLInputElement;
+  const displayErrLog = document.getElementById(
+    'display-errors',
+  ) as HTMLInputElement;
 
   // if all options are selected,
   // set "Display/Hide All" button to "Hide All".
-  if (displayInfo?.checked && displayBBoxes?.checked && 
-    displayText?.checked && displayErrLog?.checked) {
+  if (
+    displayInfo?.checked &&
+    displayBBoxes?.checked &&
+    displayText?.checked &&
+    displayErrLog?.checked
+  ) {
     displayAllBtn.classList.add('selected');
     displayAllBtn.innerHTML = 'Hide All';
   } else {
@@ -506,7 +562,7 @@ export function updateDisplayAllBtn(): void {
 /**
  * Load highlight settings from localStorage
  */
-export function loadHighlightSettings (): void {
+export function loadHighlightSettings(): void {
   const { highlightMode } = getSettings();
   updateHighlightOption(highlightMode);
 }
@@ -516,7 +572,10 @@ export function loadHighlightSettings (): void {
  * @param {string} meiClassName - The class used to signifiy the MEI element(s).
  * @param {string} background - The class used to signify the background.
  */
-export function initDisplayControls (meiClassName: string, background: string): void {
+export function initDisplayControls(
+  meiClassName: string,
+  background: string,
+): void {
   setGlyphOpacityControls(meiClassName);
   setBgOpacityControls(background);
   setHighlightControls();
@@ -538,8 +597,11 @@ export function initDisplayControls (meiClassName: string, background: string): 
       setTimeout(() => {
         displayContents.style.overflow = 'visible';
       }, 200);
-      toggleDisplay.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down`);
-    } 
+      toggleDisplay.setAttribute(
+        'xlink:href',
+        `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down`,
+      );
+    }
     // if display panel is open, close it
     else {
       displayContents.classList.add('closed');
@@ -547,8 +609,10 @@ export function initDisplayControls (meiClassName: string, background: string): 
       setTimeout(() => {
         displayContents.style.padding = '0px';
       }, 200);
-      toggleDisplay.setAttribute('xlink:href', `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-side`);
+      toggleDisplay.setAttribute(
+        'xlink:href',
+        `${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-side`,
+      );
     }
   });
 }
-

@@ -6,24 +6,39 @@ import { InitUploadArea } from './UploadArea';
 import * as contextMenuContent from './ContextMenuContent';
 import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
 
-const documentsContainer: HTMLDivElement = document.querySelector('#fs-content-container');
-const backgroundArea: HTMLDivElement = document.querySelector('#main-section-content');
+const documentsContainer: HTMLDivElement = document.querySelector(
+  '#fs-content-container',
+);
+const backgroundArea: HTMLDivElement = document.querySelector(
+  '#main-section-content',
+);
 const openButton: HTMLButtonElement = document.querySelector('#open-doc');
 const removeButton: HTMLButtonElement = document.querySelector('#remove-doc');
-const navPathContainer: HTMLDivElement = document.querySelector('#nav-path-container');
+const navPathContainer: HTMLDivElement = document.querySelector(
+  '#nav-path-container',
+);
 let backButton: HTMLButtonElement = document.querySelector('#fs-back-btn');
 let emptyButton: HTMLButtonElement = document.querySelector('#fs-empty-btn');
 let deleteButton: HTMLButtonElement = document.querySelector('#fs-delete-btn');
-const uploadDocumentsButton: HTMLButtonElement = document.querySelector('#upload-new-doc-button');
-const newFolderButton: HTMLButtonElement = document.querySelector('#add-folder-button');
+const uploadDocumentsButton: HTMLButtonElement = document.querySelector(
+  '#upload-new-doc-button',
+);
+const newFolderButton: HTMLButtonElement =
+  document.querySelector('#add-folder-button');
 
 const shiftSelection = new ShiftSelectionManager();
 const fsm = FileSystemManager();
 const state = dashboardState();
 
-const mainSection: HTMLElement = document.querySelector('.main-section-content');
-const contextMenu: HTMLElement = document.querySelector('.right-click-file-menu');
-const contextMenuContentWrapper: HTMLElement = document.querySelector('.context-menu-items-wrapper');
+const mainSection: HTMLElement = document.querySelector(
+  '.main-section-content',
+);
+const contextMenu: HTMLElement = document.querySelector(
+  '.right-click-file-menu',
+);
+const contextMenuContentWrapper: HTMLElement = document.querySelector(
+  '.context-menu-items-wrapper',
+);
 
 let metaKeyIsPressed = false;
 let shiftKeyIsPressed = false;
@@ -74,34 +89,30 @@ backgroundArea?.addEventListener('click', (e) => {
 });
 
 /**
- * 
- * @returns 
+ *
+ * @returns
  */
 function openUploadAreaHandler() {
   if (!uploadDocumentsButton.classList.contains('active')) return;
   InitUploadArea(state.getParentFolder());
 }
 
-
 /**
  * Opens a new tab with the Neon editor for the given id
- * 
+ *
  * @param id key of file in bbb or manifest url
  * @param isSample boolean to decide where to fetch file
  */
 function openEditorTab(id: string, isSample: boolean) {
-  const params = (isSample)
-    ? { manifest: id }
-    : { storage: id };
+  const params = isSample ? { manifest: id } : { storage: id };
   const query = makeQuery(params);
   window.open(`./editor.html?${query}`, '_blank');
 }
 
-
 /**
  * Opens editor tab given a document tile element
- * 
- * @param entry 
+ *
+ * @param entry
  */
 function openFile(entry: IFile) {
   const documentType = entry.metadata['document'];
@@ -111,22 +122,22 @@ function openFile(entry: IFile) {
   }
 }
 
-
 /**
- * 
- * @param obj 
- * @returns 
+ *
+ * @param obj
+ * @returns
  */
 function makeQuery(obj): string {
-  return Object.keys(obj).map(key => {
-    return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
-  }).join('&');
+  return Object.keys(obj)
+    .map((key) => {
+      return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
+    })
+    .join('&');
 }
 
-
 /**
- * 
- * @param index 
+ *
+ * @param index
  */
 function select(index: number) {
   const entry = state.getEntries().at(index);
@@ -135,10 +146,9 @@ function select(index: number) {
   tile.classList.add('selected');
 }
 
-
 /**
- * 
- * @param index 
+ *
+ * @param index
  */
 function unselect(index: number) {
   const id = state.getEntries().at(index).id;
@@ -147,17 +157,17 @@ function unselect(index: number) {
   tile.classList.remove('selected');
 }
 
-
 /**
- * 
+ *
  */
 function unselectAll() {
-  Array.from(document.querySelectorAll('.document-entry.selected'))
-    .forEach((tile) => tile.classList.remove('selected'));
+  Array.from(document.querySelectorAll('.document-entry.selected')).forEach(
+    (tile) => tile.classList.remove('selected'),
+  );
   state.resetSelection();
 }
 
-/** 
+/**
  * Creates a folder or file tile element given an entry
  * @param entry IEntry
  * @returns HTMLDivElement tile element
@@ -203,21 +213,18 @@ function createTile(entry: IEntry) {
         container.classList.add('manuscript-entry');
         // set icon
         icon.src = './Neon-gh/assets/img/manuscript-icon.svg';
-      }
-      else if (entry.metadata['type'] === 'folio') {
+      } else if (entry.metadata['type'] === 'folio') {
         // set type attrib and id
         container.classList.add('folio-entry');
         // set icon
         icon.src = './Neon-gh/assets/img/folio-icon.svg';
-      }
-      else {
+      } else {
         // set icon for no type
         icon.src = './Neon-gh/assets/img/folio-icon.svg';
       }
 
       break;
   }
-
 
   container.appendChild(icon);
   container.appendChild(name);
@@ -227,20 +234,26 @@ function createTile(entry: IEntry) {
 
 /**
  * Adds dblclick event listener to tile element and adds shift selection behaviour
- * 
+ *
  * @param index as displayed on dashboard to user
  * @param entry corresponding entry in current folder
  * @param tile HTMLDivElement
  */
-async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivElement) {
+async function addTileEventListener(
+  index: number,
+  entry: IEntry,
+  tile: HTMLDivElement,
+) {
   // double click event immediately opens document
   if (entry.type === 'folder') {
     async function enterFolder() {
-      return await updateDashboard([...state.getFolderPath(), entry as IFolder]);
+      return await updateDashboard([
+        ...state.getFolderPath(),
+        entry as IFolder,
+      ]);
     }
     tile.addEventListener('dblclick', enterFolder, false);
-  }
-  else {
+  } else {
     tile.addEventListener('dblclick', openDocsHandler, false);
   }
   addShiftSelectionListener(tile, index);
@@ -249,21 +262,25 @@ async function addTileEventListener(index: number, entry: IEntry, tile: HTMLDivE
 
 /**
  * Add shift selection behaviour to html tile element
- * 
+ *
  * When no keys are pressed: erase any previous selections and select only current tile
  * When meta key is pressed: add current tile to selection if not already selected, else remove from
  * selection. When shift key is pressed: select all tiles between current tile and previous tile
- * 
- * When there is a previous selection, the start of the shift selection is the last selected tile. 
+ *
+ * When there is a previous selection, the start of the shift selection is the last selected tile.
  * Shift clicking after will add the shift selection to the previous selection.
- * 
- * @param tile 
- * @param index 
+ *
+ * @param tile
+ * @param index
  */
 function addShiftSelectionListener(tile: HTMLDivElement, index: number) {
-  tile.addEventListener('click', function(_e) {
-    shiftSelectionHandler(index);
-  }, false);
+  tile.addEventListener(
+    'click',
+    function (_e) {
+      shiftSelectionHandler(index);
+    },
+    false,
+  );
 }
 
 function shiftSelectionHandler(index) {
@@ -271,18 +288,15 @@ function shiftSelectionHandler(index) {
     unselectAll();
     select(index);
     shiftSelection.setStart(index);
-  }
-  else if (metaKeyIsPressed) {
+  } else if (metaKeyIsPressed) {
     if (state.getSelection()[index]) {
       unselect(index);
       shiftSelection.setStart(state.getSelection().lastIndexOf(true));
-    }
-    else {
+    } else {
       select(index);
-      shiftSelection.setStart(index); 
+      shiftSelection.setStart(index);
     }
-  }
-  else if (shiftKeyIsPressed) {
+  } else if (shiftKeyIsPressed) {
     shiftSelection.getPrevSelection().forEach((idx) => {
       unselect(idx);
     });
@@ -296,7 +310,7 @@ function shiftSelectionHandler(index) {
 }
 /**
  * Opens current selection of documents on dashboard.
- * 
+ *
  * If a folder is selected, opens folder.
  * If a file(s) is selected, opens file(s).
  * If a folder and file(s) are selected, opens file(s).
@@ -305,8 +319,14 @@ function openDocsHandler() {
   if (!openButton.classList.contains('active')) return;
 
   // Open folder if only one folder is selected
-  if (state.getSelectedFolders().length === 1 || state.getSelectedTrash().length === 1) {
-    const newPath = [...state.getFolderPath(), state.getSelectedEntries()[0] as IFolder];
+  if (
+    state.getSelectedFolders().length === 1 ||
+    state.getSelectedTrash().length === 1
+  ) {
+    const newPath = [
+      ...state.getFolderPath(),
+      state.getSelectedEntries()[0] as IFolder,
+    ];
     updateDashboard(newPath);
     return;
   }
@@ -319,8 +339,8 @@ function openDocsHandler() {
 }
 
 /**
- * Move current selection of documents on dashboard to trash. 
- * 
+ * Move current selection of documents on dashboard to trash.
+ *
  */
 function removeDocsHandler() {
   if (!removeButton.classList.contains('active')) return;
@@ -330,9 +350,12 @@ function removeDocsHandler() {
   const trashFolder = state.getTrashFolder();
 
   const datetime = new Date().toLocaleString();
-  
+
   for (let entry of selectedEntries) {
-    entry = FileSystemTools.addMetadata(entry, { removed_on: datetime, recover_folder: state.getFolderPathNames() });
+    entry = FileSystemTools.addMetadata(entry, {
+      removed_on: datetime,
+      recover_folder: state.getFolderPathNames(),
+    });
   }
 
   moveToFolder(selectedEntries, parentFolder, trashFolder);
@@ -341,29 +364,33 @@ function removeDocsHandler() {
 function putBackDocsHandler() {
   const selectedEntries = state.getSelectedEntries();
   const parentFolder = state.getParentFolder();
-  
+
   for (let entry of selectedEntries) {
     const folderPathNames = entry.metadata['recover_folder'] as string[];
     const targetFolder = state.getFolderPathByNames(folderPathNames);
     if (targetFolder) {
-      entry = FileSystemTools.removeMetadata(entry, ['removed_on', 'recover_folder']);
-      const dateTimePattern = / - \d{1,2}\/\d{1,2}\/\d{4}, \d{1,2}:\d{2}:\d{2} [APMapm]{2}$/;
+      entry = FileSystemTools.removeMetadata(entry, [
+        'removed_on',
+        'recover_folder',
+      ]);
+      const dateTimePattern =
+        / - \d{1,2}\/\d{1,2}\/\d{4}, \d{1,2}:\d{2}:\d{2} [APMapm]{2}$/;
 
       // Check if the filename ends with the date time pattern
       if (dateTimePattern.test(entry.name)) {
         entry.name = entry.name.replace(dateTimePattern, '');
       }
       moveToFolder([entry], parentFolder, targetFolder);
-    }    
+    }
   }
 }
 
 /**
  * Delete a file
- * 
- * @param file 
- * @param parentFolder 
- * @returns 
+ *
+ * @param file
+ * @param parentFolder
+ * @returns
  */
 function deleteFileEntry(file: IFile, parentFolder: IFolder): Promise<boolean> {
   return new Promise((resolve, reject) => {
@@ -378,12 +405,15 @@ function deleteFileEntry(file: IFile, parentFolder: IFolder): Promise<boolean> {
 
 /**
  * Delete a folder and its content
- * 
- * @param folder 
- * @param parentFolder 
- * @returns 
+ *
+ * @param folder
+ * @param parentFolder
+ * @returns
  */
-function deleteFolderEntry(folder: IFolder, parentFolder: IFolder): Promise<boolean> {
+function deleteFolderEntry(
+  folder: IFolder,
+  parentFolder: IFolder,
+): Promise<boolean> {
   return new Promise((resolve) => {
     const deletePromises = folder.children.map((child) => {
       if (child.type === 'file') {
@@ -404,8 +434,8 @@ function deleteFolderEntry(folder: IFolder, parentFolder: IFolder): Promise<bool
 }
 
 /**
- * Deletes current selection of documents on dashboard. 
- * 
+ * Deletes current selection of documents on dashboard.
+ *
  * If a folder is selected, deletes folder.
  * If a file(s) is selected, deletes file(s).
  * If a folder and file(s) are selected, deletes all.
@@ -414,18 +444,18 @@ function deleteDocsHandler() {
   const allEntries = state.getSelectedEntries();
 
   // Create a formatted list of filenames to display in alert message
-  const createList = (entryArray: IEntry[]) => entryArray.map(entry => `- ${entry.name} (${entry.type})`).join('\n');
-  
+  const createList = (entryArray: IEntry[]) =>
+    entryArray.map((entry) => `- ${entry.name} (${entry.type})`).join('\n');
+
   const alertMessage = `Are you sure you want to delete:\n${createList(allEntries)}\nThis action is irreversible.`;
 
   const isConfirmed = window.confirm(alertMessage);
 
   if (isConfirmed) {
-    const deletePromises = allEntries.map(entry => {
+    const deletePromises = allEntries.map((entry) => {
       if (entry.type === 'file') {
         return deleteFileEntry(entry as IFile, state.getParentFolder());
-      }
-      else if (entry.type === 'folder') {
+      } else if (entry.type === 'folder') {
         return deleteFolderEntry(entry as IFolder, state.getParentFolder());
       }
     });
@@ -434,10 +464,9 @@ function deleteDocsHandler() {
       .then(() => {
         updateDashboard(state.getFolderPath());
       })
-      .catch( err => console.debug('failed to delete files: ', err));
+      .catch((err) => console.debug('failed to delete files: ', err));
   }
 }
-
 
 function emptyTrashHandler() {
   const trashFolder = state.getTrashFolder();
@@ -447,12 +476,12 @@ function emptyTrashHandler() {
     return;
   }
 
-  const alertMessage = 'Are you sure you want to delete all the files in Trash Folder?\nThis action is irreversible.';
+  const alertMessage =
+    'Are you sure you want to delete all the files in Trash Folder?\nThis action is irreversible.';
 
   const isConfirmed = window.confirm(alertMessage);
 
   if (isConfirmed) {
-
     const deletePromises = trashFolder.children.map((entry) => {
       if (entry.type === 'file') {
         return deleteFileEntry(entry as IFile, trashFolder);
@@ -472,16 +501,18 @@ function emptyTrashHandler() {
   }
 }
 
-
 /**
  * Updates the visibility of action bar buttons based on current selections
- * 
+ *
  * Note: better not to change the order
  */
 function updateActionBarButtons() {
   // inside ./Samples or selecting the samples folder
-  if (state.getParentFolder().metadata['immutable'] || 
-    (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable'])) {
+  if (
+    state.getParentFolder().metadata['immutable'] ||
+    (state.getSelectedEntries()[0] &&
+      state.getSelectedEntries()[0].metadata['immutable'])
+  ) {
     uploadDocumentsButton.classList.remove('active');
     newFolderButton.classList.remove('active');
     removeButton.classList.remove('active');
@@ -504,7 +535,7 @@ function updateActionBarButtons() {
     removeButton.classList.remove('active');
     uploadDocumentsButton.classList.remove('active');
     newFolderButton.classList.remove('active');
-  } 
+  }
   // selecting entries
   else if (state.getSelectedEntries().length) {
     openButton.classList.add('active');
@@ -534,9 +565,16 @@ function updateNavPath(): void {
     navSection.innerHTML = folder.name;
 
     const targetPath = state.getFolderPath().slice(0, idx + 1);
-    navSection.addEventListener('click', async () => await updateDashboard(targetPath));
+    navSection.addEventListener(
+      'click',
+      async () => await updateDashboard(targetPath),
+    );
     // add drop target to move dragged element to the prospective folders
-    addDropTargetListeners(navSection, state.getParentFolder(), targetPath.at(-1));
+    addDropTargetListeners(
+      navSection,
+      state.getParentFolder(),
+      targetPath.at(-1),
+    );
 
     return navSection;
   });
@@ -566,14 +604,21 @@ function updateBackButton() {
   if (isRoot) {
     buttonClone.classList.remove('active');
     buttonClone.setAttribute('disabled', 'true');
-  }
-  else {
+  } else {
     buttonClone.classList.add('active');
     buttonClone.removeAttribute('disabled');
     buttonClone.addEventListener('click', handleNavigateBack);
-    buttonClone.addEventListener('ondragenter', () => buttonClone.classList.add('active'));
-    buttonClone.addEventListener('ondragleave', () => buttonClone.classList.remove('active'));
-    addDropTargetListeners(buttonClone, state.getParentFolder(), state.getFolderPath().at(-2));
+    buttonClone.addEventListener('ondragenter', () =>
+      buttonClone.classList.add('active'),
+    );
+    buttonClone.addEventListener('ondragleave', () =>
+      buttonClone.classList.remove('active'),
+    );
+    addDropTargetListeners(
+      buttonClone,
+      state.getParentFolder(),
+      state.getFolderPath().at(-2),
+    );
   }
   backButton = buttonClone;
 }
@@ -590,7 +635,11 @@ function updateEmptyButton() {
     buttonClone.style.display = '';
 
     // Activate button if has content and not selecting when first level parent is trash
-    if (parentFolder.children.length && !state.getSelectedEntries().length && parentFolder.type === 'trash') {
+    if (
+      parentFolder.children.length &&
+      !state.getSelectedEntries().length &&
+      parentFolder.type === 'trash'
+    ) {
       buttonClone.classList.add('active');
       buttonClone.removeAttribute('disabled');
       buttonClone.addEventListener('click', emptyTrashHandler);
@@ -600,8 +649,7 @@ function updateEmptyButton() {
       buttonClone.classList.remove('active');
       buttonClone.setAttribute('disabled', 'true');
     }
-  }
-  else {
+  } else {
     buttonClone.style.display = 'none';
   }
   emptyButton = buttonClone;
@@ -628,8 +676,7 @@ function updateDeleteButton() {
       buttonClone.classList.remove('active');
       buttonClone.setAttribute('disabled', 'true');
     }
-  }
-  else {
+  } else {
     buttonClone.style.display = 'none';
   }
   deleteButton = buttonClone;
@@ -660,13 +707,15 @@ function handleAddFolder(folderName: string) {
   newFolderTile.setAttribute('id', 'new-folder');
 
   const newFolder = FileSystemTools.createFolder(folderName);
-  const succeeded = FileSystemTools.addEntry(newFolder, state.getParentFolder());
+  const succeeded = FileSystemTools.addEntry(
+    newFolder,
+    state.getParentFolder(),
+  );
   if (succeeded) {
     newFolderTile.setAttribute('id', folderName);
     updateDashboard();
     return true;
-  }
-  else {
+  } else {
     newFolderTile.remove();
     return false;
   }
@@ -674,35 +723,36 @@ function handleAddFolder(folderName: string) {
 
 /**
  * Renames current selection of document on dashboard, updating the database for files
- * 
+ *
  * @param entry IEntry to rename
  */
-function renameEntry(entry: IEntry, newName: string) {  
-  const succeeded = FileSystemTools.renameEntry(entry, state.getParentFolder(), newName);
+function renameEntry(entry: IEntry, newName: string) {
+  const succeeded = FileSystemTools.renameEntry(
+    entry,
+    state.getParentFolder(),
+    newName,
+  );
   if (succeeded) {
     // Update database if entry is a file
     if (entry.type === 'file') {
       const file = entry as IFile;
-      updateDocName(file.id, newName)
-        .then(() => {
-          updateDashboard();
-        });
-    }
-    else {
+      updateDocName(file.id, newName).then(() => {
+        updateDashboard();
+      });
+    } else {
       updateDashboard();
     }
   }
 }
 
-
 /**
  * Given an entry id, returns the entry from the current folder
- * 
- * @param id 
+ *
+ * @param id
  * @returns IEntry
-*/
+ */
 function getEntryById(id: string): IEntry {
-  const targetEntry = state.getEntries().find(entry => {
+  const targetEntry = state.getEntries().find((entry) => {
     return entry.id === id;
   });
   return targetEntry;
@@ -710,7 +760,7 @@ function getEntryById(id: string): IEntry {
 
 /**
  * Reflects changes in file system in dashboard UI
- * 
+ *
  * @param newPath If provided, uses this path to update dashboard. Otherwise, uses current path.
  */
 export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
@@ -729,7 +779,7 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
     const tile = createTile(entry);
     documentsContainer.appendChild(tile);
     await addTileEventListener(index, entry, tile);
-  }); 
+  });
 
   updateActionBarButtons();
   updateNavPath();
@@ -749,11 +799,11 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
     const tile = document.getElementById(entry.id);
     addDragStartListener(tile);
 
-    if (entry.type === 'folder' || entry.type === 'trash') { 
+    if (entry.type === 'folder' || entry.type === 'trash') {
       addDropTargetListeners(tile, currentFolder, entry as IFolder);
     }
   });
-  
+
   fsm.setFileSystem(state.getFolderPath().at(0));
 }
 
@@ -764,22 +814,29 @@ function addDragStartListener(elem: Element) {
   });
 }
 
-function addDropTargetListeners(elem: Element, currentFolder: IFolder, destinationFolder: IFolder) {
+function addDropTargetListeners(
+  elem: Element,
+  currentFolder: IFolder,
+  destinationFolder: IFolder,
+) {
   /**
-     * The dragenter and dragover events need to be overriden in order to implement the drag-and-drop functionality.
-     * Read more at: https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
-     */
+   * The dragenter and dragover events need to be overriden in order to implement the drag-and-drop functionality.
+   * Read more at: https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
+   */
   elem.addEventListener('dragenter', (e) => {
     e.preventDefault();
     elem.classList.add('dragenter');
-  });    
+  });
   elem.addEventListener('dragleave', (e) => {
     e.preventDefault();
     elem.classList.remove('dragenter');
   });
   elem.addEventListener('dragover', (e) => e.preventDefault());
 
-  elem.addEventListener('drop', createHandleDrop(currentFolder, destinationFolder));
+  elem.addEventListener(
+    'drop',
+    createHandleDrop(currentFolder, destinationFolder),
+  );
 }
 
 function createHandleDrop(currentFolder: IFolder, destinationFolder: IFolder) {
@@ -787,7 +844,7 @@ function createHandleDrop(currentFolder: IFolder, destinationFolder: IFolder) {
     e.preventDefault();
 
     // get the ID of the element being dragged
-    const dragTargetID = (<HTMLElement> currentDragTarget).getAttribute('id');
+    const dragTargetID = (<HTMLElement>currentDragTarget).getAttribute('id');
 
     // Using dragTargetID, find the object that represents the File being dropped.
     const dragEntry = getEntryById(dragTargetID);
@@ -802,23 +859,34 @@ function createHandleDrop(currentFolder: IFolder, destinationFolder: IFolder) {
 
 /**
  * Checks if entry can be moved to newFolder, and if so, moves it and refreshes dashboard.
- * 
- * @param entry 
- * @param parentFolder 
- * @param newFolder 
+ *
+ * @param entry
+ * @param parentFolder
+ * @param newFolder
  */
-function moveToFolder(entries: IEntry[], parentFolder: IFolder, newFolder: IFolder) {
+function moveToFolder(
+  entries: IEntry[],
+  parentFolder: IFolder,
+  newFolder: IFolder,
+) {
   const errorMessages = [];
   entries.forEach((entry) => {
     // Handle name conflicts for trash folder
-    if (newFolder.type === 'trash' && newFolder.children.some((e) => e.name === entry.name)) {
+    if (
+      newFolder.type === 'trash' &&
+      newFolder.children.some((e) => e.name === entry.name)
+    ) {
       entry.name = trashFNConflictHandler(entry.name);
     }
-    const response = FileSystemTools.canMoveEntry(entry, parentFolder, newFolder);
+    const response = FileSystemTools.canMoveEntry(
+      entry,
+      parentFolder,
+      newFolder,
+    );
     if (!response.succeeded) errorMessages.push(response.error);
     else FileSystemTools.moveEntry(entry, parentFolder, newFolder);
   });
-  
+
   errorMessages.filter((msg, idx, arr) => arr.indexOf(msg) === idx);
   if (errorMessages.length > 0) window.alert(errorMessages.join('\n'));
 
@@ -853,8 +921,11 @@ function openMoveToWindow() {
   treeContainer.classList.add('tree-container');
   treeContainer.appendChild(rootTree);
 
-  const modalContainer = document.getElementById('neon-modal-window-content-container');
-  modalContainer.innerHTML = '<span class="move-menu-msg">Double-click the folder you want to move your items to!</span>';
+  const modalContainer = document.getElementById(
+    'neon-modal-window-content-container',
+  );
+  modalContainer.innerHTML =
+    '<span class="move-menu-msg">Double-click the folder you want to move your items to!</span>';
   modalContainer.appendChild(treeContainer);
 }
 
@@ -870,10 +941,15 @@ function openNewFolderWindow() {
   modalWindow.setModalWindowView(ModalWindowView.NEW_FOLDER);
   modalWindow.openModalWindow();
 
-  
-  const inputContainer = document.getElementById('dashboard_input_container') as HTMLDivElement;
-  const cancelButton = document.getElementById('cancel_dashboard') as HTMLButtonElement;
-  const confirmButton = document.getElementById('confirm_dashboard') as HTMLButtonElement;
+  const inputContainer = document.getElementById(
+    'dashboard_input_container',
+  ) as HTMLDivElement;
+  const cancelButton = document.getElementById(
+    'cancel_dashboard',
+  ) as HTMLButtonElement;
+  const confirmButton = document.getElementById(
+    'confirm_dashboard',
+  ) as HTMLButtonElement;
 
   const input = document.createElement('input');
   input.id = 'dashboard_input';
@@ -886,7 +962,9 @@ function openNewFolderWindow() {
   input.focus();
 
   cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
-  confirmButton.addEventListener('click', () => confirmNewFolderAction(modalWindow, input.value));
+  confirmButton.addEventListener('click', () =>
+    confirmNewFolderAction(modalWindow, input.value),
+  );
 
   inputContainer.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
@@ -901,8 +979,7 @@ function confirmNewFolderAction(modalWindow: ModalWindow, folderName: string) {
   if (!nameExists(folderName)) {
     modalWindow.hideModalWindow();
     handleAddFolder(folderName);
-  } 
-  else {
+  } else {
     window.alert('The folder name already exists in the current folder!');
     openNewFolderWindow();
   }
@@ -917,9 +994,15 @@ function openRenameWindow() {
   modalWindow.setModalWindowView(ModalWindowView.RENAME);
   modalWindow.openModalWindow();
 
-  const inputContainer = document.getElementById('dashboard_input_container') as HTMLDivElement;
-  const cancelButton = document.getElementById('cancel_dashboard') as HTMLButtonElement;
-  const confirmButton = document.getElementById('confirm_dashboard') as HTMLButtonElement;
+  const inputContainer = document.getElementById(
+    'dashboard_input_container',
+  ) as HTMLDivElement;
+  const cancelButton = document.getElementById(
+    'cancel_dashboard',
+  ) as HTMLButtonElement;
+  const confirmButton = document.getElementById(
+    'confirm_dashboard',
+  ) as HTMLButtonElement;
 
   const input = document.createElement('input');
   input.id = 'dashboard_input';
@@ -933,7 +1016,9 @@ function openRenameWindow() {
   input.focus();
 
   cancelButton.addEventListener('click', () => modalWindow.hideModalWindow());
-  confirmButton.addEventListener('click', () => confirmRenameAction(modalWindow, input.value, prevName));
+  confirmButton.addEventListener('click', () =>
+    confirmRenameAction(modalWindow, input.value, prevName),
+  );
 
   inputContainer.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
@@ -942,26 +1027,27 @@ function openRenameWindow() {
       confirmRenameAction(modalWindow, input.value, prevName);
     }
   });
-  
 }
 
 // On confirmation, close modal window and rename entry (if file, database is updated)
-function confirmRenameAction(modalWindow: ModalWindow, newName: string, prevName: string) {
+function confirmRenameAction(
+  modalWindow: ModalWindow,
+  newName: string,
+  prevName: string,
+) {
   // check for duplicated names
   if (newName === prevName) {
     modalWindow.hideModalWindow();
-  }
-  else {
+  } else {
     if (!nameExists(newName)) {
       modalWindow.hideModalWindow();
       const entry = state.getSelectedEntries()[0];
       renameEntry(entry, newName);
-    }
-    else {
+    } else {
       window.alert('The filename already exists in the current folder!');
       openRenameWindow();
     }
-  }  
+  }
 }
 
 function nameExists(name: string): boolean {
@@ -971,14 +1057,17 @@ function nameExists(name: string): boolean {
 
 /**
  * Recursive function to generate folder tree structure for move-to menu
- * 
+ *
  * @param folder IFolder to generate tree structure for and all its subfolders
  * @param callback Callback function for when user double-clicks on a folder and moves selection
  * @param degree The level of subfolders deep
  * @returns List item node
  */
-function generateFolderTree(folder: IFolder, moveToCallback: (newParentFolder :IFolder) => void, degree: number): HTMLLIElement {
-
+function generateFolderTree(
+  folder: IFolder,
+  moveToCallback: (newParentFolder: IFolder) => void,
+  degree: number,
+): HTMLLIElement {
   const tree = document.createElement('li');
   // container for folder name and arrow
   const liContainer = document.createElement('div');
@@ -991,7 +1080,9 @@ function generateFolderTree(folder: IFolder, moveToCallback: (newParentFolder :I
 
   // On single click, highlight/select folder name
   folderName.addEventListener('click', () => {
-    document.querySelectorAll('.tree-name').forEach(elem => elem.classList.remove('selected'));
+    document
+      .querySelectorAll('.tree-name')
+      .forEach((elem) => elem.classList.remove('selected'));
     folderName.classList.add('selected');
   });
 
@@ -1001,7 +1092,7 @@ function generateFolderTree(folder: IFolder, moveToCallback: (newParentFolder :I
   });
 
   // If Folder has no subfolders, return without nested ul
-  const isLeaf = folder.children.every(entry => entry.type !== 'folder');
+  const isLeaf = folder.children.every((entry) => entry.type !== 'folder');
   if (isLeaf) {
     tree.appendChild(liContainer);
     liContainer.appendChild(folderName);
@@ -1020,7 +1111,7 @@ function generateFolderTree(folder: IFolder, moveToCallback: (newParentFolder :I
   // if more than ... subfolders down, hide by default
   if (degree < 2) ul.classList.add('active');
   if (degree < 2) arrow.classList.add('active');
-  
+
   arrow.addEventListener('click', () => {
     arrow.classList.toggle('active');
     ul.classList.toggle('active');
@@ -1034,7 +1125,11 @@ function generateFolderTree(folder: IFolder, moveToCallback: (newParentFolder :I
   // Append folder contents
   folder.children.forEach((entry) => {
     if (entry.type === 'folder') {
-      const folderTree = generateFolderTree(entry as IFolder, moveToCallback, degree + 1);
+      const folderTree = generateFolderTree(
+        entry as IFolder,
+        moveToCallback,
+        degree + 1,
+      );
       ul.appendChild(folderTree);
     }
   });
@@ -1043,11 +1138,13 @@ function generateFolderTree(folder: IFolder, moveToCallback: (newParentFolder :I
 
 /**
  * Generates entire file system folder tree for move-to menu
- * 
+ *
  * @param moveToCallback callback function for when user double-clicks on a folder and moves selection
- * @returns 
+ * @returns
  */
-function generateRootTree(moveToCallback: (newParentFolder :IFolder) => void): HTMLUListElement {
+function generateRootTree(
+  moveToCallback: (newParentFolder: IFolder) => void,
+): HTMLUListElement {
   const rootTree = document.createElement('ul');
   rootTree.id = 'tree-root';
   rootTree.appendChild(generateFolderTree(state.root(), moveToCallback, 0));
@@ -1055,16 +1152,14 @@ function generateRootTree(moveToCallback: (newParentFolder :IFolder) => void): H
 }
 
 /**
- * Displays dashboard context menu with the appropriate content 
- * 
+ * Displays dashboard context menu with the appropriate content
+ *
  * @param view context menu view (determines content of context menu)
  */
 function showContextMenu(view: string, clientX: number, clientY: number) {
-
   switch (view) {
     // Context menu options when files/folders are right-clicked
     case 'selection-options':
-
       // Need to determine selection category before displaying options
       const numberOfSelectedFiles = state.getSelectedFiles().length;
       const numberOfSelectedFolders = state.getSelectedFolders().length;
@@ -1081,39 +1176,67 @@ function showContextMenu(view: string, clientX: number, clientY: number) {
        *    7) entry in trash -> put back, delete
        */
 
-
       // trash
       if (!numberOfSelectedFiles && !numberOfSelectedFolders && selectedTrash) {
-        contextMenuContentWrapper.innerHTML = contextMenuContent.trashFolderOptions;
+        contextMenuContentWrapper.innerHTML =
+          contextMenuContent.trashFolderOptions;
         setContextMenuItemsEventListeners('trash-folder-options');
-      }
-      else if (state.getFolderPath().length > 1 && state.getFolderPath().at(1).name == 'Trash') {
-        contextMenuContentWrapper.innerHTML = contextMenuContent.trashEntryOptions;
+      } else if (
+        state.getFolderPath().length > 1 &&
+        state.getFolderPath().at(1).name == 'Trash'
+      ) {
+        contextMenuContentWrapper.innerHTML =
+          contextMenuContent.trashEntryOptions;
         setContextMenuItemsEventListeners('trash-entry-options');
       }
       // 1 file
-      else if (numberOfSelectedFiles === 1 && !numberOfSelectedFolders && !selectedTrash) {
-        contextMenuContentWrapper.innerHTML = contextMenuContent.singleFileOptions;
+      else if (
+        numberOfSelectedFiles === 1 &&
+        !numberOfSelectedFolders &&
+        !selectedTrash
+      ) {
+        contextMenuContentWrapper.innerHTML =
+          contextMenuContent.singleFileOptions;
         setContextMenuItemsEventListeners('single-file-options');
       }
       // 2+ files
-      else if (numberOfSelectedFiles > 1 && !numberOfSelectedFolders && !selectedTrash) {
-        contextMenuContentWrapper.innerHTML = contextMenuContent.multiFileOptions;
+      else if (
+        numberOfSelectedFiles > 1 &&
+        !numberOfSelectedFolders &&
+        !selectedTrash
+      ) {
+        contextMenuContentWrapper.innerHTML =
+          contextMenuContent.multiFileOptions;
         setContextMenuItemsEventListeners('multi-file-options');
       }
       // file(s) + folder(s)
-      else if (numberOfSelectedFiles >= 1 && numberOfSelectedFolders >= 1 && !selectedTrash) {
-        contextMenuContentWrapper.innerHTML = contextMenuContent.folderAndFileOptions;
+      else if (
+        numberOfSelectedFiles >= 1 &&
+        numberOfSelectedFolders >= 1 &&
+        !selectedTrash
+      ) {
+        contextMenuContentWrapper.innerHTML =
+          contextMenuContent.folderAndFileOptions;
         setContextMenuItemsEventListeners('folder-and-file-options');
       }
       // 1 folder
-      else if (!numberOfSelectedFiles && numberOfSelectedFolders === 1 && !selectedTrash) {
-        contextMenuContentWrapper.innerHTML = contextMenuContent.singleFolderOptions;
+      else if (
+        !numberOfSelectedFiles &&
+        numberOfSelectedFolders === 1 &&
+        !selectedTrash
+      ) {
+        contextMenuContentWrapper.innerHTML =
+          contextMenuContent.singleFolderOptions;
         setContextMenuItemsEventListeners('single-folder-options');
       }
       // 2+ folders
-      else if (!numberOfSelectedFiles && numberOfSelectedFolders > 1 && !selectedTrash) {
-        contextMenuContentWrapper.innerHTML = contextMenuContent.multiFolderOptions;
+      else if (
+        !numberOfSelectedFiles &&
+        numberOfSelectedFolders > 1 &&
+        !selectedTrash
+      ) {
+        contextMenuContentWrapper.innerHTML =
+          contextMenuContent.multiFolderOptions;
         setContextMenuItemsEventListeners('multi-folder-options');
       }
       break;
@@ -1125,9 +1248,12 @@ function showContextMenu(view: string, clientX: number, clientY: number) {
   }
 
   // disable editor menu for the samples folder and trash
-  if(state.getParentFolder().metadata['immutable'] || 
-  (state.getSelectedEntries()[0] && state.getSelectedEntries()[0].metadata['immutable']) ||
-  state.isInTrash()) {
+  if (
+    state.getParentFolder().metadata['immutable'] ||
+    (state.getSelectedEntries()[0] &&
+      state.getSelectedEntries()[0].metadata['immutable']) ||
+    state.isInTrash()
+  ) {
     const deleteBtn = document.getElementById('cm-remove-btn');
     const renameBtn = document.getElementById('cm-rename-btn');
     const moveBtn = document.getElementById('cm-move-btn');
@@ -1159,10 +1285,9 @@ function showContextMenu(view: string, clientX: number, clientY: number) {
   contextMenu.classList.remove('hidden');
 }
 
-
 /**
  * Set event listeners for the menu items in a particular context menu.
- * 
+ *
  * @param view The name of the context menu view that is being displayed.
  */
 function setContextMenuItemsEventListeners(view: string) {
@@ -1170,153 +1295,189 @@ function setContextMenuItemsEventListeners(view: string) {
   const btnClassname = 'context-menu-item-wrapper';
 
   switch (view) {
-
     case 'single-file-options':
       // "Open" menu item
-      document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        openDocsHandler();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-open-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          openDocsHandler();
+        });
 
       // "Move to Trash" menu item
-      document.querySelector(`.${btnClassname}#cm-remove-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        removeDocsHandler();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-remove-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          removeDocsHandler();
+        });
 
       // "Rename" menu item
-      document.querySelector(`.${btnClassname}#cm-rename-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        openRenameWindow();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-rename-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          openRenameWindow();
+        });
 
       // "Move" menu item
-      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        openMoveToWindow();   
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-move-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          openMoveToWindow();
+        });
 
       break;
-    
+
     case 'multi-file-options':
       // "Open" menu item
-      document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        openDocsHandler();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-open-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          openDocsHandler();
+        });
 
       // "Move to Trash" menu item
-      document.querySelector(`.${btnClassname}#cm-remove-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        removeDocsHandler();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-remove-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          removeDocsHandler();
+        });
 
       // "Move" menu item
-      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        openMoveToWindow();
-      });      
+      document
+        .querySelector(`.${btnClassname}#cm-move-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          openMoveToWindow();
+        });
 
       break;
 
     case 'folder-and-file-options':
       // "Move to Trash" menu item
-      document.querySelector(`.${btnClassname}#cm-remove-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        removeDocsHandler();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-remove-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          removeDocsHandler();
+        });
 
       // "Move" menu item
-      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        openMoveToWindow();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-move-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          openMoveToWindow();
+        });
 
       break;
-    
+
     case 'single-folder-options':
       // "Open" menu item
-      document.querySelector(`.${btnClassname}#cm-open-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        openDocsHandler();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-open-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          openDocsHandler();
+        });
 
       // "Move to Trash" menu item
-      document.querySelector(`.${btnClassname}#cm-remove-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        removeDocsHandler();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-remove-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          removeDocsHandler();
+        });
 
       // "Rename" menu item
-      document.querySelector(`.${btnClassname}#cm-rename-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        openRenameWindow();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-rename-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          openRenameWindow();
+        });
 
       // "Move" menu item
-      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        openMoveToWindow();
-      });      
+      document
+        .querySelector(`.${btnClassname}#cm-move-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          openMoveToWindow();
+        });
 
       break;
 
     case 'multi-folder-options':
       // "Move to Trash" menu item
-      document.querySelector(`.${btnClassname}#cm-remove-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        removeDocsHandler();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-remove-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          removeDocsHandler();
+        });
 
       // "Move" menu item
-      document.querySelector(`.${btnClassname}#cm-move-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        openMoveToWindow();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-move-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          openMoveToWindow();
+        });
 
       break;
-    
+
     case 'trash-folder-options':
       // "Empty Trash" menu item
-      document.querySelector(`.${btnClassname}#cm-empty-trash-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        emptyTrashHandler();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-empty-trash-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          emptyTrashHandler();
+        });
 
       break;
 
     case 'trash-entry-options':
       // "Put Back" menu item
-      document.querySelector(`.${btnClassname}#cm-recover-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        putBackDocsHandler();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-recover-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          putBackDocsHandler();
+        });
 
       // "Delete" menu item
-      document.querySelector(`.${btnClassname}#cm-delete-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        deleteDocsHandler();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-delete-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          deleteDocsHandler();
+        });
 
       break;
 
     default:
       // "Upload document" menu item
-      document.querySelector(`.${btnClassname}#cm-upload-doc-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        openUploadAreaHandler();
-      });
+      document
+        .querySelector(`.${btnClassname}#cm-upload-doc-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          openUploadAreaHandler();
+        });
 
       // "New folder" menu item
-      document.querySelector(`.${btnClassname}#cm-new-folder-btn`).addEventListener('click', (_e) => {
-        contextMenu.classList.add('hidden');
-        openNewFolderWindow();
-      });
-
+      document
+        .querySelector(`.${btnClassname}#cm-new-folder-btn`)
+        .addEventListener('click', (_e) => {
+          contextMenu.classList.add('hidden');
+          openNewFolderWindow();
+        });
   }
-
 }
-
 
 /**
  * Initialize dashboard context menu (right click menu).
@@ -1325,25 +1486,25 @@ function setContextMenuItemsEventListeners(view: string) {
  * may change depending on where the user right-clicks (file, files, folder, background, etc.)
  */
 function initializeDefaultContextMenu() {
-
   // right-click on dashboard background
-  document.querySelector('.main-section').addEventListener('contextmenu', (e) => {
-    e.preventDefault();
+  document
+    .querySelector('.main-section')
+    .addEventListener('contextmenu', (e) => {
+      e.preventDefault();
 
-    unselectAll();
+      unselectAll();
 
-    showContextMenu(
-      'default', 
-      (<MouseEvent> e).clientX, 
-      (<MouseEvent> e).clientY
-    );
-  });
+      showContextMenu(
+        'default',
+        (<MouseEvent>e).clientX,
+        (<MouseEvent>e).clientY,
+      );
+    });
 
   document.querySelector('.main-section').addEventListener('click', (_e) => {
     contextMenu.classList.add('hidden');
   });
 }
-
 
 /**
  * Add listeners for specific context menus.
@@ -1351,7 +1512,6 @@ function initializeDefaultContextMenu() {
  * The actual menu that is shown depends on the type of selection.
  */
 function addSpecificContextMenuListeners(tile, index) {
-
   // right-click on folder item (file or folder)
   tile.addEventListener('contextmenu', (e) => {
     e.stopPropagation();
@@ -1365,14 +1525,14 @@ function addSpecificContextMenuListeners(tile, index) {
     select(index);
 
     showContextMenu(
-      'selection-options', 
-      (<MouseEvent> e).clientX, 
-      (<MouseEvent> e).clientY
+      'selection-options',
+      (<MouseEvent>e).clientX,
+      (<MouseEvent>e).clientY,
     );
     contextMenu.classList.remove('hidden');
     rightClicked = true;
   });
-    
+
   // hide context menu if user clicks away
   mainSection.addEventListener('click', (e) => {
     if (rightClicked) {
@@ -1380,14 +1540,13 @@ function addSpecificContextMenuListeners(tile, index) {
       if (clickedElement.parentElement.classList.contains('document-entry')) {
         clickedElement = clickedElement.parentElement;
       }
-      
+
       contextMenu.classList.add('hidden');
       rightClicked = false;
       if (!clickedElement.classList.contains('document-entry')) {
-        // if clicks on blank 
+        // if clicks on blank
         unselectAll();
-      }
-      else {
+      } else {
         // if clicks on a file/folder, select it
         const clickedEntry = getEntryById(clickedElement.id);
         shiftSelectionHandler(state.getIndexByEntryName(clickedEntry.name));
@@ -1405,7 +1564,9 @@ function updateTrash(root: IFolder): void {
   }
   const trashFolder = state.getTrashFolder();
   const currentDate = new Date();
-  const thirtyDaysAgo = new Date(currentDate.getTime() - 30 * 24 * 60 * 60 * 1000); // 30 days in milliseconds
+  const thirtyDaysAgo = new Date(
+    currentDate.getTime() - 30 * 24 * 60 * 60 * 1000,
+  ); // 30 days in milliseconds
 
   // Helper function to check if an entry was deleted 30 days ago
   const toDelete = (entry: IEntry): boolean => {
@@ -1423,14 +1584,14 @@ function updateTrash(root: IFolder): void {
       if (entry.type === 'file') {
         deleteFileEntry(entry as IFile, trashFolder);
       } else if (entry.type === 'folder') {
-        deleteFolderEntry(entry as IFolder, trashFolder); 
+        deleteFolderEntry(entry as IFolder, trashFolder);
       }
     }
   });
 }
 
 /**
- * Loads root folder into dashboard on startup. 
+ * Loads root folder into dashboard on startup.
  */
 export const loadDashboard = async (): Promise<void> => {
   const root = await fsm.getRoot();

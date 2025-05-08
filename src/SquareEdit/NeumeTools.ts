@@ -10,7 +10,7 @@ export class SplitNeumeHandler {
   /**
    * @param neume - The neume that will be modified.
    */
-  constructor (neonView: NeonView, neume: SVGGElement) {
+  constructor(neonView: NeonView, neume: SVGGElement) {
     this.neonView = neonView;
     this.neume = neume;
   }
@@ -18,7 +18,7 @@ export class SplitNeumeHandler {
   /**
    * First part of the split action.
    */
-  startSplit (): void {
+  startSplit(): void {
     this.splitDisable();
 
     document.body.addEventListener('click', this.handler, { capture: true });
@@ -31,7 +31,7 @@ export class SplitNeumeHandler {
     Notification.queueNotification('Click The Beginning of The Second Neume');
   }
 
-  splitDisable (): void {
+  splitDisable(): void {
     document.body.removeEventListener('keydown', this.keydownListener);
     document.body.removeEventListener('keyup', this.resetHandler);
     document.body.removeEventListener('click', this.clickawayHandler);
@@ -43,7 +43,7 @@ export class SplitNeumeHandler {
     const id = this.neume.id;
 
     // unselect();
-    
+
     const nc = (evt.target as SVGGElement).parentElement;
     const ncId = nc.id;
 
@@ -51,28 +51,29 @@ export class SplitNeumeHandler {
       action: 'splitNeume',
       param: {
         elementId: id,
-        ncId: ncId
-      }
+        ncId: ncId,
+      },
     };
 
-    this.neonView.edit(editorAction, this.neonView.view.getCurrentPageURI()).then(async (result) => {
-      if (result) {
-        await this.neonView.updateForCurrentPage();
-        Notification.queueNotification('Split action successful', 'success');
-      } 
-      else {
-        await this.neonView.updateForCurrentPage();
-        Notification.queueNotification('Split action failed', 'error');
-      }
-      // this.neonView.updateForCurrentPage();
-      // const dragHandler = new DragHandler(this.neonView, '.neume');
-      this.splitDisable();
-      // selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
-      // try {
-      //   document.getElementById('moreEdit').innerHTML = '';
-      //   document.getElementById('moreEdit').classList.add('is-hidden');
-      // } catch (e) {}
-    });
+    this.neonView
+      .edit(editorAction, this.neonView.view.getCurrentPageURI())
+      .then(async (result) => {
+        if (result) {
+          await this.neonView.updateForCurrentPage();
+          Notification.queueNotification('Split action successful', 'success');
+        } else {
+          await this.neonView.updateForCurrentPage();
+          Notification.queueNotification('Split action failed', 'error');
+        }
+        // this.neonView.updateForCurrentPage();
+        // const dragHandler = new DragHandler(this.neonView, '.neume');
+        this.splitDisable();
+        // selectAll([document.querySelector('#' + id) as SVGGElement], this.neonView, dragHandler);
+        // try {
+        //   document.getElementById('moreEdit').innerHTML = '';
+        //   document.getElementById('moreEdit').classList.add('is-hidden');
+        // } catch (e) {}
+      });
   }).bind(this);
 
   /** Exits split on Escape press, disables on Shift. */
@@ -80,7 +81,9 @@ export class SplitNeumeHandler {
     if (evt.key === 'Escape') {
       this.splitDisable();
     } else if (evt.key === 'Shift') {
-      document.body.removeEventListener('click', this.handler, { capture: true });
+      document.body.removeEventListener('click', this.handler, {
+        capture: true,
+      });
     }
   }).bind(this);
 
@@ -89,7 +92,9 @@ export class SplitNeumeHandler {
     const target = evt.target as HTMLElement;
     if (target.closest('.active-page') === null) {
       this.splitDisable();
-      document.body.removeEventListener('click', this.handler, { capture: true });
+      document.body.removeEventListener('click', this.handler, {
+        capture: true,
+      });
     }
   }).bind(this);
 

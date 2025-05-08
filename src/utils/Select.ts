@@ -1,6 +1,12 @@
 /** @module utils/Select */
 
-import { unselect, getStaffBBox, selectStaff, selectAll, getSelectionType } from './SelectTools';
+import {
+  unselect,
+  getStaffBBox,
+  selectStaff,
+  selectAll,
+  getSelectionType,
+} from './SelectTools';
 import { resize } from './Resize';
 import NeonView from '../NeonView';
 import DragHandler from './DragHandler';
@@ -10,28 +16,31 @@ import ZoomHandler from '../SingleView/Zoom';
 import * as d3 from 'd3';
 import { BBox, getStaffByCoords, Point } from './Coordinates';
 
-let dragHandler: DragHandler, neonView: NeonView, info: InfoInterface, zoomHandler: ZoomHandler;
+let dragHandler: DragHandler,
+  neonView: NeonView,
+  info: InfoInterface,
+  zoomHandler: ZoomHandler;
 let strokeWidth = 7;
 
 /**
  * Set stroke width on drag select box.
  * @param width - Stroke width in pixels.
  */
-export function setSelectStrokeWidth (width: number): void {
+export function setSelectStrokeWidth(width: number): void {
   strokeWidth = width;
 }
 
 /**
  * Set the objects for this module.
  */
-export function setSelectHelperObjects (nv: NeonView, dh: DragHandler): void {
+export function setSelectHelperObjects(nv: NeonView, dh: DragHandler): void {
   dragHandler = dh;
   neonView = nv;
   info = neonView.info;
   zoomHandler = neonView.view.zoomHandler;
 }
 
-function escapeKeyListener (evt: KeyboardEvent): void {
+function escapeKeyListener(evt: KeyboardEvent): void {
   if (evt.key === 'Escape') {
     if (document.getElementsByClassName('selected').length > 0) {
       info.infoListeners();
@@ -42,11 +51,12 @@ function escapeKeyListener (evt: KeyboardEvent): void {
 
 // ENTER KEY: when a BBox is selected, pressing enter will
 //   trigger the edit syllable text function.
-function enterKeyListener (evt: KeyboardEvent): void {
+function enterKeyListener(evt: KeyboardEvent): void {
   // check if 'enter' is pressed with the correct conditions
-  if (getSelectionType() !== 'selByBBox'
-    || !(document.getElementById('displayText') as HTMLInputElement).checked
-    || evt.key !== 'Enter'
+  if (
+    getSelectionType() !== 'selByBBox' ||
+    !(document.getElementById('displayText') as HTMLInputElement).checked ||
+    evt.key !== 'Enter'
   )
     return;
 
@@ -63,30 +73,44 @@ function enterKeyListener (evt: KeyboardEvent): void {
   }
 }
 
-function arrowKeyListener (evt: KeyboardEvent): void {
-  if (getSelectionType() !== 'selByBBox' || (evt.key !== 'ArrowLeft' && evt.key !== 'ArrowRight' && evt.key !== 'Tab' && evt.shiftKey))
+function arrowKeyListener(evt: KeyboardEvent): void {
+  if (
+    getSelectionType() !== 'selByBBox' ||
+    (evt.key !== 'ArrowLeft' &&
+      evt.key !== 'ArrowRight' &&
+      evt.key !== 'Tab' &&
+      evt.shiftKey)
+  )
     return;
   evt.preventDefault(); // prevent default for tab key
-  
+
   const selected = document.querySelector('.syllable-highlighted');
   const syllables = Array.from(document.querySelectorAll('.syllable'));
 
   // not all syllables have BBoxes; we must filter them out
-  const bboxSyllables = syllables.filter(syl => syl.querySelector('.sylTextRect-display') !== null);
+  const bboxSyllables = syllables.filter(
+    (syl) => syl.querySelector('.sylTextRect-display') !== null,
+  );
   const ind = bboxSyllables.indexOf(selected);
 
-  if ((evt.key === 'ArrowLeft' || (evt.key === 'Tab' && evt.shiftKey)) && ind > 0) {
+  if (
+    (evt.key === 'ArrowLeft' || (evt.key === 'Tab' && evt.shiftKey)) &&
+    ind > 0
+  ) {
     unselect();
 
     const bbox = bboxSyllables[ind - 1].querySelector('.sylTextRect-display');
     selectAll([bbox as SVGGraphicsElement], neonView, dragHandler);
-  } else if ((evt.key === 'ArrowRight' || (evt.key === 'Tab' && !evt.shiftKey)) && ind < bboxSyllables.length - 1) {
+  } else if (
+    (evt.key === 'ArrowRight' || (evt.key === 'Tab' && !evt.shiftKey)) &&
+    ind < bboxSyllables.length - 1
+  ) {
     unselect();
 
     const bbox = bboxSyllables[ind + 1].querySelector('.sylTextRect-display');
     selectAll([bbox as SVGGraphicsElement], neonView, dragHandler);
   }
-  
+
   // Auto scroll to highlighted text
   const selectedSylText = document.querySelector('.text-select');
   if (selectedSylText) {
@@ -94,7 +118,7 @@ function arrowKeyListener (evt: KeyboardEvent): void {
   }
 }
 
-function isSelByBBox (): boolean {
+function isSelByBBox(): boolean {
   const selByBBox = document.getElementById('selByBBox');
   if (selByBBox) {
     return selByBBox.classList.contains('is-active');
@@ -102,17 +126,20 @@ function isSelByBBox (): boolean {
   return false;
 }
 
-function stopPropHandler (evt: Event): void { evt.stopPropagation(); }
+function stopPropHandler(evt: Event): void {
+  evt.stopPropagation();
+}
 
 /**
  * Get bounding box of an element
  */
-function getBBoxCoords (el: SVGGraphicsElement): BBox {
+function getBBoxCoords(el: SVGGraphicsElement): BBox {
   if (isSelByBBox()) {
-    const ulx = Number(el.getAttribute('x')), uly = Number(el.getAttribute('y'));
+    const ulx = Number(el.getAttribute('x')),
+      uly = Number(el.getAttribute('y'));
     // What is the math here???
-    const lrx = ulx + Number((el.getAttribute('width').slice(0, -2)));
-    const lry = uly + Number((el.getAttribute('height').slice(0, -2)));
+    const lrx = ulx + Number(el.getAttribute('width').slice(0, -2));
+    const lry = uly + Number(el.getAttribute('height').slice(0, -2));
 
     return { ulx, uly, lrx, lry };
   }
@@ -124,43 +151,54 @@ function getBBoxCoords (el: SVGGraphicsElement): BBox {
       ulx: rect.x,
       uly: rect.y,
       lrx: rect.x + rect.width,
-      lry: rect.y + rect.height
+      lry: rect.y + rect.height,
     };
   }
 
   return getStaffBBox(el);
 }
 
-
 /**
  * Checks whether an element is within the drag selection rectangle.
  * Returns true if the element is within the bounds of `ul` (upper left) and `lr` (lower right)
  */
-function isElementInRect(el: SVGGraphicsElement, ul: Point, lr: Point): boolean {
+function isElementInRect(
+  el: SVGGraphicsElement,
+  ul: Point,
+  lr: Point,
+): boolean {
   if (isSelByBBox() || el.tagName === 'use') {
     const bbox = getBBoxCoords(el);
-    
+
     // We want to find whether the bounding box overlaps with the rectangle
     // defined by `ul` and `lr`. The easiest solution is to negate a sum-of-products equation:
     // i.e., there are 4 possibilities in which the two *don't* overlap
-    return !(lr.x < bbox.ulx || ul.x > bbox.lrx || lr.y < bbox.uly || ul.y > bbox.lry);
+    return !(
+      lr.x < bbox.ulx ||
+      ul.x > bbox.lrx ||
+      lr.y < bbox.uly ||
+      ul.y > bbox.lry
+    );
   }
 
   // TODO: Simplify
   const box = getStaffBBox(el);
-  return !((ul.x < box.ulx && lr.x < box.ulx) || (ul.x > box.lrx && lr.x > box.lrx) ||
-          (ul.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate)) &&
-            lr.y < (box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate))) ||
-          (ul.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.rotate)) &&
-            lr.y > (box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.rotate))));
+  return !(
+    (ul.x < box.ulx && lr.x < box.ulx) ||
+    (ul.x > box.lrx && lr.x > box.lrx) ||
+    (ul.y < box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate) &&
+      lr.y < box.uly + Math.abs(box.ulx - ul.x) * Math.tan(box.rotate)) ||
+    (ul.y > box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.rotate) &&
+      lr.y > box.lry + Math.abs(box.lry - lr.y) * Math.tan(box.rotate))
+  );
 }
 
 /**
  * Apply listeners for click selection.
  * @param selector - The CSS selector used to choose where listeners are applied.
  */
-export function clickSelect (selector: string): void {
-  document.querySelectorAll(selector).forEach(sel => {
+export function clickSelect(selector: string): void {
+  document.querySelectorAll(selector).forEach((sel) => {
     sel.removeEventListener('mousedown', clickHandler);
     sel.addEventListener('mousedown', clickHandler);
   });
@@ -175,10 +213,13 @@ export function clickSelect (selector: string): void {
   document.body.removeEventListener('keydown', arrowKeyListener);
   document.body.addEventListener('keydown', arrowKeyListener);
 
-  document.getElementById('container')
-    .addEventListener('contextmenu', (evt) => { evt.preventDefault(); });
+  document
+    .getElementById('container')
+    .addEventListener('contextmenu', (evt) => {
+      evt.preventDefault();
+    });
 
-  document.querySelectorAll('use,rect,#moreEdit').forEach(sel => {
+  document.querySelectorAll('use,rect,#moreEdit').forEach((sel) => {
     sel.removeEventListener('click', stopPropHandler);
     sel.addEventListener('click', stopPropHandler);
   });
@@ -190,13 +231,12 @@ export function clickSelect (selector: string): void {
 
 // The `this` keyword can be "passed" as a fake parameter so that we can type it correctly
 // https://www.typescriptlang.org/docs/handbook/2/functions.html#declaring-this-in-a-function
-function clickHandler (this: SVGGraphicsElement, evt: MouseEvent): void {
+function clickHandler(this: SVGGraphicsElement, evt: MouseEvent): void {
   // Return if user is in insert mode or panning is active from shift key
-  if (!neonView || neonView.getUserMode() === 'insert' || evt.shiftKey)
-    return;
+  if (!neonView || neonView.getUserMode() === 'insert' || evt.shiftKey) return;
 
   // Helper function to check if the ctrl/cmd key has been selected
-  function isMultiSelect (): boolean {
+  function isMultiSelect(): boolean {
     return window.navigator.userAgent.match(/Mac/) ? evt.metaKey : evt.ctrlKey;
   }
 
@@ -213,8 +253,12 @@ function clickHandler (this: SVGGraphicsElement, evt: MouseEvent): void {
         const nc = this.closest('.nc');
         const neume = this.closest('.neume');
         const ncIndex = Array.from(neume.children).indexOf(nc);
-        const firstUse = neume.children[ncIndex - 1].children[0] as SVGGraphicsElement;
-        console.assert(firstUse.getAttribute('xlink:href').match(firstLigatureHalf), 'First glyph of ligature unexpected!');
+        const firstUse = neume.children[ncIndex - 1]
+          .children[0] as SVGGraphicsElement;
+        console.assert(
+          firstUse.getAttribute('xlink:href').match(firstLigatureHalf),
+          'First glyph of ligature unexpected!',
+        );
 
         if (firstUse.closest('.selected') === null) {
           selection.unshift(firstUse);
@@ -224,8 +268,12 @@ function clickHandler (this: SVGGraphicsElement, evt: MouseEvent): void {
         const nc = this.closest('.nc');
         const neume = this.closest('.neume');
         const ncIndex = Array.from(neume.children).indexOf(nc);
-        const secondUse = neume.children[ncIndex + 1].children[0] as SVGGraphicsElement;
-        console.assert(secondUse.getAttribute('xlink:href').match(secondLigatureHalf), 'Second glyph of ligature unexpected!');
+        const secondUse = neume.children[ncIndex + 1]
+          .children[0] as SVGGraphicsElement;
+        console.assert(
+          secondUse.getAttribute('xlink:href').match(secondLigatureHalf),
+          'Second glyph of ligature unexpected!',
+        );
 
         if (secondUse.closest('.selected') === null) {
           selection.push(secondUse);
@@ -233,7 +281,9 @@ function clickHandler (this: SVGGraphicsElement, evt: MouseEvent): void {
       }
 
       if (isMultiSelect()) {
-        selection = selection.concat(Array.from(document.querySelectorAll('.selected')));
+        selection = selection.concat(
+          Array.from(document.querySelectorAll('.selected')),
+        );
       }
 
       selectAll(selection, neonView, dragHandler);
@@ -241,8 +291,7 @@ function clickHandler (this: SVGGraphicsElement, evt: MouseEvent): void {
       if (dragHandler) {
         dragHandler.dragInit();
       }
-    }
-    else {
+    } else {
       if (isMultiSelect()) {
         const selectionMode = document.querySelector('.sel-by .is-active').id;
         const modeToClass = {
@@ -265,12 +314,19 @@ function clickHandler (this: SVGGraphicsElement, evt: MouseEvent): void {
         }
       }
     }
-  } else if ((evt.target as HTMLElement).tagName === 'rect' && getSelectionType() === 'selByBBox') {
+  } else if (
+    (evt.target as HTMLElement).tagName === 'rect' &&
+    getSelectionType() === 'selByBBox'
+  ) {
     if (this.closest('.selected') === null) {
       let selection = [evt.target] as SVGGElement[];
       if (isMultiSelect()) {
-        selection = selection.concat(Array.from(document.getElementsByClassName('selected')) as SVGGElement[]);
-        selection = selection.map( (el) => {
+        selection = selection.concat(
+          Array.from(
+            document.getElementsByClassName('selected'),
+          ) as SVGGElement[],
+        );
+        selection = selection.map((el) => {
           if (el.tagName == 'rect') {
             return el;
           }
@@ -286,13 +342,13 @@ function clickHandler (this: SVGGraphicsElement, evt: MouseEvent): void {
       if (isMultiSelect()) {
         const remove = [this];
         selection = Array.from(document.getElementsByClassName('selected'));
-        selection = selection.map( (el) => {
+        selection = selection.map((el) => {
           if (el.tagName == 'rect') {
             return el;
           }
           return el.querySelector('.sylTextRect-Display');
         });
-        selection = selection.filter( (el) => {
+        selection = selection.filter((el) => {
           return !remove.includes(el);
         });
         selectAll(selection, neonView, dragHandler);
@@ -308,12 +364,11 @@ function clickHandler (this: SVGGraphicsElement, evt: MouseEvent): void {
     }
 
     // Check if the point is in a staff.
-    if (!isMultiSelect())
-      unselect();
+    if (!isMultiSelect()) unselect();
 
     // Select a staff
     const staff = getStaffByCoords(evt.clientX, evt.clientY);
-    
+
     if (!staff) return;
 
     if (!staff.classList.contains('selected')) {
@@ -325,17 +380,19 @@ function clickHandler (this: SVGGraphicsElement, evt: MouseEvent): void {
       }
     }
     // Trigger mousedown event on the staff
-    staff.dispatchEvent(new MouseEvent('mousedown', {
-      screenX: evt.screenX,
-      screenY: evt.screenY,
-      clientX: evt.clientX,
-      clientY: evt.clientY,
-      ctrlKey: evt.ctrlKey,
-      shiftKey: evt.shiftKey,
-      altKey: evt.altKey,
-      metaKey: evt.metaKey,
-      view: evt.view
-    }));
+    staff.dispatchEvent(
+      new MouseEvent('mousedown', {
+        screenX: evt.screenX,
+        screenY: evt.screenY,
+        clientX: evt.clientX,
+        clientY: evt.clientY,
+        ctrlKey: evt.ctrlKey,
+        shiftKey: evt.shiftKey,
+        altKey: evt.altKey,
+        metaKey: evt.metaKey,
+        view: evt.view,
+      }),
+    );
   }
 }
 
@@ -343,7 +400,7 @@ function clickHandler (this: SVGGraphicsElement, evt: MouseEvent): void {
  * Apply listeners for drag selection.
  * @param selector - The CSS selector used to choose where listeners are applied.
  */
-export function dragSelect (selector: string): void {
+export function dragSelect(selector: string): void {
   let initialX = 0;
   let initialY = 0;
   let panning = false;
@@ -356,7 +413,7 @@ export function dragSelect (selector: string): void {
    * Check if a point is in the bounds of a staff element.
    * Rotate is not taken into account.
    */
-  function pointNotInStaff (pt: number[]): boolean {
+  function pointNotInStaff(pt: number[]): boolean {
     const staves = Array.from(document.getElementsByClassName('staff'));
     const filtered = staves.filter((staff: SVGGElement) => {
       const bbox = getStaffBBox(staff);
@@ -366,20 +423,24 @@ export function dragSelect (selector: string): void {
       const lry = bbox.lry;
       const rotate = bbox.rotate;
 
-      return (pt[0] > ulx && pt[0] < lrx) &&
-        (pt[1] > (uly + (pt[0] - ulx) * Math.tan(rotate))) &&
-        (pt[1] < (lry - (lrx - pt[0]) * Math.tan(rotate)));
+      return (
+        pt[0] > ulx &&
+        pt[0] < lrx &&
+        pt[1] > uly + (pt[0] - ulx) * Math.tan(rotate) &&
+        pt[1] < lry - (lrx - pt[0]) * Math.tan(rotate)
+      );
     });
-    return (filtered.length === 0);
+    return filtered.length === 0;
   }
 
   /**
-     * Create an initial dragging rectangle.
-     * @param ulx - The upper left x-position of the new rectangle.
-     * @param uly - The upper left y-position of the new rectangle.
-     */
-  function initRect (ulx: number, uly: number): void {
-    canvas.append('rect')
+   * Create an initial dragging rectangle.
+   * @param ulx - The upper left x-position of the new rectangle.
+   * @param uly - The upper left y-position of the new rectangle.
+   */
+  function initRect(ulx: number, uly: number): void {
+    canvas
+      .append('rect')
       .attr('x', ulx)
       .attr('y', uly)
       .attr('width', 0)
@@ -390,13 +451,22 @@ export function dragSelect (selector: string): void {
       .attr('fill', 'none');
   }
 
-  function selStart (): void {
+  function selStart(): void {
     if (!neonView) return;
     const userMode = neonView.getUserMode();
-    if (d3.event.sourceEvent.target.nodeName !== 'use' && userMode !== 'insert' && d3.event.sourceEvent.target.nodeName !== 'rect') {
-      if (!d3.event.sourceEvent.shiftKey) { // If not holding down shift key to pan
-        if (!document.getElementById('selByStaff').classList.contains('is-active') ||
-          pointNotInStaff(d3.mouse(this))) {
+    if (
+      d3.event.sourceEvent.target.nodeName !== 'use' &&
+      userMode !== 'insert' &&
+      d3.event.sourceEvent.target.nodeName !== 'rect'
+    ) {
+      if (!d3.event.sourceEvent.shiftKey) {
+        // If not holding down shift key to pan
+        if (
+          !document
+            .getElementById('selByStaff')
+            .classList.contains('is-active') ||
+          pointNotInStaff(d3.mouse(this))
+        ) {
           unselect();
           dragSelecting = true;
           const initialP = d3.mouse(this);
@@ -419,13 +489,18 @@ export function dragSelect (selector: string): void {
   }
 
   /**
-     * Update the dragging rectangle.
-     * @param newX - The new ulx.
-     * @param newY - The new uly.
-     * @param currentWidth - The width of the rectangle in pixels.
-     * @param currentHeight - The height of the rectangle in pixels.
-     */
-  function updateRect (newX: number, newY: number, currentWidth: number, currentHeight: number): void {
+   * Update the dragging rectangle.
+   * @param newX - The new ulx.
+   * @param newY - The new uly.
+   * @param currentWidth - The width of the rectangle in pixels.
+   * @param currentHeight - The height of the rectangle in pixels.
+   */
+  function updateRect(
+    newX: number,
+    newY: number,
+    currentWidth: number,
+    currentHeight: number,
+  ): void {
     d3.select('#selectRect')
       .attr('x', newX)
       .attr('y', newY)
@@ -433,17 +508,21 @@ export function dragSelect (selector: string): void {
       .attr('height', currentHeight);
   }
 
-  function getElementsBySelector (selector: string): SVGGraphicsElement[] {
+  function getElementsBySelector(selector: string): SVGGraphicsElement[] {
     if (document.getElementById('selByStaff').classList.contains('is-active'))
-      return Array.from(document.querySelectorAll(selector + ' use, ' + selector + ' .staff'));
+      return Array.from(
+        document.querySelectorAll(selector + ' use, ' + selector + ' .staff'),
+      );
 
     if (isSelByBBox())
-      return Array.from(document.querySelectorAll(selector + ' .sylTextRect-display'));
+      return Array.from(
+        document.querySelectorAll(selector + ' .sylTextRect-display'),
+      );
 
     return Array.from(document.querySelectorAll(selector + ' use'));
   }
 
-  function selecting (): void {
+  function selecting(): void {
     if (!panning && dragSelecting) {
       const currentPt = d3.mouse(this);
       const curX = currentPt[0];
@@ -462,7 +541,7 @@ export function dragSelect (selector: string): void {
     }
   }
 
-  function selEnd (): void {
+  function selEnd(): void {
     if (!panning && dragSelecting) {
       const selectRect = document.getElementById('selectRect');
       const rx = parseInt(selectRect.getAttribute('x'));
@@ -472,9 +551,16 @@ export function dragSelect (selector: string): void {
 
       // Transform to the correct coordinate system
       const node = canvas.node() as SVGSVGElement;
-      let ul = new DOMPoint(rx, ry), lr = new DOMPoint(lx, ly);
-      const transform = node.getScreenCTM().inverse()
-        .multiply((canvas.select('.system').node() as SVGGraphicsElement).getScreenCTM())
+      let ul = new DOMPoint(rx, ry),
+        lr = new DOMPoint(lx, ly);
+      const transform = node
+        .getScreenCTM()
+        .inverse()
+        .multiply(
+          (
+            canvas.select('.system').node() as SVGGraphicsElement
+          ).getScreenCTM(),
+        )
         .inverse();
       ul = ul.matrixTransform(transform);
       lr = lr.matrixTransform(transform);
@@ -482,13 +568,20 @@ export function dragSelect (selector: string): void {
       // Get all elements corresponding to the selector
       const elements = getElementsBySelector(selector);
       // Get the elements within the selection rectangle
-      const selectedElements = elements.filter(el => isElementInRect(el, ul, lr));
+      const selectedElements = elements.filter((el) =>
+        isElementInRect(el, ul, lr),
+      );
 
       // Get other halves of ligatures if only one is selected
       selectedElements.forEach((element: SVGElement) => {
-        if (element.tagName === 'use' && element.getAttribute('xlink:href').match(/E9B[456789ABC]/)) {
+        if (
+          element.tagName === 'use' &&
+          element.getAttribute('xlink:href').match(/E9B[456789ABC]/)
+        ) {
           const neume = element.closest('.neume');
-          const ncIndex = Array.from(neume.children).indexOf(element.closest('.nc'));
+          const ncIndex = Array.from(neume.children).indexOf(
+            element.closest('.nc'),
+          );
           if (element.getAttribute('xlink:href').match(/E9B[45678]/)) {
             // Add second half of ligature to selected list if not already present
             const secondNc = neume.children[ncIndex + 1];
@@ -517,9 +610,9 @@ export function dragSelect (selector: string): void {
     panning = false;
   }
 
-  d3.selectAll(selector.replace('.active-page', '').trim())
-    .on('.drag', null);
-  const dragSelectAction = d3.drag()
+  d3.selectAll(selector.replace('.active-page', '').trim()).on('.drag', null);
+  const dragSelectAction = d3
+    .drag()
     .on('start', selStart)
     .on('drag', selecting)
     .on('end', selEnd);

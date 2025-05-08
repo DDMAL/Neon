@@ -1,7 +1,17 @@
-import { checkOutOfBoundsGlyphs, convertToVerovio, removeColumnLabel } from './utils/ConvertMei';
+import {
+  checkOutOfBoundsGlyphs,
+  convertToVerovio,
+  removeColumnLabel,
+} from './utils/ConvertMei';
 import * as Validation from './Validation';
 import VerovioWrapper from './VerovioWrapper';
-import { WebAnnotation, Attributes, EditorAction, NeonManifest, VerovioMessage } from './Types';
+import {
+  WebAnnotation,
+  Attributes,
+  EditorAction,
+  NeonManifest,
+  VerovioMessage,
+} from './Types';
 import { uuidv4 } from './utils/random';
 
 import PouchDB from 'pouchdb';
@@ -40,12 +50,14 @@ class NeonCore {
   private manifest: NeonManifest;
   private lastPageLoaded: string;
 
-  getAnnotations (): WebAnnotation[] { return this.annotations; }
+  getAnnotations(): WebAnnotation[] {
+    return this.annotations;
+  }
 
   /**
    * Constructor for NeonCore
    */
-  constructor (manifest: NeonManifest) {
+  constructor(manifest: NeonManifest) {
     this.verovioWrapper = new VerovioWrapper();
     //Validation.init();
 
@@ -81,92 +93,109 @@ class NeonCore {
    * not update the database unless forced.
    * @param force - If a database update should be forced.
    */
-  async initDb (force = false): Promise<boolean> {
+  async initDb(force = false): Promise<boolean> {
     // Check for existing manifest
-    type DbAnnotation = PouchDB.Core.IdMeta & PouchDB.Core.GetMeta & WebAnnotation;
-    type Doc = PouchDB.Core.IdMeta & PouchDB.Core.GetMeta & { timestamp: string; annotations: string[]};
+    type DbAnnotation = PouchDB.Core.IdMeta &
+      PouchDB.Core.GetMeta &
+      WebAnnotation;
+    type Doc = PouchDB.Core.IdMeta &
+      PouchDB.Core.GetMeta & { timestamp: string; annotations: string[] };
     const response = await new Promise<boolean>((resolve, reject): void => {
-      this.db.get(this.manifest['@id']).catch(err => {
-        if (err.name === 'not_found') {
-          // This is a new document.
-          const doc = {
-            _id: this.manifest['@id'],
-            timestamp: this.manifest.timestamp,
-            image: this.manifest.image,
-            title: this.manifest.title,
-            annotations: []
-          };
-          this.annotations.forEach(annotation => {
-            doc.annotations.push(annotation.id);
-          });
-          return doc;
-        } else {
-          console.error(err);
-          return reject(err);
-        }
-      }).then(async (doc: Doc) => {
-        // Check if doc timestamp is newer than manifest
-        const docTime = (new Date(doc.timestamp)).getTime();
-        // Format timestamp to specific ISO 8601 variant because
-        // Safari requires timezone offsets to be +/-HH:MM and fails on
-        // the equally valid +/-HHMM. This doesn't need to be applied to
-        // the browser generated timestamp since that always generates a
-        // timestamp in UTC with the Z ending.
-        const timeZoneRegexp = /(.+[-+\u2212]\d\d)(\d\d)$/;
-        const manTime = (timeZoneRegexp.test(this.manifest.timestamp)) ?
-          (new Date(this.manifest.timestamp.replace(timeZoneRegexp, '$1:$2'))).getTime()
-          : (new Date(this.manifest.timestamp)).getTime();
-        if (docTime > manTime) {
-          if (!force) {
-            // Fill annotations list with db annotations
-            this.annotations = [];
-            const promises = doc.annotations.map((id: string) => {
-              return new Promise((res) => {
-                this.db.get(id).then((annotation: DbAnnotation) => {
-                  this.annotations.push({
-                    id: annotation._id,
-                    type: 'Annotation',
-                    body: annotation.body,
-                    target: annotation.target
-                  });
-                  res('');
-                }).catch(err => {
-                  console.error(err);
-                  res('');
+      this.db
+        .get(this.manifest['@id'])
+        .catch((err) => {
+          if (err.name === 'not_found') {
+            // This is a new document.
+            const doc = {
+              _id: this.manifest['@id'],
+              timestamp: this.manifest.timestamp,
+              image: this.manifest.image,
+              title: this.manifest.title,
+              annotations: [],
+            };
+            this.annotations.forEach((annotation) => {
+              doc.annotations.push(annotation.id);
+            });
+            return doc;
+          } else {
+            console.error(err);
+            return reject(err);
+          }
+        })
+        .then(async (doc: Doc) => {
+          // Check if doc timestamp is newer than manifest
+          const docTime = new Date(doc.timestamp).getTime();
+          // Format timestamp to specific ISO 8601 variant because
+          // Safari requires timezone offsets to be +/-HH:MM and fails on
+          // the equally valid +/-HHMM. This doesn't need to be applied to
+          // the browser generated timestamp since that always generates a
+          // timestamp in UTC with the Z ending.
+          const timeZoneRegexp = /(.+[-+\u2212]\d\d)(\d\d)$/;
+          const manTime = timeZoneRegexp.test(this.manifest.timestamp)
+            ? new Date(
+                this.manifest.timestamp.replace(timeZoneRegexp, '$1:$2'),
+              ).getTime()
+            : new Date(this.manifest.timestamp).getTime();
+          if (docTime > manTime) {
+            if (!force) {
+              // Fill annotations list with db annotations
+              this.annotations = [];
+              const promises = doc.annotations.map((id: string) => {
+                return new Promise((res) => {
+                  this.db
+                    .get(id)
+                    .then((annotation: DbAnnotation) => {
+                      this.annotations.push({
+                        id: annotation._id,
+                        type: 'Annotation',
+                        body: annotation.body,
+                        target: annotation.target,
+                      });
+                      res('');
+                    })
+                    .catch((err) => {
+                      console.error(err);
+                      res('');
+                    });
                 });
               });
-            });
-            await Promise.all(promises);
-            return resolve(false);
-          }
-        }
-        for (const annotation of this.annotations) {
-          // Add annotations to database
-          await this.db.get(annotation.id).catch(err => {
-            if (err.name === 'not_found') {
-              return {
-                _id: annotation.id
-              };
-            } else {
-              console.error(err);
-              return reject(err);
+              await Promise.all(promises);
+              return resolve(false);
             }
-          }).then((newAnnotation: DbAnnotation) => {
-            newAnnotation.body = annotation.body;
-            newAnnotation.target = annotation.target;
-            return this.db.put(newAnnotation);
-          }).catch(err => {
-            reject(err);
-            console.error(err);
-          });
-        }
-        return this.db.put(doc);
-      }).then(() => {
-        return resolve(true);
-      }).catch(err => {
-        reject(err);
-        console.error(err);
-      });
+          }
+          for (const annotation of this.annotations) {
+            // Add annotations to database
+            await this.db
+              .get(annotation.id)
+              .catch((err) => {
+                if (err.name === 'not_found') {
+                  return {
+                    _id: annotation.id,
+                  };
+                } else {
+                  console.error(err);
+                  return reject(err);
+                }
+              })
+              .then((newAnnotation: DbAnnotation) => {
+                newAnnotation.body = annotation.body;
+                newAnnotation.target = annotation.target;
+                return this.db.put(newAnnotation);
+              })
+              .catch((err) => {
+                reject(err);
+                console.error(err);
+              });
+          }
+          return this.db.put(doc);
+        })
+        .then(() => {
+          return resolve(true);
+        })
+        .catch((err) => {
+          reject(err);
+          console.error(err);
+        });
     });
 
     return response;
@@ -177,7 +206,7 @@ class NeonCore {
    * page from the cache or from the database.
    * @param pageURI - The URI of the selected page.
    */
-  loadPage (pageURI: string): Promise<CacheEntry> {
+  loadPage(pageURI: string): Promise<CacheEntry> {
     return new Promise((resolve, reject): void => {
       // Was this already the loaded page?
       if (this.lastPageLoaded === pageURI && this.neonCache.has(pageURI)) {
@@ -186,7 +215,7 @@ class NeonCore {
         this.loadData(pageURI, this.neonCache.get(pageURI).mei).then(() => {
           resolve(this.neonCache.get(pageURI));
         });
-      // Do we know this page has no MEI content?
+        // Do we know this page has no MEI content?
       } else if (this.blankPages.includes(pageURI)) {
         Validation.blankPage();
         const e = new Error('No MEI file for page ' + pageURI);
@@ -194,29 +223,33 @@ class NeonCore {
         reject(e);
       } else {
         // Find annotation
-        const annotation = this.annotations.find(elem => {
+        const annotation = this.annotations.find((elem) => {
           return elem.target === pageURI;
         });
         if (annotation) {
-          window.fetch(annotation.body).then(response => {
-            if (response.ok) {
-              return response.text();
-            } else {
-              throw new Error(response.statusText);
-            }
-          }).then(data => {
-            // Check if the MEI file is sb-based. If so, convert to staff-based.
-            if (!/<section\b[^>]*\btype="neon-neume-line"[^>]*>/.test(data)) {
-              data = convertToVerovio(data);
-            }
+          window
+            .fetch(annotation.body)
+            .then((response) => {
+              if (response.ok) {
+                return response.text();
+              } else {
+                throw new Error(response.statusText);
+              }
+            })
+            .then((data) => {
+              // Check if the MEI file is sb-based. If so, convert to staff-based.
+              if (!/<section\b[^>]*\btype="neon-neume-line"[^>]*>/.test(data)) {
+                data = convertToVerovio(data);
+              }
 
-            checkOutOfBoundsGlyphs(data);
-            this.loadData(pageURI, data).then(() => {
-              resolve(this.neonCache.get(pageURI));
+              checkOutOfBoundsGlyphs(data);
+              this.loadData(pageURI, data).then(() => {
+                resolve(this.neonCache.get(pageURI));
+              });
+            })
+            .catch((err) => {
+              reject(err);
             });
-          }).catch(err => {
-            reject(err);
-          });
         } else {
           // If no annotation was found treat the page as
           // being blank
@@ -233,7 +266,7 @@ class NeonCore {
    * @param data - The MEI of the page as a string.
    * @param dirty - If the cache entry should be marked as dirty.
    */
-  loadData (pageURI: string, data: string, dirty = false): Promise<void> {
+  loadData(pageURI: string, data: string, dirty = false): Promise<void> {
     Validation.sendForValidation(removeColumnLabel(data));
     this.lastPageLoaded = pageURI;
     /* A promise is returned that will resolve to the result of the action.
@@ -249,18 +282,18 @@ class NeonCore {
       const message: VerovioMessage = {
         id: uuidv4(),
         action: 'renderData',
-        mei: data
+        mei: data,
       };
-      function handle (evt: MessageEvent): void {
+      function handle(evt: MessageEvent): void {
         if (evt.data.id === message.id) {
           const svg = this.parser.parseFromString(
             evt.data.svg,
-            'image/svg+xml'
+            'image/svg+xml',
           ).documentElement;
           this.neonCache.set(pageURI, {
             svg: svg,
             mei: data,
-            dirty: dirty
+            dirty: dirty,
           });
           evt.target.removeEventListener('message', handle);
           resolve();
@@ -275,11 +308,15 @@ class NeonCore {
    * Get the SVG for a specific page.
    * @param pageURI - The URI of the selected page.
    */
-  getSVG (pageURI: string): Promise<SVGSVGElement> {
+  getSVG(pageURI: string): Promise<SVGSVGElement> {
     return new Promise((resolve, reject): void => {
-      this.loadPage(pageURI).then((entry) => {
-        resolve(entry.svg);
-      }).catch((err) => { reject(err); });
+      this.loadPage(pageURI)
+        .then((entry) => {
+          resolve(entry.svg);
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
   }
 
@@ -287,11 +324,15 @@ class NeonCore {
    * Get the MEI for a specific page.
    * @param pageURI - The URI of the selected page.
    */
-  getMEI (pageURI: string): Promise<string> {
+  getMEI(pageURI: string): Promise<string> {
     return new Promise((resolve, reject): void => {
-      this.loadPage(pageURI).then((entry) => {
-        resolve(entry.mei);
-      }).catch((err) => { reject(err); });
+      this.loadPage(pageURI)
+        .then((entry) => {
+          resolve(entry.mei);
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
   }
 
@@ -300,20 +341,23 @@ class NeonCore {
    * @param elementId - The unique ID of the musical element.
    * @param pageURI - The URI of the selected page.
    */
-  getElementAttr (elementId: string, pageURI: string): Promise<Attributes> {
+  getElementAttr(elementId: string, pageURI: string): Promise<Attributes> {
     return new Promise((resolve): void => {
       this.loadPage(pageURI).then(() => {
         const message: VerovioMessage = {
           id: uuidv4(),
           action: 'getElementAttr',
-          elementId: elementId
+          elementId: elementId,
         };
-        this.verovioWrapper.addEventListener('message', function handle (evt: MessageEvent) {
-          if (evt.data.id === message.id) {
-            evt.target.removeEventListener('message', handle);
-            resolve(evt.data.attributes);
-          }
-        });
+        this.verovioWrapper.addEventListener(
+          'message',
+          function handle(evt: MessageEvent) {
+            if (evt.data.id === message.id) {
+              evt.target.removeEventListener('message', handle);
+              resolve(evt.data.attributes);
+            }
+          },
+        );
         this.verovioWrapper.postMessage(message);
       });
     });
@@ -324,7 +368,7 @@ class NeonCore {
    * @param action - The editor toolkit action object.
    * @param pageURI - The URI of the selected page.
    */
-  edit (editorAction: EditorAction, pageURI: string): Promise<boolean> {
+  edit(editorAction: EditorAction, pageURI: string): Promise<boolean> {
     let promise: Promise<CacheEntry>;
     if (this.lastPageLoaded === pageURI) {
       promise = Promise.resolve(this.neonCache.get(pageURI));
@@ -332,7 +376,7 @@ class NeonCore {
       promise = this.loadPage(pageURI);
     }
     return new Promise((resolve): void => {
-      promise.then(entry => {
+      promise.then((entry) => {
         // delete unnecessary SVG object reference;
         // otherwise, this is not garbage collected!
         entry.svg = null;
@@ -341,9 +385,9 @@ class NeonCore {
         const message: VerovioMessage = {
           id: uuidv4(),
           action: 'edit',
-          editorAction: editorAction
+          editorAction: editorAction,
         };
-        function handle (this: NeonCore, evt: MessageEvent): void {
+        function handle(this: NeonCore, evt: MessageEvent): void {
           if (evt.data.id === message.id) {
             if (evt.data.result) {
               if (!this.undoStacks.has(pageURI)) {
@@ -356,14 +400,15 @@ class NeonCore {
               const undoStack = this.undoStacks.get(pageURI);
               const len = undoStack.push(currentMEI);
 
-              if (len > 10)
-                this.undoStacks.set(pageURI, undoStack.slice(1));
+              if (len > 10) this.undoStacks.set(pageURI, undoStack.slice(1));
 
               // Clear redo stack:
               this.redoStacks.set(pageURI, []);
             }
             evt.target.removeEventListener('message', handle);
-            this.updateCache(pageURI, true).then(() => { resolve(evt.data.result); });
+            this.updateCache(pageURI, true).then(() => {
+              resolve(evt.data.result);
+            });
             setSavedStatus(false);
           }
         }
@@ -378,52 +423,60 @@ class NeonCore {
    * @param pageURI - Page to be updated in cache.
    * @param dirty - If the entry should be marked as dirty
    */
-  updateCache (pageURI: string, dirty: boolean): Promise<void> {
+  updateCache(pageURI: string, dirty: boolean): Promise<void> {
     return new Promise((resolve): void => {
       // Must get MEI and then get SVG then finish.
       let mei: string, svgText: string;
       const meiPromise = new Promise((resolve): void => {
         const message: VerovioMessage = {
           id: uuidv4(),
-          action: 'getMEI'
+          action: 'getMEI',
         };
-        this.verovioWrapper.addEventListener('message', function handle (evt: MessageEvent) {
-          if (evt.data.id === message.id) {
-            mei = evt.data.mei;
-            evt.target.removeEventListener('message', handle);
-            Validation.sendForValidation(removeColumnLabel(mei));
-            resolve('');
-          }
-        });
+        this.verovioWrapper.addEventListener(
+          'message',
+          function handle(evt: MessageEvent) {
+            if (evt.data.id === message.id) {
+              mei = evt.data.mei;
+              evt.target.removeEventListener('message', handle);
+              Validation.sendForValidation(removeColumnLabel(mei));
+              resolve('');
+            }
+          },
+        );
         this.verovioWrapper.postMessage(message);
       });
       const svgPromise = new Promise((resolve): void => {
         const message: VerovioMessage = {
           id: uuidv4(),
-          action: 'renderToSVG'
+          action: 'renderToSVG',
         };
-        this.verovioWrapper.addEventListener('message', function handle (evt: MessageEvent) {
-          if (evt.data.id === message.id) {
-            svgText = evt.data.svg;
-            evt.target.removeEventListener('message', handle);
-            resolve('');
-          }
-        });
+        this.verovioWrapper.addEventListener(
+          'message',
+          function handle(evt: MessageEvent) {
+            if (evt.data.id === message.id) {
+              svgText = evt.data.svg;
+              evt.target.removeEventListener('message', handle);
+              resolve('');
+            }
+          },
+        );
         this.verovioWrapper.postMessage(message);
       });
 
-      meiPromise.then(() => { return svgPromise; }).then(() => {
-        const svg = this.parser.parseFromString(
-          svgText,
-          'image/svg+xml'
-        ).documentElement as HTMLElement & SVGSVGElement;
-        this.neonCache.set(pageURI, {
-          mei: mei,
-          svg: svg,
-          dirty: dirty
+      meiPromise
+        .then(() => {
+          return svgPromise;
+        })
+        .then(() => {
+          const svg = this.parser.parseFromString(svgText, 'image/svg+xml')
+            .documentElement as HTMLElement & SVGSVGElement;
+          this.neonCache.set(pageURI, {
+            mei: mei,
+            svg: svg,
+            dirty: dirty,
+          });
+          resolve();
         });
-        resolve();
-      });
     });
   }
 
@@ -431,7 +484,7 @@ class NeonCore {
    * Get the edit info string from the verovio toolkit.
    * @param pageURI - The URI of the page to get the edit info string from.
    */
-  info (pageURI: string): Promise<string> {
+  info(pageURI: string): Promise<string> {
     let promise: Promise<CacheEntry | void>;
     if (this.lastPageLoaded === pageURI) {
       promise = Promise.resolve();
@@ -442,14 +495,17 @@ class NeonCore {
       promise.then(() => {
         const message: VerovioMessage = {
           id: uuidv4(),
-          action: 'editInfo'
+          action: 'editInfo',
         };
-        this.verovioWrapper.addEventListener('message', function handle (evt: MessageEvent) {
-          if (evt.data.id === message.id) {
-            evt.target.removeEventListener('message', handle);
-            resolve(evt.data.info);
-          }
-        });
+        this.verovioWrapper.addEventListener(
+          'message',
+          function handle(evt: MessageEvent) {
+            if (evt.data.id === message.id) {
+              evt.target.removeEventListener('message', handle);
+              resolve(evt.data.info);
+            }
+          },
+        );
         this.verovioWrapper.postMessage(message);
       });
     });
@@ -460,10 +516,9 @@ class NeonCore {
    * @param pageURI - The URI of the selected page.
    * @returns If the action was undone.
    */
-  undo (pageURI: string): Promise<boolean> {
+  undo(pageURI: string): Promise<boolean> {
     return new Promise(async (resolve) => {
-      if (!this.undoStacks.has(pageURI))
-        return resolve(false);
+      if (!this.undoStacks.has(pageURI)) return resolve(false);
 
       const state = this.undoStacks.get(pageURI).pop();
       if (!state) return resolve(false);
@@ -481,10 +536,9 @@ class NeonCore {
    * @param pageURI - The page URI.
    * @returns If the action was redone.
    */
-  redo (pageURI: string): Promise<boolean> {
+  redo(pageURI: string): Promise<boolean> {
     return new Promise(async (resolve) => {
-      if (!this.redoStacks.has(pageURI))
-        return resolve(false);
+      if (!this.redoStacks.has(pageURI)) return resolve(false);
 
       const state = this.redoStacks.get(pageURI).pop();
       if (!state) return resolve(false);
@@ -502,15 +556,18 @@ class NeonCore {
    * This is based on the data stored in the cache. To save time,
    * only entries marked as dirty will be updated.
    */
-  async updateDatabase (): Promise<void> {
-    type Doc = PouchDB.Core.GetMeta & PouchDB.Core.IdMeta & { body: string; timestamp: string };
+  async updateDatabase(): Promise<void> {
+    type Doc = PouchDB.Core.GetMeta &
+      PouchDB.Core.IdMeta & { body: string; timestamp: string };
     let updateTimestamp = false;
     for (const pair of this.neonCache) {
       const key = pair[0];
       const value = pair[1];
       if (value.dirty) {
         updateTimestamp = true;
-        const index = this.annotations.findIndex(elem => { return elem.target === key; });
+        const index = this.annotations.findIndex((elem) => {
+          return elem.target === key;
+        });
         // try to update server with PUT request (if applicable)
         // this is simpler than expecting a specific API on the server
         // and using POST requests, although that would be better if there
@@ -519,60 +576,76 @@ class NeonCore {
         // only attempt if not a data URI
         let uri: string;
         if (!this.annotations[index].body.match(/^data:/)) {
-          await window.fetch(this.annotations[index].body,
-            {
+          await window
+            .fetch(this.annotations[index].body, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/mei+xml' },
-              body: value.mei
-            }
-          ).then(response => {
-            if (response.ok) {
-              uri = this.annotations[index].body;
-            } else {
+              body: value.mei,
+            })
+            .then((response) => {
+              if (response.ok) {
+                uri = this.annotations[index].body;
+              } else {
+                uri =
+                  'data:application/mei+xml;base64,' + window.btoa(value.mei);
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              console.warn('Falling back to data URI');
               uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
-            }
-          }).catch(err => {
-            console.error(err);
-            console.warn('Falling back to data URI');
-            uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
-          });
+            });
         } else {
           uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
         }
         // Update URI in annotations, database
         this.annotations[index].body = uri;
-        await this.db.get(this.annotations[index].id).then((doc: Doc) => {
-          doc.body = uri;
-          return this.db.put(doc);
-        }).then(() => {
-          value.dirty = false;
-        }).catch(err => {
-          console.error(err);
-        });
+        await this.db
+          .get(this.annotations[index].id)
+          .then((doc: Doc) => {
+            doc.body = uri;
+            return this.db.put(doc);
+          })
+          .then(() => {
+            value.dirty = false;
+          })
+          .catch((err) => {
+            console.error(err);
+          });
       }
     }
 
     if (updateTimestamp) {
-      await this.db.get(this.manifest['@id']).then((doc: Doc) => {
-        doc.timestamp = (new Date()).toISOString();
-        return this.db.put(doc);
-      }).catch(err => {
-        console.error(err);
-      });
+      await this.db
+        .get(this.manifest['@id'])
+        .then((doc: Doc) => {
+          doc.timestamp = new Date().toISOString();
+          return this.db.put(doc);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   }
 
   /** Completely remove the database. */
-  async deleteDb (): Promise<void[]> {
-    type Doc = PouchDB.Core.IdMeta & PouchDB.Core.GetMeta & { timestamp: string; annotations: string[]};
-    const annotations = await this.db.get(this.manifest['@id'])
-      .then((doc: Doc) => { return doc.annotations; } );
+  async deleteDb(): Promise<void[]> {
+    type Doc = PouchDB.Core.IdMeta &
+      PouchDB.Core.GetMeta & { timestamp: string; annotations: string[] };
+    const annotations = await this.db
+      .get(this.manifest['@id'])
+      .then((doc: Doc) => {
+        return doc.annotations;
+      });
     annotations.push(this.manifest['@id']);
 
     const promises = annotations.map((id) => {
-      return new Promise<void>(res => {
-        this.db.get(id)
-          .then(doc => { return this.db.remove(doc); })
+      return new Promise<void>((res) => {
+        this.db
+          .get(id)
+          .then((doc) => {
+            return this.db.remove(doc);
+          })
           .then(() => res());
       });
     });

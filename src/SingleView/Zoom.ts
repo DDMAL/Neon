@@ -16,7 +16,7 @@ export class ViewBox {
    * @param imageWidth - Width of the contained image.
    * @param imageHeight - Height of the contained image.
    */
-  constructor (imageWidth: number, imageHeight: number) {
+  constructor(imageWidth: number, imageHeight: number) {
     this.minX = 0;
     this.minY = 0;
     this.width = imageWidth;
@@ -33,7 +33,7 @@ export class ViewBox {
    * @param width - width of SVG
    * @param height - height of SVG
    */
-  set (minX: number, minY: number, width: number, height: number): void {
+  set(minX: number, minY: number, width: number, height: number): void {
     this.minX = minX;
     this.minY = minY;
     this.width = width;
@@ -41,22 +41,29 @@ export class ViewBox {
   }
 
   /** @returns Value for the viewBox parameter. */
-  get (): string {
-    return this.minX.toString() + ' ' + this.minY.toString() + ' ' +
-      this.width + ' ' + this.height;
+  get(): string {
+    return (
+      this.minX.toString() +
+      ' ' +
+      this.minY.toString() +
+      ' ' +
+      this.width +
+      ' ' +
+      this.height
+    );
   }
 
   /** @param k - Factor to zoom to. */
-  zoomTo (k: number): void {
-    const zoomHeight = (this.imageHeight / k);
-    const zoomWidth = (this.imageWidth / k);
+  zoomTo(k: number): void {
+    const zoomHeight = this.imageHeight / k;
+    const zoomWidth = this.imageWidth / k;
 
     this.width = zoomWidth;
     this.height = zoomHeight;
   }
 
   /** @returns Current zoom factor. */
-  getZoom (): number {
+  getZoom(): number {
     return this.imageWidth / this.width;
   }
 
@@ -65,7 +72,7 @@ export class ViewBox {
    * @param xDiff - Amount to shift on x-axis.
    * @param yDiff - Amount to shift on y-axis.
    */
-  translate (xDiff: number, yDiff: number): void {
+  translate(xDiff: number, yDiff: number): void {
     this.minX += xDiff;
     this.minY += yDiff;
   }
@@ -79,9 +86,12 @@ export class ZoomHandler {
   /**
    * Reset the zoom and pan of the SVG viewbox
    */
-  resetZoomAndPan (resetSettings = true): void {
+  resetZoomAndPan(resetSettings = true): void {
     const bgimg = document.getElementById('bgimg') as HTMLImageElement;
-    this.viewBox = new ViewBox(parseInt(bgimg.getAttribute('width')), parseInt(bgimg.getAttribute('height')));
+    this.viewBox = new ViewBox(
+      parseInt(bgimg.getAttribute('width')),
+      parseInt(bgimg.getAttribute('height')),
+    );
 
     if (resetSettings) {
       this.updateSVGViewBox();
@@ -92,7 +102,7 @@ export class ZoomHandler {
   /**
    * @param k - Factor to zoom to.
    */
-  zoomTo (k: number): void {
+  zoomTo(k: number): void {
     this.setViewBox();
     this.viewBox.zoomTo(k);
     this.updateSVGViewBox();
@@ -102,10 +112,10 @@ export class ZoomHandler {
 
   /**
    * Translate the view box by relative coordinates.
-  * @param xDiff - Amount to shift on x-axis.
-  * @param yDiff - Amount to shift on y-axis.
-  */
-  translate (xDiff: number, yDiff: number): void {
+   * @param xDiff - Amount to shift on x-axis.
+   * @param yDiff - Amount to shift on y-axis.
+   */
+  translate(xDiff: number, yDiff: number): void {
     this.setViewBox();
     this.viewBox.translate(xDiff, yDiff);
     this.updateSVGViewBox();
@@ -114,7 +124,7 @@ export class ZoomHandler {
   /**
    * Restore the view box to its position before the editor action.
    */
-  restoreTransformation (): void {
+  restoreTransformation(): void {
     if (this.viewBox === undefined) {
       this.resetZoomAndPan(false);
     } else {
@@ -125,33 +135,39 @@ export class ZoomHandler {
   /**
    * Set the view box of the SVG.
    */
-  setViewBox (): void {
+  setViewBox(): void {
     if (this.viewBox === undefined) {
       const bgimg = document.getElementById('bgimg') as HTMLImageElement;
-      this.viewBox = new ViewBox(parseInt(bgimg.getAttribute('width')), parseInt(bgimg.getAttribute('height')));
+      this.viewBox = new ViewBox(
+        parseInt(bgimg.getAttribute('width')),
+        parseInt(bgimg.getAttribute('height')),
+      );
     }
-    const rawViewBox = document.getElementById('svg_group')
+    const rawViewBox = document
+      .getElementById('svg_group')
       .getAttribute('viewBox')
       .split(' ');
     this.viewBox.set(
       parseInt(rawViewBox[0]),
       parseInt(rawViewBox[1]),
       parseInt(rawViewBox[2]),
-      parseInt(rawViewBox[3])
+      parseInt(rawViewBox[3]),
     );
   }
 
   /**
    * Update the viewBox attribute of svg_group
    */
-  updateSVGViewBox (): void {
+  updateSVGViewBox(): void {
     const viewBoxString = this.viewBox.get();
     document.getElementById('svg_group').setAttribute('viewBox', viewBoxString);
     setSettings({ viewBox: viewBoxString });
   }
 
-  startDrag (): void {
-    const group = document.getElementById('svg_group') as unknown as SVGSVGElement;
+  startDrag(): void {
+    const group = document.getElementById(
+      'svg_group',
+    ) as unknown as SVGSVGElement;
     this.dragCoordinates = group.createSVGPoint();
     if (d3.event.type === 'touchstart') {
       // If drag is triggered by a touch event
@@ -166,8 +182,10 @@ export class ZoomHandler {
     this.matrix = group.getScreenCTM().inverse();
   }
 
-  dragging (): void {
-    const group = document.getElementById('svg_group') as unknown as SVGSVGElement;
+  dragging(): void {
+    const group = document.getElementById(
+      'svg_group',
+    ) as unknown as SVGSVGElement;
     const newCoordinates = group.createSVGPoint();
     // Same kind of checking as in startDrag
     if (d3.event.type === 'touchmove') {
@@ -191,11 +209,14 @@ export class ZoomHandler {
     }
     const newTransform = newCoordinates.matrixTransform(this.matrix);
     const dragTransform = this.dragCoordinates.matrixTransform(this.matrix);
-    this.translate(-newTransform.x + dragTransform.x, -newTransform.y + dragTransform.y);
+    this.translate(
+      -newTransform.x + dragTransform.x,
+      -newTransform.y + dragTransform.y,
+    );
     this.dragCoordinates = newCoordinates;
   }
 
-  scrollZoom (): void {
+  scrollZoom(): void {
     if (d3.event.type !== 'wheel') return;
     if (!d3.event.shiftKey) {
       this.dragging();
@@ -211,7 +232,9 @@ export class ZoomHandler {
 
     // Update zoom slider
     slider.value = (newK * 100).toString();
-    (document.getElementById('zoomOutput') as HTMLOutputElement).value = String(Math.round(newK * 100));
+    (document.getElementById('zoomOutput') as HTMLOutputElement).value = String(
+      Math.round(newK * 100),
+    );
   }
 }
 

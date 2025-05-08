@@ -1,4 +1,8 @@
-import { bindInsertTabs, initInsertEditControls, initSelectionButtons } from './Controls';
+import {
+  bindInsertTabs,
+  initInsertEditControls,
+  initSelectionButtons,
+} from './Controls';
 import * as Select from '../utils/Select';
 import InsertHandler from './InsertHandler';
 import NeonView from '../NeonView';
@@ -15,14 +19,16 @@ class DivaEdit implements NeumeEditInterface {
   neonView: NeonView;
   dragHandler: DragHandler;
   insertHandler: InsertHandler;
-  constructor (neonView: NeonView) {
+  constructor(neonView: NeonView) {
     this.neonView = neonView;
     this.initEditMode();
   }
 
-  initEditMode (): void {
-    document.getElementById('insert_controls').innerHTML += Contents.insertControlsPanel;
-    document.getElementById('edit_controls').innerHTML += Contents.editControlsPanel;
+  initEditMode(): void {
+    document.getElementById('insert_controls').innerHTML +=
+      Contents.insertControlsPanel;
+    document.getElementById('edit_controls').innerHTML +=
+      Contents.editControlsPanel;
     document.getElementById('undoRedo_controls').innerHTML = undoRedoPanel;
 
     this.dragHandler = new DragHandler(this.neonView, '.active-page > svg');
@@ -44,13 +50,15 @@ class DivaEdit implements NeumeEditInterface {
    * Get the user mode that Neon is in. Either insert, edit, or viewer.
    * @returns {UserType}
    */
-  getUserMode (): UserType {
+  getUserMode(): UserType {
     const { userMode } = getSettings();
     return userMode;
   }
 
-  setSelectListeners (): void {
-    Select.clickSelect('.active-page > svg > svg, .active-page > svg > svg use, .active-page > svg > svg rect');
+  setSelectListeners(): void {
+    Select.clickSelect(
+      '.active-page > svg > svg, .active-page > svg > svg use, .active-page > svg > svg rect',
+    );
     Select.dragSelect('.active-page svg');
   }
 }
