@@ -171,7 +171,14 @@ export const ncActionContents = `<label>Change Head Shape:</label>
  */
 export const defaultNeumeActionContents = `<div class="right-side-panel-btns-container">
         <button class="side-panel-btn" id="delete">Delete</button>
+    </div>`;
+
+/**
+ * Contents of split neume action menu.
+ */
+export const splitNeumeActionContents = `<div class="right-side-panel-btns-container">
         <button class="side-panel-btn" id="split-neume">Split Neumes</button>
+        <button class="side-panel-btn" id="delete">Delete</button>
     </div>`;
 
 /**
@@ -405,12 +412,6 @@ export const groupingMenu = {
                     <button class="side-panel-btn" id="delete">Delete</button>
                 </div>
             </div>`,
-  splitSyllable: `<div class="more-edit-btn panel-btn">
-                    <div class="right-side-panel-btns-container">
-                        <button class="side-panel-btn" id="toggle-link">Toggle Linked Syllables</button>
-                        <button class="side-panel-btn" id="delete">Delete</button>
-                    </div>
-                </div>`,
 };
 
 /* BGINNING OF MODAL WINDOW CONTENT SECTION */

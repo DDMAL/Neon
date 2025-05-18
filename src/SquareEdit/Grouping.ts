@@ -415,7 +415,9 @@ export function initGroupingListeners(): void {
 
   try {
     document.getElementById('ungroupNeumes').addEventListener('click', () => {
-      const elementIds = getChildrenIds();
+      const elementIds = getChildrenIds().filter((e) =>
+        document.getElementById(e).classList.contains('neume'),
+      );
       groupingAction('ungroup', 'neume', elementIds);
     });
   } catch (e) {}
@@ -493,7 +495,9 @@ const keydownListener = function (e) {
         // can only ungroup if length is 1 (one syllable selected)
         // cannot ungroup if multiple syllables are selected
         else if (elements.length === 1) {
-          const elementIds = getChildrenIds();
+          const elementIds = getChildrenIds().filter((e) =>
+            document.getElementById(e).classList.contains('neume'),
+          );
           groupingAction('ungroup', 'neume', elementIds);
         }
         break;
@@ -546,6 +550,14 @@ function groupingAction(
   groupType: 'neume' | 'nc',
   elementIds: string[],
 ): void {
+  if (elementIds.length <= 1) {
+    Notification.queueNotification(
+      `Cannot ${action} with less than 2 ${groupType}s`,
+      'error',
+    );
+    return;
+  }
+
   const editorAction: EditorAction = {
     action: action,
     param: {

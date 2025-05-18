@@ -697,10 +697,6 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
 export function triggerNeumeActions(): void {
   endOptionsSelection();
 
-  setEditControls('moreEdit', Contents.defaultNeumeActionContents);
-  setEditControls('extraEdit', Contents.neumeActionContents);
-  addDeleteListener();
-
   const neume = document.querySelectorAll('.selected');
   if (neume.length !== 1) {
     console.warn(
@@ -709,18 +705,22 @@ export function triggerNeumeActions(): void {
     return;
   }
 
-  // TODO add trigger for split action
-  document.getElementById('split-neume').addEventListener('click', () => {
-    const neume = document.querySelector('.neume.selected') as SVGGElement;
-    if (neume !== null) {
+  // if neume has multiple nc, add split neume button
+  if (neume[0].querySelectorAll('.nc').length > 1) {
+    setEditControls('moreEdit', Contents.splitNeumeActionContents);
+
+    document.getElementById('split-neume').addEventListener('click', () => {
+      const neume = document.querySelector('.neume.selected') as SVGGElement;
       const split = new SplitNeumeHandler(neonView, neume);
       split.startSplit();
       endOptionsSelection();
-    } else {
-      console.error('No staff was selected!');
-      endOptionsSelection();
-    }
-  });
+    });
+  } else {
+    setEditControls('moreEdit', Contents.defaultNeumeActionContents);
+  }
+
+  setEditControls('extraEdit', Contents.neumeActionContents);
+  addDeleteListener();
 
   document
     .querySelector('#Pes.dropdown-item')
