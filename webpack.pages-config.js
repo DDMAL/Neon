@@ -47,7 +47,7 @@ module.exports = {
   plugins: [
     new HardSourceWebpackPlugin(),
     new webpack.DefinePlugin({
-      __LINK_LOCATION__: JSON.stringify('https://ddmal.music.mcgill.ca/Neon'),
+      __LINK_LOCATION__: JSON.stringify('https://ddmal.ca/Neon'),
       __NEON_VERSION__: JSON.stringify(commitHash),
       __ASSET_PREFIX__: JSON.stringify('/Neon/Neon-gh/'),
     }),
