@@ -30,8 +30,8 @@ jobs:
 
       - name: Execute Link Checker and Show Broken Links
         env:
-          TEMPORARY_WEBSITE_URL: "http://127.0.0.1:8080"
-          ACTUAL_WEBSITE_URL: "https://ddmal.music.mcgill.ca/Neon"
+          TEMPORARY_WEBSITE_URL: 'http://127.0.0.1:8080'
+          ACTUAL_WEBSITE_URL: 'https://ddmal.ca/Neon/'
         run: |
           output=$(blc $TEMPORARY_WEBSITE_URL --filter-level=3 | \
             grep -v -E '├───OK───|└───OK───' | \

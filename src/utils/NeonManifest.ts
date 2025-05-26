@@ -17,7 +17,7 @@ export function parseManifest(manifestString: NeonManifest): boolean {
   }
   const context = instance['@context'];
   if (
-    context === 'https://ddmal.music.mcgill.ca/Neon/contexts/1/manifest.jsonld'
+    context === 'https://ddmal.ca/Neon/contexts/1/manifest.jsonld'
   ) {
     return true;
   }
