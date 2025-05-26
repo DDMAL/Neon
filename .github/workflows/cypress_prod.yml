@@ -1,7 +1,7 @@
 name: Scheduled E2E on Chrome
 on:
   schedule:
-    - cron: '0 7 * * *'  # Runs at 07:00 UTC every day (02:00 AM EST)
+    - cron: '0 7 * * *' # Runs at 07:00 UTC every day (02:00 AM EST in winter, 03:00 AM EST in summer)
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
