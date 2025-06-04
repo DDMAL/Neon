@@ -415,9 +415,16 @@ export function initGroupingListeners(): void {
 
   try {
     document.getElementById('ungroupNeumes').addEventListener('click', () => {
-      const elementIds = getChildrenIds().filter((e) =>
-        document.getElementById(e).classList.contains('neume'),
-      );
+      const elementIds = getChildrenIds().filter((e) => {
+        const element = document.getElementById(e);
+        return (
+          element &&
+          (element.classList.contains('neume') ||
+            element.classList.contains('divLine') ||
+            element.classList.contains('accid') ||
+            element.classList.contains('clef'))
+        );
+      });
       groupingAction('ungroup', 'neume', elementIds);
     });
   } catch (e) {}
@@ -495,9 +502,16 @@ const keydownListener = function (e) {
         // can only ungroup if length is 1 (one syllable selected)
         // cannot ungroup if multiple syllables are selected
         else if (elements.length === 1) {
-          const elementIds = getChildrenIds().filter((e) =>
-            document.getElementById(e).classList.contains('neume'),
-          );
+          const elementIds = getChildrenIds().filter((e) => {
+            const element = document.getElementById(e);
+            return (
+              element &&
+              (element.classList.contains('neume') ||
+                element.classList.contains('divLine') ||
+                element.classList.contains('accid') ||
+                element.classList.contains('clef'))
+            );
+          });
           groupingAction('ungroup', 'neume', elementIds);
         }
         break;
