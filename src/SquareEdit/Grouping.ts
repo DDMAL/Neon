@@ -212,8 +212,9 @@ export function isLinked(elements: Array<SVGGraphicsElement>): boolean {
  * Assuming all elements are valid,
  * check if the elements can be linked:
  * 1. sort elements based on their order in the DOM
- * 2. ensure elements are adjacent in the DOM
- * 3. ensure elements belong to adjacent staves
+ * 2. ensure elements are adjacent syllables
+ * 3. ensure elements belong to the same or adjacent staves
+ *    3.1 if same staff, ensure elements are not consecutive (custos/clef should be in between)
  * 4. check if can be linked:
  *    4.1 if exactly two elements, both needs to be unlinked
  *    4.2 if more than two elements, only one element can be unlinked,
@@ -235,23 +236,35 @@ export function canBeLinked(elements: Array<SVGGraphicsElement>): boolean {
   const staves = Array.from(document.querySelectorAll('.staff'));
   const syllables = Array.from(document.querySelectorAll('.syllable'));
 
-  // 2. Ensure syllables are adjacent in the DOM
+  // 2. Ensure syllables are adjacent syllables
   for (let i = 0; i < elements.length - 1; i++) {
     const current = elements[i];
     const next = elements[i + 1];
     const currentSyllableIndex = syllables.indexOf(current);
     const nextSyllableIndex = syllables.indexOf(next);
     if (nextSyllableIndex - currentSyllableIndex !== 1) {
-      return false; // Staves must be adjacent
+      return false; // Syllables must be adjacent syllables
     }
-    // 3. Ensure syllables belong to adjacent staves
+
+    // 3. Ensure syllables belong to the same or adjacent staves
     const currentStaff = current.closest('.staff');
     const nextStaff = next.closest('.staff');
-
-    const currentStaffIndex = staves.indexOf(currentStaff as HTMLElement);
-    const nextStaffIndex = staves.indexOf(nextStaff as HTMLElement);
-    if (nextStaffIndex - currentStaffIndex !== 1) {
-      return false; // Staves must be adjacent
+    // 3.1 if same staff, ensure elements are not consecutive (custos/clef should be in between)
+    if (currentStaff === nextStaff) {
+      const staffChildren = Array.from(
+        currentStaff.querySelectorAll('.syllable, .clef, .custos'),
+      );
+      const currentIdxOnStaff = staffChildren.indexOf(current);
+      const nextIdxOnStaff = staffChildren.indexOf(next);
+      if (nextIdxOnStaff - currentIdxOnStaff <= 1) {
+        return false;
+      }
+    } else {
+      const currentStaffIndex = staves.indexOf(currentStaff as HTMLElement);
+      const nextStaffIndex = staves.indexOf(nextStaff as HTMLElement);
+      if (nextStaffIndex - currentStaffIndex > 1) {
+        return false; // Syllables must belong to the same or adjacent staves
+      }
     }
   }
 
@@ -710,7 +723,6 @@ function toggleLinkedSyllables() {
     param.push(...unlink(elementIds));
   } else {
     const [firstSyllable, secondSyllable] = getToggleSyllableIds(elements);
-    console.log(firstSyllable.id, secondSyllable.id);
     param.push({
       action: 'set',
       param: {
