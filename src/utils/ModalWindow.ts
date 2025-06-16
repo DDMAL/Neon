@@ -212,13 +212,9 @@ export class ModalWindow implements ModalWindowInterface {
             .getElementById('syl_text')
             .querySelectorAll('span.selected-to-edit')[0]
         );
-        const removeSymbol = /\u{25CA}/u;
-        const orig = span.textContent.replace(removeSymbol, '').trim();
-
         // set value of input field to current syllable text
-        (<HTMLInputElement>(
-          document.getElementById('neon-modal-window-edit-text-input')
-        )).value = orig;
+        const orig = this.getSyllableText(span);
+        this.updateModalInput(orig);
         break;
 
       case ModalWindowView.HOTKEYS:
@@ -387,39 +383,24 @@ export class ModalWindow implements ModalWindowInterface {
         .getElementById('syl_text')
         .querySelectorAll('span.selected-to-edit')[0]
     );
-    const removeSymbol = /\u{25CA}/u;
-    const orig = span.textContent.replace(removeSymbol, '').trim();
+    const orig = this.getSyllableText(span);
     const updatedSylText = (<HTMLInputElement>(
       document.getElementById('neon-modal-window-edit-text-input')
     )).value;
 
     if (updatedSylText !== null && updatedSylText !== orig) {
-      // create "set text" action
-      const elementId = [...span.classList.entries()].filter(
-        (className) =>
-          className[1] !== 'text-select' && className[1] !== 'selected-to-edit',
-      )[0][1];
-      const editorAction: SetTextAction = {
-        action: 'setText',
-        param: {
-          elementId: elementId,
-          text: updatedSylText,
-        },
-      };
       // send action to verovio for processing
-      this.neonView
-        .edit(editorAction, this.neonView.view.getCurrentPageURI())
-        .then((response: boolean) => {
-          if (response) {
-            // update the SVG
-            this.neonView.updateForCurrentPage().then(() => {
-              // An update to the page will reload the entire svg;
-              // We would like to then reselect the same selected syllable
-              // if bboxes are enabled
-              this.updateSelectedBBox(span, this.dragHandler, this.neonView);
-            });
-          }
-        });
+      this.saveTextChanges(span, updatedSylText).then((response: boolean) => {
+        if (response) {
+          // update the SVG
+          this.neonView.updateForCurrentPage().then(() => {
+            // An update to the page will reload the entire svg;
+            // We would like to then reselect the same selected syllable
+            // if bboxes are enabled
+            this.updateSelectedBBox(span, this.dragHandler, this.neonView);
+          });
+        }
+      });
     } else {
       // reselect if no change is made
       this.updateSelectedBBox(span, this.dragHandler, this.neonView);
@@ -427,6 +408,14 @@ export class ModalWindow implements ModalWindowInterface {
     // close modal window
     this.hideModalWindow();
   };
+
+  /**
+   * Helper method to extract clean syllable text
+   */
+  private getSyllableText(span: HTMLSpanElement): string {
+    const removeSymbol = /\u{25CA}/u;
+    return span.textContent.replace(removeSymbol, '').trim();
+  }
 
   /**
    * Helper method to update modal input field and focus
@@ -483,8 +472,7 @@ export class ModalWindow implements ModalWindowInterface {
       ) as HTMLSpanElement;
       if (newSpan) {
         this.updateSelectedSpan(currentSpan, newSpan);
-        const removeSymbol = /\u{25CA}/u;
-        const newText = newSpan.textContent.replace(removeSymbol, '').trim();
+        const newText = this.getSyllableText(newSpan);
         this.updateModalInput(newText);
       }
     }
@@ -539,10 +527,7 @@ export class ModalWindow implements ModalWindowInterface {
         .getElementById('syl_text')
         .querySelectorAll('span.selected-to-edit')[0]
     );
-    const removeSymbol = /\u{25CA}/u;
-    const originalText = currentSpan.textContent
-      .replace(removeSymbol, '')
-      .trim();
+    const originalText = this.getSyllableText(currentSpan);
     const updatedText = (<HTMLInputElement>(
       document.getElementById('neon-modal-window-edit-text-input')
     )).value;
@@ -659,9 +644,11 @@ export class ModalWindow implements ModalWindowInterface {
     switch (this.modalWindowView) {
       case ModalWindowView.ADD_TEXT:
       case ModalWindowView.EDIT_TEXT:
-        (<HTMLInputElement>(
+        const input = <HTMLInputElement>(
           document.getElementById('neon-modal-window-edit-text-input')
-        )).select();
+        );
+        input.focus();
+        input.select();
         break;
       case ModalWindowView.DOCUMENT_UPLOAD:
       case ModalWindowView.NEW_FOLDER:
