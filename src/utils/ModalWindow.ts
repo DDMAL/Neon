@@ -12,7 +12,7 @@ import {
   uploadAreaHTML,
 } from '../Dashboard/DashboardContent';
 import DragHandler from './DragHandler';
-import { selectBBox, unselect } from './SelectTools';
+import { selectBBox, unselect, selectAll } from './SelectTools';
 
 /**
  * Defines modal types.
@@ -42,13 +42,15 @@ export class ModalWindow implements ModalWindowInterface {
   private modalWindowView: ModalWindowView; // current modal type
   private modalWindowState: ModalWindowState; // open or closed?
   private neonView: NeonView; // neonView instance context
+  private dragHandler: DragHandler; // dragHandler instance
 
   /**
    * Set neonView instance context for this modal window instance.
    * @param neonView neonView context for Modal instance
    */
-  constructor(neonView?: NeonView) {
+  constructor(neonView?: NeonView, dragHandler?: DragHandler) {
     this.neonView = neonView;
+    this.dragHandler = dragHandler;
     this.modalWindowState = ModalWindowState.CLOSED;
     this.setupEventListeners();
   }
@@ -427,6 +429,162 @@ export class ModalWindow implements ModalWindowInterface {
   };
 
   /**
+   * Helper method to update modal input field and focus
+   */
+  private updateModalInput(text: string): void {
+    const input = <HTMLInputElement>(
+      document.getElementById('neon-modal-window-edit-text-input')
+    );
+    input.value = text;
+    input.focus();
+    input.select();
+  }
+
+  /**
+   * Helper method to update selected-to-edit span classes
+   */
+  private updateSelectedSpan(
+    oldSpan: HTMLSpanElement,
+    newSpan: HTMLSpanElement,
+  ): void {
+    oldSpan.classList.remove('selected-to-edit');
+    document
+      .querySelectorAll('span.selected-to-edit')
+      .forEach((el) => el.classList.remove('selected-to-edit'));
+    newSpan.classList.add('selected-to-edit');
+  }
+
+  /**
+   * Helper method to navigate to a bbox and update UI
+   */
+  private navigateToBBox(
+    targetBbox: Element,
+    currentSpan: HTMLSpanElement,
+  ): void {
+    // Update selection
+    unselect();
+    selectAll(
+      [targetBbox as SVGGraphicsElement],
+      this.neonView,
+      this.dragHandler,
+    );
+
+    // Auto scroll to highlighted text
+    const selectedSylText = document.querySelector('.text-select');
+    if (selectedSylText) {
+      selectedSylText.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Update modal content
+    const newSelected = document.querySelector('.syllable-highlighted');
+    if (newSelected) {
+      const newSpan = document.querySelector(
+        'span.' + newSelected.id,
+      ) as HTMLSpanElement;
+      if (newSpan) {
+        this.updateSelectedSpan(currentSpan, newSpan);
+        const removeSymbol = /\u{25CA}/u;
+        const newText = newSpan.textContent.replace(removeSymbol, '').trim();
+        this.updateModalInput(newText);
+      }
+    }
+  }
+
+  /**
+   * Helper method to save text changes
+   */
+  private saveTextChanges(
+    span: HTMLSpanElement,
+    newText: string,
+  ): Promise<boolean> {
+    const elementId = [...span.classList.entries()].filter(
+      (className) =>
+        className[1] !== 'text-select' && className[1] !== 'selected-to-edit',
+    )[0][1];
+
+    const editorAction: SetTextAction = {
+      action: 'setText',
+      param: {
+        elementId: elementId,
+        text: newText,
+      },
+    };
+
+    return this.neonView.edit(
+      editorAction,
+      this.neonView.view.getCurrentPageURI(),
+    );
+  }
+
+  /**
+   * Update text and navigate to next/previous bbox while keeping modal open
+   */
+  private updateSylTextAndNavigate = function (shiftKey: boolean) {
+    const currentSelected = document.querySelector('.syllable-highlighted');
+    const syllables = Array.from(document.querySelectorAll('.syllable'));
+    const bboxSyllables = syllables.filter(
+      (syl) => syl.querySelector('.sylTextRect-display') !== null,
+    );
+    const currentIndex = bboxSyllables.indexOf(currentSelected);
+
+    // Calculate target index
+    const targetIndex = shiftKey ? currentIndex - 1 : currentIndex + 1;
+
+    // Return early if no valid target
+    if (targetIndex < 0 || targetIndex >= bboxSyllables.length) return;
+
+    // Get current text and input value
+    const currentSpan = <HTMLSpanElement>(
+      document
+        .getElementById('syl_text')
+        .querySelectorAll('span.selected-to-edit')[0]
+    );
+    const removeSymbol = /\u{25CA}/u;
+    const originalText = currentSpan.textContent
+      .replace(removeSymbol, '')
+      .trim();
+    const updatedText = (<HTMLInputElement>(
+      document.getElementById('neon-modal-window-edit-text-input')
+    )).value;
+
+    // Check if text was changed
+    const hasTextChanged = updatedText !== null && updatedText !== originalText;
+
+    if (hasTextChanged) {
+      // Save text changes first, then navigate after page update
+      this.saveTextChanges(currentSpan, updatedText).then(
+        (response: boolean) => {
+          if (response) {
+            this.neonView.updateForCurrentPage().then(() => {
+              const updatedBboxSyllables = Array.from(
+                document.querySelectorAll('.syllable'),
+              ).filter(
+                (syl) => syl.querySelector('.sylTextRect-display') !== null,
+              );
+              if (targetIndex < updatedBboxSyllables.length) {
+                const targetBbox = updatedBboxSyllables[
+                  targetIndex
+                ].querySelector('.sylTextRect-display');
+                if (targetBbox) {
+                  this.navigateToBBox(targetBbox, currentSpan);
+                }
+              }
+            });
+          }
+        },
+      );
+    } else {
+      // No text changes, navigate immediately
+      const targetBbox = bboxSyllables[targetIndex].querySelector(
+        '.sylTextRect-display',
+      );
+      if (targetBbox) {
+        this.navigateToBBox(targetBbox, currentSpan);
+      }
+    }
+  };
+
+  /**
    * Update the bounding box selected when the edit text modal has been clicked
    */
   updateSelectedBBox(
@@ -483,6 +641,10 @@ export class ModalWindow implements ModalWindowInterface {
       case ModalWindowView.EDIT_TEXT:
         if (e.key === 'Enter') this.updateSylText();
         if (e.key === 'Escape') this.hideModalWindow();
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          this.updateSylTextAndNavigate(e.shiftKey);
+        }
         break;
 
       default:
