@@ -167,6 +167,12 @@ export class ModalWindow implements ModalWindowInterface {
             .querySelectorAll('span.selected-to-edit')[0]
         );
         span.classList.remove('selected-to-edit');
+        if (
+          getSelectionType() !== 'selByBBox' &&
+          getSelectionType() !== 'selBySyllable'
+        ) {
+          this.clearSyllableHighlighting();
+        }
         break;
 
       case ModalWindowView.DOCUMENT_UPLOAD:
@@ -333,16 +339,14 @@ export class ModalWindow implements ModalWindowInterface {
       .getElementById('neon-modal-window-edit-text-save')
       .addEventListener('click', this.updateSylText.bind(this));
 
-    // Auto-select bbox if in bbox selection mode
-    if (getSelectionType() === 'selByBBox') {
-      const span = <HTMLSpanElement>(
-        document
-          .getElementById('syl_text')
-          .querySelectorAll('span.selected-to-edit')[0]
-      );
-      if (span) {
-        this.updateSelectedBBox(span, this.dragHandler, this.neonView);
-      }
+    // Auto-select bbox when modal is open
+    const span = <HTMLSpanElement>(
+      document
+        .getElementById('syl_text')
+        .querySelectorAll('span.selected-to-edit')[0]
+    );
+    if (span) {
+      this.updateSelectedBBox(span, this.dragHandler, this.neonView);
     }
 
     // display modal window
@@ -512,10 +516,8 @@ export class ModalWindow implements ModalWindowInterface {
     const newText = this.getSyllableText(targetSpan);
     this.updateModalInput(newText);
 
-    // If in bbox mode, also update the visual selection
-    if (getSelectionType() === 'selByBBox') {
-      this.updateSelectedBBox(targetSpan, this.dragHandler, this.neonView);
-    }
+    // Always update the visual highlighting when modal is open
+    this.updateSelectedBBox(targetSpan, this.dragHandler, this.neonView);
   }
 
   /**
@@ -626,9 +628,91 @@ export class ModalWindow implements ModalWindowInterface {
         const displayRect = document
           .getElementById(bboxId)
           .querySelector('.sylTextRect-display') as SVGGraphicsElement;
-        selectBBox(displayRect, dragHandler, neonView);
+
+        if (getSelectionType() === 'selByBBox') {
+          // Highlight syllable, bbox, and text span
+          // Select bbox
+          selectBBox(displayRect, dragHandler, neonView);
+        } else {
+          // Highlight syllable, bbox and text span
+          // But don't select bbox
+          this.highlightSyllableAndBBox(displayRect);
+        }
       }
     }
+  }
+
+  /**
+   * Highlight syllable, bbox, and text span
+   */
+  private highlightSyllableAndBBox(displayRect: SVGGraphicsElement): void {
+    // Clear previous syllable highlighting
+    this.clearSyllableHighlighting();
+
+    const bbox = displayRect;
+
+    // Apply highlighting styles
+    bbox.style.fill = '#d00';
+    const closest = bbox.closest('.syllable') as HTMLElement;
+    closest.style.fill = '#d00';
+    closest.classList.add('syllable-highlighted');
+
+    if (closest.querySelectorAll('.divLine').length) {
+      closest.querySelectorAll('.neume').forEach((elem: HTMLElement) => {
+        elem.style.fill = '#d00';
+      });
+      closest.querySelectorAll('.divLine').forEach((elem: HTMLElement) => {
+        elem.style.stroke = '#d00';
+      });
+    }
+
+    // Highlight text span
+    const sylId = bbox.closest('.syllable').id;
+    if (sylId !== undefined) {
+      const span: HTMLSpanElement = document.querySelector('span.' + sylId);
+      if (span) {
+        span.style.color = '#d00';
+        span.style.fontWeight = 'bold';
+        span.classList.add('text-select');
+      }
+    }
+  }
+
+  /**
+   * Clear highlighting from all syllables
+   */
+  private clearSyllableHighlighting(): void {
+    // Clear syllable highlighting
+    document
+      .querySelectorAll('.syllable-highlighted')
+      .forEach((elem: HTMLElement) => {
+        elem.style.fill = '';
+        elem.classList.remove('syllable-highlighted');
+
+        // Clear neume and divLine highlighting
+        elem.querySelectorAll('.neume').forEach((neume: HTMLElement) => {
+          neume.style.fill = '';
+        });
+        elem.querySelectorAll('.divLine').forEach((divLine: HTMLElement) => {
+          divLine.style.stroke = '';
+        });
+      });
+
+    // Clear text span highlighting
+    document
+      .querySelectorAll('span.text-select')
+      .forEach((span: HTMLElement) => {
+        span.style.color = '';
+        span.style.fontWeight = '';
+        span.classList.remove('text-select');
+      });
+
+    // Clear bbox highlighting
+    document
+      .querySelectorAll('.sylTextRect-display')
+      .forEach((rect: HTMLElement) => {
+        rect.style.fill = '';
+      });
   }
 
   /**
