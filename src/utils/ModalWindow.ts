@@ -12,7 +12,12 @@ import {
   uploadAreaHTML,
 } from '../Dashboard/DashboardContent';
 import DragHandler from './DragHandler';
-import { selectBBox, unselect, selectAll } from './SelectTools';
+import {
+  selectBBox,
+  unselect,
+  selectAll,
+  getSelectionType,
+} from './SelectTools';
 
 /**
  * Defines modal types.
@@ -162,6 +167,12 @@ export class ModalWindow implements ModalWindowInterface {
             .querySelectorAll('span.selected-to-edit')[0]
         );
         span.classList.remove('selected-to-edit');
+        if (
+          getSelectionType() !== 'selByBBox' &&
+          getSelectionType() !== 'selBySyllable'
+        ) {
+          this.clearSyllableHighlighting();
+        }
         break;
 
       case ModalWindowView.DOCUMENT_UPLOAD:
@@ -328,6 +339,16 @@ export class ModalWindow implements ModalWindowInterface {
       .getElementById('neon-modal-window-edit-text-save')
       .addEventListener('click', this.updateSylText.bind(this));
 
+    // Auto-select bbox when modal is open
+    const span = <HTMLSpanElement>(
+      document
+        .getElementById('syl_text')
+        .querySelectorAll('span.selected-to-edit')[0]
+    );
+    if (span) {
+      this.updateSelectedBBox(span, this.dragHandler, this.neonView);
+    }
+
     // display modal window
     document.getElementById('neon-modal-window-container').style.display =
       'flex';
@@ -479,6 +500,27 @@ export class ModalWindow implements ModalWindowInterface {
   }
 
   /**
+   * Helper method to navigate to a text span and update UI
+   */
+  private navigateToTextSpan(
+    targetSpan: HTMLSpanElement,
+    currentSpan: HTMLSpanElement,
+  ): void {
+    // Update the selected span
+    this.updateSelectedSpan(currentSpan, targetSpan);
+
+    // Auto scroll to the new selected text
+    targetSpan.scrollIntoView({ behavior: 'smooth' });
+
+    // Update modal input with the new span's text
+    const newText = this.getSyllableText(targetSpan);
+    this.updateModalInput(newText);
+
+    // Always update the visual highlighting when modal is open
+    this.updateSelectedBBox(targetSpan, this.dragHandler, this.neonView);
+  }
+
+  /**
    * Helper method to save text changes
    */
   private saveTextChanges(
@@ -505,29 +547,34 @@ export class ModalWindow implements ModalWindowInterface {
   }
 
   /**
-   * Update text and navigate to next/previous bbox while keeping modal open
+   * Update text and navigate to next/previous syllable while keeping modal open
    */
   private updateSylTextAndNavigate = function (shiftKey: boolean) {
-    const currentSelected = document.querySelector('.syllable-highlighted');
-    const syllables = Array.from(document.querySelectorAll('.syllable'));
-    const bboxSyllables = syllables.filter(
-      (syl) => syl.querySelector('.sylTextRect-display') !== null,
+    // Get the currently selected span to determine the current syllable
+    const selectedSpan = <HTMLSpanElement>(
+      document
+        .getElementById('syl_text')
+        .querySelectorAll('span.selected-to-edit')[0]
     );
-    const currentIndex = bboxSyllables.indexOf(currentSelected);
+
+    if (!selectedSpan) return;
+
+    // Get all text spans (these represent the syllables we can navigate through)
+    const allTextSpans = Array.from(
+      document.getElementById('syl_text').querySelectorAll('span'),
+    );
+
+    // Find current span index
+    const currentIndex = allTextSpans.indexOf(selectedSpan);
 
     // Calculate target index
     const targetIndex = shiftKey ? currentIndex - 1 : currentIndex + 1;
 
     // Return early if no valid target
-    if (targetIndex < 0 || targetIndex >= bboxSyllables.length) return;
+    if (targetIndex < 0 || targetIndex >= allTextSpans.length) return;
 
     // Get current text and input value
-    const currentSpan = <HTMLSpanElement>(
-      document
-        .getElementById('syl_text')
-        .querySelectorAll('span.selected-to-edit')[0]
-    );
-    const originalText = this.getSyllableText(currentSpan);
+    const originalText = this.getSyllableText(selectedSpan);
     const updatedText = (<HTMLInputElement>(
       document.getElementById('neon-modal-window-edit-text-input')
     )).value;
@@ -537,22 +584,19 @@ export class ModalWindow implements ModalWindowInterface {
 
     if (hasTextChanged) {
       // Save text changes first, then navigate after page update
-      this.saveTextChanges(currentSpan, updatedText).then(
+      this.saveTextChanges(selectedSpan, updatedText).then(
         (response: boolean) => {
           if (response) {
             this.neonView.updateForCurrentPage().then(() => {
-              const updatedBboxSyllables = Array.from(
-                document.querySelectorAll('.syllable'),
-              ).filter(
-                (syl) => syl.querySelector('.sylTextRect-display') !== null,
+              // After page update, get the updated spans and navigate
+              const updatedTextSpans = Array.from(
+                document.getElementById('syl_text').querySelectorAll('span'),
               );
-              if (targetIndex < updatedBboxSyllables.length) {
-                const targetBbox = updatedBboxSyllables[
+              if (targetIndex < updatedTextSpans.length) {
+                const targetSpan = updatedTextSpans[
                   targetIndex
-                ].querySelector('.sylTextRect-display');
-                if (targetBbox) {
-                  this.navigateToBBox(targetBbox, currentSpan);
-                }
+                ] as HTMLSpanElement;
+                this.navigateToTextSpan(targetSpan, selectedSpan);
               }
             });
           }
@@ -560,12 +604,8 @@ export class ModalWindow implements ModalWindowInterface {
       );
     } else {
       // No text changes, navigate immediately
-      const targetBbox = bboxSyllables[targetIndex].querySelector(
-        '.sylTextRect-display',
-      );
-      if (targetBbox) {
-        this.navigateToBBox(targetBbox, currentSpan);
-      }
+      const targetSpan = allTextSpans[targetIndex] as HTMLSpanElement;
+      this.navigateToTextSpan(targetSpan, selectedSpan);
     }
   };
 
@@ -588,9 +628,91 @@ export class ModalWindow implements ModalWindowInterface {
         const displayRect = document
           .getElementById(bboxId)
           .querySelector('.sylTextRect-display') as SVGGraphicsElement;
-        selectBBox(displayRect, dragHandler, neonView);
+
+        if (getSelectionType() === 'selByBBox') {
+          // Highlight syllable, bbox, and text span
+          // Select bbox
+          selectBBox(displayRect, dragHandler, neonView);
+        } else {
+          // Highlight syllable, bbox and text span
+          // But don't select bbox
+          this.highlightSyllableAndBBox(displayRect);
+        }
       }
     }
+  }
+
+  /**
+   * Highlight syllable, bbox, and text span
+   */
+  private highlightSyllableAndBBox(displayRect: SVGGraphicsElement): void {
+    // Clear previous syllable highlighting
+    this.clearSyllableHighlighting();
+
+    const bbox = displayRect;
+
+    // Apply highlighting styles
+    bbox.style.fill = '#d00';
+    const closest = bbox.closest('.syllable') as HTMLElement;
+    closest.style.fill = '#d00';
+    closest.classList.add('syllable-highlighted');
+
+    if (closest.querySelectorAll('.divLine').length) {
+      closest.querySelectorAll('.neume').forEach((elem: HTMLElement) => {
+        elem.style.fill = '#d00';
+      });
+      closest.querySelectorAll('.divLine').forEach((elem: HTMLElement) => {
+        elem.style.stroke = '#d00';
+      });
+    }
+
+    // Highlight text span
+    const sylId = bbox.closest('.syllable').id;
+    if (sylId !== undefined) {
+      const span: HTMLSpanElement = document.querySelector('span.' + sylId);
+      if (span) {
+        span.style.color = '#d00';
+        span.style.fontWeight = 'bold';
+        span.classList.add('text-select');
+      }
+    }
+  }
+
+  /**
+   * Clear highlighting from all syllables
+   */
+  private clearSyllableHighlighting(): void {
+    // Clear syllable highlighting
+    document
+      .querySelectorAll('.syllable-highlighted')
+      .forEach((elem: HTMLElement) => {
+        elem.style.fill = '';
+        elem.classList.remove('syllable-highlighted');
+
+        // Clear neume and divLine highlighting
+        elem.querySelectorAll('.neume').forEach((neume: HTMLElement) => {
+          neume.style.fill = '';
+        });
+        elem.querySelectorAll('.divLine').forEach((divLine: HTMLElement) => {
+          divLine.style.stroke = '';
+        });
+      });
+
+    // Clear text span highlighting
+    document
+      .querySelectorAll('span.text-select')
+      .forEach((span: HTMLElement) => {
+        span.style.color = '';
+        span.style.fontWeight = '';
+        span.classList.remove('text-select');
+      });
+
+    // Clear bbox highlighting
+    document
+      .querySelectorAll('.sylTextRect-display')
+      .forEach((rect: HTMLElement) => {
+        rect.style.fill = '';
+      });
   }
 
   /**
