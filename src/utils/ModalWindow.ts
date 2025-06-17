@@ -12,7 +12,12 @@ import {
   uploadAreaHTML,
 } from '../Dashboard/DashboardContent';
 import DragHandler from './DragHandler';
-import { selectBBox, unselect, selectAll } from './SelectTools';
+import {
+  selectBBox,
+  unselect,
+  selectAll,
+  getSelectionType,
+} from './SelectTools';
 
 /**
  * Defines modal types.
@@ -327,6 +332,18 @@ export class ModalWindow implements ModalWindowInterface {
     document
       .getElementById('neon-modal-window-edit-text-save')
       .addEventListener('click', this.updateSylText.bind(this));
+
+    // Auto-select bbox if in bbox selection mode
+    if (getSelectionType() === 'selByBBox') {
+      const span = <HTMLSpanElement>(
+        document
+          .getElementById('syl_text')
+          .querySelectorAll('span.selected-to-edit')[0]
+      );
+      if (span) {
+        this.updateSelectedBBox(span, this.dragHandler, this.neonView);
+      }
+    }
 
     // display modal window
     document.getElementById('neon-modal-window-container').style.display =
