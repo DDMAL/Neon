@@ -496,6 +496,29 @@ export class ModalWindow implements ModalWindowInterface {
   }
 
   /**
+   * Helper method to navigate to a text span and update UI
+   */
+  private navigateToTextSpan(
+    targetSpan: HTMLSpanElement,
+    currentSpan: HTMLSpanElement,
+  ): void {
+    // Update the selected span
+    this.updateSelectedSpan(currentSpan, targetSpan);
+
+    // Auto scroll to the new selected text
+    targetSpan.scrollIntoView({ behavior: 'smooth' });
+
+    // Update modal input with the new span's text
+    const newText = this.getSyllableText(targetSpan);
+    this.updateModalInput(newText);
+
+    // If in bbox mode, also update the visual selection
+    if (getSelectionType() === 'selByBBox') {
+      this.updateSelectedBBox(targetSpan, this.dragHandler, this.neonView);
+    }
+  }
+
+  /**
    * Helper method to save text changes
    */
   private saveTextChanges(
@@ -522,29 +545,34 @@ export class ModalWindow implements ModalWindowInterface {
   }
 
   /**
-   * Update text and navigate to next/previous bbox while keeping modal open
+   * Update text and navigate to next/previous syllable while keeping modal open
    */
   private updateSylTextAndNavigate = function (shiftKey: boolean) {
-    const currentSelected = document.querySelector('.syllable-highlighted');
-    const syllables = Array.from(document.querySelectorAll('.syllable'));
-    const bboxSyllables = syllables.filter(
-      (syl) => syl.querySelector('.sylTextRect-display') !== null,
+    // Get the currently selected span to determine the current syllable
+    const selectedSpan = <HTMLSpanElement>(
+      document
+        .getElementById('syl_text')
+        .querySelectorAll('span.selected-to-edit')[0]
     );
-    const currentIndex = bboxSyllables.indexOf(currentSelected);
+
+    if (!selectedSpan) return;
+
+    // Get all text spans (these represent the syllables we can navigate through)
+    const allTextSpans = Array.from(
+      document.getElementById('syl_text').querySelectorAll('span'),
+    );
+
+    // Find current span index
+    const currentIndex = allTextSpans.indexOf(selectedSpan);
 
     // Calculate target index
     const targetIndex = shiftKey ? currentIndex - 1 : currentIndex + 1;
 
     // Return early if no valid target
-    if (targetIndex < 0 || targetIndex >= bboxSyllables.length) return;
+    if (targetIndex < 0 || targetIndex >= allTextSpans.length) return;
 
     // Get current text and input value
-    const currentSpan = <HTMLSpanElement>(
-      document
-        .getElementById('syl_text')
-        .querySelectorAll('span.selected-to-edit')[0]
-    );
-    const originalText = this.getSyllableText(currentSpan);
+    const originalText = this.getSyllableText(selectedSpan);
     const updatedText = (<HTMLInputElement>(
       document.getElementById('neon-modal-window-edit-text-input')
     )).value;
@@ -554,22 +582,19 @@ export class ModalWindow implements ModalWindowInterface {
 
     if (hasTextChanged) {
       // Save text changes first, then navigate after page update
-      this.saveTextChanges(currentSpan, updatedText).then(
+      this.saveTextChanges(selectedSpan, updatedText).then(
         (response: boolean) => {
           if (response) {
             this.neonView.updateForCurrentPage().then(() => {
-              const updatedBboxSyllables = Array.from(
-                document.querySelectorAll('.syllable'),
-              ).filter(
-                (syl) => syl.querySelector('.sylTextRect-display') !== null,
+              // After page update, get the updated spans and navigate
+              const updatedTextSpans = Array.from(
+                document.getElementById('syl_text').querySelectorAll('span'),
               );
-              if (targetIndex < updatedBboxSyllables.length) {
-                const targetBbox = updatedBboxSyllables[
+              if (targetIndex < updatedTextSpans.length) {
+                const targetSpan = updatedTextSpans[
                   targetIndex
-                ].querySelector('.sylTextRect-display');
-                if (targetBbox) {
-                  this.navigateToBBox(targetBbox, currentSpan);
-                }
+                ] as HTMLSpanElement;
+                this.navigateToTextSpan(targetSpan, selectedSpan);
               }
             });
           }
@@ -577,12 +602,8 @@ export class ModalWindow implements ModalWindowInterface {
       );
     } else {
       // No text changes, navigate immediately
-      const targetBbox = bboxSyllables[targetIndex].querySelector(
-        '.sylTextRect-display',
-      );
-      if (targetBbox) {
-        this.navigateToBBox(targetBbox, currentSpan);
-      }
+      const targetSpan = allTextSpans[targetIndex] as HTMLSpanElement;
+      this.navigateToTextSpan(targetSpan, selectedSpan);
     }
   };
 
