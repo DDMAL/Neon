@@ -141,6 +141,22 @@ export function removeHandler(): void {
   }
   const toRemove: RemoveAction[] = [];
   const selected = Array.from(document.getElementsByClassName('selected'));
+
+  // If deleting staff elements, check if it would result in no staff remaining
+  const selectedStaff = selected.filter((elem) =>
+    elem.classList.contains('staff'),
+  );
+  if (selectedStaff.length > 0) {
+    const nTotalStaff = document.querySelectorAll('.staff').length;
+    if (selectedStaff.length >= nTotalStaff) {
+      Notification.queueNotification(
+        'Cannot delete all staff elements. At least one staff must remain.',
+        'error',
+      );
+      return;
+    }
+  }
+
   selected.forEach((elem) => {
     if (elem.classList.contains('syl')) {
       elem = elem.closest('.syllable');
