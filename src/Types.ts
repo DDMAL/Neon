@@ -379,6 +379,7 @@ export type InsertType =
   | 'virga'
   | 'virgaReversed'
   | 'diamond'
+  | 'quilisma'
   | 'custos'
   | 'cClef'
   | 'fClef'

@@ -15,6 +15,9 @@ export const insertTabHtml: Record<string, string> = {
             <button id="diamond" class="side-panel-btn insertel smallel" aria-label="inclinatum" title="inclinatum"><img src="${__ASSET_PREFIX__}assets/img/diamond.png" class="image"></button>
         </p>
         <p class="insert-element-container">
+            <button id="quilisma" class="side-panel-btn insertel smallel" aria-label="quilisma" title="quilisma"><img src="${__ASSET_PREFIX__}assets/img/quilisma.png" class="image"></button>
+        </p>
+        <p class="insert-element-container">
             <button id="custos" class="side-panel-btn insertel smallel" aria-label="custos" title="custos"><img src="${__ASSET_PREFIX__}assets/img/custos.png" class="image"></button>
         </p>
         <p class="insert-element-container">
@@ -159,9 +162,10 @@ export const ncActionContents = `<label>Change Head Shape:</label>
                 <a id="Punctum" class="dropdown-item">Punctum</a>
                 <a id="Virga" class="dropdown-item">Virga</a>
                 <a id="VirgaReversed" class="dropdown-item">Reversed Virga</a>
-                <a id="Inclinatum" class="dropdown-item">Inclinatum</a>
+                <a id="Quilisma" class="dropdown-item">Quilisma</a>
                 <a id="LiquescentAnticlockwise" class="dropdown-item">Liquescent A</a>
                 <a id="LiquescentClockwise" class="dropdown-item">Liquescent C</a>
+                <a id="Inclinatum" class="dropdown-item">Inclinatum</a>
             </div>
         </div>
     </div>`;

@@ -35,9 +35,17 @@ class InsertHandler {
     switch (buttonId) {
       case 'punctum':
         this.type = 'nc';
-        this.attributes = null;
+        this.attributes = null; 
         break;
       case 'diamond':
+        this.type = 'nc';
+        this.attributes = { tilt: 'se' };
+        break;
+      case 'quilisma':
+        this.type = 'nc';
+        this.attributes = {tilt: 'n'};
+        break;
+      case 'inclinatum':
         this.type = 'nc';
         this.attributes = { tilt: 'se' };
         break;
