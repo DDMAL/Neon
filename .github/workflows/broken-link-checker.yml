@@ -33,6 +33,57 @@ jobs:
           TEMPORARY_WEBSITE_URL: 'http://127.0.0.1:8080'
           ACTUAL_WEBSITE_URL: 'https://ddmal.ca/Neon/'
         run: |
+          # Function to retry URLs that failed with retryable errors
+          retry_retryable_urls() {
+            local failed_urls="$1"
+            local retry_results=""
+
+            # Extract URLs that failed with retryable errors (BLC_UNKNOWN, HTTP_429)
+            local retryable_urls=$(echo "$failed_urls" | grep -E "(BLC_UNKNOWN|HTTP_429)" | sed -n 's/.*├─BROKEN─ \(https\?:\/\/[^[:space:]]*\).*/\1/p')
+
+            if [ -z "$retryable_urls" ]; then
+              return
+            fi
+
+            # Process each URL (avoid pipe to while loop to prevent subshell issues)
+            while IFS= read -r url; do
+              if [ -n "$url" ]; then
+                echo "Retrying URL with retryable error: $url"
+
+                # Try with curl with retries and different user agents
+                local retry_success=false
+                for attempt in 1 2 3; do
+                  echo "Attempt $attempt for $url"
+
+                  if curl -L -s -o /dev/null -w "%{http_code}" \
+                     -H "User-Agent: Mozilla/5.0 (compatible; BrokenLinkChecker)" \
+                     --connect-timeout 30 \
+                     --max-time 60 \
+                     "$url" | grep -E "^(200|301|302|303)$" > /dev/null; then
+                    echo "✓ URL accessible on attempt $attempt: $url"
+                    retry_success=true
+                    break
+                  fi
+
+                  if [ $attempt -lt 3 ]; then
+                    echo "Retrying in 5 seconds..."
+                    sleep 5
+                  fi
+                done
+
+                if [ "$retry_success" = true ]; then
+                  retry_results+="RETRY_SUCCESS: $url"$'\n'
+                else
+                  retry_results+="RETRY_FAILED: $url"$'\n'
+                fi
+              fi
+            done <<< "$retryable_urls"
+
+            echo "$retry_results"
+          }
+
+          # Run initial link check
+          echo "Running initial broken link check..."
           output=$(blc $TEMPORARY_WEBSITE_URL --filter-level=3 | \
             grep -v -E '├───OK───|└───OK───' | \
             awk '
@@ -68,15 +119,77 @@ jobs:
               }
             ' | sed "s|$TEMPORARY_WEBSITE_URL|$ACTUAL_WEBSITE_URL|g")
 
+          echo "Initial link check results:"
           echo "$output"
 
-          # Fail the github actions only if there's a single HTTP 404 found
-          echo "$output" | grep -Eq 'HTTP_4[0-9]{2}' && flag=1
+          # Check for retryable errors and retry them
+          retry_output=""
+          if echo "$output" | grep -E "(BLC_UNKNOWN|HTTP_429)"; then
+            echo ""
+            echo "Detected URLs with retryable errors. Running retries..."
+            retry_output=$(retry_retryable_urls "$output")
+            echo "$retry_output"
+          fi
 
-          if [ "$flag" -eq "1" ]; then
-            echo "Broken links were found, exiting with an error."
+          # Determine final status
+          final_flag=0
+
+          # Check for any HTTP 4xx errors that weren't successfully retried
+          if echo "$output" | grep -Eq 'HTTP_4[0-9]{2}'; then
+            # If we have retry results, check if they succeeded
+            if [ -n "$retry_output" ]; then
+              # Check if any retries failed
+              if echo "$retry_output" | grep -q "RETRY_FAILED:"; then
+                echo ""
+                echo "Some URLs failed even after retries:"
+                echo "$retry_output" | grep "RETRY_FAILED:"
+                final_flag=1
+              else
+                echo ""
+                echo "All retryable URLs were successfully verified!"
+              fi
+
+              # Get list of successfully retried URLs
+              successful_retry_urls=$(echo "$retry_output" | grep "RETRY_SUCCESS:" | sed 's/RETRY_SUCCESS: //')
+
+              # Check for 4xx errors from URLs that were NOT successfully retried
+              if [ -n "$successful_retry_urls" ]; then
+                # Filter out lines containing successfully retried URLs
+                other_4xx_lines=""
+                while IFS= read -r line; do
+                  if echo "$line" | grep -q 'HTTP_4[0-9]{2}'; then
+                    # Extract URL from this line
+                    url_in_line=$(echo "$line" | sed -n 's/.*├─BROKEN─ \(https\?:\/\/[^[:space:]]*\).*/\1/p')
+
+                    # Check if this URL is NOT in the successful retry list
+                    if ! echo "$successful_retry_urls" | grep -Fxq "$url_in_line"; then
+                      other_4xx_lines+="$line"$'\n'
+                    fi
+                  fi
+                done <<< "$output"
+              else
+                # No successful retries, so all 4xx errors are problematic
+                other_4xx_lines=$(echo "$output" | grep 'HTTP_4[0-9]{2}')
+              fi
+
+              if [ -n "$other_4xx_lines" ]; then
+                echo ""
+                echo "Found HTTP 4xx errors not resolved by retries:"
+                echo "$other_4xx_lines"
+                final_flag=1
+              fi
+            else
+              # No retry output means all 4xx errors are problematic
+              final_flag=1
+            fi
+          fi
+
+          if [ "$final_flag" -eq "1" ]; then
+            echo ""
+            echo "Broken links were found that could not be resolved, exiting with an error."
             exit 1
           else
-            echo "No broken links were found (although there may be other HTTP errors - check above), exiting successfully."
+            echo ""
+            echo "No broken links were found (or all issues were resolved via retries), exiting successfully."
             exit 0
           fi
