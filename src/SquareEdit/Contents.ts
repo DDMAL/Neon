@@ -33,6 +33,12 @@ export const insertTabHtml: Record<string, string> = {
             <button id="liquescentC" class="side-panel-btn insertel smallel" aria-label="Liquescent C" title="Liquescent C"><img src="${__ASSET_PREFIX__}assets/img/liquescentC.png" class="image"></button>
         </p>
         <p class="insert-element-container">
+            <button id="quilisma" class="side-panel-btn insertel smallel" aria-label="quilisma" title="quilisma"><img src="${__ASSET_PREFIX__}assets/img/quilisma.png" class="image"></button>
+        </p>
+        <p class="insert-element-container">
+            <button id="oriscus" class="side-panel-btn insertel smallel" aria-label="oriscus" title="oriscus"><img src="${__ASSET_PREFIX__}assets/img/oriscus.png" class="image"></button>
+        </p>
+        <p class="insert-element-container">
             <button id="flat" class="side-panel-btn insertel smallel" aria-label="Flat" title="Flat"><img src="${__ASSET_PREFIX__}assets/img/accidFlat.png" class="image"></button>
         </p>
         <p class="insert-element-container">
@@ -162,6 +168,8 @@ export const ncActionContents = `<label>Change Head Shape:</label>
                 <a id="Inclinatum" class="dropdown-item">Inclinatum</a>
                 <a id="LiquescentAnticlockwise" class="dropdown-item">Liquescent A</a>
                 <a id="LiquescentClockwise" class="dropdown-item">Liquescent C</a>
+                <a id="Quilisma" class="dropdown-item">Quilisma</a>
+                <a id="Oriscus" class="dropdown-item">Oriscus</a>
             </div>
         </div>
     </div>`;

@@ -385,6 +385,8 @@ export type InsertType =
   | 'gClef'
   | 'liquescentA'
   | 'liquescentC'
+  | 'quilisma'
+  | 'orcisus'
   | 'flat'
   | 'natural'
   | 'divLineMaxima'

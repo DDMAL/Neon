@@ -205,11 +205,17 @@ class InfoModule implements InfoInterface {
             ncs[0].id,
             this.neonView.view.getCurrentPageURI(),
           );
-          if (attr.curve === 'a' || attr.curve === 'c') {
-            let pitches = await this.getPitches(ncs);
+          let pitches = await this.getPitches(ncs);
+          pitches = pitches.trim().toUpperCase();
 
-            pitches = pitches.trim().toUpperCase();
+          if (attr.curve === 'a' || attr.curve === 'c') {
             body = 'Shape: Liquescent' + '\r\n' + 'Pitch(es): ' + pitches;
+            break;
+          } else if (ncs[0].querySelector('.quilisma')) {
+            body = 'Shape: Quilisma' + '\r\n' + 'Pitch(es): ' + pitches;
+            break;
+          } else if (ncs[0].querySelector('.oriscus')) {
+            body = 'Shape: Oriscus' + '\r\n' + 'Pitch(es): ' + pitches;
             break;
           }
         }
@@ -330,7 +336,9 @@ class InfoModule implements InfoInterface {
         break;
       }
     }
-    body = `Element Type: ${elementClass.charAt(0).toUpperCase() + elementClass.slice(1)}\n${body}`;
+    body = `Element Type: ${
+      elementClass.charAt(0).toUpperCase() + elementClass.slice(1)
+    }\n${body}`;
     this.updateInfoModule(body);
   }
 
