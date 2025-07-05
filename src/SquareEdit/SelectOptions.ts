@@ -48,6 +48,21 @@ export function unsetInclinatumAction(id: string): SetAction {
 
 /**
  * @param id - The id of the neume component.
+ * @returns An action that unsets the quilisma parameter of a neume component.
+ */
+export function unsetQuilismaAction(id: string): SetAction {
+  return {
+    action: 'set',
+    param: {
+      elementId: id,
+      attrType: 'tilt',
+      attrValue: '',
+    },
+  };
+}
+
+/**
+ * @param id - The id of the neume component.
  * @returns An action that unsets the virga parameter of a neume component.
  */
 export function unsetVirgaAction(id: string): SetAction {
@@ -467,6 +482,7 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
     .querySelector('#Punctum.dropdown-item')
     .addEventListener('click', () => {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetQuilisma = unsetQuilismaAction(nc.id);
       const unsetVirga = unsetVirgaAction(nc.id);
       const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
@@ -479,6 +495,7 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
             action: 'chain',
             param: [
               unsetInclinatum,
+              unsetQuilisma,
               unsetVirga,
               unsetVirgaReversed,
               unsetLiquescentClockwise,
@@ -501,6 +518,7 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
   document
     .querySelector('#Inclinatum.dropdown-item')
     .addEventListener('click', () => {
+      const unsetQuilisma = unsetQuilismaAction(nc.id);
       const unsetVirga = unsetVirgaAction(nc.id);
       const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
@@ -520,6 +538,7 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
           {
             action: 'chain',
             param: [
+              unsetQuilisma,
               unsetVirga,
               unsetVirgaReversed,
               unsetLiquescentClockwise,
@@ -540,16 +559,17 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
         });
     });
 
-  document
-    .querySelector('#Virga.dropdown-item')
-    .addEventListener('click', () => {
-      const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
+    document
+      .querySelector('#Quilisma.dropdown-item')
+      .addEventListener('click', () => {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetVirga = unsetVirgaAction(nc.id);
+      const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(
         nc.id,
       );
-      const setVirga: SetAction = {
+      const setQuilisma: SetAction = {
         action: 'set',
         param: {
           elementId: nc.id,
@@ -562,11 +582,12 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
           {
             action: 'chain',
             param: [
-              unsetVirgaReversed,
               unsetInclinatum,
+              unsetVirga,
+              unsetVirgaReversed,
               unsetLiquescentClockwise,
               unsetLiquescentAnticlockwise,
-              setVirga,
+              setQuilisma,
             ],
           },
           neonView.view.getCurrentPageURI(),
@@ -583,9 +604,54 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
     });
 
   document
+    .querySelector('#Virga.dropdown-item')
+    .addEventListener('click', () => {
+        const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
+        const unsetInclinatum = unsetInclinatumAction(nc.id);
+        const unsetQuilisma = unsetQuilismaAction(nc.id);
+        const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
+        const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(
+          nc.id,
+        );
+        const setVirga: SetAction = {
+          action: 'set',
+          param: {
+            elementId: nc.id,
+            attrType: 'tilt',
+            attrValue: 's',
+          },
+        };
+        neonView
+          .edit(
+            {
+              action: 'chain',
+              param: [
+                unsetVirgaReversed,
+                unsetInclinatum,
+                unsetQuilisma,
+                unsetLiquescentClockwise,
+                unsetLiquescentAnticlockwise,
+                setVirga,
+              ],
+            },
+            neonView.view.getCurrentPageURI(),
+          )
+          .then((result) => {
+            if (result) {
+              Notification.queueNotification('Shape Changed', 'success');
+            } else {
+              Notification.queueNotification('Shape Change Failed', 'error');
+            }
+            endOptionsSelection();
+            neonView.updateForCurrentPage();
+          });
+    });
+
+  document
     .querySelector('#VirgaReversed.dropdown-item')
     .addEventListener('click', () => {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetQuilisma = unsetQuilismaAction(nc.id);
       const unsetVirga = unsetVirgaAction(nc.id);
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(
@@ -605,6 +671,7 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
             action: 'chain',
             param: [
               unsetInclinatum,
+              unsetQuilisma,
               unsetVirga,
               unsetLiquescentClockwise,
               unsetLiquescentAnticlockwise,
@@ -621,13 +688,14 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
           }
           endOptionsSelection();
           neonView.updateForCurrentPage();
-        });
+      });
     });
 
   document
     .querySelector('#LiquescentClockwise.dropdown-item')
     .addEventListener('click', () => {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetQuilisma = unsetQuilismaAction(nc.id);
       const unsetVirga = unsetVirgaAction(nc.id);
       const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(
@@ -646,6 +714,7 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
             action: 'chain',
             param: [
               unsetInclinatum,
+              unsetQuilisma,
               unsetVirga,
               unsetVirgaReversed,
               unsetLiquescentAnticlockwise,
@@ -669,6 +738,7 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
     .querySelector('#LiquescentAnticlockwise.dropdown-item')
     .addEventListener('click', () => {
       const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetQuilisma = unsetQuilismaAction(nc.id);
       const unsetVirga = unsetVirgaAction(nc.id);
       const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
@@ -685,6 +755,7 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
             action: 'chain',
             param: [
               unsetInclinatum,
+              unsetQuilisma,
               unsetVirga,
               unsetVirgaReversed,
               unsetLiquescentClockwise,
