@@ -359,19 +359,6 @@ export function convertToVerovio(sbBasedMei: string): string {
         emptyNeumeInfo += `- &lt;${
           neume.tagName
         }&gt; with xml:id: ${neume.getAttribute('xml:id')}\n`;
-      } else {
-        // To be removed in the future:
-        // If nc has a @curve value, add a <liquescent> element
-        for (const nc of ncs) {
-          if (nc.hasAttribute('curve') && nc.children.length === 0) {
-            const liq = meiDoc.createElementNS(
-              'http://www.music-encoding.org/ns/mei',
-              'liquescent',
-            );
-            liq.setAttribute('xml:id', 'm-' + uuidv4());
-            nc.appendChild(liq);
-          }
-        }
       }
     }
   }
