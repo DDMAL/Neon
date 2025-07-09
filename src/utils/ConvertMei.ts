@@ -144,7 +144,7 @@ export function convertToNeon(staffBasedMei: string): string {
       'colLayout',
     );
     colLayout.setAttribute('xml:id', 'm-' + uuidv4());
-    colLayout.setAttribute('n', nCol.toString());
+    colLayout.setAttribute('cols', nCol.toString());
     scoreDef.insertAdjacentElement('afterend', colLayout);
   }
 
