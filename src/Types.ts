@@ -138,6 +138,14 @@ export type SetLiquescentAction = {
   };
 };
 
+export type SetAquitanianElementAction = {
+  action: 'setAquitanianElement';
+  param: {
+    elementId: string;
+    shape: string;
+  };
+};
+
 export type MergeAction = {
   action: 'merge';
   param: {
@@ -238,6 +246,7 @@ export type EditorAction =
   | UngroupingAction
   | SetAction
   | SetLiquescentAction
+  | SetAquitanianElementAction
   | MergeAction
   | SplitAction
   | SplitNeumeAction
@@ -385,6 +394,8 @@ export type InsertType =
   | 'gClef'
   | 'liquescentA'
   | 'liquescentC'
+  | 'quilisma'
+  | 'orcisus'
   | 'flat'
   | 'natural'
   | 'divLineMaxima'

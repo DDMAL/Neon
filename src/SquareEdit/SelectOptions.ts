@@ -12,6 +12,7 @@ import {
   MatchHeightAction,
   RemoveAction,
   SetAction,
+  SetAquitanianElementAction,
   SetClefAction,
   SetLiquescentAction,
 } from '../Types';
@@ -103,6 +104,46 @@ export function unsetLiquescentAnticlockwiseAction(
     param: {
       elementId: id,
       curve: '',
+    },
+  };
+}
+
+export function setQuilismaAction(id: string): SetAquitanianElementAction {
+  return {
+    action: 'setAquitanianElement',
+    param: {
+      elementId: id,
+      shape: 'quilisma',
+    },
+  };
+}
+
+export function unsetQuilismaAction(id: string): SetAquitanianElementAction {
+  return {
+    action: 'setAquitanianElement',
+    param: {
+      elementId: id,
+      shape: '',
+    },
+  };
+}
+
+export function setOriscusAction(id: string): SetAquitanianElementAction {
+  return {
+    action: 'setAquitanianElement',
+    param: {
+      elementId: id,
+      shape: 'oriscus',
+    },
+  };
+}
+
+export function unsetOriscusAction(id: string): SetAquitanianElementAction {
+  return {
+    action: 'setAquitanianElement',
+    param: {
+      elementId: id,
+      shape: '',
     },
   };
 }
@@ -473,6 +514,8 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(
         nc.id,
       );
+      const unsetQuilisma = unsetQuilismaAction(nc.id);
+      const unsetOriscus = unsetOriscusAction(nc.id);
       neonView
         .edit(
           {
@@ -483,6 +526,8 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
               unsetVirgaReversed,
               unsetLiquescentClockwise,
               unsetLiquescentAnticlockwise,
+              unsetQuilisma,
+              unsetOriscus,
             ],
           },
           neonView.view.getCurrentPageURI(),
@@ -507,6 +552,8 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(
         nc.id,
       );
+      const unsetQuilisma = unsetQuilismaAction(nc.id);
+      const unsetOriscus = unsetOriscusAction(nc.id);
       const setInclinatum: SetAction = {
         action: 'set',
         param: {
@@ -524,6 +571,8 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
               unsetVirgaReversed,
               unsetLiquescentClockwise,
               unsetLiquescentAnticlockwise,
+              unsetQuilisma,
+              unsetOriscus,
               setInclinatum,
             ],
           },
@@ -549,6 +598,8 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(
         nc.id,
       );
+      const unsetQuilisma = unsetQuilismaAction(nc.id);
+      const unsetOriscus = unsetOriscusAction(nc.id);
       const setVirga: SetAction = {
         action: 'set',
         param: {
@@ -566,6 +617,8 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
               unsetInclinatum,
               unsetLiquescentClockwise,
               unsetLiquescentAnticlockwise,
+              unsetQuilisma,
+              unsetOriscus,
               setVirga,
             ],
           },
@@ -591,6 +644,8 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(
         nc.id,
       );
+      const unsetQuilisma = unsetQuilismaAction(nc.id);
+      const unsetOriscus = unsetOriscusAction(nc.id);
       const setVirgaReversed: SetAction = {
         action: 'set',
         param: {
@@ -608,6 +663,8 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
               unsetVirga,
               unsetLiquescentClockwise,
               unsetLiquescentAnticlockwise,
+              unsetQuilisma,
+              unsetOriscus,
               setVirgaReversed,
             ],
           },
@@ -633,6 +690,8 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
       const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(
         nc.id,
       );
+      const unsetQuilisma = unsetQuilismaAction(nc.id);
+      const unsetOriscus = unsetOriscusAction(nc.id);
       const setLiquescentClockwise: SetLiquescentAction = {
         action: 'setLiquescent',
         param: {
@@ -649,6 +708,8 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
               unsetVirga,
               unsetVirgaReversed,
               unsetLiquescentAnticlockwise,
+              unsetQuilisma,
+              unsetOriscus,
               setLiquescentClockwise,
             ],
           },
@@ -672,6 +733,8 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
       const unsetVirga = unsetVirgaAction(nc.id);
       const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
       const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
+      const unsetQuilisma = unsetQuilismaAction(nc.id);
+      const unsetOriscus = unsetOriscusAction(nc.id);
       const setLiquescentAnticlockwise: SetLiquescentAction = {
         action: 'setLiquescent',
         param: {
@@ -688,7 +751,88 @@ export function triggerNcActions(nc: SVGGraphicsElement): void {
               unsetVirga,
               unsetVirgaReversed,
               unsetLiquescentClockwise,
+              unsetQuilisma,
+              unsetOriscus,
               setLiquescentAnticlockwise,
+            ],
+          },
+          neonView.view.getCurrentPageURI(),
+        )
+        .then((result) => {
+          if (result) {
+            Notification.queueNotification('Shape Changed', 'success');
+          } else {
+            Notification.queueNotification('Shape Change Failed', 'error');
+          }
+          endOptionsSelection();
+          neonView.updateForCurrentPage();
+        });
+    });
+
+  document
+    .querySelector('#Quilisma.dropdown-item')
+    .addEventListener('click', () => {
+      const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetVirga = unsetVirgaAction(nc.id);
+      const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
+      const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
+      const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(
+        nc.id,
+      );
+      const unsetOriscus = unsetOriscusAction(nc.id);
+      const setQuilisma = setQuilismaAction(nc.id);
+
+      neonView
+        .edit(
+          {
+            action: 'chain',
+            param: [
+              unsetInclinatum,
+              unsetVirga,
+              unsetVirgaReversed,
+              unsetLiquescentClockwise,
+              unsetLiquescentAnticlockwise,
+              unsetOriscus,
+              setQuilisma,
+            ],
+          },
+          neonView.view.getCurrentPageURI(),
+        )
+        .then((result) => {
+          if (result) {
+            Notification.queueNotification('Shape Changed', 'success');
+          } else {
+            Notification.queueNotification('Shape Change Failed', 'error');
+          }
+          endOptionsSelection();
+          neonView.updateForCurrentPage();
+        });
+    });
+
+  document
+    .querySelector('#Oriscus.dropdown-item')
+    .addEventListener('click', () => {
+      const unsetInclinatum = unsetInclinatumAction(nc.id);
+      const unsetVirga = unsetVirgaAction(nc.id);
+      const unsetVirgaReversed = unsetVirgaReversedAction(nc.id);
+      const unsetLiquescentClockwise = unsetLiquescentClockwiseAction(nc.id);
+      const unsetLiquescentAnticlockwise = unsetLiquescentAnticlockwiseAction(
+        nc.id,
+      );
+      const unsetQuilisma = unsetQuilismaAction(nc.id);
+      const setOriscus = setOriscusAction(nc.id);
+      neonView
+        .edit(
+          {
+            action: 'chain',
+            param: [
+              unsetInclinatum,
+              unsetVirga,
+              unsetVirgaReversed,
+              unsetLiquescentClockwise,
+              unsetLiquescentAnticlockwise,
+              unsetQuilisma,
+              setOriscus,
             ],
           },
           neonView.view.getCurrentPageURI(),
