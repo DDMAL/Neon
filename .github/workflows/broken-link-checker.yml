@@ -44,7 +44,7 @@ jobs:
                 echo "   Attempt $attempt/3..."
                 http_code=$(curl -L -s -o /dev/null -w "%{http_code}" \
                    -H "User-Agent: Mozilla/5.0 (compatible; BrokenLinkChecker)" \
-                   --connect-timeout 30 --max-time 60 "$url" 2>/dev/null)
+                   --connect-timeout 30 --max-time 60 --insecure "$url" 2>/dev/null)
 
                 if echo "$http_code" | grep -E "^(200|301|302|303)$" > /dev/null; then
                   echo "   ✅ Success! HTTP $http_code"
