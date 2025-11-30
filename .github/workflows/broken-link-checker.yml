@@ -43,7 +43,7 @@ jobs:
               for attempt in 1 2 3; do
                 echo "   Attempt $attempt/3..."
                 http_code=$(curl -L -s -o /dev/null -w "%{http_code}" \
-                   -H "User-Agent: Mozilla/5.0 (compatible; BrokenLinkChecker)" \
+                   -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
                    --connect-timeout 30 --max-time 60 --insecure "$url" 2>/dev/null)
 
                 if echo "$http_code" | grep -E "^(200|301|302|303)$" > /dev/null; then
