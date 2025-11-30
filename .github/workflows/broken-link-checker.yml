@@ -1,5 +1,12 @@
 name: Check for Broken Links
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+
 jobs:
   build_and_check:
     runs-on: ubuntu-latest
