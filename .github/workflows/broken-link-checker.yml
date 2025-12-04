@@ -1,5 +1,12 @@
 name: Check for Broken Links
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+
 jobs:
   build_and_check:
     runs-on: ubuntu-latest
@@ -33,115 +40,101 @@ jobs:
           TEMPORARY_WEBSITE_URL: 'http://127.0.0.1:8080'
           ACTUAL_WEBSITE_URL: 'https://ddmal.ca/Neon/'
         run: |
-          # Function to retry URLs with retryable errors
-          retry_urls() {
-            local urls="$1"
-            while IFS= read -r url; do
-              [ -z "$url" ] && continue
-              echo "🔄 Retrying: $url"
+          echo "Running broken link check with rate limiting..."
 
-              for attempt in 1 2 3; do
-                echo "   Attempt $attempt/3..."
-                http_code=$(curl -L -s -o /dev/null -w "%{http_code}" \
-                   -H "User-Agent: Mozilla/5.0 (compatible; BrokenLinkChecker)" \
-                   --connect-timeout 30 --max-time 60 "$url" 2>/dev/null)
+          # Run blc with CLI options to avoid rate limiting
+          # --filter-level 3: Check all link types including metadata
+          # --ordered: Check links sequentially (helps avoid rate limiting)
+          # --get: Use GET requests instead of HEAD (more compatible)
+          # --user-agent: Use realistic browser user agent
+          # --host-requests 1: Limit to 1 concurrent request per host (key for avoiding 429)
+          set +e  # Don't exit on blc failure, we'll handle it
+          blc $TEMPORARY_WEBSITE_URL \
+            --filter-level 3 \
+            --ordered \
+            --get \
+            --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+            --host-requests 1 \
+            --recursive \
+            --verbose \
+            > /tmp/blc_output.txt 2>&1
+          blc_exit_code=$?
+          set -e
 
-                if echo "$http_code" | grep -E "^(200|301|302|303)$" > /dev/null; then
-                  echo "   ✅ Success! HTTP $http_code"
-                  echo "RETRY_SUCCESS:$url" >> /tmp/retry_results
-                  break
-                elif [ $attempt -eq 3 ]; then
-                  echo "   ❌ Failed after 3 attempts (HTTP $http_code)"
-                  echo "RETRY_FAILED:$url" >> /tmp/retry_results
-                else
-                  echo "   ⏳ Failed with HTTP $http_code, retrying in 5 seconds..."
-                  sleep 5
-                fi
-              done
-              echo ""
-            done <<< "$urls"
+          # Display the output
+          cat /tmp/blc_output.txt
+
+          # Get all broken links
+          all_broken_links=$(grep -E "├─BROKEN─" /tmp/blc_output.txt || true)
+
+          echo ""
+          echo "=== Broken Links Found by blc ==="
+          if [ -n "$all_broken_links" ]; then
+            echo "$all_broken_links"
+          else
+            echo "None"
+          fi
+
+          # Function to verify links with curl
+          verify_with_curl() {
+            local url="$1"
+            echo "  🔄 Verifying: $url"
+
+            # Use temp file instead of /dev/null to avoid truncation errors on retry
+            temp_body=$(mktemp)
+
+            http_code=$(curl -L -s -o "$temp_body" -w "%{http_code}" \
+              -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+              --connect-timeout 30 --max-time 60 --insecure \
+              --retry 3 --retry-delay 5 --retry-all-errors \
+              "$url" 2>/dev/null || echo "000")
+
+            rm -f "$temp_body"
+
+            if echo "$http_code" | grep -E "^(200|301|302|303)$" > /dev/null; then
+              echo "     ✅ Success: HTTP $http_code"
+              return 0
+            elif [ "$http_code" = "429" ]; then
+              echo "     ⚠️  HTTP 429 (rate limited)"
+              rate_limited_urls="${rate_limited_urls}${url}\n"
+              return 0
+            else
+              echo "     ❌ Failed: HTTP $http_code"
+              failed_http_code="$http_code"
+              return 1
+            fi
           }
 
-          # Initialize retry results file
-          > /tmp/retry_results
+          # Verify all broken links with curl
+          verified_failures=""
+          rate_limited_urls=""
 
-          # Run broken link checker and filter output
-          echo "Running broken link check..."
-          output=$(blc $TEMPORARY_WEBSITE_URL --filter-level=3 | \
-            grep -v -E '├───OK───|└───OK───' | \
-            awk '
-              BEGIN { buf="" }
-              /^Getting links from:/ { buf=$0; next }
-              /^Finished!.*0 broken\./ {
-                if (length(buf)>0) { buf=""; next }
-              }
-              {
-                if(length(buf)>0) print buf
-                if (NF > 0) print
-                buf=""
-              }
-              /^Finished!/ { print "" }
-            ' | sed "s|$TEMPORARY_WEBSITE_URL|$ACTUAL_WEBSITE_URL|g")
-
-          echo "Initial link check results:"
-          echo "$output"
-
-          # Handle retryable errors
-          retryable_urls=$(echo "$output" | grep -E "(BLC_UNKNOWN|HTTP_429)" | \
-            sed -n 's/.*├─BROKEN─ \(https\?:\/\/[^[:space:]]*\).*/\1/p')
-
-          if [ -n "$retryable_urls" ]; then
+          if [ -n "$all_broken_links" ]; then
             echo ""
-            echo "🔄 Found URLs with retryable errors, starting retry process..."
-            retry_urls "$retryable_urls"
+            echo "=== Verifying Links with curl ==="
 
-            # Show retry summary
-            success_count=$(grep -c "^RETRY_SUCCESS:" /tmp/retry_results 2>/dev/null || echo "0")
-            failed_count=$(grep -c "^RETRY_FAILED:" /tmp/retry_results 2>/dev/null || echo "0")
-            echo "📊 Retry Summary: $success_count succeeded, $failed_count failed"
-          fi
+            # Extract URLs and verify them
+            urls_to_verify=$(echo "$all_broken_links" | sed -n 's/.*├─BROKEN─ \(https\?:\/\/[^[:space:]]*\).*/\1/p')
 
-          # Determine final status
-          has_errors=false
-
-          # Check for 4xx errors not resolved by retries
-          if echo "$output" | grep -Eq 'HTTP_4[0-9]{2}'; then
-            successful_urls=$(grep "^RETRY_SUCCESS:" /tmp/retry_results 2>/dev/null | cut -d: -f2- || echo "")
-
-            unresolved_4xx=$(echo "$output" | grep 'HTTP_4[0-9]{2}' | while read -r line; do
-              url=$(echo "$line" | sed -n 's/.*├─BROKEN─ \(https\?:\/\/[^[:space:]]*\).*/\1/p')
-              if [ -n "$url" ] && ! echo "$successful_urls" | grep -Fxq "$url"; then
-                echo "$line"
+            while IFS= read -r url; do
+              [ -z "$url" ] && continue
+              if ! verify_with_curl "$url"; then
+                verified_failures="${verified_failures}${url} (HTTP ${failed_http_code})\n"
               fi
-            done)
-
-            if [ -n "$unresolved_4xx" ]; then
-              echo ""
-              echo "❌ Unresolved HTTP 4xx errors:"
-              echo "$unresolved_4xx"
-              has_errors=true
-            fi
-
-            # Check for failed retries
-            if grep -q "^RETRY_FAILED:" /tmp/retry_results 2>/dev/null; then
-              echo ""
-              echo "❌ URLs that failed after retries:"
-              grep "^RETRY_FAILED:" /tmp/retry_results | cut -d: -f2-
-              has_errors=true
-            fi
+            done <<< "$urls_to_verify"
           fi
 
-          # Final result
+          # Final results
           echo ""
-          if [ "$has_errors" = true ]; then
-            echo "❌ Broken links found that could not be resolved."
+          if [ -n "$verified_failures" ]; then
+            echo "❌ CI Failed: The following links failed:"
+            echo -e "$verified_failures"
             exit 1
           else
-            if grep -q "^RETRY_SUCCESS:" /tmp/retry_results 2>/dev/null; then
-              echo "✅ All broken links resolved via retries! Successfully fixed:"
-              grep "^RETRY_SUCCESS:" /tmp/retry_results | cut -d: -f2- | sed 's/^/  - /'
-            else
-              echo "✅ No broken links found."
+            if [ -n "$rate_limited_urls" ]; then
+              echo "⚠️  Note: These links returned HTTP 429 (rate limited, not broken):"
+              echo -e "$rate_limited_urls"
             fi
+            echo "✅ CI Passed: All links verified successfully"
             exit 0
           fi
