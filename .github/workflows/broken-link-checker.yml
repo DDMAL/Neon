@@ -95,6 +95,7 @@ jobs:
               return 0
             else
               echo "     ❌ Failed: HTTP $http_code"
+              failed_http_code="$http_code"
               return 1
             fi
           }
@@ -113,12 +114,12 @@ jobs:
             while IFS= read -r url; do
               [ -z "$url" ] && continue
               if ! verify_with_curl "$url"; then
-                verified_failures="${verified_failures}${url}\n"
+                verified_failures="${verified_failures}${url} (HTTP ${failed_http_code})\n"
               fi
             done <<< "$urls_to_verify"
           fi
 
-          # Final decision
+          # Final results
           echo ""
           if [ -n "$verified_failures" ]; then
             echo "❌ CI Failed: The following links failed:"
