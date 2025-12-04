@@ -80,11 +80,16 @@ jobs:
             local url="$1"
             echo "  🔄 Verifying: $url"
 
-            http_code=$(curl -L -s -o /dev/null -w "%{http_code}" \
+            # Use temp file instead of /dev/null to avoid truncation errors on retry
+            temp_body=$(mktemp)
+
+            http_code=$(curl -L -s -o "$temp_body" -w "%{http_code}" \
               -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
               --connect-timeout 30 --max-time 60 --insecure \
               --retry 3 --retry-delay 5 --retry-all-errors \
               "$url" 2>/dev/null || echo "000")
+
+            rm -f "$temp_body"
 
             if echo "$http_code" | grep -E "^(200|301|302|303)$" > /dev/null; then
               echo "     ✅ Success: HTTP $http_code"
