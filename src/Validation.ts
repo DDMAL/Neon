@@ -8,14 +8,24 @@ let worker: Worker,
   statusField: HTMLSpanElement;
 
 async function fetchSchema(version: string): Promise<string> {
-  const baseUrl = 'https://raw.githubusercontent.com/music-encoding/schema/';
-  const schemaUrl = `${baseUrl}/main/${version}/mei-all.rng`;
-  const response = await fetch(schemaUrl);
+  const baseUrl = 'https://raw.githubusercontent.com/music-encoding/schema/main/';
+
+  const tryFetch = (folder: string): Promise<Response> => {
+    return fetch(`${baseUrl}${folder}/mei-all.rng`);
+  };
+
+  let response = await tryFetch(version);
+
+  if (!response.ok && version.includes('dev')) {
+    response = await tryFetch('dev');
+  }
+
   if (!response.ok) {
     statusField.textContent = 'Unknown MEI Version';
     statusField.style.color = 'red';
     throw new Error(`Failed to fetch schema for MEI version ${version}`);
   }
+
   return await response.text();
 }
 
