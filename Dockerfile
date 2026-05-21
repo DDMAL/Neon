@@ -1,4 +1,6 @@
 FROM node:18-alpine AS builder
+RUN apk add --no-cache git
+ENV NODE_OPTIONS=--openssl-legacy-provider
 WORKDIR /app
 
 COPY package.json yarn.lock ./
