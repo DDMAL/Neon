@@ -16,10 +16,10 @@ spec:
         app: neon
     spec:
       imagePullSecrets:
-        - name: ghcr-credentials
+        - name: ghcr-pull-secret
       containers:
         - name: neon
-          image: ghcr.io/ddmal/neon:latest
+          image: ghcr.io/ddmal/neon:develop-latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
