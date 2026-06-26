@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="https://music-encoding.org/schema/dev/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="https://music-encoding.org/schema/dev/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei
+    xmlns="http://www.music-encoding.org/ns/mei" meiversion="6.0-dev">
+    <meiHead xml:id="m-ba9bbdd6-2846-417a-9c1b-2d01f6d30597">
+        <fileDesc xml:id="m-efe9a18d-f8dd-400e-b536-8fb5ecb91b97">
+            <titleStmt xml:id="m-171943b0-e82d-443c-8f97-37fd752d409e">
+                <title xml:id="m-4e4298b0-9dae-4bbf-8737-0de6efd5beb8">MEI Encoding Output (1.0.0)</title>
+            </titleStmt>
+            <pubStmt xml:id="m-f1b73719-d74e-4c29-86d0-ef14b61db1da"/>
+        </fileDesc>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv xml:id="m-f5d0ed1c-3ce1-49a2-869f-2d524b98257d">
+                <score xml:id="m-8a52d56d-9b93-4cbe-85c7-1a6bd70636b4">
+                    <scoreDef xml:id="m-a873080b-3cd6-4d42-8317-96ca721ccc77">
+                        <staffGrp xml:id="m-50499669-fe92-48c0-93cb-291eda07cc8f">
+                            <staffDef xml:id="m-94742cf0-f93b-4b67-90ba-95c928fefe7a" n="1" notationtype="neume" lines="4"/>
+                        </staffGrp>
+                    </scoreDef>
+                    <section xml:id="m-8808f181-1cd1-48c6-a810-00dbf188db92">
+                        <staff n="1">
+                            <layer n="1">
+                                <sb n="1" xml:id="e19lkt2"/>
+                                <clef xml:id="s1h2w29i" shape="F" line="1"/>
+                                <clef xml:id="a15zii6m" shape="C" line="3"/>
+                                <syllable xml:id="ebn1uh3">
+                                    <syl xml:id="f1mjc0t1">punctum</syl>
+                                    <neume xml:id="g10qcrpz">
+                                        <nc xml:id="h41qqcm" oct="4" pname="d"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="stsn5h1">
+                                    <syl xml:id="t1a01vjk">virga</syl>
+                                    <neume xml:id="uun53yw">
+                                        <nc xml:id="v24rlht" oct="4" pname="c" tilt="s"/>
+                                    </neume>
+                                </syllable>
+                                <divLine xml:id="t18j7opy" form="maxima"/>
+                                <divLine xml:id="g111kz8h" form="maior"/>
+                                <syllable xml:id="r1hhf20m">
+                                    <syl xml:id="s1d2j1jo">liquescent.up</syl>
+                                    <neume xml:id="t1soefhy">
+                                        <nc xml:id="u19e395g" oct="3" pname="b" curve="a">
+                                            <liquescent xml:id="x1pbg8ws"/>
+                                        </nc>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="a1ytp4u7">
+                                    <syl xml:id="b2ceb6c">liquescent.down</syl>
+                                    <neume xml:id="c213eiy">
+                                        <nc xml:id="dg128ru" oct="3" pname="b" curve="c">
+                                            <liquescent xml:id="g1u270zj"/>
+                                        </nc>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="v1pl79o7">
+                                    <syl xml:id="nja9qxr">distropha</syl>
+                                    <neume xml:id="l181mluo">
+                                        <nc xml:id="p1pub5l4" oct="3" pname="b"/>
+                                        <nc xml:id="lewodud" oct="3" pname="b"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="x3175zf">
+                                    <syl xml:id="luraz9e">podatus2</syl>
+                                    <neume xml:id="jsk26vk">
+                                        <nc xml:id="nkh2tdy" oct="4" pname="c"/>
+                                        <nc xml:id="n1jefh87" oct="4" pname="d" tilt="s"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="a19iq3le">
+                                    <syl xml:id="pr8cmkd">podatus3</syl>
+                                    <neume xml:id="m81j4nt">
+                                        <nc xml:id="r1imypub" oct="3" pname="g"/>
+                                        <nc xml:id="kocj6fo" oct="3" pname="b" tilt="s"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="zp62lfp">
+                                    <syl xml:id="o1ge81bi">podatus4</syl>
+                                    <neume xml:id="m1s8lcu2">
+                                        <nc xml:id="qpbc2ev" oct="3" pname="g"/>
+                                        <nc xml:id="z1d2g4bw" oct="4" pname="c" tilt="s"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="yduh8dc">
+                                    <syl xml:id="jkq5bmj">podatus5</syl>
+                                    <neume xml:id="ohim9l3">
+                                        <nc xml:id="l12d4gc8" oct="3" pname="f"/>
+                                        <nc xml:id="y1qmra6x" oct="4" pname="c" tilt="s"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="duucn1i">
+                                    <syl xml:id="nq7h455">clivis2a</syl>
+                                    <neume xml:id="rhg11nk">
+                                        <nc xml:id="p5wbcbl" oct="3" pname="a" tilt="s"/>
+                                        <nc xml:id="i9cfu44" oct="3" pname="g" tilt="n" con="e"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="f15ix3d">
+                                    <syl xml:id="frmgms3">clivis3a</syl>
+                                    <neume xml:id="t1mhh531">
+                                        <nc xml:id="kdnsn3d" oct="4" pname="d" tilt="s"/>
+                                        <nc xml:id="h137hlsm" oct="3" pname="b" tilt="n" con="e"/>
+                                    </neume>
+                                </syllable>
+                                <custos oct="3" pname="a" xml:id="fv3c6b3"/>
+                                <sb n="2" xml:id="qhaqhcg"/>
+                                <!-- 換行時 Verovio 會自動重複現行譜號(C)，這裡不再放 explicit clef，否則重複 -->
+
+                                <syllable xml:id="h1kq5g0s">
+                                    <syl xml:id="z1exv4k3">clivis4a</syl>
+                                    <neume xml:id="x1ysvcdo">
+                                        <nc xml:id="boan30z" oct="3" pname="b" tilt="s"/>
+                                        <nc xml:id="z1e3k7ec" oct="3" pname="f" tilt="n" con="e"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="m1y1c5hw">
+                                    <syl xml:id="fgomuzm">clivis5a</syl>
+                                    <neume xml:id="fn14v3x">
+                                        <nc xml:id="h10qv06l" oct="4" pname="e" tilt="s"/>
+                                        <nc xml:id="m1af3qh3" oct="3" pname="a" tilt="n" con="e"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="t1loskjm">
+                                    <syl xml:id="r1lyahdo">clivis2b</syl>
+                                    <neume xml:id="fdzt0ax">
+                                        <nc xml:id="ti1y37i" oct="4" pname="c"/>
+                                        <nc xml:id="q1finatx" oct="3" pname="b" tilt="n"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="u1urz42u">
+                                    <syl xml:id="b4f4gsm">clivis3b</syl>
+                                    <neume xml:id="hngzpds">
+                                        <nc xml:id="d196c08j" oct="3" pname="b"/>
+                                        <nc xml:id="i1xlbtoa" oct="3" pname="g" tilt="n"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="tjtr4vr">
+                                    <syl xml:id="y1xaxb3a">clivis4b</syl>
+                                    <neume xml:id="j1ta4ife">
+                                        <nc xml:id="ng9yhwz" oct="4" pname="c"/>
+                                        <nc xml:id="aep3aq9" oct="3" pname="g" tilt="n"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="zgyxkbh">
+                                    <syl xml:id="y1csamuh">clivis5b</syl>
+                                    <neume xml:id="mvzg1a6">
+                                        <nc xml:id="a1ji9pl7" oct="4" pname="d"/>
+                                        <nc xml:id="u17whhb7" oct="3" pname="g" tilt="n"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="d946txi">
+                                    <syl xml:id="r1mgr5d5">torculus22</syl>
+                                    <neume xml:id="t16koosa">
+                                        <nc xml:id="t1ap7lld" oct="3" pname="b"/>
+                                        <nc xml:id="t1wylg7a" oct="4" pname="c" tilt="s"/>
+                                        <nc xml:id="t14amuvr" oct="3" pname="b" tilt="n" con="e"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="fbzc8jg">
+                                    <syl xml:id="v11wu4zy">torculus23</syl>
+                                    <neume xml:id="re12e2y">
+                                        <nc xml:id="x1jkdx16" oct="3" pname="a"/>
+                                        <nc xml:id="r105lrdb" oct="3" pname="b" tilt="s"/>
+                                        <nc xml:id="cn80t8p" oct="3" pname="g" tilt="n" con="e"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="e9thgh2">
+                                    <syl xml:id="aknz6i5">torculus33</syl>
+                                    <neume xml:id="q181skdc">
+                                        <nc xml:id="ccujz24" oct="3" pname="a"/>
+                                        <nc xml:id="bebtnh8" oct="4" pname="c" tilt="s"/>
+                                        <nc xml:id="t1rg0xhv" oct="3" pname="a" tilt="n" con="e"/>
+                                    </neume>
+                                </syllable>
+                                <syllable xml:id="kv8ungd">
+                                    <syl xml:id="g1nq2s92">torculus42</syl>
+                                    <neume xml:id="z1d6c2jr">
+                                        <nc xml:id="i1vtgbxk" oct="3" pname="a"/>
+                                        <nc xml:id="ot2w2ad" oct="4" pname="d" tilt="s"/>
+                                        <nc xml:id="z1su25mi" oct="4" pname="c" tilt="n" con="e"/>
+                                    </neume>
+                                </syllable>
+                            </layer>
+                        </staff>
+                    </section>
+                </score>
+            </mdiv>
+        </body>
+    </music>
+</mei>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="6.0-dev">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title>Hufnagel ligature glyph test (artificial — for font inspection only)</title>
+            </titleStmt>
+            <pubStmt/>
+        </fileDesc>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv>
+                <score>
+                    <scoreDef>
+                        <staffGrp>
+                            <staffDef n="1" notationtype="neume" lines="4" clef.shape="C" clef.line="3"/>
+                        </staffGrp>
+                    </scoreDef>
+                    <section>
+                        <staff n="1">
+                            <layer n="1">
+                                <!-- 譜號已由上面的 staffDef 宣告，這裡不再放 <clef>，否則開頭會出現兩個 -->
+                                <!-- clivis 下行 2度 → entry E9B4 + ligatura E9B9 -->
+                                <syllable>
+                                    <syl>lig2</syl>
+                                    <neume xml:id="lig2">
+                                        <nc oct="4" pname="c" ligated="true"/>
+                                        <nc oct="3" pname="b" ligated="true"/>
+                                    </neume>
+                                </syllable>
+                                <!-- clivis 下行 3度 → entry E9B5 + ligatura E9BA -->
+                                <syllable>
+                                    <syl>lig3</syl>
+                                    <neume xml:id="lig3">
+                                        <nc oct="4" pname="d" ligated="true"/>
+                                        <nc oct="3" pname="b" ligated="true"/>
+                                    </neume>
+                                </syllable>
+                                <!-- clivis 下行 4度 → entry E9B6 + ligatura E9BB -->
+                                <syllable>
+                                    <syl>lig4</syl>
+                                    <neume xml:id="lig4">
+                                        <nc oct="4" pname="e" ligated="true"/>
+                                        <nc oct="3" pname="b" ligated="true"/>
+                                    </neume>
+                                </syllable>
+                                <!-- clivis 下行 5度 → entry E9B7 + ligatura E9BC -->
+                                <syllable>
+                                    <syl>lig5</syl>
+                                    <neume xml:id="lig5">
+                                        <nc oct="4" pname="f" ligated="true"/>
+                                        <nc oct="3" pname="b" ligated="true"/>
+                                    </neume>
+                                </syllable>
+                            </layer>
+                        </staff>
+                    </section>
+                </score>
+            </mdiv>
+        </body>
+    </music>
+</mei>
