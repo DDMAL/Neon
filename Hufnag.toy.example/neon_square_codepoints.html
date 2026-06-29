@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>Neon Square Notation — SMuFL Codepoints</title>
+<style>
+  @font-face {
+    font-family: 'Bravura Text';
+    src: url('latest/media/BravuraText.woff') format('woff');
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang TC", sans-serif;
+    font-size: 13px;
+    padding: 28px;
+    color: #1a1a1a;
+    background: #fff;
+    max-width: 1200px;
+  }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .subtitle { color: #555; margin: 0 0 6px; font-size: 13px; }
+  .note {
+    background: #fffbe6;
+    border-left: 3px solid #f0c040;
+    padding: 8px 14px;
+    margin-bottom: 18px;
+    font-size: 12px;
+    line-height: 1.8;
+    border-radius: 0 4px 4px 0;
+  }
+  table { border-collapse: collapse; width: 100%; }
+  col.c-sec   { width: 130px; }
+  col.c-glyph { width: 58px; }
+  col.c-label { width: 120px; }
+  col.c-cp    { width: 82px; }
+  col.c-name  { width: 220px; }
+  col.c-desc  { width: 200px; }
+  col.c-usage { }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 7px 10px;
+    vertical-align: middle;
+    text-align: left;
+  }
+  th {
+    background: #f0f0f0;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  tr:hover td { background: #f0f5ff; }
+  .sec-col {
+    font-weight: 700;
+    background: #f3f0ff;
+    border-left: 3px solid #b8a0e8;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .glyph-col { text-align: center; }
+  .glyph {
+    font-family: 'Bravura Text', serif;
+    font-size: 36px;
+    line-height: 1;
+    display: inline-block;
+  }
+  code { font-size: 11px; color: #333; }
+  .desc-col { color: #666; font-size: 12px; }
+  .usage-col { font-size: 12px; }
+  .verovio-bug {
+    display: inline-block;
+    font-size: 10px;
+    background: #ffe0e0;
+    color: #c00;
+    border-radius: 3px;
+    padding: 1px 5px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+<h1>Neon Square Notation — SMuFL Codepoints</h1>
+<p class="subtitle">Neon 所有 Primitive Elements 對應的 SMuFL 字形，共 <strong>19 個</strong>（依據 <code>InsertHandler.ts</code>；Neon 使用自訂更新版 Verovio WASM）</p>
+<div class="note">
+  ℹ️ <strong>Verovio 版本說明：</strong><br>
+  • Neon 使用的是<strong>自訂更新版 Verovio WASM</strong>（非標準 6.2.1），已支援 quilisma（E99B）與 oriscus（E99C）的正確渲染（commit <code>db9ad214</code>）<br>
+  • <strong>連結線</strong>：Verovio 目前 pes/clivis 等複合 neume 無論音程大小，一律使用 E9BE（connecting line ascending 3rd）<br>
+  • <strong>Custos</strong>：所有位置一律使用 EA06（stem up middle）
+</div>
+<table>
+  <colgroup>
+    <col class="c-sec"><col class="c-glyph"><col class="c-label">
+    <col class="c-cp"><col class="c-name"><col class="c-desc"><col class="c-usage">
+  </colgroup>
+  <thead>
+    <tr>
+      <th>分類</th>
+      <th>字形</th>
+      <th>元素名稱</th>
+      <th>Codepoint</th>
+      <th>SMuFL 名稱</th>
+      <th>SMuFL 說明</th>
+      <th>MEI 屬性</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="sec-col" rowspan="8">單音符 nc</td>
+      <td class="glyph-col"><span class="glyph">&#xE990;</span></td>
+      <td><strong>punctum</strong></td>
+      <td><code>U+E990</code></td>
+      <td><code>chantPunctum</code></td>
+      <td class="desc-col">Punctum</td>
+      <td class="usage-col">nc（無屬性）—— 基本音符</td>
+    </tr>    <tr>
+      
+      <td class="glyph-col"><span class="glyph">&#xE991;</span></td>
+      <td><strong>inclinatum</strong></td>
+      <td><code>U+E991</code></td>
+      <td><code>chantPunctumInclinatum</code></td>
+      <td class="desc-col">Punctum inclinatum</td>
+      <td class="usage-col">nc tilt="n" —— virgaReversed / climacus 下行音</td>
+    </tr>    <tr>
+      
+      <td class="glyph-col"><span class="glyph">&#xE996;</span></td>
+      <td><strong>virga</strong></td>
+      <td><code>U+E996</code></td>
+      <td><code>chantPunctumVirga</code></td>
+      <td class="desc-col">Punctum virga</td>
+      <td class="usage-col">nc tilt="s" —— virga；也是 pes 的上音</td>
+    </tr>    <tr>
+      
+      <td class="glyph-col"><span class="glyph">&#xE997;</span></td>
+      <td><strong>virga reversed</strong></td>
+      <td><code>U+E997</code></td>
+      <td><code>chantPunctumVirgaReversed</code></td>
+      <td class="desc-col">Punctum virga, reversed</td>
+      <td class="usage-col">nc tilt="se" —— diamond（clivis 末音）</td>
+    </tr>    <tr>
+      
+      <td class="glyph-col"><span class="glyph">&#xE994;</span></td>
+      <td><strong>liquescent A</strong></td>
+      <td><code>U+E994</code></td>
+      <td><code>chantAuctumAsc</code></td>
+      <td class="desc-col">Punctum auctum, ascending</td>
+      <td class="usage-col">nc curve="a" —— 上行 liquescent</td>
+    </tr>    <tr>
+      
+      <td class="glyph-col"><span class="glyph">&#xE995;</span></td>
+      <td><strong>liquescent C</strong></td>
+      <td><code>U+E995</code></td>
+      <td><code>chantAuctumDesc</code></td>
+      <td class="desc-col">Punctum auctum, descending</td>
+      <td class="usage-col">nc curve="c" —— 下行 liquescent</td>
+    </tr>    <tr>
+      
+      <td class="glyph-col"><span class="glyph">&#xE99B;</span></td>
+      <td><strong>quilisma</strong></td>
+      <td><code>U+E99B</code></td>
+      <td><code>chantQuilisma</code></td>
+      <td class="desc-col">Quilisma</td>
+      <td class="usage-col">nc shape="quilisma"</td>
+    </tr>    <tr>
+      
+      <td class="glyph-col"><span class="glyph">&#xE99C;</span></td>
+      <td><strong>oriscus</strong></td>
+      <td><code>U+E99C</code></td>
+      <td><code>chantOriscusAscending</code></td>
+      <td class="desc-col">Oriscus ascending</td>
+      <td class="usage-col">nc shape="oriscus"（ascending）</td>
+    </tr>    <tr>
+      <td class="sec-col" rowspan="2">臨時記號 accid</td>
+      <td class="glyph-col"><span class="glyph">&#xE9E0;</span></td>
+      <td><strong>flat</strong></td>
+      <td><code>U+E9E0</code></td>
+      <td><code>medRenFlatSoftB</code></td>
+      <td class="desc-col">Flat, soft b (fa)</td>
+      <td class="usage-col">accid accid="f" —— medRen flat (soft b)</td>
+    </tr>    <tr>
+      
+      <td class="glyph-col"><span class="glyph">&#xE9E2;</span></td>
+      <td><strong>natural</strong></td>
+      <td><code>U+E9E2</code></td>
+      <td><code>medRenNatural</code></td>
+      <td class="desc-col">Natural</td>
+      <td class="usage-col">accid accid="n" —— medRen natural</td>
+    </tr>    <tr>
+      <td class="sec-col" rowspan="3">譜號 Clef</td>
+      <td class="glyph-col"><span class="glyph">&#xE900;</span></td>
+      <td><strong>G clef</strong></td>
+      <td><code>U+E900</code></td>
+      <td><code>mensuralGclef</code></td>
+      <td class="desc-col">Mensural G clef</td>
+      <td class="usage-col">clef shape="G"</td>
+    </tr>    <tr>
+      
+      <td class="glyph-col"><span class="glyph">&#xE902;</span></td>
+      <td><strong>F clef</strong></td>
+      <td><code>U+E902</code></td>
+      <td><code>chantFclef</code></td>
+      <td class="desc-col">Plainchant F clef</td>
+      <td class="usage-col">clef shape="F"</td>
+    </tr>    <tr>
+      
+      <td class="glyph-col"><span class="glyph">&#xE906;</span></td>
+      <td><strong>C clef</strong></td>
+      <td><code>U+E906</code></td>
+      <td><code>chantCclef</code></td>
+      <td class="desc-col">Plainchant C clef</td>
+      <td class="usage-col">clef shape="C"</td>
+    </tr>    <tr>
+      <td class="sec-col" rowspan="1">Custos</td>
+      <td class="glyph-col"><span class="glyph">&#xEA06;</span></td>
+      <td><strong>custos</strong></td>
+      <td><code>U+EA06</code></td>
+      <td><code>chantCustosStemUpPosMiddle</code></td>
+      <td class="desc-col">Plainchant custos, stem up, middle position</td>
+      <td class="usage-col">custos（Verovio 6.2.1 所有位置均用此字形）</td>
+    </tr>    <tr>
+      <td class="sec-col" rowspan="4">休止線 divLine</td>
+      <td class="glyph-col"><span class="glyph">&#xE8F3;</span></td>
+      <td><strong>minima</strong></td>
+      <td><code>U+E8F3</code></td>
+      <td><code>chantDivisioMinima</code></td>
+      <td class="desc-col">Divisio minima</td>
+      <td class="usage-col">divLine form="minima"</td>
+    </tr>    <tr>
+      
+      <td class="glyph-col"><span class="glyph">&#xE8F4;</span></td>
+      <td><strong>maior</strong></td>
+      <td><code>U+E8F4</code></td>
+      <td><code>chantDivisioMaior</code></td>
+      <td class="desc-col">Divisio maior</td>
+      <td class="usage-col">divLine form="maior"</td>
+    </tr>    <tr>
+      
+      <td class="glyph-col"><span class="glyph">&#xE8F5;</span></td>
+      <td><strong>maxima</strong></td>
+      <td><code>U+E8F5</code></td>
+      <td><code>chantDivisioMaxima</code></td>
+      <td class="desc-col">Divisio maxima</td>
+      <td class="usage-col">divLine form="maxima"</td>
+    </tr>    <tr>
+      
+      <td class="glyph-col"><span class="glyph">&#xE8F6;</span></td>
+      <td><strong>finalis</strong></td>
+      <td><code>U+E8F6</code></td>
+      <td><code>chantDivisioFinalis</code></td>
+      <td class="desc-col">Divisio finalis</td>
+      <td class="usage-col">divLine form="finalis"</td>
+    </tr>    <tr>
+      <td class="sec-col" rowspan="1">複合 neume 連結線</td>
+      <td class="glyph-col"><span class="glyph">&#xE9BE;</span></td>
+      <td><strong>connecting line</strong></td>
+      <td><code>U+E9BE</code></td>
+      <td><code>chantConnectingLineAsc3rd</code></td>
+      <td class="desc-col">Connecting line, ascending 3rd</td>
+      <td class="usage-col">pes/clivis 等複合 neume 的連結線（Verovio 6.2.1 所有音程均用此字形）</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Plainchant Neumes — SMuFL</title>
+<style>
+  @font-face {
+    font-family: 'Bravura Text';
+    src: url('latest/media/BravuraText.woff') format('woff');
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, sans-serif;
+    font-size: 13px;
+    padding: 24px;
+    color: #1a1a1a;
+    background: #fff;
+  }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .meta { color: #666; margin: 0 0 12px; font-size: 12px; }
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .toolbar button {
+    padding: 5px 14px;
+    font-size: 12px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    background: #f4f4f4;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .toolbar button:hover { background: #e8e8e8; }
+  .toolbar button.active {
+    background: #4a6ee0;
+    color: #fff;
+    border-color: #3a5bc8;
+  }
+  .toolbar .count { color: #888; font-size: 12px; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+  }
+  col.c-check { width: 36px; }
+  col.c-cat   { width: 200px; }
+  col.c-glyph { width: 60px; }
+  col.c-name  { width: 250px; }
+  col.c-cp    { width: 88px; }
+  col.c-desc  { }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 6px 9px;
+    vertical-align: middle;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  th {
+    background: #f4f4f4;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  th.check-col { text-align: center; }
+  tr:hover td { background: #eef4ff; }
+  tr.row-checked td { background: #fffbe6; }
+  tr.row-checked:hover td { background: #fff3c0; }
+  .check-col { text-align: center; }
+  .cat-col {
+    font-weight: 600;
+    background: #f9f5ff;
+    white-space: normal;
+    border-left: 3px solid #c4a8f0;
+  }
+  .cat-col.cat-repeat {
+    font-weight: normal;
+    color: #999;
+    border-top: 1px dashed #e0d0f8;
+  }
+  .glyph-col { text-align: center; }
+  .glyph {
+    font-family: 'Bravura Text', serif;
+    font-size: 34px;
+    line-height: 1;
+    display: inline-block;
+  }
+  .missing { color: #bbb; }
+  code { font-size: 11px; color: #444; }
+</style>
+</head>
+<body>
+<h1>Plainchant Neumes — SMuFL component glyphs</h1>
+<p class="meta">50 glyphs · 17 neume categories · 21 checked from Hufnag toy example.mei</p>
+<div class="toolbar">
+  <button id="filterBtn">Show checked only</button>
+  <button id="clearBtn">Clear all</button>
+  <span class="count" id="countLabel"></span>
+</div>
+<table>
+  <colgroup>
+    <col class="c-check"><col class="c-cat"><col class="c-glyph">
+    <col class="c-name"><col class="c-cp"><col class="c-desc">
+  </colgroup>
+  <thead>
+    <tr>
+      <th class="check-col">★</th>
+      <th>Neume / Category</th>
+      <th>Glyph</th>
+      <th>Name</th>
+      <th>Codepoint</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody">
+    <tr data-name="chantCclef" data-cat="C clef" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">C clef</td>
+      <td class="glyph-col"><span class="glyph">&#xE906;</span></td>
+      <td><code>chantCclef</code></td>
+      <td><code>U+E906</code></td>
+      <td>Plainchant C clef</td>
+    </tr>
+    <tr data-name="chantFclef" data-cat="F clef" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">F clef</td>
+      <td class="glyph-col"><span class="glyph">&#xE902;</span></td>
+      <td><code>chantFclef</code></td>
+      <td><code>U+E902</code></td>
+      <td>Plainchant F clef</td>
+    </tr>
+    <tr data-name="chantCustosStemDownPosHigh" data-cat="Custos" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Custos</td>
+      <td class="glyph-col"><span class="glyph">&#xEA08;</span></td>
+      <td><code>chantCustosStemDownPosHigh</code></td>
+      <td><code>U+EA08</code></td>
+      <td>Plainchant custos, stem down, high position</td>
+    </tr>
+    <tr data-name="chantCustosStemDownPosHighest" data-cat="Custos" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Custos</td>
+      <td class="glyph-col"><span class="glyph">&#xEA09;</span></td>
+      <td><code>chantCustosStemDownPosHighest</code></td>
+      <td><code>U+EA09</code></td>
+      <td>Plainchant custos, stem down, highest position</td>
+    </tr>
+    <tr data-name="chantCustosStemDownPosMiddle" data-cat="Custos" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Custos</td>
+      <td class="glyph-col"><span class="glyph">&#xEA07;</span></td>
+      <td><code>chantCustosStemDownPosMiddle</code></td>
+      <td><code>U+EA07</code></td>
+      <td>Plainchant custos, stem down, middle position</td>
+    </tr>
+    <tr data-name="chantCustosStemUpPosLow" data-cat="Custos" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Custos</td>
+      <td class="glyph-col"><span class="glyph">&#xEA05;</span></td>
+      <td><code>chantCustosStemUpPosLow</code></td>
+      <td><code>U+EA05</code></td>
+      <td>Plainchant custos, stem up, low position</td>
+    </tr>
+    <tr data-name="chantCustosStemUpPosLowest" data-cat="Custos" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Custos</td>
+      <td class="glyph-col"><span class="glyph">&#xEA04;</span></td>
+      <td><code>chantCustosStemUpPosLowest</code></td>
+      <td><code>U+EA04</code></td>
+      <td>Plainchant custos, stem up, lowest position</td>
+    </tr>
+    <tr data-name="chantCustosStemUpPosMiddle" data-cat="Custos" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Custos</td>
+      <td class="glyph-col"><span class="glyph">&#xEA06;</span></td>
+      <td><code>chantCustosStemUpPosMiddle</code></td>
+      <td><code>U+EA06</code></td>
+      <td>Plainchant custos, stem up, middle position</td>
+    </tr>
+    <tr data-name="chantPunctum" data-cat="Punctum" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Punctum</td>
+      <td class="glyph-col"><span class="glyph">&#xE990;</span></td>
+      <td><code>chantPunctum</code></td>
+      <td><code>U+E990</code></td>
+      <td>Punctum</td>
+    </tr>
+    <tr data-name="chantPunctumCavum" data-cat="Punctum">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col cat-repeat">Punctum</td>
+      <td class="glyph-col"><span class="glyph">&#xE998;</span></td>
+      <td><code>chantPunctumCavum</code></td>
+      <td><code>U+E998</code></td>
+      <td>Punctum cavum</td>
+    </tr>
+    <tr data-name="chantPunctumDeminutum" data-cat="Punctum">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col cat-repeat">Punctum</td>
+      <td class="glyph-col"><span class="glyph">&#xE9A1;</span></td>
+      <td><code>chantPunctumDeminutum</code></td>
+      <td><code>U+E9A1</code></td>
+      <td>Punctum deminutum</td>
+    </tr>
+    <tr data-name="chantPunctumInclinatum" data-cat="Punctum">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col cat-repeat">Punctum</td>
+      <td class="glyph-col"><span class="glyph">&#xE991;</span></td>
+      <td><code>chantPunctumInclinatum</code></td>
+      <td><code>U+E991</code></td>
+      <td>Punctum inclinatum</td>
+    </tr>
+    <tr data-name="chantPunctumInclinatumAuctum" data-cat="Punctum">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col cat-repeat">Punctum</td>
+      <td class="glyph-col"><span class="glyph">&#xE992;</span></td>
+      <td><code>chantPunctumInclinatumAuctum</code></td>
+      <td><code>U+E992</code></td>
+      <td>Punctum inclinatum auctum</td>
+    </tr>
+    <tr data-name="chantPunctumInclinatumDeminutum" data-cat="Punctum">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col cat-repeat">Punctum</td>
+      <td class="glyph-col"><span class="glyph">&#xE993;</span></td>
+      <td><code>chantPunctumInclinatumDeminutum</code></td>
+      <td><code>U+E993</code></td>
+      <td>Punctum inclinatum deminutum</td>
+    </tr>
+    <tr data-name="chantPunctumLinea" data-cat="Punctum">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col cat-repeat">Punctum</td>
+      <td class="glyph-col"><span class="glyph">&#xE999;</span></td>
+      <td><code>chantPunctumLinea</code></td>
+      <td><code>U+E999</code></td>
+      <td>Punctum linea</td>
+    </tr>
+    <tr data-name="chantPunctumLineaCavum" data-cat="Punctum">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col cat-repeat">Punctum</td>
+      <td class="glyph-col"><span class="glyph">&#xE99A;</span></td>
+      <td><code>chantPunctumLineaCavum</code></td>
+      <td><code>U+E99A</code></td>
+      <td>Punctum linea cavum</td>
+    </tr>
+    <tr data-name="chantPunctumVirga" data-cat="Virga" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Virga</td>
+      <td class="glyph-col"><span class="glyph">&#xE996;</span></td>
+      <td><code>chantPunctumVirga</code></td>
+      <td><code>U+E996</code></td>
+      <td>Punctum virga</td>
+    </tr>
+    <tr data-name="chantPunctumVirgaReversed" data-cat="Virga">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col cat-repeat">Virga</td>
+      <td class="glyph-col"><span class="glyph">&#xE997;</span></td>
+      <td><code>chantPunctumVirgaReversed</code></td>
+      <td><code>U+E997</code></td>
+      <td>Punctum virga, reversed</td>
+    </tr>
+    <tr data-name="chantPodatusLower" data-cat="Podatus 2 (goes up a second)" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Podatus 2 (goes up a second)</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B0;</span></td>
+      <td><code>chantPodatusLower</code></td>
+      <td><code>U+E9B0</code></td>
+      <td>Podatus, lower</td>
+    </tr>
+    <tr data-name="chantEntryLineAsc2nd" data-cat="Podatus 2 (goes up a second)" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Podatus 2 (goes up a second)</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B4;</span></td>
+      <td><code>chantEntryLineAsc2nd</code></td>
+      <td><code>U+E9B4</code></td>
+      <td>Entry line, ascending 2nd</td>
+    </tr>
+    <tr data-name="chantPodatusUpper" data-cat="Podatus 2 (goes up a second)" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Podatus 2 (goes up a second)</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B1;</span></td>
+      <td><code>chantPodatusUpper</code></td>
+      <td><code>U+E9B1</code></td>
+      <td>Podatus, upper</td>
+    </tr>
+    <tr data-name="chantPodatusLower" data-cat="Podatus 3 (goes up a third)" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Podatus 3 (goes up a third)</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B0;</span></td>
+      <td><code>chantPodatusLower</code></td>
+      <td><code>U+E9B0</code></td>
+      <td>Podatus, lower</td>
+    </tr>
+    <tr data-name="chantEntryLineAsc3rd" data-cat="Podatus 3 (goes up a third)" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Podatus 3 (goes up a third)</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B5;</span></td>
+      <td><code>chantEntryLineAsc3rd</code></td>
+      <td><code>U+E9B5</code></td>
+      <td>Entry line, ascending 3rd</td>
+    </tr>
+    <tr data-name="chantPodatusUpper" data-cat="Podatus 3 (goes up a third)" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Podatus 3 (goes up a third)</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B1;</span></td>
+      <td><code>chantPodatusUpper</code></td>
+      <td><code>U+E9B1</code></td>
+      <td>Podatus, upper</td>
+    </tr>
+    <tr data-name="chantPodatusUpper" data-cat="Clivis 2a (goes down a second)" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Clivis 2a (goes down a second)</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B1;</span></td>
+      <td><code>chantPodatusUpper</code></td>
+      <td><code>U+E9B1</code></td>
+      <td>Podatus, upper</td>
+    </tr>
+    <tr data-name="chantLigaturaDesc2nd" data-cat="Clivis 2a (goes down a second)" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Clivis 2a (goes down a second)</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B9;</span></td>
+      <td><code>chantLigaturaDesc2nd</code></td>
+      <td><code>U+E9B9</code></td>
+      <td>Ligated stroke, descending 2nd</td>
+    </tr>
+    <tr data-name="chantPodatusLower" data-cat="Clivis 2b" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Clivis 2b</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B0;</span></td>
+      <td><code>chantPodatusLower</code></td>
+      <td><code>U+E9B0</code></td>
+      <td>Podatus, lower</td>
+    </tr>
+    <tr data-name="chantLigaturaDesc2nd" data-cat="Clivis 2b" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Clivis 2b</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B9;</span></td>
+      <td><code>chantLigaturaDesc2nd</code></td>
+      <td><code>U+E9B9</code></td>
+      <td>Ligated stroke, descending 2nd</td>
+    </tr>
+    <tr data-name="chantPodatusUpper" data-cat="Clivis 3a (goes down a third)" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Clivis 3a (goes down a third)</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B1;</span></td>
+      <td><code>chantPodatusUpper</code></td>
+      <td><code>U+E9B1</code></td>
+      <td>Podatus, upper</td>
+    </tr>
+    <tr data-name="chantLigaturaDesc3rd" data-cat="Clivis 3a (goes down a third)" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Clivis 3a (goes down a third)</td>
+      <td class="glyph-col"><span class="glyph">&#xE9BA;</span></td>
+      <td><code>chantLigaturaDesc3rd</code></td>
+      <td><code>U+E9BA</code></td>
+      <td>Ligated stroke, descending 3rd</td>
+    </tr>
+    <tr data-name="chantPodatusLower" data-cat="Clivis 3b" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Clivis 3b</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B0;</span></td>
+      <td><code>chantPodatusLower</code></td>
+      <td><code>U+E9B0</code></td>
+      <td>Podatus, lower</td>
+    </tr>
+    <tr data-name="chantLigaturaDesc3rd" data-cat="Clivis 3b" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Clivis 3b</td>
+      <td class="glyph-col"><span class="glyph">&#xE9BA;</span></td>
+      <td><code>chantLigaturaDesc3rd</code></td>
+      <td><code>U+E9BA</code></td>
+      <td>Ligated stroke, descending 3rd</td>
+    </tr>
+    <tr data-name="chantPodatusLower" data-cat="Torculus22" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Torculus22</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B0;</span></td>
+      <td><code>chantPodatusLower</code></td>
+      <td><code>U+E9B0</code></td>
+      <td>Podatus, lower</td>
+    </tr>
+    <tr data-name="chantConnectingLineAsc2nd" data-cat="Torculus22" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Torculus22</td>
+      <td class="glyph-col"><span class="glyph">&#xE9BD;</span></td>
+      <td><code>chantConnectingLineAsc2nd</code></td>
+      <td><code>U+E9BD</code></td>
+      <td>Connecting line, ascending 2nd</td>
+    </tr>
+    <tr data-name="chantLigaturaDesc2nd" data-cat="Torculus22" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Torculus22</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B9;</span></td>
+      <td><code>chantLigaturaDesc2nd</code></td>
+      <td><code>U+E9B9</code></td>
+      <td>Ligated stroke, descending 2nd</td>
+    </tr>
+    <tr data-name="chantPodatusLower" data-cat="Torculus33" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Torculus33</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B0;</span></td>
+      <td><code>chantPodatusLower</code></td>
+      <td><code>U+E9B0</code></td>
+      <td>Podatus, lower</td>
+    </tr>
+    <tr data-name="chantConnectingLineAsc3rd" data-cat="Torculus33" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Torculus33</td>
+      <td class="glyph-col"><span class="glyph">&#xE9BE;</span></td>
+      <td><code>chantConnectingLineAsc3rd</code></td>
+      <td><code>U+E9BE</code></td>
+      <td>Connecting line, ascending 3rd</td>
+    </tr>
+    <tr data-name="chantLigaturaDesc3rd" data-cat="Torculus33" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Torculus33</td>
+      <td class="glyph-col"><span class="glyph">&#xE9BA;</span></td>
+      <td><code>chantLigaturaDesc3rd</code></td>
+      <td><code>U+E9BA</code></td>
+      <td>Ligated stroke, descending 3rd</td>
+    </tr>
+    <tr data-name="chantPodatusUpper" data-cat="Porrectus33" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Porrectus33</td>
+      <td class="glyph-col"><span class="glyph">&#xE9B1;</span></td>
+      <td><code>chantPodatusUpper</code></td>
+      <td><code>U+E9B1</code></td>
+      <td>Podatus, upper</td>
+    </tr>
+    <tr data-name="chantLigaturaDesc3rd" data-cat="Porrectus33" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Porrectus33</td>
+      <td class="glyph-col"><span class="glyph">&#xE9BA;</span></td>
+      <td><code>chantLigaturaDesc3rd</code></td>
+      <td><code>U+E9BA</code></td>
+      <td>Ligated stroke, descending 3rd</td>
+    </tr>
+    <tr data-name="chantConnectingLineAsc3rd" data-cat="Porrectus33" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Porrectus33</td>
+      <td class="glyph-col"><span class="glyph">&#xE9BE;</span></td>
+      <td><code>chantConnectingLineAsc3rd</code></td>
+      <td><code>U+E9BE</code></td>
+      <td>Connecting line, ascending 3rd</td>
+    </tr>
+    <tr data-name="chantAuctumAsc" data-cat="Liquescent up" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Liquescent up</td>
+      <td class="glyph-col"><span class="glyph">&#xE994;</span></td>
+      <td><code>chantAuctumAsc</code></td>
+      <td><code>U+E994</code></td>
+      <td>Punctum auctum, ascending</td>
+    </tr>
+    <tr data-name="chantOriscusLiquescens" data-cat="Liquescent up">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col cat-repeat">Liquescent up</td>
+      <td class="glyph-col"><span class="glyph">&#xE99E;</span></td>
+      <td><code>chantOriscusLiquescens</code></td>
+      <td><code>U+E99E</code></td>
+      <td>Oriscus liquescens</td>
+    </tr>
+    <tr data-name="medRenLiquescentAscCMN" data-cat="Liquescent up">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col cat-repeat">Liquescent up</td>
+      <td class="glyph-col"><span class="glyph">&#xEA26;</span></td>
+      <td><code>medRenLiquescentAscCMN</code></td>
+      <td><code>U+EA26</code></td>
+      <td>Liquescent ascending (Corpus Monodicum)</td>
+    </tr>
+    <tr data-name="chantStrophicus" data-cat="Distropha" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col">Distropha</td>
+      <td class="glyph-col"><span class="glyph">&#xE99F;</span></td>
+      <td><code>chantStrophicus</code></td>
+      <td><code>U+E99F</code></td>
+      <td>Strophicus</td>
+    </tr>
+    <tr data-name="chantStrophicusAuctus" data-cat="Distropha" class="row-checked">
+      <td class="check-col"><input type="checkbox" title="Mark as important" checked></td>
+      <td class="cat-col cat-repeat">Distropha</td>
+      <td class="glyph-col"><span class="glyph">&#xE9A0;</span></td>
+      <td><code>chantStrophicusAuctus</code></td>
+      <td><code>U+E9A0</code></td>
+      <td>Strophicus auctus</td>
+    </tr>
+    <tr data-name="chantStrophicusLiquescens2nd" data-cat="Pressus">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col">Pressus</td>
+      <td class="glyph-col"><span class="glyph">&#xE9C2;</span></td>
+      <td><code>chantStrophicusLiquescens2nd</code></td>
+      <td><code>U+E9C2</code></td>
+      <td>Strophicus liquescens, 2nd</td>
+    </tr>
+    <tr data-name="chantStrophicusLiquescens3rd" data-cat="Pressus">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col cat-repeat">Pressus</td>
+      <td class="glyph-col"><span class="glyph">&#xE9C3;</span></td>
+      <td><code>chantStrophicusLiquescens3rd</code></td>
+      <td><code>U+E9C3</code></td>
+      <td>Strophicus liquescens, 3rd</td>
+    </tr>
+    <tr data-name="chantStrophicusLiquescens4th" data-cat="Pressus">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col cat-repeat">Pressus</td>
+      <td class="glyph-col"><span class="glyph">&#xE9C4;</span></td>
+      <td><code>chantStrophicusLiquescens4th</code></td>
+      <td><code>U+E9C4</code></td>
+      <td>Strophicus liquescens, 4th</td>
+    </tr>
+    <tr data-name="chantStrophicusLiquescens5th" data-cat="Pressus">
+      <td class="check-col"><input type="checkbox" title="Mark as important"></td>
+      <td class="cat-col cat-repeat">Pressus</td>
+      <td class="glyph-col"><span class="glyph">&#xE9C5;</span></td>
+      <td><code>chantStrophicusLiquescens5th</code></td>
+      <td><code>U+E9C5</code></td>
+      <td>Strophicus liquescens, 5th</td>
+    </tr>
+  </tbody>
+</table>
+<script>
+(function () {
+  var STORE_KEY = 'smufl_neumes_checked_mei_v1';
+  var tbody = document.getElementById('tableBody');
+  var rows = Array.from(tbody.querySelectorAll('tr'));
+  var filterBtn = document.getElementById('filterBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var countLabel = document.getElementById('countLabel');
+  var filterActive = false;
+
+  function save() {
+    var state = {};
+    rows.forEach(function(r) {
+      var cb = r.querySelector('input');
+      state[r.dataset.name] = cb.checked;
+    });
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e) {}
+  }
+
+  function load() {
+    try {
+      var stored = localStorage.getItem(STORE_KEY);
+      if (!stored) return;
+      var state = JSON.parse(stored);
+      rows.forEach(function(r) {
+        var cb = r.querySelector('input');
+        if (r.dataset.name in state) cb.checked = state[r.dataset.name];
+      });
+    } catch(e) {}
+  }
+
+  function updateRowStyle(row) {
+    row.classList.toggle('row-checked', row.querySelector('input').checked);
+  }
+
+  function updateCount() {
+    var n = rows.filter(function(r) { return r.querySelector('input').checked; }).length;
+    countLabel.textContent = n > 0 ? n + ' checked' : '';
+  }
+
+  function applyFilter() {
+    rows.forEach(function(r) {
+      r.style.display = (!filterActive || r.querySelector('input').checked) ? '' : 'none';
+    });
+  }
+
+  rows.forEach(function(row) {
+    row.querySelector('input').addEventListener('change', function() {
+      updateRowStyle(row);
+      save();
+      updateCount();
+      if (filterActive) applyFilter();
+    });
+  });
+
+  filterBtn.addEventListener('click', function() {
+    filterActive = !filterActive;
+    filterBtn.classList.toggle('active', filterActive);
+    filterBtn.textContent = filterActive ? 'Show all' : 'Show checked only';
+    applyFilter();
+  });
+
+  clearBtn.addEventListener('click', function() {
+    rows.forEach(function(r) {
+      r.querySelector('input').checked = false;
+      updateRowStyle(r);
+    });
+    save();
+    updateCount();
+    if (filterActive) applyFilter();
+  });
+
+  load();
+  rows.forEach(updateRowStyle);
+  updateCount();
+})();
+</script>
+</body>
+</html>
