@@ -492,6 +492,40 @@ function setBurgerControls(): void {
 }
 
 /**
+ * Set click listeners for Notation Type dropdown (Square / Hufnagel).
+ * Currently only updates the label and logs to console; engine wiring is next.
+ */
+export function setNotationTypeControls(): void {
+  const dropdown = document.getElementById('notation-type-dropdown');
+  const label = document.getElementById('notation-type-label');
+
+  function notationTypeClickaway(): void {
+    document.body.removeEventListener('click', notationTypeClickaway);
+    dropdown.classList.remove('is-active');
+  }
+
+  document.getElementById('notation-type-button').addEventListener('click', (evt) => {
+    evt.stopPropagation();
+    dropdown.classList.toggle('is-active');
+    if (dropdown.classList.contains('is-active')) {
+      document.body.addEventListener('click', notationTypeClickaway);
+    } else {
+      document.body.removeEventListener('click', notationTypeClickaway);
+    }
+  });
+
+  ['square', 'hufnagel'].forEach((type) => {
+    document.getElementById(`notation-type-${type}`).addEventListener('click', () => {
+      dropdown.classList.remove('is-active');
+      document.body.removeEventListener('click', notationTypeClickaway);
+      label.textContent = `\xA0- ${type[0].toUpperCase() + type.slice(1)}`;
+      console.log(`[NotationType] switched to: ${type}`);
+      // TODO: wire up engine — call neonView.setNotationType(type)
+    });
+  });
+}
+
+/**
  * Set listener for "Display All" button in Display panel.
  */
 function setDisplayAllListener(): void {
@@ -583,6 +617,7 @@ export function initDisplayControls(
   setHighlightKeyControls();
   setDisplayAllListener();
   loadHighlightSettings();
+  setNotationTypeControls();
 
   const displayContents = document.getElementById('displayContents');
   const toggleDisplay = document.getElementById('toggleDisplay');
