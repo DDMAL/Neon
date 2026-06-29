@@ -304,6 +304,25 @@ class NeonCore {
     });
   }
 
+  setNotationFont(type: string): Promise<void> {
+    return new Promise((resolve): void => {
+      const message: VerovioMessage = {
+        id: uuidv4(),
+        action: 'setFont',
+        fontType: type,
+      };
+      function handle(evt: MessageEvent): void {
+        if (evt.data.id === message.id) {
+          evt.target.removeEventListener('message', handle);
+          this.lastPageLoaded = '';
+          resolve();
+        }
+      }
+      this.verovioWrapper.addEventListener('message', handle.bind(this));
+      this.verovioWrapper.postMessage(message);
+    });
+  }
+
   /**
    * Get the SVG for a specific page.
    * @param pageURI - The URI of the selected page.

@@ -17,7 +17,7 @@ export interface DisplayInterface {
   meiClass: string;
   background: string;
   zoomHandler: ZoomHandler;
-  setDisplayListeners(): void;
+  setDisplayListeners(neonView: NeonView): void;
   updateVisualization(): void;
   loadSettings(): void;
 }

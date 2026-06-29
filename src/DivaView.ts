@@ -220,7 +220,7 @@ class DivaView implements ViewInterface {
    */
   didLoad(): void {
     this.divaReady = true;
-    this.displayPanel.setDisplayListeners();
+    this.displayPanel.setDisplayListeners(this.neonView);
     document.getElementById('loading').style.display = 'none';
   }
 

@@ -110,7 +110,7 @@ class SingleView implements ViewInterface {
 
   onSVGLoad(): void {
     this.setViewEventHandlers();
-    this.displayPanel.setDisplayListeners();
+    this.displayPanel.setDisplayListeners(this.neonView);
   }
 
   /**

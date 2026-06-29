@@ -272,6 +272,7 @@ export type VerovioMessage = {
   mei?: string;
   elementId?: string;
   editorAction?: EditorAction;
+  fontType?: string;
 };
 
 export type VerovioResponse = {

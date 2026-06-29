@@ -240,6 +240,12 @@ class NeonView {
     });
   }
 
+  setNotationType(type: string): void {
+    this.core.setNotationFont(type).then(() => {
+      this.updateForCurrentPage();
+    });
+  }
+
   /**
    * Get the page's MEI file as a string.
    * @param pageNo - The identifying URI of the page.
