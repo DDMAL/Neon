@@ -72,6 +72,19 @@ export async function buildPrimitiveTabHtml(notationType: string): Promise<strin
   }).join('\n');
 }
 
+const GROUPINGS = ['pes', 'clivis', 'scandicus', 'climacus', 'torculus', 'porrectus', 'pressus'] as const;
+
+export function buildGroupingTabHtml(notationType: string): string {
+  const imgDir = notationType === 'hufnagel'
+    ? `${__ASSET_PREFIX__}assets/img/hufnagel/`
+    : `${__ASSET_PREFIX__}assets/img/`;
+  return GROUPINGS.map(id =>
+    `<p class="insert-element-container">
+            <button id="${id}" class="side-panel-btn insertel smallel" aria-label="${id}" title="${id}"><img src="${imgDir}${id}.png" class="image"></button>
+        </p>`
+  ).join('\n');
+}
+
 /**
  * HTML for each insert tab (neume, grouping, clef, system, and division).
  */
@@ -121,27 +134,7 @@ export const insertTabHtml: Record<string, string> = {
         <p class="insert-element-container">
             <button id="divLineMaxima" class="side-panel-btn insertel smallel" aria-label="DivLine Maxima" title="DivLine Maxima"><img src="${__ASSET_PREFIX__}assets/img/divisio.png" class="image"></button>
         </p>`,
-  groupingTab: `<p class="insert-element-container">
-            <button id="pes" class="side-panel-btn insertel smallel" aria-label="pes" title="pes"><img src="${__ASSET_PREFIX__}assets/img/pes.png" class="image"></button>
-        </p>
-        <p class="insert-element-container">
-            <button id="clivis" class="side-panel-btn insertel smallel" aria-label="clivis" title="clivis"><img src="${__ASSET_PREFIX__}assets/img/clivis.png" class="image"></button>
-        </p>
-        <p class="insert-element-container">
-            <button id="scandicus" class="side-panel-btn insertel smallel" aria-label="scandicus" title="scandicus"><img src="${__ASSET_PREFIX__}assets/img/scandicus.png" class="image"></button>
-        </p>
-        <p class="insert-element-container">
-            <button id="climacus" class="side-panel-btn insertel smallel" aria-label="climacus" title="climacus"><img src="${__ASSET_PREFIX__}assets/img/climacus.png" class="image"></button>
-        </p>
-        <p class="insert-element-container">
-            <button id="torculus" class="side-panel-btn insertel smallel" aria-label="toculus" title="toculus"><img src="${__ASSET_PREFIX__}assets/img/torculus.png" class="image"></button>
-        </p>
-        <p class="insert-element-container">
-            <button id="porrectus" class="side-panel-btn insertel smallel" aria-label="porrectus" title="porrectus"><img src="${__ASSET_PREFIX__}assets/img/porrectus.png" class="image"></button>
-        </p>
-        <p class="insert-element-container">
-            <button id="pressus" class="side-panel-btn insertel smallel" aria-label="pressus" title="pressus"><img src="${__ASSET_PREFIX__}assets/img/pressus.png" class="image"></button>
-        </p>`,
+  groupingTab: '',  // unused — call buildGroupingTabHtml(notationType) instead
   systemTab: `<p class="insert-element-container">
             <button id="staff" class="side-panel-btn insertel longel" aria-label="system" title="system"><img src="${__ASSET_PREFIX__}assets/img/staff.png" class="image"></button>
         </p>

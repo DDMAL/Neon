@@ -40,6 +40,13 @@ export function bindInsertTabs(insertHandler: InsertHandler): void {
         const { notationType } = getSettings();
         setPrimitiveFallback(insertHandler);
         renderPrimitiveTab(notationType ?? 'square', insertHandler);
+      } else if (tab === 'groupingTab') {
+        const { notationType } = getSettings();
+        document.getElementById('insert_data').innerHTML =
+          Contents.buildGroupingTabHtml(notationType ?? 'square');
+        bindElements(insertHandler);
+        deactivate('.insertel');
+        activateCurrentOrFirst(insertHandler);
       } else {
         document.getElementById('insert_data').innerHTML =
           Contents.insertTabHtml[tab];
