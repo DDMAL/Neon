@@ -1,3 +1,62 @@
+import { getFontData, buildGlyphIcon } from '../utils/GlyphIcons';
+
+export interface PrimitiveEntry {
+  id: string;
+  codepoint: string;
+  title: string;
+  pngFallback?: string;
+}
+
+export const SQUARE_PRIMITIVES: PrimitiveEntry[] = [
+  { id: 'punctum',       codepoint: 'E990', title: 'punctum' },
+  { id: 'virga',         codepoint: 'E996', title: 'virga' },
+  { id: 'virgaReversed', codepoint: 'E997', title: 'Reversed Virga', pngFallback: 'virga_reversed' },
+  { id: 'diamond',       codepoint: 'E991', title: 'inclinatum' },
+  { id: 'custos',        codepoint: 'EA06', title: 'custos' },
+  { id: 'cClef',         codepoint: 'E906', title: 'C Clef' },
+  { id: 'fClef',         codepoint: 'E902', title: 'F Clef' },
+  { id: 'gClef',         codepoint: 'E900', title: 'G Clef' },
+  { id: 'liquescentA',   codepoint: 'E994', title: 'Liquescent A' },
+  { id: 'liquescentC',   codepoint: 'E995', title: 'Liquescent C' },
+  { id: 'quilisma',      codepoint: 'E99B', title: 'quilisma' },
+  { id: 'oriscus',       codepoint: 'E99E', title: 'oriscus' },
+  { id: 'flat',          codepoint: 'E260', title: 'Flat', pngFallback: 'accidFlat' },
+  { id: 'natural',       codepoint: 'E261', title: 'Natural', pngFallback: 'accidNatural' },
+  { id: 'divLineMaxima', codepoint: 'E8F5', title: 'DivLine Maxima', pngFallback: 'divisio' },
+];
+
+export const HUFNAGEL_PRIMITIVES: PrimitiveEntry[] = [
+  { id: 'punctum',       codepoint: 'E990', title: 'punctum' },
+  { id: 'virga',         codepoint: 'E996', title: 'virga' },
+  { id: 'virgaReversed', codepoint: 'E997', title: 'UDV' },
+  { id: 'custos',        codepoint: 'EA06', title: 'custos' },
+  { id: 'cClef',         codepoint: 'E906', title: 'C Clef' },
+  { id: 'fClef',         codepoint: 'E902', title: 'F Clef ①' },
+  { id: 'liquescentA',   codepoint: 'E994', title: 'Liquescent up' },
+  { id: 'liquescentC',   codepoint: 'E995', title: 'Liquescent down' },
+];
+
+export async function buildPrimitiveTabHtml(notationType: string): Promise<string> {
+  const isHufnagel = notationType === 'hufnagel';
+  const zipUrl = isHufnagel
+    ? `${__ASSET_PREFIX__}assets/Hufnagel.zip`
+    : `${__ASSET_PREFIX__}assets/Bravura.zip`;
+  const primitives = isHufnagel ? HUFNAGEL_PRIMITIVES : SQUARE_PRIMITIVES;
+
+  const { fontName, bboxMap } = await getFontData(zipUrl);
+
+  return primitives.map(({ id, codepoint, title, pngFallback }) => {
+    const bbox = bboxMap.get(codepoint);
+    const fallbackPng = pngFallback ?? id;
+    const icon = bbox
+      ? `<span class="glyph-icon">${buildGlyphIcon(codepoint, fontName, bbox)}</span>`
+      : `<img src="${__ASSET_PREFIX__}assets/img/${fallbackPng}.png"/>`;
+    return `<p class="insert-element-container">
+            <button id="${id}" class="side-panel-btn insertel smallel" aria-label="${title}" title="${title}" data-codepoint="${codepoint}">${icon}</button>
+        </p>`;
+  }).join('\n');
+}
+
 /**
  * HTML for each insert tab (neume, grouping, clef, system, and division).
  */

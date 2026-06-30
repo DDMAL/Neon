@@ -31,6 +31,7 @@ export interface Settings {
   userMode: UserType;
   insertMode: InsertType;
   insertTab: InsertTabType;
+  notationType: string;
   selectionMode: SelectionType;
   debugMode: boolean;
   displayBBox: boolean;
@@ -56,6 +57,7 @@ const DEFAULT_SETTINGS: Settings = {
   userMode: 'edit',
   insertMode: 'punctum',
   insertTab: 'primitiveTab',
+  notationType: 'square',
   selectionMode: 'selBySyllable',
   debugMode: false,
   displayBBox: false,

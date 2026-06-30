@@ -36,19 +36,62 @@ export function bindInsertTabs(insertHandler: InsertHandler): void {
       deactivate('.insertTab');
       activate(tab, insertHandler);
       setSettings({ insertTab: tab as InsertTabType });
-      document.getElementById('insert_data').innerHTML =
-        Contents.insertTabHtml[tab];
-      bindElements(insertHandler);
-      deactivate('.insertel');
-      try {
-        const { insertMode } = getSettings();
-        activate(insertMode, insertHandler);
-      } catch (e) {
-        const firstOption = document.getElementsByClassName('insertel')[0];
-        activate(firstOption.id, insertHandler);
+      if (tab === 'primitiveTab') {
+        const { notationType } = getSettings();
+        setPrimitiveFallback(insertHandler);
+        renderPrimitiveTab(notationType ?? 'square', insertHandler);
+      } else {
+        document.getElementById('insert_data').innerHTML =
+          Contents.insertTabHtml[tab];
+        bindElements(insertHandler);
+        deactivate('.insertel');
+        activateCurrentOrFirst(insertHandler);
       }
     });
   });
+}
+
+export async function updatePrimitiveTab(notationType: string, insertHandler: InsertHandler): Promise<void> {
+  const insertData = document.getElementById('insert_data');
+  if (!insertData) return;
+  const { insertTab } = getSettings();
+  if (insertTab !== 'primitiveTab') return;
+  setPrimitiveFallback(insertHandler);
+  await renderPrimitiveTab(notationType, insertHandler);
+}
+
+function setPrimitiveFallback(insertHandler: InsertHandler): void {
+  const insertData = document.getElementById('insert_data');
+  if (!insertData) return;
+  insertData.innerHTML = Contents.insertTabHtml['primitiveTab'];
+  bindElements(insertHandler);
+  deactivate('.insertel');
+  activateCurrentOrFirst(insertHandler);
+}
+
+async function renderPrimitiveTab(notationType: string, insertHandler: InsertHandler): Promise<void> {
+  try {
+    const html = await Contents.buildPrimitiveTabHtml(notationType);
+    const insertData = document.getElementById('insert_data');
+    if (!insertData) return;
+    const { insertTab } = getSettings();
+    if (insertTab !== 'primitiveTab') return;
+    insertData.innerHTML = html;
+    bindElements(insertHandler);
+    deactivate('.insertel');
+    activateCurrentOrFirst(insertHandler);
+  } catch (err) {
+    console.error('[GlyphIcons] Failed to load glyphs, using PNG fallback:', err);
+  }
+}
+
+function activateCurrentOrFirst(insertHandler: InsertHandler): void {
+  const { insertMode } = getSettings();
+  const currentOption = document.getElementById(insertMode);
+  const firstOption = document.getElementsByClassName('insertel')[0];
+  const option = currentOption ?? firstOption;
+  if (!option) return;
+  activate(option.id, insertHandler);
 }
 
 /**
@@ -77,13 +120,14 @@ export function initInsertEditControls(): void {
 
     setSettings({ userMode: 'insert' });
 
-    (<HTMLButtonElement>document.querySelector('.insertel.is-active')).click();
+    const activeInsert = document.querySelector<HTMLButtonElement>('.insertel.is-active');
+    activeInsert?.click();
     editPanel
       .querySelector('.side-panel-btn.sel-by.is-active')
-      .classList.add('unfocused');
+      ?.classList.add('unfocused');
     insertPanel
       .querySelector('.side-panel-btn.insertel.is-active')
-      .classList.remove('unfocused');
+      ?.classList.remove('unfocused');
   });
 
   // event listener for when user clicks inside Edit panel
@@ -96,10 +140,10 @@ export function initInsertEditControls(): void {
 
     insertPanel
       .querySelector('.side-panel-btn.insertel.is-active')
-      .classList.add('unfocused');
+      ?.classList.add('unfocused');
     editPanel
       .querySelector('.side-panel-btn.sel-by.is-active')
-      .classList.remove('unfocused');
+      ?.classList.remove('unfocused');
   });
 
   insertHeading.addEventListener('click', (e) => {
@@ -171,8 +215,9 @@ export function initInsertEditControls(): void {
  */
 function activate(id: string, insertHandler: InsertHandler): void {
   const selectedTab = document.getElementById(id);
+  if (!selectedTab) return;
   selectedTab.classList.add('is-active');
-  if (document.getElementById(id).classList.contains('insertel')) {
+  if (selectedTab.classList.contains('insertel')) {
     insertHandler.insertActive(id);
     setSettings({ insertMode: id as InsertType });
   }

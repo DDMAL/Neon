@@ -500,6 +500,13 @@ export function setNotationTypeControls(neonView: NeonView): void {
   const dropdown = document.getElementById('notation-type-dropdown');
   const label = document.getElementById('notation-type-label');
 
+  function applyNotationType(type: string): void {
+    label.textContent = `\xA0- ${type[0].toUpperCase() + type.slice(1)}`;
+    setSettings({ notationType: type });
+    neonView.setNotationType(type);
+    document.dispatchEvent(new CustomEvent('notationtypechange', { detail: { type } }));
+  }
+
   function notationTypeClickaway(): void {
     document.body.removeEventListener('click', notationTypeClickaway);
     dropdown.classList.remove('is-active');
@@ -519,10 +526,11 @@ export function setNotationTypeControls(neonView: NeonView): void {
     document.getElementById(`notation-type-${type}`).addEventListener('click', () => {
       dropdown.classList.remove('is-active');
       document.body.removeEventListener('click', notationTypeClickaway);
-      label.textContent = `\xA0- ${type[0].toUpperCase() + type.slice(1)}`;
-      neonView.setNotationType(type);
+      applyNotationType(type);
     });
   });
+
+  applyNotationType(getSettings().notationType ?? 'square');
 }
 
 /**

@@ -807,6 +807,23 @@ input[type='checkbox'].debug-mode-toggle:checked + label:before {
   width: 42px;
   height: 42px;
 }
+.glyph-icon {
+  align-items: center;
+  display: flex;
+  height: 24px;
+  justify-content: center;
+  line-height: 0;
+  pointer-events: none;
+  width: 24px;
+}
+.glyph-icon svg {
+  display: block;
+  fill: currentColor;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  width: 100%;
+}
 .longel {
   width: 100px;
   height: 42px;
