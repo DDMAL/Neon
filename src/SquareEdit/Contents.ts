@@ -30,11 +30,16 @@ export const HUFNAGEL_PRIMITIVES: PrimitiveEntry[] = [
   { id: 'punctum',       codepoint: 'E990', title: 'punctum' },
   { id: 'virga',         codepoint: 'E996', title: 'virga', iconDy: -9 },
   { id: 'virgaReversed', codepoint: 'E997', title: 'UDV', iconDy: -9 },
+  { id: 'distropha',     codepoint: 'E99F', title: 'Distropha' },
   { id: 'custos',        codepoint: 'EA06', title: 'custos', iconDy: 9 },
   { id: 'cClef',         codepoint: 'E906', title: 'C Clef' },
   { id: 'fClef',         codepoint: 'E902', title: 'F Clef ①' },
+  { id: 'fClefHufnagel', codepoint: 'F49D', title: 'F Clef ②', pngFallback: 'fClef' },
   { id: 'liquescentA',   codepoint: 'E994', title: 'Liquescent up' },
   { id: 'liquescentC',   codepoint: 'E995', title: 'Liquescent down' },
+  { id: 'flat',          codepoint: 'E260', title: 'Flat', iconDy: 9, pngFallback: 'accidFlat' },
+  { id: 'natural',       codepoint: 'E261', title: 'Natural', pngFallback: 'accidNatural' },
+  { id: 'divLineMaxima', codepoint: 'E8F5', title: 'DivLine Maxima', pngFallback: 'divisio' },
 ];
 
 export async function buildPrimitiveTabHtml(notationType: string): Promise<string> {
@@ -44,14 +49,22 @@ export async function buildPrimitiveTabHtml(notationType: string): Promise<strin
     : `${__ASSET_PREFIX__}assets/Bravura.zip`;
   const primitives = isHufnagel ? HUFNAGEL_PRIMITIVES : SQUARE_PRIMITIVES;
 
-  const { fontName, bboxMap } = await getFontData(zipUrl);
+  const fontData = await getFontData(zipUrl);
+  const fallbackFontData = isHufnagel
+    ? await getFontData(`${__ASSET_PREFIX__}assets/Bravura.zip`)
+    : null;
 
   return primitives.map(({ id, codepoint, title, iconDy, pngFallback }) => {
-    const bbox = bboxMap.get(codepoint);
+    const bbox = fontData.bboxMap.get(codepoint);
+    const fallbackBBox = fallbackFontData?.bboxMap.get(codepoint);
     const fallbackPng = pngFallback ?? id;
     const iconStyle = iconDy ? ` style="transform: translateY(${iconDy}px)"` : '';
-    const icon = bbox
-      ? `<span class="glyph-icon"${iconStyle}>${buildGlyphIcon(codepoint, fontName, bbox)}</span>`
+    const icon = bbox || fallbackBBox
+      ? `<span class="glyph-icon"${iconStyle}>${buildGlyphIcon(
+        codepoint,
+        bbox ? fontData.fontName : fallbackFontData.fontName,
+        bbox ?? fallbackBBox,
+      )}</span>`
       : `<img src="${__ASSET_PREFIX__}assets/img/${fallbackPng}.png"/>`;
     return `<p class="insert-element-container">
             <button id="${id}" class="side-panel-btn insertel smallel" aria-label="${title}" title="${title}" data-codepoint="${codepoint}">${icon}</button>

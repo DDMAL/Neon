@@ -73,6 +73,7 @@ class InsertHandler {
       case 'torculus':
       case 'porrectus':
       case 'pressus':
+      case 'distropha':
         const contour = this.neonView.info.getContourByValue(
           buttonId.charAt(0).toUpperCase() + buttonId.slice(1),
         );
@@ -84,6 +85,10 @@ class InsertHandler {
       case 'gClef':
         this.type = 'clef';
         this.attributes = { shape: buttonId.charAt(0).toUpperCase() };
+        break;
+      case 'fClefHufnagel':
+        this.type = 'clef';
+        this.attributes = { shape: 'F', 'glyph.num': 'U+F49D' };
         break;
       case 'custos':
         this.type = 'custos';
