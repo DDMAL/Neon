@@ -59,7 +59,10 @@ export async function buildPrimitiveTabHtml(notationType: string): Promise<strin
     const fallbackBBox = fallbackFontData?.bboxMap.get(codepoint);
     const fallbackPng = pngFallback ?? id;
     const iconStyle = iconDy ? ` style="transform: translateY(${iconDy}px)"` : '';
-    const icon = bbox || fallbackBBox
+    // If the primary font lacks this glyph and there's a font-specific PNG override, use that
+    // before falling back to Bravura (which would show a Square notation glyph).
+    const useOverridePng = !bbox && pngFallback?.startsWith('hufnagel/');
+    const icon = !useOverridePng && (bbox || fallbackBBox)
       ? `<span class="glyph-icon"${iconStyle}>${buildGlyphIcon(
         codepoint,
         bbox ? fontData.fontName : fallbackFontData.fontName,
