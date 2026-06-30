@@ -154,7 +154,7 @@ function displayControlsPanel(handleZoom: ZoomHandler): string {
               <a aria-role="menuitem" class="dropdown-item" id="notation-type-square"
                 title="Font: Bravura. Fallback: Leipzig.">Square</a>
               <a aria-role="menuitem" class="dropdown-item" id="notation-type-hufnagel"
-                title="Font: Hufnagel (custom). Fallback: Leipzig.">Hufnagel</a>
+                title="Font: Hufnagel (custom). Fallback: Bravura.">Hufnagel</a>
             </div>
           </div>
         </div>
