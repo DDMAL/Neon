@@ -4,15 +4,16 @@ export interface PrimitiveEntry {
   id: string;
   codepoint: string;
   title: string;
+  iconDy?: number;
   pngFallback?: string;
 }
 
 export const SQUARE_PRIMITIVES: PrimitiveEntry[] = [
   { id: 'punctum',       codepoint: 'E990', title: 'punctum' },
-  { id: 'virga',         codepoint: 'E996', title: 'virga' },
-  { id: 'virgaReversed', codepoint: 'E997', title: 'Reversed Virga', pngFallback: 'virga_reversed' },
+  { id: 'virga',         codepoint: 'E996', title: 'virga', iconDy: -9 },
+  { id: 'virgaReversed', codepoint: 'E997', title: 'Reversed Virga', iconDy: -9, pngFallback: 'virga_reversed' },
   { id: 'diamond',       codepoint: 'E991', title: 'inclinatum' },
-  { id: 'custos',        codepoint: 'EA06', title: 'custos' },
+  { id: 'custos',        codepoint: 'EA06', title: 'custos', iconDy: 9 },
   { id: 'cClef',         codepoint: 'E906', title: 'C Clef' },
   { id: 'fClef',         codepoint: 'E902', title: 'F Clef' },
   { id: 'gClef',         codepoint: 'E900', title: 'G Clef' },
@@ -20,16 +21,16 @@ export const SQUARE_PRIMITIVES: PrimitiveEntry[] = [
   { id: 'liquescentC',   codepoint: 'E995', title: 'Liquescent C' },
   { id: 'quilisma',      codepoint: 'E99B', title: 'quilisma' },
   { id: 'oriscus',       codepoint: 'E99E', title: 'oriscus' },
-  { id: 'flat',          codepoint: 'E260', title: 'Flat', pngFallback: 'accidFlat' },
+  { id: 'flat',          codepoint: 'E260', title: 'Flat', iconDy: 9, pngFallback: 'accidFlat' },
   { id: 'natural',       codepoint: 'E261', title: 'Natural', pngFallback: 'accidNatural' },
   { id: 'divLineMaxima', codepoint: 'E8F5', title: 'DivLine Maxima', pngFallback: 'divisio' },
 ];
 
 export const HUFNAGEL_PRIMITIVES: PrimitiveEntry[] = [
   { id: 'punctum',       codepoint: 'E990', title: 'punctum' },
-  { id: 'virga',         codepoint: 'E996', title: 'virga' },
-  { id: 'virgaReversed', codepoint: 'E997', title: 'UDV' },
-  { id: 'custos',        codepoint: 'EA06', title: 'custos' },
+  { id: 'virga',         codepoint: 'E996', title: 'virga', iconDy: -9 },
+  { id: 'virgaReversed', codepoint: 'E997', title: 'UDV', iconDy: -9 },
+  { id: 'custos',        codepoint: 'EA06', title: 'custos', iconDy: 9 },
   { id: 'cClef',         codepoint: 'E906', title: 'C Clef' },
   { id: 'fClef',         codepoint: 'E902', title: 'F Clef ①' },
   { id: 'liquescentA',   codepoint: 'E994', title: 'Liquescent up' },
@@ -45,11 +46,12 @@ export async function buildPrimitiveTabHtml(notationType: string): Promise<strin
 
   const { fontName, bboxMap } = await getFontData(zipUrl);
 
-  return primitives.map(({ id, codepoint, title, pngFallback }) => {
+  return primitives.map(({ id, codepoint, title, iconDy, pngFallback }) => {
     const bbox = bboxMap.get(codepoint);
     const fallbackPng = pngFallback ?? id;
+    const iconStyle = iconDy ? ` style="transform: translateY(${iconDy}px)"` : '';
     const icon = bbox
-      ? `<span class="glyph-icon">${buildGlyphIcon(codepoint, fontName, bbox)}</span>`
+      ? `<span class="glyph-icon"${iconStyle}>${buildGlyphIcon(codepoint, fontName, bbox)}</span>`
       : `<img src="${__ASSET_PREFIX__}assets/img/${fallbackPng}.png"/>`;
     return `<p class="insert-element-container">
             <button id="${id}" class="side-panel-btn insertel smallel" aria-label="${title}" title="${title}" data-codepoint="${codepoint}">${icon}</button>
