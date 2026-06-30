@@ -152,9 +152,9 @@ function displayControlsPanel(handleZoom: ZoomHandler): string {
           <div class="dropdown-menu" id="notation-type-menu" role="menu">
             <div class="dropdown-content">
               <a aria-role="menuitem" class="dropdown-item" id="notation-type-square"
-                title="Font: Bravura (SMuFL). Fallback: Leipzig.">Square</a>
+                title="Font: Bravura. Fallback: Leipzig.">Square</a>
               <a aria-role="menuitem" class="dropdown-item" id="notation-type-hufnagel"
-                title="Font: Hufnagel (custom). Missing glyphs fall back to Leipzig.">Hufnagel</a>
+                title="Font: Hufnagel (custom). Fallback: Leipzig.">Hufnagel</a>
             </div>
           </div>
         </div>
