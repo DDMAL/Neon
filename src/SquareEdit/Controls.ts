@@ -67,6 +67,17 @@ export async function updatePrimitiveTab(notationType: string, insertHandler: In
   await renderPrimitiveTab(notationType, insertHandler);
 }
 
+export function updateGroupingTab(notationType: string, insertHandler: InsertHandler): void {
+  const insertData = document.getElementById('insert_data');
+  if (!insertData) return;
+  const { insertTab } = getSettings();
+  if (insertTab !== 'groupingTab') return;
+  insertData.innerHTML = Contents.buildGroupingTabHtml(notationType);
+  bindElements(insertHandler);
+  deactivate('.insertel');
+  activateCurrentOrFirst(insertHandler);
+}
+
 function setPrimitiveFallback(insertHandler: InsertHandler): void {
   const insertData = document.getElementById('insert_data');
   if (!insertData) return;
