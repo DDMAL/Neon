@@ -30,7 +30,7 @@ export const HUFNAGEL_PRIMITIVES: PrimitiveEntry[] = [
   { id: 'punctum',       codepoint: 'E990', title: 'punctum' },
   { id: 'virga',         codepoint: 'E996', title: 'virga', iconDy: -9 },
   { id: 'virgaReversed', codepoint: 'E997', title: 'UDV', iconDy: -9 },
-  { id: 'distropha',     codepoint: 'E99F', title: 'Distropha' },
+  { id: 'distropha',     codepoint: 'E99F', title: 'Distropha', pngFallback: 'hufnagel/distropha' },
   { id: 'custos',        codepoint: 'EA06', title: 'custos', iconDy: 9 },
   { id: 'cClef',         codepoint: 'E906', title: 'C Clef' },
   { id: 'fClef',         codepoint: 'E902', title: 'F Clef ①' },
