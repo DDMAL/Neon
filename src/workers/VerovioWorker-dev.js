@@ -66,7 +66,7 @@ async function handleNeonEvent(evt) {
         if (data.fontType === 'hufnagel') {
           const b64 = await fetchHufnagelBase64();
           console.log('[VerovioWorker] b64 length:', b64.length);
-          toolkit.setOptions({ ...baseOptions, font: 'Hufnagel', fontAddCustom: [b64] });
+          toolkit.setOptions({ ...baseOptions, font: 'Hufnagel', fontAddCustom: [b64], fontFallback: 'Bravura' });
           console.log('[VerovioWorker] setOptions Hufnagel done');
         } else {
           toolkit.setOptions({ ...baseOptions, font: 'Bravura', fontAddCustom: '' });
