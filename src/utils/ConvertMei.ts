@@ -26,42 +26,49 @@ function copyAttributes(src: Element, dst: Element): void {
 
 // --- BEGIN TEMPORARY Verovio compatibility shim (see issue #1360) ---
 //
-// Verovio does not yet accept notationtype="neume.hufnagel" on <staffDef>
-// (it segfaults on it) and notationtype="neume.square" has never been
-// exercised either (every existing file/fixture only uses bare "neume").
-// Verovio also does not render @con. So Neon's canonical MEI (what gets
-// downloaded/saved) keeps the correct staffDef notationtype
-// ("neume.hufnagel" / "neume.square") and, for Hufnagel, @con="e"
-// connections on <nc>. But whatever is actually handed to the Verovio
-// worker must always use bare notationtype="neume" (the Hufnagel/Square
-// look is forced via font substitution instead - see setNotationFont /
-// VerovioWorker-dev.js, which this shim does not touch) and, for
-// Hufnagel, @ligated="true" connections (the attribute Verovio's own
-// toggleLigature editor action already understands and renders
-// correctly).
+// Verovio segfaults on notationtype="neume.hufnagel" on <staffDef>, and
+// notationtype="neume.square" has never been exercised either (every
+// existing file/fixture only uses bare "neume"). So Neon's canonical MEI
+// (what gets downloaded/saved) keeps the correct staffDef notationtype
+// ("neume.hufnagel" / "neume.square"), but whatever is actually handed to
+// the Verovio worker must always use bare notationtype="neume" (the
+// Hufnagel/Square look is forced via font substitution instead - see
+// setNotationFont / VerovioWorker-dev.js, which this shim does not touch).
+//
+// @con/@ligated on <nc> are NOT touched on the way INTO Verovio, for either
+// notation type. Square's connections are Square's own real @ligated
+// (needed for Verovio's ligature-merge glyph rendering - that mechanism is
+// real and unrelated to this shim). Hufnagel's connections are rendered
+// from each note's own individual glyph (e.g. virga + UDV are two separate
+// primitives, not a merged glyph) - @con is pure semantic metadata Verovio
+// does not need for rendering Hufnagel at all. An earlier version of this
+// shim auto-derived @ligated from @con before Verovio to try to force the
+// same merge-rendering Square uses, and that was simply wrong: it made
+// Verovio invoke the Square ligature-glyph codepath, which the Hufnagel
+// font substitution does not cover, corrupting the render (UDV disappeared,
+// its partner note misshapen). Removed for good - do not reintroduce.
+//
+// The one place @con/@ligated IS still touched: if Verovio's own
+// toggleLigature editor action is used on a Hufnagel document (reusing
+// Square's button, planned but not yet wired up) and leaves @ligated="true"
+// behind after live editing, that must be converted back to @con="e" before
+// download/save, since "ligature" must never appear in Hufnagel's canonical
+// MEI. This is a no-op for documents that never went through that action.
 //
 // This entire block can be deleted once Verovio natively supports
-// notationtype="neume.hufnagel"/"neume.square" and @con.
+// notationtype="neume.hufnagel"/"neume.square".
 const HUFNAGEL_NOTATIONTYPE = 'neume.hufnagel';
 const SQUARE_NOTATIONTYPE = 'neume.square';
 const HUFNAGEL_CON_VALUE = 'e';
 
 // Strips a "neume.hufnagel"/"neume.square" staffDef notationtype down to
-// bare "neume", returning which one it was (or null if already bare/other).
-function stripStaffDefNotationTypeSuffix(
-  mei: Element,
-): 'hufnagel' | 'square' | null {
+// bare "neume".
+function stripStaffDefNotationTypeSuffix(mei: Element): void {
   const staffDef = mei.querySelector('staffDef');
   const value = staffDef?.getAttribute('notationtype');
-  if (value === HUFNAGEL_NOTATIONTYPE) {
+  if (value === HUFNAGEL_NOTATIONTYPE || value === SQUARE_NOTATIONTYPE) {
     staffDef.setAttribute('notationtype', 'neume');
-    return 'hufnagel';
   }
-  if (value === SQUARE_NOTATIONTYPE) {
-    staffDef.setAttribute('notationtype', 'neume');
-    return 'square';
-  }
-  return null;
 }
 
 // Restores a bare staffDef notationtype back to "neume.hufnagel"/"neume.square"
@@ -79,38 +86,26 @@ function restoreStaffDefNotationTypeSuffix(
     );
 }
 
-function convertConToLigated(mei: Element): void {
-  for (const nc of Array.from(mei.getElementsByTagName('nc'))) {
-    if (nc.getAttribute('con') === HUFNAGEL_CON_VALUE) {
-      nc.removeAttribute('con');
-      nc.setAttribute('ligated', 'true');
-    }
-  }
-}
-
+// Hufnagel only: reverse of Verovio's own toggleLigature editor action. For
+// each adjacent pair of @ligated <nc>s, remove @ligated from both and
+// restore @con="e" on the second one only.
 function convertLigatedToCon(mei: Element): void {
-  for (const nc of Array.from(mei.getElementsByTagName('nc'))) {
-    if (nc.getAttribute('ligated')) {
-      nc.removeAttribute('ligated');
-      nc.setAttribute('con', HUFNAGEL_CON_VALUE);
+  const ncs = Array.from(mei.getElementsByTagName('nc'));
+  let idx = 0;
+  while (idx < ncs.length) {
+    if (
+      ncs[idx].getAttribute('ligated') &&
+      idx + 1 < ncs.length &&
+      ncs[idx + 1].getAttribute('ligated')
+    ) {
+      ncs[idx].removeAttribute('ligated');
+      ncs[idx + 1].removeAttribute('ligated');
+      ncs[idx + 1].setAttribute('con', HUFNAGEL_CON_VALUE);
+      idx += 2;
+    } else {
+      idx += 1;
     }
   }
-}
-
-// Neon's canonical encoding -> what Verovio can safely load/render.
-function stripHufnagelNotation(mei: Element): void {
-  const notationType = stripStaffDefNotationTypeSuffix(mei);
-  if (notationType === 'hufnagel') convertConToLigated(mei);
-}
-
-// What Verovio hands back -> Neon's canonical encoding. Verovio's own copy
-// has no memory of being Hufnagel/Square once stripped above, so the
-// caller must pass in the notation type Neon already knows it's displaying
-// (e.g. getSettings().notationType), rather than trying to infer it here.
-function restoreHufnagelNotation(mei: Element, notationType?: string): void {
-  if (notationType !== 'hufnagel' && notationType !== 'square') return;
-  restoreStaffDefNotationTypeSuffix(mei, notationType);
-  if (notationType === 'hufnagel') convertLigatedToCon(mei);
 }
 
 // String-in/string-out wrappers for callers (NeonCore.ts) that only have
@@ -118,17 +113,24 @@ function restoreHufnagelNotation(mei: Element, notationType?: string): void {
 export function stripHufnagelForVerovio(meiString: string): string {
   const parser = new DOMParser();
   const meiDoc = parser.parseFromString(meiString, 'text/xml');
-  stripHufnagelNotation(meiDoc.documentElement);
+  stripStaffDefNotationTypeSuffix(meiDoc.documentElement);
   return vkbeautify.xml(new XMLSerializer().serializeToString(meiDoc));
 }
 
+// Used by Save (NeonCore.updateDatabase) - this is Neon's own internal
+// working copy, which gets fed straight back into Verovio on next load, so
+// it must faithfully keep whatever Verovio's live in-memory document
+// actually has (including @ligated from a real toggleLigature action, and
+// whatever else that action changed, e.g. clearing @tilt) rather than
+// "fixing" it to the canonical @con-only form. Only @notationtype is
+// restored here, since Verovio itself never remembers that.
 export function restoreHufnagelForStorage(
   meiString: string,
   notationType?: string,
 ): string {
   const parser = new DOMParser();
   const meiDoc = parser.parseFromString(meiString, 'text/xml');
-  restoreHufnagelNotation(meiDoc.documentElement, notationType);
+  restoreStaffDefNotationTypeSuffix(meiDoc.documentElement, notationType);
   return vkbeautify.xml(new XMLSerializer().serializeToString(meiDoc));
 }
 // --- END TEMPORARY Verovio compatibility shim ---
@@ -260,7 +262,10 @@ export function convertToNeon(
     scoreDef.insertAdjacentElement('afterend', colLayout);
   }
 
-  restoreHufnagelNotation(mei, notationType);
+  restoreStaffDefNotationTypeSuffix(mei, notationType);
+  if (notationType === 'hufnagel') {
+    convertLigatedToCon(mei);
+  }
 
   return vkbeautify.xml(serializer.serializeToString(meiDoc));
 

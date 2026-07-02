@@ -178,12 +178,13 @@ function createPairedFolio(
 
 export async function handleUploadAllDocuments(
   currentFolder: IFolder,
+  notationType: string,
 ): Promise<{ status: string; value?: string; reason?: any }[]> {
   const folioPromises = fm
     .getFolios()
     .map(async ([name, mei, image]: [string, File, File]) => {
       const id = uuidv4();
-      return await uploadFolio(id, name, mei, image, currentFolder);
+      return await uploadFolio(id, name, mei, image, currentFolder, notationType);
     });
 
   const manuscriptPromises = []; //fm.getManuscripts()
@@ -208,13 +209,14 @@ async function uploadFolio(
   mei: File,
   image: File,
   currentFolder: IFolder,
+  notationType: string,
 ): Promise<string | null> {
   const newName = fnConflictHandler(
     name,
     FileSystemTools.getAllNames(currentFolder),
   );
   return (
-    createManifest(id, newName, mei, image)
+    createManifest(id, newName, mei, image, notationType)
       .then((manifest) => {
         const manifestBlob = new Blob([JSON.stringify(manifest, null, 2)], {
           type: 'application/ld+json',

@@ -26,11 +26,26 @@ export async function fetchUploads(): Promise<uploadsInfo> {
   }
 }
 
+// Sets <staffDef notationtype="neume.square"/"neume.hufnagel"> on the given
+// MEI text. This is the only place a freshly-uploaded/created MEI file gets
+// its notation type recorded - the Edit page's notation type dropdown does
+// not lock or otherwise depend on this; it can still be changed afterward.
+function setMeiNotationType(meiText: string, notationType: string): string {
+  const parser = new DOMParser();
+  const serializer = new XMLSerializer();
+  const meiDoc = parser.parseFromString(meiText, 'text/xml');
+  meiDoc.documentElement
+    .querySelector('staffDef')
+    ?.setAttribute('notationtype', `neume.${notationType}`);
+  return serializer.serializeToString(meiDoc);
+}
+
 export function createManifest(
   id: string,
   title: string,
   mei: File,
   bg: File,
+  notationType: string,
 ): Promise<string> {
   return new Promise(async (resolve) => {
     const manifest = JSON.parse(JSON.stringify(localManifest));
@@ -38,12 +53,12 @@ export function createManifest(
     manifest['title'] = title;
     manifest['timestamp'] = new Date().toISOString();
 
-    const meiPromise = new Promise((resolve) => {
+    const meiTextPromise = new Promise<string>((resolve) => {
       const meiReader = new FileReader();
       meiReader.addEventListener('load', () => {
-        resolve(meiReader.result);
+        resolve(meiReader.result as string);
       });
-      meiReader.readAsDataURL(mei);
+      meiReader.readAsText(mei);
     });
 
     const bgPromise = new Promise((resolve) => {
@@ -54,8 +69,21 @@ export function createManifest(
       bgReader.readAsDataURL(bg);
     });
 
-    const meiUri = await meiPromise;
+    const meiText = await meiTextPromise;
+    const meiUri =
+      'data:application/mei+xml;base64,' +
+      window.btoa(setMeiNotationType(meiText, notationType));
     const bgUri = await bgPromise;
+
+    // Pre-seed this folio's LocalSettings entry (keyed by id, same format
+    // LocalSettings itself writes) so the Editing page's notation type
+    // dropdown reflects this choice on first open. The Editing page never
+    // reads @notationtype back out of the MEI to initialize the dropdown -
+    // it relies solely on this per-folio localStorage entry - and by the
+    // time it's loaded there, the MEI's real notationtype has already been
+    // stripped to a generic value for Verovio (see ConvertMei.ts), so it
+    // can't be recovered from the MEI at that point either.
+    window.localStorage.setItem(id, JSON.stringify({ notationType }));
 
     manifest['image'] = bgUri;
     manifest['mei_annotations'] = [
