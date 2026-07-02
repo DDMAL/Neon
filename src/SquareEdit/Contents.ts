@@ -28,10 +28,10 @@ export const SQUARE_PRIMITIVES: PrimitiveEntry[] = [
 
 export const HUFNAGEL_PRIMITIVES: PrimitiveEntry[] = [
   { id: 'punctum',       codepoint: 'E990', title: 'punctum' },
-  { id: 'virga',         codepoint: 'E996', title: 'virga', iconDy: -9 },
-  { id: 'virgaReversed', codepoint: 'E997', title: 'UDV', iconDy: -9 },
+  { id: 'virga',         codepoint: 'E996', title: 'virga', iconDy: -13 },
+  { id: 'virgaReversed', codepoint: 'E997', title: 'UDV', iconDy: 13 },
   { id: 'distropha',     codepoint: 'E99F', title: 'Distropha', pngFallback: 'hufnagel/distropha' },
-  { id: 'custos',        codepoint: 'EA06', title: 'custos', iconDy: 9 },
+  { id: 'custos',        codepoint: 'EA06', title: 'custos', iconDy: 6 },
   { id: 'cClef',         codepoint: 'E906', title: 'C Clef' },
   { id: 'fClef',         codepoint: 'E902', title: 'F Clef' },
   { id: 'liquescentA',   codepoint: 'E994', title: 'Liquescent up' },
