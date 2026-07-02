@@ -187,7 +187,7 @@ class NeonView {
   export(): Promise<string | ArrayBuffer> {
     return new Promise((resolve, reject): void => {
       this.core
-        .updateDatabase()
+        .updateDatabase(getSettings().notationType)
         .then(() => {
           this.manifest['mei_annotations'] = this.core.getAnnotations();
           this.manifest.timestamp = new Date().toISOString();
@@ -212,7 +212,7 @@ class NeonView {
    */
   save(): Promise<void> {
     setSavedStatus(true);
-    return this.core.updateDatabase();
+    return this.core.updateDatabase(getSettings().notationType);
   }
 
   /**

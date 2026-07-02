@@ -2,6 +2,8 @@ import {
   checkOutOfBoundsGlyphs,
   convertToVerovio,
   removeColumnLabel,
+  restoreHufnagelForStorage,
+  stripHufnagelForVerovio,
 } from './utils/ConvertMei';
 import * as Validation from './Validation';
 import VerovioWrapper from './VerovioWrapper';
@@ -268,6 +270,11 @@ class NeonCore {
    */
   loadData(pageURI: string, data: string, dirty = false): Promise<void> {
     Validation.sendForValidation(removeColumnLabel(data));
+    // TEMPORARY Verovio compatibility shim (see ConvertMei.ts) - every path
+    // into the worker funnels through here, so this is the one place that
+    // unconditionally keeps notationtype="neume.hufnagel"/"neume.square"
+    // and @con from ever reaching Verovio.
+    data = stripHufnagelForVerovio(data);
     this.lastPageLoaded = pageURI;
     /* A promise is returned that will resolve to the result of the action.
      * However the value that is must return comes from the Web Worker and
@@ -575,7 +582,7 @@ class NeonCore {
    * This is based on the data stored in the cache. To save time,
    * only entries marked as dirty will be updated.
    */
-  async updateDatabase(): Promise<void> {
+  async updateDatabase(notationType?: string): Promise<void> {
     type Doc = PouchDB.Core.GetMeta &
       PouchDB.Core.IdMeta & { body: string; timestamp: string };
     let updateTimestamp = false;
@@ -587,6 +594,14 @@ class NeonCore {
         const index = this.annotations.findIndex((elem) => {
           return elem.target === key;
         });
+        // TEMPORARY Verovio compatibility shim (see ConvertMei.ts) - restore
+        // the canonical notationtype/@con encoding before persisting outside
+        // of Verovio's control. Does not mutate value.mei: the live cache
+        // entry must stay in Verovio-safe form for subsequent reloads/edits.
+        const meiForStorage = restoreHufnagelForStorage(
+          value.mei,
+          notationType,
+        );
         // try to update server with PUT request (if applicable)
         // this is simpler than expecting a specific API on the server
         // and using POST requests, although that would be better if there
@@ -599,23 +614,25 @@ class NeonCore {
             .fetch(this.annotations[index].body, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/mei+xml' },
-              body: value.mei,
+              body: meiForStorage,
             })
             .then((response) => {
               if (response.ok) {
                 uri = this.annotations[index].body;
               } else {
                 uri =
-                  'data:application/mei+xml;base64,' + window.btoa(value.mei);
+                  'data:application/mei+xml;base64,' +
+                  window.btoa(meiForStorage);
               }
             })
             .catch((err) => {
               console.error(err);
               console.warn('Falling back to data URI');
-              uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
+              uri =
+                'data:application/mei+xml;base64,' + window.btoa(meiForStorage);
             });
         } else {
-          uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
+          uri = 'data:application/mei+xml;base64,' + window.btoa(meiForStorage);
         }
         // Update URI in annotations, database
         this.annotations[index].body = uri;
