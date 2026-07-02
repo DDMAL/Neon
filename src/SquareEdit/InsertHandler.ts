@@ -86,10 +86,6 @@ class InsertHandler {
         this.type = 'clef';
         this.attributes = { shape: buttonId.charAt(0).toUpperCase() };
         break;
-      case 'fClefHufnagel':
-        this.type = 'clef';
-        this.attributes = { shape: 'F', 'glyph.num': 'U+F49D' };
-        break;
       case 'custos':
         this.type = 'custos';
         this.attributes = null;

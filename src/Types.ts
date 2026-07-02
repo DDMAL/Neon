@@ -392,7 +392,6 @@ export type InsertType =
   | 'custos'
   | 'cClef'
   | 'fClef'
-  | 'fClefHufnagel'
   | 'gClef'
   | 'liquescentA'
   | 'liquescentC'
