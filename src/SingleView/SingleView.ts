@@ -31,6 +31,9 @@ class SingleView implements ViewInterface {
    */
   constructor(neonView: NeonView, panel: DisplayConstructable, image: string) {
     this.neonView = neonView;
+    document.addEventListener('notationtypechange', (evt: CustomEvent) => {
+      this.neonView.setNotationType(evt.detail.type);
+    });
     this.container = document.getElementById('container');
     this.updateCallbacks = new Array(0);
     // Group will contain the image and the rendered SVG
@@ -110,7 +113,7 @@ class SingleView implements ViewInterface {
 
   onSVGLoad(): void {
     this.setViewEventHandlers();
-    this.displayPanel.setDisplayListeners(this.neonView);
+    this.displayPanel.setDisplayListeners();
   }
 
   /**

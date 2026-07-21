@@ -5,7 +5,6 @@ import ZoomHandler from '../SingleView/Zoom';
 import { GroupingType } from '../Types';
 import { getSettings, setSettings } from '../utils/LocalSettings';
 import * as d3 from 'd3';
-import NeonView from '../NeonView';
 
 let lastGlyphOpacity: number, lastImageOpacity: number, lastCircleSize: number;
 
@@ -494,17 +493,18 @@ function setBurgerControls(): void {
 
 /**
  * Set click listeners for Notation Type dropdown (Square / Hufnagel).
- * Currently only updates the label and logs to console; engine wiring is next.
+ * Update the stored setting and notify the active view when the type changes.
  */
-export function setNotationTypeControls(neonView: NeonView): void {
+export function setNotationTypeControls(): void {
   const dropdown = document.getElementById('notation-type-dropdown');
   const label = document.getElementById('notation-type-label');
 
   function applyNotationType(type: string): void {
     label.textContent = `\xA0- ${type[0].toUpperCase() + type.slice(1)}`;
     setSettings({ notationType: type });
-    neonView.setNotationType(type);
-    document.dispatchEvent(new CustomEvent('notationtypechange', { detail: { type } }));
+    document.dispatchEvent(
+      new CustomEvent('notationtypechange', { detail: { type } }),
+    );
   }
 
   function notationTypeClickaway(): void {
@@ -617,7 +617,6 @@ export function loadHighlightSettings(): void {
 export function initDisplayControls(
   meiClassName: string,
   background: string,
-  neonView: NeonView,
 ): void {
   setGlyphOpacityControls(meiClassName);
   setBgOpacityControls(background);
@@ -626,7 +625,7 @@ export function initDisplayControls(
   setHighlightKeyControls();
   setDisplayAllListener();
   loadHighlightSettings();
-  setNotationTypeControls(neonView);
+  setNotationTypeControls();
 
   const displayContents = document.getElementById('displayContents');
   const toggleDisplay = document.getElementById('toggleDisplay');

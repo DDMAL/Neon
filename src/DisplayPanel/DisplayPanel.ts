@@ -2,7 +2,6 @@ import * as DisplayControls from './DisplayControls';
 import ZoomHandler from '../SingleView/Zoom';
 import { DisplayInterface, ViewInterface } from '../Interfaces';
 import { getSettings } from '../utils/LocalSettings';
-import NeonView from '../NeonView';
 
 /**
  * Return the HTML for the display panel.
@@ -204,12 +203,12 @@ class DisplayPanel implements DisplayInterface {
   /**
    * Apply event listeners related to the DisplayPanel.
    */
-  setDisplayListeners(neonView: NeonView): void {
+  setDisplayListeners(): void {
     if (this.zoomHandler) {
       // Zoom handler stuff
       DisplayControls.setZoomControls(this.zoomHandler);
     }
-    DisplayControls.initDisplayControls(this.meiClass, this.background, neonView);
+    DisplayControls.initDisplayControls(this.meiClass, this.background);
   }
 
   /**
