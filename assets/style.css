@@ -6,6 +6,20 @@
 
 @import url('https://unpkg.com/diva.js@6.0.2/build/diva.css');
 
+@font-face {
+  font-family: 'Bravura';
+  src: url('./fonts/Bravura.woff2') format('woff2');
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Hufnagel';
+  src: url('./fonts/Hufnagel.woff2') format('woff2');
+  font-style: normal;
+  font-weight: normal;
+}
+
 /* ----------------------- */
 /* General styles
 /* ----------------------- */

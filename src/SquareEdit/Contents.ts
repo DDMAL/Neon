@@ -42,14 +42,18 @@ export const HUFNAGEL_PRIMITIVES: PrimitiveEntry[] = [
 
 export async function buildPrimitiveTabHtml(notationType: string): Promise<string> {
   const isHufnagel = notationType === 'hufnagel';
-  const zipUrl = isHufnagel
-    ? `${__ASSET_PREFIX__}assets/Hufnagel.zip`
-    : `${__ASSET_PREFIX__}assets/Bravura.zip`;
+  const fontName = isHufnagel ? 'Hufnagel' : 'Bravura';
   const primitives = isHufnagel ? HUFNAGEL_PRIMITIVES : SQUARE_PRIMITIVES;
 
-  const fontData = await getFontData(zipUrl);
+  const fontData = await getFontData(
+    fontName,
+    `${__ASSET_PREFIX__}assets/fonts/${fontName}.xml`,
+  );
   const fallbackFontData = isHufnagel
-    ? await getFontData(`${__ASSET_PREFIX__}assets/Bravura.zip`)
+    ? await getFontData(
+      'Bravura',
+      `${__ASSET_PREFIX__}assets/fonts/Bravura.xml`,
+    )
     : null;
 
   return primitives.map(({ id, codepoint, title, iconDy, pngFallback }) => {

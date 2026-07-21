@@ -1,21 +1,7 @@
+importScripts('./FontLoader.js');
+
 let toolkit;
 const backlog = [];
-
-let hufnagelBase64Promise = null;
-
-function fetchHufnagelBase64() {
-  if (!hufnagelBase64Promise) {
-    hufnagelBase64Promise = fetch('../assets/Hufnagel.zip')
-      .then(r => r.arrayBuffer())
-      .then(buf => {
-        const bytes = new Uint8Array(buf);
-        let binary = '';
-        for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
-        return btoa(binary);
-      });
-  }
-  return hufnagelBase64Promise;
-}
 
 /**
  * Parse and respond to messages sent by NeonCore.
@@ -62,7 +48,7 @@ async function handleNeonEvent(evt) {
       };
       try {
         if (data.fontType === 'hufnagel') {
-          const b64 = await fetchHufnagelBase64();
+          const b64 = await fetchFontBase64('../assets/Hufnagel.zip');
           console.log('[VerovioWorker] b64 length:', b64.length);
           toolkit.setOptions({ ...baseOptions, font: 'Hufnagel', fontAddCustom: [b64], fontFallback: 'Bravura' });
           console.log('[VerovioWorker] setOptions Hufnagel done');

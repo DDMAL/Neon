@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const JSZip = require('jszip');
-
 interface BBox { x: number; y: number; w: number; h: number; }
 
 interface FontData {
@@ -12,44 +9,38 @@ const ICON_SIZE = 24;
 
 const cache = new Map<string, Promise<FontData>>();
 
-async function loadFontData(zipUrl: string): Promise<FontData> {
-  const response = await fetch(zipUrl);
-  const buf = await response.arrayBuffer();
-  const zip = await JSZip.loadAsync(buf);
-  const fontName = zipUrl.split('/').pop()!.replace('.zip', '');
-
-  // Inject font CSS
-  const cssFile = zip.file(`${fontName}.css`);
-  if (cssFile) {
-    const css = await cssFile.async('string');
-    const style = document.createElement('style');
-    style.textContent = css;
-    document.head.appendChild(style);
-  }
-
-  // Parse bounding boxes
+async function loadFontData(
+  fontName: string,
+  bboxUrl: string,
+): Promise<FontData> {
+  const response = await fetch(bboxUrl);
+  if (!response.ok) throw new Error(`Unable to load ${bboxUrl}`);
+  const xml = await response.text();
   const bboxMap = new Map<string, BBox>();
-  const bboxFile = zip.file(`${fontName}.xml`);
-  if (bboxFile) {
-    const xml = await bboxFile.async('string');
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(xml, 'text/xml');
-    doc.querySelectorAll('g[c]').forEach(el => {
-      const c = el.getAttribute('c');
-      const x = parseFloat(el.getAttribute('x') ?? '0');
-      const y = parseFloat(el.getAttribute('y') ?? '0');
-      const w = parseFloat(el.getAttribute('w') ?? '0');
-      const h = parseFloat(el.getAttribute('h') ?? '0');
-      if (c && w > 0 && h > 0) bboxMap.set(c, { x, y, w, h });
-    });
-  }
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xml, 'text/xml');
+  doc.querySelectorAll('g[c]').forEach(el => {
+    const c = el.getAttribute('c');
+    const x = parseFloat(el.getAttribute('x') ?? '0');
+    const y = parseFloat(el.getAttribute('y') ?? '0');
+    const w = parseFloat(el.getAttribute('w') ?? '0');
+    const h = parseFloat(el.getAttribute('h') ?? '0');
+    if (c && w > 0 && h > 0) bboxMap.set(c, { x, y, w, h });
+  });
+
+  await document.fonts.load(`1000px "${fontName}"`);
 
   return { fontName, bboxMap };
 }
 
-export function getFontData(zipUrl: string): Promise<FontData> {
-  if (!cache.has(zipUrl)) cache.set(zipUrl, loadFontData(zipUrl));
-  return cache.get(zipUrl)!;
+export function getFontData(
+  fontName: string,
+  bboxUrl: string,
+): Promise<FontData> {
+  if (!cache.has(fontName)) {
+    cache.set(fontName, loadFontData(fontName, bboxUrl));
+  }
+  return cache.get(fontName)!;
 }
 
 export function buildGlyphIcon(codepoint: string, fontName: string, bbox: BBox): string {
