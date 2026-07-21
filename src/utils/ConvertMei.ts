@@ -61,31 +61,6 @@ const HUFNAGEL_NOTATIONTYPE = 'neume.hufnagel';
 const SQUARE_NOTATIONTYPE = 'neume.square';
 const HUFNAGEL_CON_VALUE = 'e';
 
-// Strips a "neume.hufnagel"/"neume.square" staffDef notationtype down to
-// bare "neume".
-function stripStaffDefNotationTypeSuffix(mei: Element): void {
-  const staffDef = mei.querySelector('staffDef');
-  const value = staffDef?.getAttribute('notationtype');
-  if (value === HUFNAGEL_NOTATIONTYPE || value === SQUARE_NOTATIONTYPE) {
-    staffDef.setAttribute('notationtype', 'neume');
-  }
-}
-
-// Restores a bare staffDef notationtype back to "neume.hufnagel"/"neume.square"
-// given the notation type Neon already knows it's displaying.
-function restoreStaffDefNotationTypeSuffix(
-  mei: Element,
-  notationType?: string,
-): void {
-  if (notationType !== 'hufnagel' && notationType !== 'square') return;
-  mei
-    .querySelector('staffDef')
-    ?.setAttribute(
-      'notationtype',
-      notationType === 'hufnagel' ? HUFNAGEL_NOTATIONTYPE : SQUARE_NOTATIONTYPE,
-    );
-}
-
 // Hufnagel only: reverse of Verovio's own toggleLigature editor action. For
 // each adjacent pair of @ligated <nc>s, remove @ligated from both and
 // restore @con="e" on the second one only.
@@ -113,7 +88,16 @@ function convertLigatedToCon(mei: Element): void {
 export function stripHufnagelForVerovio(meiString: string): string {
   const parser = new DOMParser();
   const meiDoc = parser.parseFromString(meiString, 'text/xml');
-  stripStaffDefNotationTypeSuffix(meiDoc.documentElement);
+  const staffDef = meiDoc.documentElement.querySelector('staffDef');
+  const notationType = staffDef?.getAttribute('notationtype');
+
+  if (
+    notationType === HUFNAGEL_NOTATIONTYPE ||
+    notationType === SQUARE_NOTATIONTYPE
+  ) {
+    staffDef.setAttribute('notationtype', 'neume');
+  }
+
   return vkbeautify.xml(new XMLSerializer().serializeToString(meiDoc));
 }
 
@@ -130,7 +114,12 @@ export function restoreHufnagelForStorage(
 ): string {
   const parser = new DOMParser();
   const meiDoc = parser.parseFromString(meiString, 'text/xml');
-  restoreStaffDefNotationTypeSuffix(meiDoc.documentElement, notationType);
+  if (notationType === 'hufnagel' || notationType === 'square') {
+    meiDoc.documentElement
+      .querySelector('staffDef')
+      ?.setAttribute('notationtype', `neume.${notationType}`);
+  }
+
   return vkbeautify.xml(new XMLSerializer().serializeToString(meiDoc));
 }
 // --- END TEMPORARY Verovio compatibility shim ---
@@ -262,7 +251,12 @@ export function convertToNeon(
     scoreDef.insertAdjacentElement('afterend', colLayout);
   }
 
-  restoreStaffDefNotationTypeSuffix(mei, notationType);
+  if (notationType === 'hufnagel' || notationType === 'square') {
+    mei
+      .querySelector('staffDef')
+      ?.setAttribute('notationtype', `neume.${notationType}`);
+  }
+
   if (notationType === 'hufnagel') {
     convertLigatedToCon(mei);
   }

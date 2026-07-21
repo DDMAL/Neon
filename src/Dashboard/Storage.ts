@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import PouchDB from 'pouchdb';
 import { AllDocs, Doc, uploadsInfo } from '../Types';
 import * as localManifest from '../../assets/manifest.json';
+import { restoreHufnagelForStorage } from '../utils/ConvertMei';
 
 export const db = new PouchDB('Neon-User-Storage');
 
@@ -24,20 +25,6 @@ export async function fetchUploads(): Promise<uploadsInfo> {
     console.log("Couldn't fetch uploaded documents", err.message);
     return [];
   }
-}
-
-// Sets <staffDef notationtype="neume.square"/"neume.hufnagel"> on the given
-// MEI text. This is the only place a freshly-uploaded/created MEI file gets
-// its notation type recorded - the Edit page's notation type dropdown does
-// not lock or otherwise depend on this; it can still be changed afterward.
-function setMeiNotationType(meiText: string, notationType: string): string {
-  const parser = new DOMParser();
-  const serializer = new XMLSerializer();
-  const meiDoc = parser.parseFromString(meiText, 'text/xml');
-  meiDoc.documentElement
-    .querySelector('staffDef')
-    ?.setAttribute('notationtype', `neume.${notationType}`);
-  return serializer.serializeToString(meiDoc);
 }
 
 export function createManifest(
@@ -72,7 +59,7 @@ export function createManifest(
     const meiText = await meiTextPromise;
     const meiUri =
       'data:application/mei+xml;base64,' +
-      window.btoa(setMeiNotationType(meiText, notationType));
+      window.btoa(restoreHufnagelForStorage(meiText, notationType));
     const bgUri = await bgPromise;
 
     // Pre-seed this folio's LocalSettings entry (keyed by id, same format
