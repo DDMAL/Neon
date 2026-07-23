@@ -192,6 +192,13 @@ export type ToggleLigatureAction = {
   };
 };
 
+export type ToggleNeumeConnectionAction = {
+  action: 'toggleNeumeConnection';
+  param: {
+    elementIds: string[];
+  };
+};
+
 // MIGHT BE USELESS: does not exist in Verovio
 export type ChangeSkewAction = {
   action: 'changeSkew';
@@ -253,6 +260,7 @@ export type EditorAction =
   | SetTextAction
   | SetClefAction
   | ToggleLigatureAction
+  | ToggleNeumeConnectionAction
   | ChangeSkewAction
   | ChangeStaffAction
   | ChangeStaffToAction

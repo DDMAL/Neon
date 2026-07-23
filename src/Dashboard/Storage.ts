@@ -62,14 +62,8 @@ export function createManifest(
       window.btoa(restoreHufnagelForStorage(meiText, notationType));
     const bgUri = await bgPromise;
 
-    // Pre-seed this folio's LocalSettings entry (keyed by id, same format
-    // LocalSettings itself writes) so the Editing page's notation type
-    // dropdown reflects this choice on first open. The Editing page never
-    // reads @notationtype back out of the MEI to initialize the dropdown -
-    // it relies solely on this per-folio localStorage entry - and by the
-    // time it's loaded there, the MEI's real notationtype has already been
-    // stripped to a generic value for Verovio (see ConvertMei.ts), so it
-    // can't be recovered from the MEI at that point either.
+    // Pre-seed this folio's LocalSettings entry so the Editing page's
+    // notation type dropdown reflects this choice on first open.
     window.localStorage.setItem(id, JSON.stringify({ notationType }));
 
     manifest['image'] = bgUri;

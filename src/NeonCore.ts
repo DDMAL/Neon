@@ -3,7 +3,6 @@ import {
   convertToVerovio,
   removeColumnLabel,
   restoreHufnagelForStorage,
-  stripHufnagelForVerovio,
 } from './utils/ConvertMei';
 import * as Validation from './Validation';
 import VerovioWrapper from './VerovioWrapper';
@@ -270,11 +269,6 @@ class NeonCore {
    */
   loadData(pageURI: string, data: string, dirty = false): Promise<void> {
     Validation.sendForValidation(removeColumnLabel(data));
-    // TEMPORARY Verovio compatibility shim (see ConvertMei.ts) - every path
-    // into the worker funnels through here, so this is the one place that
-    // unconditionally keeps notationtype="neume.hufnagel"/"neume.square"
-    // and @con from ever reaching Verovio.
-    data = stripHufnagelForVerovio(data);
     this.lastPageLoaded = pageURI;
     /* A promise is returned that will resolve to the result of the action.
      * However the value that is must return comes from the Web Worker and
@@ -594,10 +588,8 @@ class NeonCore {
         const index = this.annotations.findIndex((elem) => {
           return elem.target === key;
         });
-        // TEMPORARY Verovio compatibility shim (see ConvertMei.ts) - restore
-        // the canonical notationtype/@con encoding before persisting outside
-        // of Verovio's control. Does not mutate value.mei: the live cache
-        // entry must stay in Verovio-safe form for subsequent reloads/edits.
+        // Keep the persisted staffDef notation type in sync with this folio's
+        // selected notation type.
         const meiForStorage = restoreHufnagelForStorage(
           value.mei,
           notationType,

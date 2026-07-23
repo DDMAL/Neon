@@ -4,7 +4,12 @@ import * as Notification from '../utils/Notification';
 import * as SelectTools from '../utils/SelectTools';
 import * as SelectOptions from '../SquareEdit/SelectOptions';
 import NeonView from '../NeonView';
-import { EditorAction, ToggleLigatureAction } from '../Types';
+import {
+  EditorAction,
+  ToggleLigatureAction,
+  ToggleNeumeConnectionAction,
+} from '../Types';
+import { getSettings } from '../utils/LocalSettings';
 import { removeHandler, deleteButtonHandler } from './SelectOptions';
 
 /**
@@ -454,9 +459,11 @@ export function initGroupingListeners(): void {
       .getElementById('toggle-ligature')
       .addEventListener('click', async () => {
         const elementIds = getIds();
-
-        const editorAction: ToggleLigatureAction = {
-          action: 'toggleLigature',
+        const isHufnagel = getSettings().notationType === 'hufnagel';
+        const editorAction:
+          | ToggleLigatureAction
+          | ToggleNeumeConnectionAction = {
+          action: isHufnagel ? 'toggleNeumeConnection' : 'toggleLigature',
           param: {
             elementIds: elementIds,
           },
@@ -465,9 +472,17 @@ export function initGroupingListeners(): void {
           .edit(editorAction, neonView.view.getCurrentPageURI())
           .then((result) => {
             if (result) {
-              Notification.queueNotification('Ligature Toggled', 'success');
+              Notification.queueNotification(
+                isHufnagel ? 'Neume Connection Toggled' : 'Ligature Toggled',
+                'success',
+              );
             } else {
-              Notification.queueNotification('Ligature Toggle Failed', 'error');
+              Notification.queueNotification(
+                isHufnagel
+                  ? 'Neume Connection Toggle Failed'
+                  : 'Ligature Toggle Failed',
+                'error',
+              );
             }
             endGroupingSelection();
             neonView.updateForCurrentPage();
