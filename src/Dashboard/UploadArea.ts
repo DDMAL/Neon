@@ -5,7 +5,7 @@ import {
   handleMakePair,
   sortFileByName,
 } from './UploadTools';
-import { updateDashboard } from './Dashboard';
+import { updateDashboard, markNewlyUploaded } from './Dashboard';
 import { IFolder } from './FileSystem';
 import {
   getUploadNotationType,
@@ -26,19 +26,21 @@ async function handleUploadUpdate(
 
   handleUploadAllDocuments(currentFolder, notationType)
     .then((results) => {
+      const successfulFiles = results
+        .filter((result) => result.status === 'fulfilled' && result.value)
+        .map((result) => result.value);
+        
       setTimeout(async () => {
+        if (successfulFiles.length > 0) {
+          markNewlyUploaded(successfulFiles);
+        }
         await updateDashboard();
         spinner.classList.remove('visible');
         modalWindow.hideModalWindow();
 
-        // Show uploaded filenames
-        const successfulFiles = results
-          .filter((result) => result.status === 'fulfilled' && result.value)
-          .map((result) => result.value);
-
         if (successfulFiles.length > 0) {
           const infoBadge = document.getElementById('info-badge');
-          infoBadge.textContent = `Uploaded files: ${successfulFiles.join(
+          infoBadge.textContent = `Uplaoded files: ${successfulFiles.join(
             ', ',
           )}`;
           infoBadge.style.display = 'block';

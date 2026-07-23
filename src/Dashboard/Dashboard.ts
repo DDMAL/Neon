@@ -167,6 +167,18 @@ function unselectAll() {
   state.resetSelection();
 }
 
+// Names of entries uploaded in the current session. Used to highlight their tiles
+// until the next upload batch replaces this set, or the page is reloaded.
+let newlyUploadedNames = new Set<string>();
+
+/**
+ * Marks the given entry names as newly uploaded so their tiles are highlighted
+ * on the next render. Replaces any previously highlighted set.
+ */
+export function markNewlyUploaded(names: string[]): void {
+  newlyUploadedNames = new Set(names);
+}
+
 /**
  * Creates a folder or file tile element given an entry
  * @param entry IEntry
@@ -176,7 +188,10 @@ function createTile(entry: IEntry) {
   const container = document.createElement('div');
   container.classList.add('document-entry');
   container.setAttribute('draggable', 'true'); // make file or folder draggable
-
+  if (newlyUploadedNames.has(entry.name)) {
+    container.classList.add('new-upload');
+  }
+  
   const icon = document.createElement('img');
   icon.classList.add('document-icon');
   const name = document.createElement('div');
@@ -767,6 +782,7 @@ export async function updateDashboard(newPath?: IFolder[]): Promise<void> {
   if (!newPath) newPath = state.getFolderPath();
   state.setFolderPath(newPath);
   const currentFolder = state.getParentFolder();
+  FileSystemTools.sortFolder(currentFolder);
   // clear content and selection
   documentsContainer.innerHTML = '';
   shiftSelection.reset();
