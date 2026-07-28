@@ -2,7 +2,6 @@ import { v4 as uuidv4 } from 'uuid';
 import PouchDB from 'pouchdb';
 import { AllDocs, Doc, uploadsInfo } from '../Types';
 import * as localManifest from '../../assets/manifest.json';
-import { restoreHufnagelForStorage } from '../utils/ConvertMei';
 
 export const db = new PouchDB('Neon-User-Storage');
 
@@ -32,7 +31,6 @@ export function createManifest(
   title: string,
   mei: File,
   bg: File,
-  notationType: string,
 ): Promise<string> {
   return new Promise(async (resolve) => {
     const manifest = JSON.parse(JSON.stringify(localManifest));
@@ -40,12 +38,12 @@ export function createManifest(
     manifest['title'] = title;
     manifest['timestamp'] = new Date().toISOString();
 
-    const meiTextPromise = new Promise<string>((resolve) => {
+    const meiPromise = new Promise((resolve) => {
       const meiReader = new FileReader();
       meiReader.addEventListener('load', () => {
-        resolve(meiReader.result as string);
+        resolve(meiReader.result);
       });
-      meiReader.readAsText(mei);
+      meiReader.readAsDataURL(mei);
     });
 
     const bgPromise = new Promise((resolve) => {
@@ -56,21 +54,8 @@ export function createManifest(
       bgReader.readAsDataURL(bg);
     });
 
-    const meiText = await meiTextPromise;
-    const meiUri =
-      'data:application/mei+xml;base64,' +
-      window.btoa(restoreHufnagelForStorage(meiText, notationType));
+    const meiUri = await meiPromise;
     const bgUri = await bgPromise;
-
-    // Pre-seed this folio's LocalSettings entry (keyed by id, same format
-    // LocalSettings itself writes) so the Editing page's notation type
-    // dropdown reflects this choice on first open. The Editing page never
-    // reads @notationtype back out of the MEI to initialize the dropdown -
-    // it relies solely on this per-folio localStorage entry - and by the
-    // time it's loaded there, the MEI's real notationtype has already been
-    // stripped to a generic value for Verovio (see ConvertMei.ts), so it
-    // can't be recovered from the MEI at that point either.
-    window.localStorage.setItem(id, JSON.stringify({ notationType }));
 
     manifest['image'] = bgUri;
     manifest['mei_annotations'] = [

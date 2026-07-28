@@ -2,6 +2,8 @@ import { v4 as uuidv4 } from 'uuid';
 import UploadFileManager from './UploadFileManager';
 import { createManifest, addDocument } from './Storage';
 import { IFolder, FileSystemTools } from './FileSystem';
+import { restoreHufnagelForStorage } from '../utils/ConvertMei';
+import { setInitialNotationType } from '../utils/LocalSettings';
 
 const fm = UploadFileManager.getInstance();
 
@@ -216,7 +218,19 @@ async function uploadFolio(
     FileSystemTools.getAllNames(currentFolder),
   );
   return (
-    createManifest(id, newName, mei, image, notationType)
+    mei
+      .text()
+      .then(
+        (meiText) =>
+          new File(
+            [restoreHufnagelForStorage(meiText, notationType)],
+            mei.name,
+            { type: mei.type },
+          ),
+      )
+      .then((meiForStorage) =>
+        createManifest(id, newName, meiForStorage, image),
+      )
       .then((manifest) => {
         const manifestBlob = new Blob([JSON.stringify(manifest, null, 2)], {
           type: 'application/ld+json',
@@ -234,6 +248,9 @@ async function uploadFolio(
             created_on: datetime,
           });
           const isAdded = FileSystemTools.addEntry(folioEntry, currentFolder);
+          if (isAdded) {
+            setInitialNotationType(id, notationType);
+          }
           return isAdded ? newName : null;
         } else {
           console.log('failed to uploadFolio: ' + name);

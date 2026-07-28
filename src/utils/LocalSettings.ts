@@ -128,4 +128,15 @@ export function setSettings(params: Partial<Settings>): void {
   localSettings.set(params);
 }
 
+/**
+ * Set the notation type that a newly uploaded folio should use when it is
+ * first opened in the editor.
+ */
+export function setInitialNotationType(
+  folioId: string,
+  notationType: string,
+): void {
+  window.localStorage.setItem(folioId, JSON.stringify({ notationType }));
+}
+
 export default LocalSettings;

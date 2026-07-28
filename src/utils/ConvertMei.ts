@@ -101,13 +101,13 @@ export function stripHufnagelForVerovio(meiString: string): string {
   return vkbeautify.xml(new XMLSerializer().serializeToString(meiDoc));
 }
 
-// Used by Save (NeonCore.updateDatabase) - this is Neon's own internal
-// working copy, which gets fed straight back into Verovio on next load, so
-// it must faithfully keep whatever Verovio's live in-memory document
-// actually has (including @ligated from a real toggleLigature action, and
-// whatever else that action changed, e.g. clearing @tilt) rather than
-// "fixing" it to the canonical @con-only form. Only @notationtype is
-// restored here, since Verovio itself never remembers that.
+// Restore canonical @notationtype before MEI is persisted. During upload this
+// records the user's notation choice in the document itself. During Save
+// (NeonCore.updateDatabase), the input is Neon's Verovio-safe working copy, so
+// it must faithfully keep whatever Verovio's live in-memory document contains
+// (including @ligated from a real toggleLigature action, and whatever else
+// that action changed, e.g. clearing @tilt). Only @notationtype is restored
+// here, since Verovio itself never remembers that.
 export function restoreHufnagelForStorage(
   meiString: string,
   notationType?: string,
