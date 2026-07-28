@@ -8,6 +8,9 @@ import * as d3 from 'd3';
 
 let lastGlyphOpacity: number, lastImageOpacity: number, lastCircleSize: number;
 
+const NOTATION_TYPES = ['square', 'hufnagel'] as const;
+type NotationType = (typeof NOTATION_TYPES)[number];
+
 /**
  * Set zoom control listener for button and slider
  * @param zoomHandler - A [[ZoomHandler]] is only necessary in Single Page mode as diva.js handles zooming otherwise.
@@ -499,7 +502,7 @@ export function setNotationTypeControls(): void {
   const dropdown = document.getElementById('notation-type-dropdown');
   const label = document.getElementById('notation-type-label');
 
-  function applyNotationType(type: string): void {
+  function applyNotationType(type: NotationType): void {
     label.textContent = `\xA0- ${type[0].toUpperCase() + type.slice(1)}`;
     setSettings({ notationType: type });
     document.dispatchEvent(
@@ -522,7 +525,7 @@ export function setNotationTypeControls(): void {
     }
   });
 
-  ['square', 'hufnagel'].forEach((type) => {
+  NOTATION_TYPES.forEach((type) => {
     document.getElementById(`notation-type-${type}`).addEventListener('click', () => {
       dropdown.classList.remove('is-active');
       document.body.removeEventListener('click', notationTypeClickaway);
@@ -530,7 +533,10 @@ export function setNotationTypeControls(): void {
     });
   });
 
-  applyNotationType(getSettings().notationType ?? 'square');
+  const savedNotationType = getSettings().notationType;
+  applyNotationType(
+    savedNotationType === 'hufnagel' ? 'hufnagel' : 'square',
+  );
 }
 
 /**
