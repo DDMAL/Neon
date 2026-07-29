@@ -269,10 +269,9 @@ class NeonCore {
    */
   loadData(pageURI: string, data: string, dirty = false): Promise<void> {
     Validation.sendForValidation(removeColumnLabel(data));
-    // TEMPORARY Verovio compatibility shim (see ConvertMei.ts) - every path
-    // into the worker funnels through here, so this is the one place that
-    // unconditionally keeps notationtype="neume.hufnagel"/"neume.square"
-    // and @con from ever reaching Verovio.
+    // TEMPORARY Verovio compatibility path (see ConvertMei.ts): normalize the
+    // notation subtype for the already-tested demo workflow before loading the
+    // working MEI. @con and other <nc> attributes are left unchanged.
     data = stripHufnagelForVerovio(data);
     this.lastPageLoaded = pageURI;
     /* A promise is returned that will resolve to the result of the action.

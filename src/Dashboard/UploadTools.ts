@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import UploadFileManager from './UploadFileManager';
 import { createManifest, addDocument } from './Storage';
 import { IFolder, FileSystemTools } from './FileSystem';
-import { restoreHufnagelForStorage } from '../utils/ConvertMei';
+import { setNotationTypeInMei } from '../utils/ConvertMei';
 import { setInitialNotationType } from '../utils/LocalSettings';
 
 const fm = UploadFileManager.getInstance();
@@ -223,7 +223,7 @@ async function uploadFolio(
       .then(
         (meiText) =>
           new File(
-            [restoreHufnagelForStorage(meiText, notationType)],
+            [setNotationTypeInMei(meiText, notationType)],
             mei.name,
             { type: mei.type },
           ),
