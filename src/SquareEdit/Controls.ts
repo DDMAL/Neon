@@ -46,13 +46,13 @@ export function bindInsertTabs(insertHandler: InsertHandler): void {
           Contents.buildGroupingTabHtml(notationType ?? 'square');
         bindElements(insertHandler);
         deactivate('.insertel');
-        activateCurrentOrFirst(insertHandler);
+        activateSavedOrFirstInsertOption(insertHandler);
       } else {
         document.getElementById('insert_data').innerHTML =
           Contents.insertTabHtml[tab];
         bindElements(insertHandler);
         deactivate('.insertel');
-        activateCurrentOrFirst(insertHandler);
+        activateSavedOrFirstInsertOption(insertHandler);
       }
     });
   });
@@ -75,7 +75,7 @@ export function updateGroupingTab(notationType: string, insertHandler: InsertHan
   insertData.innerHTML = Contents.buildGroupingTabHtml(notationType);
   bindElements(insertHandler);
   deactivate('.insertel');
-  activateCurrentOrFirst(insertHandler);
+  activateSavedOrFirstInsertOption(insertHandler);
 }
 
 function setPrimitiveFallback(insertHandler: InsertHandler): void {
@@ -84,7 +84,7 @@ function setPrimitiveFallback(insertHandler: InsertHandler): void {
   insertData.innerHTML = Contents.insertTabHtml['primitiveTab'];
   bindElements(insertHandler);
   deactivate('.insertel');
-  activateCurrentOrFirst(insertHandler);
+  activateSavedOrFirstInsertOption(insertHandler);
 }
 
 async function renderPrimitiveTab(notationType: string, insertHandler: InsertHandler): Promise<void> {
@@ -97,13 +97,17 @@ async function renderPrimitiveTab(notationType: string, insertHandler: InsertHan
     insertData.innerHTML = html;
     bindElements(insertHandler);
     deactivate('.insertel');
-    activateCurrentOrFirst(insertHandler);
+    activateSavedOrFirstInsertOption(insertHandler);
   } catch (err) {
     console.error('[GlyphIcons] Failed to load glyphs, using PNG fallback:', err);
   }
 }
 
-function activateCurrentOrFirst(insertHandler: InsertHandler): void {
+/**
+ * Activate the saved insert option if it exists in the rendered tab;
+ * otherwise activate the first available insert option.
+ */
+function activateSavedOrFirstInsertOption(insertHandler: InsertHandler): void {
   const { insertMode } = getSettings();
   const currentOption = document.getElementById(insertMode);
   const firstOption = document.getElementsByClassName('insertel')[0];
