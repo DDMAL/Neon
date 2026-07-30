@@ -6,6 +6,20 @@
 
 @import url('https://unpkg.com/diva.js@6.0.2/build/diva.css');
 
+@font-face {
+  font-family: 'Bravura';
+  src: url('./fonts/Bravura.woff2') format('woff2');
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Hufnagel';
+  src: url('./fonts/Hufnagel.woff2') format('woff2');
+  font-style: normal;
+  font-weight: normal;
+}
+
 /* ----------------------- */
 /* General styles
 /* ----------------------- */
@@ -806,6 +820,23 @@ input[type='checkbox'].debug-mode-toggle:checked + label:before {
 .smallel {
   width: 42px;
   height: 42px;
+}
+.glyph-icon {
+  align-items: center;
+  display: flex;
+  height: 24px;
+  justify-content: center;
+  line-height: 0;
+  pointer-events: none;
+  width: 24px;
+}
+.glyph-icon svg {
+  display: block;
+  fill: currentColor;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  width: 100%;
 }
 .longel {
   width: 100px;

@@ -72,15 +72,15 @@ class NeonView {
       this.NeumeEdit = new params.NeumeEdit(this);
       this.textView.updateBBoxVisibility();
       const { userMode, insertMode, selectionMode } = getSettings();
-      document.getElementById(insertMode).classList.add('is-active');
-      document.getElementById(selectionMode).classList.add('is-active');
+      document.getElementById(insertMode)?.classList.add('is-active');
+      document.getElementById(selectionMode)?.classList.add('is-active');
       switch (userMode) {
         case 'insert':
-          document.getElementById(insertMode).click();
+          document.getElementById(insertMode)?.click();
           break;
         case 'edit':
         default:
-          document.getElementById(selectionMode).click();
+          document.getElementById(selectionMode)?.click();
           break;
       }
     }
@@ -237,6 +237,12 @@ class NeonView {
           'data:application/mei+xml;charset=utf-8,' + encodeURIComponent(mei),
         );
       });
+    });
+  }
+
+  setNotationType(type: string): void {
+    this.core.setNotationFont(type).then(() => {
+      this.updateForCurrentPage();
     });
   }
 

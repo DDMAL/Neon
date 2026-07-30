@@ -1,3 +1,95 @@
+import { getFontData, buildGlyphIcon } from '../utils/GlyphIcons';
+
+export interface PrimitiveEntry {
+  id: string;
+  codepoint: string;
+  title: string;
+  iconDy?: number;
+  pngFallback?: string;
+}
+
+export const SQUARE_PRIMITIVES: PrimitiveEntry[] = [
+  { id: 'punctum',       codepoint: 'E990', title: 'punctum' },
+  { id: 'virga',         codepoint: 'E996', title: 'virga', iconDy: -9 },
+  { id: 'virgaReversed', codepoint: 'E997', title: 'Reversed Virga', iconDy: -9, pngFallback: 'virga_reversed' },
+  { id: 'diamond',       codepoint: 'E991', title: 'inclinatum' },
+  { id: 'custos',        codepoint: 'EA06', title: 'custos', iconDy: 9 },
+  { id: 'cClef',         codepoint: 'E906', title: 'C Clef' },
+  { id: 'fClef',         codepoint: 'E902', title: 'F Clef' },
+  { id: 'gClef',         codepoint: 'E900', title: 'G Clef' },
+  { id: 'liquescentA',   codepoint: 'E994', title: 'Liquescent A' },
+  { id: 'liquescentC',   codepoint: 'E995', title: 'Liquescent C' },
+  { id: 'quilisma',      codepoint: 'E99B', title: 'quilisma' },
+  { id: 'oriscus',       codepoint: 'E99E', title: 'oriscus' },
+  { id: 'flat',          codepoint: 'E260', title: 'Flat', iconDy: 9, pngFallback: 'accidFlat' },
+  { id: 'natural',       codepoint: 'E261', title: 'Natural', pngFallback: 'accidNatural' },
+  { id: 'divLineMaxima', codepoint: 'E8F5', title: 'DivLine Maxima', pngFallback: 'divisio' },
+];
+
+export const HUFNAGEL_PRIMITIVES: PrimitiveEntry[] = [
+  { id: 'punctum',       codepoint: 'E990', title: 'punctum' },
+  { id: 'virga',         codepoint: 'E996', title: 'virga', iconDy: -13 },
+  { id: 'virgaReversed', codepoint: 'E997', title: 'UDV', iconDy: 13 },
+  { id: 'distropha',     codepoint: 'E99F', title: 'Distropha', pngFallback: 'hufnagel/distropha' },
+  { id: 'custos',        codepoint: 'EA06', title: 'custos', iconDy: 6 },
+  { id: 'cClef',         codepoint: 'E906', title: 'C Clef' },
+  { id: 'fClef',         codepoint: 'E902', title: 'F Clef' },
+  { id: 'liquescentA',   codepoint: 'E994', title: 'Liquescent up' },
+  { id: 'flat',          codepoint: 'E260', title: 'Flat', iconDy: 9, pngFallback: 'accidFlat' },
+  { id: 'natural',       codepoint: 'E261', title: 'Natural', pngFallback: 'accidNatural' },
+  { id: 'divLineMaxima', codepoint: 'E8F5', title: 'DivLine Maxima', pngFallback: 'divisio' },
+];
+
+export async function buildPrimitiveTabHtml(notationType: string): Promise<string> {
+  const isHufnagel = notationType === 'hufnagel';
+  const fontName = isHufnagel ? 'Hufnagel' : 'Bravura';
+  const primitives = isHufnagel ? HUFNAGEL_PRIMITIVES : SQUARE_PRIMITIVES;
+
+  const fontData = await getFontData(
+    fontName,
+    `${__ASSET_PREFIX__}assets/fonts/${fontName}.xml`,
+  );
+  const fallbackFontData = isHufnagel
+    ? await getFontData(
+      'Bravura',
+      `${__ASSET_PREFIX__}assets/fonts/Bravura.xml`,
+    )
+    : null;
+
+  return primitives.map(({ id, codepoint, title, iconDy, pngFallback }) => {
+    const bbox = fontData.bboxMap.get(codepoint);
+    const fallbackBBox = fallbackFontData?.bboxMap.get(codepoint);
+    const fallbackPng = pngFallback ?? id;
+    const iconStyle = iconDy ? ` style="transform: translateY(${iconDy}px)"` : '';
+    // If the primary font lacks this glyph and there's a font-specific PNG override, use that
+    // before falling back to Bravura (which would show a Square notation glyph).
+    const useOverridePng = !bbox && pngFallback?.startsWith('hufnagel/');
+    const icon = !useOverridePng && (bbox || fallbackBBox)
+      ? `<span class="glyph-icon"${iconStyle}>${buildGlyphIcon(
+        codepoint,
+        bbox ? fontData.fontName : fallbackFontData.fontName,
+        bbox ?? fallbackBBox,
+      )}</span>`
+      : `<img src="${__ASSET_PREFIX__}assets/img/${fallbackPng}.png"/>`;
+    return `<p class="insert-element-container">
+            <button id="${id}" class="side-panel-btn insertel smallel" aria-label="${title}" title="${title}" data-codepoint="${codepoint}">${icon}</button>
+        </p>`;
+  }).join('\n');
+}
+
+const GROUPINGS = ['pes', 'clivis', 'scandicus', 'climacus', 'torculus', 'porrectus', 'pressus'] as const;
+
+export function buildGroupingTabHtml(notationType: string): string {
+  const imgDir = notationType === 'hufnagel'
+    ? `${__ASSET_PREFIX__}assets/img/hufnagel/`
+    : `${__ASSET_PREFIX__}assets/img/`;
+  return GROUPINGS.map(id =>
+    `<p class="insert-element-container">
+            <button id="${id}" class="side-panel-btn insertel smallel" aria-label="${id}" title="${id}"><img src="${imgDir}${id}.png" class="image"></button>
+        </p>`
+  ).join('\n');
+}
+
 /**
  * HTML for each insert tab (neume, grouping, clef, system, and division).
  */
@@ -47,27 +139,7 @@ export const insertTabHtml: Record<string, string> = {
         <p class="insert-element-container">
             <button id="divLineMaxima" class="side-panel-btn insertel smallel" aria-label="DivLine Maxima" title="DivLine Maxima"><img src="${__ASSET_PREFIX__}assets/img/divisio.png" class="image"></button>
         </p>`,
-  groupingTab: `<p class="insert-element-container">
-            <button id="pes" class="side-panel-btn insertel smallel" aria-label="pes" title="pes"><img src="${__ASSET_PREFIX__}assets/img/pes.png" class="image"></button>
-        </p>
-        <p class="insert-element-container">
-            <button id="clivis" class="side-panel-btn insertel smallel" aria-label="clivis" title="clivis"><img src="${__ASSET_PREFIX__}assets/img/clivis.png" class="image"></button>
-        </p>
-        <p class="insert-element-container">
-            <button id="scandicus" class="side-panel-btn insertel smallel" aria-label="scandicus" title="scandicus"><img src="${__ASSET_PREFIX__}assets/img/scandicus.png" class="image"></button>
-        </p>
-        <p class="insert-element-container">
-            <button id="climacus" class="side-panel-btn insertel smallel" aria-label="climacus" title="climacus"><img src="${__ASSET_PREFIX__}assets/img/climacus.png" class="image"></button>
-        </p>
-        <p class="insert-element-container">
-            <button id="torculus" class="side-panel-btn insertel smallel" aria-label="toculus" title="toculus"><img src="${__ASSET_PREFIX__}assets/img/torculus.png" class="image"></button>
-        </p>
-        <p class="insert-element-container">
-            <button id="porrectus" class="side-panel-btn insertel smallel" aria-label="porrectus" title="porrectus"><img src="${__ASSET_PREFIX__}assets/img/porrectus.png" class="image"></button>
-        </p>
-        <p class="insert-element-container">
-            <button id="pressus" class="side-panel-btn insertel smallel" aria-label="pressus" title="pressus"><img src="${__ASSET_PREFIX__}assets/img/pressus.png" class="image"></button>
-        </p>`,
+  groupingTab: '',  // unused — call buildGroupingTabHtml(notationType) instead
   systemTab: `<p class="insert-element-container">
             <button id="staff" class="side-panel-btn insertel longel" aria-label="system" title="system"><img src="${__ASSET_PREFIX__}assets/img/staff.png" class="image"></button>
         </p>

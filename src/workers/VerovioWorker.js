@@ -1,3 +1,5 @@
+importScripts('./FontLoader.js');
+
 let toolkit;
 const backlog = [];
 
@@ -5,7 +7,7 @@ const backlog = [];
  * Parse and respond to messages sent by NeonCore.
  * @param {MessageEvent} evt
  */
-function handleNeonEvent(evt) {
+async function handleNeonEvent(evt) {
   const data = evt.data;
   const result = {
     id: data.id,
@@ -33,6 +35,33 @@ function handleNeonEvent(evt) {
     case 'renderToSVG':
       result.svg = toolkit.renderToSVG(1);
       break;
+    case 'setFont': {
+      const baseOptions = {
+        inputFrom: 'mei',
+        footer: 'none',
+        header: 'none',
+        pageMarginLeft: 0,
+        pageMarginTop: 0,
+        useFacsimile: false,
+        svgAdditionalAttribute: ['syllable@precedes', 'syllable@follows'],
+        svgCss: 'g.nc, g.custos, g.clef, g.accid, g.divLine {stroke: currentColor; stroke-width: 30px;}',
+      };
+      try {
+        if (data.fontType === 'hufnagel') {
+          const b64 = await fetchFontBase64('../assets/Hufnagel.zip');
+          console.log('[VerovioWorker] b64 length:', b64.length);
+          toolkit.setOptions({ ...baseOptions, font: 'Hufnagel', fontAddCustom: [b64], fontFallback: 'Bravura' });
+          console.log('[VerovioWorker] setOptions Hufnagel done');
+        } else {
+          toolkit.setOptions({ ...baseOptions, font: 'Bravura', fontAddCustom: '' });
+          console.log('[VerovioWorker] setOptions Bravura done');
+        }
+        console.log('[VerovioWorker] setFont done:', data.fontType);
+      } catch (e) {
+        console.error('[VerovioWorker] setFont ERROR:', e);
+      }
+      break;
+    }
     default:
       break;
   }

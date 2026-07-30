@@ -8,6 +8,9 @@ import * as d3 from 'd3';
 
 let lastGlyphOpacity: number, lastImageOpacity: number, lastCircleSize: number;
 
+const NOTATION_TYPES = ['square', 'hufnagel'] as const;
+type NotationType = (typeof NOTATION_TYPES)[number];
+
 /**
  * Set zoom control listener for button and slider
  * @param zoomHandler - A [[ZoomHandler]] is only necessary in Single Page mode as diva.js handles zooming otherwise.
@@ -492,6 +495,51 @@ function setBurgerControls(): void {
 }
 
 /**
+ * Set click listeners for Notation Type dropdown (Square / Hufnagel).
+ * Update the stored setting and notify the active view when the type changes.
+ */
+export function setNotationTypeControls(): void {
+  const dropdown = document.getElementById('notation-type-dropdown');
+  const label = document.getElementById('notation-type-label');
+
+  function applyNotationType(type: NotationType): void {
+    label.textContent = `\xA0- ${type[0].toUpperCase() + type.slice(1)}`;
+    setSettings({ notationType: type });
+    document.dispatchEvent(
+      new CustomEvent('notationtypechange', { detail: { type } }),
+    );
+  }
+
+  function notationTypeClickaway(): void {
+    document.body.removeEventListener('click', notationTypeClickaway);
+    dropdown.classList.remove('is-active');
+  }
+
+  document.getElementById('notation-type-button').addEventListener('click', (evt) => {
+    evt.stopPropagation();
+    dropdown.classList.toggle('is-active');
+    if (dropdown.classList.contains('is-active')) {
+      document.body.addEventListener('click', notationTypeClickaway);
+    } else {
+      document.body.removeEventListener('click', notationTypeClickaway);
+    }
+  });
+
+  NOTATION_TYPES.forEach((type) => {
+    document.getElementById(`notation-type-${type}`).addEventListener('click', () => {
+      dropdown.classList.remove('is-active');
+      document.body.removeEventListener('click', notationTypeClickaway);
+      applyNotationType(type);
+    });
+  });
+
+  const savedNotationType = getSettings().notationType;
+  applyNotationType(
+    savedNotationType === 'hufnagel' ? 'hufnagel' : 'square',
+  );
+}
+
+/**
  * Set listener for "Display All" button in Display panel.
  */
 function setDisplayAllListener(): void {
@@ -583,6 +631,7 @@ export function initDisplayControls(
   setHighlightKeyControls();
   setDisplayAllListener();
   loadHighlightSettings();
+  setNotationTypeControls();
 
   const displayContents = document.getElementById('displayContents');
   const toggleDisplay = document.getElementById('toggleDisplay');

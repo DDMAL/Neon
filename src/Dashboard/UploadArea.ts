@@ -15,7 +15,12 @@ async function handleUploadUpdate(
   const spinner = document.querySelector('#uploading_spinner');
   spinner.classList.add('visible');
 
-  handleUploadAllDocuments(currentFolder)
+  const selectedNotationType: HTMLInputElement = document.querySelector(
+    'input[name="upload_notation_type"]:checked',
+  );
+  const notationType = selectedNotationType?.value ?? 'square';
+
+  handleUploadAllDocuments(currentFolder, notationType)
     .then((results) => {
       setTimeout(async () => {
         await updateDashboard();

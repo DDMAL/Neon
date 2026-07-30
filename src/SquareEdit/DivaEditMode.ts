@@ -2,6 +2,8 @@ import {
   bindInsertTabs,
   initInsertEditControls,
   initSelectionButtons,
+  updatePrimitiveTab,
+  updateGroupingTab,
 } from './Controls';
 import * as Select from '../utils/Select';
 import InsertHandler from './InsertHandler';
@@ -36,6 +38,11 @@ class DivaEdit implements NeumeEditInterface {
     bindInsertTabs(this.insertHandler);
     const { insertTab } = getSettings();
     document.getElementById(insertTab).click();
+    document.addEventListener('notationtypechange', (evt: CustomEvent) => {
+      updatePrimitiveTab(evt.detail.type, this.insertHandler);
+      updateGroupingTab(evt.detail.type, this.insertHandler);
+    });
+    updatePrimitiveTab(getSettings().notationType ?? 'square', this.insertHandler);
     Select.setSelectHelperObjects(this.neonView, this.dragHandler);
     this.setSelectListeners();
     SelectOptions.initNeonView(this.neonView);

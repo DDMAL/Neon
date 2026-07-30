@@ -2,6 +2,8 @@ import {
   bindInsertTabs,
   initInsertEditControls,
   initSelectionButtons,
+  updatePrimitiveTab,
+  updateGroupingTab,
 } from './Controls';
 import { setHighlightOption } from '../DisplayPanel/DisplayControls';
 import { initUndoRedoPanel } from '../utils/EditControls';
@@ -50,6 +52,11 @@ class SingleEditMode implements NeumeEditInterface {
     bindInsertTabs(this.insertHandler);
     const { insertTab } = getSettings();
     document.getElementById(insertTab).click();
+    document.addEventListener('notationtypechange', (evt: CustomEvent) => {
+      updatePrimitiveTab(evt.detail.type, this.insertHandler);
+      updateGroupingTab(evt.detail.type, this.insertHandler);
+    });
+    updatePrimitiveTab(getSettings().notationType ?? 'square', this.insertHandler);
     Select.setSelectHelperObjects(this.neonView, this.dragHandler);
     this.setSelectListeners();
 

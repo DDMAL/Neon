@@ -272,6 +272,7 @@ export type VerovioMessage = {
   mei?: string;
   elementId?: string;
   editorAction?: EditorAction;
+  fontType?: string;
 };
 
 export type VerovioResponse = {
@@ -394,6 +395,7 @@ export type InsertType =
   | 'gClef'
   | 'liquescentA'
   | 'liquescentC'
+  | 'distropha'
   | 'quilisma'
   | 'orcisus'
   | 'flat'

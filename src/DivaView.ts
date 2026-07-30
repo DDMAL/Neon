@@ -33,6 +33,9 @@ class DivaView implements ViewInterface {
     manifest: string,
   ) {
     this.neonView = neonView;
+    document.addEventListener('notationtypechange', (evt: CustomEvent) => {
+      this.neonView.setNotationType(evt.detail.type);
+    });
     this.updateCallbacks = [];
     this.divaReady = false;
     this.diva = new Diva('container', {

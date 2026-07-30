@@ -2,6 +2,8 @@ import { v4 as uuidv4 } from 'uuid';
 import UploadFileManager from './UploadFileManager';
 import { createManifest, addDocument } from './Storage';
 import { IFolder, FileSystemTools } from './FileSystem';
+import { setNotationTypeInMei } from '../utils/ConvertMei';
+import { setInitialNotationType } from '../utils/LocalSettings';
 
 const fm = UploadFileManager.getInstance();
 
@@ -178,12 +180,13 @@ function createPairedFolio(
 
 export async function handleUploadAllDocuments(
   currentFolder: IFolder,
+  notationType: string,
 ): Promise<{ status: string; value?: string; reason?: any }[]> {
   const folioPromises = fm
     .getFolios()
     .map(async ([name, mei, image]: [string, File, File]) => {
       const id = uuidv4();
-      return await uploadFolio(id, name, mei, image, currentFolder);
+      return await uploadFolio(id, name, mei, image, currentFolder, notationType);
     });
 
   const manuscriptPromises = []; //fm.getManuscripts()
@@ -208,13 +211,26 @@ async function uploadFolio(
   mei: File,
   image: File,
   currentFolder: IFolder,
+  notationType: string,
 ): Promise<string | null> {
   const newName = fnConflictHandler(
     name,
     FileSystemTools.getAllNames(currentFolder),
   );
   return (
-    createManifest(id, newName, mei, image)
+    mei
+      .text()
+      .then(
+        (meiText) =>
+          new File(
+            [setNotationTypeInMei(meiText, notationType)],
+            mei.name,
+            { type: mei.type },
+          ),
+      )
+      .then((meiForStorage) =>
+        createManifest(id, newName, meiForStorage, image),
+      )
       .then((manifest) => {
         const manifestBlob = new Blob([JSON.stringify(manifest, null, 2)], {
           type: 'application/ld+json',
@@ -232,6 +248,9 @@ async function uploadFolio(
             created_on: datetime,
           });
           const isAdded = FileSystemTools.addEntry(folioEntry, currentFolder);
+          if (isAdded) {
+            setInitialNotationType(id, notationType);
+          }
           return isAdded ? newName : null;
         } else {
           console.log('failed to uploadFolio: ' + name);

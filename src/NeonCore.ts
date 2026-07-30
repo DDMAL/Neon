@@ -2,6 +2,7 @@ import {
   checkOutOfBoundsGlyphs,
   convertToVerovio,
   removeColumnLabel,
+  stripHufnagelForVerovio,
 } from './utils/ConvertMei';
 import * as Validation from './Validation';
 import VerovioWrapper from './VerovioWrapper';
@@ -268,6 +269,10 @@ class NeonCore {
    */
   loadData(pageURI: string, data: string, dirty = false): Promise<void> {
     Validation.sendForValidation(removeColumnLabel(data));
+    // TEMPORARY Verovio compatibility path (see ConvertMei.ts): normalize the
+    // notation subtype for the already-tested demo workflow before loading the
+    // working MEI. @con and other <nc> attributes are left unchanged.
+    data = stripHufnagelForVerovio(data);
     this.lastPageLoaded = pageURI;
     /* A promise is returned that will resolve to the result of the action.
      * However the value that is must return comes from the Web Worker and
@@ -296,6 +301,25 @@ class NeonCore {
             dirty: dirty,
           });
           evt.target.removeEventListener('message', handle);
+          resolve();
+        }
+      }
+      this.verovioWrapper.addEventListener('message', handle.bind(this));
+      this.verovioWrapper.postMessage(message);
+    });
+  }
+
+  setNotationFont(type: string): Promise<void> {
+    return new Promise((resolve): void => {
+      const message: VerovioMessage = {
+        id: uuidv4(),
+        action: 'setFont',
+        fontType: type,
+      };
+      function handle(evt: MessageEvent): void {
+        if (evt.data.id === message.id) {
+          evt.target.removeEventListener('message', handle);
+          this.lastPageLoaded = '';
           resolve();
         }
       }
@@ -593,7 +617,8 @@ class NeonCore {
             .catch((err) => {
               console.error(err);
               console.warn('Falling back to data URI');
-              uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
+              uri =
+                'data:application/mei+xml;base64,' + window.btoa(value.mei);
             });
         } else {
           uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
