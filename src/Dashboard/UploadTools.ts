@@ -178,16 +178,16 @@ function createPairedFolio(
   return folio;
 }
 
+export type UploadResult = {
+  status: string;
+  value?: { id: string; name: string };
+  reason?: any;
+};
+
 export async function handleUploadAllDocuments(
   currentFolder: IFolder,
   notationType: string,
-): Promise<
-  {
-    status: string;
-    value?: { id: string; name: string };
-    reason?: any;
-  }[]
-> {
+): Promise<UploadResult[]> {
   const folioPromises = fm
     .getFolios()
     .map(async ([name, mei, image]: [string, File, File]) => {
