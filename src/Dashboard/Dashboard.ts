@@ -167,16 +167,16 @@ function unselectAll() {
   state.resetSelection();
 }
 
-// Names of entries uploaded in the current session. Used to highlight their tiles
+// IDs of entries uploaded in the current session. Used to highlight their tiles
 // until the next upload batch replaces this set, or the page is reloaded.
-let newlyUploadedNames = new Set<string>();
+let newlyUploadedIds = new Set<string>();
 
 /**
- * Marks the given entry names as newly uploaded so their tiles are highlighted
+ * Marks the given entry IDs as newly uploaded so their tiles are highlighted
  * on the next render. Replaces any previously highlighted set.
  */
-export function markNewlyUploaded(names: string[]): void {
-  newlyUploadedNames = new Set(names);
+export function markNewlyUploaded(ids: string[]): void {
+  newlyUploadedIds = new Set(ids);
 }
 
 /**
@@ -188,7 +188,7 @@ function createTile(entry: IEntry) {
   const container = document.createElement('div');
   container.classList.add('document-entry');
   container.setAttribute('draggable', 'true'); // make file or folder draggable
-  if (newlyUploadedNames.has(entry.name)) {
+  if (newlyUploadedIds.has(entry.id)) {
     container.classList.add('new-upload');
   }
   

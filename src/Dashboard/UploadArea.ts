@@ -29,20 +29,18 @@ async function handleUploadUpdate(
       const successfulFiles = results
         .filter((result) => result.status === 'fulfilled' && result.value)
         .map((result) => result.value);
-        
+
       setTimeout(async () => {
-        if (successfulFiles.length > 0) {
-          markNewlyUploaded(successfulFiles);
-        }
+        markNewlyUploaded(successfulFiles.map((file) => file.id));
         await updateDashboard();
         spinner.classList.remove('visible');
         modalWindow.hideModalWindow();
 
         if (successfulFiles.length > 0) {
           const infoBadge = document.getElementById('info-badge');
-          infoBadge.textContent = `Uplaoded files: ${successfulFiles.join(
-            ', ',
-          )}`;
+          infoBadge.textContent = `Uploaded files: ${successfulFiles
+            .map((file) => file.name)
+            .join(', ')}`;
           infoBadge.style.display = 'block';
           infoBadge.style.background = '#9DB2BF';
         }
