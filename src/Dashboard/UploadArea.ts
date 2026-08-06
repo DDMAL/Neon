@@ -7,6 +7,10 @@ import {
 } from './UploadTools';
 import { updateDashboard } from './Dashboard';
 import { IFolder } from './FileSystem';
+import {
+  getUploadNotationType,
+  setUploadNotationType,
+} from './UploadNotationType';
 
 async function handleUploadUpdate(
   modalWindow: ModalWindow,
@@ -60,6 +64,16 @@ export function InitUploadArea(currentFolder: IFolder): void {
 
   const pairButton = document.querySelector('#make_pair');
   const uploadButton = document.querySelector('#upload_button');
+  const notationTypeInputs: NodeListOf<HTMLInputElement> =
+    document.querySelectorAll('input[name="upload_notation_type"]');
+  const savedNotationType = getUploadNotationType();
+
+  notationTypeInputs.forEach((input) => {
+    input.checked = input.value === savedNotationType;
+    input.addEventListener('change', () => {
+      if (input.checked) setUploadNotationType(input.value);
+    });
+  });
 
   pairButton.addEventListener('click', handleMakePair);
   uploadButton.addEventListener('click', () =>
