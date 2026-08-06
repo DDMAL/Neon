@@ -9,6 +9,7 @@ import TextView from '../../src/TextView';
 import TextEditMode from '../../src/TextEditMode';
 import { NeonViewParams } from '../../src/Interfaces';
 import { NeonManifest } from '../../src/Types';
+import { setInitialNotationType } from '../../src/utils/LocalSettings';
 import PouchDB from 'pouchdb';
 
 const name = getGetParam('manifest');
@@ -31,6 +32,7 @@ if (name) {
       console.debug(text);
       return;
     }
+    await initializeSampleNotationType(manifest);
     // Determine if it is a single page or multiple by media type
     const mediaType: string = await new Promise((resolve, reject) => {
       window.fetch(manifest.image).then(response => {
@@ -105,6 +107,46 @@ if (name) {
     const view = new NeonView(params);
     view.start();
   });
+}
+
+/**
+ * Initialize a static sample's notation font from its MEI subtype.
+ * Preserve an existing LocalSettings value when the user has already opened
+ * the sample and selected a notation type.
+ */
+async function initializeSampleNotationType(
+  manifest: NeonManifest,
+): Promise<void> {
+  if (
+    !manifest['@id'] ||
+    window.localStorage.getItem(manifest['@id']) !== null
+  ) {
+    return;
+  }
+
+  const annotation = manifest.mei_annotations[0];
+  if (!annotation) return;
+
+  try {
+    const response = await window.fetch(annotation.body);
+    if (!response.ok) return;
+
+    const mei = new DOMParser().parseFromString(
+      await response.text(),
+      'text/xml',
+    );
+    const notationType = mei
+      .querySelector('staffDef')
+      ?.getAttribute('notationtype');
+
+    if (notationType === 'neume.hufnagel') {
+      setInitialNotationType(manifest['@id'], 'hufnagel');
+    } else if (notationType === 'neume.square') {
+      setInitialNotationType(manifest['@id'], 'square');
+    }
+  } catch (error) {
+    console.warn('Unable to initialize sample notation type', error);
+  }
 }
 
 function getGetParam(paramName): string {
