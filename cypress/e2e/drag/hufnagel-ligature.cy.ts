@@ -44,7 +44,13 @@ describe('drag: Hufnagel ligature', () => {
 
     // Select the ascending nc pair and toggle it into a ligature.
     cy.get(`${FIRST_NC} use`).click({ force: true });
-    cy.get(`${SECOND_NC} use`).click({ force: true, metaKey: true });
+    // Neon reads metaKey on Mac and ctrlKey elsewhere; set both so this
+    // works on CI (Linux) and local dev machines alike.
+    cy.get(`${SECOND_NC} use`).click({
+      force: true,
+      metaKey: true,
+      ctrlKey: true,
+    });
     cy.get('#toggle-ligature').click({ force: true });
     cy.contains('Ligature Toggled').should('be.visible');
   });
