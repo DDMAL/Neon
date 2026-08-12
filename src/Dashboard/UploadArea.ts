@@ -51,29 +51,35 @@ async function handleUploadUpdate(
         .map((result) => result.value);
 
       setTimeout(async () => {
-        markNewlyUploaded(successfulFiles.map((file) => file.id));
-        await updateDashboard();
-        spinner.classList.remove('visible');
-        modalWindow.hideModalWindow();
+        try {
+          markNewlyUploaded(successfulFiles.map((file) => file.id));
+          await updateDashboard();
+          spinner.classList.remove('visible');
+          modalWindow.hideModalWindow();
 
-        if (successfulFiles.length > 0) {
-          const infoBadge = document.getElementById('info-badge');
-          infoBadge.textContent = `Uploaded files: ${successfulFiles
-            .map((file) => file.name)
-            .join(', ')}`;
-          infoBadge.style.display = 'block';
-          infoBadge.style.background = '#9DB2BF';
+          if (successfulFiles.length > 0) {
+            const infoBadge = document.getElementById('info-badge');
+            infoBadge.textContent = `Uploaded files: ${successfulFiles
+              .map((file) => file.name)
+              .join(', ')}`;
+            infoBadge.style.display = 'block';
+            infoBadge.style.background = '#9DB2BF';
+          }
+        } finally {
+          isUploadPending = false;
         }
-        isUploadPending = false;
       }, 2000);
     })
     .catch((error) => {
       console.log('One or more uploads rejected: ', error);
       setTimeout(async () => {
-        await updateDashboard();
-        spinner.classList.remove('visible');
-        modalWindow.hideModalWindow();
-        isUploadPending = false;
+        try {
+          await updateDashboard();
+          spinner.classList.remove('visible');
+          modalWindow.hideModalWindow();
+        } finally {
+          isUploadPending = false;
+        }
       }, 2000);
     });
 }
