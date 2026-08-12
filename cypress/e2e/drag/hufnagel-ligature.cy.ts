@@ -56,11 +56,21 @@ describe('drag: Hufnagel ligature', () => {
   });
 
   it('safe: move ligature within bounds', () => {
-    drag(`${FIRST_NC} use`, 30, -20);
+    cy.get(FIRST_NC).then((el) => {
+      const origin = el[0].getBoundingClientRect();
 
-    cy.contains('Drag action failed').should('not.exist');
-    cy.get(FIRST_NC).should('have.class', 'selected');
-    cy.get(SECOND_NC).should('have.class', 'selected');
+      drag(`${FIRST_NC} use`, 30, -20);
+
+      cy.contains('Drag action failed').should('not.exist');
+      cy.get(FIRST_NC).should('have.class', 'selected');
+      cy.get(SECOND_NC).should('have.class', 'selected');
+
+      cy.get(FIRST_NC).then((moved) => {
+        const { x, y } = moved[0].getBoundingClientRect();
+        expect(x).to.not.be.closeTo(origin.x, 1);
+        expect(y).to.not.be.closeTo(origin.y, 1);
+      });
+    });
   });
 });
 
