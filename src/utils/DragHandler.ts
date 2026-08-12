@@ -278,7 +278,11 @@ class DragHandler {
       (acc, el) => acc.concat(...el.querySelectorAll(glyphSelector)),
       [],
     );
-    const glyphBBoxes: BBox[] = glyphs.map(getGlyphBBox);
+    // Hufnagel connector glyphs (E9B4-E9B8) have zero-sized bboxes that
+    // collapse to the SVG origin, which always reads as out of bounds.
+    const glyphBBoxes: BBox[] = glyphs
+      .map(getGlyphBBox)
+      .filter((bbox) => bbox.lrx > bbox.ulx && bbox.lry > bbox.uly);
 
     // Get the surrounding bounding box of the selected elements
     const selectionBBox: BBox = glyphBBoxes.reduce(
