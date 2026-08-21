@@ -149,17 +149,20 @@ class DragHandler {
       param: paramArray,
     };
 
+    // Neon re-renders the entire SVG in response to the edit, which drops the
+    // `selected` class from every node, so record what to reselect NOW --
+    // while the nodes are still attached and still selected. Reading this
+    // after the edit resolves is a race: anything else that replaces the SVG
+    // in the meantime leaves us with an empty list and silently unselects
+    // everything.
+    const toReselect = Array.from(document.querySelectorAll('.selected'))
+      .filter((el) => !el.classList.contains('no-moving'))
+      .map((el) => el.id);
+
     // Send editor action
     this.neonView
       .edit(editorAction, this.neonView.view.getCurrentPageURI())
       .then(async () => {
-        // Neon re-renders the entire SVG, and hence, before we do so,
-        // we need to store all the elements (IDs) we need to select again
-        // Then, we need to reselect them by calling `this.reselect()`
-        const toReselect = Array.from(document.querySelectorAll('.selected'))
-          .filter((el) => !el.classList.contains('no-moving'))
-          .map((el) => el.id);
-
         // CAUTION: `updateForCurrentPage()` is an asynchronous function!
         // It requires an `await` keyword.
         await this.neonView.updateForCurrentPage();
@@ -173,15 +176,21 @@ class DragHandler {
   }
 
   async reselect(toReselect: string[]): Promise<void> {
-    const reselected = toReselect.map((id) =>
-      document.querySelector<SVGGraphicsElement>(`#${id}`),
-    );
+    // An id may be missing from the re-rendered SVG (Verovio can drop or
+    // rename elements as a result of the edit). Drop those instead of letting
+    // a null reach `classList` below, which would throw inside this promise
+    // and skip both the reselection and the caller's `dragInit()`.
+    const reselected = toReselect
+      .map((id) => document.querySelector<SVGGraphicsElement>(`#${id}`))
+      .filter((el): el is SVGGraphicsElement => el !== null);
+
+    if (reselected.length === 0) return;
 
     // All glyphs except bouding boxes ('syl's) must be selected with
-    // `selectAll()`
-    reselected
-      .filter((el) => !el.classList.contains('syl'))
-      .forEach(async () => await selectAll(reselected, this.neonView, this));
+    // `selectAll()`. It takes the whole array, so call it once.
+    if (reselected.some((el) => !el.classList.contains('syl'))) {
+      await selectAll(reselected, this.neonView, this);
+    }
 
     // Bounding boxes must be explicitly selected using `selectBBox()`
     reselected
@@ -283,6 +292,11 @@ class DragHandler {
     const glyphBBoxes: BBox[] = glyphs
       .map(getGlyphBBox)
       .filter((bbox) => bbox.lrx > bbox.ulx && bbox.lry > bbox.uly);
+
+    // With nothing left to measure, the reduce below collapses to the
+    // MAX_VALUE/MIN_VALUE seed and always reports out of bounds. There is no
+    // evidence the drag is invalid, so let it through rather than failing it.
+    if (glyphBBoxes.length === 0) return false;
 
     // Get the surrounding bounding box of the selected elements
     const selectionBBox: BBox = glyphBBoxes.reduce(

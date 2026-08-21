@@ -7,12 +7,8 @@ describe('test: zoom', () => {
   const ORIGIN_VIEWBOX = [0, 0, 4872, 6496];
 
   beforeEach(() => {
-    cy.viewport('macbook-13');
     // Visit the website, and wait until the MEI SVG is visible:
-    cy.visit('http://localhost:8080/editor.html?manifest=test');
-    cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
-      'be.visible',
-    );
+    cy.visitEditor('/editor.html?manifest=test');
 
     expectZoom(100);
   });
@@ -37,11 +33,13 @@ describe('test: zoom', () => {
    * viewbox value and zoom output text value
    */
   function zoomTo(val: number) {
-    cy.get('#zoomSlider')
-      .as('range')
-      .trigger('mousedown')
-      .invoke('val', val)
-      .trigger('mouseup'); // may be "change"
+    cy.get('#zoomSlider').as('range');
+
+    // Re-query the alias between steps rather than chaining off the first
+    // action, so a re-render mid-sequence cannot leave us on a detached node.
+    cy.get('@range').trigger('mousedown');
+    cy.get('@range').invoke('val', val);
+    cy.get('@range').trigger('mouseup'); // may be "change"
 
     expectZoom(val);
   }

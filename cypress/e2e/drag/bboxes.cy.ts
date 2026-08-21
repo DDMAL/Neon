@@ -3,10 +3,7 @@
 // - Are there out-of-bound checks?
 
 beforeEach(() => {
-  cy.visit('http://localhost:8080/editor.html?manifest=test');
-  cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
-    'be.visible',
-  );
+  cy.visitEditor('/editor.html?manifest=test');
 });
 
 describe('drag: bounding boxes', () => {
@@ -31,32 +28,33 @@ describe('drag: bounding boxes', () => {
 /**
  * Drag function for bounding boxes:
  * Checks for whether the bounding box has moved correctly on mouseup
+ *
+ * Every measurement re-queries `selector`. Neon replaces the whole SVG when
+ * the drag is committed, so the node the mouse events were dispatched on is
+ * detached by the time we want its new position -- reading
+ * getBoundingClientRect() off it would report a stale rect.
  */
 function dragBBox(selector: string, offsetX = 0, offsetY = 0): void {
-  cy.window().then((win) => {
-    cy.get(selector)
-      .click()
-      .then(($bbox) => {
-        // Recommended way of storing variables:
-        // https://docs.cypress.io/guides/core-concepts/variables-and-aliases#Closures
-        const origin = $bbox[0].getBoundingClientRect();
+  cy.get(selector).click();
 
-        cy.get(selector)
-          .trigger('mousedown', { view: win, force: true, timeout: 100 })
-          .trigger('mousemove', offsetX, offsetY, { force: true })
-          .trigger('mouseup', { view: win, force: true })
-          .then(($bbox) => {
-            const moved = $bbox[0].getBoundingClientRect();
+  cy.get(selector).then(($bbox) => {
+    // Recommended way of storing variables:
+    // https://docs.cypress.io/guides/core-concepts/variables-and-aliases#Closures
+    const origin = $bbox[0].getBoundingClientRect();
 
-            // Bounding box coordinate checks:
-            // We allow for some leeway on how close the positions have to be,
-            // for any calculation rounding in d3 and Neon
-            expect(moved.width).to.be.closeTo(origin.width, 1);
-            expect(moved.height).to.be.closeTo(origin.height, 1);
-            expect(moved.x).to.be.closeTo(origin.x + offsetX, 15);
-            expect(moved.y).to.be.closeTo(origin.y + offsetY, 15);
-          });
-      });
+    cy.dragElementNoClick(selector, offsetX, offsetY);
+
+    cy.get(selector).should(($moved) => {
+      const moved = $moved[0].getBoundingClientRect();
+
+      // Bounding box coordinate checks:
+      // We allow for some leeway on how close the positions have to be,
+      // for any calculation rounding in d3 and Neon
+      expect(moved.width).to.be.closeTo(origin.width, 1);
+      expect(moved.height).to.be.closeTo(origin.height, 1);
+      expect(moved.x).to.be.closeTo(origin.x + offsetX, 15);
+      expect(moved.y).to.be.closeTo(origin.y + offsetY, 15);
+    });
   });
 }
 

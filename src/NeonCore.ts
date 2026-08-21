@@ -50,6 +50,12 @@ class NeonCore {
   private annotations: WebAnnotation[];
   private manifest: NeonManifest;
   private lastPageLoaded: string;
+  /**
+   * The notation font currently loaded in the Verovio worker. The worker
+   * initializes itself with Bravura (see workers/VerovioWorker.js), which is
+   * the square notation font, so that is the starting state here.
+   */
+  private notationFont: string;
 
   getAnnotations(): WebAnnotation[] {
     return this.annotations;
@@ -86,6 +92,7 @@ class NeonCore {
     this.manifest = manifest;
     this.annotations = manifest.mei_annotations;
     this.lastPageLoaded = '';
+    this.notationFont = 'square';
   }
 
   /**
@@ -309,7 +316,20 @@ class NeonCore {
     });
   }
 
-  setNotationFont(type: string): Promise<void> {
+  /**
+   * Load a notation font into the Verovio worker.
+   *
+   * Resolves to `true` when the font actually changed, and `false` when the
+   * requested font was already loaded. Callers use that to decide whether a
+   * re-render is needed: switching fonts invalidates the render cache, but
+   * re-requesting the font that is already active does not, and re-rendering
+   * anyway replaces the whole SVG for no visible change.
+   */
+  setNotationFont(type: string): Promise<boolean> {
+    if (type === this.notationFont) {
+      return Promise.resolve(false);
+    }
+
     return new Promise((resolve): void => {
       const message: VerovioMessage = {
         id: uuidv4(),
@@ -319,8 +339,9 @@ class NeonCore {
       function handle(evt: MessageEvent): void {
         if (evt.data.id === message.id) {
           evt.target.removeEventListener('message', handle);
+          this.notationFont = type;
           this.lastPageLoaded = '';
-          resolve();
+          resolve(true);
         }
       }
       this.verovioWrapper.addEventListener('message', handle.bind(this));

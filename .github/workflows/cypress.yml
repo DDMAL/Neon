@@ -1,18 +1,52 @@
 name: E2E on Chrome
-on: [push]
+on:
+  pull_request:
+  push:
+    branches:
+      - develop
+      - main
+      - master
+
+# A newer push to the same branch supersedes this run.
+concurrency:
+  group: e2e-chrome-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     # let's make sure our tests pass on Chrome browser
     name: E2E on Chrome
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      # Node 16 is EOL, but it is load-bearing here: webpack 4 uses the legacy
+      # OpenSSL hashing that Node 17+ rejects (ERR_OSSL_EVP_UNSUPPORTED), which
+      # is why the Dockerfile sets NODE_OPTIONS=--openssl-legacy-provider.
+      # Bumping this needs that flag or a webpack 5 migration first.
       - name: Set Node.js 16
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 16
-      - uses: cypress-io/github-action@v5
+          cache: yarn
+      - uses: cypress-io/github-action@v6
         with:
           build: yarn build
           start: yarn start
+          # `yarn start` is a bare http-server with no readiness signal, and the
+          # action does not wait implicitly -- without this, Cypress races the
+          # server on a cold runner.
+          wait-on: 'http://localhost:8080'
+          wait-on-timeout: 120
           browser: chrome
+      # Screenshots and videos are the only evidence a headless failure leaves.
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-artifacts
+          path: |
+            cypress/screenshots
+            cypress/videos
+          if-no-files-found: ignore
+          retention-days: 7

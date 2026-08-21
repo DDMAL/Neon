@@ -502,9 +502,17 @@ export function setNotationTypeControls(): void {
   const dropdown = document.getElementById('notation-type-dropdown');
   const label = document.getElementById('notation-type-label');
 
-  function applyNotationType(type: NotationType): void {
+  // Reflect the notation type in the panel without touching the renderer.
+  function showNotationType(type: NotationType): void {
     label.textContent = `\xA0- ${type[0].toUpperCase() + type.slice(1)}`;
     setSettings({ notationType: type });
+  }
+
+  // Reflect the notation type AND ask the active view to re-render in it.
+  // The re-render replaces the whole SVG, so this must only run for a real
+  // change of type -- never as part of initialization.
+  function applyNotationType(type: NotationType): void {
+    showNotationType(type);
     document.dispatchEvent(
       new CustomEvent('notationtypechange', { detail: { type } }),
     );
@@ -533,10 +541,22 @@ export function setNotationTypeControls(): void {
     });
   });
 
-  const savedNotationType = getSettings().notationType;
-  applyNotationType(
-    savedNotationType === 'hufnagel' ? 'hufnagel' : 'square',
-  );
+  // Initialize the control from the stored setting. This runs from
+  // initDisplayControls(), i.e. immediately after the first SVG has been
+  // rendered and handed to the view, so it must not trigger a second render:
+  // the Verovio worker already boots with the square notation font, and a
+  // redundant re-render would replace the freshly-rendered SVG, detaching
+  // every node and dropping any selection.
+  const savedNotationType: NotationType =
+    getSettings().notationType === 'hufnagel' ? 'hufnagel' : 'square';
+
+  if (savedNotationType === 'square') {
+    showNotationType(savedNotationType);
+  } else {
+    // Hufnagel genuinely differs from the worker's default font, so the
+    // render it triggers is doing real work.
+    applyNotationType(savedNotationType);
+  }
 }
 
 /**

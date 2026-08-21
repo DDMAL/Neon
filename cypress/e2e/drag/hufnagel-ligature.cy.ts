@@ -11,22 +11,6 @@
  * currently renders the empty connector glyphs, so the test builds the
  * ligature via the UI instead of relying on a static @con MEI fixture.
  */
-function drag(selector: string, offsetX = 0, offsetY = 0): void {
-  cy.window().then((win) => {
-    cy.get(selector)
-      .first()
-      .click({ timeout: 100, force: true })
-      .trigger('mousedown', 1, 1, {
-        timeout: 100,
-        force: true,
-        which: 1,
-        view: win,
-      })
-      .trigger('mousemove', offsetX + 1, offsetY + 1, { force: true })
-      .trigger('mouseup', { force: true, view: win });
-  });
-}
-
 describe('drag: Hufnagel ligature', () => {
   // Ascending 2nd (d -> e), the first two nc's of syllable "u" in
   // St_Gall_022r_one_staff: nc#d1vfpl6j, nc#q1x6mj1e.
@@ -34,13 +18,8 @@ describe('drag: Hufnagel ligature', () => {
   const SECOND_NC = '#q1x6mj1e';
 
   beforeEach(() => {
-    cy.visit(
-      'http://localhost:8080/editor.html?manifest=St_Gall_022r_one_staff',
-    );
-    cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
-      'be.visible',
-    );
-    cy.get('#selByNc').click().should('have.class', 'is-active');
+    cy.visitEditor('/editor.html?manifest=St_Gall_022r_one_staff');
+    cy.clickAndExpectClass('#selByNc', 'is-active');
 
     // Select the ascending nc pair and toggle it into a ligature.
     cy.get(`${FIRST_NC} use`).click({ force: true });
@@ -59,7 +38,7 @@ describe('drag: Hufnagel ligature', () => {
     cy.get(FIRST_NC).then((el) => {
       const origin = el[0].getBoundingClientRect();
 
-      drag(`${FIRST_NC} use`, 30, -20);
+      cy.dragElement(`${FIRST_NC} use`, 30, -20);
 
       cy.contains('Drag action failed').should('not.exist');
       cy.get(FIRST_NC).should('have.class', 'selected');

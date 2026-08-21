@@ -3,11 +3,7 @@ describe('resize: bounding boxes', () => {
   // Wait for the SVG to be visible, have bounding boxes displayed,
   // have selection mode to bounding boxes, and expect there to be bounding boxes.
   beforeEach(() => {
-    cy.viewport('macbook-13');
-    cy.visit('http://localhost:8080/editor.html?manifest=test');
-    cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
-      'be.visible',
-    );
+    cy.visitEditor('/editor.html?manifest=test');
     cy.get('#displayBBox').click();
     cy.get('#selByBBox').click();
 
@@ -17,19 +13,26 @@ describe('resize: bounding boxes', () => {
   const BBOX_ID = '#m-8e6837fc-19d4-42c9-8266-cd54bb6f1dea';
 
   it('oob: bbox should return to original size', () => {
-    cy.get(BBOX_ID).click().should('have.class', 'selected');
+    cy.get(BBOX_ID).click();
+    cy.get(BBOX_ID).should('have.class', 'selected');
 
-    // cy.window() is necessary for d3 dragging
-    cy.window().then((win) => {
-      cy.get('#p-BottomLeft')
-        .trigger('mousedown', {
-          timeout: 100,
-          force: true,
-          which: 1,
-          view: win,
-        })
-        .trigger('mousemove', -100, 0, { force: true })
-        .trigger('mouseup', { force: true, view: win });
+    cy.get(BBOX_ID).then(($bbox) => {
+      const origin = $bbox[0].getBoundingClientRect();
+
+      // Drag the bottom-left resize point far enough left to go out of
+      // bounds; the bbox is expected to snap back to where it started.
+      cy.dragElementNoClick('#p-BottomLeft', -100, 0);
+
+      cy.get(BBOX_ID).should(($after) => {
+        const after = $after[0].getBoundingClientRect();
+
+        expect(after.width).to.be.closeTo(origin.width, 1);
+        expect(after.height).to.be.closeTo(origin.height, 1);
+        expect(after.x).to.be.closeTo(origin.x, 1);
+        expect(after.y).to.be.closeTo(origin.y, 1);
+      });
     });
   });
 });
+
+export {};

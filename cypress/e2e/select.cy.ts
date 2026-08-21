@@ -1,28 +1,31 @@
 // Tests for selection of glyphs
 // - Are selected glyphs visually shown?
 // - Do resize points show up for bounding boxes and staves?
+//
+// Note on style: selecting an element makes Neon re-render, which replaces the
+// whole SVG. Assertions are therefore never chained off the `.click()` that
+// triggers them -- each one re-queries the selector so Cypress can retry
+// against the live DOM instead of a detached node.
+
+const STAFF_ID = '#m-bb55180f-699b-4266-bf98-99f75d5ba995';
+const RED = 'rgb(221, 0, 0)';
 
 // Load page and wait for SVG to be visible
 beforeEach(() => {
-  cy.viewport('macbook-13');
-  cy.visit('http://localhost:8080/editor.html?manifest=test');
-  cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
-    'be.visible',
-  );
+  cy.visitEditor('/editor.html?manifest=test');
 });
 
 describe('select: syllable', () => {
   beforeEach(() => {
-    cy.get('#selBySyllable').click().should('have.class', 'is-active');
+    cy.clickAndExpectClass('#selBySyllable', 'is-active');
   });
 
   it('highlight: syllable should be selected red', () => {
-    cy.get('.syllable')
-      .first()
-      .click({ timeout: 100, force: true })
-      .should('have.class', 'selected')
-      .should('have.css', 'fill')
-      .and('eq', 'rgb(221, 0, 0)');
+    cy.get('.syllable').first().as('syllable');
+    cy.get('@syllable').click({ force: true });
+
+    cy.get('@syllable').should('have.class', 'selected');
+    cy.get('@syllable').should('have.css', 'fill', RED);
 
     cy.get('#svg_group > .resizePoint').should('have.length', 0);
   });
@@ -30,51 +33,43 @@ describe('select: syllable', () => {
 
 describe('select: staff', () => {
   beforeEach(() => {
-    cy.get('#selByStaff').click().should('have.class', 'is-active');
+    cy.clickAndExpectClass('#selByStaff', 'is-active');
   });
 
-  it('highlight: syllables, clefs, and accids', () => {
-    const staffId = '#m-bb55180f-699b-4266-bf98-99f75d5ba995';
+  /** Click the staff under test and wait until it is actually selected. */
+  function selectStaff(): void {
+    cy.get(STAFF_ID).should('exist');
+    cy.clickStaff(STAFF_ID);
+    cy.get(STAFF_ID).should('have.class', 'selected');
+  }
 
-    cy.get(staffId)
-      .should('exist')
-      .click({ timeout: 100, force: true })
-      .should('have.class', 'selected', { timeout: 200 })
-      .within(() => {
-        // Check whether syllables, clefs, and accidentals have
-        // - `highlighted` class
-        // - Filled red
-        cy.get('.syllable, .clef, .accid')
-          .should('have.class', 'highlighted')
-          .and('have.css', 'fill')
-          .and('eq', 'rgb(221, 0, 0)');
-      });
+  it('highlight: syllables, clefs, and accids', () => {
+    selectStaff();
+
+    // Check whether syllables, clefs, and accidentals have
+    // - `highlighted` class
+    // - Filled red
+    cy.get(STAFF_ID).within(() => {
+      cy.get('.syllable, .clef, .accid').should('have.class', 'highlighted');
+      cy.get('.syllable, .clef, .accid').should('have.css', 'fill', RED);
+    });
   });
 
   // Check whether divlines show up as red when a staff is selected
   it('highlight: divlines', () => {
-    const staffId = '#m-bb55180f-699b-4266-bf98-99f75d5ba995';
+    selectStaff();
 
-    cy.get(staffId)
-      .should('exist')
-      .click({ timeout: 100, force: true })
-      .should('have.class', 'selected', { timeout: 200 })
-      .within(() => {
-        cy.get('.divLine')
-          .should('have.class', 'highlighted')
-          .and('have.css', 'color')
-          .and('eq', 'rgb(221, 0, 0)');
-      });
+    cy.get(STAFF_ID).within(() => {
+      cy.get('.divLine').should('have.class', 'highlighted');
+      cy.get('.divLine').should('have.css', 'color', RED);
+    });
   });
 
   it('resize: resize points should show up', () => {
-    const staffId = '#m-bb55180f-699b-4266-bf98-99f75d5ba995';
-
-    cy.get(staffId)
-      .should('exist')
-      .click({ timeout: 100, force: true })
-      .should('have.class', 'selected', { timeout: 200 });
+    selectStaff();
 
     cy.get('#svg_group').find('.resizePoint').should('have.length', 8);
   });
 });
+
+export {};

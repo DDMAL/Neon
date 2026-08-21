@@ -1,47 +1,47 @@
-/**
- * Drag function for syllables and staves
- */
-function drag(selector: string, offsetX = 0, offsetY = 0): void {
-  // https://github.com/cypress-io/cypress/issues/3441#issuecomment-545292552
-  cy.window().then((win) => {
-    cy.get(selector)
-      .first()
-      .click({ timeout: 100, force: true })
-      .trigger('mousedown', 1, 1, {
-        timeout: 100,
-        force: true,
-        which: 1,
-        view: win,
-      })
-      .trigger('mousemove', offsetX + 1, offsetY + 1, { force: true })
-      .trigger('mouseup', { force: true, view: win });
-  });
-}
-
 beforeEach(() => {
-  cy.visit('http://localhost:8080/editor.html?manifest=test');
-  cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
-    'be.visible',
-  );
+  cy.visitEditor('/editor.html?manifest=test');
 });
 
 describe('drag: staves', () => {
   beforeEach(() => {
-    cy.get('#selByStaff').click().should('have.class', 'is-active');
+    cy.clickAndExpectClass('#selByStaff', 'is-active');
   });
 
+  /**
+   * Select a staff, then drag it. Selection goes through `cy.clickStaff`
+   * rather than clicking the `<g class="staff">` centre, because Neon
+   * hit-tests staff clicks against the staff *lines* -- see the command.
+   */
+  function dragStaff(selector: string, dx: number, dy: number): void {
+    cy.clickStaff(selector);
+    cy.get(selector).first().should('have.class', 'selected');
+    cy.dragElementNoClick(selector, dx, dy);
+  }
+
   it('error: move out of bounds to the LEFT', () => {
+    // Select the staff BEFORE measuring. Selecting highlights the staff, and
+    // the highlight stroke widens its bounding rect by ~30px (see the
+    // `stroke-width: 30px` rule Verovio is configured with), which moves the
+    // reported `x` by half that. Measuring an unselected staff and comparing
+    // it to a selected one reports a ~15px shift that has nothing to do with
+    // the drag.
+    cy.clickStaff('.staff');
+    cy.get('.staff').first().should('have.class', 'selected');
+
     cy.get('.staff')
       .first()
       .then((el) => {
         const origin = el[0].getBoundingClientRect();
 
-        drag('.staff', -300, -0);
+        cy.dragElementNoClick('.staff', -300, -0);
 
+        // `should()` rather than `then()`: the rejected drag returns the staff
+        // to its original position, and that has to be allowed to settle.
+        // `then()` measures exactly once and can catch it mid-return.
         cy.get('.staff')
           .first()
-          .then((el) => {
-            const { x, y } = el[0].getBoundingClientRect();
+          .should((moved) => {
+            const { x, y } = moved[0].getBoundingClientRect();
 
             expect(x).to.be.closeTo(origin.x, 15);
             expect(y).to.be.closeTo(origin.y, 15);
@@ -53,22 +53,22 @@ describe('drag: staves', () => {
   });
 
   it('error: move out of bounds to the RIGHT', () => {
-    drag('.staff', 200, 0);
+    dragStaff('.staff', 200, 0);
     cy.contains('Drag action failed').should('be.visible');
   });
 
   it('error: move out of bounds to the TOP', () => {
-    drag('.staff', 0, -300);
+    dragStaff('.staff', 0, -300);
     cy.contains('Drag action failed').should('be.visible');
   });
 
   it('error: move out of bounds to the BOTTOM', () => {
-    drag('.staff', 0, 1000);
+    dragStaff('.staff', 0, 1000);
     cy.contains('Drag action failed').should('be.visible');
   });
 
   it('safe: move within bounds', () => {
-    drag('.staff', 50, -30);
+    dragStaff('.staff', 50, -30);
 
     // Staff should still be selected even after drag
     cy.get('.staff').first().should('have.class', 'selected');
@@ -80,7 +80,7 @@ describe('drag: staves', () => {
   // would have issues with dragging:
   // https://github.com/DDMAL/Neon/issues/700#issuecomment-1190243501
   it('error: move random staff out of bounds', () => {
-    drag('#m-c64a9618-0edc-436b-8255-ae6984012c01', 200, 0);
+    dragStaff('#m-c64a9618-0edc-436b-8255-ae6984012c01', 200, 0);
     cy.contains('Drag action failed').should('be.visible');
   });
 });

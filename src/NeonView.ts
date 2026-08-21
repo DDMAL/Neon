@@ -241,8 +241,13 @@ class NeonView {
   }
 
   setNotationType(type: string): void {
-    this.core.setNotationFont(type).then(() => {
-      this.updateForCurrentPage();
+    this.core.setNotationFont(type).then((changed) => {
+      // Only re-render when the font actually changed. Re-rendering replaces
+      // the entire SVG (SingleView.updateSVG), which drops selection and
+      // detaches every node, so it must not happen for a no-op font change.
+      if (changed) {
+        this.updateForCurrentPage();
+      }
     });
   }
 
