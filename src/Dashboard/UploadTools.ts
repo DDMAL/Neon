@@ -178,10 +178,16 @@ function createPairedFolio(
   return folio;
 }
 
+export type UploadResult = {
+  status: string;
+  value?: { id: string; name: string };
+  reason?: any;
+};
+
 export async function handleUploadAllDocuments(
   currentFolder: IFolder,
   notationType: string,
-): Promise<{ status: string; value?: string; reason?: any }[]> {
+): Promise<UploadResult[]> {
   const folioPromises = fm
     .getFolios()
     .map(async ([name, mei, image]: [string, File, File]) => {
@@ -212,7 +218,7 @@ async function uploadFolio(
   image: File,
   currentFolder: IFolder,
   notationType: string,
-): Promise<string | null> {
+): Promise<{ id: string; name: string } | null> {
   const newName = fnConflictHandler(
     name,
     FileSystemTools.getAllNames(currentFolder),
@@ -251,7 +257,7 @@ async function uploadFolio(
           if (isAdded) {
             setInitialNotationType(id, notationType);
           }
-          return isAdded ? newName : null;
+          return isAdded ? { id, name: newName } : null;
         } else {
           console.log('failed to uploadFolio: ' + name);
           return null;

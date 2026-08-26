@@ -4,18 +4,38 @@ import {
   handleUploadAllDocuments,
   handleMakePair,
   sortFileByName,
+  UploadResult,
 } from './UploadTools';
-import { updateDashboard } from './Dashboard';
+import { updateDashboard, markNewlyUploaded } from './Dashboard';
 import { IFolder } from './FileSystem';
 import {
   getUploadNotationType,
   setUploadNotationType,
 } from './UploadNotationType';
 
+// Narrows a fulfilled UploadResult down to one with a non-null value, so
+// successfulFiles below is typed as { id: string; name: string }[] instead of
+// carrying the original optional value.
+function isSuccessfulUpload(
+  result: UploadResult,
+): result is UploadResult & { value: { id: string; name: string } } {
+  return result.status === 'fulfilled' && result.value != null;
+}
+
+// Guards against overlapping upload batches: the upload button isn't disabled
+// while a batch is pending, so a second click could otherwise let an older
+// batch's delayed callback run after a newer one and clobber its highlights.
+let isUploadPending = false;
+
 async function handleUploadUpdate(
   modalWindow: ModalWindow,
   currentFolder: IFolder,
 ) {
+  if (isUploadPending) {
+    return;
+  }
+  isUploadPending = true;
+
   const spinner = document.querySelector('#uploading_spinner');
   spinner.classList.add('visible');
 
@@ -26,32 +46,40 @@ async function handleUploadUpdate(
 
   handleUploadAllDocuments(currentFolder, notationType)
     .then((results) => {
+      const successfulFiles = results
+        .filter(isSuccessfulUpload)
+        .map((result) => result.value);
+
       setTimeout(async () => {
-        await updateDashboard();
-        spinner.classList.remove('visible');
-        modalWindow.hideModalWindow();
+        try {
+          markNewlyUploaded(successfulFiles.map((file) => file.id));
+          await updateDashboard();
+          spinner.classList.remove('visible');
+          modalWindow.hideModalWindow();
 
-        // Show uploaded filenames
-        const successfulFiles = results
-          .filter((result) => result.status === 'fulfilled' && result.value)
-          .map((result) => result.value);
-
-        if (successfulFiles.length > 0) {
-          const infoBadge = document.getElementById('info-badge');
-          infoBadge.textContent = `Uploaded files: ${successfulFiles.join(
-            ', ',
-          )}`;
-          infoBadge.style.display = 'block';
-          infoBadge.style.background = '#9DB2BF';
+          if (successfulFiles.length > 0) {
+            const infoBadge = document.getElementById('info-badge');
+            infoBadge.textContent = `Uploaded files: ${successfulFiles
+              .map((file) => file.name)
+              .join(', ')}`;
+            infoBadge.style.display = 'block';
+            infoBadge.style.background = '#9DB2BF';
+          }
+        } finally {
+          isUploadPending = false;
         }
       }, 2000);
     })
     .catch((error) => {
       console.log('One or more uploads rejected: ', error);
       setTimeout(async () => {
-        await updateDashboard();
-        spinner.classList.remove('visible');
-        modalWindow.hideModalWindow();
+        try {
+          await updateDashboard();
+          spinner.classList.remove('visible');
+          modalWindow.hideModalWindow();
+        } finally {
+          isUploadPending = false;
+        }
       }, 2000);
     });
 }
