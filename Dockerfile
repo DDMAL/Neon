@@ -10,6 +10,7 @@ COPY . .
 RUN yarn build:prod
 
 FROM nginx:1.25-alpine
+RUN sed -i 's/worker_processes  auto;/worker_processes  2;/' /etc/nginx/nginx.conf
 COPY --from=builder /app/deployment/server /usr/share/nginx/html
 COPY k8s/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
