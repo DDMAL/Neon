@@ -2,7 +2,6 @@ import {
   checkOutOfBoundsGlyphs,
   convertToVerovio,
   removeColumnLabel,
-  stripHufnagelForVerovio,
 } from './utils/ConvertMei';
 import * as Validation from './Validation';
 import VerovioWrapper from './VerovioWrapper';
@@ -276,10 +275,6 @@ class NeonCore {
    */
   loadData(pageURI: string, data: string, dirty = false): Promise<void> {
     Validation.sendForValidation(removeColumnLabel(data));
-    // TEMPORARY Verovio compatibility path (see ConvertMei.ts): normalize the
-    // notation subtype for the already-tested demo workflow before loading the
-    // working MEI. @con and other <nc> attributes are left unchanged.
-    data = stripHufnagelForVerovio(data);
     this.lastPageLoaded = pageURI;
     /* A promise is returned that will resolve to the result of the action.
      * However the value that is must return comes from the Web Worker and

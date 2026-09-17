@@ -24,77 +24,54 @@ function copyAttributes(src: Element, dst: Element): void {
   }
 }
 
-// --- BEGIN TEMPORARY Verovio compatibility shim (see issue #1360) ---
-//
-// Neon currently keeps one compatibility path for the Hufnagel demo:
-// uploaded and downloaded MEI records the selected notation subtype, while
-// the working MEI sent to Verovio is temporarily normalized to bare
-// notationtype="neume". Font selection is handled separately through
-// setNotationFont() and Verovio's fontAddCustom option.
-//
-// The official Verovio develop build now recognizes neume.square and
-// neume.hufnagel. This PR intentionally keeps the normalization so the
-// already-tested Neon font and connection workflow remains unchanged for the
-// demo. It should be removed when Neon integrates Verovio's native Hufnagel
-// @con rendering and editor action, so the subtype can become the single
-// source of truth throughout the working MEI.
-//
-// @con and @ligated are not removed or rewritten before the MEI reaches
-// Verovio. The current Hufnagel control still invokes toggleLigature, however,
-// so direct MEI download temporarily converts the resulting Hufnagel
-// @ligated pairs to canonical @con="e". Square @ligated values are unchanged.
-const HUFNAGEL_NOTATIONTYPE = 'neume.hufnagel';
-const SQUARE_NOTATIONTYPE = 'neume.square';
-const HUFNAGEL_CON_VALUE = 'e';
-
 /**
- * Temporary export compatibility for Hufnagel connection editing.
+ * Read the notation subtype recorded on the MEI's staffDef.
  *
- * Neon's current Hufnagel control invokes Verovio's toggleLigature action,
- * which writes @ligated on the selected <nc> elements. Until the native
- * toggleNeumeConnection action is available in the production Verovio build,
- * convert those pairs to canonical @con="e" when downloading MEI.
+ * Verovio gates both @con rendering and the toggleNeumeConnection editor
+ * action on the staff's notation type, so this - not the notation type held
+ * in LocalSettings - is what decides which connection action applies. The
+ * LocalSettings value only drives font selection and can disagree with the
+ * document.
  *
- * Remove this conversion when Neon switches the Hufnagel control to
- * toggleNeumeConnection. Square-notation @ligated values are not changed.
+ * @returns 'hufnagel', 'square', or null if the MEI records neither.
  */
-function convertLigatedToCon(mei: Element): void {
-  const ncs = Array.from(mei.getElementsByTagName('nc'));
-  let idx = 0;
-  while (idx < ncs.length) {
-    if (
-      ncs[idx].getAttribute('ligated') &&
-      idx + 1 < ncs.length &&
-      ncs[idx + 1].getAttribute('ligated')
-    ) {
-      ncs[idx].removeAttribute('ligated');
-      ncs[idx + 1].removeAttribute('ligated');
-      ncs[idx + 1].setAttribute('con', HUFNAGEL_CON_VALUE);
-      idx += 2;
-    } else {
-      idx += 1;
-    }
-  }
-}
-
-// String-in/string-out wrappers for callers (NeonCore.ts) that only have
-// the MEI as a string, not an already-parsed DOM.
-export function stripHufnagelForVerovio(meiString: string): string {
+export function getNotationTypeFromMei(meiString: string): string | null {
   const parser = new DOMParser();
   const meiDoc = parser.parseFromString(meiString, 'text/xml');
-  const staffDef = meiDoc.documentElement.querySelector('staffDef');
-  const notationType = staffDef?.getAttribute('notationtype');
+  const notationType = meiDoc.documentElement
+    .querySelector('staffDef')
+    ?.getAttribute('notationtype');
 
-  if (
-    notationType === HUFNAGEL_NOTATIONTYPE ||
-    notationType === SQUARE_NOTATIONTYPE
-  ) {
-    staffDef.setAttribute('notationtype', 'neume');
-  }
-
-  return vkbeautify.xml(new XMLSerializer().serializeToString(meiDoc));
+  if (notationType === 'neume.hufnagel') return 'hufnagel';
+  if (notationType === 'neume.square') return 'square';
+  return null;
 }
-// --- END TEMPORARY Verovio compatibility shim ---
+
+/**
+ * Find which of the given <nc> elements still carry @ligated.
+ *
+ * Hufnagel connections were briefly encoded with Square's @ligated, before
+ * Verovio could render @con. Documents saved during that period still hold it,
+ * and toggleNeumeConnection only ever touches @con - so without clearing the
+ * stale @ligated first, the pair ends up with both attributes and can no
+ * longer be disconnected from the UI.
+ *
+ * @param ncIds - The <nc> ids to check, typically the current selection.
+ * @returns The subset of ncIds whose <nc> has @ligated set.
+ */
+export function getLigatedNcIds(meiString: string, ncIds: string[]): string[] {
+  const parser = new DOMParser();
+  const meiDoc = parser.parseFromString(meiString, 'text/xml');
+  const ncs = Array.from(meiDoc.documentElement.getElementsByTagName('nc'));
+
+  return ncs
+    .filter(
+      (nc) =>
+        nc.getAttribute('ligated') &&
+        ncIds.includes(nc.getAttribute('xml:id')),
+    )
+    .map((nc) => nc.getAttribute('xml:id'));
+}
 
 /**
  * Record the user's notation choice in the uploaded MEI before creating its
@@ -243,17 +220,25 @@ export function convertToNeon(
     scoreDef.insertAdjacentElement('afterend', colLayout);
   }
 
-  // Restore the selected subtype in the downloaded MEI. The temporary working
-  // copy uses bare notationtype="neume", while Neon's notation dropdown stores
-  // the active subtype in LocalSettings and switches the custom font.
-  if (notationType === 'hufnagel' || notationType === 'square') {
-    mei
-      .querySelector('staffDef')
-      ?.setAttribute('notationtype', `neume.${notationType}`);
-  }
-
-  if (notationType === 'hufnagel') {
-    convertLigatedToCon(mei);
+  // Make sure the downloaded MEI always declares its notation subtype.
+  //
+  // The working MEI now carries the subtype through Verovio untouched, so a
+  // document that declared one at upload (setNotationTypeInMei) is already
+  // correct and must not be overwritten - LocalSettings only drives font
+  // selection and can disagree with the document.
+  //
+  // Legacy uploads and the built-in samples predate that and only have bare
+  // notationtype="neume". They never declared a subtype, so the notation
+  // dropdown is the user's declaration; LocalSettings defaults to 'square',
+  // which is also the right default for undeclared material.
+  const staffDef = mei.querySelector('staffDef');
+  const declaredNotationType = staffDef?.getAttribute('notationtype');
+  if (
+    declaredNotationType !== 'neume.hufnagel' &&
+    declaredNotationType !== 'neume.square'
+  ) {
+    const fallback = notationType === 'hufnagel' ? 'hufnagel' : 'square';
+    staffDef?.setAttribute('notationtype', `neume.${fallback}`);
   }
 
   return vkbeautify.xml(serializer.serializeToString(meiDoc));
