@@ -9,7 +9,6 @@ import {
   ToggleLigatureAction,
   ToggleNeumeConnectionAction,
 } from '../Types';
-import { getLigatedNcIds, getNotationTypeFromMei } from '../utils/ConvertMei';
 import { removeHandler, deleteButtonHandler } from './SelectOptions';
 
 /**
@@ -459,7 +458,10 @@ export function initGroupingListeners(): void {
       .getElementById('toggle-ligature')
       .addEventListener('click', async () => {
         const pageURI = neonView.view.getCurrentPageURI();
-        const meiString = await neonView.getPageMEI(pageURI);
+        const mei = new DOMParser().parseFromString(
+          await neonView.getPageMEI(pageURI),
+          'text/xml',
+        ).documentElement;
 
         // Hufnagel connections are encoded as @con and toggled by Verovio's
         // toggleNeumeConnection; Square ligatures stay on @ligated and
@@ -467,7 +469,9 @@ export function initGroupingListeners(): void {
         // read it from the MEI rather than from LocalSettings - the notation
         // dropdown only drives font selection and can disagree with the
         // document.
-        const isHufnagel = getNotationTypeFromMei(meiString) === 'hufnagel';
+        const isHufnagel =
+          mei.querySelector('staffDef')?.getAttribute('notationtype') ===
+          'neume.hufnagel';
 
         if (!isHufnagel) {
           const editorAction: ToggleLigatureAction = {
@@ -501,7 +505,13 @@ export function initGroupingListeners(): void {
         // ever touches @con, and a leftover @ligated keeps the pair rendered
         // as connected with no way to undo it. Such a pair therefore takes one
         // click to move onto @con and a second to actually disconnect.
-        const staleLigated = getLigatedNcIds(meiString, elementIds);
+        const staleLigated = Array.from(mei.getElementsByTagName('nc'))
+          .filter(
+            (nc) =>
+              nc.getAttribute('ligated') &&
+              elementIds.includes(nc.getAttribute('xml:id')),
+          )
+          .map((nc) => nc.getAttribute('xml:id'));
         const editorAction: EditorAction = staleLigated.length
           ? {
               action: 'chain',

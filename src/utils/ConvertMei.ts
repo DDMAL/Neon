@@ -25,55 +25,6 @@ function copyAttributes(src: Element, dst: Element): void {
 }
 
 /**
- * Read the notation subtype recorded on the MEI's staffDef.
- *
- * Verovio gates both @con rendering and the toggleNeumeConnection editor
- * action on the staff's notation type, so this - not the notation type held
- * in LocalSettings - is what decides which connection action applies. The
- * LocalSettings value only drives font selection and can disagree with the
- * document.
- *
- * @returns 'hufnagel', 'square', or null if the MEI records neither.
- */
-export function getNotationTypeFromMei(meiString: string): string | null {
-  const parser = new DOMParser();
-  const meiDoc = parser.parseFromString(meiString, 'text/xml');
-  const notationType = meiDoc.documentElement
-    .querySelector('staffDef')
-    ?.getAttribute('notationtype');
-
-  if (notationType === 'neume.hufnagel') return 'hufnagel';
-  if (notationType === 'neume.square') return 'square';
-  return null;
-}
-
-/**
- * Find which of the given <nc> elements still carry @ligated.
- *
- * Hufnagel connections were briefly encoded with Square's @ligated, before
- * Verovio could render @con. Documents saved during that period still hold it,
- * and toggleNeumeConnection only ever touches @con - so without clearing the
- * stale @ligated first, the pair ends up with both attributes and can no
- * longer be disconnected from the UI.
- *
- * @param ncIds - The <nc> ids to check, typically the current selection.
- * @returns The subset of ncIds whose <nc> has @ligated set.
- */
-export function getLigatedNcIds(meiString: string, ncIds: string[]): string[] {
-  const parser = new DOMParser();
-  const meiDoc = parser.parseFromString(meiString, 'text/xml');
-  const ncs = Array.from(meiDoc.documentElement.getElementsByTagName('nc'));
-
-  return ncs
-    .filter(
-      (nc) =>
-        nc.getAttribute('ligated') &&
-        ncIds.includes(nc.getAttribute('xml:id')),
-    )
-    .map((nc) => nc.getAttribute('xml:id'));
-}
-
-/**
  * Record the user's notation choice in the uploaded MEI before creating its
  * manifest. Generic legacy MEI cannot distinguish Square from Hufnagel, and
  * the same choice can be applied to every folio in a batch upload.
