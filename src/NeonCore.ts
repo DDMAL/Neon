@@ -2,7 +2,6 @@ import {
   checkOutOfBoundsGlyphs,
   convertToVerovio,
   removeColumnLabel,
-  stripHufnagelForVerovio,
 } from './utils/ConvertMei';
 import * as Validation from './Validation';
 import VerovioWrapper from './VerovioWrapper';
@@ -56,9 +55,22 @@ class NeonCore {
    * the square notation font, so that is the starting state here.
    */
   private notationFont: string;
+  /**
+   * staffDef@notationtype of the loaded document, kept so callers that cannot
+   * wait on the worker - such as building a side panel - can still label
+   * themselves after the document rather than after LocalSettings.
+   */
+  private notationType: string;
 
   getAnnotations(): WebAnnotation[] {
     return this.annotations;
+  }
+
+  /**
+   * @returns The loaded document's staffDef@notationtype, if it declares one.
+   */
+  getNotationType(): string {
+    return this.notationType;
   }
 
   /**
@@ -276,10 +288,10 @@ class NeonCore {
    */
   loadData(pageURI: string, data: string, dirty = false): Promise<void> {
     Validation.sendForValidation(removeColumnLabel(data));
-    // TEMPORARY Verovio compatibility path (see ConvertMei.ts): normalize the
-    // notation subtype for the already-tested demo workflow before loading the
-    // working MEI. @con and other <nc> attributes are left unchanged.
-    data = stripHufnagelForVerovio(data);
+    this.notationType = this.parser
+      .parseFromString(data, 'text/xml')
+      .documentElement.querySelector('staffDef')
+      ?.getAttribute('notationtype');
     this.lastPageLoaded = pageURI;
     /* A promise is returned that will resolve to the result of the action.
      * However the value that is must return comes from the Web Worker and
@@ -554,6 +566,35 @@ class NeonCore {
         this.verovioWrapper.postMessage(message);
       });
     });
+  }
+
+  /**
+   * Replace a page's MEI wholesale, as a single undoable action.
+   *
+   * Editor actions cannot express every change: converting a document's
+   * notation type rewrites staffDef@notationtype, and Verovio only re-reads
+   * that in SetScoreDefFunctor when the document is prepared, not from a
+   * `set` action. Such a change therefore has to go back in as a document,
+   * but should still behave like any other edit - undoable, and marking the
+   * page unsaved.
+   *
+   * @param pageURI - The URI of the selected page.
+   * @param mei - The replacement MEI.
+   */
+  async replaceMEI(pageURI: string, mei: string): Promise<void> {
+    const currentMEI = await this.getMEI(pageURI);
+
+    if (!this.undoStacks.has(pageURI)) {
+      this.undoStacks.set(pageURI, []);
+    }
+    const undoStack = this.undoStacks.get(pageURI);
+    if (undoStack.push(currentMEI) > 10) {
+      this.undoStacks.set(pageURI, undoStack.slice(1));
+    }
+    this.redoStacks.set(pageURI, []);
+
+    await this.loadData(pageURI, mei, true);
+    setSavedStatus(false);
   }
 
   /**

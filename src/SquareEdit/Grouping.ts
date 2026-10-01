@@ -4,7 +4,11 @@ import * as Notification from '../utils/Notification';
 import * as SelectTools from '../utils/SelectTools';
 import * as SelectOptions from '../SquareEdit/SelectOptions';
 import NeonView from '../NeonView';
-import { EditorAction, ToggleLigatureAction } from '../Types';
+import {
+  EditorAction,
+  ToggleLigatureAction,
+  ToggleNeumeConnectionAction,
+} from '../Types';
 import { removeHandler, deleteButtonHandler } from './SelectOptions';
 
 /**
@@ -373,7 +377,41 @@ export function triggerGrouping(type: string): void {
   const moreEdit = document.getElementById('moreEdit');
   moreEdit.parentElement.classList.remove('hidden');
   moreEdit.innerHTML += Contents.groupingMenu[type];
+
+  const toggle = document.getElementById('toggle-ligature');
+  if (toggle) {
+    toggle.textContent = `${isConnected() ? 'Untoggle' : 'Toggle'} ${connectionNoun()}`;
+  }
+
   initGroupingListeners();
+}
+
+/**
+ * What this notation calls a connection between two neume components.
+ *
+ * "Ligature" is a Square notation term; Hufnagel has no such thing, and MEI
+ * documents what it does have - nc@con - as a "Connection to the previous
+ * component within the same neume". The document's own staffDef@notationtype
+ * decides, not LocalSettings, which only drives font selection.
+ */
+function connectionNoun(): string {
+  return neonView.getNotationType() === 'neume.hufnagel'
+    ? 'Connection'
+    : 'Ligature';
+}
+
+/**
+ * Whether the current selection is already connected.
+ *
+ * Both notations draw a connected pair with the chant connector glyphs - an
+ * entry line on the first component and a ligatura on the second - so the
+ * rendered glyph answers this without going back to the worker. Select.ts
+ * pairs the two halves of a connection by the same codepoints.
+ */
+function isConnected(): boolean {
+  return Array.from(document.querySelectorAll('.nc.selected use')).some((use) =>
+    /E9B[456789ABC]/.test(use.getAttribute('xlink:href') ?? ''),
+  );
 }
 
 /**
@@ -453,25 +491,77 @@ export function initGroupingListeners(): void {
     document
       .getElementById('toggle-ligature')
       .addEventListener('click', async () => {
-        const elementIds = getIds();
+        const pageURI = neonView.view.getCurrentPageURI();
+        const mei = new DOMParser().parseFromString(
+          await neonView.getPageMEI(pageURI),
+          'text/xml',
+        ).documentElement;
 
-        const editorAction: ToggleLigatureAction = {
-          action: 'toggleLigature',
-          param: {
-            elementIds: elementIds,
-          },
+        // Hufnagel connections are encoded as @con and toggled by Verovio's
+        // toggleNeumeConnection; Square ligatures stay on @ligated and
+        // toggleLigature. Verovio gates both on the staff's notationtype, so
+        // read it from the MEI rather than from LocalSettings - the notation
+        // dropdown only drives font selection and can disagree with the
+        // document.
+        const isHufnagel =
+          mei.querySelector('staffDef')?.getAttribute('notationtype') ===
+          'neume.hufnagel';
+
+        if (!isHufnagel) {
+          const editorAction: ToggleLigatureAction = {
+            action: 'toggleLigature',
+            param: { elementIds: getIds() },
+          };
+          dispatchLigatureAction(editorAction, pageURI);
+          return;
+        }
+
+        const elementIds = getNcIds();
+
+        // Verovio asserts on exactly two <nc>s, and those asserts are compiled
+        // out of the release WASM build, so anything else reaches a bad cast
+        // and takes the worker down instead of returning a failure.
+        if (elementIds.length !== 2) {
+          Notification.queueNotification(
+            'Select exactly 2 neume components to connect',
+            'error',
+          );
+          return;
+        }
+
+        const toggleConnection: ToggleNeumeConnectionAction = {
+          action: 'toggleNeumeConnection',
+          param: { elementIds: elementIds },
         };
-        neonView
-          .edit(editorAction, neonView.view.getCurrentPageURI())
-          .then((result) => {
-            if (result) {
-              Notification.queueNotification('Ligature Toggled', 'success');
-            } else {
-              Notification.queueNotification('Ligature Toggle Failed', 'error');
+
+        // Clear any @ligated left on this pair by the interim encoding, so it
+        // cannot end up carrying both attributes - toggleNeumeConnection only
+        // ever touches @con, and a leftover @ligated keeps the pair rendered
+        // as connected with no way to undo it. Such a pair therefore takes one
+        // click to move onto @con and a second to actually disconnect.
+        const staleLigated = Array.from(mei.getElementsByTagName('nc'))
+          .filter(
+            (nc) =>
+              nc.getAttribute('ligated') === 'true' &&
+              elementIds.includes(nc.getAttribute('xml:id')),
+          )
+          .map((nc) => nc.getAttribute('xml:id'));
+        const editorAction: EditorAction = staleLigated.length
+          ? {
+              action: 'chain',
+              param: [
+                ...staleLigated.map(
+                  (id): EditorAction => ({
+                    action: 'set',
+                    param: { elementId: id, attrType: 'ligated', attrValue: '' },
+                  }),
+                ),
+                toggleConnection,
+              ],
             }
-            endGroupingSelection();
-            neonView.updateForCurrentPage();
-          });
+          : toggleConnection;
+
+        dispatchLigatureAction(editorAction, pageURI);
       });
   } catch (e) {}
 
@@ -480,6 +570,31 @@ export function initGroupingListeners(): void {
       toggleLinkedSyllables();
     });
   } catch (e) {}
+}
+
+/**
+ * Send a connection edit and report the outcome, in the wording the document's
+ * notation type uses and for the direction actually taken - matching the label
+ * the control carried when it was pressed.
+ */
+function dispatchLigatureAction(
+  editorAction: EditorAction,
+  pageURI: string,
+): void {
+  // Read the state before the edit: the action reverses it, and the selection
+  // is cleared by the time the result comes back.
+  const verb = isConnected() ? 'Untoggle' : 'Toggle';
+  const name = connectionNoun();
+
+  neonView.edit(editorAction, pageURI).then((result) => {
+    if (result) {
+      Notification.queueNotification(`${name} ${verb}d`, 'success');
+    } else {
+      Notification.queueNotification(`${name} ${verb} Failed`, 'error');
+    }
+    endGroupingSelection();
+    neonView.updateForCurrentPage();
+  });
 }
 
 /**
@@ -778,6 +893,19 @@ function getIds(): string[] {
     ids.push(el.id);
   });
   return ids;
+}
+
+/**
+ * @returns The IDs of selected neume components only.
+ *
+ * getIds() returns every selected element regardless of type. Verovio's
+ * toggleNeumeConnection casts each id straight to an Nc, so a stray clef or
+ * custos in the selection would crash the worker.
+ */
+function getNcIds(): string[] {
+  return Array.from(document.getElementsByClassName('selected'))
+    .filter((el) => el.classList.contains('nc'))
+    .map((el) => el.id);
 }
 
 /**

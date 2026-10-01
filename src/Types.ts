@@ -6,6 +6,8 @@ export type Attributes = {
   shape?: string;
   line?: string;
   ligated?: string;
+  /** Hufnagel neume connection. Set to 'e' on the second <nc> of a pair. */
+  con?: string;
   curve?: string;
   tilt?: string;
   form?: string;
@@ -192,6 +194,18 @@ export type ToggleLigatureAction = {
   };
 };
 
+/**
+ * Hufnagel counterpart of ToggleLigatureAction. Verovio requires exactly two
+ * adjacent <nc> ids from the same <neume>, and rejects the action unless the
+ * staff's notationtype is neume.hufnagel.
+ */
+export type ToggleNeumeConnectionAction = {
+  action: 'toggleNeumeConnection';
+  param: {
+    elementIds: string[];
+  };
+};
+
 // MIGHT BE USELESS: does not exist in Verovio
 export type ChangeSkewAction = {
   action: 'changeSkew';
@@ -253,6 +267,7 @@ export type EditorAction =
   | SetTextAction
   | SetClefAction
   | ToggleLigatureAction
+  | ToggleNeumeConnectionAction
   | ChangeSkewAction
   | ChangeStaffAction
   | ChangeStaffToAction
