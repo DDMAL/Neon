@@ -377,6 +377,15 @@ export function triggerGrouping(type: string): void {
   const moreEdit = document.getElementById('moreEdit');
   moreEdit.parentElement.classList.remove('hidden');
   moreEdit.innerHTML += Contents.groupingMenu[type];
+
+  // "Ligature" is a Square notation term; Hufnagel has no such thing, and MEI
+  // calls what it does have a connection (nc@con). Label the control after the
+  // document's own notation type rather than the menu's hardcoded wording.
+  if (neonView.getNotationType() === 'neume.hufnagel') {
+    const toggle = document.getElementById('toggle-ligature');
+    if (toggle) toggle.textContent = 'Toggle Connection';
+  }
+
   initGroupingListeners();
 }
 
@@ -539,20 +548,21 @@ export function initGroupingListeners(): void {
 }
 
 /**
- * Send a connection edit and report the outcome.
- *
- * The wording still says "Ligature" for both notations, matching the button's
- * own label. Correcting it belongs with the Square/Hufnagel control split.
+ * Send a connection edit and report the outcome, in the wording the document's
+ * notation type uses - matching the control's own label.
  */
 function dispatchLigatureAction(
   editorAction: EditorAction,
   pageURI: string,
 ): void {
+  const name =
+    neonView.getNotationType() === 'neume.hufnagel' ? 'Connection' : 'Ligature';
+
   neonView.edit(editorAction, pageURI).then((result) => {
     if (result) {
-      Notification.queueNotification('Ligature Toggled', 'success');
+      Notification.queueNotification(`${name} Toggled`, 'success');
     } else {
-      Notification.queueNotification('Ligature Toggle Failed', 'error');
+      Notification.queueNotification(`${name} Toggle Failed`, 'error');
     }
     endGroupingSelection();
     neonView.updateForCurrentPage();

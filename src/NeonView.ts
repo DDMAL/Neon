@@ -272,6 +272,13 @@ class NeonView {
   }
 
   /**
+   * @returns The loaded document's staffDef@notationtype, if it declares one.
+   */
+  getNotationType(): string {
+    return this.core.getNotationType();
+  }
+
+  /**
    * Get the page's MEI file as a string.
    * @param pageNo - The identifying URI of the page.
    */

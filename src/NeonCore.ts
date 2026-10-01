@@ -55,9 +55,22 @@ class NeonCore {
    * the square notation font, so that is the starting state here.
    */
   private notationFont: string;
+  /**
+   * staffDef@notationtype of the loaded document, kept so callers that cannot
+   * wait on the worker - such as building a side panel - can still label
+   * themselves after the document rather than after LocalSettings.
+   */
+  private notationType: string;
 
   getAnnotations(): WebAnnotation[] {
     return this.annotations;
+  }
+
+  /**
+   * @returns The loaded document's staffDef@notationtype, if it declares one.
+   */
+  getNotationType(): string {
+    return this.notationType;
   }
 
   /**
@@ -275,6 +288,10 @@ class NeonCore {
    */
   loadData(pageURI: string, data: string, dirty = false): Promise<void> {
     Validation.sendForValidation(removeColumnLabel(data));
+    this.notationType = this.parser
+      .parseFromString(data, 'text/xml')
+      .documentElement.querySelector('staffDef')
+      ?.getAttribute('notationtype');
     this.lastPageLoaded = pageURI;
     /* A promise is returned that will resolve to the result of the action.
      * However the value that is must return comes from the Web Worker and
