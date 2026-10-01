@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import UploadFileManager from './UploadFileManager';
 import { createManifest, addDocument } from './Storage';
 import { IFolder, FileSystemTools } from './FileSystem';
-import { setNotationTypeInMei } from '../utils/ConvertMei';
+import { convertNotationType } from '../utils/ConvertMei';
 import { setInitialNotationType } from '../utils/LocalSettings';
 
 const fm = UploadFileManager.getInstance();
@@ -229,7 +229,7 @@ async function uploadFolio(
       .then(
         (meiText) =>
           new File(
-            [setNotationTypeInMei(meiText, notationType)],
+            [convertNotationType(meiText, notationType)],
             mei.name,
             { type: mei.type },
           ),

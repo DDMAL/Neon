@@ -13,6 +13,7 @@ import {
   TextViewInterface,
   ViewInterface,
 } from './Interfaces';
+import { convertNotationType } from './utils/ConvertMei';
 import { setDebugMode } from './utils/DebugMode';
 import { setSavedStatus, listenUnsavedChanges } from './utils/Unsaved';
 import LocalSettings, { getSettings } from './utils/LocalSettings';
@@ -240,15 +241,34 @@ class NeonView {
     });
   }
 
-  setNotationType(type: string): void {
-    this.core.setNotationFont(type).then((changed) => {
-      // Only re-render when the font actually changed. Re-rendering replaces
-      // the entire SVG (SingleView.updateSVG), which drops selection and
-      // detaches every node, so it must not happen for a no-op font change.
-      if (changed) {
-        this.updateForCurrentPage();
-      }
-    });
+  async setNotationType(type: string): Promise<void> {
+    const pageURI = this.view.getCurrentPageURI();
+    const mei = await this.getPageMEI(pageURI);
+    const declared = new DOMParser()
+      .parseFromString(mei, 'text/xml')
+      .documentElement.querySelector('staffDef')
+      ?.getAttribute('notationtype');
+
+    // Switching notation type is the only way to correct a document that was
+    // uploaded as the wrong one, so it has to convert the encoding, not just
+    // relabel it - Verovio reads @ligated for Square and @con for Hufnagel,
+    // and ignores the other. Converting it back restores the original.
+    if (
+      (type === 'hufnagel' || type === 'square') &&
+      declared !== `neume.${type}`
+    ) {
+      await this.core.replaceMEI(pageURI, convertNotationType(mei, type));
+    }
+
+    const changed = await this.core.setNotationFont(type);
+
+    // replaceMEI has already reloaded the document, so re-render whenever
+    // either the encoding or the font changed. Re-rendering replaces the
+    // entire SVG (SingleView.updateSVG), which drops selection and detaches
+    // every node, so it must not happen when neither did.
+    if (changed || declared !== `neume.${type}`) {
+      this.updateForCurrentPage();
+    }
   }
 
   /**

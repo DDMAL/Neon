@@ -552,6 +552,35 @@ class NeonCore {
   }
 
   /**
+   * Replace a page's MEI wholesale, as a single undoable action.
+   *
+   * Editor actions cannot express every change: converting a document's
+   * notation type rewrites staffDef@notationtype, and Verovio only re-reads
+   * that in SetScoreDefFunctor when the document is prepared, not from a
+   * `set` action. Such a change therefore has to go back in as a document,
+   * but should still behave like any other edit - undoable, and marking the
+   * page unsaved.
+   *
+   * @param pageURI - The URI of the selected page.
+   * @param mei - The replacement MEI.
+   */
+  async replaceMEI(pageURI: string, mei: string): Promise<void> {
+    const currentMEI = await this.getMEI(pageURI);
+
+    if (!this.undoStacks.has(pageURI)) {
+      this.undoStacks.set(pageURI, []);
+    }
+    const undoStack = this.undoStacks.get(pageURI);
+    if (undoStack.push(currentMEI) > 10) {
+      this.undoStacks.set(pageURI, undoStack.slice(1));
+    }
+    this.redoStacks.set(pageURI, []);
+
+    await this.loadData(pageURI, mei, true);
+    setSavedStatus(false);
+  }
+
+  /**
    * Undo the last action performed on a specific page.
    * @param pageURI - The URI of the selected page.
    * @returns If the action was undone.

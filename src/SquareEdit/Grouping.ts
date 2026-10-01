@@ -508,7 +508,7 @@ export function initGroupingListeners(): void {
         const staleLigated = Array.from(mei.getElementsByTagName('nc'))
           .filter(
             (nc) =>
-              nc.getAttribute('ligated') &&
+              nc.getAttribute('ligated') === 'true' &&
               elementIds.includes(nc.getAttribute('xml:id')),
           )
           .map((nc) => nc.getAttribute('xml:id'));
