@@ -9,6 +9,7 @@ import * as Select from '../utils/Select';
 import InsertHandler from './InsertHandler';
 import NeonView from '../NeonView';
 import * as SelectOptions from './SelectOptions';
+import * as Grouping from './Grouping';
 import { setHighlightSelectionControls } from '../DisplayPanel/DisplayControls';
 import DragHandler from '../utils/DragHandler';
 import { NeumeEditInterface } from '../Interfaces';
@@ -39,6 +40,10 @@ class DivaEdit implements NeumeEditInterface {
     const { insertTab } = getSettings();
     document.getElementById(insertTab).click();
     document.addEventListener('notationtypechange', (evt: CustomEvent) => {
+      // Changing the notation type re-renders the page, which replaces the
+      // SVG and detaches everything the grouping menu was acting on. Close it
+      // rather than leave it pointing at elements that no longer exist.
+      Grouping.endGroupingSelection();
       updatePrimitiveTab(evt.detail.type, this.insertHandler);
       updateGroupingTab(evt.detail.type, this.insertHandler);
     });

@@ -378,15 +378,40 @@ export function triggerGrouping(type: string): void {
   moreEdit.parentElement.classList.remove('hidden');
   moreEdit.innerHTML += Contents.groupingMenu[type];
 
-  // "Ligature" is a Square notation term; Hufnagel has no such thing, and MEI
-  // calls what it does have a connection (nc@con). Label the control after the
-  // document's own notation type rather than the menu's hardcoded wording.
-  if (neonView.getNotationType() === 'neume.hufnagel') {
-    const toggle = document.getElementById('toggle-ligature');
-    if (toggle) toggle.textContent = 'Toggle Connection';
+  const toggle = document.getElementById('toggle-ligature');
+  if (toggle) {
+    toggle.textContent = `${isConnected() ? 'Untoggle' : 'Toggle'} ${connectionNoun()}`;
   }
 
   initGroupingListeners();
+}
+
+/**
+ * What this notation calls a connection between two neume components.
+ *
+ * "Ligature" is a Square notation term; Hufnagel has no such thing, and MEI
+ * documents what it does have - nc@con - as a "Connection to the previous
+ * component within the same neume". The document's own staffDef@notationtype
+ * decides, not LocalSettings, which only drives font selection.
+ */
+function connectionNoun(): string {
+  return neonView.getNotationType() === 'neume.hufnagel'
+    ? 'Connection'
+    : 'Ligature';
+}
+
+/**
+ * Whether the current selection is already connected.
+ *
+ * Both notations draw a connected pair with the chant connector glyphs - an
+ * entry line on the first component and a ligatura on the second - so the
+ * rendered glyph answers this without going back to the worker. Select.ts
+ * pairs the two halves of a connection by the same codepoints.
+ */
+function isConnected(): boolean {
+  return Array.from(document.querySelectorAll('.nc.selected use')).some((use) =>
+    /E9B[456789ABC]/.test(use.getAttribute('xlink:href') ?? ''),
+  );
 }
 
 /**
@@ -549,20 +574,23 @@ export function initGroupingListeners(): void {
 
 /**
  * Send a connection edit and report the outcome, in the wording the document's
- * notation type uses - matching the control's own label.
+ * notation type uses and for the direction actually taken - matching the label
+ * the control carried when it was pressed.
  */
 function dispatchLigatureAction(
   editorAction: EditorAction,
   pageURI: string,
 ): void {
-  const name =
-    neonView.getNotationType() === 'neume.hufnagel' ? 'Connection' : 'Ligature';
+  // Read the state before the edit: the action reverses it, and the selection
+  // is cleared by the time the result comes back.
+  const verb = isConnected() ? 'Untoggle' : 'Toggle';
+  const name = connectionNoun();
 
   neonView.edit(editorAction, pageURI).then((result) => {
     if (result) {
-      Notification.queueNotification(`${name} Toggled`, 'success');
+      Notification.queueNotification(`${name} ${verb}d`, 'success');
     } else {
-      Notification.queueNotification(`${name} Toggle Failed`, 'error');
+      Notification.queueNotification(`${name} ${verb} Failed`, 'error');
     }
     endGroupingSelection();
     neonView.updateForCurrentPage();
