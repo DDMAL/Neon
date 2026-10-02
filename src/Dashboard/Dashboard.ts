@@ -9,6 +9,7 @@ import {
   forgetNotationType,
   getRecordedNotationType,
 } from '../utils/NotationTypeCache';
+import { getSampleNotationType } from './samples_filenames';
 
 const documentsContainer: HTMLDivElement = document.querySelector(
   '#fs-content-container',
@@ -185,20 +186,20 @@ export function markNewlyUploaded(ids: string[]): void {
 
 /**
  * Creates the dot that shows which notation a file's saved MEI declares.
- * Samples and manuscripts are not labelled yet, and a file that has not been
- * uploaded or opened since notation types were recorded has no dot.
+ * Samples show the notation of the MEI they ship with, not of any local
+ * edits. Manuscripts are not labelled yet, and a file uploaded before
+ * notation types were recorded has no dot until it is opened.
  * @param entry IEntry
  * @returns HTMLSpanElement dot, or null if there is nothing to show
  */
 function createNotationDot(entry: IEntry): HTMLSpanElement | null {
-  if (
-    entry.type !== 'file' ||
-    entry.metadata['document'] === 'sample' ||
-    entry.metadata['type'] === 'manuscript'
-  ) {
+  if (entry.type !== 'file' || entry.metadata['type'] === 'manuscript') {
     return null;
   }
-  const notationType = getRecordedNotationType(entry.id);
+  const notationType =
+    entry.metadata['document'] === 'sample'
+      ? getSampleNotationType(entry.id)
+      : getRecordedNotationType(entry.id);
   if (!notationType) return null;
 
   const label =
