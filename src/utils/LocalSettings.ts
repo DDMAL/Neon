@@ -31,6 +31,13 @@ export interface Settings {
   userMode: UserType;
   insertMode: InsertType;
   insertTab: InsertTabType;
+  /**
+   * TODO: remove. Duplicates staffDef@notationtype, which is the real source
+   * now that switching notation rewrites the MEI. On open it overrides the
+   * MEI, which can hide a stale save. Still read by the insert panel, the
+   * Notation Type dropdown and Download MEI because they are set up before
+   * the MEI is loaded.
+   */
   notationType: string;
   selectionMode: SelectionType;
   debugMode: boolean;
