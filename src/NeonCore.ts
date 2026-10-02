@@ -232,7 +232,10 @@ class NeonCore {
       if (this.lastPageLoaded === pageURI && this.neonCache.has(pageURI)) {
         resolve(this.neonCache.get(pageURI));
       } else if (this.neonCache.has(pageURI)) {
-        this.loadData(pageURI, this.neonCache.get(pageURI).mei).then(() => {
+        // Reloading the cached MEI does not save it, so keep it unsaved if it
+        // was (e.g. after a notation type change resets lastPageLoaded).
+        const cached = this.neonCache.get(pageURI);
+        this.loadData(pageURI, cached.mei, cached.dirty).then(() => {
           resolve(this.neonCache.get(pageURI));
         });
         // Do we know this page has no MEI content?
