@@ -5,6 +5,10 @@ import { ShiftSelectionManager, dashboardState } from './DashboardTools';
 import { InitUploadArea } from './UploadArea';
 import * as contextMenuContent from './ContextMenuContent';
 import { ModalWindow, ModalWindowView } from '../utils/ModalWindow';
+import {
+  forgetNotationType,
+  getRecordedNotationType,
+} from '../utils/NotationTypeCache';
 
 const documentsContainer: HTMLDivElement = document.querySelector(
   '#fs-content-container',
@@ -180,6 +184,34 @@ export function markNewlyUploaded(ids: string[]): void {
 }
 
 /**
+ * Creates the dot that shows which notation a file's saved MEI declares.
+ * Samples and manuscripts are not labelled yet, and a file that has not been
+ * uploaded or opened since notation types were recorded has no dot.
+ * @param entry IEntry
+ * @returns HTMLSpanElement dot, or null if there is nothing to show
+ */
+function createNotationDot(entry: IEntry): HTMLSpanElement | null {
+  if (
+    entry.type !== 'file' ||
+    entry.metadata['document'] === 'sample' ||
+    entry.metadata['type'] === 'manuscript'
+  ) {
+    return null;
+  }
+  const notationType = getRecordedNotationType(entry.id);
+  if (!notationType) return null;
+
+  const label =
+    notationType === 'hufnagel' ? 'Hufnagel notation' : 'Square notation';
+  const dot = document.createElement('span');
+  dot.classList.add('notation-dot', `notation-dot--${notationType}`);
+  dot.title = label;
+  dot.setAttribute('role', 'img');
+  dot.setAttribute('aria-label', label);
+  return dot;
+}
+
+/**
  * Creates a folder or file tile element given an entry
  * @param entry IEntry
  * @returns HTMLDivElement tile element
@@ -242,6 +274,8 @@ function createTile(entry: IEntry) {
   }
 
   container.appendChild(icon);
+  const notationDot = createNotationDot(entry);
+  if (notationDot) container.appendChild(notationDot);
   container.appendChild(name);
 
   return container;
@@ -412,6 +446,7 @@ function deleteFileEntry(file: IFile, parentFolder: IFolder): Promise<boolean> {
     deleteDocument(file.id)
       .then(() => {
         FileSystemTools.removeEntry(file, parentFolder);
+        forgetNotationType(file.id);
         resolve(true);
       })
       .catch(() => reject(false));

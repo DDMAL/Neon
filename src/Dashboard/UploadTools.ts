@@ -4,6 +4,7 @@ import { createManifest, addDocument } from './Storage';
 import { IFolder, FileSystemTools } from './FileSystem';
 import { convertNotationType } from '../utils/ConvertMei';
 import { setInitialNotationType } from '../utils/LocalSettings';
+import { recordNotationType } from '../utils/NotationTypeCache';
 
 const fm = UploadFileManager.getInstance();
 
@@ -223,17 +224,15 @@ async function uploadFolio(
     name,
     FileSystemTools.getAllNames(currentFolder),
   );
+  // The MEI as stored, which is what the dashboard's notation label reads.
+  let storedMei: string;
   return (
     mei
       .text()
-      .then(
-        (meiText) =>
-          new File(
-            [convertNotationType(meiText, notationType)],
-            mei.name,
-            { type: mei.type },
-          ),
-      )
+      .then((meiText) => {
+        storedMei = convertNotationType(meiText, notationType);
+        return new File([storedMei], mei.name, { type: mei.type });
+      })
       .then((meiForStorage) =>
         createManifest(id, newName, meiForStorage, image),
       )
@@ -256,6 +255,7 @@ async function uploadFolio(
           const isAdded = FileSystemTools.addEntry(folioEntry, currentFolder);
           if (isAdded) {
             setInitialNotationType(id, notationType);
+            recordNotationType(id, storedMei);
           }
           return isAdded ? { id, name: newName } : null;
         } else {

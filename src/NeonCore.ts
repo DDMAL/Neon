@@ -16,6 +16,7 @@ import { uuidv4 } from './utils/random';
 
 import PouchDB from 'pouchdb';
 import { setSavedStatus } from './utils/Unsaved';
+import { recordNotationType } from './utils/NotationTypeCache';
 
 /**
  * A cache is used to keep track of what has happened
@@ -260,6 +261,10 @@ class NeonCore {
               }
             })
             .then((data) => {
+              // This is the saved MEI, which may have changed outside the
+              // editor's save (e.g. after a revert), so record it again.
+              recordNotationType(this.manifest['@id'], data);
+
               // Check if the MEI file is sb-based. If so, convert to staff-based.
               if (!/<section\b[^>]*\btype="neon-neume-line"[^>]*>/.test(data)) {
                 data = convertToVerovio(data);
@@ -698,6 +703,7 @@ class NeonCore {
           })
           .then(() => {
             value.dirty = false;
+            recordNotationType(this.manifest['@id'], value.mei);
           })
           .catch((err) => {
             console.error(err);
