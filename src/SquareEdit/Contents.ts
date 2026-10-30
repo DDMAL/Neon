@@ -631,6 +631,14 @@ export const hotkeysModal = `
                     Group/Ungroup Selected Element(s)
                 </div>
             </div>
+            <div class="hotkey-entry-container">
+                <div class="hotkey-container">
+                    <div class="hotkey-entry">l</div>
+                </div>
+                <div class="hotkey-entry-description">
+                    Toggle Ligature / Connection (NC selection)
+                </div>
+            </div>
         </div>
 
         <!-- "Other" hotkeys -->
