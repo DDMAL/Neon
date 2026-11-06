@@ -1,0 +1,21 @@
+{
+  "@context": "https://ddmal.ca/Neon/contexts/1/manifest.jsonld",
+  "@id": "samples/manifests/diva-test.jsonld",
+  "title": "Diva test (two local pages)",
+  "timestamp": "2026-11-05T00:00:00.000Z",
+  "image": "/__diva__/manifest.json",
+  "mei_annotations": [
+    {
+      "id": "urn:uuid:00000000-1392-4409-8000-000000000001",
+      "type": "Annotation",
+      "body": "samples/mei/CDN-Hsmu_M2149.L4_001r.mei",
+      "target": "http://local.test/iiif/canvas/p1"
+    },
+    {
+      "id": "urn:uuid:00000000-1392-4409-8000-000000000002",
+      "type": "Annotation",
+      "body": "samples/mei/CDN-Hsmu_M2149.L4_002r.mei",
+      "target": "http://local.test/iiif/canvas/p2"
+    }
+  ]
+}
