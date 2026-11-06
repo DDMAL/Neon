@@ -25,6 +25,22 @@ function copyAttributes(src: Element, dst: Element): void {
 }
 
 /**
+ * Read which notation a document declares in staffDef@notationtype.
+ *
+ * Only neume.hufnagel counts as Hufnagel. Anything else - neume.square, or
+ * the bare "neume" of documents that predate the subtype - is square, which
+ * matches the fallback used when exporting.
+ */
+export function getNotationType(meiString: string): 'square' | 'hufnagel' {
+  const staffDef = new DOMParser()
+    .parseFromString(meiString, 'text/xml')
+    .querySelector('staffDef');
+  return staffDef?.getAttribute('notationtype') === 'neume.hufnagel'
+    ? 'hufnagel'
+    : 'square';
+}
+
+/**
  * Declare a document's notation type and bring its encoding into line.
  *
  * staffDef@notationtype says what the document is; the connections inside it

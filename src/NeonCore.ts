@@ -16,6 +16,7 @@ import { uuidv4 } from './utils/random';
 
 import PouchDB from 'pouchdb';
 import { setSavedStatus } from './utils/Unsaved';
+import { recordNotationType } from './utils/NotationTypeCache';
 
 /**
  * A cache is used to keep track of what has happened
@@ -232,7 +233,10 @@ class NeonCore {
       if (this.lastPageLoaded === pageURI && this.neonCache.has(pageURI)) {
         resolve(this.neonCache.get(pageURI));
       } else if (this.neonCache.has(pageURI)) {
-        this.loadData(pageURI, this.neonCache.get(pageURI).mei).then(() => {
+        // Reloading the cached MEI does not save it, so keep it unsaved if it
+        // was (e.g. after a notation type change resets lastPageLoaded).
+        const cached = this.neonCache.get(pageURI);
+        this.loadData(pageURI, cached.mei, cached.dirty).then(() => {
           resolve(this.neonCache.get(pageURI));
         });
         // Do we know this page has no MEI content?
@@ -257,6 +261,10 @@ class NeonCore {
               }
             })
             .then((data) => {
+              // This is the saved MEI, which may have changed outside the
+              // editor's save (e.g. after a revert), so record it again.
+              recordNotationType(this.manifest['@id'], data);
+
               // Check if the MEI file is sb-based. If so, convert to staff-based.
               if (!/<section\b[^>]*\btype="neon-neume-line"[^>]*>/.test(data)) {
                 data = convertToVerovio(data);
@@ -695,6 +703,7 @@ class NeonCore {
           })
           .then(() => {
             value.dirty = false;
+            recordNotationType(this.manifest['@id'], value.mei);
           })
           .catch((err) => {
             console.error(err);
