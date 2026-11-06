@@ -54,7 +54,6 @@ export interface TextEditConstructable {
 export interface TextEditInterface {
   initTextEdit(): void;
   initSelectByBBoxButton(): void;
-  initBBoxCircleSlider(): void;
 }
 
 export interface ModalWindowInterface {

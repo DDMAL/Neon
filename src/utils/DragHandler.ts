@@ -1,7 +1,7 @@
 import NeonView from '../NeonView';
 import { DragAction, EditorAction } from '../Types';
 import * as d3 from 'd3';
-import { BBox, isOutOfSVGBounds, getGlyphBBox } from './Coordinates';
+import { isOutOfSVGBounds, getContentBounds } from './Coordinates';
 import { queueNotification } from './Notification';
 import { selectAll, selectBBox, selectStaff } from './SelectTools';
 
@@ -271,56 +271,27 @@ class DragHandler {
   }
 
   /**
-   * Returns whether the selection array is within the bounds of the SVG
+   * Returns whether the dragged content would land outside the page.
+   *
+   * Only real content counts (staff lines, glyphs, text boxes; see
+   * `getContentBounds`): editing handles such as the rotate diamonds may
+   * hang off the image without blocking a valid move (#1409).
+   *
+   * Must be called while the drag preview `translate(dx,dy)` is still on the
+   * selection: the measured bounds already include it, so the offset is not
+   * added a second time.
    * @param {SVGGraphicsElement[]} selection
    * @returns {boolean} Is selection out of bounds
    */
   isDragOutOfBounds(selection: SVGGraphicsElement[]): boolean {
-    // Get the bounding boxes of all glyphs (<use> elements) within the selection array
-    const isBBoxDisplayed =
-      document.querySelector<HTMLInputElement>('#displayBBox').checked;
-    let glyphSelector = isBBoxDisplayed ? 'use, rect' : 'use';
+    const bounds = getContentBounds(selection);
 
-    if (selection[0].classList.contains('staff')) glyphSelector = 'path';
-
-    const glyphs: SVGUseElement[] = selection.reduce(
-      (acc, el) => acc.concat(...el.querySelectorAll(glyphSelector)),
-      [],
-    );
-    // Hufnagel connector glyphs (E9B4-E9B8) have zero-sized bboxes that
-    // collapse to the SVG origin, which always reads as out of bounds.
-    const glyphBBoxes: BBox[] = glyphs
-      .map(getGlyphBBox)
-      .filter((bbox) => bbox.lrx > bbox.ulx && bbox.lry > bbox.uly);
-
-    // With nothing left to measure, the reduce below collapses to the
-    // MAX_VALUE/MIN_VALUE seed and always reports out of bounds. There is no
+    // Nothing measurable (e.g. only zero-size connector glyphs): there is no
     // evidence the drag is invalid, so let it through rather than failing it.
-    if (glyphBBoxes.length === 0) return false;
+    if (bounds === null) return false;
 
-    // Get the surrounding bounding box of the selected elements
-    const selectionBBox: BBox = glyphBBoxes.reduce(
-      (bbox, curr) => {
-        return {
-          ulx: Math.min(bbox.ulx, curr.ulx),
-          uly: Math.min(bbox.uly, curr.uly),
-          lrx: Math.max(bbox.lrx, curr.lrx),
-          lry: Math.max(bbox.lry, curr.lry),
-        };
-      },
-      {
-        ulx: Number.MAX_VALUE,
-        uly: Number.MAX_VALUE,
-        lrx: Number.MIN_VALUE,
-        lry: Number.MIN_VALUE,
-      },
-    );
-
-    const { ulx, uly, lrx, lry } = selectionBBox;
-    return (
-      isOutOfSVGBounds(ulx + this.dx, uly + this.dy) ||
-      isOutOfSVGBounds(lrx + this.dx, lry + this.dy)
-    );
+    const { ulx, uly, lrx, lry } = bounds;
+    return isOutOfSVGBounds(ulx, uly) || isOutOfSVGBounds(lrx, lry);
   }
 }
 

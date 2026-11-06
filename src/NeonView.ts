@@ -17,6 +17,7 @@ import { convertNotationType } from './utils/ConvertMei';
 import { setDebugMode } from './utils/DebugMode';
 import { setSavedStatus, listenUnsavedChanges } from './utils/Unsaved';
 import LocalSettings, { getSettings } from './utils/LocalSettings';
+import { initEditHandleSizeControls } from './DisplayPanel/DisplayControls';
 
 /**
  * NeonView class. Manages the other modules of Neon and communicates with
@@ -68,6 +69,14 @@ class NeonView {
       if (params.TextEdit !== undefined) {
         this.TextEdit = new params.TextEdit(this);
       }
+    }
+    // The editing handle size slider belongs to editing as a whole, not to
+    // text bounding boxes: staff handles use it even with bboxes hidden.
+    if (
+      (params.NeumeEdit !== undefined || this.TextEdit !== undefined) &&
+      this.getUserMode() !== 'viewer'
+    ) {
+      initEditHandleSizeControls();
     }
     if (params.NeumeEdit !== undefined) {
       this.NeumeEdit = new params.NeumeEdit(this);

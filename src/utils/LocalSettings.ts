@@ -26,7 +26,13 @@ export interface Settings {
   zoom: number;
   glyphOpacity: number;
   imageOpacity: number;
-  circleSize: number;
+  /**
+   * Size of the editing handles (resize-circle radius) in CSS pixels.
+   * Replaces the old `circleSize`, which was in SVG units and therefore
+   * looked ten times bigger on a ten-times-smaller image. Old `circleSize`
+   * values are not converted; see EditHandles.clampHandleSize.
+   */
+  handleSize: number;
   highlightMode: GroupingType;
   userMode: UserType;
   insertMode: InsertType;
@@ -52,7 +58,7 @@ const DEFAULT_SETTINGS: Settings = {
   zoom: 100,
   glyphOpacity: 100,
   imageOpacity: 100,
-  circleSize: 25,
+  handleSize: 6, // = EditHandles.HANDLE_SIZE_DEFAULT
   highlightMode: 'none',
   userMode: 'edit',
   insertMode: 'punctum',

@@ -4,9 +4,15 @@ import * as Color from '../utils/Color';
 import ZoomHandler from '../SingleView/Zoom';
 import { GroupingType } from '../Types';
 import { getSettings, setSettings } from '../utils/LocalSettings';
-import * as d3 from 'd3';
+import {
+  applyHandleSizes,
+  clampHandleSize,
+  HANDLE_SIZE_DEFAULT,
+  HANDLE_SIZE_MAX,
+  HANDLE_SIZE_MIN,
+} from '../utils/EditHandles';
 
-let lastGlyphOpacity: number, lastImageOpacity: number, lastCircleSize: number;
+let lastGlyphOpacity: number, lastImageOpacity: number;
 
 const NOTATION_TYPES = ['square', 'hufnagel'] as const;
 type NotationType = (typeof NOTATION_TYPES)[number];
@@ -273,52 +279,61 @@ export function setBgOpacityFromSlider(background?: string): void {
 }
 
 /**
- * Set bbox adjustment circle size button and slider listeners.
+ * Add the "Editing handle size" slider to the display panel and wire it up.
+ *
+ * The value is the resize-circle radius in CSS pixels; every editing handle
+ * (circles, rotate diamonds, dashed frame) is derived from it. It only
+ * changes how the handles look: no editor action is sent and no content
+ * coordinate changes. Safe to call more than once; the slider and its
+ * listeners are created only the first time.
  */
-export function setCircleSizeControls(): void {
-  const circleSlider = document.getElementById(
-    'circleSlider',
-  ) as HTMLInputElement;
-  const circleOutput = document.getElementById(
-    'circleOutput',
-  ) as HTMLOutputElement;
+export function initEditHandleSizeControls(): void {
+  if (document.getElementById('edit-handle-size-slider')) return;
+  const sliderSection = document.getElementById('display-slider-section');
+  if (!sliderSection) return;
 
-  const { circleSize } = getSettings();
-  lastCircleSize = circleSize;
-  circleSlider.value = String(circleSize);
-  circleOutput.value = String(circleSize);
+  const container = document.createElement('div');
+  container.classList.add('slider-and-slider-actions-container', 'display-panel');
+  container.style.cursor = 'default';
+  container.id = 'edit-handle-size-slider';
+  container.innerHTML = `
+    <div class="slider-actions-container">
+        <div class="display-slider-title">Editing handle size</div>
+        <button class="side-panel-btn slider-btn" id="reset-handle-size" title="Reset editing handle size">
+            <img class="slider-btn-img" src="${__ASSET_PREFIX__}assets/img/arrow-rotate-left-solid.svg">
+        </button>
+    </div>
+    <div class="slider-container">
+        <input type="range"
+            step="1" min="${HANDLE_SIZE_MIN}" max="${HANDLE_SIZE_MAX}" value="${HANDLE_SIZE_DEFAULT}"
+            aria-labelledby="reset-handle-size"
+            class="slider is-fullwidth is-large"
+            id="handleSizeSlider"
+            style="padding-left: 1rem; padding-right: 1rem;"
+        />
+        <output id="handleSizeOutput" for="handleSizeSlider">${HANDLE_SIZE_DEFAULT}</output>
+    </div>`;
+  sliderSection.appendChild(container);
 
-  function circleSizeInputChangeHandler(): void {
-    circleOutput.value = circleSlider.value;
-    lastCircleSize = Number(circleSlider.value);
-    setSettings({ circleSize: Number(lastCircleSize) });
-    const resizePoints = d3.selectAll('.resizePoint');
-    if (!resizePoints.empty()) {
-      resizePoints.attr('r', lastCircleSize);
-    }
+  const slider = container.querySelector<HTMLInputElement>('#handleSizeSlider');
+  const output = container.querySelector<HTMLOutputElement>('#handleSizeOutput');
+
+  function setHandleSize(value: unknown): void {
+    const size = clampHandleSize(value);
+    slider.value = String(size);
+    output.value = String(size);
+    setSettings({ handleSize: size });
+    applyHandleSizes();
   }
 
-  const resetBtn = document.getElementById('reset-circle-size');
-  resetBtn.addEventListener('click', () => {
-    const defaultSize = 25;
-    // if has resizePoints displayed
-    const resizePoints = d3.selectAll('.resizePoint');
-    if (!resizePoints.empty()) {
-      resizePoints.attr('r', defaultSize);
-    }
+  // Normalise whatever was stored (missing, 0, NaN, out of range).
+  setHandleSize(getSettings().handleSize);
 
-    lastCircleSize = Number(defaultSize);
-    circleSlider.value = String(defaultSize);
-    circleOutput.value = String(defaultSize);
-
-    setSettings({ circleSize: Number(defaultSize) });
-    circleSizeInputChangeHandler();
-  });
-
-  circleSlider.addEventListener('input', circleSizeInputChangeHandler);
-  circleSlider.addEventListener('change', circleSizeInputChangeHandler);
-
-  circleSlider.disabled = false;
+  slider.addEventListener('input', () => setHandleSize(slider.value));
+  slider.addEventListener('change', () => setHandleSize(slider.value));
+  container
+    .querySelector('#reset-handle-size')
+    .addEventListener('click', () => setHandleSize(HANDLE_SIZE_DEFAULT));
 }
 
 /**

@@ -11,7 +11,11 @@ import * as d3 from 'd3';
 import { EditorAction, ResizeAction } from '../Types';
 import { isOutOfSVGBounds } from './Coordinates';
 import { queueNotification } from './Notification';
-import { getSettings } from './LocalSettings';
+import {
+  applyHandleSizes,
+  markHandle,
+  setRotateAnchor,
+} from './EditHandles';
 
 /**
  * Resize a staff or a syllable text bounding box.
@@ -97,6 +101,18 @@ function getPoints(
   return points;
 }
 
+/**
+ * Anchor the rotate diamonds to the middle of the right (points[3]) and left
+ * (points[7]) sides. Their size and offset from the anchor are applied in CSS
+ * pixels by EditHandles; the anchors are plain content coordinates.
+ */
+function placeRotateHandles(points: Point[]): void {
+  const right = document.getElementById('rotateRight');
+  const left = document.getElementById('rotateLeft');
+  if (right) setRotateAnchor(right, points[3].x, points[3].y, 'right');
+  if (left) setRotateAnchor(left, points[7].x, points[7].y, 'left');
+}
+
 export function resize(
   element: SVGGraphicsElement,
   neonView: NeonView,
@@ -153,47 +169,7 @@ export function resize(
         .attr('cy', point.y);
     }
 
-    let x = points[3].x;
-    let y = points[3].y;
-    const pointStringRight =
-      x +
-      100 +
-      ',' +
-      (y + 85) +
-      ' ' +
-      (x + 70) +
-      ',' +
-      (y + 50) +
-      ' ' +
-      (x + 100) +
-      ',' +
-      (y + 15) +
-      ' ' +
-      (x + 130) +
-      ',' +
-      (y + 50);
-    x = points[7].x;
-    y = points[7].y;
-    const pointStringLeft =
-      x -
-      100 +
-      ',' +
-      (y - 15) +
-      ' ' +
-      (x - 130) +
-      ',' +
-      (y - 50) +
-      ' ' +
-      (x - 100) +
-      ',' +
-      (y - 85) +
-      ' ' +
-      (x - 70) +
-      ',' +
-      (y - 50);
-
-    d3.select('#rotateLeft').attr('points', pointStringLeft);
-    d3.select('#rotateRight').attr('points', pointStringRight);
+    placeRotateHandles(points);
   }
 
   /**
@@ -263,12 +239,11 @@ export function resize(
       .attr('points', pointString)
       .attr('id', 'resizeRect')
       .attr('stroke', 'black')
-      .attr('stroke-width', 10)
       .attr('fill', 'none')
       .style('cursor', 'move')
-      .style('stroke-dasharray', '20 10');
-
-    const { circleSize } = getSettings();
+      .each(function () {
+        markHandle(this as Element, 'frame');
+      });
 
     for (const pointName in PointNames) {
       const point: Point = points[PointNames[pointName]];
@@ -276,13 +251,16 @@ export function resize(
         .append('circle')
         .attr('cx', point.x)
         .attr('cy', point.y)
-        .attr('r', circleSize)
         .attr('stroke', 'black')
-        .attr('stroke-width', 4)
         .attr('fill', '#0099ff')
         .attr('class', 'resizePoint')
-        .attr('id', 'p-' + pointName);
+        .attr('id', 'p-' + pointName)
+        .each(function () {
+          markHandle(this as Element, 'point');
+        });
     }
+
+    applyHandleSizes();
 
     // do it as a loop instead of selectAll so that you can easily know which point was
     for (const name in PointNames) {
@@ -300,62 +278,18 @@ export function resize(
     }
 
     if (element.classList.contains('staff')) {
-      let x = points[3].x;
-      let y = points[3].y;
-      const pointStringRight =
-        x +
-        100 +
-        ',' +
-        (y + 85) +
-        ' ' +
-        (x + 70) +
-        ',' +
-        (y + 50) +
-        ' ' +
-        (x + 100) +
-        ',' +
-        (y + 15) +
-        ' ' +
-        (x + 130) +
-        ',' +
-        (y + 50);
-      x = points[7].x;
-      y = points[7].y;
-      const pointStringLeft =
-        x -
-        100 +
-        ',' +
-        (y - 15) +
-        ' ' +
-        (x - 130) +
-        ',' +
-        (y - 50) +
-        ' ' +
-        (x - 100) +
-        ',' +
-        (y - 85) +
-        ' ' +
-        (x - 70) +
-        ',' +
-        (y - 50);
-
-      d3.select('#' + element.id)
-        .append('polygon')
-        .attr('points', pointStringRight)
-        .attr('id', 'rotateRight')
-        .attr('stroke', 'black')
-        .attr('stroke-width', 7)
-        .attr('fill', '#0099ff')
-        .attr('class', 'rotatePoint');
-
-      d3.select('#' + element.id)
-        .append('polygon')
-        .attr('points', pointStringLeft)
-        .attr('id', 'rotateLeft')
-        .attr('stroke', 'black')
-        .attr('stroke-width', 7)
-        .attr('fill', '#0099ff')
-        .attr('class', 'rotatePoint');
+      for (const id of ['rotateRight', 'rotateLeft']) {
+        d3.select('#' + element.id)
+          .append('polygon')
+          .attr('id', id)
+          .attr('stroke', 'black')
+          .attr('fill', '#0099ff')
+          .attr('class', 'rotatePoint')
+          .each(function () {
+            markHandle(this as Element, 'rotate');
+          });
+      }
+      placeRotateHandles(points);
 
       d3.select('#rotateLeft').call(
         d3

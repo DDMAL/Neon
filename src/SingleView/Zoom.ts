@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import { setSettings } from '../utils/LocalSettings';
+import { applyHandleSizes } from '../utils/EditHandles';
 
 export class ViewBox {
   // vieBox attribute of an SVG viewport:
@@ -162,6 +163,8 @@ export class ZoomHandler {
     const viewBoxString = this.viewBox.get();
     document.getElementById('svg_group').setAttribute('viewBox', viewBoxString);
     setSettings({ viewBox: viewBoxString });
+    // Zooming changes the CSS size of one SVG unit; keep handles constant.
+    applyHandleSizes();
   }
 
   startDrag(): void {
