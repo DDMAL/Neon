@@ -360,7 +360,10 @@ export function resize(
     }
 
     function resizeEnd(): void {
-      if (isOutOfSVGBounds(ulx, uly) || isOutOfSVGBounds(lrx, lry)) {
+      if (
+        isOutOfSVGBounds(ulx, uly, element) ||
+        isOutOfSVGBounds(lrx, lry, element)
+      ) {
         (ulx = initialUlx),
           (uly = initialUly),
           (lrx = initialLrx),
@@ -486,7 +489,10 @@ export function resize(
         dy = 0;
       }
 
-      if (isOutOfSVGBounds(ulx, uly) || isOutOfSVGBounds(lrx, lry)) {
+      if (
+        isOutOfSVGBounds(ulx, uly, element) ||
+        isOutOfSVGBounds(lrx, lry, element)
+      ) {
         document.querySelectorAll('.resizePoint').forEach((el) => el.remove());
         document.querySelectorAll('#resizeRect').forEach((el) => el.remove());
         document.querySelectorAll('.rotatePoint').forEach((el) => el.remove());

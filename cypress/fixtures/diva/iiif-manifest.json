@@ -1,0 +1,65 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json",
+  "@id": "http://local.test/iiif/manifest.json",
+  "@type": "sc:Manifest",
+  "label": "Diva test (CDN-Hsmu 001r-002r MEI)",
+  "sequences": [
+    {
+      "@type": "sc:Sequence",
+      "canvases": [
+        {
+          "@id": "http://local.test/iiif/canvas/p1",
+          "@type": "sc:Canvas",
+          "label": "001r",
+          "width": 7758,
+          "height": 9853,
+          "images": [
+            {
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "on": "http://local.test/iiif/canvas/p1",
+              "resource": {
+                "@id": "/__diva__/img/p1/full/full/0/default.jpg",
+                "@type": "dctypes:Image",
+                "format": "image/jpeg",
+                "width": 7758,
+                "height": 9853,
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "/__diva__/img/p1",
+                  "profile": "http://iiif.io/api/image/2/level1.json"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "@id": "http://local.test/iiif/canvas/p2",
+          "@type": "sc:Canvas",
+          "label": "002r",
+          "width": 7758,
+          "height": 9853,
+          "images": [
+            {
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "on": "http://local.test/iiif/canvas/p2",
+              "resource": {
+                "@id": "/__diva__/img/p2/full/full/0/default.jpg",
+                "@type": "dctypes:Image",
+                "format": "image/jpeg",
+                "width": 7758,
+                "height": 9853,
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "/__diva__/img/p2",
+                  "profile": "http://iiif.io/api/image/2/level1.json"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

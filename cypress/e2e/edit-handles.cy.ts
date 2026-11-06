@@ -11,6 +11,14 @@
  * edits are checked in the exported MEI, never only in internal values.
  */
 
+import {
+  clearNeonDb,
+  expectSameContent,
+  meiContent,
+  readMei,
+  staffZone,
+} from '../support/neon-mei';
+
 /** Default handle size: resize-circle radius in CSS px. */
 const DEFAULT_SIZE = 6;
 
@@ -71,91 +79,6 @@ function openPage(page: Page): void {
       String(Math.round(4872 * page.scale)),
     );
   }
-}
-
-/** Same PouchDB clean-up as toggle-shortcut.cy.ts. */
-function clearNeonDb(whilePageOpen = false): void {
-  cy.then(
-    () =>
-      new Cypress.Promise<void>((resolve, reject) => {
-        const request = window.indexedDB.deleteDatabase('_pouch_Neon');
-        request.onsuccess = () => resolve();
-        request.onerror = () => reject(request.error);
-        request.onblocked = () =>
-          whilePageOpen
-            ? resolve()
-            : reject(new Error('Neon database is still open'));
-      }),
-  );
-}
-
-/** Read the current page's MEI through the "Download MEI" link. */
-function readMei(): Cypress.Chainable<Document> {
-  cy.get('#getmei', { log: false }).then(($link) => {
-    const link = $link[0];
-    link.setAttribute('href', '#');
-    link.addEventListener('click', (e) => e.preventDefault(), { once: true });
-    link.dispatchEvent(
-      new MouseEvent('click', { bubbles: true, cancelable: true }),
-    );
-  });
-  return cy
-    .get('#getmei', { log: false, timeout: 15000 })
-    .should(($link) => {
-      expect(($link.attr('href') ?? '').startsWith('data:')).to.equal(true);
-    })
-    .then(($link) => {
-      const base64 = $link.attr('href').split(',')[1];
-      return new DOMParser().parseFromString(atob(base64), 'text/xml');
-    });
-}
-
-/**
- * The musical content of the MEI (facsimile zones + notation), i.e. the MEI
- * without its header, which holds change dates/timestamps.
- *
- * Neon gives `<pb>` a fresh xml:id on every export, even with no edit at all
- * (two exports in a row differ only there), so that id is left out.
- */
-function meiContent(doc: Document): string {
-  const music = doc.getElementsByTagName('music')[0].cloneNode(true) as Element;
-  Array.from(music.getElementsByTagName('pb')).forEach((pb) =>
-    pb.removeAttribute('xml:id'),
-  );
-  return new XMLSerializer().serializeToString(music);
-}
-
-/**
- * Assert two MEI contents are identical without handing the whole documents
- * to Chai: logging or diffing strings this size freezes the runner. On a
- * mismatch, report only the first difference with some context.
- */
-function expectSameContent(actual: string, expected: string, label: string): void {
-  if (actual === expected) {
-    expect(true, `${label}: MEI content unchanged`).to.equal(true);
-    return;
-  }
-  let i = 0;
-  while (i < actual.length && actual[i] === expected[i]) i++;
-  const around = (str: string): string => str.slice(Math.max(0, i - 80), i + 80);
-  expect(
-    around(actual),
-    `${label}: MEI content changed at character ${i}`,
-  ).to.equal(around(expected));
-}
-
-function staffZone(doc: Document, staffId: string): Record<string, number> {
-  // A rendered staff is the MEI <sb> (system begin) that carries its zone.
-  const staff = Array.from(doc.getElementsByTagName('*')).find(
-    (el) => el.getAttribute('xml:id') === staffId,
-  );
-  expect(staff, `staff ${staffId} in MEI`).to.not.equal(undefined);
-  const zoneId = staff.getAttribute('facs').replace('#', '');
-  const zone = Array.from(doc.getElementsByTagName('zone')).find(
-    (el) => el.getAttribute('xml:id') === zoneId,
-  );
-  const n = (a: string): number => Number(zone.getAttribute(a));
-  return { ulx: n('ulx'), uly: n('uly'), lrx: n('lrx'), lry: n('lry') };
 }
 
 /** Set the editor zoom the way the zoom slider does. */
@@ -311,6 +234,80 @@ function dragGlyphsAboveImage(): void {
       dragStaffByUnits(0, -upPx / k);
     });
   });
+}
+
+/**
+ * Measure the handles of a selected *text box* (no rotate diamonds), in CSS
+ * px: circle diameter and stroke, frame stroke and dashes, and how far the
+ * Left circle sits from the middle of the frame's left side.
+ */
+function measureTextBox(doc: Document): Omit<
+  Metrics,
+  'diamondW' | 'diamondH' | 'diamondOffsetX' | 'diamondOffsetY' | 'diamondStroke'
+> {
+  const circle = doc.querySelector<SVGCircleElement>('#p-Left');
+  const frame = doc.querySelector<SVGPolygonElement>('#resizeRect');
+  const c = circle.getBoundingClientRect();
+  const scale = (el: SVGGraphicsElement): number => el.getScreenCTM().a;
+  const m = frame.getScreenCTM();
+  const pts = frame.points;
+  const tl = new DOMPoint(pts.getItem(0).x, pts.getItem(0).y).matrixTransform(m);
+  const bl = new DOMPoint(pts.getItem(3).x, pts.getItem(3).y).matrixTransform(m);
+  return {
+    circle: c.width,
+    circleStroke: Number(circle.getAttribute('stroke-width')) * scale(circle),
+    frameStroke: Number(frame.getAttribute('stroke-width')) * scale(frame),
+    dash: frame.style.strokeDasharray
+      .split(/[\s,]+/)
+      .map((v) => parseFloat(v) * scale(frame)),
+    anchorError: Math.hypot(
+      centre(c).x - (tl.x + bl.x) / 2,
+      centre(c).y - (tl.y + bl.y) / 2,
+    ),
+  };
+}
+
+function expectTextBoxHandles(h: number, label: string): void {
+  cy.document().should((doc) => {
+    const m = measureTextBox(doc);
+    const near = (actual: number, expected: number, what: string): void => {
+      expect(actual, `${label}: ${what}`).to.be.closeTo(expected, 0.6);
+    };
+    expect(doc.querySelectorAll('.resizePoint'), `${label}: 8 circles`).to.have.length(8);
+    expect(doc.querySelector('.rotatePoint'), `${label}: no diamonds`).to.equal(null);
+    near(m.circle, 2 * h, 'circle diameter');
+    near(m.circleStroke, Math.max(1, 0.16 * h), 'circle stroke');
+    near(m.frameStroke, Math.max(1, 0.4 * h), 'frame stroke');
+    near(m.dash[0], Math.max(2, 0.8 * h), 'frame dash');
+    near(m.dash[1], Math.max(1, 0.4 * h), 'frame gap');
+    expect(m.anchorError, `${label}: circle on its anchor`).to.be.lessThan(0.6);
+  });
+}
+
+/**
+ * Ids of the two shown text boxes nearest the page's top-left corner that
+ * have a real size (the first syllable of the sample has an incomplete zone)
+ * and are fully on screen, so they stay reachable when zoomed in.
+ */
+function twoTextBoxes(): Cypress.Chainable<[string, string]> {
+  return cy.get('.sylTextRect-display').then(($rects) => {
+    const vh = Cypress.config('viewportHeight');
+    const ids = $rects
+      .toArray()
+      .filter((r) => Number(r.getAttribute('width')) > 0)
+      .map((r) => ({ id: r.closest('.syl').id, box: r.getBoundingClientRect() }))
+      .filter(({ box }) => box.top > 130 && box.bottom < vh - 40 && box.left > 0)
+      .sort((a, b) => a.box.top + a.box.left - (b.box.top + b.box.left))
+      .map(({ id }) => id);
+    expect(ids.length, 'text boxes on screen').to.be.greaterThan(1);
+    return [ids[0], ids[1]] as [string, string];
+  });
+}
+
+function selectTextBox(sylId: string): void {
+  cy.get(`#${sylId} > .sylTextRect-display`).click({ force: true });
+  cy.get(`#${sylId}`).should('have.class', 'selected');
+  cy.get('#p-Left').should('exist');
 }
 
 describe('editing handles: constant CSS size (#1392)', () => {
@@ -596,6 +593,121 @@ describe('small page: staff drag bounds ignore editing handles (#1409)', () => {
         expectSameContent(meiContent(after), before, 'MEI'),
       );
     });
+  });
+});
+
+describe('text boxes (#1392, #1409)', () => {
+  beforeEach(() => {
+    clearNeonDb();
+    cy.visitEditor('/editor.html?manifest=test');
+  });
+  after(() => clearNeonDb(true));
+
+  it('text box handles keep their size through slider, zoom and reselect; MEI unchanged', () => {
+    readMei().then((initial) => {
+      const before = meiContent(initial);
+
+      cy.get('#displayBBox').click();
+      cy.clickAndExpectClass('#selByBBox', 'is-active');
+      twoTextBoxes().then(([first, second]) => {
+        selectTextBox(first);
+        expectTextBoxHandles(DEFAULT_SIZE, 'selected');
+
+        setHandleSize(10);
+        expectTextBoxHandles(10, 'slider 10');
+
+        zoomTo(200);
+        expectTextBoxHandles(10, 'zoom 200%');
+
+        // Reselect: another box, then the first one again.
+        selectTextBox(second);
+        expectTextBoxHandles(10, 'other box');
+        selectTextBox(first);
+        expectTextBoxHandles(10, 'reselected');
+
+        zoomTo(100);
+        cy.get('#reset-handle-size').click();
+        expectTextBoxHandles(DEFAULT_SIZE, 'reset');
+      });
+
+      cy.get('#undo').click();
+      cy.contains('There is nothing left to undo.').should('exist');
+      readMei().then((after) =>
+        expectSameContent(meiContent(after), before, 'MEI'),
+      );
+    });
+  });
+
+  it('staff move with text boxes hidden: a text box leaving the page is refused', () => {
+    cy.get('#displayBBox').should('not.be.checked');
+    cy.get('.sylTextRect-display').should('not.exist');
+
+    // Find an on-screen staff whose (hidden) text boxes reach further down
+    // than its lines and glyphs, and the move that takes only the text box
+    // off the bottom of the page.
+    cy.document()
+      .then((doc) => {
+        const height = Number(doc.getElementById('bgimg').getAttribute('height'));
+        const margin = doc.querySelector<SVGGraphicsElement>('.page-margin');
+        const toPage = margin.getCTM().inverse();
+        const screen = margin.getScreenCTM();
+        const vh = Cypress.config('viewportHeight');
+
+        const candidates = Array.from(doc.querySelectorAll('.staff'))
+          .filter((staff) => {
+            const line = staff.querySelector('path').getBoundingClientRect();
+            return line.top > 130 && line.bottom < vh - 40;
+          })
+          .map((staff) => {
+            // Hidden boxes have no layout box: use their attributes.
+            const textBottoms = Array.from(
+              staff.querySelectorAll<SVGRectElement>('rect.sylTextRect'),
+            )
+              .filter((r) => r.width.baseVal.value > 0 && r.height.baseVal.value > 0)
+              .map((r) => {
+                const corner = new DOMPoint(
+                  r.x.baseVal.value,
+                  r.y.baseVal.value + r.height.baseVal.value,
+                );
+                return corner.matrixTransform(toPage.multiply(r.getCTM())).y;
+              });
+            const otherBottoms = Array.from(staff.querySelectorAll('use, path'))
+              .map((el) => el.getBoundingClientRect())
+              .filter((r) => r.width > 0 || r.height > 0)
+              .map((r) => (r.bottom - screen.f) / screen.d);
+            const textBottom = Math.max(...textBottoms);
+            const otherBottom = Math.max(...otherBottoms);
+            return { id: staff.id, textBottom, otherBottom, gap: textBottom - otherBottom };
+          })
+          .filter((c) => Number.isFinite(c.gap))
+          .sort((a, b) => b.gap - a.gap);
+
+        expect(candidates.length, 'staves on screen').to.be.greaterThan(0);
+        const best = candidates[0];
+        expect(best.gap, 'text box reaches below the glyphs').to.be.greaterThan(20);
+        // Text box ends gap/2 below the page; everything else stays on it.
+        return { id: best.id, dy: height - best.textBottom + best.gap / 2 };
+      })
+      .then(({ id, dy }) => {
+        readMei().then((initial) => {
+          const before = meiContent(initial);
+          cy.clickAndExpectClass('#selByStaff', 'is-active');
+          cy.clickStaff(`#${id}`);
+          cy.get(`#${id}`).should('have.class', 'selected');
+          cy.get(`#${id} path`)
+            .first()
+            .invoke('attr', 'd')
+            .then((d) => {
+              dragStaffByUnits(0, dy);
+              cy.contains('Drag action failed').should('be.visible');
+              cy.get(`#${id} path`).first().should('have.attr', 'd', d);
+              cy.get(`#${id}`).should('not.have.attr', 'transform');
+            });
+          readMei().then((after) =>
+            expectSameContent(meiContent(after), before, 'MEI'),
+          );
+        });
+      });
   });
 });
 

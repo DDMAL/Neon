@@ -70,11 +70,15 @@ export function getStaffByCoords(
 
 /**
  * Size of the page in content (MEI zone) coordinates.
- * SingleView draws the page over `#bgimg`; DivaView has no such image, so
- * fall back to the viewBox of the active page's Verovio SVG, which spans the
- * same page.
+ *
+ * SingleView draws the page over `#bgimg`. DivaView has no such image; use
+ * the viewBox of the page's Verovio SVG (`svg.definition-scale`), which spans
+ * the same page. With a `context` element, that is the page the element is
+ * on; otherwise the active page. In SingleView `.active-page` is the page SVG
+ * itself; in DivaView it is the page's container <div>, two levels up, hence
+ * the descendant selector.
  */
-function getPageSize(): { width: number; height: number } | null {
+function getPageSize(context?: Element): { width: number; height: number } | null {
   const bgImg = document.querySelector<SVGImageElement>('#bgimg');
   if (bgImg) {
     return {
@@ -82,9 +86,9 @@ function getPageSize(): { width: number; height: number } | null {
       height: Number(bgImg.getAttribute('height')),
     };
   }
-  const page = document.querySelector<SVGSVGElement>(
-    '.active-page > .definition-scale',
-  );
+  const page =
+    context?.closest<SVGSVGElement>('svg.definition-scale') ??
+    document.querySelector<SVGSVGElement>('.active-page .definition-scale');
   const viewBox = page?.viewBox?.baseVal;
   if (viewBox && viewBox.width > 0 && viewBox.height > 0) {
     return { width: viewBox.x + viewBox.width, height: viewBox.y + viewBox.height };
@@ -92,10 +96,20 @@ function getPageSize(): { width: number; height: number } | null {
   return null;
 }
 
-export function isOutOfSVGBounds(x: number, y: number): boolean {
-  const page = getPageSize();
-  // Without a known page there is nothing to compare against.
-  if (page === null) return false;
+/**
+ * Whether a point (content coordinates) lies outside the page.
+ * @param context - An element on the page in question (DivaView shows
+ *   several pages); defaults to the active page.
+ *
+ * If the page size cannot be determined the point is reported as out of
+ * bounds: an edit that cannot be checked must not be written to the MEI.
+ */
+export function isOutOfSVGBounds(x: number, y: number, context?: Element): boolean {
+  const page = getPageSize(context);
+  if (page === null) {
+    console.warn('Page bounds unknown; refusing the edit.');
+    return true;
+  }
 
   return x <= 0 || x >= page.width || y <= 0 || y >= page.height;
 }
@@ -121,14 +135,32 @@ function getContentElements(el: Element, bboxShown: boolean): SVGGraphicsElement
 }
 
 /**
- * Bounding box of `el` in the coordinate system of `reference`, including
- * every transform between them (in particular the `translate(dx,dy)` a drag
- * preview puts on the selection). Returns null when the element has no
- * measurable geometry: a glyph with neither width nor height, such as the
- * Hufnagel connector glyphs (E9B4-E9B8), which have no outline at all.
- * A staff line has zero height but real width, and is kept.
+ * Local (own user space) box of a content element, or null when it has no
+ * position to check.
+ *
+ * Text boxes (`rect`) are read from their attributes: a hidden text box has
+ * `display: none`, for which getBBox() reports 0x0, but it still moves with
+ * the staff and its zone must stay on the page. A text box without a positive
+ * width and height comes from an incomplete zone and has no position.
+ *
+ * Other elements use getBBox(). A glyph with neither width nor height, such
+ * as the Hufnagel connector glyphs (E9B4-E9B8), has no outline and is
+ * skipped; a staff line has zero height but real width, and is kept.
  */
-function getBBoxIn(el: SVGGraphicsElement, reference: SVGGraphicsElement): BBox | null {
+function getLocalBox(
+  el: SVGGraphicsElement,
+): { x: number; y: number; width: number; height: number } | null {
+  if (el instanceof SVGRectElement) {
+    const x = el.x.baseVal.value;
+    const y = el.y.baseVal.value;
+    const width = el.width.baseVal.value;
+    const height = el.height.baseVal.value;
+    if (!(width > 0 && height > 0) || !Number.isFinite(x + y + width + height)) {
+      return null;
+    }
+    return { x, y, width, height };
+  }
+
   let box: DOMRect;
   try {
     box = el.getBBox();
@@ -136,6 +168,17 @@ function getBBoxIn(el: SVGGraphicsElement, reference: SVGGraphicsElement): BBox 
     return null;
   }
   if (box.width === 0 && box.height === 0) return null;
+  return box;
+}
+
+/**
+ * Bounding box of `el` in the coordinate system of `reference`, including
+ * every transform between them (in particular the `translate(dx,dy)` a drag
+ * preview puts on the selection). Null when `el` has no position to check.
+ */
+function getBBoxIn(el: SVGGraphicsElement, reference: SVGGraphicsElement): BBox | null {
+  const box = getLocalBox(el);
+  if (box === null) return null;
 
   const elCTM = el.getCTM();
   const refCTM = reference.getCTM();

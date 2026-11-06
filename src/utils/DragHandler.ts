@@ -267,7 +267,7 @@ class DragHandler {
     const endX = this.dragStartCoords[0] + this.dx;
     const endY = this.dragStartCoords[1] + this.dy;
 
-    return isOutOfSVGBounds(endX, endY);
+    return isOutOfSVGBounds(endX, endY, this.selection[0]);
   }
 
   /**
@@ -291,7 +291,10 @@ class DragHandler {
     if (bounds === null) return false;
 
     const { ulx, uly, lrx, lry } = bounds;
-    return isOutOfSVGBounds(ulx, uly) || isOutOfSVGBounds(lrx, lry);
+    return (
+      isOutOfSVGBounds(ulx, uly, selection[0]) ||
+      isOutOfSVGBounds(lrx, lry, selection[0])
+    );
   }
 }
 
