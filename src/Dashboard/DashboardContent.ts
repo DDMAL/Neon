@@ -61,10 +61,12 @@ export const uploadAreaHTML = `<div id="document-upload-container">
           <div class="notation_type_options">
             <label class="notation_type_option">
               <input type="radio" name="upload_notation_type" value="square" checked>
+              <span class="notation-dot notation-dot--square" aria-hidden="true"></span>
               Square
             </label>
             <label class="notation_type_option">
               <input type="radio" name="upload_notation_type" value="hufnagel">
+              <span class="notation-dot notation-dot--hufnagel" aria-hidden="true"></span>
               Hufnagel
             </label>
           </div>
