@@ -68,9 +68,10 @@ async function handleNeonEvent(evt) {
   postMessage(result);
 }
 
-importScripts(
-  'https://www.verovio.org/javascript/develop/verovio-toolkit-wasm.js',
-);
+// Pinned to the toolkit Neon ships (Verovio 6.4.1), not the moving develop
+// channel: later develop builds dropped fontAddCustom and the
+// neume.hufnagel / neume.square notation types this worker depends on.
+importScripts('../assets/js/verovio-toolkit-wasm.js');
 
 verovio.module.onRuntimeInitialized = () => {
   toolkit = new verovio.toolkit();
