@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Plainchant Glyphs — SMuFL</title>
+<style>
+  @font-face {
+    font-family: 'Bravura Text';
+    src: url('latest/media/BravuraText.woff') format('woff');
+  }
+  body {
+    font-family: -apple-system, sans-serif;
+    font-size: 13px;
+    padding: 24px;
+    color: #1a1a1a;
+    background: #fff;
+  }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  p.meta { color: #666; margin-bottom: 16px; font-size: 12px; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+  }
+  col.c-glyph { width: 70px; }
+  col.c-name  { width: 240px; }
+  col.c-cp    { width: 90px; }
+  col.c-desc  { width: 220px; }
+  col.c-range { width: 220px; }
+  col.c-class { width: 180px; }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 6px 8px;
+    vertical-align: middle;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  th {
+    background: #f4f4f4;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  tr:nth-child(even) { background: #fafafa; }
+  tr:hover { background: #eef4ff; }
+  .glyph-col { text-align: center; }
+  .glyph {
+    font-family: 'Bravura Text', serif;
+    font-size: 36px;
+    line-height: 1;
+    display: inline-block;
+  }
+  .missing { color: #bbb; }
+  code { font-size: 11px; color: #333; }
+</style>
+</head>
+<body>
+<h1>Plainchant &amp; Medieval/Renaissance Glyphs — SMuFL</h1>
+<p class="meta">231 glyphs · sourced from glyphnames.json, ranges.json, classes.json</p>
+<table>
+  <colgroup>
+    <col class="c-glyph"><col class="c-name"><col class="c-cp">
+    <col class="c-desc"><col class="c-range"><col class="c-class">
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Glyph</th>
+      <th>Name</th>
+      <th>Codepoint</th>
+      <th>Description</th>
+      <th>Range</th>
+      <th>Classes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9D6;</span></td>
+      <td><code>chantAccentusAbove</code></td>
+      <td><code>U+E9D6</code></td>
+      <td>Accentus above</td>
+      <td>plainchant articulations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9D7;</span></td>
+      <td><code>chantAccentusBelow</code></td>
+      <td><code>U+E9D7</code></td>
+      <td>Accentus below</td>
+      <td>plainchant articulations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE994;</span></td>
+      <td><code>chantAuctumAsc</code></td>
+      <td><code>U+E994</code></td>
+      <td>Punctum auctum, ascending</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE995;</span></td>
+      <td><code>chantAuctumDesc</code></td>
+      <td><code>U+E995</code></td>
+      <td>Punctum auctum, descending</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9D9;</span></td>
+      <td><code>chantAugmentum</code></td>
+      <td><code>U+E9D9</code></td>
+      <td>Augmentum (mora)</td>
+      <td>plainchant articulations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE8F8;</span></td>
+      <td><code>chantCaesura</code></td>
+      <td><code>U+E8F8</code></td>
+      <td>Caesura</td>
+      <td>staves</td>
+      <td>forTextBasedApplications</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE906;</span></td>
+      <td><code>chantCclef</code></td>
+      <td><code>U+E906</code></td>
+      <td>Plainchant C clef</td>
+      <td>clefs</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9D2;</span></td>
+      <td><code>chantCirculusAbove</code></td>
+      <td><code>U+E9D2</code></td>
+      <td>Circulus above</td>
+      <td>plainchant articulations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9D3;</span></td>
+      <td><code>chantCirculusBelow</code></td>
+      <td><code>U+E9D3</code></td>
+      <td>Circulus below</td>
+      <td>plainchant articulations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9BD;</span></td>
+      <td><code>chantConnectingLineAsc2nd</code></td>
+      <td><code>U+E9BD</code></td>
+      <td>Connecting line, ascending 2nd</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9BE;</span></td>
+      <td><code>chantConnectingLineAsc3rd</code></td>
+      <td><code>U+E9BE</code></td>
+      <td>Connecting line, ascending 3rd</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9BF;</span></td>
+      <td><code>chantConnectingLineAsc4th</code></td>
+      <td><code>U+E9BF</code></td>
+      <td>Connecting line, ascending 4th</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9C0;</span></td>
+      <td><code>chantConnectingLineAsc5th</code></td>
+      <td><code>U+E9C0</code></td>
+      <td>Connecting line, ascending 5th</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9C1;</span></td>
+      <td><code>chantConnectingLineAsc6th</code></td>
+      <td><code>U+E9C1</code></td>
+      <td>Connecting line, ascending 6th</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA08;</span></td>
+      <td><code>chantCustosStemDownPosHigh</code></td>
+      <td><code>U+EA08</code></td>
+      <td>Plainchant custos, stem down, high position</td>
+      <td>miscellany</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA09;</span></td>
+      <td><code>chantCustosStemDownPosHighest</code></td>
+      <td><code>U+EA09</code></td>
+      <td>Plainchant custos, stem down, highest position</td>
+      <td>miscellany</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA07;</span></td>
+      <td><code>chantCustosStemDownPosMiddle</code></td>
+      <td><code>U+EA07</code></td>
+      <td>Plainchant custos, stem down, middle position</td>
+      <td>miscellany</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA05;</span></td>
+      <td><code>chantCustosStemUpPosLow</code></td>
+      <td><code>U+EA05</code></td>
+      <td>Plainchant custos, stem up, low position</td>
+      <td>miscellany</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA04;</span></td>
+      <td><code>chantCustosStemUpPosLowest</code></td>
+      <td><code>U+EA04</code></td>
+      <td>Plainchant custos, stem up, lowest position</td>
+      <td>miscellany</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA06;</span></td>
+      <td><code>chantCustosStemUpPosMiddle</code></td>
+      <td><code>U+EA06</code></td>
+      <td>Plainchant custos, stem up, middle position</td>
+      <td>miscellany</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9B3;</span></td>
+      <td><code>chantDeminutumLower</code></td>
+      <td><code>U+E9B3</code></td>
+      <td>Punctum deminutum, lower</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9B2;</span></td>
+      <td><code>chantDeminutumUpper</code></td>
+      <td><code>U+E9B2</code></td>
+      <td>Punctum deminutum, upper</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE8F6;</span></td>
+      <td><code>chantDivisioFinalis</code></td>
+      <td><code>U+E8F6</code></td>
+      <td>Divisio finalis</td>
+      <td>staves</td>
+      <td>forTextBasedApplications</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE8F4;</span></td>
+      <td><code>chantDivisioMaior</code></td>
+      <td><code>U+E8F4</code></td>
+      <td>Divisio maior</td>
+      <td>staves</td>
+      <td>forTextBasedApplications</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE8F5;</span></td>
+      <td><code>chantDivisioMaxima</code></td>
+      <td><code>U+E8F5</code></td>
+      <td>Divisio maxima</td>
+      <td>staves</td>
+      <td>forTextBasedApplications</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE8F3;</span></td>
+      <td><code>chantDivisioMinima</code></td>
+      <td><code>U+E8F3</code></td>
+      <td>Divisio minima</td>
+      <td>staves</td>
+      <td>forTextBasedApplications</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9B4;</span></td>
+      <td><code>chantEntryLineAsc2nd</code></td>
+      <td><code>U+E9B4</code></td>
+      <td>Entry line, ascending 2nd</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9B5;</span></td>
+      <td><code>chantEntryLineAsc3rd</code></td>
+      <td><code>U+E9B5</code></td>
+      <td>Entry line, ascending 3rd</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9B6;</span></td>
+      <td><code>chantEntryLineAsc4th</code></td>
+      <td><code>U+E9B6</code></td>
+      <td>Entry line, ascending 4th</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9B7;</span></td>
+      <td><code>chantEntryLineAsc5th</code></td>
+      <td><code>U+E9B7</code></td>
+      <td>Entry line, ascending 5th</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9B8;</span></td>
+      <td><code>chantEntryLineAsc6th</code></td>
+      <td><code>U+E9B8</code></td>
+      <td>Entry line, ascending 6th</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9D8;</span></td>
+      <td><code>chantEpisema</code></td>
+      <td><code>U+E9D8</code></td>
+      <td>Episema</td>
+      <td>plainchant articulations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE902;</span></td>
+      <td><code>chantFclef</code></td>
+      <td><code>U+E902</code></td>
+      <td>Plainchant F clef</td>
+      <td>clefs</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9D0;</span></td>
+      <td><code>chantIctusAbove</code></td>
+      <td><code>U+E9D0</code></td>
+      <td>Ictus above</td>
+      <td>plainchant articulations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9D1;</span></td>
+      <td><code>chantIctusBelow</code></td>
+      <td><code>U+E9D1</code></td>
+      <td>Ictus below</td>
+      <td>plainchant articulations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9B9;</span></td>
+      <td><code>chantLigaturaDesc2nd</code></td>
+      <td><code>U+E9B9</code></td>
+      <td>Ligated stroke, descending 2nd</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9BA;</span></td>
+      <td><code>chantLigaturaDesc3rd</code></td>
+      <td><code>U+E9BA</code></td>
+      <td>Ligated stroke, descending 3rd</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9BB;</span></td>
+      <td><code>chantLigaturaDesc4th</code></td>
+      <td><code>U+E9BB</code></td>
+      <td>Ligated stroke, descending 4th</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9BC;</span></td>
+      <td><code>chantLigaturaDesc5th</code></td>
+      <td><code>U+E9BC</code></td>
+      <td>Ligated stroke, descending 5th</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE99C;</span></td>
+      <td><code>chantOriscusAscending</code></td>
+      <td><code>U+E99C</code></td>
+      <td>Oriscus ascending</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE99D;</span></td>
+      <td><code>chantOriscusDescending</code></td>
+      <td><code>U+E99D</code></td>
+      <td>Oriscus descending</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE99E;</span></td>
+      <td><code>chantOriscusLiquescens</code></td>
+      <td><code>U+E99E</code></td>
+      <td>Oriscus liquescens</td>
+      <td>plainchant single-note forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9B0;</span></td>
+      <td><code>chantPodatusLower</code></td>
+      <td><code>U+E9B0</code></td>
+      <td>Podatus, lower</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9B1;</span></td>
+      <td><code>chantPodatusUpper</code></td>
+      <td><code>U+E9B1</code></td>
+      <td>Podatus, upper</td>
+      <td>plainchant multiple-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE990;</span></td>
+      <td><code>chantPunctum</code></td>
+      <td><code>U+E990</code></td>
+      <td>Punctum</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE998;</span></td>
+      <td><code>chantPunctumCavum</code></td>
+      <td><code>U+E998</code></td>
+      <td>Punctum cavum</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9A1;</span></td>
+      <td><code>chantPunctumDeminutum</code></td>
+      <td><code>U+E9A1</code></td>
+      <td>Punctum deminutum</td>
+      <td>plainchant single-note forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE991;</span></td>
+      <td><code>chantPunctumInclinatum</code></td>
+      <td><code>U+E991</code></td>
+      <td>Punctum inclinatum</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE992;</span></td>
+      <td><code>chantPunctumInclinatumAuctum</code></td>
+      <td><code>U+E992</code></td>
+      <td>Punctum inclinatum auctum</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE993;</span></td>
+      <td><code>chantPunctumInclinatumDeminutum</code></td>
+      <td><code>U+E993</code></td>
+      <td>Punctum inclinatum deminutum</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE999;</span></td>
+      <td><code>chantPunctumLinea</code></td>
+      <td><code>U+E999</code></td>
+      <td>Punctum linea</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE99A;</span></td>
+      <td><code>chantPunctumLineaCavum</code></td>
+      <td><code>U+E99A</code></td>
+      <td>Punctum linea cavum</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE996;</span></td>
+      <td><code>chantPunctumVirga</code></td>
+      <td><code>U+E996</code></td>
+      <td>Punctum virga</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE997;</span></td>
+      <td><code>chantPunctumVirgaReversed</code></td>
+      <td><code>U+E997</code></td>
+      <td>Punctum virga, reversed</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE99B;</span></td>
+      <td><code>chantQuilisma</code></td>
+      <td><code>U+E99B</code></td>
+      <td>Quilisma</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9D4;</span></td>
+      <td><code>chantSemicirculusAbove</code></td>
+      <td><code>U+E9D4</code></td>
+      <td>Semicirculus above</td>
+      <td>plainchant articulations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9D5;</span></td>
+      <td><code>chantSemicirculusBelow</code></td>
+      <td><code>U+E9D5</code></td>
+      <td>Semicirculus below</td>
+      <td>plainchant articulations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE8F0;</span></td>
+      <td><code>chantStaff</code></td>
+      <td><code>U+E8F0</code></td>
+      <td>Plainchant staff</td>
+      <td>staves</td>
+      <td>forTextBasedApplications, tf_zeroWidth</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE8F2;</span></td>
+      <td><code>chantStaffNarrow</code></td>
+      <td><code>U+E8F2</code></td>
+      <td>Plainchant staff (narrow)</td>
+      <td>staves</td>
+      <td>forTextBasedApplications, tf_zeroWidth</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE8F1;</span></td>
+      <td><code>chantStaffWide</code></td>
+      <td><code>U+E8F1</code></td>
+      <td>Plainchant staff (wide)</td>
+      <td>staves</td>
+      <td>forTextBasedApplications, tf_zeroWidth</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE99F;</span></td>
+      <td><code>chantStrophicus</code></td>
+      <td><code>U+E99F</code></td>
+      <td>Strophicus</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9A0;</span></td>
+      <td><code>chantStrophicusAuctus</code></td>
+      <td><code>U+E9A0</code></td>
+      <td>Strophicus auctus</td>
+      <td>plainchant single-note forms</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9C2;</span></td>
+      <td><code>chantStrophicusLiquescens2nd</code></td>
+      <td><code>U+E9C2</code></td>
+      <td>Strophicus liquescens, 2nd</td>
+      <td>plainchant multiple-note forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9C3;</span></td>
+      <td><code>chantStrophicusLiquescens3rd</code></td>
+      <td><code>U+E9C3</code></td>
+      <td>Strophicus liquescens, 3rd</td>
+      <td>plainchant multiple-note forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9C4;</span></td>
+      <td><code>chantStrophicusLiquescens4th</code></td>
+      <td><code>U+E9C4</code></td>
+      <td>Strophicus liquescens, 4th</td>
+      <td>plainchant multiple-note forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9C5;</span></td>
+      <td><code>chantStrophicusLiquescens5th</code></td>
+      <td><code>U+E9C5</code></td>
+      <td>Strophicus liquescens, 5th</td>
+      <td>plainchant multiple-note forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE8F7;</span></td>
+      <td><code>chantVirgula</code></td>
+      <td><code>U+E8F7</code></td>
+      <td>Virgula</td>
+      <td>staves</td>
+      <td>forTextBasedApplications</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9E1;</span></td>
+      <td><code>medRenFlatHardB</code></td>
+      <td><code>U+E9E1</code></td>
+      <td>Flat, hard b (mi)</td>
+      <td>accidentals</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9E0;</span></td>
+      <td><code>medRenFlatSoftB</code></td>
+      <td><code>U+E9E0</code></td>
+      <td>Flat, soft b (fa)</td>
+      <td>accidentals</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9E4;</span></td>
+      <td><code>medRenFlatWithDot</code></td>
+      <td><code>U+E9E4</code></td>
+      <td>Flat with dot</td>
+      <td>accidentals</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA24;</span></td>
+      <td><code>medRenGClefCMN</code></td>
+      <td><code>U+EA24</code></td>
+      <td>G clef (Corpus Monodicum)</td>
+      <td>symbols in CMN</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA22;</span></td>
+      <td><code>medRenLiquescenceCMN</code></td>
+      <td><code>U+EA22</code></td>
+      <td>Liquescence</td>
+      <td>symbols in CMN</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA26;</span></td>
+      <td><code>medRenLiquescentAscCMN</code></td>
+      <td><code>U+EA26</code></td>
+      <td>Liquescent ascending (Corpus Monodicum)</td>
+      <td>symbols in CMN</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA27;</span></td>
+      <td><code>medRenLiquescentDescCMN</code></td>
+      <td><code>U+EA27</code></td>
+      <td>Liquescent descending (Corpus Monodicum)</td>
+      <td>symbols in CMN</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9E2;</span></td>
+      <td><code>medRenNatural</code></td>
+      <td><code>U+E9E2</code></td>
+      <td>Natural</td>
+      <td>accidentals</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9E5;</span></td>
+      <td><code>medRenNaturalWithCross</code></td>
+      <td><code>U+E9E5</code></td>
+      <td>Natural with interrupted cross</td>
+      <td>accidentals</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA2A;</span></td>
+      <td><code>medRenOriscusCMN</code></td>
+      <td><code>U+EA2A</code></td>
+      <td>Oriscus (Corpus Monodicum)</td>
+      <td>symbols in CMN</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA23;</span></td>
+      <td><code>medRenPlicaCMN</code></td>
+      <td><code>U+EA23</code></td>
+      <td>Plica</td>
+      <td>symbols in CMN</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA25;</span></td>
+      <td><code>medRenPunctumCMN</code></td>
+      <td><code>U+EA25</code></td>
+      <td>Punctum (Corpus Monodicum)</td>
+      <td>symbols in CMN</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA28;</span></td>
+      <td><code>medRenQuilismaCMN</code></td>
+      <td><code>U+EA28</code></td>
+      <td>Quilisma (Corpus Monodicum)</td>
+      <td>symbols in CMN</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9E3;</span></td>
+      <td><code>medRenSharpCroix</code></td>
+      <td><code>U+E9E3</code></td>
+      <td>Croix</td>
+      <td>accidentals</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA29;</span></td>
+      <td><code>medRenStrophicusCMN</code></td>
+      <td><code>U+EA29</code></td>
+      <td>Strophicus (Corpus Monodicum)</td>
+      <td>symbols in CMN</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA10;</span></td>
+      <td><code>mensuralAlterationSign</code></td>
+      <td><code>U+EA10</code></td>
+      <td>Alteration sign</td>
+      <td>miscellany</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE952;</span></td>
+      <td><code>mensuralBlackBrevis</code></td>
+      <td><code>U+E952</code></td>
+      <td>Black mensural brevis</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE956;</span></td>
+      <td><code>mensuralBlackBrevisVoid</code></td>
+      <td><code>U+E956</code></td>
+      <td>Black mensural void brevis</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE95A;</span></td>
+      <td><code>mensuralBlackDragma</code></td>
+      <td><code>U+E95A</code></td>
+      <td>Black mensural dragma</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE951;</span></td>
+      <td><code>mensuralBlackLonga</code></td>
+      <td><code>U+E951</code></td>
+      <td>Black mensural longa</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE950;</span></td>
+      <td><code>mensuralBlackMaxima</code></td>
+      <td><code>U+E950</code></td>
+      <td>Black mensural maxima</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE954;</span></td>
+      <td><code>mensuralBlackMinima</code></td>
+      <td><code>U+E954</code></td>
+      <td>Black mensural minima</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE958;</span></td>
+      <td><code>mensuralBlackMinimaVoid</code></td>
+      <td><code>U+E958</code></td>
+      <td>Black mensural void minima</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE953;</span></td>
+      <td><code>mensuralBlackSemibrevis</code></td>
+      <td><code>U+E953</code></td>
+      <td>Black mensural semibrevis</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE959;</span></td>
+      <td><code>mensuralBlackSemibrevisCaudata</code></td>
+      <td><code>U+E959</code></td>
+      <td>Black mensural semibrevis caudata</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE95B;</span></td>
+      <td><code>mensuralBlackSemibrevisOblique</code></td>
+      <td><code>U+E95B</code></td>
+      <td>Black mensural oblique semibrevis</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE957;</span></td>
+      <td><code>mensuralBlackSemibrevisVoid</code></td>
+      <td><code>U+E957</code></td>
+      <td>Black mensural void semibrevis</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE955;</span></td>
+      <td><code>mensuralBlackSemiminima</code></td>
+      <td><code>U+E955</code></td>
+      <td>Black mensural semiminima</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE905;</span></td>
+      <td><code>mensuralCclef</code></td>
+      <td><code>U+E905</code></td>
+      <td>Mensural C clef</td>
+      <td>clefs</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE90A;</span></td>
+      <td><code>mensuralCclefPetrucciPosHigh</code></td>
+      <td><code>U+E90A</code></td>
+      <td>Petrucci C clef, high position</td>
+      <td>clefs</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE90B;</span></td>
+      <td><code>mensuralCclefPetrucciPosHighest</code></td>
+      <td><code>U+E90B</code></td>
+      <td>Petrucci C clef, highest position</td>
+      <td>clefs</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE908;</span></td>
+      <td><code>mensuralCclefPetrucciPosLow</code></td>
+      <td><code>U+E908</code></td>
+      <td>Petrucci C clef, low position</td>
+      <td>clefs</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE907;</span></td>
+      <td><code>mensuralCclefPetrucciPosLowest</code></td>
+      <td><code>U+E907</code></td>
+      <td>Petrucci C clef, lowest position</td>
+      <td>clefs</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE909;</span></td>
+      <td><code>mensuralCclefPetrucciPosMiddle</code></td>
+      <td><code>U+E909</code></td>
+      <td>Petrucci C clef, middle position</td>
+      <td>clefs</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA0F;</span></td>
+      <td><code>mensuralColorationEndRound</code></td>
+      <td><code>U+EA0F</code></td>
+      <td>Coloration end, round</td>
+      <td>miscellany</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA0D;</span></td>
+      <td><code>mensuralColorationEndSquare</code></td>
+      <td><code>U+EA0D</code></td>
+      <td>Coloration end, square</td>
+      <td>miscellany</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA0E;</span></td>
+      <td><code>mensuralColorationStartRound</code></td>
+      <td><code>U+EA0E</code></td>
+      <td>Coloration start, round</td>
+      <td>miscellany</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA0C;</span></td>
+      <td><code>mensuralColorationStartSquare</code></td>
+      <td><code>U+EA0C</code></td>
+      <td>Coloration start, square</td>
+      <td>miscellany</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE940;</span></td>
+      <td><code>mensuralCombStemDiagonal</code></td>
+      <td><code>U+E940</code></td>
+      <td>Combining stem diagonal</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE93F;</span></td>
+      <td><code>mensuralCombStemDown</code></td>
+      <td><code>U+E93F</code></td>
+      <td>Combining stem down</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE948;</span></td>
+      <td><code>mensuralCombStemDownFlagExtended</code></td>
+      <td><code>U+E948</code></td>
+      <td>Combining stem with extended flag down</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE946;</span></td>
+      <td><code>mensuralCombStemDownFlagFlared</code></td>
+      <td><code>U+E946</code></td>
+      <td>Combining stem with flared flag down</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE94C;</span></td>
+      <td><code>mensuralCombStemDownFlagFusa</code></td>
+      <td><code>U+E94C</code></td>
+      <td>Combining stem with fusa flag down</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE944;</span></td>
+      <td><code>mensuralCombStemDownFlagLeft</code></td>
+      <td><code>U+E944</code></td>
+      <td>Combining stem with flag left down</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE942;</span></td>
+      <td><code>mensuralCombStemDownFlagRight</code></td>
+      <td><code>U+E942</code></td>
+      <td>Combining stem with flag right down</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE94A;</span></td>
+      <td><code>mensuralCombStemDownFlagSemiminima</code></td>
+      <td><code>U+E94A</code></td>
+      <td>Combining stem with semiminima flag down</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE93E;</span></td>
+      <td><code>mensuralCombStemUp</code></td>
+      <td><code>U+E93E</code></td>
+      <td>Combining stem up</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE947;</span></td>
+      <td><code>mensuralCombStemUpFlagExtended</code></td>
+      <td><code>U+E947</code></td>
+      <td>Combining stem with extended flag up</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE945;</span></td>
+      <td><code>mensuralCombStemUpFlagFlared</code></td>
+      <td><code>U+E945</code></td>
+      <td>Combining stem with flared flag up</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE94B;</span></td>
+      <td><code>mensuralCombStemUpFlagFusa</code></td>
+      <td><code>U+E94B</code></td>
+      <td>Combining stem with fusa flag up</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE943;</span></td>
+      <td><code>mensuralCombStemUpFlagLeft</code></td>
+      <td><code>U+E943</code></td>
+      <td>Combining stem with flag left up</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE941;</span></td>
+      <td><code>mensuralCombStemUpFlagRight</code></td>
+      <td><code>U+E941</code></td>
+      <td>Combining stem with flag right up</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE949;</span></td>
+      <td><code>mensuralCombStemUpFlagSemiminima</code></td>
+      <td><code>U+E949</code></td>
+      <td>Combining stem with semiminima flag up</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA0A;</span></td>
+      <td><code>mensuralCustosCheckmark</code></td>
+      <td><code>U+EA0A</code></td>
+      <td>Checkmark custos</td>
+      <td>miscellany</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA03;</span></td>
+      <td><code>mensuralCustosDown</code></td>
+      <td><code>U+EA03</code></td>
+      <td>Mensural custos down</td>
+      <td>miscellany</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA0B;</span></td>
+      <td><code>mensuralCustosTurn</code></td>
+      <td><code>U+EA0B</code></td>
+      <td>Turn-like custos</td>
+      <td>miscellany</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA02;</span></td>
+      <td><code>mensuralCustosUp</code></td>
+      <td><code>U+EA02</code></td>
+      <td>Mensural custos up</td>
+      <td>miscellany</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE903;</span></td>
+      <td><code>mensuralFclef</code></td>
+      <td><code>U+E903</code></td>
+      <td>Mensural F clef</td>
+      <td>clefs</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE904;</span></td>
+      <td><code>mensuralFclefPetrucci</code></td>
+      <td><code>U+E904</code></td>
+      <td>Petrucci F clef</td>
+      <td>clefs</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE900;</span></td>
+      <td><code>mensuralGclef</code></td>
+      <td><code>U+E900</code></td>
+      <td>Mensural G clef</td>
+      <td>clefs</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE901;</span></td>
+      <td><code>mensuralGclefPetrucci</code></td>
+      <td><code>U+E901</code></td>
+      <td>Petrucci G clef</td>
+      <td>clefs</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE92D;</span></td>
+      <td><code>mensuralModusImperfectumVert</code></td>
+      <td><code>U+E92D</code></td>
+      <td>Modus imperfectum, vertical</td>
+      <td>prolations</td>
+      <td>tf_prolations</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE92C;</span></td>
+      <td><code>mensuralModusPerfectumVert</code></td>
+      <td><code>U+E92C</code></td>
+      <td>Modus perfectum, vertical</td>
+      <td>prolations</td>
+      <td>tf_prolations</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE934;</span></td>
+      <td><code>mensuralNoteheadLongaBlack</code></td>
+      <td><code>U+E934</code></td>
+      <td>Longa/brevis notehead, black</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE936;</span></td>
+      <td><code>mensuralNoteheadLongaBlackVoid</code></td>
+      <td><code>U+E936</code></td>
+      <td>Longa/brevis notehead, black and void</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE935;</span></td>
+      <td><code>mensuralNoteheadLongaVoid</code></td>
+      <td><code>U+E935</code></td>
+      <td>Longa/brevis notehead, void</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE937;</span></td>
+      <td><code>mensuralNoteheadLongaWhite</code></td>
+      <td><code>U+E937</code></td>
+      <td>Longa/brevis notehead, white</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE930;</span></td>
+      <td><code>mensuralNoteheadMaximaBlack</code></td>
+      <td><code>U+E930</code></td>
+      <td>Maxima notehead, black</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE932;</span></td>
+      <td><code>mensuralNoteheadMaximaBlackVoid</code></td>
+      <td><code>U+E932</code></td>
+      <td>Maxima notehead, black and void</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE931;</span></td>
+      <td><code>mensuralNoteheadMaximaVoid</code></td>
+      <td><code>U+E931</code></td>
+      <td>Maxima notehead, void</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE933;</span></td>
+      <td><code>mensuralNoteheadMaximaWhite</code></td>
+      <td><code>U+E933</code></td>
+      <td>Maxima notehead, white</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE93C;</span></td>
+      <td><code>mensuralNoteheadMinimaWhite</code></td>
+      <td><code>U+E93C</code></td>
+      <td>Minima notehead, white</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE938;</span></td>
+      <td><code>mensuralNoteheadSemibrevisBlack</code></td>
+      <td><code>U+E938</code></td>
+      <td>Semibrevis notehead, black</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE93A;</span></td>
+      <td><code>mensuralNoteheadSemibrevisBlackVoid</code></td>
+      <td><code>U+E93A</code></td>
+      <td>Semibrevis notehead, black and void</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE93B;</span></td>
+      <td><code>mensuralNoteheadSemibrevisBlackVoidTurned</code></td>
+      <td><code>U+E93B</code></td>
+      <td>Semibrevis notehead, black and void (turned)</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE939;</span></td>
+      <td><code>mensuralNoteheadSemibrevisVoid</code></td>
+      <td><code>U+E939</code></td>
+      <td>Semibrevis notehead, void</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE93D;</span></td>
+      <td><code>mensuralNoteheadSemiminimaWhite</code></td>
+      <td><code>U+E93D</code></td>
+      <td>Semiminima/fusa notehead, white</td>
+      <td>noteheads and stems</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE970;</span></td>
+      <td><code>mensuralObliqueAsc2ndBlack</code></td>
+      <td><code>U+E970</code></td>
+      <td>Oblique form, ascending 2nd, black</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE972;</span></td>
+      <td><code>mensuralObliqueAsc2ndBlackVoid</code></td>
+      <td><code>U+E972</code></td>
+      <td>Oblique form, ascending 2nd, black and void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE971;</span></td>
+      <td><code>mensuralObliqueAsc2ndVoid</code></td>
+      <td><code>U+E971</code></td>
+      <td>Oblique form, ascending 2nd, void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE973;</span></td>
+      <td><code>mensuralObliqueAsc2ndWhite</code></td>
+      <td><code>U+E973</code></td>
+      <td>Oblique form, ascending 2nd, white</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE974;</span></td>
+      <td><code>mensuralObliqueAsc3rdBlack</code></td>
+      <td><code>U+E974</code></td>
+      <td>Oblique form, ascending 3rd, black</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE976;</span></td>
+      <td><code>mensuralObliqueAsc3rdBlackVoid</code></td>
+      <td><code>U+E976</code></td>
+      <td>Oblique form, ascending 3rd, black and void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE975;</span></td>
+      <td><code>mensuralObliqueAsc3rdVoid</code></td>
+      <td><code>U+E975</code></td>
+      <td>Oblique form, ascending 3rd, void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE977;</span></td>
+      <td><code>mensuralObliqueAsc3rdWhite</code></td>
+      <td><code>U+E977</code></td>
+      <td>Oblique form, ascending 3rd, white</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE978;</span></td>
+      <td><code>mensuralObliqueAsc4thBlack</code></td>
+      <td><code>U+E978</code></td>
+      <td>Oblique form, ascending 4th, black</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE97A;</span></td>
+      <td><code>mensuralObliqueAsc4thBlackVoid</code></td>
+      <td><code>U+E97A</code></td>
+      <td>Oblique form, ascending 4th, black and void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE979;</span></td>
+      <td><code>mensuralObliqueAsc4thVoid</code></td>
+      <td><code>U+E979</code></td>
+      <td>Oblique form, ascending 4th, void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE97B;</span></td>
+      <td><code>mensuralObliqueAsc4thWhite</code></td>
+      <td><code>U+E97B</code></td>
+      <td>Oblique form, ascending 4th, white</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE97C;</span></td>
+      <td><code>mensuralObliqueAsc5thBlack</code></td>
+      <td><code>U+E97C</code></td>
+      <td>Oblique form, ascending 5th, black</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE97E;</span></td>
+      <td><code>mensuralObliqueAsc5thBlackVoid</code></td>
+      <td><code>U+E97E</code></td>
+      <td>Oblique form, ascending 5th, black and void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE97D;</span></td>
+      <td><code>mensuralObliqueAsc5thVoid</code></td>
+      <td><code>U+E97D</code></td>
+      <td>Oblique form, ascending 5th, void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE97F;</span></td>
+      <td><code>mensuralObliqueAsc5thWhite</code></td>
+      <td><code>U+E97F</code></td>
+      <td>Oblique form, ascending 5th, white</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE980;</span></td>
+      <td><code>mensuralObliqueDesc2ndBlack</code></td>
+      <td><code>U+E980</code></td>
+      <td>Oblique form, descending 2nd, black</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE982;</span></td>
+      <td><code>mensuralObliqueDesc2ndBlackVoid</code></td>
+      <td><code>U+E982</code></td>
+      <td>Oblique form, descending 2nd, black and void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE981;</span></td>
+      <td><code>mensuralObliqueDesc2ndVoid</code></td>
+      <td><code>U+E981</code></td>
+      <td>Oblique form, descending 2nd, void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE983;</span></td>
+      <td><code>mensuralObliqueDesc2ndWhite</code></td>
+      <td><code>U+E983</code></td>
+      <td>Oblique form, descending 2nd, white</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE984;</span></td>
+      <td><code>mensuralObliqueDesc3rdBlack</code></td>
+      <td><code>U+E984</code></td>
+      <td>Oblique form, descending 3rd, black</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE986;</span></td>
+      <td><code>mensuralObliqueDesc3rdBlackVoid</code></td>
+      <td><code>U+E986</code></td>
+      <td>Oblique form, descending 3rd, black and void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE985;</span></td>
+      <td><code>mensuralObliqueDesc3rdVoid</code></td>
+      <td><code>U+E985</code></td>
+      <td>Oblique form, descending 3rd, void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE987;</span></td>
+      <td><code>mensuralObliqueDesc3rdWhite</code></td>
+      <td><code>U+E987</code></td>
+      <td>Oblique form, descending 3rd, white</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE988;</span></td>
+      <td><code>mensuralObliqueDesc4thBlack</code></td>
+      <td><code>U+E988</code></td>
+      <td>Oblique form, descending 4th, black</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE98A;</span></td>
+      <td><code>mensuralObliqueDesc4thBlackVoid</code></td>
+      <td><code>U+E98A</code></td>
+      <td>Oblique form, descending 4th, black and void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE989;</span></td>
+      <td><code>mensuralObliqueDesc4thVoid</code></td>
+      <td><code>U+E989</code></td>
+      <td>Oblique form, descending 4th, void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE98B;</span></td>
+      <td><code>mensuralObliqueDesc4thWhite</code></td>
+      <td><code>U+E98B</code></td>
+      <td>Oblique form, descending 4th, white</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE98C;</span></td>
+      <td><code>mensuralObliqueDesc5thBlack</code></td>
+      <td><code>U+E98C</code></td>
+      <td>Oblique form, descending 5th, black</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE98E;</span></td>
+      <td><code>mensuralObliqueDesc5thBlackVoid</code></td>
+      <td><code>U+E98E</code></td>
+      <td>Oblique form, descending 5th, black and void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE98D;</span></td>
+      <td><code>mensuralObliqueDesc5thVoid</code></td>
+      <td><code>U+E98D</code></td>
+      <td>Oblique form, descending 5th, void</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE98F;</span></td>
+      <td><code>mensuralObliqueDesc5thWhite</code></td>
+      <td><code>U+E98F</code></td>
+      <td>Oblique form, descending 5th, white</td>
+      <td>oblique forms</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE910;</span></td>
+      <td><code>mensuralProlation1</code></td>
+      <td><code>U+E910</code></td>
+      <td>Tempus perfectum cum prolatione perfecta (9/8)</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE919;</span></td>
+      <td><code>mensuralProlation10</code></td>
+      <td><code>U+E919</code></td>
+      <td>Tempus imperfectum cum prolatione imperfecta diminution 4</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE91A;</span></td>
+      <td><code>mensuralProlation11</code></td>
+      <td><code>U+E91A</code></td>
+      <td>Tempus imperfectum cum prolatione imperfecta diminution 5</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE911;</span></td>
+      <td><code>mensuralProlation2</code></td>
+      <td><code>U+E911</code></td>
+      <td>Tempus perfectum cum prolatione imperfecta (3/4)</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE912;</span></td>
+      <td><code>mensuralProlation3</code></td>
+      <td><code>U+E912</code></td>
+      <td>Tempus perfectum cum prolatione imperfecta diminution 1 (3/8)</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE913;</span></td>
+      <td><code>mensuralProlation4</code></td>
+      <td><code>U+E913</code></td>
+      <td>Tempus perfectum cum prolatione perfecta diminution 2 (9/16)</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE914;</span></td>
+      <td><code>mensuralProlation5</code></td>
+      <td><code>U+E914</code></td>
+      <td>Tempus imperfectum cum prolatione perfecta (6/8)</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE915;</span></td>
+      <td><code>mensuralProlation6</code></td>
+      <td><code>U+E915</code></td>
+      <td>Tempus imperfectum cum prolatione imperfecta (2/4)</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE916;</span></td>
+      <td><code>mensuralProlation7</code></td>
+      <td><code>U+E916</code></td>
+      <td>Tempus imperfectum cum prolatione imperfecta diminution 1 (2/2)</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE917;</span></td>
+      <td><code>mensuralProlation8</code></td>
+      <td><code>U+E917</code></td>
+      <td>Tempus imperfectum cum prolatione imperfecta diminution 2 (6/16)</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE918;</span></td>
+      <td><code>mensuralProlation9</code></td>
+      <td><code>U+E918</code></td>
+      <td>Tempus imperfectum cum prolatione imperfecta diminution 3 (2/2)</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE920;</span></td>
+      <td><code>mensuralProlationCombiningDot</code></td>
+      <td><code>U+E920</code></td>
+      <td>Combining dot</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE924;</span></td>
+      <td><code>mensuralProlationCombiningDotVoid</code></td>
+      <td><code>U+E924</code></td>
+      <td>Combining void dot</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE925;</span></td>
+      <td><code>mensuralProlationCombiningStroke</code></td>
+      <td><code>U+E925</code></td>
+      <td>Combining vertical stroke</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE922;</span></td>
+      <td><code>mensuralProlationCombiningThreeDots</code></td>
+      <td><code>U+E922</code></td>
+      <td>Combining three dots horizontal</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE923;</span></td>
+      <td><code>mensuralProlationCombiningThreeDotsTri</code></td>
+      <td><code>U+E923</code></td>
+      <td>Combining three dots triangular</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE921;</span></td>
+      <td><code>mensuralProlationCombiningTwoDots</code></td>
+      <td><code>U+E921</code></td>
+      <td>Combining two dots</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE926;</span></td>
+      <td><code>mensuralProportion1</code></td>
+      <td><code>U+E926</code></td>
+      <td>Mensural proportion 1</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE927;</span></td>
+      <td><code>mensuralProportion2</code></td>
+      <td><code>U+E927</code></td>
+      <td>Mensural proportion 2</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE928;</span></td>
+      <td><code>mensuralProportion3</code></td>
+      <td><code>U+E928</code></td>
+      <td>Mensural proportion 3</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE929;</span></td>
+      <td><code>mensuralProportion4</code></td>
+      <td><code>U+E929</code></td>
+      <td>Mensural proportion 4</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEE90;</span></td>
+      <td><code>mensuralProportion5</code></td>
+      <td><code>U+EE90</code></td>
+      <td>Mensural proportion 5</td>
+      <td>prolations supplement</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEE91;</span></td>
+      <td><code>mensuralProportion6</code></td>
+      <td><code>U+EE91</code></td>
+      <td>Mensural proportion 6</td>
+      <td>prolations supplement</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEE92;</span></td>
+      <td><code>mensuralProportion7</code></td>
+      <td><code>U+EE92</code></td>
+      <td>Mensural proportion 7</td>
+      <td>prolations supplement</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEE93;</span></td>
+      <td><code>mensuralProportion8</code></td>
+      <td><code>U+EE93</code></td>
+      <td>Mensural proportion 8</td>
+      <td>prolations supplement</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEE94;</span></td>
+      <td><code>mensuralProportion9</code></td>
+      <td><code>U+EE94</code></td>
+      <td>Mensural proportion 9</td>
+      <td>prolations supplement</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE92B;</span></td>
+      <td><code>mensuralProportionMajor</code></td>
+      <td><code>U+E92B</code></td>
+      <td>Mensural proportion major</td>
+      <td>prolations</td>
+      <td>tf_prolations</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE92A;</span></td>
+      <td><code>mensuralProportionMinor</code></td>
+      <td><code>U+E92A</code></td>
+      <td>Mensural proportion minor</td>
+      <td>prolations</td>
+      <td>tf_prolations</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE91C;</span></td>
+      <td><code>mensuralProportionProportioDupla1</code></td>
+      <td><code>U+E91C</code></td>
+      <td>Proportio dupla 1</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE91D;</span></td>
+      <td><code>mensuralProportionProportioDupla2</code></td>
+      <td><code>U+E91D</code></td>
+      <td>Proportio dupla 2</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE91F;</span></td>
+      <td><code>mensuralProportionProportioQuadrupla</code></td>
+      <td><code>U+E91F</code></td>
+      <td>Proportio quadrupla</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE91E;</span></td>
+      <td><code>mensuralProportionProportioTripla</code></td>
+      <td><code>U+E91E</code></td>
+      <td>Proportio tripla</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE91B;</span></td>
+      <td><code>mensuralProportionTempusPerfectum</code></td>
+      <td><code>U+E91B</code></td>
+      <td>Tempus perfectum</td>
+      <td>prolations</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9F3;</span></td>
+      <td><code>mensuralRestBrevis</code></td>
+      <td><code>U+E9F3</code></td>
+      <td>Brevis rest</td>
+      <td>rests</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9F7;</span></td>
+      <td><code>mensuralRestFusa</code></td>
+      <td><code>U+E9F7</code></td>
+      <td>Fusa rest</td>
+      <td>rests</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9F2;</span></td>
+      <td><code>mensuralRestLongaImperfecta</code></td>
+      <td><code>U+E9F2</code></td>
+      <td>Longa imperfecta rest</td>
+      <td>rests</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9F1;</span></td>
+      <td><code>mensuralRestLongaPerfecta</code></td>
+      <td><code>U+E9F1</code></td>
+      <td>Longa perfecta rest</td>
+      <td>rests</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9F0;</span></td>
+      <td><code>mensuralRestMaxima</code></td>
+      <td><code>U+E9F0</code></td>
+      <td>Maxima rest</td>
+      <td>rests</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9F5;</span></td>
+      <td><code>mensuralRestMinima</code></td>
+      <td><code>U+E9F5</code></td>
+      <td>Minima rest</td>
+      <td>rests</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9F4;</span></td>
+      <td><code>mensuralRestSemibrevis</code></td>
+      <td><code>U+E9F4</code></td>
+      <td>Semibrevis rest</td>
+      <td>rests</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9F8;</span></td>
+      <td><code>mensuralRestSemifusa</code></td>
+      <td><code>U+E9F8</code></td>
+      <td>Semifusa rest</td>
+      <td>rests</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE9F6;</span></td>
+      <td><code>mensuralRestSemiminima</code></td>
+      <td><code>U+E9F6</code></td>
+      <td>Semiminima rest</td>
+      <td>rests</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA01;</span></td>
+      <td><code>mensuralSignumDown</code></td>
+      <td><code>U+EA01</code></td>
+      <td>Signum congruentiae down</td>
+      <td>miscellany</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA00;</span></td>
+      <td><code>mensuralSignumUp</code></td>
+      <td><code>U+EA00</code></td>
+      <td>Signum congruentiae up</td>
+      <td>miscellany</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE92F;</span></td>
+      <td><code>mensuralTempusImperfectumHoriz</code></td>
+      <td><code>U+E92F</code></td>
+      <td>Tempus imperfectum, horizontal</td>
+      <td>prolations</td>
+      <td>tf_prolations</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE92E;</span></td>
+      <td><code>mensuralTempusPerfectumHoriz</code></td>
+      <td><code>U+E92E</code></td>
+      <td>Tempus perfectum, horizontal</td>
+      <td>prolations</td>
+      <td>tf_prolations</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE95E;</span></td>
+      <td><code>mensuralWhiteBrevis</code></td>
+      <td><code>U+E95E</code></td>
+      <td>White mensural brevis</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE961;</span></td>
+      <td><code>mensuralWhiteFusa</code></td>
+      <td><code>U+E961</code></td>
+      <td>White mensural fusa</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE95D;</span></td>
+      <td><code>mensuralWhiteLonga</code></td>
+      <td><code>U+E95D</code></td>
+      <td>White mensural longa</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE95C;</span></td>
+      <td><code>mensuralWhiteMaxima</code></td>
+      <td><code>U+E95C</code></td>
+      <td>White mensural maxima</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE95F;</span></td>
+      <td><code>mensuralWhiteMinima</code></td>
+      <td><code>U+E95F</code></td>
+      <td>White mensural minima</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE962;</span></td>
+      <td><code>mensuralWhiteSemibrevis</code></td>
+      <td><code>U+E962</code></td>
+      <td>White mensural semibrevis</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xE960;</span></td>
+      <td><code>mensuralWhiteSemiminima</code></td>
+      <td><code>U+E960</code></td>
+      <td>White mensural semiminima</td>
+      <td>individual notes</td>
+      <td>combiningStaffPositions</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA21;</span></td>
+      <td><code>ornamentOriscus</code></td>
+      <td><code>U+EA21</code></td>
+      <td>Oriscus</td>
+      <td>symbols in CMN</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td class="glyph-col"><span class="glyph">&#xEA20;</span></td>
+      <td><code>ornamentQuilisma</code></td>
+      <td><code>U+EA20</code></td>
+      <td>Quilisma</td>
+      <td>symbols in CMN</td>
+      <td>—</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
