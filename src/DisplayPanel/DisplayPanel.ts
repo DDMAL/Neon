@@ -135,7 +135,30 @@ function displayControlsPanel(handleZoom: ZoomHandler): string {
 
         </div>
       </div>
-      
+
+      <div class="panel-content-subsection">
+        <div id="notation-type-options-title" class="panel-sub-title">Notation Type:</div>
+        <div class="dropdown" id="notation-type-dropdown">
+          <div class="dropdown-trigger">
+            <button class="side-panel-btn" id="notation-type-button" aria-haspopup="true" aria-controls="notation-type-menu" style="width: auto">
+              <span>Type</span>
+              <span id="notation-type-label">&nbsp;- Square</span>
+              <svg class="icon">
+                <use xlink:href="${__ASSET_PREFIX__}assets/img/icons.svg#dropdown-down"></use>
+              </svg>
+            </button>
+          </div>
+          <div class="dropdown-menu" id="notation-type-menu" role="menu">
+            <div class="dropdown-content">
+              <a aria-role="menuitem" class="dropdown-item" id="notation-type-square"
+                title="Font: Bravura. Fallback: Leipzig.">Square</a>
+              <a aria-role="menuitem" class="dropdown-item" id="notation-type-hufnagel"
+                title="Font: Hufnagel (custom). Fallback: Bravura.">Hufnagel</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>`;
 
   return contents;

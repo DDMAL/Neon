@@ -1,9 +1,5 @@
 beforeEach(() => {
-  cy.viewport('macbook-13');
-  cy.visit('http://localhost:8080/editor.html?manifest=test');
-  cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
-    'be.visible',
-  );
+  cy.visitEditor('/editor.html?manifest=test');
 });
 
 type OpacityType = 'glyph' | 'bg';
@@ -37,12 +33,15 @@ function expectToggleButton(type: OpacityType, val: number) {
 function setOpacity(type: OpacityType, val: number) {
   const sliderId = type === 'glyph' ? '#opacitySlider' : '#bgOpacitySlider';
 
-  cy.get(sliderId)
-    .as('range')
-    .trigger('mousedown')
-    .invoke('val', val)
-    .trigger('change') // Zoom slider uses mouseup, but glyph/img opacity uses change event
-    .trigger('mouseup');
+  cy.get(sliderId).as('range');
+
+  // Re-query the alias between steps rather than chaining off the first
+  // action, so a re-render mid-sequence cannot leave us on a detached node.
+  cy.get('@range').trigger('mousedown');
+  cy.get('@range').invoke('val', val);
+  // Zoom slider uses mouseup, but glyph/img opacity uses the change event
+  cy.get('@range').trigger('change');
+  cy.get('@range').trigger('mouseup');
 
   expectOpacity(type, val);
   expectToggleButton(type, val);
@@ -52,14 +51,13 @@ function setOpacity(type: OpacityType, val: number) {
 // Check opacity value to be set to 0 or 100, as expected
 function clickToggle(type: OpacityType) {
   const sliderId = type === 'glyph' ? '#opacitySlider' : '#bgOpacitySlider';
-  cy.get(sliderId)
-    .as('range')
-    .then(($slider: JQuery<HTMLInputElement>) => {
-      const originVal = Number($slider[0].value);
-      cy.get(`#toggle-${type}-opacity`).click();
-      expectOpacity(type, originVal === 0 ? 100 : 0);
-      expectToggleButton(type, originVal === 0 ? 100 : 0);
-    });
+  cy.get(sliderId).as('range');
+  cy.get('@range').then(($slider: JQuery<HTMLInputElement>) => {
+    const originVal = Number($slider[0].value);
+    cy.get(`#toggle-${type}-opacity`).click();
+    expectOpacity(type, originVal === 0 ? 100 : 0);
+    expectToggleButton(type, originVal === 0 ? 100 : 0);
+  });
 }
 
 describe('test: glyph opacity', () => {

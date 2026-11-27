@@ -24,7 +24,78 @@ function copyAttributes(src: Element, dst: Element): void {
   }
 }
 
-export function convertToNeon(staffBasedMei: string): string {
+/**
+ * Declare a document's notation type and bring its encoding into line.
+ *
+ * staffDef@notationtype says what the document is; the connections inside it
+ * have to match, because Verovio reads only the encoding that belongs to the
+ * declared type. Square marks both members of a ligature with @ligated, while
+ * Hufnagel records the connection once, as @con="e" on the second <nc>, and
+ * each notation ignores the other's attribute. Declaring a type without
+ * translating therefore produces a document whose connections are invisible
+ * and whose encoding is wrong - which is what happens when the notation type
+ * is picked incorrectly on upload.
+ *
+ * Both entry points into a document go through here: the upload dialog, where
+ * the type is first declared, and the editor's Notation Type control, which
+ * exists so a wrong choice can be corrected afterwards.
+ *
+ * The mapping is symmetrical, so a document converted by mistake is restored
+ * by converting it back. The exception is a half-connection - a lone @ligated
+ * whose neighbour has none, which the "Untoggle Invalid Obliques" action
+ * exists to clean up, or a @con on the first <nc> of a neume. Neither has a
+ * counterpart in the other notation, and both are dropped.
+ *
+ * An unrecognised notation type leaves the MEI untouched.
+ */
+export function convertNotationType(
+  meiString: string,
+  notationType?: string,
+): string {
+  if (notationType !== 'hufnagel' && notationType !== 'square') {
+    return meiString;
+  }
+
+  const parser = new DOMParser();
+  const meiDoc = parser.parseFromString(meiString, 'text/xml');
+  const mei = meiDoc.documentElement;
+
+  mei.querySelectorAll('staffDef').forEach((staffDef) => {
+    staffDef.setAttribute('notationtype', `neume.${notationType}`);
+  });
+
+  for (const neume of Array.from(mei.getElementsByTagName('neume'))) {
+    const ncs = Array.from(neume.getElementsByTagName('nc'));
+
+    for (let idx = 0; idx < ncs.length; idx++) {
+      if (notationType === 'hufnagel') {
+        if (ncs[idx].getAttribute('ligated') !== 'true') continue;
+
+        ncs[idx].removeAttribute('ligated');
+        if (ncs[idx + 1]?.getAttribute('ligated') === 'true') {
+          ncs[idx + 1].removeAttribute('ligated');
+          ncs[idx + 1].setAttribute('con', 'e');
+          idx += 1;
+        }
+      } else {
+        if (ncs[idx].getAttribute('con') !== 'e') continue;
+
+        ncs[idx].removeAttribute('con');
+        if (ncs[idx - 1]) {
+          ncs[idx - 1].setAttribute('ligated', 'true');
+          ncs[idx].setAttribute('ligated', 'true');
+        }
+      }
+    }
+  }
+
+  return vkbeautify.xml(new XMLSerializer().serializeToString(meiDoc));
+}
+
+export function convertToNeon(
+  staffBasedMei: string,
+  notationType?: string,
+): string {
   const parser = new DOMParser();
   const serializer = new XMLSerializer();
   const meiDoc = parser.parseFromString(staffBasedMei, 'text/xml');
@@ -146,6 +217,26 @@ export function convertToNeon(staffBasedMei: string): string {
     colLayout.setAttribute('xml:id', 'm-' + uuidv4());
     colLayout.setAttribute('cols', nCol.toString());
     scoreDef.insertAdjacentElement('afterend', colLayout);
+  }
+
+  // Make sure the downloaded MEI always declares its notation subtype.
+  //
+  // The working MEI now carries the subtype through Verovio untouched, so a
+  // document that declared one - on upload, or through the editor's Notation
+  // Type control - is already correct here and must not be overwritten.
+  //
+  // Legacy uploads and the built-in samples predate that and only have bare
+  // notationtype="neume". They never declared a subtype, so the notation
+  // dropdown is the user's declaration; LocalSettings defaults to 'square',
+  // which is also the right default for undeclared material.
+  const staffDef = mei.querySelector('staffDef');
+  const declaredNotationType = staffDef?.getAttribute('notationtype');
+  if (
+    declaredNotationType !== 'neume.hufnagel' &&
+    declaredNotationType !== 'neume.square'
+  ) {
+    const fallback = notationType === 'hufnagel' ? 'hufnagel' : 'square';
+    staffDef?.setAttribute('notationtype', `neume.${fallback}`);
   }
 
   return vkbeautify.xml(serializer.serializeToString(meiDoc));

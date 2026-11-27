@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: neon
+  namespace: neon
+spec:
+  rules:
+    - host: neon.simssa.ca
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: neon
+                port:
+                  number: 80

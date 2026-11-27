@@ -764,49 +764,9 @@ export async function selectAll(
         case 2:
           if (sharedSecondLevelParent(groups)) {
             // Check if this selection is a ligature or can be a ligature
-            // Check if these neume components are part of the same neume
-            if (groups[0].parentElement === groups[1].parentElement) {
-              const children = Array.from(groups[0].parentElement.children);
-
-              // Check that neume components are adjacent
-              if (
-                Math.abs(
-                  children.indexOf(groups[0]) - children.indexOf(groups[1]),
-                ) === 1
-              ) {
-                // Check that second neume component is lower than first.
-                // Note that the order in the list may not be the same as the
-                // order by x-position.
-                let firstNC = groups[0].children[0] as SVGUseElement;
-                let secondNC = groups[1].children[0] as SVGUseElement;
-
-                let firstNCX = firstNC.x.baseVal.value;
-                let secondNCX = secondNC.x.baseVal.value;
-                let firstNCY = firstNC.y.baseVal.value;
-                let secondNCY = secondNC.y.baseVal.value;
-
-                // order nc's by x coord (left to right)
-                if (
-                  firstNCX > secondNCX ||
-                  (firstNCX === secondNCX && firstNCY < secondNCY)
-                ) {
-                  [firstNC, secondNC] = [secondNC, firstNC];
-                  [firstNCX, firstNCY, secondNCX, secondNCY] = [
-                    secondNCX,
-                    secondNCY,
-                    firstNCX,
-                    firstNCY,
-                  ];
-                }
-
-                // if stacked nc's/ligature (identical x), or descending nc's (y descends)
-                if (firstNCX === secondNCX || firstNCY < secondNCY) {
-                  Grouping.triggerGrouping('ligature');
-                  break;
-                }
-              }
-            }
-            Grouping.triggerGrouping('nc');
+            Grouping.triggerGrouping(
+              Grouping.isConnectablePair(groups) ? 'ligature' : 'nc',
+            );
           } else {
             SelectOptions.triggerDefaultActions();
           }

@@ -4,9 +4,18 @@ import * as Color from '../utils/Color';
 import ZoomHandler from '../SingleView/Zoom';
 import { GroupingType } from '../Types';
 import { getSettings, setSettings } from '../utils/LocalSettings';
-import * as d3 from 'd3';
+import {
+  applyHandleSizes,
+  clampHandleSize,
+  HANDLE_SIZE_DEFAULT,
+  HANDLE_SIZE_MAX,
+  HANDLE_SIZE_MIN,
+} from '../utils/EditHandles';
 
-let lastGlyphOpacity: number, lastImageOpacity: number, lastCircleSize: number;
+let lastGlyphOpacity: number, lastImageOpacity: number;
+
+const NOTATION_TYPES = ['square', 'hufnagel'] as const;
+type NotationType = (typeof NOTATION_TYPES)[number];
 
 /**
  * Set zoom control listener for button and slider
@@ -270,52 +279,61 @@ export function setBgOpacityFromSlider(background?: string): void {
 }
 
 /**
- * Set bbox adjustment circle size button and slider listeners.
+ * Add the "Editing handle size" slider to the display panel and wire it up.
+ *
+ * The value is the resize-circle radius in CSS pixels; every editing handle
+ * (circles, rotate diamonds, dashed frame) is derived from it. It only
+ * changes how the handles look: no editor action is sent and no content
+ * coordinate changes. Safe to call more than once; the slider and its
+ * listeners are created only the first time.
  */
-export function setCircleSizeControls(): void {
-  const circleSlider = document.getElementById(
-    'circleSlider',
-  ) as HTMLInputElement;
-  const circleOutput = document.getElementById(
-    'circleOutput',
-  ) as HTMLOutputElement;
+export function initEditHandleSizeControls(): void {
+  if (document.getElementById('edit-handle-size-slider')) return;
+  const sliderSection = document.getElementById('display-slider-section');
+  if (!sliderSection) return;
 
-  const { circleSize } = getSettings();
-  lastCircleSize = circleSize;
-  circleSlider.value = String(circleSize);
-  circleOutput.value = String(circleSize);
+  const container = document.createElement('div');
+  container.classList.add('slider-and-slider-actions-container', 'display-panel');
+  container.style.cursor = 'default';
+  container.id = 'edit-handle-size-slider';
+  container.innerHTML = `
+    <div class="slider-actions-container">
+        <div class="display-slider-title">Editing handle size</div>
+        <button class="side-panel-btn slider-btn" id="reset-handle-size" title="Reset editing handle size">
+            <img class="slider-btn-img" src="${__ASSET_PREFIX__}assets/img/arrow-rotate-left-solid.svg">
+        </button>
+    </div>
+    <div class="slider-container">
+        <input type="range"
+            step="1" min="${HANDLE_SIZE_MIN}" max="${HANDLE_SIZE_MAX}" value="${HANDLE_SIZE_DEFAULT}"
+            aria-labelledby="reset-handle-size"
+            class="slider is-fullwidth is-large"
+            id="handleSizeSlider"
+            style="padding-left: 1rem; padding-right: 1rem;"
+        />
+        <output id="handleSizeOutput" for="handleSizeSlider">${HANDLE_SIZE_DEFAULT}</output>
+    </div>`;
+  sliderSection.appendChild(container);
 
-  function circleSizeInputChangeHandler(): void {
-    circleOutput.value = circleSlider.value;
-    lastCircleSize = Number(circleSlider.value);
-    setSettings({ circleSize: Number(lastCircleSize) });
-    const resizePoints = d3.selectAll('.resizePoint');
-    if (!resizePoints.empty()) {
-      resizePoints.attr('r', lastCircleSize);
-    }
+  const slider = container.querySelector<HTMLInputElement>('#handleSizeSlider');
+  const output = container.querySelector<HTMLOutputElement>('#handleSizeOutput');
+
+  function setHandleSize(value: unknown): void {
+    const size = clampHandleSize(value);
+    slider.value = String(size);
+    output.value = String(size);
+    setSettings({ handleSize: size });
+    applyHandleSizes();
   }
 
-  const resetBtn = document.getElementById('reset-circle-size');
-  resetBtn.addEventListener('click', () => {
-    const defaultSize = 25;
-    // if has resizePoints displayed
-    const resizePoints = d3.selectAll('.resizePoint');
-    if (!resizePoints.empty()) {
-      resizePoints.attr('r', defaultSize);
-    }
+  // Normalise whatever was stored (missing, 0, NaN, out of range).
+  setHandleSize(getSettings().handleSize);
 
-    lastCircleSize = Number(defaultSize);
-    circleSlider.value = String(defaultSize);
-    circleOutput.value = String(defaultSize);
-
-    setSettings({ circleSize: Number(defaultSize) });
-    circleSizeInputChangeHandler();
-  });
-
-  circleSlider.addEventListener('input', circleSizeInputChangeHandler);
-  circleSlider.addEventListener('change', circleSizeInputChangeHandler);
-
-  circleSlider.disabled = false;
+  slider.addEventListener('input', () => setHandleSize(slider.value));
+  slider.addEventListener('change', () => setHandleSize(slider.value));
+  container
+    .querySelector('#reset-handle-size')
+    .addEventListener('click', () => setHandleSize(HANDLE_SIZE_DEFAULT));
 }
 
 /**
@@ -492,6 +510,71 @@ function setBurgerControls(): void {
 }
 
 /**
+ * Set click listeners for Notation Type dropdown (Square / Hufnagel).
+ * Update the stored setting and notify the active view when the type changes.
+ */
+export function setNotationTypeControls(): void {
+  const dropdown = document.getElementById('notation-type-dropdown');
+  const label = document.getElementById('notation-type-label');
+
+  // Reflect the notation type in the panel without touching the renderer.
+  function showNotationType(type: NotationType): void {
+    label.textContent = `\xA0- ${type[0].toUpperCase() + type.slice(1)}`;
+    setSettings({ notationType: type });
+  }
+
+  // Reflect the notation type AND ask the active view to re-render in it.
+  // The re-render replaces the whole SVG, so this must only run for a real
+  // change of type -- never as part of initialization.
+  function applyNotationType(type: NotationType): void {
+    showNotationType(type);
+    document.dispatchEvent(
+      new CustomEvent('notationtypechange', { detail: { type } }),
+    );
+  }
+
+  function notationTypeClickaway(): void {
+    document.body.removeEventListener('click', notationTypeClickaway);
+    dropdown.classList.remove('is-active');
+  }
+
+  document.getElementById('notation-type-button').addEventListener('click', (evt) => {
+    evt.stopPropagation();
+    dropdown.classList.toggle('is-active');
+    if (dropdown.classList.contains('is-active')) {
+      document.body.addEventListener('click', notationTypeClickaway);
+    } else {
+      document.body.removeEventListener('click', notationTypeClickaway);
+    }
+  });
+
+  NOTATION_TYPES.forEach((type) => {
+    document.getElementById(`notation-type-${type}`).addEventListener('click', () => {
+      dropdown.classList.remove('is-active');
+      document.body.removeEventListener('click', notationTypeClickaway);
+      applyNotationType(type);
+    });
+  });
+
+  // Initialize the control from the stored setting. This runs from
+  // initDisplayControls(), i.e. immediately after the first SVG has been
+  // rendered and handed to the view, so it must not trigger a second render:
+  // the Verovio worker already boots with the square notation font, and a
+  // redundant re-render would replace the freshly-rendered SVG, detaching
+  // every node and dropping any selection.
+  const savedNotationType: NotationType =
+    getSettings().notationType === 'hufnagel' ? 'hufnagel' : 'square';
+
+  if (savedNotationType === 'square') {
+    showNotationType(savedNotationType);
+  } else {
+    // Hufnagel genuinely differs from the worker's default font, so the
+    // render it triggers is doing real work.
+    applyNotationType(savedNotationType);
+  }
+}
+
+/**
  * Set listener for "Display All" button in Display panel.
  */
 function setDisplayAllListener(): void {
@@ -583,6 +666,7 @@ export function initDisplayControls(
   setHighlightKeyControls();
   setDisplayAllListener();
   loadHighlightSettings();
+  setNotationTypeControls();
 
   const displayContents = document.getElementById('displayContents');
   const toggleDisplay = document.getElementById('toggleDisplay');

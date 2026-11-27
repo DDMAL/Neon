@@ -2,18 +2,14 @@
 
 describe('visual: activate sidebar buttons', () => {
   beforeEach(() => {
-    cy.viewport('macbook-13');
-    cy.visit('http://localhost:8080/editor.html?manifest=test');
-    cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
-      'be.visible',
-    );
+    cy.visitEditor('/editor.html?manifest=test');
   });
 
   it('class: buttons should have `is-active` class when clicked', () => {
-    cy.get('#selByStaff').click().should('have.class', 'is-active');
-    cy.get('#selBySyllable').click().should('have.class', 'is-active');
-    cy.get('#selByNeume').click().should('have.class', 'is-active');
-    cy.get('#selByNc').click().should('have.class', 'is-active');
-    cy.get('#selByLayerElement').click().should('have.class', 'is-active');
+    cy.clickAndExpectClass('#selByStaff', 'is-active');
+    cy.clickAndExpectClass('#selBySyllable', 'is-active');
+    cy.clickAndExpectClass('#selByNeume', 'is-active');
+    cy.clickAndExpectClass('#selByNc', 'is-active');
+    cy.clickAndExpectClass('#selByLayerElement', 'is-active');
   });
 });

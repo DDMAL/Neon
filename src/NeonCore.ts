@@ -49,9 +49,28 @@ class NeonCore {
   private annotations: WebAnnotation[];
   private manifest: NeonManifest;
   private lastPageLoaded: string;
+  /**
+   * The notation font currently loaded in the Verovio worker. The worker
+   * initializes itself with Bravura (see workers/VerovioWorker.js), which is
+   * the square notation font, so that is the starting state here.
+   */
+  private notationFont: string;
+  /**
+   * staffDef@notationtype of the loaded document, kept so callers that cannot
+   * wait on the worker - such as building a side panel - can still label
+   * themselves after the document rather than after LocalSettings.
+   */
+  private notationType: string;
 
   getAnnotations(): WebAnnotation[] {
     return this.annotations;
+  }
+
+  /**
+   * @returns The loaded document's staffDef@notationtype, if it declares one.
+   */
+  getNotationType(): string {
+    return this.notationType;
   }
 
   /**
@@ -85,6 +104,7 @@ class NeonCore {
     this.manifest = manifest;
     this.annotations = manifest.mei_annotations;
     this.lastPageLoaded = '';
+    this.notationFont = 'square';
   }
 
   /**
@@ -268,6 +288,10 @@ class NeonCore {
    */
   loadData(pageURI: string, data: string, dirty = false): Promise<void> {
     Validation.sendForValidation(removeColumnLabel(data));
+    this.notationType = this.parser
+      .parseFromString(data, 'text/xml')
+      .documentElement.querySelector('staffDef')
+      ?.getAttribute('notationtype');
     this.lastPageLoaded = pageURI;
     /* A promise is returned that will resolve to the result of the action.
      * However the value that is must return comes from the Web Worker and
@@ -297,6 +321,39 @@ class NeonCore {
           });
           evt.target.removeEventListener('message', handle);
           resolve();
+        }
+      }
+      this.verovioWrapper.addEventListener('message', handle.bind(this));
+      this.verovioWrapper.postMessage(message);
+    });
+  }
+
+  /**
+   * Load a notation font into the Verovio worker.
+   *
+   * Resolves to `true` when the font actually changed, and `false` when the
+   * requested font was already loaded. Callers use that to decide whether a
+   * re-render is needed: switching fonts invalidates the render cache, but
+   * re-requesting the font that is already active does not, and re-rendering
+   * anyway replaces the whole SVG for no visible change.
+   */
+  setNotationFont(type: string): Promise<boolean> {
+    if (type === this.notationFont) {
+      return Promise.resolve(false);
+    }
+
+    return new Promise((resolve): void => {
+      const message: VerovioMessage = {
+        id: uuidv4(),
+        action: 'setFont',
+        fontType: type,
+      };
+      function handle(evt: MessageEvent): void {
+        if (evt.data.id === message.id) {
+          evt.target.removeEventListener('message', handle);
+          this.notationFont = type;
+          this.lastPageLoaded = '';
+          resolve(true);
         }
       }
       this.verovioWrapper.addEventListener('message', handle.bind(this));
@@ -512,6 +569,35 @@ class NeonCore {
   }
 
   /**
+   * Replace a page's MEI wholesale, as a single undoable action.
+   *
+   * Editor actions cannot express every change: converting a document's
+   * notation type rewrites staffDef@notationtype, and Verovio only re-reads
+   * that in SetScoreDefFunctor when the document is prepared, not from a
+   * `set` action. Such a change therefore has to go back in as a document,
+   * but should still behave like any other edit - undoable, and marking the
+   * page unsaved.
+   *
+   * @param pageURI - The URI of the selected page.
+   * @param mei - The replacement MEI.
+   */
+  async replaceMEI(pageURI: string, mei: string): Promise<void> {
+    const currentMEI = await this.getMEI(pageURI);
+
+    if (!this.undoStacks.has(pageURI)) {
+      this.undoStacks.set(pageURI, []);
+    }
+    const undoStack = this.undoStacks.get(pageURI);
+    if (undoStack.push(currentMEI) > 10) {
+      this.undoStacks.set(pageURI, undoStack.slice(1));
+    }
+    this.redoStacks.set(pageURI, []);
+
+    await this.loadData(pageURI, mei, true);
+    setSavedStatus(false);
+  }
+
+  /**
    * Undo the last action performed on a specific page.
    * @param pageURI - The URI of the selected page.
    * @returns If the action was undone.
@@ -593,7 +679,8 @@ class NeonCore {
             .catch((err) => {
               console.error(err);
               console.warn('Falling back to data URI');
-              uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);
+              uri =
+                'data:application/mei+xml;base64,' + window.btoa(value.mei);
             });
         } else {
           uri = 'data:application/mei+xml;base64,' + window.btoa(value.mei);

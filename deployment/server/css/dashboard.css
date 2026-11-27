@@ -313,6 +313,25 @@
   }
 }
 
+@keyframes new-upload-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(240, 180, 41, 0.55);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgba(240, 180, 41, 0);
+  }
+}
+
+.document-entry.new-upload {
+  background-color: #fff6e0;
+  border-color: #f0b429;
+  animation:
+    settle 0.5s ease-in-out forwards,
+    new-upload-pulse 1.2s ease-in-out 2;
+}
+
 .document-icon {
   width: 20px;
   height: 20px;
@@ -617,7 +636,7 @@ input.filename-input, select.file-input, textarea.file-input {
 }
 
 .folio_list {
-  height: 80%;
+  height: 65%;
   width: 100%;
   overflow: scroll;
 }
@@ -645,6 +664,39 @@ input.filename-input, select.file-input, textarea.file-input {
   font-size: large;
   cursor: pointer;
   opacity: 0.4;
+}
+
+#notation_type_container {
+  height: 15%;
+  width: 100%;
+  border-top: 1px solid #dfdfdf;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* .file-container-title normally sizes to 10% of a much taller panel;
+   inside this short container that shrinks it below its own text height,
+   so it visually overlaps the radio row underneath. Override to auto. */
+#notation_type_container .file-container-title {
+  height: auto;
+  border-bottom: none;
+  margin-bottom: 4px;
+}
+
+.notation_type_options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notation_type_option {
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  margin: 0 6px;
 }
 
 #upload_button_container {

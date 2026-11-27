@@ -73,6 +73,7 @@ class InsertHandler {
       case 'torculus':
       case 'porrectus':
       case 'pressus':
+      case 'distropha':
         const contour = this.neonView.info.getContourByValue(
           buttonId.charAt(0).toUpperCase() + buttonId.slice(1),
         );

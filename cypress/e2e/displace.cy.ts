@@ -1,9 +1,5 @@
 beforeEach(() => {
-  cy.viewport('macbook-13');
-  cy.visit('http://localhost:8080/editor.html?manifest=test');
-  cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
-    'be.visible',
-  );
+  cy.visitEditor('/editor.html?manifest=test');
 });
 
 describe('displace: +1 octave', () => {
@@ -11,28 +7,28 @@ describe('displace: +1 octave', () => {
     cy.get('#displayInfo').click();
     cy.get('#selByLayerElement').click();
 
-    cy.get('.clef').first().click({ timeout: 100, force: true });
+    cy.get('.clef').first().click({ force: true });
   });
 
   it('pitch: octave should be incremented', () => {
-    cy.get('#increment-octave').click({ timeout: 100, force: true });
+    cy.get('#increment-octave').click({ force: true });
 
     // A random neume in the middle of the staff of whose pitch we know
     const NEUME_ID = '#m-f76386ee-7bfd-471a-8478-e1fb7e345757';
 
-    cy.get(NEUME_ID).trigger('mouseover', { force: true, timeout: 100 });
+    cy.get(NEUME_ID).trigger('mouseover', { force: true });
     cy.get('#element_info').should('contain', 'F4').and('not.contain', 'F3');
   });
 
   it('pitch: ignore presence of divlines', () => {
-    cy.get('#increment-octave').click({ timeout: 100, force: true });
+    cy.get('#increment-octave').click({ force: true });
 
     // This is a known neume at the end of the staff, with 3 divlines before it.
     // According to our rules, the divlines should not matter: the pitch should
     // still be displaced:
     const NEUME_ID = '#m-61068be0-0f13-4ffb-bc64-65e6b643de60';
 
-    cy.get(NEUME_ID).trigger('mouseover', { force: true, timeout: 100 });
+    cy.get(NEUME_ID).trigger('mouseover', { force: true });
     cy.get('#element_info').should('contain', 'D4').and('not.contain', 'D3');
   });
 
@@ -43,7 +39,7 @@ describe('displace: +1 octave', () => {
     cy.get(NEUME_ID).then(($neume) => {
       const origin = $neume[0].getBoundingClientRect();
 
-      cy.get('#increment-octave').click({ timeout: 100, force: true });
+      cy.get('#increment-octave').click({ force: true });
 
       cy.get(NEUME_ID).then(($neume) => {
         const after = $neume[0].getBoundingClientRect();

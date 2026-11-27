@@ -300,4 +300,5 @@ export const FileSystemTools = {
   removeMetadata: removeMetadata,
   getAllNames: getAllNames,
   renameEntry: renameEntry,
+  sortFolder: sortFolder,
 };

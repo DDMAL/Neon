@@ -56,6 +56,20 @@ export const uploadAreaHTML = `<div id="document-upload-container">
         </div>
         <div class="folio_list" id="paired_list"></div>
 
+        <div id="notation_type_container">
+          <div class="file-container-title">Notation Type</div>
+          <div class="notation_type_options">
+            <label class="notation_type_option">
+              <input type="radio" name="upload_notation_type" value="square" checked>
+              Square
+            </label>
+            <label class="notation_type_option">
+              <input type="radio" name="upload_notation_type" value="hufnagel">
+              Hufnagel
+            </label>
+          </div>
+        </div>
+
         <div id="upload_button_container">
           <div class="action_button" id="upload_button">
             Upload

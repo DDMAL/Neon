@@ -2,6 +2,7 @@ import NeonView from './NeonView';
 import DisplayPanel from './DisplayPanel/DisplayPanel';
 import { DisplayConstructable, ViewInterface } from './Interfaces';
 import ZoomHandler from './SingleView/Zoom';
+import { applyHandleSizes } from './utils/EditHandles';
 
 import Diva from 'diva.js';
 
@@ -33,6 +34,9 @@ class DivaView implements ViewInterface {
     manifest: string,
   ) {
     this.neonView = neonView;
+    document.addEventListener('notationtypechange', (evt: CustomEvent) => {
+      this.neonView.setNotationType(evt.detail.type);
+    });
     this.updateCallbacks = [];
     this.divaReady = false;
     this.diva = new Diva('container', {
@@ -167,6 +171,8 @@ class DivaView implements ViewInterface {
           elem.style.display = '';
         },
       );
+      // updateSVG ran while the pages were hidden (no screen CTM yet).
+      applyHandleSizes();
     });
   }
 
@@ -213,6 +219,8 @@ class DivaView implements ViewInterface {
     container.style.left = `${offset.left - parseInt(marginLeft)}px`;
 
     container.appendChild(svg);
+    // The page is drawn at a new CSS scale; keep editing handles constant.
+    applyHandleSizes();
   }
 
   /**

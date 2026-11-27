@@ -13,9 +13,11 @@ import {
   TextViewInterface,
   ViewInterface,
 } from './Interfaces';
+import { convertNotationType } from './utils/ConvertMei';
 import { setDebugMode } from './utils/DebugMode';
 import { setSavedStatus, listenUnsavedChanges } from './utils/Unsaved';
 import LocalSettings, { getSettings } from './utils/LocalSettings';
+import { initEditHandleSizeControls } from './DisplayPanel/DisplayControls';
 
 /**
  * NeonView class. Manages the other modules of Neon and communicates with
@@ -68,19 +70,27 @@ class NeonView {
         this.TextEdit = new params.TextEdit(this);
       }
     }
+    // The editing handle size slider belongs to editing as a whole, not to
+    // text bounding boxes: staff handles use it even with bboxes hidden.
+    if (
+      (params.NeumeEdit !== undefined || this.TextEdit !== undefined) &&
+      this.getUserMode() !== 'viewer'
+    ) {
+      initEditHandleSizeControls();
+    }
     if (params.NeumeEdit !== undefined) {
       this.NeumeEdit = new params.NeumeEdit(this);
       this.textView.updateBBoxVisibility();
       const { userMode, insertMode, selectionMode } = getSettings();
-      document.getElementById(insertMode).classList.add('is-active');
-      document.getElementById(selectionMode).classList.add('is-active');
+      document.getElementById(insertMode)?.classList.add('is-active');
+      document.getElementById(selectionMode)?.classList.add('is-active');
       switch (userMode) {
         case 'insert':
-          document.getElementById(insertMode).click();
+          document.getElementById(insertMode)?.click();
           break;
         case 'edit':
         default:
-          document.getElementById(selectionMode).click();
+          document.getElementById(selectionMode)?.click();
           break;
       }
     }
@@ -238,6 +248,43 @@ class NeonView {
         );
       });
     });
+  }
+
+  async setNotationType(type: string): Promise<void> {
+    const pageURI = this.view.getCurrentPageURI();
+    const mei = await this.getPageMEI(pageURI);
+    const declared = new DOMParser()
+      .parseFromString(mei, 'text/xml')
+      .documentElement.querySelector('staffDef')
+      ?.getAttribute('notationtype');
+
+    // Switching notation type is the only way to correct a document that was
+    // uploaded as the wrong one, so it has to convert the encoding, not just
+    // relabel it - Verovio reads @ligated for Square and @con for Hufnagel,
+    // and ignores the other. Converting it back restores the original.
+    if (
+      (type === 'hufnagel' || type === 'square') &&
+      declared !== `neume.${type}`
+    ) {
+      await this.core.replaceMEI(pageURI, convertNotationType(mei, type));
+    }
+
+    const changed = await this.core.setNotationFont(type);
+
+    // replaceMEI has already reloaded the document, so re-render whenever
+    // either the encoding or the font changed. Re-rendering replaces the
+    // entire SVG (SingleView.updateSVG), which drops selection and detaches
+    // every node, so it must not happen when neither did.
+    if (changed || declared !== `neume.${type}`) {
+      this.updateForCurrentPage();
+    }
+  }
+
+  /**
+   * @returns The loaded document's staffDef@notationtype, if it declares one.
+   */
+  getNotationType(): string {
+    return this.core.getNotationType();
   }
 
   /**

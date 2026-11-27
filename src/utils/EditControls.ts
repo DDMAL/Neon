@@ -2,6 +2,7 @@ import * as Notification from './Notification';
 import NeonView from '../NeonView';
 import { convertToNeon } from './ConvertMei';
 import { EditorAction } from '../Types';
+import { getSettings } from './LocalSettings';
 
 /**
  * Set top navbar event listeners.
@@ -49,7 +50,8 @@ export function initNavbar(neonView: NeonView): void {
     const uri = neonView.view.getCurrentPageURI();
     neonView.getPageMEI(uri).then((mei) => {
       const data =
-        'data:application/mei+xml;base64,' + window.btoa(convertToNeon(mei));
+        'data:application/mei+xml;base64,' +
+        window.btoa(convertToNeon(mei, getSettings().notationType));
       document.getElementById('getmei').setAttribute('href', data);
       document
         .getElementById('getmei')

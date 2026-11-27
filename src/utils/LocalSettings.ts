@@ -26,11 +26,18 @@ export interface Settings {
   zoom: number;
   glyphOpacity: number;
   imageOpacity: number;
-  circleSize: number;
+  /**
+   * Size of the editing handles (resize-circle radius) in CSS pixels.
+   * Replaces the old `circleSize`, which was in SVG units and therefore
+   * looked ten times bigger on a ten-times-smaller image. Old `circleSize`
+   * values are not converted; see EditHandles.clampHandleSize.
+   */
+  handleSize: number;
   highlightMode: GroupingType;
   userMode: UserType;
   insertMode: InsertType;
   insertTab: InsertTabType;
+  notationType: string;
   selectionMode: SelectionType;
   debugMode: boolean;
   displayBBox: boolean;
@@ -51,11 +58,12 @@ const DEFAULT_SETTINGS: Settings = {
   zoom: 100,
   glyphOpacity: 100,
   imageOpacity: 100,
-  circleSize: 25,
+  handleSize: 6, // = EditHandles.HANDLE_SIZE_DEFAULT
   highlightMode: 'none',
   userMode: 'edit',
   insertMode: 'punctum',
   insertTab: 'primitiveTab',
+  notationType: 'square',
   selectionMode: 'selBySyllable',
   debugMode: false,
   displayBBox: false,
@@ -124,6 +132,17 @@ export function getSettings(): Settings {
  */
 export function setSettings(params: Partial<Settings>): void {
   localSettings.set(params);
+}
+
+/**
+ * Set the notation type that a newly uploaded folio should use when it is
+ * first opened in the editor.
+ */
+export function setInitialNotationType(
+  folioId: string,
+  notationType: string,
+): void {
+  window.localStorage.setItem(folioId, JSON.stringify({ notationType }));
 }
 
 export default LocalSettings;

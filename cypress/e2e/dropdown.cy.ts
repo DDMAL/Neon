@@ -1,10 +1,6 @@
 describe('test: dropdowns', () => {
   beforeEach(() => {
-    cy.viewport('macbook-13');
-    cy.visit('http://localhost:8080/editor.html?manifest=test');
-    cy.get('svg.neon-container.active-page', { timeout: 10000 }).should(
-      'be.visible',
-    );
+    cy.visitEditor('/editor.html?manifest=test');
   });
 
   function isOctaveDropdown(visible = true) {
@@ -13,8 +9,8 @@ describe('test: dropdowns', () => {
   }
 
   it('test: multiple action dropdowns', () => {
-    cy.get('#selByLayerElement').click().should('have.class', 'is-active');
-    cy.get('.clef').first().click({ force: true, timeout: 100 });
+    cy.clickAndExpectClass('#selByLayerElement', 'is-active');
+    cy.get('.clef').first().click({ force: true });
 
     // Octave dropdown options should not be visible
     isOctaveDropdown(false);
@@ -30,8 +26,8 @@ describe('test: dropdowns', () => {
   });
 
   it('test: click away from dropdown', () => {
-    cy.get('#selByLayerElement').click().should('have.class', 'is-active');
-    cy.get('.clef').first().click({ force: true, timeout: 100 });
+    cy.clickAndExpectClass('#selByLayerElement', 'is-active');
+    cy.get('.clef').first().click({ force: true });
 
     cy.contains('Displace Octave').click();
     isOctaveDropdown(true);

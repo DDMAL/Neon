@@ -1,7 +1,7 @@
 import NeonView from '../NeonView';
 import { DragAction, EditorAction } from '../Types';
 import * as d3 from 'd3';
-import { BBox, isOutOfSVGBounds, getGlyphBBox } from './Coordinates';
+import { isOutOfSVGBounds, getContentBounds } from './Coordinates';
 import { queueNotification } from './Notification';
 import { selectAll, selectBBox, selectStaff } from './SelectTools';
 
@@ -149,17 +149,20 @@ class DragHandler {
       param: paramArray,
     };
 
+    // Neon re-renders the entire SVG in response to the edit, which drops the
+    // `selected` class from every node, so record what to reselect NOW --
+    // while the nodes are still attached and still selected. Reading this
+    // after the edit resolves is a race: anything else that replaces the SVG
+    // in the meantime leaves us with an empty list and silently unselects
+    // everything.
+    const toReselect = Array.from(document.querySelectorAll('.selected'))
+      .filter((el) => !el.classList.contains('no-moving'))
+      .map((el) => el.id);
+
     // Send editor action
     this.neonView
       .edit(editorAction, this.neonView.view.getCurrentPageURI())
       .then(async () => {
-        // Neon re-renders the entire SVG, and hence, before we do so,
-        // we need to store all the elements (IDs) we need to select again
-        // Then, we need to reselect them by calling `this.reselect()`
-        const toReselect = Array.from(document.querySelectorAll('.selected'))
-          .filter((el) => !el.classList.contains('no-moving'))
-          .map((el) => el.id);
-
         // CAUTION: `updateForCurrentPage()` is an asynchronous function!
         // It requires an `await` keyword.
         await this.neonView.updateForCurrentPage();
@@ -173,15 +176,21 @@ class DragHandler {
   }
 
   async reselect(toReselect: string[]): Promise<void> {
-    const reselected = toReselect.map((id) =>
-      document.querySelector<SVGGraphicsElement>(`#${id}`),
-    );
+    // An id may be missing from the re-rendered SVG (Verovio can drop or
+    // rename elements as a result of the edit). Drop those instead of letting
+    // a null reach `classList` below, which would throw inside this promise
+    // and skip both the reselection and the caller's `dragInit()`.
+    const reselected = toReselect
+      .map((id) => document.querySelector<SVGGraphicsElement>(`#${id}`))
+      .filter((el): el is SVGGraphicsElement => el !== null);
+
+    if (reselected.length === 0) return;
 
     // All glyphs except bouding boxes ('syl's) must be selected with
-    // `selectAll()`
-    reselected
-      .filter((el) => !el.classList.contains('syl'))
-      .forEach(async () => await selectAll(reselected, this.neonView, this));
+    // `selectAll()`. It takes the whole array, so call it once.
+    if (reselected.some((el) => !el.classList.contains('syl'))) {
+      await selectAll(reselected, this.neonView, this);
+    }
 
     // Bounding boxes must be explicitly selected using `selectBBox()`
     reselected
@@ -258,50 +267,33 @@ class DragHandler {
     const endX = this.dragStartCoords[0] + this.dx;
     const endY = this.dragStartCoords[1] + this.dy;
 
-    return isOutOfSVGBounds(endX, endY);
+    return isOutOfSVGBounds(endX, endY, this.selection[0]);
   }
 
   /**
-   * Returns whether the selection array is within the bounds of the SVG
+   * Returns whether the dragged content would land outside the page.
+   *
+   * Only real content counts (staff lines, glyphs, text boxes; see
+   * `getContentBounds`): editing handles such as the rotate diamonds may
+   * hang off the image without blocking a valid move (#1409).
+   *
+   * Must be called while the drag preview `translate(dx,dy)` is still on the
+   * selection: the measured bounds already include it, so the offset is not
+   * added a second time.
    * @param {SVGGraphicsElement[]} selection
    * @returns {boolean} Is selection out of bounds
    */
   isDragOutOfBounds(selection: SVGGraphicsElement[]): boolean {
-    // Get the bounding boxes of all glyphs (<use> elements) within the selection array
-    const isBBoxDisplayed =
-      document.querySelector<HTMLInputElement>('#displayBBox').checked;
-    let glyphSelector = isBBoxDisplayed ? 'use, rect' : 'use';
+    const bounds = getContentBounds(selection);
 
-    if (selection[0].classList.contains('staff')) glyphSelector = 'path';
+    // Nothing measurable (e.g. only zero-size connector glyphs): there is no
+    // evidence the drag is invalid, so let it through rather than failing it.
+    if (bounds === null) return false;
 
-    const glyphs: SVGUseElement[] = selection.reduce(
-      (acc, el) => acc.concat(...el.querySelectorAll(glyphSelector)),
-      [],
-    );
-    const glyphBBoxes: BBox[] = glyphs.map(getGlyphBBox);
-
-    // Get the surrounding bounding box of the selected elements
-    const selectionBBox: BBox = glyphBBoxes.reduce(
-      (bbox, curr) => {
-        return {
-          ulx: Math.min(bbox.ulx, curr.ulx),
-          uly: Math.min(bbox.uly, curr.uly),
-          lrx: Math.max(bbox.lrx, curr.lrx),
-          lry: Math.max(bbox.lry, curr.lry),
-        };
-      },
-      {
-        ulx: Number.MAX_VALUE,
-        uly: Number.MAX_VALUE,
-        lrx: Number.MIN_VALUE,
-        lry: Number.MIN_VALUE,
-      },
-    );
-
-    const { ulx, uly, lrx, lry } = selectionBBox;
+    const { ulx, uly, lrx, lry } = bounds;
     return (
-      isOutOfSVGBounds(ulx + this.dx, uly + this.dy) ||
-      isOutOfSVGBounds(lrx + this.dx, lry + this.dy)
+      isOutOfSVGBounds(ulx, uly, selection[0]) ||
+      isOutOfSVGBounds(lrx, lry, selection[0])
     );
   }
 }
